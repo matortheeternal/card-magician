@@ -1,0 +1,26 @@
+<div class="card">
+    <template x-for="bg in backgrounds">
+        <div class="card-bg" :style="bg"></div>
+    </template>
+    <div class="card-frame">
+        <div class="card-header">
+            <div class="card-name"></div>
+            <div class="card-mana-cost"></div>
+        </div>
+
+        <div class="card-art-image"></div>
+
+        <div class="card-type-line">
+            <div class="card-type"></div>
+            <div class="card-expansion-symbol"></div>
+        </div>
+
+        <div class="card-text-box"></div>
+
+        <div class="card-pt-container" x-show="showPT"></div>
+    </div>
+    <div class="card-footer">
+        <div class="card-info"></div>
+        <div class="card-legal-text"></div>
+    </div>
+</div>

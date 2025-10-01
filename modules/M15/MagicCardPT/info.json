@@ -1,0 +1,5 @@
+{
+  "name": "MagicCardPT",
+  "description": "Defines the creature power and toughness fields and the corresponding power & toughness display for M15 Magic: The Gathering Card templates.",
+  "version": "0.0"
+}
