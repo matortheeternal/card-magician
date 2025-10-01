@@ -1,0 +1,35 @@
+.card-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: inherit;
+    padding: 6px;
+    overflow: hidden;
+    font-size: 17px;
+    font-family: "MPlantin", sans-serif;
+}
+
+.card-text i {
+    font-family: "Times New Roman", serif;
+}
+
+.card-text p {
+    margin: 0;
+}
+
+.card-text img {
+    width: 14px;
+    vertical-align: baseline;
+    margin: 0 1px;
+}
+
+.rules-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.flavor-text {
+    font-family: "Times New Roman", serif;
+    font-style: italic;
+}

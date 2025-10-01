@@ -1,0 +1,5 @@
+{
+  "name": "MagicCardName",
+  "description": "Defines the card name field and its corresponding display for M15 Magic: The Gathering Card templates.",
+  "version": "0.0"
+}

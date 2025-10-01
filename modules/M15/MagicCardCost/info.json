@@ -1,0 +1,5 @@
+{
+  "name": "MagicCardCost",
+  "description": "Defines the card cost field and its corresponding display for M15 Magic: The Gathering Card templates.",
+  "version": "0.0"
+}

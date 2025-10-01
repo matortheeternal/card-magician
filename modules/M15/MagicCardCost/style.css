@@ -1,0 +1,9 @@
+.card-mana-cost span {
+    display: flex;
+    gap: 2px;
+    padding: 3px 0;
+}
+
+.card-mana-cost img {
+    height: 18px;
+}

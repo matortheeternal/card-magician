@@ -1,0 +1,25 @@
+.card-info {
+    display: flex;
+    flex-direction: column;
+    font-family: "Relay Medium", sans-serif;
+    font-size: 10px;
+    color: #fff;
+}
+
+.card-info .illustrator-name {
+    font-size: 10.5px;
+    font-weight: initial;
+    font-family: "Beleren Small Caps Bold", sans-serif;
+}
+
+.card-legal-text {
+    font-size: 9.5px;
+    font-weight: initial;
+    font-family: "MPlantin", sans-serif;
+}
+
+.illustrator-brush {
+    width: 12px;
+    height: 7px;
+    filter: invert(100%);
+}

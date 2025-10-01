@@ -1,0 +1,12 @@
+.card-type {
+    height: inherit;
+}
+
+.type-text {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    height: inherit;
+    font-family: "Beleren Bold", serif;
+    font-size: 17px;
+}

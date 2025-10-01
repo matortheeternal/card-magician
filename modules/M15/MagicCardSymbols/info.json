@@ -1,0 +1,5 @@
+{
+  "name": "MagicCardSymbols",
+  "description": "Defines utility functions for generating MTG symbol images in cards for mana costs, abilities, etc.",
+  "version": "0.0"
+}

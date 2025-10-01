@@ -1,0 +1,17 @@
+{
+  "name": "M15Adventure",
+  "description": "The M15 adventure card frame.",
+  "version": "0.0",
+  "modules": [
+    "M15/MagicCardFrame",
+    "M15/MagicCardSymbols",
+    "M15/MagicCardName",
+    "M15/MagicCardCost",
+    "M15/MagicCardArt",
+    "M15/MagicCardType",
+    "M15/MagicCardRarity",
+    "M15/MagicCardAdventure",
+    "M15/MagicCardPT",
+    "M15/MagicCardFooter"
+  ]
+}

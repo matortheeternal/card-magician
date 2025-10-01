@@ -1,0 +1,37 @@
+{
+  "name": "card-magician",
+  "version": "1.0.0",
+  "description": "A tool for creating custom playing cards.",
+  "keywords": [
+    "trading",
+    "cards",
+    "magic",
+    "the",
+    "gathering",
+    "desktop",
+    "app"
+  ],
+  "homepage": "https://github.com/matortheeternal/card-magician#readme",
+  "bugs": {
+    "url": "https://github.com/matortheeternal/card-magician/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matortheeternal/card-magician.git"
+  },
+  "license": "MIT",
+  "author": "mator",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --minify --target=es2020",
+    "dev": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --target=es2020",
+    "start": "neu run"
+  },
+  "dependencies": {
+    "alpinejs": "^3.15.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10"
+  }
+}
