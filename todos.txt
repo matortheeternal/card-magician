@@ -1,0 +1,7 @@
+- simple save/load
+- nyx bg support
+- vehicle bg support
+- expanded mana symbol support (hybird, phyexian, multi-digit)
+- configuration support
+- simple set support
+- 

@@ -8,7 +8,7 @@ import { buildForm } from './formBuilder.js';
 
 // BASE SETUP
 Neutralino.init();
-Neutralino.events.on("windowClose", Neutralino.app.exit);
+Neutralino.events.on("windowClose", () => Neutralino.app.exit(0));
 window.Alpine = Alpine;
 Alpine.start();
 registerFitText(Alpine);
