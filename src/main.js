@@ -33,6 +33,22 @@ const buildCard = async function(template) {
         },
         setFrame(html) {
             dom.innerHTML = html;
+        },
+        async save() {
+            const cardData = {};
+            card.fields.forEach(field => {
+                cardData[field.id] = this[field.id];
+            });
+            const jsonString = JSON.stringify(cardData);
+            await Neutralino.filesystem.writeFile('./card.json', jsonString);
+        },
+        async load() {
+            const jsonString = await Neutralino.filesystem.readFile('./card.json');
+            const cardData = JSON.parse(jsonString);
+            card.fields.forEach(field => {
+                if (field.type === 'file') return;
+                this[field.id] = cardData[field.id];
+            });
         }
     });
 
@@ -66,6 +82,16 @@ const buildCard = async function(template) {
 
     window.card = card;
     const form = buildForm(card);
+    const button = document.createElement('button');
+    button.textContent = 'Save';
+    button.setAttribute('type', 'button');
+    button.setAttribute('x-on:click', 'await save()');
+    form.appendChild(button);
+    const loadButton = document.createElement('button');
+    loadButton.textContent = 'Load';
+    loadButton.setAttribute('type', 'button');
+    loadButton.setAttribute('x-on:click', 'await load()');
+    form.appendChild(loadButton);
     const main = document.querySelector('main');
     main.innerHTML = '';
     main.setAttribute('x-data', 'card');

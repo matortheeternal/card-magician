@@ -1,7 +1,5 @@
 .card-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: relative;
     height: inherit;
     padding: 6px;
     overflow: hidden;
@@ -13,8 +11,8 @@
     font-family: "Times New Roman", serif;
 }
 
-.card-text p {
-    margin: 0;
+.card-text p:not(:first-of-type), .card-text p:not(:last-of-type) {
+    margin: 4px 0;
 }
 
 .card-text img {
@@ -23,13 +21,14 @@
     margin: 0 1px;
 }
 
-.rules-text {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
 .flavor-text {
     font-family: "Times New Roman", serif;
     font-style: italic;
+}
+
+.card-text-wrap-shape {
+    height: 100%;
+    width: 100%;
+    float: right;
+    pointer-events: none;
 }

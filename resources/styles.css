@@ -69,3 +69,7 @@ textarea:focus {
     border-color: green;
     box-shadow: 0 0 2px 0 green;
 }
+
+.card-container {
+    zoom: 1.5;
+}
