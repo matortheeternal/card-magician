@@ -1,7 +1,9 @@
 <div class="card">
-    <template x-for="bg in backgrounds">
-        <div class="card-bg" :style="bg"></div>
-    </template>
+    <div class="backgrounds">
+        <template x-for="bg in backgrounds">
+            <div class="card-bg" :style="bg"></div>
+        </template>
+    </div>
     <div class="card-frame">
         <div class="card-header">
             <div class="card-name"></div>

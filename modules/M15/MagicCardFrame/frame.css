@@ -57,8 +57,7 @@
 
 .card-text-box {
     padding: 3px 7px;
-    height: 155px;
-    margin-bottom: 8px;
+    height: 163px;
 }
 
 .card-pt-container {
@@ -68,6 +67,17 @@
     right: 20px;
     width: 80px;
     z-index: 3;
+}
+
+.card-pt-wrap-shape {
+    float: right;
+    width: 78px;
+    height: 30px;
+    margin-right: 4px;
+    shape-outside: polygon(0% -80%, 94% -80%, 94% 44%, 0% 44%);
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
 }
 
 .card-footer {
