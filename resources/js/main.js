@@ -3512,7 +3512,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
       init_imageProcessing();
       init_formBuilder();
       Neutralino.init();
-      Neutralino.events.on("windowClose", Neutralino.app.exit);
+      Neutralino.events.on("windowClose", () => Neutralino.app.exit(0));
       window.Alpine = module_default;
       module_default.start();
       fitText_default(module_default);
