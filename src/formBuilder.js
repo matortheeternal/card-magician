@@ -27,7 +27,8 @@ const makeFormInput = function(field) {
     const tagName = TYPES_TO_TAGS[field.type] || 'input';
     const input = document.createElement(tagName);
     if (field.type === 'select') addSelectOptions(input, field);
-    input.setAttribute('type', field.type || 'text');
+    if (tagName === 'input')
+        input.setAttribute('type', field.type || 'text');
     input.setAttribute('x-model', field.id);
     applyOnChange(field, input);
     return input;

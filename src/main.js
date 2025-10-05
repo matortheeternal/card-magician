@@ -3,7 +3,7 @@ import registerFitText from './fitText.js';
 import {
     loadJson, checkFileExists, loadModule, getImageUrl, loadFont
 } from './fsHelpers.js';
-import { maskImage } from './imageProcessing.js';
+import { maskImage, parseBlob } from './imageProcessing.js';
 import { buildForm } from './formBuilder.js';
 
 // BASE SETUP
@@ -36,19 +36,20 @@ const buildCard = async function(template) {
         },
         async save() {
             const cardData = {};
-            card.fields.forEach(field => {
-                cardData[field.id] = this[field.id];
-            });
+            for (const field of card.fields)
+                cardData[field.id] = field.hasOwnProperty('save')
+                    ? await field.save()
+                    : card[field.id];
             const jsonString = JSON.stringify(cardData);
             await Neutralino.filesystem.writeFile('./card.json', jsonString);
         },
         async load() {
             const jsonString = await Neutralino.filesystem.readFile('./card.json');
             const cardData = JSON.parse(jsonString);
-            card.fields.forEach(field => {
-                if (field.type === 'file') return;
-                this[field.id] = cardData[field.id];
-            });
+            for (const field of card.fields)
+                this[field.id] = field.hasOwnProperty('load')
+                    ? await field.load(cardData)
+                    : cardData[field.id];
         }
     });
 
@@ -64,12 +65,12 @@ const buildCard = async function(template) {
         async maskImage(sourceUrl, maskUrl, width, height) {
             return await maskImage(sourceUrl, maskUrl, width, height);
         },
-        updateCardImage(event, card, key) {
-            const file = event.target.files[0];
-            if (!file) return;
-            if (card.artUrl && card.artUrl.startsWith('blob:'))
-                URL.revokeObjectURL(card.artUrl);
-            card[key] = URL.createObjectURL(file);
+        disposeImage(card, key) {
+            if (!card[key]) return;
+            URL.revokeObjectURL(card[key]);
+        },
+        parseBlob(text) {
+            return parseBlob(text);
         },
         async loadFont(fontName, localPath) {
             const filePath = ['modules', modulePath, 'assets', localPath].join('/');

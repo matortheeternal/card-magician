@@ -31,17 +31,15 @@ export default async function(card, utils) {
         return { c: 'm', color: 'gold' };
     };
 
-    card.updateManaCost = async function() {
-        Alpine.nextTick(async () => {
-            card.manaCostHTML = await card.generateSymbols(card.manaCost, true);
-            card.color = card.getColorIdentity();
-        });
-    };
+    Alpine.effect(async () => {
+        if (!card.manaCost) return;
+        card.manaCostHTML = await card.generateSymbols(card.manaCost, true);
+        card.color = card.getColorIdentity();
+    });
 
     card.addField({
         id: 'manaCost',
-        displayName: 'Mana Cost',
-        onChange: 'updateManaCost()'
+        displayName: 'Mana Cost'
     });
 
     card.publishElement('.card-mana-cost',

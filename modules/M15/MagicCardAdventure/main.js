@@ -6,8 +6,7 @@ export default async function(card, utils) {
 
      card.addField({
          id: 'rulesText',
-         displayName: 'Rules Text',
-         onChange: 'rulesTextUpdated()',
+         displayName: 'Rules Text'
      });
      card.addField({
          id: 'flavorText',
@@ -19,8 +18,7 @@ export default async function(card, utils) {
      });
      card.addField({
          id: 'adventureManaCost',
-         displayName: 'Adventure Mana Cost',
-         onChange: 'adventureManaCostUpdated()',
+         displayName: 'Adventure Mana Cost'
      });
      card.addField({
          id: 'adventureSuperType',
@@ -32,23 +30,25 @@ export default async function(card, utils) {
      });
      card.addField({
          id: 'adventureText',
-         displayName: 'Adventure Text',
-         onChange: 'adventureTextUpdated()'
+         displayName: 'Adventure Text'
      });
 
-     card.adventureManaCostUpdated = function() {
+     Alpine.effect(() => {
+         if (!card.adventureManaCost) return;
          card.adventureManaCostHTML = card.generateSymbols(card.adventureManaCost, true);
          const colors = card.getColors(card.adventureManaCost);
          card.adventureColor = card.getColorIdentity(colors);
-     };
+     });
 
-     card.rulesTextUpdated = function() {
-         card.rulesTextHTML = card.formatText(card.rulesText);
-     };
+    Alpine.effect(() => {
+        if (!card.rulesText) return;
+        card.rulesTextHTML = card.formatText(card.rulesText);
+    });
 
-     card.adventureTextUpdated = function() {
-         card.adventureTextHTML = card.formatText(card.adventureText);
-     };
+    Alpine.effect(() => {
+        if (!card.adventureText) return;
+        card.adventureTextHTML = card.formatText(card.adventureText);
+    });
 
      card.publishElement('.card-text-box', `
          <div class="adventure-left">

@@ -6,9 +6,10 @@ export default async function(card, utils) {
         card.ptStyle = { backgroundImage: `url("${url}")` };
     }
 
-    card.ptUpdated = function() {
+    Alpine.effect(() => {
+        if (!card.toughness || !card.power) return;
         card.showPT = card.toughness.length || card.power.length;
-    };
+    });
 
     Alpine.effect(() => {
         if (!card.color) return;
@@ -17,14 +18,12 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'power',
-        displayName: 'Power',
-        onChange: 'ptUpdated()'
+        displayName: 'Power'
     });
 
     card.addField({
         id: 'toughness',
-        displayName: 'Toughness',
-        onChange: 'ptUpdated()'
+        displayName: 'Toughness'
     });
 
     card.publishElement('.card-pt-container',
