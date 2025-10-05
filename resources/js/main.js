@@ -3319,7 +3319,9 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
       };
       effect3(() => {
         evaluateLater2(expression || "true")(() => {
-          Alpine2.nextTick(adjustFontSize);
+          Alpine2.nextTick(() => {
+            requestAnimationFrame(adjustFontSize);
+          });
         });
       });
     });
@@ -3449,6 +3451,16 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     ctx.drawImage(sourceImg, 0, 0, width, height);
     return canvas.toDataURL("image/png");
   }
+  function parseBlob(text) {
+    const [prefix2, base64] = text.split(",");
+    const match = prefix2.match(/data:([^;]+);base64/);
+    if (!match) throw new Error("Malformed data, could not load image blob.");
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++)
+      bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: match[0] });
+  }
   var init_imageProcessing = __esm({
     "src/imageProcessing.js"() {
     }
@@ -3495,7 +3507,8 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
         const tagName = TYPES_TO_TAGS[field.type] || "input";
         const input = document.createElement(tagName);
         if (field.type === "select") addSelectOptions(input, field);
-        input.setAttribute("type", field.type || "text");
+        if (tagName === "input")
+          input.setAttribute("type", field.type || "text");
         input.setAttribute("x-model", field.id);
         applyOnChange(field, input);
         return input;
@@ -3538,19 +3551,16 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
           },
           async save() {
             const cardData = {};
-            card.fields.forEach((field) => {
-              cardData[field.id] = this[field.id];
-            });
+            for (const field of card.fields)
+              cardData[field.id] = field.hasOwnProperty("save") ? await field.save() : card[field.id];
             const jsonString = JSON.stringify(cardData);
             await Neutralino.filesystem.writeFile("./card.json", jsonString);
           },
           async load() {
             const jsonString = await Neutralino.filesystem.readFile("./card.json");
             const cardData = JSON.parse(jsonString);
-            card.fields.forEach((field) => {
-              if (field.type === "file") return;
-              this[field.id] = cardData[field.id];
-            });
+            for (const field of card.fields)
+              this[field.id] = field.hasOwnProperty("load") ? await field.load(cardData) : cardData[field.id];
           }
         });
         const utils = (modulePath) => ({
@@ -3565,12 +3575,12 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
           async maskImage(sourceUrl, maskUrl, width, height) {
             return await maskImage(sourceUrl, maskUrl, width, height);
           },
-          updateCardImage(event, card2, key) {
-            const file = event.target.files[0];
-            if (!file) return;
-            if (card2.artUrl && card2.artUrl.startsWith("blob:"))
-              URL.revokeObjectURL(card2.artUrl);
-            card2[key] = URL.createObjectURL(file);
+          disposeImage(card2, key) {
+            if (!card2[key]) return;
+            URL.revokeObjectURL(card2[key]);
+          },
+          parseBlob(text) {
+            return parseBlob(text);
           },
           async loadFont(fontName, localPath) {
             const filePath = ["modules", modulePath, "assets", localPath].join("/");

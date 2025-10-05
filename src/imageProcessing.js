@@ -24,3 +24,14 @@ export async function maskImage(sourceUrl, maskUrl, width = 375, height = 523) {
 
     return canvas.toDataURL('image/png');
 }
+
+export function parseBlob(text) {
+    const [prefix, base64] = text.split(',');
+    const match = prefix.match(/data:([^;]+);base64/);
+    if (!match) throw new Error('Malformed data, could not load image blob.');
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++)
+        bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: match[0] });
+}

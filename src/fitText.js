@@ -30,7 +30,9 @@ export default function(Alpine) {
 
         effect(() => {
             evaluateLater(expression || 'true')(() => {
-                Alpine.nextTick(adjustFontSize);
+                Alpine.nextTick(() => {
+                    requestAnimationFrame(adjustFontSize);
+                });
             });
         });
     });

@@ -12,15 +12,15 @@ export default async function(card, utils) {
         };
     });
 
-    card.rulesTextUpdated = function() {
+    Alpine.effect(() => {
+        if (!card.rulesText) return;
         card.rulesHTML = card.formatText(card.rulesText);
-    };
+    });
 
     card.addField({
         id: 'rulesText',
         type: 'textarea',
-        displayName: 'Rules Text',
-        onChange: 'rulesTextUpdated()'
+        displayName: 'Rules Text'
     });
 
     card.addField({
