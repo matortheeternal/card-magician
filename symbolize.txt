@@ -1,0 +1,17 @@
+we have some sequence of characters
+at some point in the sequence, there may be a forward slash
+when there is a forward slash, the character before and after the forward slash get merged together
+merged characters can also be merged together, in some cases
+when a character isn't recognized it is deleted
+
+allowed characters:
+
+/[WUBRGC0-9\|\/FLXYZ]/i
+/[SEI]/i
+/h/i
+
+sequences:
+phyrexian: /([wubrg]\/h)/i
+generic or: /([0-9XYZ]\/[wubrgc])/i
+half: /(\|[wubrgc])/i
+large number: /([1-2][0-9]|30)/i

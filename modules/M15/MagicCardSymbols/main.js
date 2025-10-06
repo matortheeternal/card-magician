@@ -1,24 +1,31 @@
 export default async function(card, utils) {
-    const tallUrl = await utils.assetURL(`tall/mana_circle.png`);
-    const flatUrl = await utils.assetURL(`flat/mana_circle.png`);
+    const { buildSymbolConverters } = await utils.import('symbolizer.js');
+
+    const tallUrl = await utils.assetURL(`tall/circle.png`);
+    const flatUrl = await utils.assetURL(`flat/circle.png`);
     card.tallManaCircleStyle = { backgroundImage: `url("${tallUrl}")` };
     card.flatManaCircleStyle = { backgroundImage: `url("${flatUrl}")` };
 
-    const img = (src) => `<img class="sym" src="${src}"/>`;
-    const tallManaCircle = (num) =>
-        `<div class="mana-circle" :style="tallManaCircleStyle">${num}</div>`;
-    const flatManaCircle = (num) =>
-        `<div class="mana-circle" :style="flatManaCircleStyle">${num}</div>`;
     const symbolExpr = /([1-9WUBRGwubrgTXYZ]+)([,:])/g;
+    const symbolConverters = buildSymbolConverters(utils);
 
-    async function symbolize(sym, size) {
-        if ('qtxyz'.includes(sym))
-            return img(await utils.assetURL(`${size}/mana_${sym}.png`));
-        if ('0123456789'.includes(sym))
-            return size === 'tall' ? tallManaCircle(sym) : flatManaCircle(sym);
-        if ('wubrgc'.includes(sym))
-            return img(await utils.assetURL(`${size}/mana_${sym}.png`));
-        return sym;
+    function findSymbolConverter(str) {
+        for (let converter of symbolConverters) {
+            const match = converter.match(str);
+            if (match) return [converter, match];
+        }
+        return str;
+    }
+
+    async function convertSymbols(str, size) {
+        let remainingStr = str;
+        let output = [];
+        while (remainingStr.length) {
+            const [converter, match] = findSymbolConverter(remainingStr);
+            output.push(await converter.convert(size, match));
+            remainingStr = remainingStr.slice(match[0].length);
+        }
+        return output.join('');
     }
 
     async function replaceAsync(str, regex, asyncFn) {
@@ -33,10 +40,7 @@ export default async function(card, utils) {
 
     card.generateSymbols = async function(str, useTall) {
         if (!str) return '';
-        const size = useTall ? 'tall' : 'flat';
-        return (await Promise.all(
-            str.toLowerCase().split('').map(sym => symbolize(sym, size))
-        )).join('');
+        return convertSymbols(str, useTall ? 'tall' : 'flat');
     };
 
     card.formatText = async function(text) {

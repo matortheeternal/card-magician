@@ -1,4 +1,4 @@
-import { getImageUrl, loadFont } from './fsHelpers';
+import { getImageUrl, loadFont, loadImport } from './fsHelpers';
 import { maskImage, parseBlob } from './gfx/imageProcessing';
 import { combineBlendUrl, linearBlendUrl } from './gfx/blending';
 
@@ -30,5 +30,9 @@ export const buildModuleUtils = (modulePath) => ({
     async loadFont(fontName, localPath) {
         const filePath = ['modules', modulePath, 'assets', localPath].join('/');
         await loadFont(fontName, filePath);
+    },
+    import(localPath) {
+        const filePath = ['modules', modulePath, localPath].join('/');
+        return loadImport(filePath);
     }
 });
