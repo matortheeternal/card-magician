@@ -7,8 +7,7 @@ export default async function(card, utils) {
     }
 
     Alpine.effect(() => {
-        if (!card.toughness || !card.power) return;
-        card.showPT = card.toughness.length || card.power.length;
+        card.showPT = card.toughness || card.power;
     });
 
     Alpine.effect(() => {
