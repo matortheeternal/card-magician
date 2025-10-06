@@ -32,7 +32,11 @@ export async function loadModule(modulePath, card, utils) {
     }
 }
 
+const imageUrlCache = new Map();
 export async function getImageUrl(filePath) {
+    if (imageUrlCache.has(filePath))
+        return imageUrlCache.get(filePath);
+
     try {
         const exists = await checkFileExists(filePath);
         if (!exists) {
@@ -42,7 +46,10 @@ export async function getImageUrl(filePath) {
 
         const rawData = await Neutralino.filesystem.readBinaryFile(filePath);
         const blob = new Blob([rawData], { type: 'image/png' });
-        return URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+
+        imageUrlCache.set(filePath, url);
+        return url;
     } catch (error) {
         console.error('Failed to load image:', error);
     }

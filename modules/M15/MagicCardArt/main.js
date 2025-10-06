@@ -31,7 +31,9 @@ export default async function(card, utils) {
         const colorCount = card.color.c.length;
         const colorImage = await getDefaultColorImage(colorCount);
         const typeImage = await getDefaultTypeImage(card);
-        card.defaultImageUrl = await utils.combineBlend(colorImage, typeImage);
+        card.defaultImageUrl = typeImage
+            ? await utils.combineBlend(colorImage, typeImage)
+            : colorImage;
     });
 
     card.updateArtImage = function(event) {
