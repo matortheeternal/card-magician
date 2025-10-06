@@ -1,4 +1,3 @@
-- artifact/land bg support
 - nyx bg support
 - vehicle bg support
 - expanded mana symbol support (hybird, phyexian, multi-digit)

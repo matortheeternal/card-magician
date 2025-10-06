@@ -1,4 +1,9 @@
+const maskCache = new Map();
 export async function maskImage(sourceUrl, maskUrl, width = 375, height = 523) {
+    const key = `${sourceUrl}|${maskUrl}|${width}|${height}`;
+    if (maskCache.has(key))
+        return maskCache.get(key);
+
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
@@ -21,8 +26,10 @@ export async function maskImage(sourceUrl, maskUrl, width = 375, height = 523) {
     ctx.drawImage(maskImg, 0, 0, width, height);
     ctx.globalCompositeOperation = 'source-in';
     ctx.drawImage(sourceImg, 0, 0, width, height);
+    const url = canvas.toDataURL('image/png');
 
-    return canvas.toDataURL('image/png');
+    maskCache.set(key, url);
+    return url;
 }
 
 export function parseBlob(text) {
