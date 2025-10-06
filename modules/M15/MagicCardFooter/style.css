@@ -2,12 +2,12 @@
     display: flex;
     flex-direction: column;
     font-family: "Relay Medium", sans-serif;
-    font-size: 10px;
+    font-size: 9.3px;
     color: white;
 }
 
 .card-info .illustrator-name {
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: initial;
     font-family: "Beleren Small Caps Bold", sans-serif;
 }

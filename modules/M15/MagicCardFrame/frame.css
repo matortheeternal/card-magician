@@ -22,14 +22,14 @@
     display: flex;
     flex-direction: column;
     border-radius: 4px;
-    padding: 11px 6px 0;
+    padding: 10px 6px 0;
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     padding: 2px 8px;
-    height: 31px;
+    height: 32px;
 }
 
 .card-art-image {
@@ -46,8 +46,7 @@
     padding: 4px 8px;
     height: 28px;
     align-items: center;
-    margin-top: 3px;
-    margin-right: 3px;
+    margin: 1.5px 3px;
 }
 
 .card-expansion-symbol {
@@ -63,9 +62,9 @@
 
 .card-pt-container {
     position: absolute;
-    bottom: 17px;
+    bottom: 16px;
     height: 42px;
-    right: 20px;
+    right: 22px;
     width: 80px;
     z-index: 3;
 }

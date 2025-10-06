@@ -1,7 +1,8 @@
-- simple save/load
+- artifact/land bg support
 - nyx bg support
 - vehicle bg support
 - expanded mana symbol support (hybird, phyexian, multi-digit)
+- hybrid bg support
 - configuration support
 - simple set support
-- 
+- card image exporting
