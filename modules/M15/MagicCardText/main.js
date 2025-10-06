@@ -1,14 +1,18 @@
+const vStart = '87%';
+const hStart = '80%';
+const ptPolygon = `polygon(${hStart} ${vStart}, 100% ${vStart}, 100% 100%, ${hStart} 100%)`;
+
 export default async function(card, utils) {
     card.rulesHTML = '';
     card.wrapShapeStyle = {
-        shapeOutside: 'polygon(79% 86%, 100% 86%, 100% 100%, 79% 100%)',
-        clipPath: 'polygon(79% 86%, 100% 86%, 100% 100%, 79% 100%)'
+        shapeOutside: ptPolygon,
+        clipPath: ptPolygon
     };
 
     Alpine.effect(() => {
         card.wrapShapeStyle = {
-            shapeOutside: 'polygon(79% 86%, 100% 86%, 100% 100%, 79% 100%)',
-            clipPath: 'polygon(79% 86%, 100% 86%, 100% 100%, 79% 100%)'
+            shapeOutside: ptPolygon,
+            clipPath: ptPolygon
         };
     });
 

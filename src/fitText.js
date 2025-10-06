@@ -10,9 +10,9 @@ export default function(Alpine) {
             const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
             const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
             const minFontSize = 10;
-            const minLineHeight = 1.02;
+            const minLineHeight = 1.05;
             const fontSizeStep = 0.5;
-            const lineHeightStep = 0.1;
+            const lineHeightStep = 0.05;
 
             let fontSize = initialFontSize;
             let lineHeight = initialLineHeight;

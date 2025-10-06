@@ -1,7 +1,7 @@
 .card-text {
     position: relative;
     height: inherit;
-    padding: 6px;
+    padding: 3px 6px 5px;
     overflow: hidden;
     font-size: 17px;
     font-family: "MPlantin", sans-serif;
@@ -11,13 +11,17 @@
     font-family: "Times New Roman", serif;
 }
 
-.card-text p:not(:first-of-type), .card-text p:not(:last-of-type) {
+.card-text p {
     margin: 4px 0;
+}
+
+.card-text p:first-of-type, .card-text p:last-of-type {
+    margin: 0;
 }
 
 .card-text img {
     width: 14px;
-    vertical-align: baseline;
+    vertical-align: bottom;
     margin: 0 1px;
 }
 

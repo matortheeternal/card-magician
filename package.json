@@ -21,12 +21,17 @@
   },
   "license": "MIT",
   "author": "mator",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --minify --target=es2020",
     "dev": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --target=es2020",
-    "start": "neu run"
+    "start": "npm run build && neu run",
+    "test": "npm run build && neu run -- --run-tests"
+  },
+  "jest": {
+    "transform": {},
+    "testEnvironment": "jsdom"
   },
   "dependencies": {
     "alpinejs": "^3.15.0"

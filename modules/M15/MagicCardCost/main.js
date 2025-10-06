@@ -13,9 +13,6 @@ function getColorlessIdentity(superType) {
 }
 
 export default async function(card, utils) {
-    card.manaCostHTML = '';
-    card.color = getColorlessIdentity('');
-
     card.getColors = function() {
         let colorChars = card.manaCost.toLowerCase().split('')
             .filter(char => 'wubrg'.includes(char));
@@ -25,14 +22,17 @@ export default async function(card, utils) {
     card.getColorIdentity = function() {
         const colors = card.getColors();
         if (colors.length === 0)
-            return getColorlessIdentity(card.superType);
+            return getColorlessIdentity(card.superType || '');
         if (colors.length === 1)
             return { c: colors[0], color: colorNames[colors[0]] };
-        return { c: 'm', color: 'gold' };
+        return { c: 'm', color: 'gold', colors: colors.map(c => colorNames[c]) };
+    };
+
+    card.isMulticolor = function() {
+        return card.color.c.length >= 2;
     };
 
     Alpine.effect(async () => {
-        if (!card.manaCost) return;
         card.manaCostHTML = await card.generateSymbols(card.manaCost, true);
         card.color = card.getColorIdentity();
     });
