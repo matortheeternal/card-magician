@@ -165,3 +165,66 @@ export async function linearBlendUrl(imgUrlA, imgUrlB, x1, y1, x2, y2) {
     linearBlendCache.set(key, url);
     return url;
 }
+
+export function maskBlend(img1, img2, mask) {
+    const { width, height } = img1;
+
+    if (
+        img2.width !== width || img2.height !== height ||
+        mask.width !== width || mask.height !== height
+    ) {
+        throw new Error("Images used for blending must have the same size");
+    }
+
+    const canvas1 = document.createElement("canvas");
+    const canvas2 = document.createElement("canvas");
+    const canvasM = document.createElement("canvas");
+    canvas1.width = canvas2.width = canvasM.width = width;
+    canvas1.height = canvas2.height = canvasM.height = height;
+
+    const ctx1 = canvas1.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    const ctxM = canvasM.getContext("2d");
+    ctx1.drawImage(img1, 0, 0);
+    ctx2.drawImage(img2, 0, 0);
+    ctxM.drawImage(mask, 0, 0);
+
+    const imgData1 = ctx1.getImageData(0, 0, width, height);
+    const imgData2 = ctx2.getImageData(0, 0, width, height);
+    const maskData = ctxM.getImageData(0, 0, width, height);
+
+    const d1 = imgData1.data;
+    const d2 = imgData2.data;
+    const m  = maskData.data;
+
+    for (let i = 0; i < d1.length; i += 4) {
+        // grayscale mask from red channel
+        const maskVal = m[i];
+        const inv = 255 - maskVal;
+        d1[i]   = (d1[i]   * maskVal + d2[i]   * inv) / 255;
+        d1[i+1] = (d1[i+1] * maskVal + d2[i+1] * inv) / 255;
+        d1[i+2] = (d1[i+2] * maskVal + d2[i+2] * inv) / 255;
+    }
+
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = width;
+    outCanvas.height = height;
+    outCanvas.getContext("2d").putImageData(imgData1, 0, 0);
+    return outCanvas;
+}
+
+const maskBlendCache = new Map();
+export async function maskBlendUrl(imgUrlA, imgUrlB, maskUrl) {
+    const key = `${imgUrlA}|${imgUrlB}|${maskUrl}`;
+    if (maskBlendCache.has(key))
+        return maskBlendCache.get(key);
+
+    const imgA = await loadImage(imgUrlA);
+    const imgB = await loadImage(imgUrlB);
+    const maskImg = await loadImage(maskUrl);
+    const canvas = maskBlend(imgA, imgB, maskImg);
+    const url = await canvasToObjectURL(canvas);
+
+    maskBlendCache.set(key, url);
+    return url;
+}
