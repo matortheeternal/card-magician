@@ -1,4 +1,4 @@
-import { combineBlend } from '../gfx/blending.js';
+import { combineBlend, linearBlend } from '../gfx/blending.js';
 import { getImageUrl } from '../fsHelpers.js';
 
 async function saveCanvasToFile(canvas, filePath) {
@@ -39,8 +39,8 @@ const modes = [
     "symmetricOverlay"
 ];
 
-export function buildBlendTests() {
-    describe('Blend modes', () => {
+export function buildCombineBlendTests() {
+    describe('combineBlend', () => {
         let photo, gradient;
         const results = {};
 
@@ -68,7 +68,51 @@ export function buildBlendTests() {
 
         afterAll(async () => {
             await Neutralino.filesystem.writeFile(
-                'tests/output/benchmark.json',
+                'tests/output/combineBlend_benchmark.json',
+                JSON.stringify(results, null, 2)
+            );
+        })
+    });
+}
+
+const testAngles = [
+    { name: 'vertical',   x1: 0,   y1: 0, x2: 0,   y2: 1 },
+    { name: 'horizontal', x1: 0,   y1: 0, x2: 1,   y2: 0 },
+    { name: 'diagonal1',  x1: 0,   y1: 0, x2: 1,   y2: 1 },
+    { name: 'diagonal2',  x1: 1,   y1: 0, x2: 0,   y2: 1 }
+];
+
+export function buildLinearBlendTests() {
+    describe('linearBlend', () => {
+        let photo, gradient;
+        const results = {};
+
+        beforeAll(async () => {
+            const photoUrl = await getImageUrl('tests/fixtures/photo.jpg');
+            const gradientUrl = await getImageUrl('tests/fixtures/gradient.png');
+
+            photo = await loadImage(photoUrl);
+            gradient = await loadImage(gradientUrl);
+        });
+
+        it('should blend photo and gradient at various angles', async () => {
+            let canvas;
+            for (const { name, x1, y1, x2, y2 } of testAngles) {
+                const { avg } = await benchmarkAsync(async () => {
+                    canvas = linearBlend(photo, gradient, x1, y1, x2, y2);
+                }, iterations);
+
+                results[name] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
+
+                await saveCanvasToFile(canvas, `tests/output/linearBlend_${name}.png`);
+                expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+            }
+            console.log("Linear blend benchmark results:", results);
+        });
+
+        afterAll(async () => {
+            await Neutralino.filesystem.writeFile(
+                'tests/output/linearBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );
         })
