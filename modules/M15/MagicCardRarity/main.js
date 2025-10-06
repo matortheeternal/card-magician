@@ -1,9 +1,8 @@
 export default async function(card) {
     card.rarity = 'Common';
-    card.rarityCharacter = 'C';
-    card.rarityClass = 'rarity-common';
 
     Alpine.effect(() => {
+        if (!card.rarity) return;
         card.rarityCharacter = card.rarity.slice(0, 1);
         card.rarityClass = `rarity-${card.rarity.toLowerCase()}`;
     });

@@ -13,19 +13,27 @@ export async function checkFileExists(filePath) {
     }
 }
 
-export async function loadModule(modulePath, card, utils) {
+export async function loadImport(filePath) {
     try {
-        const mainPath = `./modules/${modulePath}/main.js`;
-        const exists = await checkFileExists(mainPath);
+        const exists = await checkFileExists(filePath);
         if (!exists) {
-            console.error(`Module not found: ${mainPath}`);
+            console.error(`Module not found: ${filePath}`);
             return;
         }
 
-        const sourceCode = await Neutralino.filesystem.readFile(mainPath);
+        const sourceCode = await Neutralino.filesystem.readFile(filePath);
         const blob = new Blob([sourceCode], { type: 'application/javascript' });
         const blobUrl = URL.createObjectURL(blob);
-        const module = await import(blobUrl);
+        return await import(blobUrl);
+    } catch (error) {
+        console.error(`Failed to import ${filePath}:`, error);
+    }
+}
+
+export async function loadModule(modulePath, card, utils) {
+    try {
+        const mainPath = `./modules/${modulePath}/main.js`;
+        const module = await loadImport(mainPath);
         await module.default(card, utils);
     } catch (error) {
         console.error('Failed to load module:', error);
