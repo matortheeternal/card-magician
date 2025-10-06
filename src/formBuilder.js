@@ -34,6 +34,14 @@ const makeFormInput = function(field) {
     return input;
 }
 
+function makeFormButton(label, action) {
+    const button = document.createElement('button');
+    button.textContent = label;
+    button.setAttribute('type', 'button');
+    button.setAttribute('x-on:click', action);
+    return button;
+}
+
 export function buildForm(card) {
     const form = document.createElement('form');
     form.setAttribute('onsubmit', 'return false');
@@ -46,5 +54,7 @@ export function buildForm(card) {
         label.appendChild(input);
         form.appendChild(label);
     }
+    form.appendChild(makeFormButton('save', 'await save()'));
+    form.appendChild(makeFormButton('load', 'await load()'));
     return form;
 }

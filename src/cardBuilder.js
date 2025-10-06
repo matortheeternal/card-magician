@@ -1,12 +1,19 @@
-import {checkFileExists, getImageUrl, loadFont, loadJson, loadModule} from './fsHelpers';
-import { maskImage, parseBlob } from './gfx/imageProcessing';
-import { combineBlendUrl } from './gfx/blending';
+import {checkFileExists, loadJson, loadModule} from './fsHelpers';
 import { buildForm } from './formBuilder';
+import { buildModuleUtils } from './moduleUtils.js';
 
-export async function buildCard(template) {
-    const dom = document.createElement('div');
-    dom.className = 'card-container';
-    const card = Alpine.reactive({
+function publishCard(card, dom) {
+    window.card = card;
+    const form = buildForm(card);
+    const main = document.querySelector('main');
+    main.innerHTML = '';
+    main.setAttribute('x-data', 'card');
+    main.appendChild(dom);
+    main.appendChild(form);
+}
+
+function initCard(dom) {
+    return Alpine.reactive({
         fields: [],
         addField(field) {
             this.fields.push(field);
@@ -41,55 +48,17 @@ export async function buildCard(template) {
                     : cardData[field.id];
         }
     });
+}
 
-    const utils = (modulePath) => ({
-        async assetURL(path) {
-            const filePath = ['modules', modulePath, 'assets', path].join('/');
-            return await getImageUrl(filePath);
-        },
-        async loadFile(filename) {
-            const filePath = ['modules', modulePath, filename].join('/');
-            return await Neutralino.filesystem.readFile(filePath);
-        },
-        async maskImage(sourceUrl, maskUrl, width, height) {
-            return await maskImage(sourceUrl, maskUrl, width, height);
-        },
-        disposeImage(card, key) {
-            if (!card[key]) return;
-            URL.revokeObjectURL(card[key]);
-        },
-        parseBlob(text) {
-            return parseBlob(text);
-        },
-        async combineBlend(imgUrl1, imgUrl2, mode = 'symmetricOverlay') {
-            return await combineBlendUrl(imgUrl1, imgUrl2, mode);
-        },
-        async loadFont(fontName, localPath) {
-            const filePath = ['modules', modulePath, 'assets', localPath].join('/');
-            await loadFont(fontName, filePath);
-        }
-    });
+export async function buildCard(template) {
+    const dom = document.createElement('div');
+    dom.className = 'card-container';
+    const card = initCard(dom);
 
     for (let modulePath of template.info.modules)
-        await loadModule(modulePath, card, utils(modulePath));
+        await loadModule(modulePath, card, buildModuleUtils(modulePath));
 
-    window.card = card;
-    const form = buildForm(card);
-    const button = document.createElement('button');
-    button.textContent = 'Save';
-    button.setAttribute('type', 'button');
-    button.setAttribute('x-on:click', 'await save()');
-    form.appendChild(button);
-    const loadButton = document.createElement('button');
-    loadButton.textContent = 'Load';
-    loadButton.setAttribute('type', 'button');
-    loadButton.setAttribute('x-on:click', 'await load()');
-    form.appendChild(loadButton);
-    const main = document.querySelector('main');
-    main.innerHTML = '';
-    main.setAttribute('x-data', 'card');
-    main.appendChild(dom);
-    main.appendChild(form);
+    publishCard(card, dom);
 }
 
 export async function loadTemplates() {
