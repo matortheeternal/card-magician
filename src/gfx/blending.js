@@ -10,6 +10,23 @@ function overlay(a, b) {
         : 255 - (((255 - a) * (255 - b)) >> 7);
 }
 
+function softLight(a, b) {
+    a /= 255;
+    b /= 255;
+    let result;
+
+    if (b < 0.5) {
+        result = a - (1 - 2 * b) * a * (1 - a);
+    } else {
+        const d = (a <= 0.25)
+            ? ((16 * a - 12) * a + 4) * a
+            : Math.sqrt(a);
+        result = a + (2 * b - 1) * (d - a);
+    }
+
+    return Math.round(result * 255);
+}
+
 const blendFuncs = {
     add:           (a, b) => top(a + b),
     subtract:      (a, b) => bot(a - b),
@@ -26,7 +43,7 @@ const blendFuncs = {
     hardLight:     (a, b) => (b < 128)
         ? (a * b) >> 7
         : 255 - (((255 - a) * (255 - b)) >> 7),
-    softLight:     (a, b) => b,
+    softLight:     (a, b) => softLight(a, b),
     reflect:       (a, b) => (b === 255 ? 255 : top((a * a) / (255 - b))),
     glow:          (a, b) => (a === 255 ? 255 : top((b * b) / (255 - a))),
     freeze:        (a, b) => (b === 0 ? 0 : bot(255 - ((255 - a) * (255 - a)) / b)),
@@ -57,23 +74,6 @@ function blendImageData(baseData, topData, mode) {
     return out;
 }
 
-const canvasBlendMap = {
-    normal: "source-over",
-    add: "lighter",
-    difference: "difference",
-    multiply: "multiply",
-    darken: "darken",
-    lighten: "lighten",
-    colorDodge: "color-dodge",
-    colorBurn: "color-burn",
-    screen: "screen",
-    overlay: "overlay",
-    hardLight: "hard-light",
-    softLight: "soft-light",
-    xor: "xor",
-    exclusion: "exclusion"
-};
-
 export function combineBlend(imgA, imgB, mode) {
     const w = imgA.width;
     const h = imgA.height;
@@ -86,21 +86,15 @@ export function combineBlend(imgA, imgB, mode) {
     ctx.globalCompositeOperation = "source-over";
     ctx.drawImage(imgA, 0, 0);
 
-    if (canvasBlendMap[mode]) {
-        ctx.globalCompositeOperation = canvasBlendMap[mode];
-        ctx.drawImage(imgB, 0, 0);
-    } else {
-        const baseData = ctx.getImageData(0, 0, w, h);
-        const tmpCanvas = document.createElement("canvas");
-        tmpCanvas.width = w;
-        tmpCanvas.height = h;
-        tmpCanvas.getContext("2d").drawImage(imgB, 0, 0);
-        const topData = tmpCanvas.getContext("2d").getImageData(0, 0, w, h);
+    const baseData = ctx.getImageData(0, 0, w, h);
+    const tmpCanvas = document.createElement("canvas");
+    tmpCanvas.width = w;
+    tmpCanvas.height = h;
+    tmpCanvas.getContext("2d").drawImage(imgB, 0, 0);
+    const topData = tmpCanvas.getContext("2d").getImageData(0, 0, w, h);
 
-        const outData = blendImageData(baseData, topData, mode);
-        ctx.putImageData(outData, 0, 0);
-    }
-
+    const outData = blendImageData(baseData, topData, mode);
+    ctx.putImageData(outData, 0, 0);
     return outCanvas;
 }
 
