@@ -3,6 +3,14 @@ export default async function(card, utils) {
         return /legendary/i.test(card.superType);
     };
 
+    card.isLand = function() {
+        return /land/i.test(card.superType);
+    };
+
+    card.isArtifact = function() {
+        return /artifact/i.test(card.superType);
+    };
+
     card.addField({
         id: 'superType',
         displayName: 'Super Type'

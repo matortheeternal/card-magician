@@ -35,3 +35,22 @@ export function parseBlob(text) {
         bytes[i] = binary.charCodeAt(i);
     return new Blob([bytes], { type: match[0] });
 }
+
+export function loadImage(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+    });
+}
+
+export function canvasToObjectURL(canvas, type = 'image/png', quality = 0.92) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+            if (!blob) return reject(new Error('Failed to create blob from canvas'));
+            const url = URL.createObjectURL(blob);
+            resolve(url);
+        }, type, quality);
+    });
+}

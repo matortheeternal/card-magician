@@ -23,6 +23,7 @@ export default async function(card, utils) {
     }
 
     card.generateSymbols = async function(str, useTall) {
+        if (!str) return '';
         const size = useTall ? 'tall' : 'flat';
         return (await Promise.all(
             str.toLowerCase().split('').map(sym => symbolize(sym, size))
@@ -31,9 +32,13 @@ export default async function(card, utils) {
 
     card.formatText = async function(text) {
         if (text.length === 0) return text;
-        return (await replaceAsync(text, symbolExpr, async (match, p1, p2) => {
+        text = (await replaceAsync(text, symbolExpr, async (match, p1, p2) => {
             return await card.generateSymbols(p1) + p2;
-        })).replaceAll(/@/g, () => {
+        }));
+        text = (await replaceAsync(text, /<sym>(\w+)<\/sym>/gi, async (match, p1) => {
+            return await card.generateSymbols(p1);
+        }));
+        return text.replaceAll(/(LEGENDNAME|@)/g, () => {
             return card.getLegendName();
         }).replaceAll(/(CARDNAME|~)/g, () => {
             return card.cardName;
