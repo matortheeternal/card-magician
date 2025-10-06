@@ -1,6 +1,6 @@
 import {checkFileExists, getImageUrl, loadFont, loadJson, loadModule} from './fsHelpers';
-import { maskImage, parseBlob, loadImage, canvasToObjectURL } from './gfx/imageProcessing';
-import { combineBlend } from './gfx/blending';
+import { maskImage, parseBlob } from './gfx/imageProcessing';
+import { combineBlendUrl } from './gfx/blending';
 import { buildForm } from './formBuilder';
 
 export async function buildCard(template) {
@@ -62,11 +62,7 @@ export async function buildCard(template) {
             return parseBlob(text);
         },
         async combineBlend(imgUrl1, imgUrl2, mode = 'symmetricOverlay') {
-            if (!imgUrl2) return imgUrl1;
-            const img1 = await loadImage(imgUrl1);
-            const img2 = await loadImage(imgUrl2);
-            const result = combineBlend(img1, img2, mode);
-            return await canvasToObjectURL(result);
+            return await combineBlendUrl(imgUrl1, imgUrl2, mode);
         },
         async loadFont(fontName, localPath) {
             const filePath = ['modules', modulePath, 'assets', localPath].join('/');
