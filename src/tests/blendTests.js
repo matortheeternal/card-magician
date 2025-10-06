@@ -32,7 +32,7 @@ async function benchmarkAsync(fn, iterations = 10) {
 
 const iterations = 10;
 const modes = [
-    "normal", "add", "subtract", "stamp", "difference", "negation",
+    "add", "subtract", "stamp", "difference", "negation",
     "multiply", "darken", "lighten", "colorDodge", "colorBurn",
     "screen", "overlay", "hardLight", "softLight", "reflect",
     "glow", "freeze", "heat", "and", "or", "xor", "shadow",
