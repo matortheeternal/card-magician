@@ -1,6 +1,6 @@
 {
-  "vertical": "0.20 ms (avg over 10 runs)",
-  "horizontal": "0.00 ms (avg over 10 runs)",
-  "diagonal1": "0.10 ms (avg over 10 runs)",
-  "diagonal2": "0.00 ms (avg over 10 runs)"
+  "vertical": "0.80 ms (avg over 10 runs)",
+  "horizontal": "0.10 ms (avg over 10 runs)",
+  "diagonal1": "0.00 ms (avg over 10 runs)",
+  "diagonal2": "0.10 ms (avg over 10 runs)"
 }

@@ -1,4 +1,4 @@
-import { combineBlend, linearBlend } from '../gfx/blending.js';
+import { combineBlend, linearBlend, maskBlend } from '../gfx/blending.js';
 import { getImageUrl } from '../fsHelpers.js';
 
 async function saveCanvasToFile(canvas, filePath) {
@@ -116,5 +116,41 @@ export function buildLinearBlendTests() {
                 JSON.stringify(results, null, 2)
             );
         })
+    });
+}
+
+export function buildMaskBlendTests() {
+    describe('maskBlend', () => {
+        let img1, img2, mask;
+        const results = {};
+
+        beforeAll(async () => {
+            const img1Url = await getImageUrl('tests/fixtures/photo.jpg');
+            const img2Url = await getImageUrl('tests/fixtures/gradient.png');
+            const maskUrl = await getImageUrl('tests/fixtures/softmask.png');
+
+            img1 = await loadImage(img1Url);
+            img2 = await loadImage(img2Url);
+            mask = await loadImage(maskUrl);
+        });
+
+        it('should blend two images based on a mask', async () => {
+            let canvas;
+            const { avg } = await benchmarkAsync(async () => {
+                canvas = maskBlend(img1, img2, mask);
+                expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+            }, iterations);
+            await saveCanvasToFile(canvas, 'tests/output/maskBlend.png');
+
+            results['maskBlend'] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
+            console.log("Mask blend benchmark results:", results);
+        });
+
+        afterAll(async () => {
+            await Neutralino.filesystem.writeFile(
+                'tests/output/maskBlend_benchmark.json',
+                JSON.stringify(results, null, 2)
+            );
+        });
     });
 }
