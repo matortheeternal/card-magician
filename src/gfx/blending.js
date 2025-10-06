@@ -1,3 +1,5 @@
+import { canvasToObjectURL, loadImage } from './imageProcessing';
+
 function top(x)  { return Math.min(255, x); }
 function bot(x)  { return Math.max(0, x); }
 function col(x)  { return Math.min(255, Math.max(0, x)); }
@@ -100,4 +102,20 @@ export function combineBlend(imgA, imgB, mode) {
     }
 
     return outCanvas;
+}
+
+const combineBlendCache = new Map();
+export async function combineBlendUrl(imgUrlA, imgUrlB, mode) {
+    if (!imgUrlB) return imgUrlA;
+    const key = `${imgUrlA}|${imgUrlB}|${mode}`;
+    if (combineBlendCache.has(key))
+        return combineBlendCache.get(key);
+
+    const imgA = await loadImage(imgUrlA);
+    const imgB = await loadImage(imgUrlB);
+    const canvas = combineBlend(imgA, imgB, mode);
+    const url = await canvasToObjectURL(canvas);
+
+    combineBlendCache.set(key, url);
+    return url;
 }

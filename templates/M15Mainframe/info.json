@@ -8,6 +8,7 @@
     "M15/MagicCardName",
     "M15/MagicCardCost",
     "M15/MagicCardArt",
+    "M15/MagicCardDefaultArt",
     "M15/MagicCardType",
     "M15/MagicCardRarity",
     "M15/MagicCardText",
