@@ -1,6 +1,6 @@
 import { getImageUrl, loadFont } from './fsHelpers';
 import { maskImage, parseBlob } from './gfx/imageProcessing';
-import { combineBlendUrl } from './gfx/blending';
+import { combineBlendUrl, linearBlendUrl } from './gfx/blending';
 
 export const buildModuleUtils = (modulePath) => ({
     async assetURL(path) {
@@ -23,6 +23,9 @@ export const buildModuleUtils = (modulePath) => ({
     },
     async combineBlend(imgUrl1, imgUrl2, mode = 'symmetricOverlay') {
         return await combineBlendUrl(imgUrl1, imgUrl2, mode);
+    },
+    async linearBlend(imgUrl1, imgUrl2, x1, y1, x2, y2) {
+        return await linearBlendUrl(imgUrl1, imgUrl2, x1, y1, x2, y2);
     },
     async loadFont(fontName, localPath) {
         const filePath = ['modules', modulePath, 'assets', localPath].join('/');

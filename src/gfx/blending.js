@@ -119,3 +119,49 @@ export async function combineBlendUrl(imgUrlA, imgUrlB, mode) {
     combineBlendCache.set(key, url);
     return url;
 }
+
+export function linearBlend(img1, img2, x1, y1, x2, y2) {
+    if (img1.width !== img2.width || img1.height !== img2.height)
+        throw new Error("Images used for blending must have the same size");
+
+    const { width, height } = img1;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img1, 0, 0);
+    ctx.save();
+
+    const gradient = ctx.createLinearGradient(
+        x1 * width, y1 * height,
+        x2 * width, y2 * height
+    );
+    gradient.addColorStop(0, 'rgba(0,0,0,0)');
+    gradient.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.drawImage(img2, 0, 0);
+    ctx.restore();
+
+    return canvas;
+}
+
+const linearBlendCache = new Map();
+export async function linearBlendUrl(imgUrlA, imgUrlB, x1, y1, x2, y2) {
+    if (!imgUrlB) return imgUrlA;
+    const key = `${imgUrlA}|${imgUrlB}|${x1}|${y1}|${x2}|${y2}`;
+    if (linearBlendCache.has(key))
+        return linearBlendCache.get(key);
+
+    const imgA = await loadImage(imgUrlA);
+    const imgB = await loadImage(imgUrlB);
+    const canvas = linearBlend(imgA, imgB, x1, y1, x2, y2);
+    const url = await canvasToObjectURL(canvas);
+
+    linearBlendCache.set(key, url);
+    return url;
+}
