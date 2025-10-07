@@ -79,4 +79,9 @@ textarea:focus {
 
 h1, h2, h3, h4, h5, h6 {
     text-transform: capitalize;
+    text-align: center;
+    border-bottom: 1px solid;
+    font-family: monospace;
+    zoom: 1.5;
+    margin: 0 0 0.5em;
 }

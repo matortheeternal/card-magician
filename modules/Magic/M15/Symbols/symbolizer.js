@@ -88,7 +88,7 @@ export const buildSymbolConverters = (utils) => ([
         }
     },
     {
-        name: 'written character',
+        name: 'circle with text',
         match: str => str.match(/^[0-9|\/flxyz]/i),
         convert: async (size, [str]) => {
             return manaCircle(size, str.toUpperCase());
@@ -99,6 +99,13 @@ export const buildSymbolConverters = (utils) => ([
         match: str => str.match(/^[wubrgchsei]/i),
         convert: async (size, [str]) => {
             return img(await utils.assetURL(`${size}/single/${str}.png`));
+        }
+    },
+    {
+        name: 'tap',
+        match: str => str.match(/^[tq]/i),
+        convert: async (size, [str]) => {
+            return img(await utils.assetURL(`${size}/tap/${str}.png`));
         }
     }
 ]);
