@@ -1,10 +1,4105 @@
-(()=>{var De=!1,He=!1,R=[],ze=-1;function Fr(e){kr(e)}function kr(e){R.includes(e)||R.push(e),Rr()}function Lr(e){let t=R.indexOf(e);t!==-1&&t>ze&&R.splice(t,1)}function Rr(){!He&&!De&&(De=!0,queueMicrotask(Nr))}function Nr(){De=!1,He=!0;for(let e=0;e<R.length;e++)R[e](),ze=e;R.length=0,ze=-1,He=!1}var W,z,V,Xt,Ue=!0;function Pr(e){Ue=!1,e(),Ue=!0}function Dr(e){W=e.reactive,V=e.release,z=t=>e.effect(t,{scheduler:n=>{Ue?Fr(n):n()}}),Xt=e.raw}function Rt(e){z=e}function Hr(e){let t=()=>{};return[r=>{let i=z(r);return e._x_effects||(e._x_effects=new Set,e._x_runEffects=()=>{e._x_effects.forEach(o=>o())}),e._x_effects.add(i),t=()=>{i!==void 0&&(e._x_effects.delete(i),V(i))},i},()=>{t()}]}function Zt(e,t){let n=!0,r,i=z(()=>{let o=e();JSON.stringify(o),n?r=o:queueMicrotask(()=>{t(o,r),r=o}),n=!1});return()=>V(i)}var Qt=[],en=[],tn=[];function zr(e){tn.push(e)}function rt(e,t){typeof t=="function"?(e._x_cleanups||(e._x_cleanups=[]),e._x_cleanups.push(t)):(t=e,en.push(t))}function nn(e){Qt.push(e)}function rn(e,t,n){e._x_attributeCleanups||(e._x_attributeCleanups={}),e._x_attributeCleanups[t]||(e._x_attributeCleanups[t]=[]),e._x_attributeCleanups[t].push(n)}function on(e,t){e._x_attributeCleanups&&Object.entries(e._x_attributeCleanups).forEach(([n,r])=>{(t===void 0||t.includes(n))&&(r.forEach(i=>i()),delete e._x_attributeCleanups[n])})}function Ur(e){for(e._x_effects?.forEach(Lr);e._x_cleanups?.length;)e._x_cleanups.pop()()}var ot=new MutationObserver(lt),at=!1;function st(){ot.observe(document,{subtree:!0,childList:!0,attributes:!0,attributeOldValue:!0}),at=!0}function an(){Kr(),ot.disconnect(),at=!1}var ee=[];function Kr(){let e=ot.takeRecords();ee.push(()=>e.length>0&&lt(e));let t=ee.length;queueMicrotask(()=>{if(ee.length===t)for(;ee.length>0;)ee.shift()()})}function y(e){if(!at)return e();an();let t=e();return st(),t}var ct=!1,be=[];function qr(){ct=!0}function Jr(){ct=!1,lt(be),be=[]}function lt(e){if(ct){be=be.concat(e);return}let t=[],n=new Set,r=new Map,i=new Map;for(let o=0;o<e.length;o++)if(!e[o].target._x_ignoreMutationObserver&&(e[o].type==="childList"&&(e[o].removedNodes.forEach(a=>{a.nodeType===1&&a._x_marker&&n.add(a)}),e[o].addedNodes.forEach(a=>{if(a.nodeType===1){if(n.has(a)){n.delete(a);return}a._x_marker||t.push(a)}})),e[o].type==="attributes")){let a=e[o].target,s=e[o].attributeName,c=e[o].oldValue,l=()=>{r.has(a)||r.set(a,[]),r.get(a).push({name:s,value:a.getAttribute(s)})},u=()=>{i.has(a)||i.set(a,[]),i.get(a).push(s)};a.hasAttribute(s)&&c===null?l():a.hasAttribute(s)?(u(),l()):u()}i.forEach((o,a)=>{on(a,o)}),r.forEach((o,a)=>{Qt.forEach(s=>s(a,o))});for(let o of n)t.some(a=>a.contains(o))||en.forEach(a=>a(o));for(let o of t)o.isConnected&&tn.forEach(a=>a(o));t=null,n=null,r=null,i=null}function sn(e){return ce(q(e))}function se(e,t,n){return e._x_dataStack=[t,...q(n||e)],()=>{e._x_dataStack=e._x_dataStack.filter(r=>r!==t)}}function q(e){return e._x_dataStack?e._x_dataStack:typeof ShadowRoot=="function"&&e instanceof ShadowRoot?q(e.host):e.parentNode?q(e.parentNode):[]}function ce(e){return new Proxy({objects:e},Wr)}var Wr={ownKeys({objects:e}){return Array.from(new Set(e.flatMap(t=>Object.keys(t))))},has({objects:e},t){return t==Symbol.unscopables?!1:e.some(n=>Object.prototype.hasOwnProperty.call(n,t)||Reflect.has(n,t))},get({objects:e},t,n){return t=="toJSON"?Vr:Reflect.get(e.find(r=>Reflect.has(r,t))||{},t,n)},set({objects:e},t,n,r){let i=e.find(a=>Object.prototype.hasOwnProperty.call(a,t))||e[e.length-1],o=Object.getOwnPropertyDescriptor(i,t);return o?.set&&o?.get?o.set.call(r,n)||!0:Reflect.set(i,t,n)}};function Vr(){return Reflect.ownKeys(this).reduce((t,n)=>(t[n]=Reflect.get(this,n),t),{})}function cn(e){let t=r=>typeof r=="object"&&!Array.isArray(r)&&r!==null,n=(r,i="")=>{Object.entries(Object.getOwnPropertyDescriptors(r)).forEach(([o,{value:a,enumerable:s}])=>{if(s===!1||a===void 0||typeof a=="object"&&a!==null&&a.__v_skip)return;let c=i===""?o:`${i}.${o}`;typeof a=="object"&&a!==null&&a._x_interceptor?r[o]=a.initialize(e,c,o):t(a)&&a!==r&&!(a instanceof Element)&&n(a,c)})};return n(e)}function ln(e,t=()=>{}){let n={initialValue:void 0,_x_interceptor:!0,initialize(r,i,o){return e(this.initialValue,()=>Gr(r,i),a=>Ke(r,i,a),i,o)}};return t(n),r=>{if(typeof r=="object"&&r!==null&&r._x_interceptor){let i=n.initialize.bind(n);n.initialize=(o,a,s)=>{let c=r.initialize(o,a,s);return n.initialValue=c,i(o,a,s)}}else n.initialValue=r;return n}}function Gr(e,t){return t.split(".").reduce((n,r)=>n[r],e)}function Ke(e,t,n){if(typeof t=="string"&&(t=t.split(".")),t.length===1)e[t[0]]=n;else{if(t.length===0)throw error;return e[t[0]]||(e[t[0]]={}),Ke(e[t[0]],t.slice(1),n)}}var un={};function C(e,t){un[e]=t}function qe(e,t){let n=Yr(t);return Object.entries(un).forEach(([r,i])=>{Object.defineProperty(e,`$${r}`,{get(){return i(t,n)},enumerable:!1})}),e}function Yr(e){let[t,n]=gn(e),r={interceptor:ln,...t};return rt(e,n),r}function Xr(e,t,n,...r){try{return n(...r)}catch(i){ae(i,e,t)}}function ae(e,t,n=void 0){e=Object.assign(e??{message:"No error message given."},{el:t,expression:n}),console.warn(`Alpine Expression Error: ${e.message}
-
-${n?'Expression: "'+n+`"
-
-`:""}`,t),setTimeout(()=>{throw e},0)}var ye=!0;function fn(e){let t=ye;ye=!1;let n=e();return ye=t,n}function N(e,t,n={}){let r;return E(e,t)(i=>r=i,n),r}function E(...e){return dn(...e)}var dn=pn;function Zr(e){dn=e}function pn(e,t){let n={};qe(n,e);let r=[n,...q(e)],i=typeof t=="function"?Qr(r,t):ti(r,t,e);return Xr.bind(null,e,t,i)}function Qr(e,t){return(n=()=>{},{scope:r={},params:i=[],context:o}={})=>{let a=t.apply(ce([r,...e]),i);we(n,a)}}var ke={};function ei(e,t){if(ke[e])return ke[e];let n=Object.getPrototypeOf(async function(){}).constructor,r=/^[\n\s]*if.*\(.*\)/.test(e.trim())||/^(let|const)\s/.test(e.trim())?`(async()=>{ ${e} })()`:e,o=(()=>{try{let a=new n(["__self","scope"],`with (scope) { __self.result = ${r} }; __self.finished = true; return __self.result;`);return Object.defineProperty(a,"name",{value:`[Alpine] ${e}`}),a}catch(a){return ae(a,t,e),Promise.resolve()}})();return ke[e]=o,o}function ti(e,t,n){let r=ei(t,n);return(i=()=>{},{scope:o={},params:a=[],context:s}={})=>{r.result=void 0,r.finished=!1;let c=ce([o,...e]);if(typeof r=="function"){let l=r.call(s,r,c).catch(u=>ae(u,n,t));r.finished?(we(i,r.result,c,a,n),r.result=void 0):l.then(u=>{we(i,u,c,a,n)}).catch(u=>ae(u,n,t)).finally(()=>r.result=void 0)}}}function we(e,t,n,r,i){if(ye&&typeof t=="function"){let o=t.apply(n,r);o instanceof Promise?o.then(a=>we(e,a,n,r)).catch(a=>ae(a,i,t)):e(o)}else typeof t=="object"&&t instanceof Promise?t.then(o=>e(o)):e(t)}var ut="x-";function G(e=""){return ut+e}function ni(e){ut=e}var ve={};function w(e,t){return ve[e]=t,{before(n){if(!ve[n]){console.warn(String.raw`Cannot find directive \`${n}\`. \`${e}\` will use the default order of execution`);return}let r=L.indexOf(n);L.splice(r>=0?r:L.indexOf("DEFAULT"),0,e)}}}function ri(e){return Object.keys(ve).includes(e)}function ft(e,t,n){if(t=Array.from(t),e._x_virtualDirectives){let o=Object.entries(e._x_virtualDirectives).map(([s,c])=>({name:s,value:c})),a=hn(o);o=o.map(s=>a.find(c=>c.name===s.name)?{name:`x-bind:${s.name}`,value:`"${s.value}"`}:s),t=t.concat(o)}let r={};return t.map(xn((o,a)=>r[o]=a)).filter(wn).map(ai(r,n)).sort(si).map(o=>oi(e,o))}function hn(e){return Array.from(e).map(xn()).filter(t=>!wn(t))}var Je=!1,re=new Map,_n=Symbol();function ii(e){Je=!0;let t=Symbol();_n=t,re.set(t,[]);let n=()=>{for(;re.get(t).length;)re.get(t).shift()();re.delete(t)},r=()=>{Je=!1,n()};e(n),r()}function gn(e){let t=[],n=s=>t.push(s),[r,i]=Hr(e);return t.push(i),[{Alpine:le,effect:r,cleanup:n,evaluateLater:E.bind(E,e),evaluate:N.bind(N,e)},()=>t.forEach(s=>s())]}function oi(e,t){let n=()=>{},r=ve[t.type]||n,[i,o]=gn(e);rn(e,t.original,o);let a=()=>{e._x_ignore||e._x_ignoreSelf||(r.inline&&r.inline(e,t,i),r=r.bind(r,e,t,i),Je?re.get(_n).push(r):r())};return a.runCleanups=o,a}var mn=(e,t)=>({name:n,value:r})=>(n.startsWith(e)&&(n=n.replace(e,t)),{name:n,value:r}),yn=e=>e;function xn(e=()=>{}){return({name:t,value:n})=>{let{name:r,value:i}=bn.reduce((o,a)=>a(o),{name:t,value:n});return r!==t&&e(r,t),{name:r,value:i}}}var bn=[];function dt(e){bn.push(e)}function wn({name:e}){return vn().test(e)}var vn=()=>new RegExp(`^${ut}([^:^.]+)\\b`);function ai(e,t){return({name:n,value:r})=>{let i=n.match(vn()),o=n.match(/:([a-zA-Z0-9\-_:]+)/),a=n.match(/\.[^.\]]+(?=[^\]]*$)/g)||[],s=t||e[n]||n;return{type:i?i[1]:null,value:o?o[1]:null,modifiers:a.map(c=>c.replace(".","")),expression:r,original:s}}}var We="DEFAULT",L=["ignore","ref","data","id","anchor","bind","init","for","model","modelable","transition","show","if",We,"teleport"];function si(e,t){let n=L.indexOf(e.type)===-1?We:e.type,r=L.indexOf(t.type)===-1?We:t.type;return L.indexOf(n)-L.indexOf(r)}function ie(e,t,n={}){e.dispatchEvent(new CustomEvent(t,{detail:n,bubbles:!0,composed:!0,cancelable:!0}))}function H(e,t){if(typeof ShadowRoot=="function"&&e instanceof ShadowRoot){Array.from(e.children).forEach(i=>H(i,t));return}let n=!1;if(t(e,()=>n=!0),n)return;let r=e.firstElementChild;for(;r;)H(r,t,!1),r=r.nextElementSibling}function S(e,...t){console.warn(`Alpine Warning: ${e}`,...t)}var Nt=!1;function ci(){Nt&&S("Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems."),Nt=!0,document.body||S("Unable to initialize. Trying to load Alpine before `<body>` is available. Did you forget to add `defer` in Alpine's `<script>` tag?"),ie(document,"alpine:init"),ie(document,"alpine:initializing"),st(),zr(t=>I(t,H)),rt(t=>X(t)),nn((t,n)=>{ft(t,n).forEach(r=>r())});let e=t=>!Se(t.parentElement,!0);Array.from(document.querySelectorAll(An().join(","))).filter(e).forEach(t=>{I(t)}),ie(document,"alpine:initialized"),setTimeout(()=>{di()})}var pt=[],En=[];function Sn(){return pt.map(e=>e())}function An(){return pt.concat(En).map(e=>e())}function Cn(e){pt.push(e)}function On(e){En.push(e)}function Se(e,t=!1){return Y(e,n=>{if((t?An():Sn()).some(i=>n.matches(i)))return!0})}function Y(e,t){if(e){if(t(e))return e;if(e._x_teleportBack&&(e=e._x_teleportBack),!!e.parentElement)return Y(e.parentElement,t)}}function li(e){return Sn().some(t=>e.matches(t))}var Mn=[];function ui(e){Mn.push(e)}var fi=1;function I(e,t=H,n=()=>{}){Y(e,r=>r._x_ignore)||ii(()=>{t(e,(r,i)=>{r._x_marker||(n(r,i),Mn.forEach(o=>o(r,i)),ft(r,r.attributes).forEach(o=>o()),r._x_ignore||(r._x_marker=fi++),r._x_ignore&&i())})})}function X(e,t=H){t(e,n=>{Ur(n),on(n),delete n._x_marker})}function di(){[["ui","dialog",["[x-dialog], [x-popover]"]],["anchor","anchor",["[x-anchor]"]],["sort","sort",["[x-sort]"]]].forEach(([t,n,r])=>{ri(n)||r.some(i=>{if(document.querySelector(i))return S(`found "${i}", but missing ${t} plugin`),!0})})}var Ve=[],ht=!1;function _t(e=()=>{}){return queueMicrotask(()=>{ht||setTimeout(()=>{Ge()})}),new Promise(t=>{Ve.push(()=>{e(),t()})})}function Ge(){for(ht=!1;Ve.length;)Ve.shift()()}function pi(){ht=!0}function gt(e,t){return Array.isArray(t)?Pt(e,t.join(" ")):typeof t=="object"&&t!==null?hi(e,t):typeof t=="function"?gt(e,t()):Pt(e,t)}function Pt(e,t){let n=o=>o.split(" ").filter(Boolean),r=o=>o.split(" ").filter(a=>!e.classList.contains(a)).filter(Boolean),i=o=>(e.classList.add(...o),()=>{e.classList.remove(...o)});return t=t===!0?t="":t||"",i(r(t))}function hi(e,t){let n=s=>s.split(" ").filter(Boolean),r=Object.entries(t).flatMap(([s,c])=>c?n(s):!1).filter(Boolean),i=Object.entries(t).flatMap(([s,c])=>c?!1:n(s)).filter(Boolean),o=[],a=[];return i.forEach(s=>{e.classList.contains(s)&&(e.classList.remove(s),a.push(s))}),r.forEach(s=>{e.classList.contains(s)||(e.classList.add(s),o.push(s))}),()=>{a.forEach(s=>e.classList.add(s)),o.forEach(s=>e.classList.remove(s))}}function Ae(e,t){return typeof t=="object"&&t!==null?_i(e,t):gi(e,t)}function _i(e,t){let n={};return Object.entries(t).forEach(([r,i])=>{n[r]=e.style[r],r.startsWith("--")||(r=mi(r)),e.style.setProperty(r,i)}),setTimeout(()=>{e.style.length===0&&e.removeAttribute("style")}),()=>{Ae(e,n)}}function gi(e,t){let n=e.getAttribute("style",t);return e.setAttribute("style",t),()=>{e.setAttribute("style",n||"")}}function mi(e){return e.replace(/([a-z])([A-Z])/g,"$1-$2").toLowerCase()}function Ye(e,t=()=>{}){let n=!1;return function(){n?t.apply(this,arguments):(n=!0,e.apply(this,arguments))}}w("transition",(e,{value:t,modifiers:n,expression:r},{evaluate:i})=>{typeof r=="function"&&(r=i(r)),r!==!1&&(!r||typeof r=="boolean"?xi(e,n,t):yi(e,r,t))});function yi(e,t,n){In(e,gt,""),{enter:i=>{e._x_transition.enter.during=i},"enter-start":i=>{e._x_transition.enter.start=i},"enter-end":i=>{e._x_transition.enter.end=i},leave:i=>{e._x_transition.leave.during=i},"leave-start":i=>{e._x_transition.leave.start=i},"leave-end":i=>{e._x_transition.leave.end=i}}[n](t)}function xi(e,t,n){In(e,Ae);let r=!t.includes("in")&&!t.includes("out")&&!n,i=r||t.includes("in")||["enter"].includes(n),o=r||t.includes("out")||["leave"].includes(n);t.includes("in")&&!r&&(t=t.filter((_,h)=>h<t.indexOf("out"))),t.includes("out")&&!r&&(t=t.filter((_,h)=>h>t.indexOf("out")));let a=!t.includes("opacity")&&!t.includes("scale"),s=a||t.includes("opacity"),c=a||t.includes("scale"),l=s?0:1,u=c?te(t,"scale",95)/100:1,d=te(t,"delay",0)/1e3,p=te(t,"origin","center"),m="opacity, transform",x=te(t,"duration",150)/1e3,$=te(t,"duration",75)/1e3,f="cubic-bezier(0.4, 0.0, 0.2, 1)";i&&(e._x_transition.enter.during={transformOrigin:p,transitionDelay:`${d}s`,transitionProperty:m,transitionDuration:`${x}s`,transitionTimingFunction:f},e._x_transition.enter.start={opacity:l,transform:`scale(${u})`},e._x_transition.enter.end={opacity:1,transform:"scale(1)"}),o&&(e._x_transition.leave.during={transformOrigin:p,transitionDelay:`${d}s`,transitionProperty:m,transitionDuration:`${$}s`,transitionTimingFunction:f},e._x_transition.leave.start={opacity:1,transform:"scale(1)"},e._x_transition.leave.end={opacity:l,transform:`scale(${u})`})}function In(e,t,n={}){e._x_transition||(e._x_transition={enter:{during:n,start:n,end:n},leave:{during:n,start:n,end:n},in(r=()=>{},i=()=>{}){Xe(e,t,{during:this.enter.during,start:this.enter.start,end:this.enter.end},r,i)},out(r=()=>{},i=()=>{}){Xe(e,t,{during:this.leave.during,start:this.leave.start,end:this.leave.end},r,i)}})}window.Element.prototype._x_toggleAndCascadeWithTransitions=function(e,t,n,r){let i=document.visibilityState==="visible"?requestAnimationFrame:setTimeout,o=()=>i(n);if(t){e._x_transition&&(e._x_transition.enter||e._x_transition.leave)?e._x_transition.enter&&(Object.entries(e._x_transition.enter.during).length||Object.entries(e._x_transition.enter.start).length||Object.entries(e._x_transition.enter.end).length)?e._x_transition.in(n):o():e._x_transition?e._x_transition.in(n):o();return}e._x_hidePromise=e._x_transition?new Promise((a,s)=>{e._x_transition.out(()=>{},()=>a(r)),e._x_transitioning&&e._x_transitioning.beforeCancel(()=>s({isFromCancelledTransition:!0}))}):Promise.resolve(r),queueMicrotask(()=>{let a=$n(e);a?(a._x_hideChildren||(a._x_hideChildren=[]),a._x_hideChildren.push(e)):i(()=>{let s=c=>{let l=Promise.all([c._x_hidePromise,...(c._x_hideChildren||[]).map(s)]).then(([u])=>u?.());return delete c._x_hidePromise,delete c._x_hideChildren,l};s(e).catch(c=>{if(!c.isFromCancelledTransition)throw c})})})};function $n(e){let t=e.parentNode;if(t)return t._x_hidePromise?t:$n(t)}function Xe(e,t,{during:n,start:r,end:i}={},o=()=>{},a=()=>{}){if(e._x_transitioning&&e._x_transitioning.cancel(),Object.keys(n).length===0&&Object.keys(r).length===0&&Object.keys(i).length===0){o(),a();return}let s,c,l;bi(e,{start(){s=t(e,r)},during(){c=t(e,n)},before:o,end(){s(),l=t(e,i)},after:a,cleanup(){c(),l()}})}function bi(e,t){let n,r,i,o=Ye(()=>{y(()=>{n=!0,r||t.before(),i||(t.end(),Ge()),t.after(),e.isConnected&&t.cleanup(),delete e._x_transitioning})});e._x_transitioning={beforeCancels:[],beforeCancel(a){this.beforeCancels.push(a)},cancel:Ye(function(){for(;this.beforeCancels.length;)this.beforeCancels.shift()();o()}),finish:o},y(()=>{t.start(),t.during()}),pi(),requestAnimationFrame(()=>{if(n)return;let a=Number(getComputedStyle(e).transitionDuration.replace(/,.*/,"").replace("s",""))*1e3,s=Number(getComputedStyle(e).transitionDelay.replace(/,.*/,"").replace("s",""))*1e3;a===0&&(a=Number(getComputedStyle(e).animationDuration.replace("s",""))*1e3),y(()=>{t.before()}),r=!0,requestAnimationFrame(()=>{n||(y(()=>{t.end()}),Ge(),setTimeout(e._x_transitioning.finish,a+s),i=!0)})})}function te(e,t,n){if(e.indexOf(t)===-1)return n;let r=e[e.indexOf(t)+1];if(!r||t==="scale"&&isNaN(r))return n;if(t==="duration"||t==="delay"){let i=r.match(/([0-9]+)ms/);if(i)return i[1]}return t==="origin"&&["top","right","left","center","bottom"].includes(e[e.indexOf(t)+2])?[r,e[e.indexOf(t)+2]].join(" "):r}var j=!1;function F(e,t=()=>{}){return(...n)=>j?t(...n):e(...n)}function wi(e){return(...t)=>j&&e(...t)}var Tn=[];function Ce(e){Tn.push(e)}function vi(e,t){Tn.forEach(n=>n(e,t)),j=!0,jn(()=>{I(t,(n,r)=>{r(n,()=>{})})}),j=!1}var Ze=!1;function Ei(e,t){t._x_dataStack||(t._x_dataStack=e._x_dataStack),j=!0,Ze=!0,jn(()=>{Si(t)}),j=!1,Ze=!1}function Si(e){let t=!1;I(e,(r,i)=>{H(r,(o,a)=>{if(t&&li(o))return a();t=!0,i(o,a)})})}function jn(e){let t=z;Rt((n,r)=>{let i=t(n);return V(i),()=>{}}),e(),Rt(t)}function Bn(e,t,n,r=[]){switch(e._x_bindings||(e._x_bindings=W({})),e._x_bindings[t]=n,t=r.includes("camel")?ji(t):t,t){case"value":Ai(e,n);break;case"style":Oi(e,n);break;case"class":Ci(e,n);break;case"selected":case"checked":Mi(e,t,n);break;default:Fn(e,t,n);break}}function Ai(e,t){if(Rn(e))e.attributes.value===void 0&&(e.value=t),window.fromModel&&(typeof t=="boolean"?e.checked=xe(e.value)===t:e.checked=Dt(e.value,t));else if(mt(e))Number.isInteger(t)?e.value=t:!Array.isArray(t)&&typeof t!="boolean"&&![null,void 0].includes(t)?e.value=String(t):Array.isArray(t)?e.checked=t.some(n=>Dt(n,e.value)):e.checked=!!t;else if(e.tagName==="SELECT")Ti(e,t);else{if(e.value===t)return;e.value=t===void 0?"":t}}function Ci(e,t){e._x_undoAddedClasses&&e._x_undoAddedClasses(),e._x_undoAddedClasses=gt(e,t)}function Oi(e,t){e._x_undoAddedStyles&&e._x_undoAddedStyles(),e._x_undoAddedStyles=Ae(e,t)}function Mi(e,t,n){Fn(e,t,n),$i(e,t,n)}function Fn(e,t,n){[null,void 0,!1].includes(n)&&Fi(t)?e.removeAttribute(t):(kn(t)&&(n=t),Ii(e,t,n))}function Ii(e,t,n){e.getAttribute(t)!=n&&e.setAttribute(t,n)}function $i(e,t,n){e[t]!==n&&(e[t]=n)}function Ti(e,t){let n=[].concat(t).map(r=>r+"");Array.from(e.options).forEach(r=>{r.selected=n.includes(r.value)})}function ji(e){return e.toLowerCase().replace(/-(\w)/g,(t,n)=>n.toUpperCase())}function Dt(e,t){return e==t}function xe(e){return[1,"1","true","on","yes",!0].includes(e)?!0:[0,"0","false","off","no",!1].includes(e)?!1:e?!!e:null}var Bi=new Set(["allowfullscreen","async","autofocus","autoplay","checked","controls","default","defer","disabled","formnovalidate","inert","ismap","itemscope","loop","multiple","muted","nomodule","novalidate","open","playsinline","readonly","required","reversed","selected","shadowrootclonable","shadowrootdelegatesfocus","shadowrootserializable"]);function kn(e){return Bi.has(e)}function Fi(e){return!["aria-pressed","aria-checked","aria-expanded","aria-selected"].includes(e)}function ki(e,t,n){return e._x_bindings&&e._x_bindings[t]!==void 0?e._x_bindings[t]:Ln(e,t,n)}function Li(e,t,n,r=!0){if(e._x_bindings&&e._x_bindings[t]!==void 0)return e._x_bindings[t];if(e._x_inlineBindings&&e._x_inlineBindings[t]!==void 0){let i=e._x_inlineBindings[t];return i.extract=r,fn(()=>N(e,i.expression))}return Ln(e,t,n)}function Ln(e,t,n){let r=e.getAttribute(t);return r===null?typeof n=="function"?n():n:r===""?!0:kn(t)?!![t,"true"].includes(r):r}function mt(e){return e.type==="checkbox"||e.localName==="ui-checkbox"||e.localName==="ui-switch"}function Rn(e){return e.type==="radio"||e.localName==="ui-radio"}function Nn(e,t){let n;return function(){let r=this,i=arguments,o=function(){n=null,e.apply(r,i)};clearTimeout(n),n=setTimeout(o,t)}}function Pn(e,t){let n;return function(){let r=this,i=arguments;n||(e.apply(r,i),n=!0,setTimeout(()=>n=!1,t))}}function Dn({get:e,set:t},{get:n,set:r}){let i=!0,o,a,s=z(()=>{let c=e(),l=n();if(i)r(Le(c)),i=!1;else{let u=JSON.stringify(c),d=JSON.stringify(l);u!==o?r(Le(c)):u!==d&&t(Le(l))}o=JSON.stringify(e()),a=JSON.stringify(n())});return()=>{V(s)}}function Le(e){return typeof e=="object"?JSON.parse(JSON.stringify(e)):e}function Ri(e){(Array.isArray(e)?e:[e]).forEach(n=>n(le))}var k={},Ht=!1;function Ni(e,t){if(Ht||(k=W(k),Ht=!0),t===void 0)return k[e];k[e]=t,cn(k[e]),typeof t=="object"&&t!==null&&t.hasOwnProperty("init")&&typeof t.init=="function"&&k[e].init()}function Pi(){return k}var Hn={};function Di(e,t){let n=typeof t!="function"?()=>t:t;return e instanceof Element?zn(e,n()):(Hn[e]=n,()=>{})}function Hi(e){return Object.entries(Hn).forEach(([t,n])=>{Object.defineProperty(e,t,{get(){return(...r)=>n(...r)}})}),e}function zn(e,t,n){let r=[];for(;r.length;)r.pop()();let i=Object.entries(t).map(([a,s])=>({name:a,value:s})),o=hn(i);return i=i.map(a=>o.find(s=>s.name===a.name)?{name:`x-bind:${a.name}`,value:`"${a.value}"`}:a),ft(e,i,n).map(a=>{r.push(a.runCleanups),a()}),()=>{for(;r.length;)r.pop()()}}var Un={};function zi(e,t){Un[e]=t}function Ui(e,t){return Object.entries(Un).forEach(([n,r])=>{Object.defineProperty(e,n,{get(){return(...i)=>r.bind(t)(...i)},enumerable:!1})}),e}var Ki={get reactive(){return W},get release(){return V},get effect(){return z},get raw(){return Xt},version:"3.15.0",flushAndStopDeferringMutations:Jr,dontAutoEvaluateFunctions:fn,disableEffectScheduling:Pr,startObservingMutations:st,stopObservingMutations:an,setReactivityEngine:Dr,onAttributeRemoved:rn,onAttributesAdded:nn,closestDataStack:q,skipDuringClone:F,onlyDuringClone:wi,addRootSelector:Cn,addInitSelector:On,interceptClone:Ce,addScopeToNode:se,deferMutations:qr,mapAttributes:dt,evaluateLater:E,interceptInit:ui,setEvaluator:Zr,mergeProxies:ce,extractProp:Li,findClosest:Y,onElRemoved:rt,closestRoot:Se,destroyTree:X,interceptor:ln,transition:Xe,setStyles:Ae,mutateDom:y,directive:w,entangle:Dn,throttle:Pn,debounce:Nn,evaluate:N,initTree:I,nextTick:_t,prefixed:G,prefix:ni,plugin:Ri,magic:C,store:Ni,start:ci,clone:Ei,cloneNode:vi,bound:ki,$data:sn,watch:Zt,walk:H,data:zi,bind:Di},le=Ki;function Kn(e,t){let n=Object.create(null),r=e.split(",");for(let i=0;i<r.length;i++)n[r[i]]=!0;return t?i=>!!n[i.toLowerCase()]:i=>!!n[i]}var qi="itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly",pa=Kn(qi+",async,autofocus,autoplay,controls,default,defer,disabled,hidden,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected"),Ji=Object.freeze({}),ha=Object.freeze([]),Wi=Object.prototype.hasOwnProperty,Oe=(e,t)=>Wi.call(e,t),P=Array.isArray,oe=e=>qn(e)==="[object Map]",Vi=e=>typeof e=="string",yt=e=>typeof e=="symbol",Me=e=>e!==null&&typeof e=="object",Gi=Object.prototype.toString,qn=e=>Gi.call(e),Jn=e=>qn(e).slice(8,-1),xt=e=>Vi(e)&&e!=="NaN"&&e[0]!=="-"&&""+parseInt(e,10)===e,Ie=e=>{let t=Object.create(null);return n=>t[n]||(t[n]=e(n))},Yi=/-(\w)/g,_a=Ie(e=>e.replace(Yi,(t,n)=>n?n.toUpperCase():"")),Xi=/\B([A-Z])/g,ga=Ie(e=>e.replace(Xi,"-$1").toLowerCase()),Wn=Ie(e=>e.charAt(0).toUpperCase()+e.slice(1)),ma=Ie(e=>e?`on${Wn(e)}`:""),Vn=(e,t)=>e!==t&&(e===e||t===t),Qe=new WeakMap,ne=[],O,D=Symbol("iterate"),et=Symbol("Map key iterate");function Zi(e){return e&&e._isEffect===!0}function Qi(e,t=Ji){Zi(e)&&(e=e.raw);let n=no(e,t);return t.lazy||n(),n}function eo(e){e.active&&(Gn(e),e.options.onStop&&e.options.onStop(),e.active=!1)}var to=0;function no(e,t){let n=function(){if(!n.active)return e();if(!ne.includes(n)){Gn(n);try{return io(),ne.push(n),O=n,e()}finally{ne.pop(),Yn(),O=ne[ne.length-1]}}};return n.id=to++,n.allowRecurse=!!t.allowRecurse,n._isEffect=!0,n.active=!0,n.raw=e,n.deps=[],n.options=t,n}function Gn(e){let{deps:t}=e;if(t.length){for(let n=0;n<t.length;n++)t[n].delete(e);t.length=0}}var J=!0,bt=[];function ro(){bt.push(J),J=!1}function io(){bt.push(J),J=!0}function Yn(){let e=bt.pop();J=e===void 0?!0:e}function A(e,t,n){if(!J||O===void 0)return;let r=Qe.get(e);r||Qe.set(e,r=new Map);let i=r.get(n);i||r.set(n,i=new Set),i.has(O)||(i.add(O),O.deps.push(i),O.options.onTrack&&O.options.onTrack({effect:O,target:e,type:t,key:n}))}function B(e,t,n,r,i,o){let a=Qe.get(e);if(!a)return;let s=new Set,c=u=>{u&&u.forEach(d=>{(d!==O||d.allowRecurse)&&s.add(d)})};if(t==="clear")a.forEach(c);else if(n==="length"&&P(e))a.forEach((u,d)=>{(d==="length"||d>=r)&&c(u)});else switch(n!==void 0&&c(a.get(n)),t){case"add":P(e)?xt(n)&&c(a.get("length")):(c(a.get(D)),oe(e)&&c(a.get(et)));break;case"delete":P(e)||(c(a.get(D)),oe(e)&&c(a.get(et)));break;case"set":oe(e)&&c(a.get(D));break}let l=u=>{u.options.onTrigger&&u.options.onTrigger({effect:u,target:e,key:n,type:t,newValue:r,oldValue:i,oldTarget:o}),u.options.scheduler?u.options.scheduler(u):u()};s.forEach(l)}var oo=Kn("__proto__,__v_isRef,__isVue"),Xn=new Set(Object.getOwnPropertyNames(Symbol).map(e=>Symbol[e]).filter(yt)),ao=Zn(),so=Zn(!0),zt=co();function co(){let e={};return["includes","indexOf","lastIndexOf"].forEach(t=>{e[t]=function(...n){let r=g(this);for(let o=0,a=this.length;o<a;o++)A(r,"get",o+"");let i=r[t](...n);return i===-1||i===!1?r[t](...n.map(g)):i}}),["push","pop","shift","unshift","splice"].forEach(t=>{e[t]=function(...n){ro();let r=g(this)[t].apply(this,n);return Yn(),r}}),e}function Zn(e=!1,t=!1){return function(r,i,o){if(i==="__v_isReactive")return!e;if(i==="__v_isReadonly")return e;if(i==="__v_raw"&&o===(e?t?Ao:nr:t?So:tr).get(r))return r;let a=P(r);if(!e&&a&&Oe(zt,i))return Reflect.get(zt,i,o);let s=Reflect.get(r,i,o);return(yt(i)?Xn.has(i):oo(i))||(e||A(r,"get",i),t)?s:tt(s)?!a||!xt(i)?s.value:s:Me(s)?e?rr(s):St(s):s}}var lo=uo();function uo(e=!1){return function(n,r,i,o){let a=n[r];if(!e&&(i=g(i),a=g(a),!P(n)&&tt(a)&&!tt(i)))return a.value=i,!0;let s=P(n)&&xt(r)?Number(r)<n.length:Oe(n,r),c=Reflect.set(n,r,i,o);return n===g(o)&&(s?Vn(i,a)&&B(n,"set",r,i,a):B(n,"add",r,i)),c}}function fo(e,t){let n=Oe(e,t),r=e[t],i=Reflect.deleteProperty(e,t);return i&&n&&B(e,"delete",t,void 0,r),i}function po(e,t){let n=Reflect.has(e,t);return(!yt(t)||!Xn.has(t))&&A(e,"has",t),n}function ho(e){return A(e,"iterate",P(e)?"length":D),Reflect.ownKeys(e)}var _o={get:ao,set:lo,deleteProperty:fo,has:po,ownKeys:ho},go={get:so,set(e,t){return console.warn(`Set operation on key "${String(t)}" failed: target is readonly.`,e),!0},deleteProperty(e,t){return console.warn(`Delete operation on key "${String(t)}" failed: target is readonly.`,e),!0}},wt=e=>Me(e)?St(e):e,vt=e=>Me(e)?rr(e):e,Et=e=>e,$e=e=>Reflect.getPrototypeOf(e);function pe(e,t,n=!1,r=!1){e=e.__v_raw;let i=g(e),o=g(t);t!==o&&!n&&A(i,"get",t),!n&&A(i,"get",o);let{has:a}=$e(i),s=r?Et:n?vt:wt;if(a.call(i,t))return s(e.get(t));if(a.call(i,o))return s(e.get(o));e!==i&&e.get(t)}function he(e,t=!1){let n=this.__v_raw,r=g(n),i=g(e);return e!==i&&!t&&A(r,"has",e),!t&&A(r,"has",i),e===i?n.has(e):n.has(e)||n.has(i)}function _e(e,t=!1){return e=e.__v_raw,!t&&A(g(e),"iterate",D),Reflect.get(e,"size",e)}function Ut(e){e=g(e);let t=g(this);return $e(t).has.call(t,e)||(t.add(e),B(t,"add",e,e)),this}function Kt(e,t){t=g(t);let n=g(this),{has:r,get:i}=$e(n),o=r.call(n,e);o?er(n,r,e):(e=g(e),o=r.call(n,e));let a=i.call(n,e);return n.set(e,t),o?Vn(t,a)&&B(n,"set",e,t,a):B(n,"add",e,t),this}function qt(e){let t=g(this),{has:n,get:r}=$e(t),i=n.call(t,e);i?er(t,n,e):(e=g(e),i=n.call(t,e));let o=r?r.call(t,e):void 0,a=t.delete(e);return i&&B(t,"delete",e,void 0,o),a}function Jt(){let e=g(this),t=e.size!==0,n=oe(e)?new Map(e):new Set(e),r=e.clear();return t&&B(e,"clear",void 0,void 0,n),r}function ge(e,t){return function(r,i){let o=this,a=o.__v_raw,s=g(a),c=t?Et:e?vt:wt;return!e&&A(s,"iterate",D),a.forEach((l,u)=>r.call(i,c(l),c(u),o))}}function me(e,t,n){return function(...r){let i=this.__v_raw,o=g(i),a=oe(o),s=e==="entries"||e===Symbol.iterator&&a,c=e==="keys"&&a,l=i[e](...r),u=n?Et:t?vt:wt;return!t&&A(o,"iterate",c?et:D),{next(){let{value:d,done:p}=l.next();return p?{value:d,done:p}:{value:s?[u(d[0]),u(d[1])]:u(d),done:p}},[Symbol.iterator](){return this}}}}function T(e){return function(...t){{let n=t[0]?`on key "${t[0]}" `:"";console.warn(`${Wn(e)} operation ${n}failed: target is readonly.`,g(this))}return e==="delete"?!1:this}}function mo(){let e={get(o){return pe(this,o)},get size(){return _e(this)},has:he,add:Ut,set:Kt,delete:qt,clear:Jt,forEach:ge(!1,!1)},t={get(o){return pe(this,o,!1,!0)},get size(){return _e(this)},has:he,add:Ut,set:Kt,delete:qt,clear:Jt,forEach:ge(!1,!0)},n={get(o){return pe(this,o,!0)},get size(){return _e(this,!0)},has(o){return he.call(this,o,!0)},add:T("add"),set:T("set"),delete:T("delete"),clear:T("clear"),forEach:ge(!0,!1)},r={get(o){return pe(this,o,!0,!0)},get size(){return _e(this,!0)},has(o){return he.call(this,o,!0)},add:T("add"),set:T("set"),delete:T("delete"),clear:T("clear"),forEach:ge(!0,!0)};return["keys","values","entries",Symbol.iterator].forEach(o=>{e[o]=me(o,!1,!1),n[o]=me(o,!0,!1),t[o]=me(o,!1,!0),r[o]=me(o,!0,!0)}),[e,n,t,r]}var[yo,xo,bo,wo]=mo();function Qn(e,t){let n=t?e?wo:bo:e?xo:yo;return(r,i,o)=>i==="__v_isReactive"?!e:i==="__v_isReadonly"?e:i==="__v_raw"?r:Reflect.get(Oe(n,i)&&i in r?n:r,i,o)}var vo={get:Qn(!1,!1)},Eo={get:Qn(!0,!1)};function er(e,t,n){let r=g(n);if(r!==n&&t.call(e,r)){let i=Jn(e);console.warn(`Reactive ${i} contains both the raw and reactive versions of the same object${i==="Map"?" as keys":""}, which can lead to inconsistencies. Avoid differentiating between the raw and reactive versions of an object and only use the reactive version if possible.`)}}var tr=new WeakMap,So=new WeakMap,nr=new WeakMap,Ao=new WeakMap;function Co(e){switch(e){case"Object":case"Array":return 1;case"Map":case"Set":case"WeakMap":case"WeakSet":return 2;default:return 0}}function Oo(e){return e.__v_skip||!Object.isExtensible(e)?0:Co(Jn(e))}function St(e){return e&&e.__v_isReadonly?e:ir(e,!1,_o,vo,tr)}function rr(e){return ir(e,!0,go,Eo,nr)}function ir(e,t,n,r,i){if(!Me(e))return console.warn(`value cannot be made reactive: ${String(e)}`),e;if(e.__v_raw&&!(t&&e.__v_isReactive))return e;let o=i.get(e);if(o)return o;let a=Oo(e);if(a===0)return e;let s=new Proxy(e,a===2?r:n);return i.set(e,s),s}function g(e){return e&&g(e.__v_raw)||e}function tt(e){return!!(e&&e.__v_isRef===!0)}C("nextTick",()=>_t);C("dispatch",e=>ie.bind(ie,e));C("watch",(e,{evaluateLater:t,cleanup:n})=>(r,i)=>{let o=t(r),s=Zt(()=>{let c;return o(l=>c=l),c},i);n(s)});C("store",Pi);C("data",e=>sn(e));C("root",e=>Se(e));C("refs",e=>(e._x_refs_proxy||(e._x_refs_proxy=ce(Mo(e))),e._x_refs_proxy));function Mo(e){let t=[];return Y(e,n=>{n._x_refs&&t.push(n._x_refs)}),t}var Re={};function or(e){return Re[e]||(Re[e]=0),++Re[e]}function Io(e,t){return Y(e,n=>{if(n._x_ids&&n._x_ids[t])return!0})}function $o(e,t){e._x_ids||(e._x_ids={}),e._x_ids[t]||(e._x_ids[t]=or(t))}C("id",(e,{cleanup:t})=>(n,r=null)=>{let i=`${n}${r?`-${r}`:""}`;return To(e,i,t,()=>{let o=Io(e,n),a=o?o._x_ids[n]:or(n);return r?`${n}-${a}-${r}`:`${n}-${a}`})});Ce((e,t)=>{e._x_id&&(t._x_id=e._x_id)});function To(e,t,n,r){if(e._x_id||(e._x_id={}),e._x_id[t])return e._x_id[t];let i=r();return e._x_id[t]=i,n(()=>{delete e._x_id[t]}),i}C("el",e=>e);ar("Focus","focus","focus");ar("Persist","persist","persist");function ar(e,t,n){C(t,r=>S(`You can't use [$${t}] without first installing the "${e}" plugin here: https://alpinejs.dev/plugins/${n}`,r))}w("modelable",(e,{expression:t},{effect:n,evaluateLater:r,cleanup:i})=>{let o=r(t),a=()=>{let u;return o(d=>u=d),u},s=r(`${t} = __placeholder`),c=u=>s(()=>{},{scope:{__placeholder:u}}),l=a();c(l),queueMicrotask(()=>{if(!e._x_model)return;e._x_removeModelListeners.default();let u=e._x_model.get,d=e._x_model.set,p=Dn({get(){return u()},set(m){d(m)}},{get(){return a()},set(m){c(m)}});i(p)})});w("teleport",(e,{modifiers:t,expression:n},{cleanup:r})=>{e.tagName.toLowerCase()!=="template"&&S("x-teleport can only be used on a <template> tag",e);let i=Wt(n),o=e.content.cloneNode(!0).firstElementChild;e._x_teleport=o,o._x_teleportBack=e,e.setAttribute("data-teleport-template",!0),o.setAttribute("data-teleport-target",!0),e._x_forwardEvents&&e._x_forwardEvents.forEach(s=>{o.addEventListener(s,c=>{c.stopPropagation(),e.dispatchEvent(new c.constructor(c.type,c))})}),se(o,{},e);let a=(s,c,l)=>{l.includes("prepend")?c.parentNode.insertBefore(s,c):l.includes("append")?c.parentNode.insertBefore(s,c.nextSibling):c.appendChild(s)};y(()=>{a(o,i,t),F(()=>{I(o)})()}),e._x_teleportPutBack=()=>{let s=Wt(n);y(()=>{a(e._x_teleport,s,t)})},r(()=>y(()=>{o.remove(),X(o)}))});var jo=document.createElement("div");function Wt(e){let t=F(()=>document.querySelector(e),()=>jo)();return t||S(`Cannot find x-teleport element for selector: "${e}"`),t}var sr=()=>{};sr.inline=(e,{modifiers:t},{cleanup:n})=>{t.includes("self")?e._x_ignoreSelf=!0:e._x_ignore=!0,n(()=>{t.includes("self")?delete e._x_ignoreSelf:delete e._x_ignore})};w("ignore",sr);w("effect",F((e,{expression:t},{effect:n})=>{n(E(e,t))}));function nt(e,t,n,r){let i=e,o=c=>r(c),a={},s=(c,l)=>u=>l(c,u);if(n.includes("dot")&&(t=Bo(t)),n.includes("camel")&&(t=Fo(t)),n.includes("passive")&&(a.passive=!0),n.includes("capture")&&(a.capture=!0),n.includes("window")&&(i=window),n.includes("document")&&(i=document),n.includes("debounce")){let c=n[n.indexOf("debounce")+1]||"invalid-wait",l=Ee(c.split("ms")[0])?Number(c.split("ms")[0]):250;o=Nn(o,l)}if(n.includes("throttle")){let c=n[n.indexOf("throttle")+1]||"invalid-wait",l=Ee(c.split("ms")[0])?Number(c.split("ms")[0]):250;o=Pn(o,l)}return n.includes("prevent")&&(o=s(o,(c,l)=>{l.preventDefault(),c(l)})),n.includes("stop")&&(o=s(o,(c,l)=>{l.stopPropagation(),c(l)})),n.includes("once")&&(o=s(o,(c,l)=>{c(l),i.removeEventListener(t,o,a)})),(n.includes("away")||n.includes("outside"))&&(i=document,o=s(o,(c,l)=>{e.contains(l.target)||l.target.isConnected!==!1&&(e.offsetWidth<1&&e.offsetHeight<1||e._x_isShown!==!1&&c(l))})),n.includes("self")&&(o=s(o,(c,l)=>{l.target===e&&c(l)})),(Lo(t)||cr(t))&&(o=s(o,(c,l)=>{Ro(l,n)||c(l)})),i.addEventListener(t,o,a),()=>{i.removeEventListener(t,o,a)}}function Bo(e){return e.replace(/-/g,".")}function Fo(e){return e.toLowerCase().replace(/-(\w)/g,(t,n)=>n.toUpperCase())}function Ee(e){return!Array.isArray(e)&&!isNaN(e)}function ko(e){return[" ","_"].includes(e)?e:e.replace(/([a-z])([A-Z])/g,"$1-$2").replace(/[_\s]/,"-").toLowerCase()}function Lo(e){return["keydown","keyup"].includes(e)}function cr(e){return["contextmenu","click","mouse"].some(t=>e.includes(t))}function Ro(e,t){let n=t.filter(o=>!["window","document","prevent","stop","once","capture","self","away","outside","passive","preserve-scroll"].includes(o));if(n.includes("debounce")){let o=n.indexOf("debounce");n.splice(o,Ee((n[o+1]||"invalid-wait").split("ms")[0])?2:1)}if(n.includes("throttle")){let o=n.indexOf("throttle");n.splice(o,Ee((n[o+1]||"invalid-wait").split("ms")[0])?2:1)}if(n.length===0||n.length===1&&Vt(e.key).includes(n[0]))return!1;let i=["ctrl","shift","alt","meta","cmd","super"].filter(o=>n.includes(o));return n=n.filter(o=>!i.includes(o)),!(i.length>0&&i.filter(a=>((a==="cmd"||a==="super")&&(a="meta"),e[`${a}Key`])).length===i.length&&(cr(e.type)||Vt(e.key).includes(n[0])))}function Vt(e){if(!e)return[];e=ko(e);let t={ctrl:"control",slash:"/",space:" ",spacebar:" ",cmd:"meta",esc:"escape",up:"arrow-up",down:"arrow-down",left:"arrow-left",right:"arrow-right",period:".",comma:",",equal:"=",minus:"-",underscore:"_"};return t[e]=e,Object.keys(t).map(n=>{if(t[n]===e)return n}).filter(n=>n)}w("model",(e,{modifiers:t,expression:n},{effect:r,cleanup:i})=>{let o=e;t.includes("parent")&&(o=e.parentNode);let a=E(o,n),s;typeof n=="string"?s=E(o,`${n} = __placeholder`):typeof n=="function"&&typeof n()=="string"?s=E(o,`${n()} = __placeholder`):s=()=>{};let c=()=>{let p;return a(m=>p=m),Gt(p)?p.get():p},l=p=>{let m;a(x=>m=x),Gt(m)?m.set(p):s(()=>{},{scope:{__placeholder:p}})};typeof n=="string"&&e.type==="radio"&&y(()=>{e.hasAttribute("name")||e.setAttribute("name",n)});let u=e.tagName.toLowerCase()==="select"||["checkbox","radio"].includes(e.type)||t.includes("lazy")?"change":"input",d=j?()=>{}:nt(e,u,t,p=>{l(Ne(e,t,p,c()))});if(t.includes("fill")&&([void 0,null,""].includes(c())||mt(e)&&Array.isArray(c())||e.tagName.toLowerCase()==="select"&&e.multiple)&&l(Ne(e,t,{target:e},c())),e._x_removeModelListeners||(e._x_removeModelListeners={}),e._x_removeModelListeners.default=d,i(()=>e._x_removeModelListeners.default()),e.form){let p=nt(e.form,"reset",[],m=>{_t(()=>e._x_model&&e._x_model.set(Ne(e,t,{target:e},c())))});i(()=>p())}e._x_model={get(){return c()},set(p){l(p)}},e._x_forceModelUpdate=p=>{p===void 0&&typeof n=="string"&&n.match(/\./)&&(p=""),window.fromModel=!0,y(()=>Bn(e,"value",p)),delete window.fromModel},r(()=>{let p=c();t.includes("unintrusive")&&document.activeElement.isSameNode(e)||e._x_forceModelUpdate(p)})});function Ne(e,t,n,r){return y(()=>{if(n instanceof CustomEvent&&n.detail!==void 0)return n.detail!==null&&n.detail!==void 0?n.detail:n.target.value;if(mt(e))if(Array.isArray(r)){let i=null;return t.includes("number")?i=Pe(n.target.value):t.includes("boolean")?i=xe(n.target.value):i=n.target.value,n.target.checked?r.includes(i)?r:r.concat([i]):r.filter(o=>!No(o,i))}else return n.target.checked;else{if(e.tagName.toLowerCase()==="select"&&e.multiple)return t.includes("number")?Array.from(n.target.selectedOptions).map(i=>{let o=i.value||i.text;return Pe(o)}):t.includes("boolean")?Array.from(n.target.selectedOptions).map(i=>{let o=i.value||i.text;return xe(o)}):Array.from(n.target.selectedOptions).map(i=>i.value||i.text);{let i;return Rn(e)?n.target.checked?i=n.target.value:i=r:i=n.target.value,t.includes("number")?Pe(i):t.includes("boolean")?xe(i):t.includes("trim")?i.trim():i}}})}function Pe(e){let t=e?parseFloat(e):null;return Po(t)?t:e}function No(e,t){return e==t}function Po(e){return!Array.isArray(e)&&!isNaN(e)}function Gt(e){return e!==null&&typeof e=="object"&&typeof e.get=="function"&&typeof e.set=="function"}w("cloak",e=>queueMicrotask(()=>y(()=>e.removeAttribute(G("cloak")))));On(()=>`[${G("init")}]`);w("init",F((e,{expression:t},{evaluate:n})=>typeof t=="string"?!!t.trim()&&n(t,{},!1):n(t,{},!1)));w("text",(e,{expression:t},{effect:n,evaluateLater:r})=>{let i=r(t);n(()=>{i(o=>{y(()=>{e.textContent=o})})})});w("html",(e,{expression:t},{effect:n,evaluateLater:r})=>{let i=r(t);n(()=>{i(o=>{y(()=>{e.innerHTML=o,e._x_ignoreSelf=!0,I(e),delete e._x_ignoreSelf})})})});dt(mn(":",yn(G("bind:"))));var lr=(e,{value:t,modifiers:n,expression:r,original:i},{effect:o,cleanup:a})=>{if(!t){let c={};Hi(c),E(e,r)(u=>{zn(e,u,i)},{scope:c});return}if(t==="key")return Do(e,r);if(e._x_inlineBindings&&e._x_inlineBindings[t]&&e._x_inlineBindings[t].extract)return;let s=E(e,r);o(()=>s(c=>{c===void 0&&typeof r=="string"&&r.match(/\./)&&(c=""),y(()=>Bn(e,t,c,n))})),a(()=>{e._x_undoAddedClasses&&e._x_undoAddedClasses(),e._x_undoAddedStyles&&e._x_undoAddedStyles()})};lr.inline=(e,{value:t,modifiers:n,expression:r})=>{t&&(e._x_inlineBindings||(e._x_inlineBindings={}),e._x_inlineBindings[t]={expression:r,extract:!1})};w("bind",lr);function Do(e,t){e._x_keyExpression=t}Cn(()=>`[${G("data")}]`);w("data",(e,{expression:t},{cleanup:n})=>{if(Ho(e))return;t=t===""?"{}":t;let r={};qe(r,e);let i={};Ui(i,r);let o=N(e,t,{scope:i});(o===void 0||o===!0)&&(o={}),qe(o,e);let a=W(o);cn(a);let s=se(e,a);a.init&&N(e,a.init),n(()=>{a.destroy&&N(e,a.destroy),s()})});Ce((e,t)=>{e._x_dataStack&&(t._x_dataStack=e._x_dataStack,t.setAttribute("data-has-alpine-state",!0))});function Ho(e){return j?Ze?!0:e.hasAttribute("data-has-alpine-state"):!1}w("show",(e,{modifiers:t,expression:n},{effect:r})=>{let i=E(e,n);e._x_doHide||(e._x_doHide=()=>{y(()=>{e.style.setProperty("display","none",t.includes("important")?"important":void 0)})}),e._x_doShow||(e._x_doShow=()=>{y(()=>{e.style.length===1&&e.style.display==="none"?e.removeAttribute("style"):e.style.removeProperty("display")})});let o=()=>{e._x_doHide(),e._x_isShown=!1},a=()=>{e._x_doShow(),e._x_isShown=!0},s=()=>setTimeout(a),c=Ye(d=>d?a():o(),d=>{typeof e._x_toggleAndCascadeWithTransitions=="function"?e._x_toggleAndCascadeWithTransitions(e,d,a,o):d?s():o()}),l,u=!0;r(()=>i(d=>{!u&&d===l||(t.includes("immediate")&&(d?s():o()),c(d),l=d,u=!1)}))});w("for",(e,{expression:t},{effect:n,cleanup:r})=>{let i=Uo(t),o=E(e,i.items),a=E(e,e._x_keyExpression||"index");e._x_prevKeys=[],e._x_lookup={},n(()=>zo(e,i,o,a)),r(()=>{Object.values(e._x_lookup).forEach(s=>y(()=>{X(s),s.remove()})),delete e._x_prevKeys,delete e._x_lookup})});function zo(e,t,n,r){let i=a=>typeof a=="object"&&!Array.isArray(a),o=e;n(a=>{Ko(a)&&a>=0&&(a=Array.from(Array(a).keys(),f=>f+1)),a===void 0&&(a=[]);let s=e._x_lookup,c=e._x_prevKeys,l=[],u=[];if(i(a))a=Object.entries(a).map(([f,_])=>{let h=Yt(t,_,f,a);r(b=>{u.includes(b)&&S("Duplicate key on x-for",e),u.push(b)},{scope:{index:f,...h}}),l.push(h)});else for(let f=0;f<a.length;f++){let _=Yt(t,a[f],f,a);r(h=>{u.includes(h)&&S("Duplicate key on x-for",e),u.push(h)},{scope:{index:f,..._}}),l.push(_)}let d=[],p=[],m=[],x=[];for(let f=0;f<c.length;f++){let _=c[f];u.indexOf(_)===-1&&m.push(_)}c=c.filter(f=>!m.includes(f));let $="template";for(let f=0;f<u.length;f++){let _=u[f],h=c.indexOf(_);if(h===-1)c.splice(f,0,_),d.push([$,f]);else if(h!==f){let b=c.splice(f,1)[0],v=c.splice(h-1,1)[0];c.splice(f,0,v),c.splice(h,0,b),p.push([b,v])}else x.push(_);$=_}for(let f=0;f<m.length;f++){let _=m[f];_ in s&&(y(()=>{X(s[_]),s[_].remove()}),delete s[_])}for(let f=0;f<p.length;f++){let[_,h]=p[f],b=s[_],v=s[h],K=document.createElement("div");y(()=>{v||S('x-for ":key" is undefined or invalid',o,h,s),v.after(K),b.after(v),v._x_currentIfEl&&v.after(v._x_currentIfEl),K.before(b),b._x_currentIfEl&&b.after(b._x_currentIfEl),K.remove()}),v._x_refreshXForScope(l[u.indexOf(h)])}for(let f=0;f<d.length;f++){let[_,h]=d[f],b=_==="template"?o:s[_];b._x_currentIfEl&&(b=b._x_currentIfEl);let v=l[h],K=u[h],Q=document.importNode(o.content,!0).firstElementChild,Lt=W(v);se(Q,Lt,o),Q._x_refreshXForScope=Tr=>{Object.entries(Tr).forEach(([jr,Br])=>{Lt[jr]=Br})},y(()=>{b.after(Q),F(()=>I(Q))()}),typeof K=="object"&&S("x-for key cannot be an object, it must be a string or an integer",o),s[K]=Q}for(let f=0;f<x.length;f++)s[x[f]]._x_refreshXForScope(l[u.indexOf(x[f])]);o._x_prevKeys=u})}function Uo(e){let t=/,([^,\}\]]*)(?:,([^,\}\]]*))?$/,n=/^\s*\(|\)\s*$/g,r=/([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/,i=e.match(r);if(!i)return;let o={};o.items=i[2].trim();let a=i[1].replace(n,"").trim(),s=a.match(t);return s?(o.item=a.replace(t,"").trim(),o.index=s[1].trim(),s[2]&&(o.collection=s[2].trim())):o.item=a,o}function Yt(e,t,n,r){let i={};return/^\[.*\]$/.test(e.item)&&Array.isArray(t)?e.item.replace("[","").replace("]","").split(",").map(a=>a.trim()).forEach((a,s)=>{i[a]=t[s]}):/^\{.*\}$/.test(e.item)&&!Array.isArray(t)&&typeof t=="object"?e.item.replace("{","").replace("}","").split(",").map(a=>a.trim()).forEach(a=>{i[a]=t[a]}):i[e.item]=t,e.index&&(i[e.index]=n),e.collection&&(i[e.collection]=r),i}function Ko(e){return!Array.isArray(e)&&!isNaN(e)}function ur(){}ur.inline=(e,{expression:t},{cleanup:n})=>{let r=Se(e);r._x_refs||(r._x_refs={}),r._x_refs[t]=e,n(()=>delete r._x_refs[t])};w("ref",ur);w("if",(e,{expression:t},{effect:n,cleanup:r})=>{e.tagName.toLowerCase()!=="template"&&S("x-if can only be used on a <template> tag",e);let i=E(e,t),o=()=>{if(e._x_currentIfEl)return e._x_currentIfEl;let s=e.content.cloneNode(!0).firstElementChild;return se(s,{},e),y(()=>{e.after(s),F(()=>I(s))()}),e._x_currentIfEl=s,e._x_undoIf=()=>{y(()=>{X(s),s.remove()}),delete e._x_currentIfEl},s},a=()=>{e._x_undoIf&&(e._x_undoIf(),delete e._x_undoIf)};n(()=>i(s=>{s?o():a()})),r(()=>e._x_undoIf&&e._x_undoIf())});w("id",(e,{expression:t},{evaluate:n})=>{n(t).forEach(i=>$o(e,i))});Ce((e,t)=>{e._x_ids&&(t._x_ids=e._x_ids)});dt(mn("@",yn(G("on:"))));w("on",F((e,{value:t,modifiers:n,expression:r},{cleanup:i})=>{let o=r?E(e,r):()=>{};e.tagName.toLowerCase()==="template"&&(e._x_forwardEvents||(e._x_forwardEvents=[]),e._x_forwardEvents.includes(t)||e._x_forwardEvents.push(t));let a=nt(e,t,n,s=>{o(()=>{},{scope:{$event:s},params:[s]})});i(()=>a())}));Te("Collapse","collapse","collapse");Te("Intersect","intersect","intersect");Te("Focus","trap","focus");Te("Mask","mask","mask");function Te(e,t,n){w(t,r=>S(`You can't use [x-${t}] without first installing the "${e}" plugin here: https://alpinejs.dev/plugins/${n}`,r))}le.setEvaluator(pn);le.setReactivityEngine({reactive:St,effect:Qi,release:eo,raw:g});var qo=le,je=qo;function Jo(e){return e.scrollHeight>e.clientHeight||e.scrollWidth>e.clientWidth}function fr(e){e.directive("fit-text",(t,{expression:n},{effect:r,evaluateLater:i})=>{let o=()=>{t.style.fontSize="";let a=getComputedStyle(t),s=parseFloat(a.fontSize)||16,c=parseFloat(a.lineHeight)||1.2,l=10,u=1.05,d=.5,p=.05,m=s,x=c;for(;Jo(t)&&m>l;)x>u?x-=p:(x=c,m-=d),t.style.lineHeight=`${x}`,t.style.fontSize=`${m}px`};r(()=>{i(n||"true")(()=>{e.nextTick(()=>{requestAnimationFrame(o)})})})})}async function dr(e){let t=await Neutralino.filesystem.readFile(e);return JSON.parse(t)}async function ue(e){try{return(await Neutralino.filesystem.getStats(e)).isFile}catch(t){if(t.code==="NE_FS_NOPATHE")return!1;throw t}}async function Ct(e){try{if(!await ue(e)){console.error(`Module not found: ${e}`);return}let n=await Neutralino.filesystem.readFile(e),r=new Blob([n],{type:"application/javascript"});return await import(URL.createObjectURL(r))}catch(t){console.error(`Failed to import ${e}:`,t)}}async function pr(e,t,n){try{let r=`./modules/${e}/main.js`;await(await Ct(r)).default(t,n)}catch(r){console.error("Failed to load module:",r)}}var At=new Map;async function M(e){if(At.has(e))return At.get(e);try{if(!await ue(e)){console.error(`Image not found: ${e}`);return}let n=await Neutralino.filesystem.readBinaryFile(e),r=new Blob([n],{type:"image/png"}),i=URL.createObjectURL(r);return At.set(e,i),i}catch(t){console.error("Failed to load image:",t)}}function Wo(e){return e.endsWith(".woff2")?"woff2":e.endsWith(".woff")?"woff":"truetype"}var hr={};function Vo(e,t,n){let r=document.createElement("style"),i=`data:font/${t};base64,${n}`;r.textContent=`
-        @font-face {
-            font-family: "${e}";
-            src: url("${i}") format("${t}");
+(() => {
+  // node_modules/alpinejs/dist/module.esm.js
+  var flushPending = false;
+  var flushing = false;
+  var queue = [];
+  var lastFlushedIndex = -1;
+  function scheduler(callback) {
+    queueJob(callback);
+  }
+  function queueJob(job) {
+    if (!queue.includes(job))
+      queue.push(job);
+    queueFlush();
+  }
+  function dequeueJob(job) {
+    let index = queue.indexOf(job);
+    if (index !== -1 && index > lastFlushedIndex)
+      queue.splice(index, 1);
+  }
+  function queueFlush() {
+    if (!flushing && !flushPending) {
+      flushPending = true;
+      queueMicrotask(flushJobs);
+    }
+  }
+  function flushJobs() {
+    flushPending = false;
+    flushing = true;
+    for (let i = 0; i < queue.length; i++) {
+      queue[i]();
+      lastFlushedIndex = i;
+    }
+    queue.length = 0;
+    lastFlushedIndex = -1;
+    flushing = false;
+  }
+  var reactive;
+  var effect;
+  var release;
+  var raw;
+  var shouldSchedule = true;
+  function disableEffectScheduling(callback) {
+    shouldSchedule = false;
+    callback();
+    shouldSchedule = true;
+  }
+  function setReactivityEngine(engine) {
+    reactive = engine.reactive;
+    release = engine.release;
+    effect = (callback) => engine.effect(callback, { scheduler: (task) => {
+      if (shouldSchedule) {
+        scheduler(task);
+      } else {
+        task();
+      }
+    } });
+    raw = engine.raw;
+  }
+  function overrideEffect(override) {
+    effect = override;
+  }
+  function elementBoundEffect(el) {
+    let cleanup2 = () => {
+    };
+    let wrappedEffect = (callback) => {
+      let effectReference = effect(callback);
+      if (!el._x_effects) {
+        el._x_effects = /* @__PURE__ */ new Set();
+        el._x_runEffects = () => {
+          el._x_effects.forEach((i) => i());
+        };
+      }
+      el._x_effects.add(effectReference);
+      cleanup2 = () => {
+        if (effectReference === void 0)
+          return;
+        el._x_effects.delete(effectReference);
+        release(effectReference);
+      };
+      return effectReference;
+    };
+    return [wrappedEffect, () => {
+      cleanup2();
+    }];
+  }
+  function watch(getter, callback) {
+    let firstTime = true;
+    let oldValue;
+    let effectReference = effect(() => {
+      let value = getter();
+      JSON.stringify(value);
+      if (!firstTime) {
+        queueMicrotask(() => {
+          callback(value, oldValue);
+          oldValue = value;
+        });
+      } else {
+        oldValue = value;
+      }
+      firstTime = false;
+    });
+    return () => release(effectReference);
+  }
+  var onAttributeAddeds = [];
+  var onElRemoveds = [];
+  var onElAddeds = [];
+  function onElAdded(callback) {
+    onElAddeds.push(callback);
+  }
+  function onElRemoved(el, callback) {
+    if (typeof callback === "function") {
+      if (!el._x_cleanups)
+        el._x_cleanups = [];
+      el._x_cleanups.push(callback);
+    } else {
+      callback = el;
+      onElRemoveds.push(callback);
+    }
+  }
+  function onAttributesAdded(callback) {
+    onAttributeAddeds.push(callback);
+  }
+  function onAttributeRemoved(el, name, callback) {
+    if (!el._x_attributeCleanups)
+      el._x_attributeCleanups = {};
+    if (!el._x_attributeCleanups[name])
+      el._x_attributeCleanups[name] = [];
+    el._x_attributeCleanups[name].push(callback);
+  }
+  function cleanupAttributes(el, names) {
+    if (!el._x_attributeCleanups)
+      return;
+    Object.entries(el._x_attributeCleanups).forEach(([name, value]) => {
+      if (names === void 0 || names.includes(name)) {
+        value.forEach((i) => i());
+        delete el._x_attributeCleanups[name];
+      }
+    });
+  }
+  function cleanupElement(el) {
+    el._x_effects?.forEach(dequeueJob);
+    while (el._x_cleanups?.length)
+      el._x_cleanups.pop()();
+  }
+  var observer = new MutationObserver(onMutate);
+  var currentlyObserving = false;
+  function startObservingMutations() {
+    observer.observe(document, { subtree: true, childList: true, attributes: true, attributeOldValue: true });
+    currentlyObserving = true;
+  }
+  function stopObservingMutations() {
+    flushObserver();
+    observer.disconnect();
+    currentlyObserving = false;
+  }
+  var queuedMutations = [];
+  function flushObserver() {
+    let records = observer.takeRecords();
+    queuedMutations.push(() => records.length > 0 && onMutate(records));
+    let queueLengthWhenTriggered = queuedMutations.length;
+    queueMicrotask(() => {
+      if (queuedMutations.length === queueLengthWhenTriggered) {
+        while (queuedMutations.length > 0)
+          queuedMutations.shift()();
+      }
+    });
+  }
+  function mutateDom(callback) {
+    if (!currentlyObserving)
+      return callback();
+    stopObservingMutations();
+    let result = callback();
+    startObservingMutations();
+    return result;
+  }
+  var isCollecting = false;
+  var deferredMutations = [];
+  function deferMutations() {
+    isCollecting = true;
+  }
+  function flushAndStopDeferringMutations() {
+    isCollecting = false;
+    onMutate(deferredMutations);
+    deferredMutations = [];
+  }
+  function onMutate(mutations) {
+    if (isCollecting) {
+      deferredMutations = deferredMutations.concat(mutations);
+      return;
+    }
+    let addedNodes = [];
+    let removedNodes = /* @__PURE__ */ new Set();
+    let addedAttributes = /* @__PURE__ */ new Map();
+    let removedAttributes = /* @__PURE__ */ new Map();
+    for (let i = 0; i < mutations.length; i++) {
+      if (mutations[i].target._x_ignoreMutationObserver)
+        continue;
+      if (mutations[i].type === "childList") {
+        mutations[i].removedNodes.forEach((node) => {
+          if (node.nodeType !== 1)
+            return;
+          if (!node._x_marker)
+            return;
+          removedNodes.add(node);
+        });
+        mutations[i].addedNodes.forEach((node) => {
+          if (node.nodeType !== 1)
+            return;
+          if (removedNodes.has(node)) {
+            removedNodes.delete(node);
+            return;
+          }
+          if (node._x_marker)
+            return;
+          addedNodes.push(node);
+        });
+      }
+      if (mutations[i].type === "attributes") {
+        let el = mutations[i].target;
+        let name = mutations[i].attributeName;
+        let oldValue = mutations[i].oldValue;
+        let add2 = () => {
+          if (!addedAttributes.has(el))
+            addedAttributes.set(el, []);
+          addedAttributes.get(el).push({ name, value: el.getAttribute(name) });
+        };
+        let remove = () => {
+          if (!removedAttributes.has(el))
+            removedAttributes.set(el, []);
+          removedAttributes.get(el).push(name);
+        };
+        if (el.hasAttribute(name) && oldValue === null) {
+          add2();
+        } else if (el.hasAttribute(name)) {
+          remove();
+          add2();
+        } else {
+          remove();
         }
-    `,document.head.appendChild(r),hr[e]=r}function Go(e){let t=e instanceof Uint8Array?e:new Uint8Array(e),n=8192,r="";for(let i=0;i<t.byteLength;i+=n){let o=t.subarray(i,i+n);r+=String.fromCharCode(...o)}return btoa(r)}async function _r(e,t){try{if(hr.hasOwnProperty(e)){console.info(`Font ${e} already loaded.`);return}if(!ue(t)){console.error("Font file not found at ",t);return}let n=await Neutralino.filesystem.readBinaryFile(t),r=Wo(t),i=Go(n);Vo(e,r,i)}catch(n){console.error("Failed to load font: ",n)}}function Yo(e){return e.type==="text"||e.type==="textarea"||!e.type}var Xo=function(e,t){if(!e.onChange)return;let n=Yo(e)?"x-on:input.debounce":"x-on:change";t.setAttribute(n,e.onChange)},Zo={textarea:"textarea",select:"select"},Qo=function(e,t){for(let n of t.options){let r=document.createElement("option");r.innerText=n,e.appendChild(r)}},ea=function(e){let t=Zo[e.type]||"input",n=document.createElement(t);return e.type==="select"&&Qo(n,e),t==="input"&&n.setAttribute("type",e.type||"text"),n.setAttribute("x-model",e.id),Xo(e,n),n};function gr(e,t){let n=document.createElement("button");return n.textContent=e,n.setAttribute("type","button"),n.setAttribute("x-on:click",t),n}function mr(e){let t=document.createElement("form");t.setAttribute("onsubmit","return false");for(let n of e.fields){let r=document.createElement("label"),i=document.createElement("span");i.innerText=n.displayName,r.appendChild(i);let o=ea(n);r.appendChild(o),t.appendChild(r)}return t.appendChild(gr("save","await save()")),t.appendChild(gr("load","await load()")),t}var Ot=new Map;async function yr(e,t,n=375,r=523){let i=`${e}|${t}|${n}|${r}`;if(Ot.has(i))return Ot.get(i);let o=document.createElement("canvas");o.width=n,o.height=r;let a=o.getContext("2d"),s=new Image;s.crossOrigin="Anonymous",await new Promise(u=>{s.onload=u,s.src=e});let c=new Image;c.crossOrigin="Anonymous",await new Promise(u=>{c.onload=u,c.src=t}),a.drawImage(c,0,0,n,r),a.globalCompositeOperation="source-in",a.drawImage(s,0,0,n,r);let l=o.toDataURL("image/png");return Ot.set(i,l),l}function xr(e){let[t,n]=e.split(","),r=t.match(/data:([^;]+);base64/);if(!r)throw new Error("Malformed data, could not load image blob.");let i=atob(n),o=new Uint8Array(i.length);for(let a=0;a<i.length;a++)o[a]=i.charCodeAt(a);return new Blob([o],{type:r[0]})}function fe(e){return new Promise((t,n)=>{let r=new Image;r.onload=()=>t(r),r.onerror=n,r.src=e})}function Mt(e,t="image/png",n=.92){return new Promise((r,i)=>{e.toBlob(o=>{if(!o)return i(new Error("Failed to create blob from canvas"));let a=URL.createObjectURL(o);r(a)},t,n)})}function Be(e){return Math.min(255,e)}function Fe(e){return Math.max(0,e)}function ta(e){return Math.min(255,Math.max(0,e))}function It(e,t){return e<128?e*t>>7:255-((255-e)*(255-t)>>7)}function na(e,t){e/=255,t/=255;let n;if(t<.5)n=e-(1-2*t)*e*(1-e);else{let r=e<=.25?((16*e-12)*e+4)*e:Math.sqrt(e);n=e+(2*t-1)*(r-e)}return Math.round(n*255)}var ra={add:(e,t)=>Be(e+t),subtract:(e,t)=>Fe(e-t),stamp:(e,t)=>ta(e-2*t+256),difference:(e,t)=>Math.abs(e-t),negation:(e,t)=>255-Math.abs(255-e-t),multiply:(e,t)=>e*t/255,darken:(e,t)=>Math.min(e,t),lighten:(e,t)=>Math.max(e,t),colorDodge:(e,t)=>t===255?255:Be(e*255/(255-t)),colorBurn:(e,t)=>t===0?0:Fe(255-(255-e)*255/t),screen:(e,t)=>255-(255-e)*(255-t)/255,overlay:(e,t)=>It(e,t),hardLight:(e,t)=>t<128?e*t>>7:255-((255-e)*(255-t)>>7),softLight:(e,t)=>na(e,t),reflect:(e,t)=>t===255?255:Be(e*e/(255-t)),glow:(e,t)=>e===255?255:Be(t*t/(255-e)),freeze:(e,t)=>t===0?0:Fe(255-(255-e)*(255-e)/t),heat:(e,t)=>e===0?0:Fe(255-(255-t)*(255-t)/e),and:(e,t)=>e&t,or:(e,t)=>e|t,xor:(e,t)=>e^t,shadow:(e,t)=>t*e*e/65025,symmetricOverlay:(e,t)=>It(e,t)+It(t,e)>>1};function ia(e,t,n){let r=ra[n];if(!r)throw new Error(`Blend mode not supported: ${n}`);let i=new ImageData(e.width,e.height),o=e.data,a=t.data,s=i.data;for(let c=0;c<o.length;c+=4)s[c]=r(o[c],a[c]),s[c+1]=r(o[c+1],a[c+1]),s[c+2]=r(o[c+2],a[c+2]),s[c+3]=Math.max(o[c+3],a[c+3]);return i}function jt(e,t,n){let r=e.width,i=e.height,o=document.createElement("canvas");o.width=r,o.height=i;let a=o.getContext("2d");a.globalCompositeOperation="source-over",a.drawImage(e,0,0);let s=a.getImageData(0,0,r,i),c=document.createElement("canvas");c.width=r,c.height=i,c.getContext("2d").drawImage(t,0,0);let l=c.getContext("2d").getImageData(0,0,r,i),u=ia(s,l,n);return a.putImageData(u,0,0),o}var $t=new Map;async function br(e,t,n){if(!t)return e;let r=`${e}|${t}|${n}`;if($t.has(r))return $t.get(r);let i=await fe(e),o=await fe(t),a=jt(i,o,n),s=await Mt(a);return $t.set(r,s),s}function Bt(e,t,n,r,i,o){if(e.width!==t.width||e.height!==t.height)throw new Error("Images used for blending must have the same size");let{width:a,height:s}=e,c=document.createElement("canvas");c.width=a,c.height=s;let l=c.getContext("2d");l.drawImage(e,0,0),l.save();let u=l.createLinearGradient(n*a,r*s,i*a,o*s);return u.addColorStop(0,"rgba(0,0,0,0)"),u.addColorStop(1,"rgba(0,0,0,1)"),l.globalCompositeOperation="destination-in",l.fillStyle=u,l.fillRect(0,0,a,s),l.globalCompositeOperation="destination-over",l.drawImage(t,0,0),l.restore(),c}var Tt=new Map;async function wr(e,t,n,r,i,o){if(!t)return e;let a=`${e}|${t}|${n}|${r}|${i}|${o}`;if(Tt.has(a))return Tt.get(a);let s=await fe(e),c=await fe(t),l=Bt(s,c,n,r,i,o),u=await Mt(l);return Tt.set(a,u),u}function vr(e,t,n){let{width:r,height:i}=e;if(t.width!==r||t.height!==i||n.width!==r||n.height!==i)throw new Error("Images used for blending must have the same size");let o=document.createElement("canvas"),a=document.createElement("canvas"),s=document.createElement("canvas");o.width=a.width=s.width=r,o.height=a.height=s.height=i;let c=o.getContext("2d"),l=a.getContext("2d"),u=s.getContext("2d");c.drawImage(e,0,0),l.drawImage(t,0,0),u.drawImage(n,0,0);let d=c.getImageData(0,0,r,i),p=l.getImageData(0,0,r,i),m=u.getImageData(0,0,r,i),x=d.data,$=p.data,f=m.data;for(let h=0;h<x.length;h+=4){let b=f[h],v=255-b;x[h]=(x[h]*b+$[h]*v)/255,x[h+1]=(x[h+1]*b+$[h+1]*v)/255,x[h+2]=(x[h+2]*b+$[h+2]*v)/255}let _=document.createElement("canvas");return _.width=r,_.height=i,_.getContext("2d").putImageData(d,0,0),_}var Er=e=>({async assetURL(t){let n=["modules",e,"assets",t].join("/");return await M(n)},async loadFile(t){let n=["modules",e,t].join("/");return await Neutralino.filesystem.readFile(n)},async maskImage(t,n,r,i){return await yr(t,n,r,i)},disposeImage(t,n){t[n]&&URL.revokeObjectURL(t[n])},parseBlob(t){return xr(t)},async combineBlend(t,n,r="symmetricOverlay"){return await br(t,n,r)},async linearBlend(t,n,r,i,o,a){return await wr(t,n,r,i,o,a)},async loadFont(t,n){let r=["modules",e,"assets",n].join("/");await _r(t,r)},import(t){let n=["modules",e,t].join("/");return Ct(n)}});function oa(e,t){window.card=e;let n=mr(e),r=document.querySelector("main");r.innerHTML="",r.setAttribute("x-data","card"),r.appendChild(t),r.appendChild(n)}function aa(e){return Alpine.reactive({fields:[],addField(t){this.fields.push(t),this[t.id]=""},publishElement(t,n){e.querySelector(t).innerHTML=n},addStyle(t){let n=document.createElement("style");n.innerHTML=t,e.prepend(n)},setFrame(t){e.innerHTML=t},async save(){let t={};for(let r of card.fields)t[r.id]=r.hasOwnProperty("save")?await r.save():card[r.id];let n=JSON.stringify(t);await Neutralino.filesystem.writeFile("./card.json",n)},async load(){let t=await Neutralino.filesystem.readFile("./card.json"),n=JSON.parse(t);for(let r of card.fields)this[r.id]=r.hasOwnProperty("load")?await r.load(n):n[r.id]}})}async function Sr(e){let t=document.createElement("div");t.className="card-container";let n=aa(t);for(let r of e.info.modules)await pr(r,n,Er(r));oa(n,t)}async function Ar(){let e=[],t=await Neutralino.filesystem.readDirectory("templates");for(let n of t){let r="./"+n.path+"/info.json";await ue(r)&&(n.info=await dr(n.path+"/info.json"),e.push(n))}return e}async function Ft(e,t){let r=await(await new Promise(i=>e.toBlob(i,"image/png"))).arrayBuffer();await Neutralino.filesystem.writeBinaryFile(t,r)}function U(e){return new Promise((t,n)=>{let r=new Image;r.onload=()=>t(r),r.onerror=n,r.src=e})}async function kt(e,t=10){let n=[];for(let i=0;i<t;i++){let o=Date.now();await e();let a=Date.now();n.push(a-o)}return{avg:n.reduce((i,o)=>i+o,0)/n.length,times:n}}var Z=10,sa=["add","subtract","stamp","difference","negation","multiply","darken","lighten","colorDodge","colorBurn","screen","overlay","hardLight","softLight","reflect","glow","freeze","heat","and","or","xor","shadow","symmetricOverlay"];function Cr(){describe("combineBlend",()=>{let e,t,n={};beforeAll(async()=>{let r=await M("tests/fixtures/photo.jpg"),i=await M("tests/fixtures/gradient.png");e=await U(r),t=await U(i)}),it("should combine photo and gradient for each mode",async()=>{let r;for(let i of sa){let{avg:o}=await kt(async()=>{r=await jt(e,t,i)},Z);n[i]=`${o.toFixed(2)} ms (avg over ${Z} runs)`,await Ft(r,`tests/output/${i}.png`),expect(r).toBeInstanceOf(HTMLCanvasElement)}console.log("Blend benchmark results:",n)}),afterAll(async()=>{await Neutralino.filesystem.writeFile("tests/output/combineBlend_benchmark.json",JSON.stringify(n,null,2))})})}var ca=[{name:"vertical",x1:0,y1:0,x2:0,y2:1},{name:"horizontal",x1:0,y1:0,x2:1,y2:0},{name:"diagonal1",x1:0,y1:0,x2:1,y2:1},{name:"diagonal2",x1:1,y1:0,x2:0,y2:1}];function Or(){describe("linearBlend",()=>{let e,t,n={};beforeAll(async()=>{let r=await M("tests/fixtures/photo.jpg"),i=await M("tests/fixtures/gradient.png");e=await U(r),t=await U(i)}),it("should blend photo and gradient at various angles",async()=>{let r;for(let{name:i,x1:o,y1:a,x2:s,y2:c}of ca){let{avg:l}=await kt(async()=>{r=Bt(e,t,o,a,s,c)},Z);n[i]=`${l.toFixed(2)} ms (avg over ${Z} runs)`,await Ft(r,`tests/output/linearBlend_${i}.png`),expect(r).toBeInstanceOf(HTMLCanvasElement)}console.log("Linear blend benchmark results:",n)}),afterAll(async()=>{await Neutralino.filesystem.writeFile("tests/output/linearBlend_benchmark.json",JSON.stringify(n,null,2))})})}function Mr(){describe("maskBlend",()=>{let e,t,n,r={};beforeAll(async()=>{let i=await M("tests/fixtures/photo.jpg"),o=await M("tests/fixtures/gradient.png"),a=await M("tests/fixtures/softmask.png");e=await U(i),t=await U(o),n=await U(a)}),it("should blend two images based on a mask",async()=>{let i,{avg:o}=await kt(async()=>{i=vr(e,t,n),expect(i).toBeInstanceOf(HTMLCanvasElement)},Z);await Ft(i,"tests/output/maskBlend.png"),r.maskBlend=`${o.toFixed(2)} ms (avg over ${Z} runs)`,console.log("Mask blend benchmark results:",r)}),afterAll(async()=>{await Neutralino.filesystem.writeFile("tests/output/maskBlend_benchmark.json",JSON.stringify(r,null,2))})})}var de="https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core",la=[`${de}/jasmine.js`,`${de}/jasmine-html.js`,`${de}/boot0.js`,`${de}/boot1.js`],ua=`${de}/jasmine.css`;function fa(e){return new Promise((t,n)=>{let r=document.createElement("script");r.src=e,r.onload=t,r.onerror=()=>n(new Error(`Failed to load Jasmine script: ${e}`)),document.head.appendChild(r)})}function da(e){return new Promise((t,n)=>{let r=document.createElement("link");r.rel="stylesheet",r.href=e,r.onload=t,r.onerror=()=>n(new Error("Failed to load Jasmine CSS")),document.head.appendChild(r)})}async function Ir(){await da(ua);for(let e of la)await fa(e);return document.querySelector("main").remove(),!0}async function $r(){Cr(),Or(),Mr()}Neutralino.init();Neutralino.events.on("windowClose",()=>Neutralino.app.exit(0));window.Alpine=je;je.start();fr(je);NL_ARGS.includes("--run-tests")?Ir().then($r):Ar().then(e=>{Sr(e[1]).then(()=>console.log("Card loaded!"))});})();
+      }
+    }
+    removedAttributes.forEach((attrs, el) => {
+      cleanupAttributes(el, attrs);
+    });
+    addedAttributes.forEach((attrs, el) => {
+      onAttributeAddeds.forEach((i) => i(el, attrs));
+    });
+    for (let node of removedNodes) {
+      if (addedNodes.some((i) => i.contains(node)))
+        continue;
+      onElRemoveds.forEach((i) => i(node));
+    }
+    for (let node of addedNodes) {
+      if (!node.isConnected)
+        continue;
+      onElAddeds.forEach((i) => i(node));
+    }
+    addedNodes = null;
+    removedNodes = null;
+    addedAttributes = null;
+    removedAttributes = null;
+  }
+  function scope(node) {
+    return mergeProxies(closestDataStack(node));
+  }
+  function addScopeToNode(node, data2, referenceNode) {
+    node._x_dataStack = [data2, ...closestDataStack(referenceNode || node)];
+    return () => {
+      node._x_dataStack = node._x_dataStack.filter((i) => i !== data2);
+    };
+  }
+  function closestDataStack(node) {
+    if (node._x_dataStack)
+      return node._x_dataStack;
+    if (typeof ShadowRoot === "function" && node instanceof ShadowRoot) {
+      return closestDataStack(node.host);
+    }
+    if (!node.parentNode) {
+      return [];
+    }
+    return closestDataStack(node.parentNode);
+  }
+  function mergeProxies(objects) {
+    return new Proxy({ objects }, mergeProxyTrap);
+  }
+  var mergeProxyTrap = {
+    ownKeys({ objects }) {
+      return Array.from(
+        new Set(objects.flatMap((i) => Object.keys(i)))
+      );
+    },
+    has({ objects }, name) {
+      if (name == Symbol.unscopables)
+        return false;
+      return objects.some(
+        (obj) => Object.prototype.hasOwnProperty.call(obj, name) || Reflect.has(obj, name)
+      );
+    },
+    get({ objects }, name, thisProxy) {
+      if (name == "toJSON")
+        return collapseProxies;
+      return Reflect.get(
+        objects.find(
+          (obj) => Reflect.has(obj, name)
+        ) || {},
+        name,
+        thisProxy
+      );
+    },
+    set({ objects }, name, value, thisProxy) {
+      const target = objects.find(
+        (obj) => Object.prototype.hasOwnProperty.call(obj, name)
+      ) || objects[objects.length - 1];
+      const descriptor = Object.getOwnPropertyDescriptor(target, name);
+      if (descriptor?.set && descriptor?.get)
+        return descriptor.set.call(thisProxy, value) || true;
+      return Reflect.set(target, name, value);
+    }
+  };
+  function collapseProxies() {
+    let keys = Reflect.ownKeys(this);
+    return keys.reduce((acc, key) => {
+      acc[key] = Reflect.get(this, key);
+      return acc;
+    }, {});
+  }
+  function initInterceptors(data2) {
+    let isObject2 = (val) => typeof val === "object" && !Array.isArray(val) && val !== null;
+    let recurse = (obj, basePath = "") => {
+      Object.entries(Object.getOwnPropertyDescriptors(obj)).forEach(([key, { value, enumerable }]) => {
+        if (enumerable === false || value === void 0)
+          return;
+        if (typeof value === "object" && value !== null && value.__v_skip)
+          return;
+        let path = basePath === "" ? key : `${basePath}.${key}`;
+        if (typeof value === "object" && value !== null && value._x_interceptor) {
+          obj[key] = value.initialize(data2, path, key);
+        } else {
+          if (isObject2(value) && value !== obj && !(value instanceof Element)) {
+            recurse(value, path);
+          }
+        }
+      });
+    };
+    return recurse(data2);
+  }
+  function interceptor(callback, mutateObj = () => {
+  }) {
+    let obj = {
+      initialValue: void 0,
+      _x_interceptor: true,
+      initialize(data2, path, key) {
+        return callback(this.initialValue, () => get(data2, path), (value) => set(data2, path, value), path, key);
+      }
+    };
+    mutateObj(obj);
+    return (initialValue) => {
+      if (typeof initialValue === "object" && initialValue !== null && initialValue._x_interceptor) {
+        let initialize = obj.initialize.bind(obj);
+        obj.initialize = (data2, path, key) => {
+          let innerValue = initialValue.initialize(data2, path, key);
+          obj.initialValue = innerValue;
+          return initialize(data2, path, key);
+        };
+      } else {
+        obj.initialValue = initialValue;
+      }
+      return obj;
+    };
+  }
+  function get(obj, path) {
+    return path.split(".").reduce((carry, segment) => carry[segment], obj);
+  }
+  function set(obj, path, value) {
+    if (typeof path === "string")
+      path = path.split(".");
+    if (path.length === 1)
+      obj[path[0]] = value;
+    else if (path.length === 0)
+      throw error;
+    else {
+      if (obj[path[0]])
+        return set(obj[path[0]], path.slice(1), value);
+      else {
+        obj[path[0]] = {};
+        return set(obj[path[0]], path.slice(1), value);
+      }
+    }
+  }
+  var magics = {};
+  function magic(name, callback) {
+    magics[name] = callback;
+  }
+  function injectMagics(obj, el) {
+    let memoizedUtilities = getUtilities(el);
+    Object.entries(magics).forEach(([name, callback]) => {
+      Object.defineProperty(obj, `$${name}`, {
+        get() {
+          return callback(el, memoizedUtilities);
+        },
+        enumerable: false
+      });
+    });
+    return obj;
+  }
+  function getUtilities(el) {
+    let [utilities, cleanup2] = getElementBoundUtilities(el);
+    let utils = { interceptor, ...utilities };
+    onElRemoved(el, cleanup2);
+    return utils;
+  }
+  function tryCatch(el, expression, callback, ...args) {
+    try {
+      return callback(...args);
+    } catch (e) {
+      handleError(e, el, expression);
+    }
+  }
+  function handleError(error2, el, expression = void 0) {
+    error2 = Object.assign(
+      error2 ?? { message: "No error message given." },
+      { el, expression }
+    );
+    console.warn(`Alpine Expression Error: ${error2.message}
+
+${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
+    setTimeout(() => {
+      throw error2;
+    }, 0);
+  }
+  var shouldAutoEvaluateFunctions = true;
+  function dontAutoEvaluateFunctions(callback) {
+    let cache = shouldAutoEvaluateFunctions;
+    shouldAutoEvaluateFunctions = false;
+    let result = callback();
+    shouldAutoEvaluateFunctions = cache;
+    return result;
+  }
+  function evaluate(el, expression, extras = {}) {
+    let result;
+    evaluateLater(el, expression)((value) => result = value, extras);
+    return result;
+  }
+  function evaluateLater(...args) {
+    return theEvaluatorFunction(...args);
+  }
+  var theEvaluatorFunction = normalEvaluator;
+  function setEvaluator(newEvaluator) {
+    theEvaluatorFunction = newEvaluator;
+  }
+  function normalEvaluator(el, expression) {
+    let overriddenMagics = {};
+    injectMagics(overriddenMagics, el);
+    let dataStack = [overriddenMagics, ...closestDataStack(el)];
+    let evaluator = typeof expression === "function" ? generateEvaluatorFromFunction(dataStack, expression) : generateEvaluatorFromString(dataStack, expression, el);
+    return tryCatch.bind(null, el, expression, evaluator);
+  }
+  function generateEvaluatorFromFunction(dataStack, func) {
+    return (receiver = () => {
+    }, { scope: scope2 = {}, params = [], context } = {}) => {
+      let result = func.apply(mergeProxies([scope2, ...dataStack]), params);
+      runIfTypeOfFunction(receiver, result);
+    };
+  }
+  var evaluatorMemo = {};
+  function generateFunctionFromString(expression, el) {
+    if (evaluatorMemo[expression]) {
+      return evaluatorMemo[expression];
+    }
+    let AsyncFunction = Object.getPrototypeOf(async function() {
+    }).constructor;
+    let rightSideSafeExpression = /^[\n\s]*if.*\(.*\)/.test(expression.trim()) || /^(let|const)\s/.test(expression.trim()) ? `(async()=>{ ${expression} })()` : expression;
+    const safeAsyncFunction = () => {
+      try {
+        let func2 = new AsyncFunction(
+          ["__self", "scope"],
+          `with (scope) { __self.result = ${rightSideSafeExpression} }; __self.finished = true; return __self.result;`
+        );
+        Object.defineProperty(func2, "name", {
+          value: `[Alpine] ${expression}`
+        });
+        return func2;
+      } catch (error2) {
+        handleError(error2, el, expression);
+        return Promise.resolve();
+      }
+    };
+    let func = safeAsyncFunction();
+    evaluatorMemo[expression] = func;
+    return func;
+  }
+  function generateEvaluatorFromString(dataStack, expression, el) {
+    let func = generateFunctionFromString(expression, el);
+    return (receiver = () => {
+    }, { scope: scope2 = {}, params = [], context } = {}) => {
+      func.result = void 0;
+      func.finished = false;
+      let completeScope = mergeProxies([scope2, ...dataStack]);
+      if (typeof func === "function") {
+        let promise = func.call(context, func, completeScope).catch((error2) => handleError(error2, el, expression));
+        if (func.finished) {
+          runIfTypeOfFunction(receiver, func.result, completeScope, params, el);
+          func.result = void 0;
+        } else {
+          promise.then((result) => {
+            runIfTypeOfFunction(receiver, result, completeScope, params, el);
+          }).catch((error2) => handleError(error2, el, expression)).finally(() => func.result = void 0);
+        }
+      }
+    };
+  }
+  function runIfTypeOfFunction(receiver, value, scope2, params, el) {
+    if (shouldAutoEvaluateFunctions && typeof value === "function") {
+      let result = value.apply(scope2, params);
+      if (result instanceof Promise) {
+        result.then((i) => runIfTypeOfFunction(receiver, i, scope2, params)).catch((error2) => handleError(error2, el, value));
+      } else {
+        receiver(result);
+      }
+    } else if (typeof value === "object" && value instanceof Promise) {
+      value.then((i) => receiver(i));
+    } else {
+      receiver(value);
+    }
+  }
+  var prefixAsString = "x-";
+  function prefix(subject = "") {
+    return prefixAsString + subject;
+  }
+  function setPrefix(newPrefix) {
+    prefixAsString = newPrefix;
+  }
+  var directiveHandlers = {};
+  function directive(name, callback) {
+    directiveHandlers[name] = callback;
+    return {
+      before(directive2) {
+        if (!directiveHandlers[directive2]) {
+          console.warn(String.raw`Cannot find directive \`${directive2}\`. \`${name}\` will use the default order of execution`);
+          return;
+        }
+        const pos = directiveOrder.indexOf(directive2);
+        directiveOrder.splice(pos >= 0 ? pos : directiveOrder.indexOf("DEFAULT"), 0, name);
+      }
+    };
+  }
+  function directiveExists(name) {
+    return Object.keys(directiveHandlers).includes(name);
+  }
+  function directives(el, attributes, originalAttributeOverride) {
+    attributes = Array.from(attributes);
+    if (el._x_virtualDirectives) {
+      let vAttributes = Object.entries(el._x_virtualDirectives).map(([name, value]) => ({ name, value }));
+      let staticAttributes = attributesOnly(vAttributes);
+      vAttributes = vAttributes.map((attribute) => {
+        if (staticAttributes.find((attr) => attr.name === attribute.name)) {
+          return {
+            name: `x-bind:${attribute.name}`,
+            value: `"${attribute.value}"`
+          };
+        }
+        return attribute;
+      });
+      attributes = attributes.concat(vAttributes);
+    }
+    let transformedAttributeMap = {};
+    let directives2 = attributes.map(toTransformedAttributes((newName, oldName) => transformedAttributeMap[newName] = oldName)).filter(outNonAlpineAttributes).map(toParsedDirectives(transformedAttributeMap, originalAttributeOverride)).sort(byPriority);
+    return directives2.map((directive2) => {
+      return getDirectiveHandler(el, directive2);
+    });
+  }
+  function attributesOnly(attributes) {
+    return Array.from(attributes).map(toTransformedAttributes()).filter((attr) => !outNonAlpineAttributes(attr));
+  }
+  var isDeferringHandlers = false;
+  var directiveHandlerStacks = /* @__PURE__ */ new Map();
+  var currentHandlerStackKey = Symbol();
+  function deferHandlingDirectives(callback) {
+    isDeferringHandlers = true;
+    let key = Symbol();
+    currentHandlerStackKey = key;
+    directiveHandlerStacks.set(key, []);
+    let flushHandlers = () => {
+      while (directiveHandlerStacks.get(key).length)
+        directiveHandlerStacks.get(key).shift()();
+      directiveHandlerStacks.delete(key);
+    };
+    let stopDeferring = () => {
+      isDeferringHandlers = false;
+      flushHandlers();
+    };
+    callback(flushHandlers);
+    stopDeferring();
+  }
+  function getElementBoundUtilities(el) {
+    let cleanups = [];
+    let cleanup2 = (callback) => cleanups.push(callback);
+    let [effect3, cleanupEffect] = elementBoundEffect(el);
+    cleanups.push(cleanupEffect);
+    let utilities = {
+      Alpine: alpine_default,
+      effect: effect3,
+      cleanup: cleanup2,
+      evaluateLater: evaluateLater.bind(evaluateLater, el),
+      evaluate: evaluate.bind(evaluate, el)
+    };
+    let doCleanup = () => cleanups.forEach((i) => i());
+    return [utilities, doCleanup];
+  }
+  function getDirectiveHandler(el, directive2) {
+    let noop = () => {
+    };
+    let handler4 = directiveHandlers[directive2.type] || noop;
+    let [utilities, cleanup2] = getElementBoundUtilities(el);
+    onAttributeRemoved(el, directive2.original, cleanup2);
+    let fullHandler = () => {
+      if (el._x_ignore || el._x_ignoreSelf)
+        return;
+      handler4.inline && handler4.inline(el, directive2, utilities);
+      handler4 = handler4.bind(handler4, el, directive2, utilities);
+      isDeferringHandlers ? directiveHandlerStacks.get(currentHandlerStackKey).push(handler4) : handler4();
+    };
+    fullHandler.runCleanups = cleanup2;
+    return fullHandler;
+  }
+  var startingWith = (subject, replacement) => ({ name, value }) => {
+    if (name.startsWith(subject))
+      name = name.replace(subject, replacement);
+    return { name, value };
+  };
+  var into = (i) => i;
+  function toTransformedAttributes(callback = () => {
+  }) {
+    return ({ name, value }) => {
+      let { name: newName, value: newValue } = attributeTransformers.reduce((carry, transform) => {
+        return transform(carry);
+      }, { name, value });
+      if (newName !== name)
+        callback(newName, name);
+      return { name: newName, value: newValue };
+    };
+  }
+  var attributeTransformers = [];
+  function mapAttributes(callback) {
+    attributeTransformers.push(callback);
+  }
+  function outNonAlpineAttributes({ name }) {
+    return alpineAttributeRegex().test(name);
+  }
+  var alpineAttributeRegex = () => new RegExp(`^${prefixAsString}([^:^.]+)\\b`);
+  function toParsedDirectives(transformedAttributeMap, originalAttributeOverride) {
+    return ({ name, value }) => {
+      let typeMatch = name.match(alpineAttributeRegex());
+      let valueMatch = name.match(/:([a-zA-Z0-9\-_:]+)/);
+      let modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
+      let original = originalAttributeOverride || transformedAttributeMap[name] || name;
+      return {
+        type: typeMatch ? typeMatch[1] : null,
+        value: valueMatch ? valueMatch[1] : null,
+        modifiers: modifiers.map((i) => i.replace(".", "")),
+        expression: value,
+        original
+      };
+    };
+  }
+  var DEFAULT = "DEFAULT";
+  var directiveOrder = [
+    "ignore",
+    "ref",
+    "data",
+    "id",
+    "anchor",
+    "bind",
+    "init",
+    "for",
+    "model",
+    "modelable",
+    "transition",
+    "show",
+    "if",
+    DEFAULT,
+    "teleport"
+  ];
+  function byPriority(a, b) {
+    let typeA = directiveOrder.indexOf(a.type) === -1 ? DEFAULT : a.type;
+    let typeB = directiveOrder.indexOf(b.type) === -1 ? DEFAULT : b.type;
+    return directiveOrder.indexOf(typeA) - directiveOrder.indexOf(typeB);
+  }
+  function dispatch(el, name, detail = {}) {
+    el.dispatchEvent(
+      new CustomEvent(name, {
+        detail,
+        bubbles: true,
+        // Allows events to pass the shadow DOM barrier.
+        composed: true,
+        cancelable: true
+      })
+    );
+  }
+  function walk(el, callback) {
+    if (typeof ShadowRoot === "function" && el instanceof ShadowRoot) {
+      Array.from(el.children).forEach((el2) => walk(el2, callback));
+      return;
+    }
+    let skip = false;
+    callback(el, () => skip = true);
+    if (skip)
+      return;
+    let node = el.firstElementChild;
+    while (node) {
+      walk(node, callback, false);
+      node = node.nextElementSibling;
+    }
+  }
+  function warn(message, ...args) {
+    console.warn(`Alpine Warning: ${message}`, ...args);
+  }
+  var started = false;
+  function start() {
+    if (started)
+      warn("Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems.");
+    started = true;
+    if (!document.body)
+      warn("Unable to initialize. Trying to load Alpine before `<body>` is available. Did you forget to add `defer` in Alpine's `<script>` tag?");
+    dispatch(document, "alpine:init");
+    dispatch(document, "alpine:initializing");
+    startObservingMutations();
+    onElAdded((el) => initTree(el, walk));
+    onElRemoved((el) => destroyTree(el));
+    onAttributesAdded((el, attrs) => {
+      directives(el, attrs).forEach((handle) => handle());
+    });
+    let outNestedComponents = (el) => !closestRoot(el.parentElement, true);
+    Array.from(document.querySelectorAll(allSelectors().join(","))).filter(outNestedComponents).forEach((el) => {
+      initTree(el);
+    });
+    dispatch(document, "alpine:initialized");
+    setTimeout(() => {
+      warnAboutMissingPlugins();
+    });
+  }
+  var rootSelectorCallbacks = [];
+  var initSelectorCallbacks = [];
+  function rootSelectors() {
+    return rootSelectorCallbacks.map((fn) => fn());
+  }
+  function allSelectors() {
+    return rootSelectorCallbacks.concat(initSelectorCallbacks).map((fn) => fn());
+  }
+  function addRootSelector(selectorCallback) {
+    rootSelectorCallbacks.push(selectorCallback);
+  }
+  function addInitSelector(selectorCallback) {
+    initSelectorCallbacks.push(selectorCallback);
+  }
+  function closestRoot(el, includeInitSelectors = false) {
+    return findClosest(el, (element) => {
+      const selectors = includeInitSelectors ? allSelectors() : rootSelectors();
+      if (selectors.some((selector) => element.matches(selector)))
+        return true;
+    });
+  }
+  function findClosest(el, callback) {
+    if (!el)
+      return;
+    if (callback(el))
+      return el;
+    if (el._x_teleportBack)
+      el = el._x_teleportBack;
+    if (!el.parentElement)
+      return;
+    return findClosest(el.parentElement, callback);
+  }
+  function isRoot(el) {
+    return rootSelectors().some((selector) => el.matches(selector));
+  }
+  var initInterceptors2 = [];
+  function interceptInit(callback) {
+    initInterceptors2.push(callback);
+  }
+  var markerDispenser = 1;
+  function initTree(el, walker = walk, intercept = () => {
+  }) {
+    if (findClosest(el, (i) => i._x_ignore))
+      return;
+    deferHandlingDirectives(() => {
+      walker(el, (el2, skip) => {
+        if (el2._x_marker)
+          return;
+        intercept(el2, skip);
+        initInterceptors2.forEach((i) => i(el2, skip));
+        directives(el2, el2.attributes).forEach((handle) => handle());
+        if (!el2._x_ignore)
+          el2._x_marker = markerDispenser++;
+        el2._x_ignore && skip();
+      });
+    });
+  }
+  function destroyTree(root, walker = walk) {
+    walker(root, (el) => {
+      cleanupElement(el);
+      cleanupAttributes(el);
+      delete el._x_marker;
+    });
+  }
+  function warnAboutMissingPlugins() {
+    let pluginDirectives = [
+      ["ui", "dialog", ["[x-dialog], [x-popover]"]],
+      ["anchor", "anchor", ["[x-anchor]"]],
+      ["sort", "sort", ["[x-sort]"]]
+    ];
+    pluginDirectives.forEach(([plugin2, directive2, selectors]) => {
+      if (directiveExists(directive2))
+        return;
+      selectors.some((selector) => {
+        if (document.querySelector(selector)) {
+          warn(`found "${selector}", but missing ${plugin2} plugin`);
+          return true;
+        }
+      });
+    });
+  }
+  var tickStack = [];
+  var isHolding = false;
+  function nextTick(callback = () => {
+  }) {
+    queueMicrotask(() => {
+      isHolding || setTimeout(() => {
+        releaseNextTicks();
+      });
+    });
+    return new Promise((res) => {
+      tickStack.push(() => {
+        callback();
+        res();
+      });
+    });
+  }
+  function releaseNextTicks() {
+    isHolding = false;
+    while (tickStack.length)
+      tickStack.shift()();
+  }
+  function holdNextTicks() {
+    isHolding = true;
+  }
+  function setClasses(el, value) {
+    if (Array.isArray(value)) {
+      return setClassesFromString(el, value.join(" "));
+    } else if (typeof value === "object" && value !== null) {
+      return setClassesFromObject(el, value);
+    } else if (typeof value === "function") {
+      return setClasses(el, value());
+    }
+    return setClassesFromString(el, value);
+  }
+  function setClassesFromString(el, classString) {
+    let split = (classString2) => classString2.split(" ").filter(Boolean);
+    let missingClasses = (classString2) => classString2.split(" ").filter((i) => !el.classList.contains(i)).filter(Boolean);
+    let addClassesAndReturnUndo = (classes) => {
+      el.classList.add(...classes);
+      return () => {
+        el.classList.remove(...classes);
+      };
+    };
+    classString = classString === true ? classString = "" : classString || "";
+    return addClassesAndReturnUndo(missingClasses(classString));
+  }
+  function setClassesFromObject(el, classObject) {
+    let split = (classString) => classString.split(" ").filter(Boolean);
+    let forAdd = Object.entries(classObject).flatMap(([classString, bool]) => bool ? split(classString) : false).filter(Boolean);
+    let forRemove = Object.entries(classObject).flatMap(([classString, bool]) => !bool ? split(classString) : false).filter(Boolean);
+    let added = [];
+    let removed = [];
+    forRemove.forEach((i) => {
+      if (el.classList.contains(i)) {
+        el.classList.remove(i);
+        removed.push(i);
+      }
+    });
+    forAdd.forEach((i) => {
+      if (!el.classList.contains(i)) {
+        el.classList.add(i);
+        added.push(i);
+      }
+    });
+    return () => {
+      removed.forEach((i) => el.classList.add(i));
+      added.forEach((i) => el.classList.remove(i));
+    };
+  }
+  function setStyles(el, value) {
+    if (typeof value === "object" && value !== null) {
+      return setStylesFromObject(el, value);
+    }
+    return setStylesFromString(el, value);
+  }
+  function setStylesFromObject(el, value) {
+    let previousStyles = {};
+    Object.entries(value).forEach(([key, value2]) => {
+      previousStyles[key] = el.style[key];
+      if (!key.startsWith("--")) {
+        key = kebabCase(key);
+      }
+      el.style.setProperty(key, value2);
+    });
+    setTimeout(() => {
+      if (el.style.length === 0) {
+        el.removeAttribute("style");
+      }
+    });
+    return () => {
+      setStyles(el, previousStyles);
+    };
+  }
+  function setStylesFromString(el, value) {
+    let cache = el.getAttribute("style", value);
+    el.setAttribute("style", value);
+    return () => {
+      el.setAttribute("style", cache || "");
+    };
+  }
+  function kebabCase(subject) {
+    return subject.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  }
+  function once(callback, fallback = () => {
+  }) {
+    let called = false;
+    return function() {
+      if (!called) {
+        called = true;
+        callback.apply(this, arguments);
+      } else {
+        fallback.apply(this, arguments);
+      }
+    };
+  }
+  directive("transition", (el, { value, modifiers, expression }, { evaluate: evaluate2 }) => {
+    if (typeof expression === "function")
+      expression = evaluate2(expression);
+    if (expression === false)
+      return;
+    if (!expression || typeof expression === "boolean") {
+      registerTransitionsFromHelper(el, modifiers, value);
+    } else {
+      registerTransitionsFromClassString(el, expression, value);
+    }
+  });
+  function registerTransitionsFromClassString(el, classString, stage) {
+    registerTransitionObject(el, setClasses, "");
+    let directiveStorageMap = {
+      "enter": (classes) => {
+        el._x_transition.enter.during = classes;
+      },
+      "enter-start": (classes) => {
+        el._x_transition.enter.start = classes;
+      },
+      "enter-end": (classes) => {
+        el._x_transition.enter.end = classes;
+      },
+      "leave": (classes) => {
+        el._x_transition.leave.during = classes;
+      },
+      "leave-start": (classes) => {
+        el._x_transition.leave.start = classes;
+      },
+      "leave-end": (classes) => {
+        el._x_transition.leave.end = classes;
+      }
+    };
+    directiveStorageMap[stage](classString);
+  }
+  function registerTransitionsFromHelper(el, modifiers, stage) {
+    registerTransitionObject(el, setStyles);
+    let doesntSpecify = !modifiers.includes("in") && !modifiers.includes("out") && !stage;
+    let transitioningIn = doesntSpecify || modifiers.includes("in") || ["enter"].includes(stage);
+    let transitioningOut = doesntSpecify || modifiers.includes("out") || ["leave"].includes(stage);
+    if (modifiers.includes("in") && !doesntSpecify) {
+      modifiers = modifiers.filter((i, index) => index < modifiers.indexOf("out"));
+    }
+    if (modifiers.includes("out") && !doesntSpecify) {
+      modifiers = modifiers.filter((i, index) => index > modifiers.indexOf("out"));
+    }
+    let wantsAll = !modifiers.includes("opacity") && !modifiers.includes("scale");
+    let wantsOpacity = wantsAll || modifiers.includes("opacity");
+    let wantsScale = wantsAll || modifiers.includes("scale");
+    let opacityValue = wantsOpacity ? 0 : 1;
+    let scaleValue = wantsScale ? modifierValue(modifiers, "scale", 95) / 100 : 1;
+    let delay = modifierValue(modifiers, "delay", 0) / 1e3;
+    let origin = modifierValue(modifiers, "origin", "center");
+    let property = "opacity, transform";
+    let durationIn = modifierValue(modifiers, "duration", 150) / 1e3;
+    let durationOut = modifierValue(modifiers, "duration", 75) / 1e3;
+    let easing = `cubic-bezier(0.4, 0.0, 0.2, 1)`;
+    if (transitioningIn) {
+      el._x_transition.enter.during = {
+        transformOrigin: origin,
+        transitionDelay: `${delay}s`,
+        transitionProperty: property,
+        transitionDuration: `${durationIn}s`,
+        transitionTimingFunction: easing
+      };
+      el._x_transition.enter.start = {
+        opacity: opacityValue,
+        transform: `scale(${scaleValue})`
+      };
+      el._x_transition.enter.end = {
+        opacity: 1,
+        transform: `scale(1)`
+      };
+    }
+    if (transitioningOut) {
+      el._x_transition.leave.during = {
+        transformOrigin: origin,
+        transitionDelay: `${delay}s`,
+        transitionProperty: property,
+        transitionDuration: `${durationOut}s`,
+        transitionTimingFunction: easing
+      };
+      el._x_transition.leave.start = {
+        opacity: 1,
+        transform: `scale(1)`
+      };
+      el._x_transition.leave.end = {
+        opacity: opacityValue,
+        transform: `scale(${scaleValue})`
+      };
+    }
+  }
+  function registerTransitionObject(el, setFunction, defaultValue = {}) {
+    if (!el._x_transition)
+      el._x_transition = {
+        enter: { during: defaultValue, start: defaultValue, end: defaultValue },
+        leave: { during: defaultValue, start: defaultValue, end: defaultValue },
+        in(before = () => {
+        }, after = () => {
+        }) {
+          transition(el, setFunction, {
+            during: this.enter.during,
+            start: this.enter.start,
+            end: this.enter.end
+          }, before, after);
+        },
+        out(before = () => {
+        }, after = () => {
+        }) {
+          transition(el, setFunction, {
+            during: this.leave.during,
+            start: this.leave.start,
+            end: this.leave.end
+          }, before, after);
+        }
+      };
+  }
+  window.Element.prototype._x_toggleAndCascadeWithTransitions = function(el, value, show, hide) {
+    const nextTick2 = document.visibilityState === "visible" ? requestAnimationFrame : setTimeout;
+    let clickAwayCompatibleShow = () => nextTick2(show);
+    if (value) {
+      if (el._x_transition && (el._x_transition.enter || el._x_transition.leave)) {
+        el._x_transition.enter && (Object.entries(el._x_transition.enter.during).length || Object.entries(el._x_transition.enter.start).length || Object.entries(el._x_transition.enter.end).length) ? el._x_transition.in(show) : clickAwayCompatibleShow();
+      } else {
+        el._x_transition ? el._x_transition.in(show) : clickAwayCompatibleShow();
+      }
+      return;
+    }
+    el._x_hidePromise = el._x_transition ? new Promise((resolve, reject) => {
+      el._x_transition.out(() => {
+      }, () => resolve(hide));
+      el._x_transitioning && el._x_transitioning.beforeCancel(() => reject({ isFromCancelledTransition: true }));
+    }) : Promise.resolve(hide);
+    queueMicrotask(() => {
+      let closest = closestHide(el);
+      if (closest) {
+        if (!closest._x_hideChildren)
+          closest._x_hideChildren = [];
+        closest._x_hideChildren.push(el);
+      } else {
+        nextTick2(() => {
+          let hideAfterChildren = (el2) => {
+            let carry = Promise.all([
+              el2._x_hidePromise,
+              ...(el2._x_hideChildren || []).map(hideAfterChildren)
+            ]).then(([i]) => i?.());
+            delete el2._x_hidePromise;
+            delete el2._x_hideChildren;
+            return carry;
+          };
+          hideAfterChildren(el).catch((e) => {
+            if (!e.isFromCancelledTransition)
+              throw e;
+          });
+        });
+      }
+    });
+  };
+  function closestHide(el) {
+    let parent = el.parentNode;
+    if (!parent)
+      return;
+    return parent._x_hidePromise ? parent : closestHide(parent);
+  }
+  function transition(el, setFunction, { during, start: start2, end } = {}, before = () => {
+  }, after = () => {
+  }) {
+    if (el._x_transitioning)
+      el._x_transitioning.cancel();
+    if (Object.keys(during).length === 0 && Object.keys(start2).length === 0 && Object.keys(end).length === 0) {
+      before();
+      after();
+      return;
+    }
+    let undoStart, undoDuring, undoEnd;
+    performTransition(el, {
+      start() {
+        undoStart = setFunction(el, start2);
+      },
+      during() {
+        undoDuring = setFunction(el, during);
+      },
+      before,
+      end() {
+        undoStart();
+        undoEnd = setFunction(el, end);
+      },
+      after,
+      cleanup() {
+        undoDuring();
+        undoEnd();
+      }
+    });
+  }
+  function performTransition(el, stages) {
+    let interrupted, reachedBefore, reachedEnd;
+    let finish = once(() => {
+      mutateDom(() => {
+        interrupted = true;
+        if (!reachedBefore)
+          stages.before();
+        if (!reachedEnd) {
+          stages.end();
+          releaseNextTicks();
+        }
+        stages.after();
+        if (el.isConnected)
+          stages.cleanup();
+        delete el._x_transitioning;
+      });
+    });
+    el._x_transitioning = {
+      beforeCancels: [],
+      beforeCancel(callback) {
+        this.beforeCancels.push(callback);
+      },
+      cancel: once(function() {
+        while (this.beforeCancels.length) {
+          this.beforeCancels.shift()();
+        }
+        ;
+        finish();
+      }),
+      finish
+    };
+    mutateDom(() => {
+      stages.start();
+      stages.during();
+    });
+    holdNextTicks();
+    requestAnimationFrame(() => {
+      if (interrupted)
+        return;
+      let duration = Number(getComputedStyle(el).transitionDuration.replace(/,.*/, "").replace("s", "")) * 1e3;
+      let delay = Number(getComputedStyle(el).transitionDelay.replace(/,.*/, "").replace("s", "")) * 1e3;
+      if (duration === 0)
+        duration = Number(getComputedStyle(el).animationDuration.replace("s", "")) * 1e3;
+      mutateDom(() => {
+        stages.before();
+      });
+      reachedBefore = true;
+      requestAnimationFrame(() => {
+        if (interrupted)
+          return;
+        mutateDom(() => {
+          stages.end();
+        });
+        releaseNextTicks();
+        setTimeout(el._x_transitioning.finish, duration + delay);
+        reachedEnd = true;
+      });
+    });
+  }
+  function modifierValue(modifiers, key, fallback) {
+    if (modifiers.indexOf(key) === -1)
+      return fallback;
+    const rawValue = modifiers[modifiers.indexOf(key) + 1];
+    if (!rawValue)
+      return fallback;
+    if (key === "scale") {
+      if (isNaN(rawValue))
+        return fallback;
+    }
+    if (key === "duration" || key === "delay") {
+      let match = rawValue.match(/([0-9]+)ms/);
+      if (match)
+        return match[1];
+    }
+    if (key === "origin") {
+      if (["top", "right", "left", "center", "bottom"].includes(modifiers[modifiers.indexOf(key) + 2])) {
+        return [rawValue, modifiers[modifiers.indexOf(key) + 2]].join(" ");
+      }
+    }
+    return rawValue;
+  }
+  var isCloning = false;
+  function skipDuringClone(callback, fallback = () => {
+  }) {
+    return (...args) => isCloning ? fallback(...args) : callback(...args);
+  }
+  function onlyDuringClone(callback) {
+    return (...args) => isCloning && callback(...args);
+  }
+  var interceptors = [];
+  function interceptClone(callback) {
+    interceptors.push(callback);
+  }
+  function cloneNode(from, to) {
+    interceptors.forEach((i) => i(from, to));
+    isCloning = true;
+    dontRegisterReactiveSideEffects(() => {
+      initTree(to, (el, callback) => {
+        callback(el, () => {
+        });
+      });
+    });
+    isCloning = false;
+  }
+  var isCloningLegacy = false;
+  function clone(oldEl, newEl) {
+    if (!newEl._x_dataStack)
+      newEl._x_dataStack = oldEl._x_dataStack;
+    isCloning = true;
+    isCloningLegacy = true;
+    dontRegisterReactiveSideEffects(() => {
+      cloneTree(newEl);
+    });
+    isCloning = false;
+    isCloningLegacy = false;
+  }
+  function cloneTree(el) {
+    let hasRunThroughFirstEl = false;
+    let shallowWalker = (el2, callback) => {
+      walk(el2, (el3, skip) => {
+        if (hasRunThroughFirstEl && isRoot(el3))
+          return skip();
+        hasRunThroughFirstEl = true;
+        callback(el3, skip);
+      });
+    };
+    initTree(el, shallowWalker);
+  }
+  function dontRegisterReactiveSideEffects(callback) {
+    let cache = effect;
+    overrideEffect((callback2, el) => {
+      let storedEffect = cache(callback2);
+      release(storedEffect);
+      return () => {
+      };
+    });
+    callback();
+    overrideEffect(cache);
+  }
+  function bind(el, name, value, modifiers = []) {
+    if (!el._x_bindings)
+      el._x_bindings = reactive({});
+    el._x_bindings[name] = value;
+    name = modifiers.includes("camel") ? camelCase(name) : name;
+    switch (name) {
+      case "value":
+        bindInputValue(el, value);
+        break;
+      case "style":
+        bindStyles(el, value);
+        break;
+      case "class":
+        bindClasses(el, value);
+        break;
+      case "selected":
+      case "checked":
+        bindAttributeAndProperty(el, name, value);
+        break;
+      default:
+        bindAttribute(el, name, value);
+        break;
+    }
+  }
+  function bindInputValue(el, value) {
+    if (isRadio(el)) {
+      if (el.attributes.value === void 0) {
+        el.value = value;
+      }
+      if (window.fromModel) {
+        if (typeof value === "boolean") {
+          el.checked = safeParseBoolean(el.value) === value;
+        } else {
+          el.checked = checkedAttrLooseCompare(el.value, value);
+        }
+      }
+    } else if (isCheckbox(el)) {
+      if (Number.isInteger(value)) {
+        el.value = value;
+      } else if (!Array.isArray(value) && typeof value !== "boolean" && ![null, void 0].includes(value)) {
+        el.value = String(value);
+      } else {
+        if (Array.isArray(value)) {
+          el.checked = value.some((val) => checkedAttrLooseCompare(val, el.value));
+        } else {
+          el.checked = !!value;
+        }
+      }
+    } else if (el.tagName === "SELECT") {
+      updateSelect(el, value);
+    } else {
+      if (el.value === value)
+        return;
+      el.value = value === void 0 ? "" : value;
+    }
+  }
+  function bindClasses(el, value) {
+    if (el._x_undoAddedClasses)
+      el._x_undoAddedClasses();
+    el._x_undoAddedClasses = setClasses(el, value);
+  }
+  function bindStyles(el, value) {
+    if (el._x_undoAddedStyles)
+      el._x_undoAddedStyles();
+    el._x_undoAddedStyles = setStyles(el, value);
+  }
+  function bindAttributeAndProperty(el, name, value) {
+    bindAttribute(el, name, value);
+    setPropertyIfChanged(el, name, value);
+  }
+  function bindAttribute(el, name, value) {
+    if ([null, void 0, false].includes(value) && attributeShouldntBePreservedIfFalsy(name)) {
+      el.removeAttribute(name);
+    } else {
+      if (isBooleanAttr(name))
+        value = name;
+      setIfChanged(el, name, value);
+    }
+  }
+  function setIfChanged(el, attrName, value) {
+    if (el.getAttribute(attrName) != value) {
+      el.setAttribute(attrName, value);
+    }
+  }
+  function setPropertyIfChanged(el, propName, value) {
+    if (el[propName] !== value) {
+      el[propName] = value;
+    }
+  }
+  function updateSelect(el, value) {
+    const arrayWrappedValue = [].concat(value).map((value2) => {
+      return value2 + "";
+    });
+    Array.from(el.options).forEach((option) => {
+      option.selected = arrayWrappedValue.includes(option.value);
+    });
+  }
+  function camelCase(subject) {
+    return subject.toLowerCase().replace(/-(\w)/g, (match, char) => char.toUpperCase());
+  }
+  function checkedAttrLooseCompare(valueA, valueB) {
+    return valueA == valueB;
+  }
+  function safeParseBoolean(rawValue) {
+    if ([1, "1", "true", "on", "yes", true].includes(rawValue)) {
+      return true;
+    }
+    if ([0, "0", "false", "off", "no", false].includes(rawValue)) {
+      return false;
+    }
+    return rawValue ? Boolean(rawValue) : null;
+  }
+  var booleanAttributes = /* @__PURE__ */ new Set([
+    "allowfullscreen",
+    "async",
+    "autofocus",
+    "autoplay",
+    "checked",
+    "controls",
+    "default",
+    "defer",
+    "disabled",
+    "formnovalidate",
+    "inert",
+    "ismap",
+    "itemscope",
+    "loop",
+    "multiple",
+    "muted",
+    "nomodule",
+    "novalidate",
+    "open",
+    "playsinline",
+    "readonly",
+    "required",
+    "reversed",
+    "selected",
+    "shadowrootclonable",
+    "shadowrootdelegatesfocus",
+    "shadowrootserializable"
+  ]);
+  function isBooleanAttr(attrName) {
+    return booleanAttributes.has(attrName);
+  }
+  function attributeShouldntBePreservedIfFalsy(name) {
+    return !["aria-pressed", "aria-checked", "aria-expanded", "aria-selected"].includes(name);
+  }
+  function getBinding(el, name, fallback) {
+    if (el._x_bindings && el._x_bindings[name] !== void 0)
+      return el._x_bindings[name];
+    return getAttributeBinding(el, name, fallback);
+  }
+  function extractProp(el, name, fallback, extract = true) {
+    if (el._x_bindings && el._x_bindings[name] !== void 0)
+      return el._x_bindings[name];
+    if (el._x_inlineBindings && el._x_inlineBindings[name] !== void 0) {
+      let binding = el._x_inlineBindings[name];
+      binding.extract = extract;
+      return dontAutoEvaluateFunctions(() => {
+        return evaluate(el, binding.expression);
+      });
+    }
+    return getAttributeBinding(el, name, fallback);
+  }
+  function getAttributeBinding(el, name, fallback) {
+    let attr = el.getAttribute(name);
+    if (attr === null)
+      return typeof fallback === "function" ? fallback() : fallback;
+    if (attr === "")
+      return true;
+    if (isBooleanAttr(name)) {
+      return !![name, "true"].includes(attr);
+    }
+    return attr;
+  }
+  function isCheckbox(el) {
+    return el.type === "checkbox" || el.localName === "ui-checkbox" || el.localName === "ui-switch";
+  }
+  function isRadio(el) {
+    return el.type === "radio" || el.localName === "ui-radio";
+  }
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this, args = arguments;
+      const later = function() {
+        timeout = null;
+        func.apply(context, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+  function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+      let context = this, args = arguments;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  }
+  function entangle({ get: outerGet, set: outerSet }, { get: innerGet, set: innerSet }) {
+    let firstRun = true;
+    let outerHash;
+    let innerHash;
+    let reference = effect(() => {
+      let outer = outerGet();
+      let inner = innerGet();
+      if (firstRun) {
+        innerSet(cloneIfObject(outer));
+        firstRun = false;
+      } else {
+        let outerHashLatest = JSON.stringify(outer);
+        let innerHashLatest = JSON.stringify(inner);
+        if (outerHashLatest !== outerHash) {
+          innerSet(cloneIfObject(outer));
+        } else if (outerHashLatest !== innerHashLatest) {
+          outerSet(cloneIfObject(inner));
+        } else {
+        }
+      }
+      outerHash = JSON.stringify(outerGet());
+      innerHash = JSON.stringify(innerGet());
+    });
+    return () => {
+      release(reference);
+    };
+  }
+  function cloneIfObject(value) {
+    return typeof value === "object" ? JSON.parse(JSON.stringify(value)) : value;
+  }
+  function plugin(callback) {
+    let callbacks = Array.isArray(callback) ? callback : [callback];
+    callbacks.forEach((i) => i(alpine_default));
+  }
+  var stores = {};
+  var isReactive = false;
+  function store(name, value) {
+    if (!isReactive) {
+      stores = reactive(stores);
+      isReactive = true;
+    }
+    if (value === void 0) {
+      return stores[name];
+    }
+    stores[name] = value;
+    initInterceptors(stores[name]);
+    if (typeof value === "object" && value !== null && value.hasOwnProperty("init") && typeof value.init === "function") {
+      stores[name].init();
+    }
+  }
+  function getStores() {
+    return stores;
+  }
+  var binds = {};
+  function bind2(name, bindings) {
+    let getBindings = typeof bindings !== "function" ? () => bindings : bindings;
+    if (name instanceof Element) {
+      return applyBindingsObject(name, getBindings());
+    } else {
+      binds[name] = getBindings;
+    }
+    return () => {
+    };
+  }
+  function injectBindingProviders(obj) {
+    Object.entries(binds).forEach(([name, callback]) => {
+      Object.defineProperty(obj, name, {
+        get() {
+          return (...args) => {
+            return callback(...args);
+          };
+        }
+      });
+    });
+    return obj;
+  }
+  function applyBindingsObject(el, obj, original) {
+    let cleanupRunners = [];
+    while (cleanupRunners.length)
+      cleanupRunners.pop()();
+    let attributes = Object.entries(obj).map(([name, value]) => ({ name, value }));
+    let staticAttributes = attributesOnly(attributes);
+    attributes = attributes.map((attribute) => {
+      if (staticAttributes.find((attr) => attr.name === attribute.name)) {
+        return {
+          name: `x-bind:${attribute.name}`,
+          value: `"${attribute.value}"`
+        };
+      }
+      return attribute;
+    });
+    directives(el, attributes, original).map((handle) => {
+      cleanupRunners.push(handle.runCleanups);
+      handle();
+    });
+    return () => {
+      while (cleanupRunners.length)
+        cleanupRunners.pop()();
+    };
+  }
+  var datas = {};
+  function data(name, callback) {
+    datas[name] = callback;
+  }
+  function injectDataProviders(obj, context) {
+    Object.entries(datas).forEach(([name, callback]) => {
+      Object.defineProperty(obj, name, {
+        get() {
+          return (...args) => {
+            return callback.bind(context)(...args);
+          };
+        },
+        enumerable: false
+      });
+    });
+    return obj;
+  }
+  var Alpine2 = {
+    get reactive() {
+      return reactive;
+    },
+    get release() {
+      return release;
+    },
+    get effect() {
+      return effect;
+    },
+    get raw() {
+      return raw;
+    },
+    version: "3.15.0",
+    flushAndStopDeferringMutations,
+    dontAutoEvaluateFunctions,
+    disableEffectScheduling,
+    startObservingMutations,
+    stopObservingMutations,
+    setReactivityEngine,
+    onAttributeRemoved,
+    onAttributesAdded,
+    closestDataStack,
+    skipDuringClone,
+    onlyDuringClone,
+    addRootSelector,
+    addInitSelector,
+    interceptClone,
+    addScopeToNode,
+    deferMutations,
+    mapAttributes,
+    evaluateLater,
+    interceptInit,
+    setEvaluator,
+    mergeProxies,
+    extractProp,
+    findClosest,
+    onElRemoved,
+    closestRoot,
+    destroyTree,
+    interceptor,
+    // INTERNAL: not public API and is subject to change without major release.
+    transition,
+    // INTERNAL
+    setStyles,
+    // INTERNAL
+    mutateDom,
+    directive,
+    entangle,
+    throttle,
+    debounce,
+    evaluate,
+    initTree,
+    nextTick,
+    prefixed: prefix,
+    prefix: setPrefix,
+    plugin,
+    magic,
+    store,
+    start,
+    clone,
+    // INTERNAL
+    cloneNode,
+    // INTERNAL
+    bound: getBinding,
+    $data: scope,
+    watch,
+    walk,
+    data,
+    bind: bind2
+  };
+  var alpine_default = Alpine2;
+  function makeMap(str, expectsLowerCase) {
+    const map = /* @__PURE__ */ Object.create(null);
+    const list = str.split(",");
+    for (let i = 0; i < list.length; i++) {
+      map[list[i]] = true;
+    }
+    return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
+  }
+  var specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+  var isBooleanAttr2 = /* @__PURE__ */ makeMap(specialBooleanAttrs + `,async,autofocus,autoplay,controls,default,defer,disabled,hidden,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected`);
+  var EMPTY_OBJ = true ? Object.freeze({}) : {};
+  var EMPTY_ARR = true ? Object.freeze([]) : [];
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  var hasOwn = (val, key) => hasOwnProperty.call(val, key);
+  var isArray = Array.isArray;
+  var isMap = (val) => toTypeString(val) === "[object Map]";
+  var isString = (val) => typeof val === "string";
+  var isSymbol = (val) => typeof val === "symbol";
+  var isObject = (val) => val !== null && typeof val === "object";
+  var objectToString = Object.prototype.toString;
+  var toTypeString = (value) => objectToString.call(value);
+  var toRawType = (value) => {
+    return toTypeString(value).slice(8, -1);
+  };
+  var isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+  var cacheStringFunction = (fn) => {
+    const cache = /* @__PURE__ */ Object.create(null);
+    return (str) => {
+      const hit = cache[str];
+      return hit || (cache[str] = fn(str));
+    };
+  };
+  var camelizeRE = /-(\w)/g;
+  var camelize = cacheStringFunction((str) => {
+    return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+  });
+  var hyphenateRE = /\B([A-Z])/g;
+  var hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
+  var capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
+  var toHandlerKey = cacheStringFunction((str) => str ? `on${capitalize(str)}` : ``);
+  var hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
+  var targetMap = /* @__PURE__ */ new WeakMap();
+  var effectStack = [];
+  var activeEffect;
+  var ITERATE_KEY = Symbol(true ? "iterate" : "");
+  var MAP_KEY_ITERATE_KEY = Symbol(true ? "Map key iterate" : "");
+  function isEffect(fn) {
+    return fn && fn._isEffect === true;
+  }
+  function effect2(fn, options = EMPTY_OBJ) {
+    if (isEffect(fn)) {
+      fn = fn.raw;
+    }
+    const effect3 = createReactiveEffect(fn, options);
+    if (!options.lazy) {
+      effect3();
+    }
+    return effect3;
+  }
+  function stop(effect3) {
+    if (effect3.active) {
+      cleanup(effect3);
+      if (effect3.options.onStop) {
+        effect3.options.onStop();
+      }
+      effect3.active = false;
+    }
+  }
+  var uid = 0;
+  function createReactiveEffect(fn, options) {
+    const effect3 = function reactiveEffect() {
+      if (!effect3.active) {
+        return fn();
+      }
+      if (!effectStack.includes(effect3)) {
+        cleanup(effect3);
+        try {
+          enableTracking();
+          effectStack.push(effect3);
+          activeEffect = effect3;
+          return fn();
+        } finally {
+          effectStack.pop();
+          resetTracking();
+          activeEffect = effectStack[effectStack.length - 1];
+        }
+      }
+    };
+    effect3.id = uid++;
+    effect3.allowRecurse = !!options.allowRecurse;
+    effect3._isEffect = true;
+    effect3.active = true;
+    effect3.raw = fn;
+    effect3.deps = [];
+    effect3.options = options;
+    return effect3;
+  }
+  function cleanup(effect3) {
+    const { deps } = effect3;
+    if (deps.length) {
+      for (let i = 0; i < deps.length; i++) {
+        deps[i].delete(effect3);
+      }
+      deps.length = 0;
+    }
+  }
+  var shouldTrack = true;
+  var trackStack = [];
+  function pauseTracking() {
+    trackStack.push(shouldTrack);
+    shouldTrack = false;
+  }
+  function enableTracking() {
+    trackStack.push(shouldTrack);
+    shouldTrack = true;
+  }
+  function resetTracking() {
+    const last = trackStack.pop();
+    shouldTrack = last === void 0 ? true : last;
+  }
+  function track(target, type, key) {
+    if (!shouldTrack || activeEffect === void 0) {
+      return;
+    }
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, depsMap = /* @__PURE__ */ new Map());
+    }
+    let dep = depsMap.get(key);
+    if (!dep) {
+      depsMap.set(key, dep = /* @__PURE__ */ new Set());
+    }
+    if (!dep.has(activeEffect)) {
+      dep.add(activeEffect);
+      activeEffect.deps.push(dep);
+      if (activeEffect.options.onTrack) {
+        activeEffect.options.onTrack({
+          effect: activeEffect,
+          target,
+          type,
+          key
+        });
+      }
+    }
+  }
+  function trigger(target, type, key, newValue, oldValue, oldTarget) {
+    const depsMap = targetMap.get(target);
+    if (!depsMap) {
+      return;
+    }
+    const effects = /* @__PURE__ */ new Set();
+    const add2 = (effectsToAdd) => {
+      if (effectsToAdd) {
+        effectsToAdd.forEach((effect3) => {
+          if (effect3 !== activeEffect || effect3.allowRecurse) {
+            effects.add(effect3);
+          }
+        });
+      }
+    };
+    if (type === "clear") {
+      depsMap.forEach(add2);
+    } else if (key === "length" && isArray(target)) {
+      depsMap.forEach((dep, key2) => {
+        if (key2 === "length" || key2 >= newValue) {
+          add2(dep);
+        }
+      });
+    } else {
+      if (key !== void 0) {
+        add2(depsMap.get(key));
+      }
+      switch (type) {
+        case "add":
+          if (!isArray(target)) {
+            add2(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              add2(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          } else if (isIntegerKey(key)) {
+            add2(depsMap.get("length"));
+          }
+          break;
+        case "delete":
+          if (!isArray(target)) {
+            add2(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              add2(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          }
+          break;
+        case "set":
+          if (isMap(target)) {
+            add2(depsMap.get(ITERATE_KEY));
+          }
+          break;
+      }
+    }
+    const run = (effect3) => {
+      if (effect3.options.onTrigger) {
+        effect3.options.onTrigger({
+          effect: effect3,
+          target,
+          key,
+          type,
+          newValue,
+          oldValue,
+          oldTarget
+        });
+      }
+      if (effect3.options.scheduler) {
+        effect3.options.scheduler(effect3);
+      } else {
+        effect3();
+      }
+    };
+    effects.forEach(run);
+  }
+  var isNonTrackableKeys = /* @__PURE__ */ makeMap(`__proto__,__v_isRef,__isVue`);
+  var builtInSymbols = new Set(Object.getOwnPropertyNames(Symbol).map((key) => Symbol[key]).filter(isSymbol));
+  var get2 = /* @__PURE__ */ createGetter();
+  var readonlyGet = /* @__PURE__ */ createGetter(true);
+  var arrayInstrumentations = /* @__PURE__ */ createArrayInstrumentations();
+  function createArrayInstrumentations() {
+    const instrumentations = {};
+    ["includes", "indexOf", "lastIndexOf"].forEach((key) => {
+      instrumentations[key] = function(...args) {
+        const arr = toRaw(this);
+        for (let i = 0, l = this.length; i < l; i++) {
+          track(arr, "get", i + "");
+        }
+        const res = arr[key](...args);
+        if (res === -1 || res === false) {
+          return arr[key](...args.map(toRaw));
+        } else {
+          return res;
+        }
+      };
+    });
+    ["push", "pop", "shift", "unshift", "splice"].forEach((key) => {
+      instrumentations[key] = function(...args) {
+        pauseTracking();
+        const res = toRaw(this)[key].apply(this, args);
+        resetTracking();
+        return res;
+      };
+    });
+    return instrumentations;
+  }
+  function createGetter(isReadonly = false, shallow = false) {
+    return function get3(target, key, receiver) {
+      if (key === "__v_isReactive") {
+        return !isReadonly;
+      } else if (key === "__v_isReadonly") {
+        return isReadonly;
+      } else if (key === "__v_raw" && receiver === (isReadonly ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
+        return target;
+      }
+      const targetIsArray = isArray(target);
+      if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
+        return Reflect.get(arrayInstrumentations, key, receiver);
+      }
+      const res = Reflect.get(target, key, receiver);
+      if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
+        return res;
+      }
+      if (!isReadonly) {
+        track(target, "get", key);
+      }
+      if (shallow) {
+        return res;
+      }
+      if (isRef(res)) {
+        const shouldUnwrap = !targetIsArray || !isIntegerKey(key);
+        return shouldUnwrap ? res.value : res;
+      }
+      if (isObject(res)) {
+        return isReadonly ? readonly(res) : reactive2(res);
+      }
+      return res;
+    };
+  }
+  var set2 = /* @__PURE__ */ createSetter();
+  function createSetter(shallow = false) {
+    return function set3(target, key, value, receiver) {
+      let oldValue = target[key];
+      if (!shallow) {
+        value = toRaw(value);
+        oldValue = toRaw(oldValue);
+        if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+          oldValue.value = value;
+          return true;
+        }
+      }
+      const hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
+      const result = Reflect.set(target, key, value, receiver);
+      if (target === toRaw(receiver)) {
+        if (!hadKey) {
+          trigger(target, "add", key, value);
+        } else if (hasChanged(value, oldValue)) {
+          trigger(target, "set", key, value, oldValue);
+        }
+      }
+      return result;
+    };
+  }
+  function deleteProperty(target, key) {
+    const hadKey = hasOwn(target, key);
+    const oldValue = target[key];
+    const result = Reflect.deleteProperty(target, key);
+    if (result && hadKey) {
+      trigger(target, "delete", key, void 0, oldValue);
+    }
+    return result;
+  }
+  function has(target, key) {
+    const result = Reflect.has(target, key);
+    if (!isSymbol(key) || !builtInSymbols.has(key)) {
+      track(target, "has", key);
+    }
+    return result;
+  }
+  function ownKeys(target) {
+    track(target, "iterate", isArray(target) ? "length" : ITERATE_KEY);
+    return Reflect.ownKeys(target);
+  }
+  var mutableHandlers = {
+    get: get2,
+    set: set2,
+    deleteProperty,
+    has,
+    ownKeys
+  };
+  var readonlyHandlers = {
+    get: readonlyGet,
+    set(target, key) {
+      if (true) {
+        console.warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
+      }
+      return true;
+    },
+    deleteProperty(target, key) {
+      if (true) {
+        console.warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target);
+      }
+      return true;
+    }
+  };
+  var toReactive = (value) => isObject(value) ? reactive2(value) : value;
+  var toReadonly = (value) => isObject(value) ? readonly(value) : value;
+  var toShallow = (value) => value;
+  var getProto = (v) => Reflect.getPrototypeOf(v);
+  function get$1(target, key, isReadonly = false, isShallow = false) {
+    target = target[
+      "__v_raw"
+      /* RAW */
+    ];
+    const rawTarget = toRaw(target);
+    const rawKey = toRaw(key);
+    if (key !== rawKey) {
+      !isReadonly && track(rawTarget, "get", key);
+    }
+    !isReadonly && track(rawTarget, "get", rawKey);
+    const { has: has2 } = getProto(rawTarget);
+    const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
+    if (has2.call(rawTarget, key)) {
+      return wrap(target.get(key));
+    } else if (has2.call(rawTarget, rawKey)) {
+      return wrap(target.get(rawKey));
+    } else if (target !== rawTarget) {
+      target.get(key);
+    }
+  }
+  function has$1(key, isReadonly = false) {
+    const target = this[
+      "__v_raw"
+      /* RAW */
+    ];
+    const rawTarget = toRaw(target);
+    const rawKey = toRaw(key);
+    if (key !== rawKey) {
+      !isReadonly && track(rawTarget, "has", key);
+    }
+    !isReadonly && track(rawTarget, "has", rawKey);
+    return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
+  }
+  function size(target, isReadonly = false) {
+    target = target[
+      "__v_raw"
+      /* RAW */
+    ];
+    !isReadonly && track(toRaw(target), "iterate", ITERATE_KEY);
+    return Reflect.get(target, "size", target);
+  }
+  function add(value) {
+    value = toRaw(value);
+    const target = toRaw(this);
+    const proto = getProto(target);
+    const hadKey = proto.has.call(target, value);
+    if (!hadKey) {
+      target.add(value);
+      trigger(target, "add", value, value);
+    }
+    return this;
+  }
+  function set$1(key, value) {
+    value = toRaw(value);
+    const target = toRaw(this);
+    const { has: has2, get: get3 } = getProto(target);
+    let hadKey = has2.call(target, key);
+    if (!hadKey) {
+      key = toRaw(key);
+      hadKey = has2.call(target, key);
+    } else if (true) {
+      checkIdentityKeys(target, has2, key);
+    }
+    const oldValue = get3.call(target, key);
+    target.set(key, value);
+    if (!hadKey) {
+      trigger(target, "add", key, value);
+    } else if (hasChanged(value, oldValue)) {
+      trigger(target, "set", key, value, oldValue);
+    }
+    return this;
+  }
+  function deleteEntry(key) {
+    const target = toRaw(this);
+    const { has: has2, get: get3 } = getProto(target);
+    let hadKey = has2.call(target, key);
+    if (!hadKey) {
+      key = toRaw(key);
+      hadKey = has2.call(target, key);
+    } else if (true) {
+      checkIdentityKeys(target, has2, key);
+    }
+    const oldValue = get3 ? get3.call(target, key) : void 0;
+    const result = target.delete(key);
+    if (hadKey) {
+      trigger(target, "delete", key, void 0, oldValue);
+    }
+    return result;
+  }
+  function clear() {
+    const target = toRaw(this);
+    const hadItems = target.size !== 0;
+    const oldTarget = true ? isMap(target) ? new Map(target) : new Set(target) : void 0;
+    const result = target.clear();
+    if (hadItems) {
+      trigger(target, "clear", void 0, void 0, oldTarget);
+    }
+    return result;
+  }
+  function createForEach(isReadonly, isShallow) {
+    return function forEach(callback, thisArg) {
+      const observed = this;
+      const target = observed[
+        "__v_raw"
+        /* RAW */
+      ];
+      const rawTarget = toRaw(target);
+      const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
+      !isReadonly && track(rawTarget, "iterate", ITERATE_KEY);
+      return target.forEach((value, key) => {
+        return callback.call(thisArg, wrap(value), wrap(key), observed);
+      });
+    };
+  }
+  function createIterableMethod(method, isReadonly, isShallow) {
+    return function(...args) {
+      const target = this[
+        "__v_raw"
+        /* RAW */
+      ];
+      const rawTarget = toRaw(target);
+      const targetIsMap = isMap(rawTarget);
+      const isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
+      const isKeyOnly = method === "keys" && targetIsMap;
+      const innerIterator = target[method](...args);
+      const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
+      !isReadonly && track(rawTarget, "iterate", isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
+      return {
+        // iterator protocol
+        next() {
+          const { value, done } = innerIterator.next();
+          return done ? { value, done } : {
+            value: isPair ? [wrap(value[0]), wrap(value[1])] : wrap(value),
+            done
+          };
+        },
+        // iterable protocol
+        [Symbol.iterator]() {
+          return this;
+        }
+      };
+    };
+  }
+  function createReadonlyMethod(type) {
+    return function(...args) {
+      if (true) {
+        const key = args[0] ? `on key "${args[0]}" ` : ``;
+        console.warn(`${capitalize(type)} operation ${key}failed: target is readonly.`, toRaw(this));
+      }
+      return type === "delete" ? false : this;
+    };
+  }
+  function createInstrumentations() {
+    const mutableInstrumentations2 = {
+      get(key) {
+        return get$1(this, key);
+      },
+      get size() {
+        return size(this);
+      },
+      has: has$1,
+      add,
+      set: set$1,
+      delete: deleteEntry,
+      clear,
+      forEach: createForEach(false, false)
+    };
+    const shallowInstrumentations2 = {
+      get(key) {
+        return get$1(this, key, false, true);
+      },
+      get size() {
+        return size(this);
+      },
+      has: has$1,
+      add,
+      set: set$1,
+      delete: deleteEntry,
+      clear,
+      forEach: createForEach(false, true)
+    };
+    const readonlyInstrumentations2 = {
+      get(key) {
+        return get$1(this, key, true);
+      },
+      get size() {
+        return size(this, true);
+      },
+      has(key) {
+        return has$1.call(this, key, true);
+      },
+      add: createReadonlyMethod(
+        "add"
+        /* ADD */
+      ),
+      set: createReadonlyMethod(
+        "set"
+        /* SET */
+      ),
+      delete: createReadonlyMethod(
+        "delete"
+        /* DELETE */
+      ),
+      clear: createReadonlyMethod(
+        "clear"
+        /* CLEAR */
+      ),
+      forEach: createForEach(true, false)
+    };
+    const shallowReadonlyInstrumentations2 = {
+      get(key) {
+        return get$1(this, key, true, true);
+      },
+      get size() {
+        return size(this, true);
+      },
+      has(key) {
+        return has$1.call(this, key, true);
+      },
+      add: createReadonlyMethod(
+        "add"
+        /* ADD */
+      ),
+      set: createReadonlyMethod(
+        "set"
+        /* SET */
+      ),
+      delete: createReadonlyMethod(
+        "delete"
+        /* DELETE */
+      ),
+      clear: createReadonlyMethod(
+        "clear"
+        /* CLEAR */
+      ),
+      forEach: createForEach(true, true)
+    };
+    const iteratorMethods = ["keys", "values", "entries", Symbol.iterator];
+    iteratorMethods.forEach((method) => {
+      mutableInstrumentations2[method] = createIterableMethod(method, false, false);
+      readonlyInstrumentations2[method] = createIterableMethod(method, true, false);
+      shallowInstrumentations2[method] = createIterableMethod(method, false, true);
+      shallowReadonlyInstrumentations2[method] = createIterableMethod(method, true, true);
+    });
+    return [
+      mutableInstrumentations2,
+      readonlyInstrumentations2,
+      shallowInstrumentations2,
+      shallowReadonlyInstrumentations2
+    ];
+  }
+  var [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* @__PURE__ */ createInstrumentations();
+  function createInstrumentationGetter(isReadonly, shallow) {
+    const instrumentations = shallow ? isReadonly ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly ? readonlyInstrumentations : mutableInstrumentations;
+    return (target, key, receiver) => {
+      if (key === "__v_isReactive") {
+        return !isReadonly;
+      } else if (key === "__v_isReadonly") {
+        return isReadonly;
+      } else if (key === "__v_raw") {
+        return target;
+      }
+      return Reflect.get(hasOwn(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
+    };
+  }
+  var mutableCollectionHandlers = {
+    get: /* @__PURE__ */ createInstrumentationGetter(false, false)
+  };
+  var readonlyCollectionHandlers = {
+    get: /* @__PURE__ */ createInstrumentationGetter(true, false)
+  };
+  function checkIdentityKeys(target, has2, key) {
+    const rawKey = toRaw(key);
+    if (rawKey !== key && has2.call(target, rawKey)) {
+      const type = toRawType(target);
+      console.warn(`Reactive ${type} contains both the raw and reactive versions of the same object${type === `Map` ? ` as keys` : ``}, which can lead to inconsistencies. Avoid differentiating between the raw and reactive versions of an object and only use the reactive version if possible.`);
+    }
+  }
+  var reactiveMap = /* @__PURE__ */ new WeakMap();
+  var shallowReactiveMap = /* @__PURE__ */ new WeakMap();
+  var readonlyMap = /* @__PURE__ */ new WeakMap();
+  var shallowReadonlyMap = /* @__PURE__ */ new WeakMap();
+  function targetTypeMap(rawType) {
+    switch (rawType) {
+      case "Object":
+      case "Array":
+        return 1;
+      case "Map":
+      case "Set":
+      case "WeakMap":
+      case "WeakSet":
+        return 2;
+      default:
+        return 0;
+    }
+  }
+  function getTargetType(value) {
+    return value[
+      "__v_skip"
+      /* SKIP */
+    ] || !Object.isExtensible(value) ? 0 : targetTypeMap(toRawType(value));
+  }
+  function reactive2(target) {
+    if (target && target[
+      "__v_isReadonly"
+      /* IS_READONLY */
+    ]) {
+      return target;
+    }
+    return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
+  }
+  function readonly(target) {
+    return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
+  }
+  function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
+    if (!isObject(target)) {
+      if (true) {
+        console.warn(`value cannot be made reactive: ${String(target)}`);
+      }
+      return target;
+    }
+    if (target[
+      "__v_raw"
+      /* RAW */
+    ] && !(isReadonly && target[
+      "__v_isReactive"
+      /* IS_REACTIVE */
+    ])) {
+      return target;
+    }
+    const existingProxy = proxyMap.get(target);
+    if (existingProxy) {
+      return existingProxy;
+    }
+    const targetType = getTargetType(target);
+    if (targetType === 0) {
+      return target;
+    }
+    const proxy = new Proxy(target, targetType === 2 ? collectionHandlers : baseHandlers);
+    proxyMap.set(target, proxy);
+    return proxy;
+  }
+  function toRaw(observed) {
+    return observed && toRaw(observed[
+      "__v_raw"
+      /* RAW */
+    ]) || observed;
+  }
+  function isRef(r) {
+    return Boolean(r && r.__v_isRef === true);
+  }
+  magic("nextTick", () => nextTick);
+  magic("dispatch", (el) => dispatch.bind(dispatch, el));
+  magic("watch", (el, { evaluateLater: evaluateLater2, cleanup: cleanup2 }) => (key, callback) => {
+    let evaluate2 = evaluateLater2(key);
+    let getter = () => {
+      let value;
+      evaluate2((i) => value = i);
+      return value;
+    };
+    let unwatch = watch(getter, callback);
+    cleanup2(unwatch);
+  });
+  magic("store", getStores);
+  magic("data", (el) => scope(el));
+  magic("root", (el) => closestRoot(el));
+  magic("refs", (el) => {
+    if (el._x_refs_proxy)
+      return el._x_refs_proxy;
+    el._x_refs_proxy = mergeProxies(getArrayOfRefObject(el));
+    return el._x_refs_proxy;
+  });
+  function getArrayOfRefObject(el) {
+    let refObjects = [];
+    findClosest(el, (i) => {
+      if (i._x_refs)
+        refObjects.push(i._x_refs);
+    });
+    return refObjects;
+  }
+  var globalIdMemo = {};
+  function findAndIncrementId(name) {
+    if (!globalIdMemo[name])
+      globalIdMemo[name] = 0;
+    return ++globalIdMemo[name];
+  }
+  function closestIdRoot(el, name) {
+    return findClosest(el, (element) => {
+      if (element._x_ids && element._x_ids[name])
+        return true;
+    });
+  }
+  function setIdRoot(el, name) {
+    if (!el._x_ids)
+      el._x_ids = {};
+    if (!el._x_ids[name])
+      el._x_ids[name] = findAndIncrementId(name);
+  }
+  magic("id", (el, { cleanup: cleanup2 }) => (name, key = null) => {
+    let cacheKey = `${name}${key ? `-${key}` : ""}`;
+    return cacheIdByNameOnElement(el, cacheKey, cleanup2, () => {
+      let root = closestIdRoot(el, name);
+      let id = root ? root._x_ids[name] : findAndIncrementId(name);
+      return key ? `${name}-${id}-${key}` : `${name}-${id}`;
+    });
+  });
+  interceptClone((from, to) => {
+    if (from._x_id) {
+      to._x_id = from._x_id;
+    }
+  });
+  function cacheIdByNameOnElement(el, cacheKey, cleanup2, callback) {
+    if (!el._x_id)
+      el._x_id = {};
+    if (el._x_id[cacheKey])
+      return el._x_id[cacheKey];
+    let output = callback();
+    el._x_id[cacheKey] = output;
+    cleanup2(() => {
+      delete el._x_id[cacheKey];
+    });
+    return output;
+  }
+  magic("el", (el) => el);
+  warnMissingPluginMagic("Focus", "focus", "focus");
+  warnMissingPluginMagic("Persist", "persist", "persist");
+  function warnMissingPluginMagic(name, magicName, slug) {
+    magic(magicName, (el) => warn(`You can't use [$${magicName}] without first installing the "${name}" plugin here: https://alpinejs.dev/plugins/${slug}`, el));
+  }
+  directive("modelable", (el, { expression }, { effect: effect3, evaluateLater: evaluateLater2, cleanup: cleanup2 }) => {
+    let func = evaluateLater2(expression);
+    let innerGet = () => {
+      let result;
+      func((i) => result = i);
+      return result;
+    };
+    let evaluateInnerSet = evaluateLater2(`${expression} = __placeholder`);
+    let innerSet = (val) => evaluateInnerSet(() => {
+    }, { scope: { "__placeholder": val } });
+    let initialValue = innerGet();
+    innerSet(initialValue);
+    queueMicrotask(() => {
+      if (!el._x_model)
+        return;
+      el._x_removeModelListeners["default"]();
+      let outerGet = el._x_model.get;
+      let outerSet = el._x_model.set;
+      let releaseEntanglement = entangle(
+        {
+          get() {
+            return outerGet();
+          },
+          set(value) {
+            outerSet(value);
+          }
+        },
+        {
+          get() {
+            return innerGet();
+          },
+          set(value) {
+            innerSet(value);
+          }
+        }
+      );
+      cleanup2(releaseEntanglement);
+    });
+  });
+  directive("teleport", (el, { modifiers, expression }, { cleanup: cleanup2 }) => {
+    if (el.tagName.toLowerCase() !== "template")
+      warn("x-teleport can only be used on a <template> tag", el);
+    let target = getTarget(expression);
+    let clone2 = el.content.cloneNode(true).firstElementChild;
+    el._x_teleport = clone2;
+    clone2._x_teleportBack = el;
+    el.setAttribute("data-teleport-template", true);
+    clone2.setAttribute("data-teleport-target", true);
+    if (el._x_forwardEvents) {
+      el._x_forwardEvents.forEach((eventName) => {
+        clone2.addEventListener(eventName, (e) => {
+          e.stopPropagation();
+          el.dispatchEvent(new e.constructor(e.type, e));
+        });
+      });
+    }
+    addScopeToNode(clone2, {}, el);
+    let placeInDom = (clone3, target2, modifiers2) => {
+      if (modifiers2.includes("prepend")) {
+        target2.parentNode.insertBefore(clone3, target2);
+      } else if (modifiers2.includes("append")) {
+        target2.parentNode.insertBefore(clone3, target2.nextSibling);
+      } else {
+        target2.appendChild(clone3);
+      }
+    };
+    mutateDom(() => {
+      placeInDom(clone2, target, modifiers);
+      skipDuringClone(() => {
+        initTree(clone2);
+      })();
+    });
+    el._x_teleportPutBack = () => {
+      let target2 = getTarget(expression);
+      mutateDom(() => {
+        placeInDom(el._x_teleport, target2, modifiers);
+      });
+    };
+    cleanup2(
+      () => mutateDom(() => {
+        clone2.remove();
+        destroyTree(clone2);
+      })
+    );
+  });
+  var teleportContainerDuringClone = document.createElement("div");
+  function getTarget(expression) {
+    let target = skipDuringClone(() => {
+      return document.querySelector(expression);
+    }, () => {
+      return teleportContainerDuringClone;
+    })();
+    if (!target)
+      warn(`Cannot find x-teleport element for selector: "${expression}"`);
+    return target;
+  }
+  var handler = () => {
+  };
+  handler.inline = (el, { modifiers }, { cleanup: cleanup2 }) => {
+    modifiers.includes("self") ? el._x_ignoreSelf = true : el._x_ignore = true;
+    cleanup2(() => {
+      modifiers.includes("self") ? delete el._x_ignoreSelf : delete el._x_ignore;
+    });
+  };
+  directive("ignore", handler);
+  directive("effect", skipDuringClone((el, { expression }, { effect: effect3 }) => {
+    effect3(evaluateLater(el, expression));
+  }));
+  function on(el, event, modifiers, callback) {
+    let listenerTarget = el;
+    let handler4 = (e) => callback(e);
+    let options = {};
+    let wrapHandler = (callback2, wrapper) => (e) => wrapper(callback2, e);
+    if (modifiers.includes("dot"))
+      event = dotSyntax(event);
+    if (modifiers.includes("camel"))
+      event = camelCase2(event);
+    if (modifiers.includes("passive"))
+      options.passive = true;
+    if (modifiers.includes("capture"))
+      options.capture = true;
+    if (modifiers.includes("window"))
+      listenerTarget = window;
+    if (modifiers.includes("document"))
+      listenerTarget = document;
+    if (modifiers.includes("debounce")) {
+      let nextModifier = modifiers[modifiers.indexOf("debounce") + 1] || "invalid-wait";
+      let wait = isNumeric(nextModifier.split("ms")[0]) ? Number(nextModifier.split("ms")[0]) : 250;
+      handler4 = debounce(handler4, wait);
+    }
+    if (modifiers.includes("throttle")) {
+      let nextModifier = modifiers[modifiers.indexOf("throttle") + 1] || "invalid-wait";
+      let wait = isNumeric(nextModifier.split("ms")[0]) ? Number(nextModifier.split("ms")[0]) : 250;
+      handler4 = throttle(handler4, wait);
+    }
+    if (modifiers.includes("prevent"))
+      handler4 = wrapHandler(handler4, (next, e) => {
+        e.preventDefault();
+        next(e);
+      });
+    if (modifiers.includes("stop"))
+      handler4 = wrapHandler(handler4, (next, e) => {
+        e.stopPropagation();
+        next(e);
+      });
+    if (modifiers.includes("once")) {
+      handler4 = wrapHandler(handler4, (next, e) => {
+        next(e);
+        listenerTarget.removeEventListener(event, handler4, options);
+      });
+    }
+    if (modifiers.includes("away") || modifiers.includes("outside")) {
+      listenerTarget = document;
+      handler4 = wrapHandler(handler4, (next, e) => {
+        if (el.contains(e.target))
+          return;
+        if (e.target.isConnected === false)
+          return;
+        if (el.offsetWidth < 1 && el.offsetHeight < 1)
+          return;
+        if (el._x_isShown === false)
+          return;
+        next(e);
+      });
+    }
+    if (modifiers.includes("self"))
+      handler4 = wrapHandler(handler4, (next, e) => {
+        e.target === el && next(e);
+      });
+    if (isKeyEvent(event) || isClickEvent(event)) {
+      handler4 = wrapHandler(handler4, (next, e) => {
+        if (isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers)) {
+          return;
+        }
+        next(e);
+      });
+    }
+    listenerTarget.addEventListener(event, handler4, options);
+    return () => {
+      listenerTarget.removeEventListener(event, handler4, options);
+    };
+  }
+  function dotSyntax(subject) {
+    return subject.replace(/-/g, ".");
+  }
+  function camelCase2(subject) {
+    return subject.toLowerCase().replace(/-(\w)/g, (match, char) => char.toUpperCase());
+  }
+  function isNumeric(subject) {
+    return !Array.isArray(subject) && !isNaN(subject);
+  }
+  function kebabCase2(subject) {
+    if ([" ", "_"].includes(
+      subject
+    ))
+      return subject;
+    return subject.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/[_\s]/, "-").toLowerCase();
+  }
+  function isKeyEvent(event) {
+    return ["keydown", "keyup"].includes(event);
+  }
+  function isClickEvent(event) {
+    return ["contextmenu", "click", "mouse"].some((i) => event.includes(i));
+  }
+  function isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers) {
+    let keyModifiers = modifiers.filter((i) => {
+      return !["window", "document", "prevent", "stop", "once", "capture", "self", "away", "outside", "passive", "preserve-scroll"].includes(i);
+    });
+    if (keyModifiers.includes("debounce")) {
+      let debounceIndex = keyModifiers.indexOf("debounce");
+      keyModifiers.splice(debounceIndex, isNumeric((keyModifiers[debounceIndex + 1] || "invalid-wait").split("ms")[0]) ? 2 : 1);
+    }
+    if (keyModifiers.includes("throttle")) {
+      let debounceIndex = keyModifiers.indexOf("throttle");
+      keyModifiers.splice(debounceIndex, isNumeric((keyModifiers[debounceIndex + 1] || "invalid-wait").split("ms")[0]) ? 2 : 1);
+    }
+    if (keyModifiers.length === 0)
+      return false;
+    if (keyModifiers.length === 1 && keyToModifiers(e.key).includes(keyModifiers[0]))
+      return false;
+    const systemKeyModifiers = ["ctrl", "shift", "alt", "meta", "cmd", "super"];
+    const selectedSystemKeyModifiers = systemKeyModifiers.filter((modifier) => keyModifiers.includes(modifier));
+    keyModifiers = keyModifiers.filter((i) => !selectedSystemKeyModifiers.includes(i));
+    if (selectedSystemKeyModifiers.length > 0) {
+      const activelyPressedKeyModifiers = selectedSystemKeyModifiers.filter((modifier) => {
+        if (modifier === "cmd" || modifier === "super")
+          modifier = "meta";
+        return e[`${modifier}Key`];
+      });
+      if (activelyPressedKeyModifiers.length === selectedSystemKeyModifiers.length) {
+        if (isClickEvent(e.type))
+          return false;
+        if (keyToModifiers(e.key).includes(keyModifiers[0]))
+          return false;
+      }
+    }
+    return true;
+  }
+  function keyToModifiers(key) {
+    if (!key)
+      return [];
+    key = kebabCase2(key);
+    let modifierToKeyMap = {
+      "ctrl": "control",
+      "slash": "/",
+      "space": " ",
+      "spacebar": " ",
+      "cmd": "meta",
+      "esc": "escape",
+      "up": "arrow-up",
+      "down": "arrow-down",
+      "left": "arrow-left",
+      "right": "arrow-right",
+      "period": ".",
+      "comma": ",",
+      "equal": "=",
+      "minus": "-",
+      "underscore": "_"
+    };
+    modifierToKeyMap[key] = key;
+    return Object.keys(modifierToKeyMap).map((modifier) => {
+      if (modifierToKeyMap[modifier] === key)
+        return modifier;
+    }).filter((modifier) => modifier);
+  }
+  directive("model", (el, { modifiers, expression }, { effect: effect3, cleanup: cleanup2 }) => {
+    let scopeTarget = el;
+    if (modifiers.includes("parent")) {
+      scopeTarget = el.parentNode;
+    }
+    let evaluateGet = evaluateLater(scopeTarget, expression);
+    let evaluateSet;
+    if (typeof expression === "string") {
+      evaluateSet = evaluateLater(scopeTarget, `${expression} = __placeholder`);
+    } else if (typeof expression === "function" && typeof expression() === "string") {
+      evaluateSet = evaluateLater(scopeTarget, `${expression()} = __placeholder`);
+    } else {
+      evaluateSet = () => {
+      };
+    }
+    let getValue = () => {
+      let result;
+      evaluateGet((value) => result = value);
+      return isGetterSetter(result) ? result.get() : result;
+    };
+    let setValue = (value) => {
+      let result;
+      evaluateGet((value2) => result = value2);
+      if (isGetterSetter(result)) {
+        result.set(value);
+      } else {
+        evaluateSet(() => {
+        }, {
+          scope: { "__placeholder": value }
+        });
+      }
+    };
+    if (typeof expression === "string" && el.type === "radio") {
+      mutateDom(() => {
+        if (!el.hasAttribute("name"))
+          el.setAttribute("name", expression);
+      });
+    }
+    let event = el.tagName.toLowerCase() === "select" || ["checkbox", "radio"].includes(el.type) || modifiers.includes("lazy") ? "change" : "input";
+    let removeListener = isCloning ? () => {
+    } : on(el, event, modifiers, (e) => {
+      setValue(getInputValue(el, modifiers, e, getValue()));
+    });
+    if (modifiers.includes("fill")) {
+      if ([void 0, null, ""].includes(getValue()) || isCheckbox(el) && Array.isArray(getValue()) || el.tagName.toLowerCase() === "select" && el.multiple) {
+        setValue(
+          getInputValue(el, modifiers, { target: el }, getValue())
+        );
+      }
+    }
+    if (!el._x_removeModelListeners)
+      el._x_removeModelListeners = {};
+    el._x_removeModelListeners["default"] = removeListener;
+    cleanup2(() => el._x_removeModelListeners["default"]());
+    if (el.form) {
+      let removeResetListener = on(el.form, "reset", [], (e) => {
+        nextTick(() => el._x_model && el._x_model.set(getInputValue(el, modifiers, { target: el }, getValue())));
+      });
+      cleanup2(() => removeResetListener());
+    }
+    el._x_model = {
+      get() {
+        return getValue();
+      },
+      set(value) {
+        setValue(value);
+      }
+    };
+    el._x_forceModelUpdate = (value) => {
+      if (value === void 0 && typeof expression === "string" && expression.match(/\./))
+        value = "";
+      window.fromModel = true;
+      mutateDom(() => bind(el, "value", value));
+      delete window.fromModel;
+    };
+    effect3(() => {
+      let value = getValue();
+      if (modifiers.includes("unintrusive") && document.activeElement.isSameNode(el))
+        return;
+      el._x_forceModelUpdate(value);
+    });
+  });
+  function getInputValue(el, modifiers, event, currentValue) {
+    return mutateDom(() => {
+      if (event instanceof CustomEvent && event.detail !== void 0)
+        return event.detail !== null && event.detail !== void 0 ? event.detail : event.target.value;
+      else if (isCheckbox(el)) {
+        if (Array.isArray(currentValue)) {
+          let newValue = null;
+          if (modifiers.includes("number")) {
+            newValue = safeParseNumber(event.target.value);
+          } else if (modifiers.includes("boolean")) {
+            newValue = safeParseBoolean(event.target.value);
+          } else {
+            newValue = event.target.value;
+          }
+          return event.target.checked ? currentValue.includes(newValue) ? currentValue : currentValue.concat([newValue]) : currentValue.filter((el2) => !checkedAttrLooseCompare2(el2, newValue));
+        } else {
+          return event.target.checked;
+        }
+      } else if (el.tagName.toLowerCase() === "select" && el.multiple) {
+        if (modifiers.includes("number")) {
+          return Array.from(event.target.selectedOptions).map((option) => {
+            let rawValue = option.value || option.text;
+            return safeParseNumber(rawValue);
+          });
+        } else if (modifiers.includes("boolean")) {
+          return Array.from(event.target.selectedOptions).map((option) => {
+            let rawValue = option.value || option.text;
+            return safeParseBoolean(rawValue);
+          });
+        }
+        return Array.from(event.target.selectedOptions).map((option) => {
+          return option.value || option.text;
+        });
+      } else {
+        let newValue;
+        if (isRadio(el)) {
+          if (event.target.checked) {
+            newValue = event.target.value;
+          } else {
+            newValue = currentValue;
+          }
+        } else {
+          newValue = event.target.value;
+        }
+        if (modifiers.includes("number")) {
+          return safeParseNumber(newValue);
+        } else if (modifiers.includes("boolean")) {
+          return safeParseBoolean(newValue);
+        } else if (modifiers.includes("trim")) {
+          return newValue.trim();
+        } else {
+          return newValue;
+        }
+      }
+    });
+  }
+  function safeParseNumber(rawValue) {
+    let number = rawValue ? parseFloat(rawValue) : null;
+    return isNumeric2(number) ? number : rawValue;
+  }
+  function checkedAttrLooseCompare2(valueA, valueB) {
+    return valueA == valueB;
+  }
+  function isNumeric2(subject) {
+    return !Array.isArray(subject) && !isNaN(subject);
+  }
+  function isGetterSetter(value) {
+    return value !== null && typeof value === "object" && typeof value.get === "function" && typeof value.set === "function";
+  }
+  directive("cloak", (el) => queueMicrotask(() => mutateDom(() => el.removeAttribute(prefix("cloak")))));
+  addInitSelector(() => `[${prefix("init")}]`);
+  directive("init", skipDuringClone((el, { expression }, { evaluate: evaluate2 }) => {
+    if (typeof expression === "string") {
+      return !!expression.trim() && evaluate2(expression, {}, false);
+    }
+    return evaluate2(expression, {}, false);
+  }));
+  directive("text", (el, { expression }, { effect: effect3, evaluateLater: evaluateLater2 }) => {
+    let evaluate2 = evaluateLater2(expression);
+    effect3(() => {
+      evaluate2((value) => {
+        mutateDom(() => {
+          el.textContent = value;
+        });
+      });
+    });
+  });
+  directive("html", (el, { expression }, { effect: effect3, evaluateLater: evaluateLater2 }) => {
+    let evaluate2 = evaluateLater2(expression);
+    effect3(() => {
+      evaluate2((value) => {
+        mutateDom(() => {
+          el.innerHTML = value;
+          el._x_ignoreSelf = true;
+          initTree(el);
+          delete el._x_ignoreSelf;
+        });
+      });
+    });
+  });
+  mapAttributes(startingWith(":", into(prefix("bind:"))));
+  var handler2 = (el, { value, modifiers, expression, original }, { effect: effect3, cleanup: cleanup2 }) => {
+    if (!value) {
+      let bindingProviders = {};
+      injectBindingProviders(bindingProviders);
+      let getBindings = evaluateLater(el, expression);
+      getBindings((bindings) => {
+        applyBindingsObject(el, bindings, original);
+      }, { scope: bindingProviders });
+      return;
+    }
+    if (value === "key")
+      return storeKeyForXFor(el, expression);
+    if (el._x_inlineBindings && el._x_inlineBindings[value] && el._x_inlineBindings[value].extract) {
+      return;
+    }
+    let evaluate2 = evaluateLater(el, expression);
+    effect3(() => evaluate2((result) => {
+      if (result === void 0 && typeof expression === "string" && expression.match(/\./)) {
+        result = "";
+      }
+      mutateDom(() => bind(el, value, result, modifiers));
+    }));
+    cleanup2(() => {
+      el._x_undoAddedClasses && el._x_undoAddedClasses();
+      el._x_undoAddedStyles && el._x_undoAddedStyles();
+    });
+  };
+  handler2.inline = (el, { value, modifiers, expression }) => {
+    if (!value)
+      return;
+    if (!el._x_inlineBindings)
+      el._x_inlineBindings = {};
+    el._x_inlineBindings[value] = { expression, extract: false };
+  };
+  directive("bind", handler2);
+  function storeKeyForXFor(el, expression) {
+    el._x_keyExpression = expression;
+  }
+  addRootSelector(() => `[${prefix("data")}]`);
+  directive("data", (el, { expression }, { cleanup: cleanup2 }) => {
+    if (shouldSkipRegisteringDataDuringClone(el))
+      return;
+    expression = expression === "" ? "{}" : expression;
+    let magicContext = {};
+    injectMagics(magicContext, el);
+    let dataProviderContext = {};
+    injectDataProviders(dataProviderContext, magicContext);
+    let data2 = evaluate(el, expression, { scope: dataProviderContext });
+    if (data2 === void 0 || data2 === true)
+      data2 = {};
+    injectMagics(data2, el);
+    let reactiveData = reactive(data2);
+    initInterceptors(reactiveData);
+    let undo = addScopeToNode(el, reactiveData);
+    reactiveData["init"] && evaluate(el, reactiveData["init"]);
+    cleanup2(() => {
+      reactiveData["destroy"] && evaluate(el, reactiveData["destroy"]);
+      undo();
+    });
+  });
+  interceptClone((from, to) => {
+    if (from._x_dataStack) {
+      to._x_dataStack = from._x_dataStack;
+      to.setAttribute("data-has-alpine-state", true);
+    }
+  });
+  function shouldSkipRegisteringDataDuringClone(el) {
+    if (!isCloning)
+      return false;
+    if (isCloningLegacy)
+      return true;
+    return el.hasAttribute("data-has-alpine-state");
+  }
+  directive("show", (el, { modifiers, expression }, { effect: effect3 }) => {
+    let evaluate2 = evaluateLater(el, expression);
+    if (!el._x_doHide)
+      el._x_doHide = () => {
+        mutateDom(() => {
+          el.style.setProperty("display", "none", modifiers.includes("important") ? "important" : void 0);
+        });
+      };
+    if (!el._x_doShow)
+      el._x_doShow = () => {
+        mutateDom(() => {
+          if (el.style.length === 1 && el.style.display === "none") {
+            el.removeAttribute("style");
+          } else {
+            el.style.removeProperty("display");
+          }
+        });
+      };
+    let hide = () => {
+      el._x_doHide();
+      el._x_isShown = false;
+    };
+    let show = () => {
+      el._x_doShow();
+      el._x_isShown = true;
+    };
+    let clickAwayCompatibleShow = () => setTimeout(show);
+    let toggle = once(
+      (value) => value ? show() : hide(),
+      (value) => {
+        if (typeof el._x_toggleAndCascadeWithTransitions === "function") {
+          el._x_toggleAndCascadeWithTransitions(el, value, show, hide);
+        } else {
+          value ? clickAwayCompatibleShow() : hide();
+        }
+      }
+    );
+    let oldValue;
+    let firstTime = true;
+    effect3(() => evaluate2((value) => {
+      if (!firstTime && value === oldValue)
+        return;
+      if (modifiers.includes("immediate"))
+        value ? clickAwayCompatibleShow() : hide();
+      toggle(value);
+      oldValue = value;
+      firstTime = false;
+    }));
+  });
+  directive("for", (el, { expression }, { effect: effect3, cleanup: cleanup2 }) => {
+    let iteratorNames = parseForExpression(expression);
+    let evaluateItems = evaluateLater(el, iteratorNames.items);
+    let evaluateKey = evaluateLater(
+      el,
+      // the x-bind:key expression is stored for our use instead of evaluated.
+      el._x_keyExpression || "index"
+    );
+    el._x_prevKeys = [];
+    el._x_lookup = {};
+    effect3(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
+    cleanup2(() => {
+      Object.values(el._x_lookup).forEach((el2) => mutateDom(
+        () => {
+          destroyTree(el2);
+          el2.remove();
+        }
+      ));
+      delete el._x_prevKeys;
+      delete el._x_lookup;
+    });
+  });
+  function loop(el, iteratorNames, evaluateItems, evaluateKey) {
+    let isObject2 = (i) => typeof i === "object" && !Array.isArray(i);
+    let templateEl = el;
+    evaluateItems((items) => {
+      if (isNumeric3(items) && items >= 0) {
+        items = Array.from(Array(items).keys(), (i) => i + 1);
+      }
+      if (items === void 0)
+        items = [];
+      let lookup = el._x_lookup;
+      let prevKeys = el._x_prevKeys;
+      let scopes = [];
+      let keys = [];
+      if (isObject2(items)) {
+        items = Object.entries(items).map(([key, value]) => {
+          let scope2 = getIterationScopeVariables(iteratorNames, value, key, items);
+          evaluateKey((value2) => {
+            if (keys.includes(value2))
+              warn("Duplicate key on x-for", el);
+            keys.push(value2);
+          }, { scope: { index: key, ...scope2 } });
+          scopes.push(scope2);
+        });
+      } else {
+        for (let i = 0; i < items.length; i++) {
+          let scope2 = getIterationScopeVariables(iteratorNames, items[i], i, items);
+          evaluateKey((value) => {
+            if (keys.includes(value))
+              warn("Duplicate key on x-for", el);
+            keys.push(value);
+          }, { scope: { index: i, ...scope2 } });
+          scopes.push(scope2);
+        }
+      }
+      let adds = [];
+      let moves = [];
+      let removes = [];
+      let sames = [];
+      for (let i = 0; i < prevKeys.length; i++) {
+        let key = prevKeys[i];
+        if (keys.indexOf(key) === -1)
+          removes.push(key);
+      }
+      prevKeys = prevKeys.filter((key) => !removes.includes(key));
+      let lastKey = "template";
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        let prevIndex = prevKeys.indexOf(key);
+        if (prevIndex === -1) {
+          prevKeys.splice(i, 0, key);
+          adds.push([lastKey, i]);
+        } else if (prevIndex !== i) {
+          let keyInSpot = prevKeys.splice(i, 1)[0];
+          let keyForSpot = prevKeys.splice(prevIndex - 1, 1)[0];
+          prevKeys.splice(i, 0, keyForSpot);
+          prevKeys.splice(prevIndex, 0, keyInSpot);
+          moves.push([keyInSpot, keyForSpot]);
+        } else {
+          sames.push(key);
+        }
+        lastKey = key;
+      }
+      for (let i = 0; i < removes.length; i++) {
+        let key = removes[i];
+        if (!(key in lookup))
+          continue;
+        mutateDom(() => {
+          destroyTree(lookup[key]);
+          lookup[key].remove();
+        });
+        delete lookup[key];
+      }
+      for (let i = 0; i < moves.length; i++) {
+        let [keyInSpot, keyForSpot] = moves[i];
+        let elInSpot = lookup[keyInSpot];
+        let elForSpot = lookup[keyForSpot];
+        let marker = document.createElement("div");
+        mutateDom(() => {
+          if (!elForSpot)
+            warn(`x-for ":key" is undefined or invalid`, templateEl, keyForSpot, lookup);
+          elForSpot.after(marker);
+          elInSpot.after(elForSpot);
+          elForSpot._x_currentIfEl && elForSpot.after(elForSpot._x_currentIfEl);
+          marker.before(elInSpot);
+          elInSpot._x_currentIfEl && elInSpot.after(elInSpot._x_currentIfEl);
+          marker.remove();
+        });
+        elForSpot._x_refreshXForScope(scopes[keys.indexOf(keyForSpot)]);
+      }
+      for (let i = 0; i < adds.length; i++) {
+        let [lastKey2, index] = adds[i];
+        let lastEl = lastKey2 === "template" ? templateEl : lookup[lastKey2];
+        if (lastEl._x_currentIfEl)
+          lastEl = lastEl._x_currentIfEl;
+        let scope2 = scopes[index];
+        let key = keys[index];
+        let clone2 = document.importNode(templateEl.content, true).firstElementChild;
+        let reactiveScope = reactive(scope2);
+        addScopeToNode(clone2, reactiveScope, templateEl);
+        clone2._x_refreshXForScope = (newScope) => {
+          Object.entries(newScope).forEach(([key2, value]) => {
+            reactiveScope[key2] = value;
+          });
+        };
+        mutateDom(() => {
+          lastEl.after(clone2);
+          skipDuringClone(() => initTree(clone2))();
+        });
+        if (typeof key === "object") {
+          warn("x-for key cannot be an object, it must be a string or an integer", templateEl);
+        }
+        lookup[key] = clone2;
+      }
+      for (let i = 0; i < sames.length; i++) {
+        lookup[sames[i]]._x_refreshXForScope(scopes[keys.indexOf(sames[i])]);
+      }
+      templateEl._x_prevKeys = keys;
+    });
+  }
+  function parseForExpression(expression) {
+    let forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
+    let stripParensRE = /^\s*\(|\)\s*$/g;
+    let forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
+    let inMatch = expression.match(forAliasRE);
+    if (!inMatch)
+      return;
+    let res = {};
+    res.items = inMatch[2].trim();
+    let item = inMatch[1].replace(stripParensRE, "").trim();
+    let iteratorMatch = item.match(forIteratorRE);
+    if (iteratorMatch) {
+      res.item = item.replace(forIteratorRE, "").trim();
+      res.index = iteratorMatch[1].trim();
+      if (iteratorMatch[2]) {
+        res.collection = iteratorMatch[2].trim();
+      }
+    } else {
+      res.item = item;
+    }
+    return res;
+  }
+  function getIterationScopeVariables(iteratorNames, item, index, items) {
+    let scopeVariables = {};
+    if (/^\[.*\]$/.test(iteratorNames.item) && Array.isArray(item)) {
+      let names = iteratorNames.item.replace("[", "").replace("]", "").split(",").map((i) => i.trim());
+      names.forEach((name, i) => {
+        scopeVariables[name] = item[i];
+      });
+    } else if (/^\{.*\}$/.test(iteratorNames.item) && !Array.isArray(item) && typeof item === "object") {
+      let names = iteratorNames.item.replace("{", "").replace("}", "").split(",").map((i) => i.trim());
+      names.forEach((name) => {
+        scopeVariables[name] = item[name];
+      });
+    } else {
+      scopeVariables[iteratorNames.item] = item;
+    }
+    if (iteratorNames.index)
+      scopeVariables[iteratorNames.index] = index;
+    if (iteratorNames.collection)
+      scopeVariables[iteratorNames.collection] = items;
+    return scopeVariables;
+  }
+  function isNumeric3(subject) {
+    return !Array.isArray(subject) && !isNaN(subject);
+  }
+  function handler3() {
+  }
+  handler3.inline = (el, { expression }, { cleanup: cleanup2 }) => {
+    let root = closestRoot(el);
+    if (!root._x_refs)
+      root._x_refs = {};
+    root._x_refs[expression] = el;
+    cleanup2(() => delete root._x_refs[expression]);
+  };
+  directive("ref", handler3);
+  directive("if", (el, { expression }, { effect: effect3, cleanup: cleanup2 }) => {
+    if (el.tagName.toLowerCase() !== "template")
+      warn("x-if can only be used on a <template> tag", el);
+    let evaluate2 = evaluateLater(el, expression);
+    let show = () => {
+      if (el._x_currentIfEl)
+        return el._x_currentIfEl;
+      let clone2 = el.content.cloneNode(true).firstElementChild;
+      addScopeToNode(clone2, {}, el);
+      mutateDom(() => {
+        el.after(clone2);
+        skipDuringClone(() => initTree(clone2))();
+      });
+      el._x_currentIfEl = clone2;
+      el._x_undoIf = () => {
+        mutateDom(() => {
+          destroyTree(clone2);
+          clone2.remove();
+        });
+        delete el._x_currentIfEl;
+      };
+      return clone2;
+    };
+    let hide = () => {
+      if (!el._x_undoIf)
+        return;
+      el._x_undoIf();
+      delete el._x_undoIf;
+    };
+    effect3(() => evaluate2((value) => {
+      value ? show() : hide();
+    }));
+    cleanup2(() => el._x_undoIf && el._x_undoIf());
+  });
+  directive("id", (el, { expression }, { evaluate: evaluate2 }) => {
+    let names = evaluate2(expression);
+    names.forEach((name) => setIdRoot(el, name));
+  });
+  interceptClone((from, to) => {
+    if (from._x_ids) {
+      to._x_ids = from._x_ids;
+    }
+  });
+  mapAttributes(startingWith("@", into(prefix("on:"))));
+  directive("on", skipDuringClone((el, { value, modifiers, expression }, { cleanup: cleanup2 }) => {
+    let evaluate2 = expression ? evaluateLater(el, expression) : () => {
+    };
+    if (el.tagName.toLowerCase() === "template") {
+      if (!el._x_forwardEvents)
+        el._x_forwardEvents = [];
+      if (!el._x_forwardEvents.includes(value))
+        el._x_forwardEvents.push(value);
+    }
+    let removeListener = on(el, value, modifiers, (e) => {
+      evaluate2(() => {
+      }, { scope: { "$event": e }, params: [e] });
+    });
+    cleanup2(() => removeListener());
+  }));
+  warnMissingPluginDirective("Collapse", "collapse", "collapse");
+  warnMissingPluginDirective("Intersect", "intersect", "intersect");
+  warnMissingPluginDirective("Focus", "trap", "focus");
+  warnMissingPluginDirective("Mask", "mask", "mask");
+  function warnMissingPluginDirective(name, directiveName, slug) {
+    directive(directiveName, (el) => warn(`You can't use [x-${directiveName}] without first installing the "${name}" plugin here: https://alpinejs.dev/plugins/${slug}`, el));
+  }
+  alpine_default.setEvaluator(normalEvaluator);
+  alpine_default.setReactivityEngine({ reactive: reactive2, effect: effect2, release: stop, raw: toRaw });
+  var src_default = alpine_default;
+  var module_default = src_default;
+
+  // src/directives/fitText.js
+  function elementOverflows(el) {
+    return el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth;
+  }
+  function fitText_default(Alpine3) {
+    Alpine3.directive("fit-text", (el, { expression }, { effect: effect3, evaluateLater: evaluateLater2 }) => {
+      const adjustFontSize = () => {
+        el.style.fontSize = "";
+        const baseStyle = getComputedStyle(el);
+        const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
+        const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
+        const minFontSize = 10;
+        const minLineHeight = 1.05;
+        const fontSizeStep = 0.5;
+        const lineHeightStep = 0.05;
+        let fontSize = initialFontSize;
+        let lineHeight = initialLineHeight;
+        while (elementOverflows(el) && fontSize > minFontSize) {
+          if (lineHeight > minLineHeight) {
+            lineHeight -= lineHeightStep;
+          } else {
+            lineHeight = initialLineHeight;
+            fontSize -= fontSizeStep;
+          }
+          el.style.lineHeight = `${lineHeight}`;
+          el.style.fontSize = `${fontSize}px`;
+        }
+      };
+      effect3(() => {
+        evaluateLater2(expression || "true")(() => {
+          Alpine3.nextTick(() => {
+            requestAnimationFrame(adjustFontSize);
+          });
+        });
+      });
+    });
+  }
+
+  // src/directives/scope.js
+  function scope_default(Alpine3) {
+    Alpine3.directive("scope", (el, { expression }, { evaluate: evaluate2, effect: effect3 }) => {
+      const parentScope = Alpine3.closestDataStack(el)[0];
+      const subScope = evaluate2(expression);
+      const path = expression.split(".");
+      function getParentValue() {
+        return path.reduce((acc, key) => acc?.[key], parentScope);
+      }
+      const proxy = new Proxy(subScope, {
+        get(target, prop) {
+          if (prop in target) return target[prop];
+          const current = getParentValue();
+          return current?.[prop];
+        },
+        set(target, prop, value) {
+          const current = getParentValue();
+          if (current) current[prop] = value;
+          return true;
+        }
+      });
+      effect3(() => {
+        const current = getParentValue();
+        Object.assign(proxy, current);
+      });
+      Alpine3.addScopeToNode(el, proxy);
+      Alpine3.initTree(el);
+    });
+  }
+
+  // src/fsHelpers.js
+  async function loadJson(filePath) {
+    const text = await Neutralino.filesystem.readFile(filePath);
+    return JSON.parse(text);
+  }
+  async function checkFileExists(filePath) {
+    try {
+      const stats = await Neutralino.filesystem.getStats(filePath);
+      return stats.isFile;
+    } catch (error2) {
+      if (error2.code === "NE_FS_NOPATHE") return false;
+      throw error2;
+    }
+  }
+  async function loadImport(filePath) {
+    try {
+      const exists = await checkFileExists(filePath);
+      if (!exists) {
+        console.error(`Module not found: ${filePath}`);
+        return;
+      }
+      const sourceCode = await Neutralino.filesystem.readFile(filePath);
+      const blob = new Blob([sourceCode], { type: "application/javascript" });
+      const blobUrl = URL.createObjectURL(blob);
+      return await import(blobUrl);
+    } catch (error2) {
+      console.error(`Failed to import ${filePath}:`, error2);
+    }
+  }
+  async function loadModule(modulePath, card2, utils) {
+    try {
+      const mainPath = `./modules/${modulePath}/main.js`;
+      const module = await loadImport(mainPath);
+      console.log("Loading module", mainPath);
+      await module.default(card2, utils);
+    } catch (error2) {
+      console.error("Failed to load module:", error2);
+    }
+  }
+  var imageUrlCache = /* @__PURE__ */ new Map();
+  async function getImageUrl(filePath) {
+    if (imageUrlCache.has(filePath))
+      return imageUrlCache.get(filePath);
+    try {
+      const exists = await checkFileExists(filePath);
+      if (!exists) {
+        console.error(`Image not found: ${filePath}`);
+        return;
+      }
+      const rawData = await Neutralino.filesystem.readBinaryFile(filePath);
+      const blob = new Blob([rawData], { type: "image/png" });
+      const url = URL.createObjectURL(blob);
+      imageUrlCache.set(filePath, url);
+      return url;
+    } catch (error2) {
+      console.error("Failed to load image:", error2);
+    }
+  }
+  function getFontFormat(fontPath) {
+    if (fontPath.endsWith(".woff2")) return "woff2";
+    if (fontPath.endsWith(".woff")) return "woff";
+    return "truetype";
+  }
+  var fontCache = {};
+  function createFontStyle(fontName, fontFormat, base64data) {
+    const style = document.createElement("style");
+    const fontUrl = `data:font/${fontFormat};base64,${base64data}`;
+    style.textContent = `
+        @font-face {
+            font-family: "${fontName}";
+            src: url("${fontUrl}") format("${fontFormat}");
+        }
+    `;
+    document.head.appendChild(style);
+    fontCache[fontName] = style;
+  }
+  function convertToBase64(rawData) {
+    const bytes = rawData instanceof Uint8Array ? rawData : new Uint8Array(rawData);
+    const chunkSize = 8192;
+    let binaryString = "";
+    for (let offset = 0; offset < bytes.byteLength; offset += chunkSize) {
+      const chunk = bytes.subarray(offset, offset + chunkSize);
+      binaryString += String.fromCharCode(...chunk);
+    }
+    return btoa(binaryString);
+  }
+  async function loadFont(fontName, fontPath) {
+    try {
+      if (fontCache.hasOwnProperty(fontName)) {
+        console.info(`Font ${fontName} already loaded.`);
+        return;
+      }
+      if (!checkFileExists(fontPath)) {
+        console.error("Font file not found at ", fontPath);
+        return;
+      }
+      const rawData = await Neutralino.filesystem.readBinaryFile(fontPath);
+      const fontFormat = getFontFormat(fontPath);
+      const base64data = convertToBase64(rawData);
+      createFontStyle(fontName, fontFormat, base64data);
+    } catch (error2) {
+      console.error("Failed to load font: ", error2);
+    }
+  }
+
+  // src/gfx/imageProcessing.js
+  var maskCache = /* @__PURE__ */ new Map();
+  async function maskImage(sourceUrl, maskUrl, width = 375, height = 523) {
+    const key = `${sourceUrl}|${maskUrl}|${width}|${height}`;
+    if (maskCache.has(key))
+      return maskCache.get(key);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    const sourceImg = new Image();
+    sourceImg.crossOrigin = "Anonymous";
+    await new Promise((resolve) => {
+      sourceImg.onload = resolve;
+      sourceImg.src = sourceUrl;
+    });
+    const maskImg = new Image();
+    maskImg.crossOrigin = "Anonymous";
+    await new Promise((resolve) => {
+      maskImg.onload = resolve;
+      maskImg.src = maskUrl;
+    });
+    ctx.drawImage(maskImg, 0, 0, width, height);
+    ctx.globalCompositeOperation = "source-in";
+    ctx.drawImage(sourceImg, 0, 0, width, height);
+    const url = canvas.toDataURL("image/png");
+    maskCache.set(key, url);
+    return url;
+  }
+  function parseBlob(text) {
+    const [prefix2, base64] = text.split(",");
+    const match = prefix2.match(/data:([^;]+);base64/);
+    if (!match) throw new Error("Malformed data, could not load image blob.");
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++)
+      bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: match[0] });
+  }
+  function loadImage(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+  function canvasToObjectURL(canvas, type = "image/png", quality = 0.92) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) return reject(new Error("Failed to create blob from canvas"));
+        const url = URL.createObjectURL(blob);
+        resolve(url);
+      }, type, quality);
+    });
+  }
+
+  // src/gfx/blending.js
+  function top(x) {
+    return Math.min(255, x);
+  }
+  function bot(x) {
+    return Math.max(0, x);
+  }
+  function col(x) {
+    return Math.min(255, Math.max(0, x));
+  }
+  function overlay(a, b) {
+    return a < 128 ? a * b >> 7 : 255 - ((255 - a) * (255 - b) >> 7);
+  }
+  function softLight(a, b) {
+    a /= 255;
+    b /= 255;
+    let result;
+    if (b < 0.5) {
+      result = a - (1 - 2 * b) * a * (1 - a);
+    } else {
+      const d = a <= 0.25 ? ((16 * a - 12) * a + 4) * a : Math.sqrt(a);
+      result = a + (2 * b - 1) * (d - a);
+    }
+    return Math.round(result * 255);
+  }
+  var blendFuncs = {
+    add: (a, b) => top(a + b),
+    subtract: (a, b) => bot(a - b),
+    stamp: (a, b) => col(a - 2 * b + 256),
+    difference: (a, b) => Math.abs(a - b),
+    negation: (a, b) => 255 - Math.abs(255 - a - b),
+    multiply: (a, b) => a * b / 255,
+    darken: (a, b) => Math.min(a, b),
+    lighten: (a, b) => Math.max(a, b),
+    colorDodge: (a, b) => b === 255 ? 255 : top(a * 255 / (255 - b)),
+    colorBurn: (a, b) => b === 0 ? 0 : bot(255 - (255 - a) * 255 / b),
+    screen: (a, b) => 255 - (255 - a) * (255 - b) / 255,
+    overlay: (a, b) => overlay(a, b),
+    hardLight: (a, b) => b < 128 ? a * b >> 7 : 255 - ((255 - a) * (255 - b) >> 7),
+    softLight: (a, b) => softLight(a, b),
+    reflect: (a, b) => b === 255 ? 255 : top(a * a / (255 - b)),
+    glow: (a, b) => a === 255 ? 255 : top(b * b / (255 - a)),
+    freeze: (a, b) => b === 0 ? 0 : bot(255 - (255 - a) * (255 - a) / b),
+    heat: (a, b) => a === 0 ? 0 : bot(255 - (255 - b) * (255 - b) / a),
+    and: (a, b) => a & b,
+    or: (a, b) => a | b,
+    xor: (a, b) => a ^ b,
+    shadow: (a, b) => b * a * a / (255 * 255),
+    symmetricOverlay: (a, b) => overlay(a, b) + overlay(b, a) >> 1
+  };
+  function blendImageData(baseData, topData, mode) {
+    const func = blendFuncs[mode];
+    if (!func) throw new Error(`Blend mode not supported: ${mode}`);
+    const out = new ImageData(baseData.width, baseData.height);
+    const a = baseData.data;
+    const b = topData.data;
+    const o = out.data;
+    for (let i = 0; i < a.length; i += 4) {
+      o[i] = func(a[i], b[i]);
+      o[i + 1] = func(a[i + 1], b[i + 1]);
+      o[i + 2] = func(a[i + 2], b[i + 2]);
+      o[i + 3] = Math.max(a[i + 3], b[i + 3]);
+    }
+    return out;
+  }
+  function combineBlend(imgA, imgB, mode) {
+    const w = imgA.width;
+    const h = imgA.height;
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = w;
+    outCanvas.height = h;
+    const ctx = outCanvas.getContext("2d");
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(imgA, 0, 0);
+    const baseData = ctx.getImageData(0, 0, w, h);
+    const tmpCanvas = document.createElement("canvas");
+    tmpCanvas.width = w;
+    tmpCanvas.height = h;
+    tmpCanvas.getContext("2d").drawImage(imgB, 0, 0);
+    const topData = tmpCanvas.getContext("2d").getImageData(0, 0, w, h);
+    const outData = blendImageData(baseData, topData, mode);
+    ctx.putImageData(outData, 0, 0);
+    return outCanvas;
+  }
+  var combineBlendCache = /* @__PURE__ */ new Map();
+  async function combineBlendUrl(imgUrlA, imgUrlB, mode) {
+    if (!imgUrlB) return imgUrlA;
+    const key = `${imgUrlA}|${imgUrlB}|${mode}`;
+    if (combineBlendCache.has(key))
+      return combineBlendCache.get(key);
+    const imgA = await loadImage(imgUrlA);
+    const imgB = await loadImage(imgUrlB);
+    const canvas = combineBlend(imgA, imgB, mode);
+    const url = await canvasToObjectURL(canvas);
+    combineBlendCache.set(key, url);
+    return url;
+  }
+  function linearBlend(img1, img2, x1, y1, x2, y2) {
+    if (img1.width !== img2.width || img1.height !== img2.height)
+      throw new Error("Images used for blending must have the same size");
+    const { width, height } = img1;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img1, 0, 0);
+    ctx.save();
+    const gradient = ctx.createLinearGradient(
+      x1 * width,
+      y1 * height,
+      x2 * width,
+      y2 * height
+    );
+    gradient.addColorStop(0, "rgba(0,0,0,0)");
+    gradient.addColorStop(1, "rgba(0,0,0,1)");
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.drawImage(img2, 0, 0);
+    ctx.restore();
+    return canvas;
+  }
+  var linearBlendCache = /* @__PURE__ */ new Map();
+  async function linearBlendUrl(imgUrlA, imgUrlB, x1, y1, x2, y2) {
+    if (!imgUrlB) return imgUrlA;
+    const key = `${imgUrlA}|${imgUrlB}|${x1}|${y1}|${x2}|${y2}`;
+    if (linearBlendCache.has(key))
+      return linearBlendCache.get(key);
+    const imgA = await loadImage(imgUrlA);
+    const imgB = await loadImage(imgUrlB);
+    const canvas = linearBlend(imgA, imgB, x1, y1, x2, y2);
+    const url = await canvasToObjectURL(canvas);
+    linearBlendCache.set(key, url);
+    return url;
+  }
+  function maskBlend(img1, img2, mask) {
+    const { width, height } = img1;
+    if (img2.width !== width || img2.height !== height || mask.width !== width || mask.height !== height) {
+      throw new Error("Images used for blending must have the same size");
+    }
+    const canvas1 = document.createElement("canvas");
+    const canvas2 = document.createElement("canvas");
+    const canvasM = document.createElement("canvas");
+    canvas1.width = canvas2.width = canvasM.width = width;
+    canvas1.height = canvas2.height = canvasM.height = height;
+    const ctx1 = canvas1.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    const ctxM = canvasM.getContext("2d");
+    ctx1.drawImage(img1, 0, 0);
+    ctx2.drawImage(img2, 0, 0);
+    ctxM.drawImage(mask, 0, 0);
+    const imgData1 = ctx1.getImageData(0, 0, width, height);
+    const imgData2 = ctx2.getImageData(0, 0, width, height);
+    const maskData = ctxM.getImageData(0, 0, width, height);
+    const d1 = imgData1.data;
+    const d2 = imgData2.data;
+    const m = maskData.data;
+    for (let i = 0; i < d1.length; i += 4) {
+      const maskVal = m[i];
+      const inv = 255 - maskVal;
+      d1[i] = (d1[i] * maskVal + d2[i] * inv) / 255;
+      d1[i + 1] = (d1[i + 1] * maskVal + d2[i + 1] * inv) / 255;
+      d1[i + 2] = (d1[i + 2] * maskVal + d2[i + 2] * inv) / 255;
+    }
+    const outCanvas = document.createElement("canvas");
+    outCanvas.width = width;
+    outCanvas.height = height;
+    outCanvas.getContext("2d").putImageData(imgData1, 0, 0);
+    return outCanvas;
+  }
+
+  // src/moduleUtils.js
+  var buildModuleUtils = (modulePath) => ({
+    async assetURL(path) {
+      const filePath = ["modules", modulePath, "assets", path].join("/");
+      return await getImageUrl(filePath);
+    },
+    async loadFile(filename) {
+      const filePath = ["modules", modulePath, filename].join("/");
+      return await Neutralino.filesystem.readFile(filePath);
+    },
+    async maskImage(sourceUrl, maskUrl, width, height) {
+      return await maskImage(sourceUrl, maskUrl, width, height);
+    },
+    disposeImage(card2, key) {
+      if (!card2[key]) return;
+      URL.revokeObjectURL(card2[key]);
+    },
+    parseBlob(text) {
+      return parseBlob(text);
+    },
+    async combineBlend(imgUrl1, imgUrl2, mode = "symmetricOverlay") {
+      return await combineBlendUrl(imgUrl1, imgUrl2, mode);
+    },
+    async linearBlend(imgUrl1, imgUrl2, x1, y1, x2, y2) {
+      return await linearBlendUrl(imgUrl1, imgUrl2, x1, y1, x2, y2);
+    },
+    async loadFont(fontName, localPath) {
+      const filePath = ["modules", modulePath, "assets", localPath].join("/");
+      await loadFont(fontName, filePath);
+    },
+    import(localPath) {
+      const filePath = ["modules", modulePath, localPath].join("/");
+      return loadImport(filePath);
+    }
+  });
+
+  // src/templateBuilder.js
+  function initCard(key) {
+    const dom = document.createElement("div");
+    dom.className = `${key}-container`;
+    dom.setAttribute("x-scope", key);
+    return Alpine.reactive({
+      id: key,
+      dom,
+      subCards: [],
+      fields: [],
+      addField(field) {
+        this.fields.push(field);
+        this[field.id] = "";
+      },
+      publishElement(selector, html) {
+        dom.querySelector(selector).innerHTML = html;
+      },
+      addStyle(styleCode) {
+        const styleFragment = document.createElement("style");
+        styleFragment.innerHTML = styleCode;
+        dom.prepend(styleFragment);
+      },
+      setFrame(html) {
+        dom.innerHTML = html;
+      },
+      async save() {
+        const cardData = {};
+        for (const field of card.fields)
+          cardData[field.id] = field.hasOwnProperty("save") ? await field.save() : card[field.id];
+        const jsonString = JSON.stringify(cardData);
+        await Neutralino.filesystem.writeFile("./card.json", jsonString);
+      },
+      async load() {
+        const jsonString = await Neutralino.filesystem.readFile("./card.json");
+        const cardData = JSON.parse(jsonString);
+        for (const field of card.fields)
+          this[field.id] = field.hasOwnProperty("load") ? await field.load(cardData) : cardData[field.id];
+      }
+    });
+  }
+  var componentLoaders = [
+    {
+      type: "module",
+      useLoader: (component) => component.constructor === String,
+      load: (card2, component) => {
+        const utils = buildModuleUtils(component);
+        return loadModule(component, card2, utils);
+      }
+    },
+    {
+      type: "card",
+      useLoader: (component) => component.constructor === Object,
+      load: buildCards
+    }
+  ];
+  function getComponentLoader(component) {
+    return componentLoaders.find((loader) => loader.useLoader(component));
+  }
+  async function buildCard(cardNamespace, key, components) {
+    const card2 = initCard(key);
+    card2.parent = () => cardNamespace;
+    if (cardNamespace.subCards) cardNamespace.subCards.push(card2);
+    for (let component of components) {
+      const loader = getComponentLoader(component);
+      await loader.load(card2, component);
+    }
+    return card2;
+  }
+  async function buildCards(cardNamespace, template) {
+    for (const [key, components] of Object.entries(template))
+      cardNamespace[key] = await buildCard(cardNamespace, key, components);
+  }
+  async function buildTemplate({ info }) {
+    const { template } = info;
+    const cardNamespace = {};
+    await buildCards(cardNamespace, template);
+    return cardNamespace;
+  }
+  async function loadTemplates() {
+    const templates = [];
+    const templateFolders = await Neutralino.filesystem.readDirectory(
+      "templates",
+      { recursion: true }
+    );
+    for (let templateFolder of templateFolders) {
+      console.info("Reading template from", templateFolder.path);
+      const infoPath = [".", templateFolder.path, "info.json"].join("/");
+      if (!await checkFileExists(infoPath)) {
+        console.info("No info.json found at", infoPath);
+        continue;
+      }
+      const template = {};
+      template.info = await loadJson(infoPath);
+      templates.push(template);
+    }
+    return templates;
+  }
+
+  // src/tests/blendTests.js
+  async function saveCanvasToFile(canvas, filePath) {
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    const arrayBuffer = await blob.arrayBuffer();
+    await Neutralino.filesystem.writeBinaryFile(filePath, arrayBuffer);
+  }
+  function loadImage2(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+  async function benchmarkAsync(fn, iterations2 = 10) {
+    const times = [];
+    for (let i = 0; i < iterations2; i++) {
+      const t0 = Date.now();
+      await fn();
+      const t1 = Date.now();
+      times.push(t1 - t0);
+    }
+    const avg = times.reduce((a, b) => a + b, 0) / times.length;
+    return { avg, times };
+  }
+  var iterations = 10;
+  var modes = [
+    "add",
+    "subtract",
+    "stamp",
+    "difference",
+    "negation",
+    "multiply",
+    "darken",
+    "lighten",
+    "colorDodge",
+    "colorBurn",
+    "screen",
+    "overlay",
+    "hardLight",
+    "softLight",
+    "reflect",
+    "glow",
+    "freeze",
+    "heat",
+    "and",
+    "or",
+    "xor",
+    "shadow",
+    "symmetricOverlay"
+  ];
+  function buildCombineBlendTests() {
+    describe("combineBlend", () => {
+      let photo, gradient;
+      const results = {};
+      beforeAll(async () => {
+        const photoUrl = await getImageUrl("tests/fixtures/photo.jpg");
+        const gradientUrl = await getImageUrl("tests/fixtures/gradient.png");
+        photo = await loadImage2(photoUrl);
+        gradient = await loadImage2(gradientUrl);
+      });
+      it("should combine photo and gradient for each mode", async () => {
+        let canvas;
+        for (const mode of modes) {
+          const { avg } = await benchmarkAsync(async () => {
+            canvas = await combineBlend(photo, gradient, mode);
+          }, iterations);
+          results[mode] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
+          await saveCanvasToFile(canvas, `tests/output/${mode}.png`);
+          expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+        }
+        console.log("Blend benchmark results:", results);
+      });
+      afterAll(async () => {
+        await Neutralino.filesystem.writeFile(
+          "tests/output/combineBlend_benchmark.json",
+          JSON.stringify(results, null, 2)
+        );
+      });
+    });
+  }
+  var testAngles = [
+    { name: "vertical", x1: 0, y1: 0, x2: 0, y2: 1 },
+    { name: "horizontal", x1: 0, y1: 0, x2: 1, y2: 0 },
+    { name: "diagonal1", x1: 0, y1: 0, x2: 1, y2: 1 },
+    { name: "diagonal2", x1: 1, y1: 0, x2: 0, y2: 1 }
+  ];
+  function buildLinearBlendTests() {
+    describe("linearBlend", () => {
+      let photo, gradient;
+      const results = {};
+      beforeAll(async () => {
+        const photoUrl = await getImageUrl("tests/fixtures/photo.jpg");
+        const gradientUrl = await getImageUrl("tests/fixtures/gradient.png");
+        photo = await loadImage2(photoUrl);
+        gradient = await loadImage2(gradientUrl);
+      });
+      it("should blend photo and gradient at various angles", async () => {
+        let canvas;
+        for (const { name, x1, y1, x2, y2 } of testAngles) {
+          const { avg } = await benchmarkAsync(async () => {
+            canvas = linearBlend(photo, gradient, x1, y1, x2, y2);
+          }, iterations);
+          results[name] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
+          await saveCanvasToFile(canvas, `tests/output/linearBlend_${name}.png`);
+          expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+        }
+        console.log("Linear blend benchmark results:", results);
+      });
+      afterAll(async () => {
+        await Neutralino.filesystem.writeFile(
+          "tests/output/linearBlend_benchmark.json",
+          JSON.stringify(results, null, 2)
+        );
+      });
+    });
+  }
+  function buildMaskBlendTests() {
+    describe("maskBlend", () => {
+      let img1, img2, mask;
+      const results = {};
+      beforeAll(async () => {
+        const img1Url = await getImageUrl("tests/fixtures/photo.jpg");
+        const img2Url = await getImageUrl("tests/fixtures/gradient.png");
+        const maskUrl = await getImageUrl("tests/fixtures/softmask.png");
+        img1 = await loadImage2(img1Url);
+        img2 = await loadImage2(img2Url);
+        mask = await loadImage2(maskUrl);
+      });
+      it("should blend two images based on a mask", async () => {
+        let canvas;
+        const { avg } = await benchmarkAsync(async () => {
+          canvas = maskBlend(img1, img2, mask);
+          expect(canvas).toBeInstanceOf(HTMLCanvasElement);
+        }, iterations);
+        await saveCanvasToFile(canvas, "tests/output/maskBlend.png");
+        results["maskBlend"] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
+        console.log("Mask blend benchmark results:", results);
+      });
+      afterAll(async () => {
+        await Neutralino.filesystem.writeFile(
+          "tests/output/maskBlend_benchmark.json",
+          JSON.stringify(results, null, 2)
+        );
+      });
+    });
+  }
+
+  // src/tests.js
+  var JASMINE_BASE = "https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core";
+  var scripts = [
+    `${JASMINE_BASE}/jasmine.js`,
+    `${JASMINE_BASE}/jasmine-html.js`,
+    `${JASMINE_BASE}/boot0.js`,
+    `${JASMINE_BASE}/boot1.js`
+  ];
+  var jasmineStyle = `${JASMINE_BASE}/jasmine.css`;
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Failed to load Jasmine script: ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+  function loadStyle(href) {
+    return new Promise((resolve, reject) => {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.onload = resolve;
+      link.onerror = () => reject(new Error("Failed to load Jasmine CSS"));
+      document.head.appendChild(link);
+    });
+  }
+  async function setupTestHarness() {
+    await loadStyle(jasmineStyle);
+    for (const src of scripts)
+      await loadScript(src);
+    document.querySelector("main").remove();
+    return true;
+  }
+  async function runTests() {
+    buildCombineBlendTests();
+    buildLinearBlendTests();
+    buildMaskBlendTests();
+  }
+
+  // src/formBuilder.js
+  function useInputDebounce(field) {
+    return field.type === "text" || field.type === "textarea" || !field.type;
+  }
+  var applyOnChange = function(field, input) {
+    if (!field.onChange) return;
+    const attribute = useInputDebounce(field) ? "x-on:input.debounce" : "x-on:change";
+    input.setAttribute(attribute, field.onChange);
+  };
+  var TYPES_TO_TAGS = {
+    textarea: "textarea",
+    select: "select"
+  };
+  var addSelectOptions = function(select, field) {
+    for (let option of field.options) {
+      const element = document.createElement("option");
+      element.innerText = option;
+      select.appendChild(element);
+    }
+  };
+  var makeFormInput = function(field) {
+    const tagName = TYPES_TO_TAGS[field.type] || "input";
+    const input = document.createElement(tagName);
+    if (field.type === "select") addSelectOptions(input, field);
+    if (tagName === "input")
+      input.setAttribute("type", field.type || "text");
+    input.setAttribute("x-model", field.id);
+    applyOnChange(field, input);
+    return input;
+  };
+  function makeFormButton(label, action) {
+    const button = document.createElement("button");
+    button.textContent = label;
+    button.setAttribute("type", "button");
+    button.setAttribute("x-on:click", action);
+    return button;
+  }
+  function buildCardForm(form, key, card2) {
+    const h2 = document.createElement("h2");
+    h2.textContent = key;
+    form.appendChild(h2);
+    const section = document.createElement("section");
+    for (let field of card2.fields) {
+      const label = document.createElement("label");
+      const labelSpan = document.createElement("span");
+      labelSpan.innerText = field.displayName;
+      label.appendChild(labelSpan);
+      const input = makeFormInput(field);
+      label.appendChild(input);
+      section.appendChild(label);
+    }
+    form.appendChild(section);
+  }
+  function buildForms(cardNamespace) {
+    const formsContainer = document.createElement("div");
+    formsContainer.className = "forms-container";
+    for (let [key, card2] of Object.entries(cardNamespace)) {
+      const form = document.createElement("form");
+      form.setAttribute("x-scope", key);
+      form.setAttribute("onsubmit", "return false");
+      buildCardForm(form, key, card2);
+      for (let [key2, subcard] of Object.entries(card2.subCards))
+        buildCardForm(form, key2, subcard);
+      form.appendChild(makeFormButton("save", "await save()"));
+      form.appendChild(makeFormButton("load", "await load()"));
+      formsContainer.appendChild(form);
+    }
+    return formsContainer;
+  }
+
+  // src/main.js
+  Neutralino.init();
+  Neutralino.events.on("windowClose", () => Neutralino.app.exit(0));
+  window.Alpine = module_default;
+  fitText_default(module_default);
+  scope_default(module_default);
+  module_default.start();
+  function publishTemplate(templateModel) {
+    window.templateModel = templateModel;
+    const forms = buildForms(templateModel);
+    const main = document.querySelector("main");
+    main.setAttribute("x-data", "templateModel");
+    const templateContainer = document.createElement("div");
+    templateContainer.className = "template-container";
+    for (let model of Object.values(templateModel))
+      templateContainer.appendChild(model.dom);
+    main.appendChild(templateContainer);
+    main.appendChild(forms);
+  }
+  if (NL_ARGS.includes("--run-tests")) {
+    setupTestHarness().then(runTests);
+  } else {
+    loadTemplates().then((templates) => {
+      buildTemplate(templates[1]).then(publishTemplate);
+    });
+  }
+})();

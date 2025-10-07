@@ -1,17 +1,28 @@
 {
   "name": "M15Adventure",
-  "description": "The M15 adventure card frame.",
+  "description": "This is a template for adventure cards which builds off of the M15 main frame.",
   "version": "0.0",
-  "modules": [
-    "M15/MagicCardFrame",
-    "M15/MagicCardSymbols",
-    "M15/MagicCardName",
-    "M15/MagicCardCost",
-    "M15/MagicCardArt",
-    "M15/MagicCardType",
-    "M15/MagicCardRarity",
-    "M15/MagicCardAdventure",
-    "M15/MagicCardPT",
-    "M15/MagicCardFooter"
-  ]
+  "template": {
+    "card": [
+      "Magic/M15/MainFrame",
+      "Magic/M15/Symbols",
+      "Magic/M15/Name",
+      "Magic/M15/Cost",
+      "Magic/M15/Art",
+      "Magic/M15/Type",
+      "Magic/M15/Rarity",
+      {
+        "adventure": [
+          "Magic/M15/AdventureFrame",
+          "Magic/M15/Symbols",
+          "Magic/M15/Name",
+          "Magic/M15/Type",
+          "Magic/M15/Text"
+        ]
+      },
+      "Magic/M15/Text",
+      "Magic/M15/PT",
+      "Magic/M15/Footer"
+    ]
+  }
 }
