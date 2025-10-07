@@ -27,7 +27,7 @@ function initCard(key) {
         },
         async save() {
             const cardData = {};
-            for (const field of card.fields)
+            for (const field of this.fields)
                 cardData[field.id] = field.hasOwnProperty('save')
                     ? await field.save()
                     : card[field.id];
@@ -37,7 +37,7 @@ function initCard(key) {
         async load() {
             const jsonString = await Neutralino.filesystem.readFile('./card.json');
             const cardData = JSON.parse(jsonString);
-            for (const field of card.fields)
+            for (const field of this.fields)
                 this[field.id] = field.hasOwnProperty('load')
                     ? await field.load(cardData)
                     : cardData[field.id];
