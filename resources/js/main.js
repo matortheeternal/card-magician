@@ -3783,19 +3783,24 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   function getComponentLoader(component) {
     return componentLoaders.find((loader) => loader.useLoader(component));
   }
-  async function buildCard(cardNamespace, key, components) {
+  async function buildCard(parent, key, def) {
     const card2 = initCard(key);
-    card2.parent = () => cardNamespace;
-    if (cardNamespace.subCards) cardNamespace.subCards.push(card2);
+    card2.parent = () => parent;
+    if (parent.subCards) parent.subCards.push(Alpine.raw(card2));
+    const components = Array.isArray(def) ? def : def.components;
     for (let component of components) {
       const loader = getComponentLoader(component);
       await loader.load(card2, component);
     }
+    if (def.target) {
+      const el = parent.dom.querySelector(`.${parent.id}-${def.target}`);
+      el.replaceWith(card2.dom);
+    }
     return card2;
   }
   async function buildCards(cardNamespace, template) {
-    for (const [key, components] of Object.entries(template))
-      cardNamespace[key] = await buildCard(cardNamespace, key, components);
+    for (const [key, def] of Object.entries(template))
+      cardNamespace[key] = await buildCard(cardNamespace, key, def);
   }
   async function buildTemplate({ info }) {
     const { template } = info;
@@ -4049,11 +4054,12 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     button.setAttribute("x-on:click", action);
     return button;
   }
-  function buildCardForm(form, key, card2) {
+  function buildCardForm(container, card2) {
     const h2 = document.createElement("h2");
-    h2.textContent = key;
-    form.appendChild(h2);
+    h2.textContent = card2.id;
+    container.appendChild(h2);
     const section = document.createElement("section");
+    section.setAttribute("x-scope", card2.id);
     for (let field of card2.fields) {
       const label = document.createElement("label");
       const labelSpan = document.createElement("span");
@@ -4063,18 +4069,17 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
       label.appendChild(input);
       section.appendChild(label);
     }
-    form.appendChild(section);
+    for (let subcard of Object.values(card2.subCards))
+      buildCardForm(section, subcard);
+    container.appendChild(section);
   }
   function buildForms(cardNamespace) {
     const formsContainer = document.createElement("div");
     formsContainer.className = "forms-container";
-    for (let [key, card2] of Object.entries(cardNamespace)) {
+    for (let card2 of Object.values(cardNamespace)) {
       const form = document.createElement("form");
-      form.setAttribute("x-scope", key);
       form.setAttribute("onsubmit", "return false");
-      buildCardForm(form, key, card2);
-      for (let [key2, subcard] of Object.entries(card2.subCards))
-        buildCardForm(form, key2, subcard);
+      buildCardForm(form, card2);
       form.appendChild(makeFormButton("save", "await save()"));
       form.appendChild(makeFormButton("load", "await load()"));
       formsContainer.appendChild(form);
@@ -4105,7 +4110,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     setupTestHarness().then(runTests);
   } else {
     loadTemplates().then((templates) => {
-      buildTemplate(templates[1]).then(publishTemplate);
+      buildTemplate(templates[0]).then(publishTemplate);
     });
   }
 })();

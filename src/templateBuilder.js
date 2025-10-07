@@ -22,14 +22,9 @@ function initCard(key) {
             this.fields.push(field);
             this[field.id] = '';
         },
-        publishElement(selector, html, options = {}) {
+        publishElement(selector, html) {
             const targetElement = dom.querySelector(`.${key}-${selector}`);
-            const compiled = compileTemplate(this, html);
-            if (options.replace) {
-                targetElement.replaceWith(compiled);
-            } else {
-                targetElement.innerHTML = compiled;
-            }
+            targetElement.innerHTML = compileTemplate(this, html);
         },
         addStyle(css) {
             const styleFragment = document.createElement('style');
@@ -82,7 +77,7 @@ function getComponentLoader(component) {
 async function buildCard(parent, key, def) {
     const card = initCard(key);
     card.parent = () => parent;
-    if (parent.subCards) parent.subCards.push(card);
+    if (parent.subCards) parent.subCards.push(Alpine.raw(card));
 
     const components = Array.isArray(def) ? def : def.components;
     for (let component of components) {
@@ -90,8 +85,10 @@ async function buildCard(parent, key, def) {
         await loader.load(card, component);
     }
 
-    if (def.target)
-        parent.publishElement(def.target, card.dom, { replace: true });
+    if (def.target) {
+        const el = parent.dom.querySelector(`.${parent.id}-${def.target}`);
+        el.replaceWith(card.dom);
+    }
 
     return card;
 }

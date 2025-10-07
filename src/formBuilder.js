@@ -42,11 +42,12 @@ function makeFormButton(label, action) {
     return button;
 }
 
-function buildCardForm(form, key, card) {
+function buildCardForm(container, card) {
     const h2 = document.createElement('h2');
-    h2.textContent = key;
-    form.appendChild(h2);
+    h2.textContent = card.id;
+    container.appendChild(h2);
     const section = document.createElement('section');
+    section.setAttribute('x-scope', card.id);
     for (let field of card.fields) {
         const label = document.createElement('label');
         const labelSpan = document.createElement('span');
@@ -56,19 +57,18 @@ function buildCardForm(form, key, card) {
         label.appendChild(input);
         section.appendChild(label);
     }
-    form.appendChild(section);
+    for (let subcard of Object.values(card.subCards))
+        buildCardForm(section, subcard);
+    container.appendChild(section);
 }
 
 export function buildForms(cardNamespace) {
     const formsContainer = document.createElement('div');
     formsContainer.className = 'forms-container';
-    for (let [key, card] of Object.entries(cardNamespace)) {
+    for (let card of Object.values(cardNamespace)) {
         const form = document.createElement('form');
-        form.setAttribute('x-scope', key);
         form.setAttribute('onsubmit', 'return false');
-        buildCardForm(form, key, card);
-        for (let [key, subcard] of Object.entries(card.subCards))
-            buildCardForm(form, key, subcard);
+        buildCardForm(form, card);
         form.appendChild(makeFormButton('save', 'await save()'));
         form.appendChild(makeFormButton('load', 'await load()'));
         formsContainer.appendChild(form);
