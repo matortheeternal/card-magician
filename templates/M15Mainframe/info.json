@@ -2,17 +2,19 @@
   "name": "M15MainFrame",
   "description": "The M15 main card frame.",
   "version": "0.0",
-  "modules": [
-    "M15/MagicCardFrame",
-    "M15/MagicCardSymbols",
-    "M15/MagicCardName",
-    "M15/MagicCardCost",
-    "M15/MagicCardArt",
-    "M15/MagicCardDefaultArt",
-    "M15/MagicCardType",
-    "M15/MagicCardRarity",
-    "M15/MagicCardText",
-    "M15/MagicCardPT",
-    "M15/MagicCardFooter"
-  ]
+  "template": {
+    "card": [
+      "Magic/M15/MainFrame",
+      "Magic/M15/Symbols",
+      "Magic/M15/Name",
+      "Magic/M15/Cost",
+      "Magic/M15/Art",
+      "Magic/M15/DefaultArt",
+      "Magic/M15/Type",
+      "Magic/M15/Rarity",
+      "Magic/M15/Text",
+      "Magic/M15/PT",
+      "Magic/M15/Footer"
+    ]
+  }
 }

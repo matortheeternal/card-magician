@@ -34,6 +34,8 @@ export async function loadModule(modulePath, card, utils) {
     try {
         const mainPath = `./modules/${modulePath}/main.js`;
         const module = await loadImport(mainPath);
+        console.log('Loading module', mainPath);
+        // console.log(Alpine.raw(card), utils);
         await module.default(card, utils);
     } catch (error) {
         console.error('Failed to load module:', error);

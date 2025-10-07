@@ -26,8 +26,8 @@
   "scripts": {
     "build": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --minify --target=es2020",
     "dev": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --target=es2020",
-    "start": "npm run build && neu run",
-    "test": "npm run build && neu run -- --run-tests"
+    "start": "npm run dev && neu run",
+    "test": "npm run dev && neu run -- --run-tests"
   },
   "jest": {
     "transform": {},
