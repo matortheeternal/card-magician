@@ -1,4 +1,4 @@
-.card-info {
+.__id__-info {
     display: flex;
     flex-direction: column;
     font-family: "Relay Medium", sans-serif;
@@ -6,13 +6,13 @@
     color: white;
 }
 
-.card-info .illustrator-name {
+.__id__-info .illustrator-name {
     font-size: 10px;
     font-weight: initial;
     font-family: "Beleren Small Caps Bold", sans-serif;
 }
 
-.card-legal-text {
+.__id__-legal-text {
     color: white;
     font-size: 9.5px;
     font-weight: initial;

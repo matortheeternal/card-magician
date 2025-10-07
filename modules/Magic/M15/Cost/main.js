@@ -42,7 +42,7 @@ export default async function(card, utils) {
         displayName: 'Mana Cost'
     });
 
-    card.publishElement('.card-mana-cost',
+    card.publishElement('mana-cost',
         `<span x-html="manaCostHTML"></span>`
     );
 

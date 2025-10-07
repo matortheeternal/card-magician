@@ -25,7 +25,7 @@ export default async function(card, utils) {
         displayName: 'Toughness'
     });
 
-    card.publishElement('.card-pt-container',
+    card.publishElement('pt-container',
         `<div class="pt-text" :style="ptStyle">
             <span x-text="power"></span>/<span x-text="toughness"></span>
         </div>`

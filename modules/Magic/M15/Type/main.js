@@ -21,7 +21,7 @@ export default async function(card, utils) {
         displayName: 'Sub Type'
     });
 
-    card.publishElement('.card-type',
+    card.publishElement('type',
         `<div class="type-text" x-fit-text="[superType, subType]">
             <span x-text="superType"></span>
             <span x-show="subType">&nbsp;—&nbsp;</span>

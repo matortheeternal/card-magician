@@ -26,7 +26,7 @@ export default async function(card, utils) {
         displayName: 'Legal Text'
     });
 
-    card.publishElement('.card-info',
+    card.publishElement('info',
         `<div>
             <span x-text="rarityCharacter"></span>
             <span x-text="collectorNumber"></span>
@@ -40,7 +40,7 @@ export default async function(card, utils) {
         </div>`
     );
 
-    card.publishElement('.card-legal-text',
+    card.publishElement('legal-text',
         `<span x-text="legalText"></span>`
     );
 

@@ -1,11 +1,11 @@
-.card-mana-cost span {
+.__id__-mana-cost span {
     display: flex;
     gap: 2px;
     padding: 3px 0;
     margin-top: 1px;
 }
 
-.card-mana-cost img {
+.__id__-mana-cost img {
     height: 19px;
 }
 

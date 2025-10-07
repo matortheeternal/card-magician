@@ -14,7 +14,7 @@ export default async function(card) {
         displayName: 'Rarity'
     });
 
-    card.publishElement('.card-expansion-symbol',
+    card.publishElement('expansion-symbol',
         `<span :class="rarityClass" x-text="rarityCharacter"></span>`
     );
 }

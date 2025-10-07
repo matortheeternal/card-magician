@@ -1,10 +1,10 @@
-.card-art-image {
+.__id__-art-image {
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
 }
 
-.card-art-image img {
+.__id__-art-image img {
     width: 100%;
 }

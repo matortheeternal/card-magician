@@ -1,5 +1,5 @@
 {
-  "name": "MagicCardType",
+  "name": "M15Type",
   "description": "Defines the card supertype and subtype fields and the corresponding display for M15 Magic: The Gathering Card templates.",
   "version": "0.0"
 }

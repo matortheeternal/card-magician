@@ -39,9 +39,9 @@ export default async function(card, utils) {
         displayName: 'Flavor Text'
     });
 
-    card.publishElement('.card-text-box',
-        `<div class="card-text" x-fit-text="[rulesText, flavorText]">
-            <div class="card-text-wrap-shape" :style="wrapShapeStyle"></div>
+    card.publishElement('text-box',
+        `<div class="text" x-fit-text="[rulesText, flavorText]">
+            <div class="text-wrap-shape" :style="wrapShapeStyle"></div>
             <div class="rules-text" x-html="rulesHTML"></div>
             <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
             <div class="flavor-text" x-text="flavorText"></div>
