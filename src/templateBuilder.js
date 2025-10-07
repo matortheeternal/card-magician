@@ -1,6 +1,14 @@
 import { checkFileExists, loadJson, loadModule } from './fsHelpers';
 import { buildModuleUtils } from './moduleUtils.js';
 
+function compileTemplate(context, src) {
+    const parent = context.parent();
+    const output = src.replaceAll('__id__', context.id);
+    return parent
+        ? output.replaceAll('__parentId__', parent.id)
+        : output;
+}
+
 function initCard(key) {
     const dom = document.createElement('div');
     dom.className = `${key}-container`;
@@ -14,16 +22,22 @@ function initCard(key) {
             this.fields.push(field);
             this[field.id] = '';
         },
-        publishElement(selector, html) {
-            dom.querySelector(selector).innerHTML = html;
+        publishElement(selector, html, options = {}) {
+            const targetElement = dom.querySelector(`.${key}-${selector}`);
+            const compiled = compileTemplate(this, html);
+            if (options.replace) {
+                targetElement.replaceWith(compiled);
+            } else {
+                targetElement.innerHTML = compiled;
+            }
         },
-        addStyle(styleCode) {
+        addStyle(css) {
             const styleFragment = document.createElement('style');
-            styleFragment.innerHTML = styleCode;
+            styleFragment.innerHTML = compileTemplate(this, css);
             dom.prepend(styleFragment);
         },
         setFrame(html) {
-            dom.innerHTML = html;
+            dom.innerHTML = compileTemplate(this, html);
         },
         async save() {
             const cardData = {};
@@ -65,20 +79,26 @@ function getComponentLoader(component) {
     return componentLoaders.find(loader => loader.useLoader(component));
 }
 
-async function buildCard(cardNamespace, key, components) {
+async function buildCard(parent, key, def) {
     const card = initCard(key);
-    card.parent = () => cardNamespace;
-    if (cardNamespace.subCards) cardNamespace.subCards.push(card);
+    card.parent = () => parent;
+    if (parent.subCards) parent.subCards.push(card);
+
+    const components = Array.isArray(def) ? def : def.components;
     for (let component of components) {
         const loader = getComponentLoader(component);
         await loader.load(card, component);
     }
+
+    if (def.target)
+        parent.publishElement(def.target, card.dom, { replace: true });
+
     return card;
 }
 
 async function buildCards(cardNamespace, template) {
-    for (const [key, components] of Object.entries(template))
-        cardNamespace[key] = await buildCard(cardNamespace, key, components);
+    for (const [key, def] of Object.entries(template))
+        cardNamespace[key] = await buildCard(cardNamespace, key, def);
 }
 
 export async function buildTemplate({ info }) {

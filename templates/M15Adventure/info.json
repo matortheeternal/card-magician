@@ -12,13 +12,16 @@
       "Magic/M15/Type",
       "Magic/M15/Rarity",
       {
-        "adventure": [
-          "Magic/M15/AdventureFrame",
-          "Magic/M15/Symbols",
-          "Magic/M15/Name",
-          "Magic/M15/Type",
-          "Magic/M15/Text"
-        ]
+        "adventure": {
+          "target": "text-box",
+          "components": [
+            "Magic/M15/Adventure",
+            "Magic/M15/Symbols",
+            "Magic/M15/Name",
+            "Magic/M15/Type",
+            "Magic/M15/Text"
+          ]
+        }
       },
       "Magic/M15/Text",
       "Magic/M15/PT",

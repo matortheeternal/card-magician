@@ -36,7 +36,7 @@ export default async function(card, utils) {
         onChange: 'updateArtImage($event)'
     });
 
-    card.publishElement('.card-art-image',
+    card.publishElement('art-image',
         `<img x-show="showArtImage" :src="artImageUrl" alt="Card Art" />
          <img x-show="!showArtImage" :src="defaultImageUrl" alt="Placeholder image" />`
     );

@@ -3720,6 +3720,11 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   });
 
   // src/templateBuilder.js
+  function compileTemplate(context, src) {
+    const parent = context.parent();
+    const output = src.replaceAll("__id__", context.id);
+    return parent ? output.replaceAll("__parentId__", parent.id) : output;
+  }
   function initCard(key) {
     const dom = document.createElement("div");
     dom.className = `${key}-container`;
@@ -3734,15 +3739,16 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
         this[field.id] = "";
       },
       publishElement(selector, html) {
-        dom.querySelector(selector).innerHTML = html;
+        const targetElement = dom.querySelector(`.${key}-${selector}`);
+        targetElement.innerHTML = compileTemplate(this, html);
       },
-      addStyle(styleCode) {
+      addStyle(css) {
         const styleFragment = document.createElement("style");
-        styleFragment.innerHTML = styleCode;
+        styleFragment.innerHTML = compileTemplate(this, css);
         dom.prepend(styleFragment);
       },
       setFrame(html) {
-        dom.innerHTML = html;
+        dom.innerHTML = compileTemplate(this, html);
       },
       async save() {
         const cardData = {};

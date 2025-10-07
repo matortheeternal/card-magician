@@ -1,4 +1,4 @@
-.card {
+.__id__-container {
     width: 375px;
     height: 523px;
     border-radius: 18px;
@@ -7,7 +7,7 @@
     padding: 15px;
 }
 
-.card-bg {
+.__id__-bg {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -18,21 +18,21 @@
     background-position: center;
 }
 
-.card-frame {
+.__id__-frame {
     display: flex;
     flex-direction: column;
     border-radius: 4px;
     padding: 10px 6px 0;
 }
 
-.card-header {
+.__id__-header {
     display: flex;
     justify-content: space-between;
     padding: 2px 8px;
     height: 32px;
 }
 
-.card-art-image {
+.__id__-art-image {
     height: 232px;
     overflow: hidden;
     border: 1px solid #000;
@@ -40,7 +40,7 @@
     margin: 2px 9px 2px 8px;
 }
 
-.card-type-line {
+.__id__-type-line {
     display: flex;
     justify-content: space-between;
     padding: 4px 8px;
@@ -49,18 +49,18 @@
     margin: 1.5px 3px;
 }
 
-.card-expansion-symbol {
+.__id__-expansion-symbol {
     min-width: 10px;
     min-height: 10px;
 }
 
-.card-text-box {
+.__id__-text-box {
     padding: 3px 7px;
     height: 159px;
     margin-bottom: 6px;
 }
 
-.card-pt-container {
+.__id__-pt-container {
     position: absolute;
     bottom: 16px;
     height: 42px;
@@ -69,7 +69,7 @@
     z-index: 3;
 }
 
-.card-pt-wrap-shape {
+.__id__-pt-wrap-shape {
     float: right;
     width: 78px;
     height: 30px;
@@ -80,7 +80,7 @@
     z-index: 2;
 }
 
-.card-footer {
+.__id__-footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

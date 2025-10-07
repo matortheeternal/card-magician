@@ -10,7 +10,7 @@ export default async function(card, utils) {
         return match ? match[1] || match[2] : card.cardName;
     };
 
-    card.publishElement('.card-name',
+    card.publishElement('name',
         `<span x-text="cardName" x-fit-text="cardName"></span>`
     );
 
