@@ -1,35 +1,19 @@
-const maskCache = new Map();
-export async function maskImage(sourceUrl, maskUrl, width = 375, height = 523) {
-    const key = `${sourceUrl}|${maskUrl}|${width}|${height}`;
-    if (maskCache.has(key))
-        return maskCache.get(key);
+export function imageToCanvas(img) {
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, img.width, img.height);
+    return { canvas, ctx, imageData };
+}
 
-    const canvas = document.createElement('canvas');
+export function newCanvas(width, height) {
+    const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    const ctx = canvas.getContext('2d');
-
-    const sourceImg = new Image();
-    sourceImg.crossOrigin = 'Anonymous';
-    await new Promise(resolve => {
-        sourceImg.onload = resolve;
-        sourceImg.src = sourceUrl;
-    });
-
-    const maskImg = new Image();
-    maskImg.crossOrigin = 'Anonymous';
-    await new Promise(resolve => {
-        maskImg.onload = resolve;
-        maskImg.src = maskUrl;
-    });
-
-    ctx.drawImage(maskImg, 0, 0, width, height);
-    ctx.globalCompositeOperation = 'source-in';
-    ctx.drawImage(sourceImg, 0, 0, width, height);
-    const url = canvas.toDataURL('image/png');
-
-    maskCache.set(key, url);
-    return url;
+    const ctx = canvas.getContext("2d");
+    return { canvas, ctx };
 }
 
 export function parseBlob(text) {
@@ -60,4 +44,24 @@ export function canvasToObjectURL(canvas, type = 'image/png', quality = 0.92) {
             resolve(url);
         }, type, quality);
     });
+}
+
+export function createCachedImageWrapper(coreFunction, numImageArgs, shortcut = false) {
+    const cache = new Map();
+
+    return async function (...args) {
+        if (shortcut && !args[1]) return args[0];
+
+        const key = args.join('|');
+        if (cache.has(key)) return cache.get(key);
+
+        const imageArgs = args.slice(0, numImageArgs);
+        const otherArgs = args.slice(numImageArgs);
+        const images = await Promise.all(imageArgs.map(url => loadImage(url)));
+        const canvas = coreFunction(...images, ...otherArgs);
+        const url = await canvasToObjectURL(canvas);
+        cache.set(key, url);
+
+        return url;
+    };
 }
