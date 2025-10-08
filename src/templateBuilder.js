@@ -20,7 +20,7 @@ function initCard(key) {
         fields: [],
         addField(field) {
             this.fields.push(field);
-            this[field.id] = '';
+            this[field.id] = field.default || '';
         },
         publishElement(selector, html) {
             const targetElement = dom.querySelector(`.${key}-${selector}`);

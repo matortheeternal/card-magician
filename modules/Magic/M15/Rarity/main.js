@@ -1,6 +1,4 @@
 export default async function(card) {
-    card.rarity = 'Common';
-
     Alpine.effect(() => {
         if (!card.rarity) return;
         card.rarityCharacter = card.rarity.slice(0, 1);
@@ -11,7 +9,8 @@ export default async function(card) {
         id: 'rarity',
         type: 'select',
         options: ['Common', 'Uncommon', 'Rare', 'Mythic Rare'],
-        displayName: 'Rarity'
+        displayName: 'Rarity',
+        default: "Common",
     });
 
     card.publishElement('expansion-symbol',
