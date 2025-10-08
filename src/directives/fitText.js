@@ -6,6 +6,7 @@ export default function(Alpine) {
     Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => {
         const adjustFontSize = () => {
             el.style.fontSize = '';
+            el.style.lineHeight = '';
             const baseStyle = getComputedStyle(el);
             const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
             const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
