@@ -32,6 +32,15 @@ export const buildPipeline = (utils) => [{
         //bgs.base =
     }
 }, {
+    name: 'vehicle blend and mask',
+    useBackground: card => card.isVehicle(),
+    apply: async (card, bgs) => {
+        const vehicleUrl = await utils.assetURL(`trims/vehicle.png`);
+        const maskUrl = await utils.assetURL(`masks/375x523 trim mask.png`);
+        const blendUrl = await utils.maskImage(vehicleUrl, maskUrl);
+        bgs.vehicle = { url: blendUrl, zIndex: -9 };
+    }
+}, {
     name: 'enchantment blend (nyx)',
     useBackground: card => card.isEnchantment(),
     apply: async (card, bgs) => {
@@ -40,13 +49,6 @@ export const buildPipeline = (utils) => [{
         const maskUrl = await utils.assetURL(`masks/375x523 trim mask.png`);
         const blendUrl = await utils.maskImage(nyxUrl, maskUrl);
         bgs.nyx = { url: blendUrl, zIndex: -9 };
-    }
-}, {
-    name: 'vehicle blend and mask',
-    useBackground: card => card.isVehicle(),
-    apply: async (card, bgs) => {
-        //bgs.base =
-        //bgs.vehicle =
     }
 }, {
     name: 'legendary crown and mask',
