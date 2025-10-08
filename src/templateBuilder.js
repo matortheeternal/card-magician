@@ -39,17 +39,20 @@ function initCard(key) {
             for (const field of this.fields)
                 cardData[field.id] = field.hasOwnProperty('save')
                     ? await field.save()
-                    : card[field.id];
-            const jsonString = JSON.stringify(cardData);
-            await Neutralino.filesystem.writeFile('./card.json', jsonString);
+                    : this[field.id];
+            for (const subCard of this.subCards) {
+                cardData[subCard.id] = await subCard.save();
+            }
+            return cardData;
         },
-        async load() {
-            const jsonString = await Neutralino.filesystem.readFile('./card.json');
-            const cardData = JSON.parse(jsonString);
+        async load(cardData) {
             for (const field of this.fields)
                 this[field.id] = field.hasOwnProperty('load')
                     ? await field.load(cardData)
                     : cardData[field.id];
+            for (const subCard of this.subCards) {
+                await subCard.load(cardData[subCard.id]);
+            }
         }
     });
 }
