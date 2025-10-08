@@ -11,6 +11,14 @@ export default async function(card, utils) {
         return /artifact/i.test(card.superType);
     };
 
+    card.isEnchantment = function() {
+        return /enchantment/i.test(card.superType);
+    };
+
+    card.isVehicle = function() {
+        return /vehicle/i.test(card.subType);
+    };
+
     card.addField({
         id: 'superType',
         displayName: 'Super Type'

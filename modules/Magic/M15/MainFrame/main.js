@@ -1,37 +1,30 @@
 export default async function(card, utils) {
-    card.backgrounds = [];
+    const { buildPipeline } = await utils.import('backgroundPipeline.js');
+    const backgroundPipeline = buildPipeline(utils);
 
-    async function background(assetPath, zIndex) {
-        const url = await utils.assetURL(assetPath);
-        return { backgroundImage: `url("${url}")`, zIndex };
+    function makeStyles(backgrounds) {
+        const styles = Object.values(backgrounds);
+        for (const style of styles) {
+            style.backgroundImage = `url("${style.url}")`;
+            delete style.url;
+        }
+        return styles;
     }
 
-    async function maskedBackground(imgUrl, maskUrl, zIndex, backgroundColor = 'black') {
-        const url = await utils.maskImage(imgUrl, maskUrl);
-        return { backgroundImage: `url("${url}")`, backgroundColor, zIndex };
+    card.buildBackgrounds = async function() {
+        const backgrounds = {};
+        card.backgroundsUsed = [];
+        for (let pipe of backgroundPipeline) {
+            if (!pipe.useBackground(card)) continue;
+            card.backgroundsUsed.push(pipe.name);
+            await pipe.apply(card, backgrounds);
+        }
+        return makeStyles(backgrounds);
     }
 
-    async function getLegendBackgrounds(color, c) {
-        return [
-            await background(`legend/${c}crown.png`, -8),
-            await maskedBackground(
-                await utils.assetURL(`cards/${color}card.jpg`),
-                await utils.assetURL(`masks/crown_mask.png`),
-                -10
-            )
-        ];
-    }
-
-    card.updateBackground = async function() {
-        const { color, c } = card.getColorIdentity();
-        card.backgrounds = card.isLegendary()
-            ? await getLegendBackgrounds(color, c)
-            : [await background(`cards/${color}card.jpg`, -10)];
-    }
-
-    Alpine.effect(() => {
-        if (!card.getColorIdentity || !card.isLegendary) return;
-        card.updateBackground(card.color);
+    Alpine.effect(async () => {
+        const canGenerate = card.color !== undefined && card.superType !== undefined;
+        card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
     });
 
     card.setFrame(await utils.loadFile('frame.html'));

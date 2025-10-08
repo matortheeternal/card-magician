@@ -1,59 +1,5 @@
-import { canvasToObjectURL, loadImage } from './imageProcessing';
-
-function top(x)  { return Math.min(255, x); }
-function bot(x)  { return Math.max(0, x); }
-function col(x)  { return Math.min(255, Math.max(0, x)); }
-
-function overlay(a, b) {
-    return (a < 128)
-        ? (a * b) >> 7
-        : 255 - (((255 - a) * (255 - b)) >> 7);
-}
-
-function softLight(a, b) {
-    a /= 255;
-    b /= 255;
-    let result;
-
-    if (b < 0.5) {
-        result = a - (1 - 2 * b) * a * (1 - a);
-    } else {
-        const d = (a <= 0.25)
-            ? ((16 * a - 12) * a + 4) * a
-            : Math.sqrt(a);
-        result = a + (2 * b - 1) * (d - a);
-    }
-
-    return Math.round(result * 255);
-}
-
-const blendFuncs = {
-    add:           (a, b) => top(a + b),
-    subtract:      (a, b) => bot(a - b),
-    stamp:         (a, b) => col(a - 2 * b + 256),
-    difference:    (a, b) => Math.abs(a - b),
-    negation:      (a, b) => 255 - Math.abs(255 - a - b),
-    multiply:      (a, b) => (a * b) / 255,
-    darken:        (a, b) => Math.min(a, b),
-    lighten:       (a, b) => Math.max(a, b),
-    colorDodge:    (a, b) => (b === 255 ? 255 : top(a * 255 / (255 - b))),
-    colorBurn:     (a, b) => (b === 0 ? 0 : bot(255 - (255 - a) * 255 / b)),
-    screen:        (a, b) => 255 - (((255 - a) * (255 - b)) / 255),
-    overlay:       (a, b) => overlay(a, b),
-    hardLight:     (a, b) => (b < 128)
-        ? (a * b) >> 7
-        : 255 - (((255 - a) * (255 - b)) >> 7),
-    softLight:     (a, b) => softLight(a, b),
-    reflect:       (a, b) => (b === 255 ? 255 : top((a * a) / (255 - b))),
-    glow:          (a, b) => (a === 255 ? 255 : top((b * b) / (255 - a))),
-    freeze:        (a, b) => (b === 0 ? 0 : bot(255 - ((255 - a) * (255 - a)) / b)),
-    heat:          (a, b) => (a === 0 ? 0 : bot(255 - ((255 - b) * (255 - b)) / a)),
-    and:           (a, b) => a & b,
-    or:            (a, b) => a | b,
-    xor:           (a, b) => a ^ b,
-    shadow:        (a, b) => (b * a * a) / (255 * 255),
-    symmetricOverlay: (a, b) => (overlay(a, b) + overlay(b, a)) >> 1,
-};
+import { imageToCanvas, newCanvas, createCachedImageWrapper } from './imageProcessing';
+import { blendFuncs } from './blendFuncs.js';
 
 function blendImageData(baseData, topData, mode) {
     const func = blendFuncs[mode];
@@ -75,56 +21,29 @@ function blendImageData(baseData, topData, mode) {
 }
 
 export function combineBlend(imgA, imgB, mode) {
-    const w = imgA.width;
-    const h = imgA.height;
+    const { width, height } = imgA;
+    if (imgB.width !== width || imgB.height !== height)
+        throw new Error("Images must have the same size");
 
-    const outCanvas = document.createElement("canvas");
-    outCanvas.width = w;
-    outCanvas.height = h;
-    const ctx = outCanvas.getContext("2d");
-
+    const { canvas, ctx } = newCanvas(width, height);
     ctx.globalCompositeOperation = "source-over";
     ctx.drawImage(imgA, 0, 0);
 
-    const baseData = ctx.getImageData(0, 0, w, h);
-    const tmpCanvas = document.createElement("canvas");
-    tmpCanvas.width = w;
-    tmpCanvas.height = h;
-    tmpCanvas.getContext("2d").drawImage(imgB, 0, 0);
-    const topData = tmpCanvas.getContext("2d").getImageData(0, 0, w, h);
+    const base = ctx.getImageData(0, 0, width, height);
+    const { imageData: top } = imageToCanvas(imgB);
 
-    const outData = blendImageData(baseData, topData, mode);
-    ctx.putImageData(outData, 0, 0);
-    return outCanvas;
-}
-
-const combineBlendCache = new Map();
-export async function combineBlendUrl(imgUrlA, imgUrlB, mode) {
-    if (!imgUrlB) return imgUrlA;
-    const key = `${imgUrlA}|${imgUrlB}|${mode}`;
-    if (combineBlendCache.has(key))
-        return combineBlendCache.get(key);
-
-    const imgA = await loadImage(imgUrlA);
-    const imgB = await loadImage(imgUrlB);
-    const canvas = combineBlend(imgA, imgB, mode);
-    const url = await canvasToObjectURL(canvas);
-
-    combineBlendCache.set(key, url);
-    return url;
+    const blended = blendImageData(base, top, mode);
+    ctx.putImageData(blended, 0, 0);
+    return canvas;
 }
 
 export function linearBlend(img1, img2, x1, y1, x2, y2) {
     if (img1.width !== img2.width || img1.height !== img2.height)
-        throw new Error("Images used for blending must have the same size");
+        throw new Error("Images must have the same size");
 
     const { width, height } = img1;
+    const { canvas, ctx } = newCanvas(width, height);
 
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
     ctx.drawImage(img1, 0, 0);
     ctx.save();
 
@@ -144,81 +63,52 @@ export function linearBlend(img1, img2, x1, y1, x2, y2) {
     return canvas;
 }
 
-const linearBlendCache = new Map();
-export async function linearBlendUrl(imgUrlA, imgUrlB, x1, y1, x2, y2) {
-    if (!imgUrlB) return imgUrlA;
-    const key = `${imgUrlA}|${imgUrlB}|${x1}|${y1}|${x2}|${y2}`;
-    if (linearBlendCache.has(key))
-        return linearBlendCache.get(key);
-
-    const imgA = await loadImage(imgUrlA);
-    const imgB = await loadImage(imgUrlB);
-    const canvas = linearBlend(imgA, imgB, x1, y1, x2, y2);
-    const url = await canvasToObjectURL(canvas);
-
-    linearBlendCache.set(key, url);
-    return url;
-}
-
 export function maskBlend(img1, img2, mask) {
     const { width, height } = img1;
+    if (img2.width !== width || img2.height !== height || mask.width !== width || mask.height !== height)
+        throw new Error("Images must have the same size");
 
-    if (
-        img2.width !== width || img2.height !== height ||
-        mask.width !== width || mask.height !== height
-    ) {
-        throw new Error("Images used for blending must have the same size");
-    }
+    const { imageData: data1 } = imageToCanvas(img1);
+    const { imageData: data2 } = imageToCanvas(img2);
+    const { imageData: maskData } = imageToCanvas(mask);
 
-    const canvas1 = document.createElement("canvas");
-    const canvas2 = document.createElement("canvas");
-    const canvasM = document.createElement("canvas");
-    canvas1.width = canvas2.width = canvasM.width = width;
-    canvas1.height = canvas2.height = canvasM.height = height;
-
-    const ctx1 = canvas1.getContext("2d");
-    const ctx2 = canvas2.getContext("2d");
-    const ctxM = canvasM.getContext("2d");
-    ctx1.drawImage(img1, 0, 0);
-    ctx2.drawImage(img2, 0, 0);
-    ctxM.drawImage(mask, 0, 0);
-
-    const imgData1 = ctx1.getImageData(0, 0, width, height);
-    const imgData2 = ctx2.getImageData(0, 0, width, height);
-    const maskData = ctxM.getImageData(0, 0, width, height);
-
-    const d1 = imgData1.data;
-    const d2 = imgData2.data;
-    const m  = maskData.data;
+    const d1 = data1.data;
+    const d2 = data2.data;
+    const m = maskData.data;
 
     for (let i = 0; i < d1.length; i += 4) {
-        // grayscale mask from red channel
-        const maskVal = m[i];
+        const maskVal = m[i]; // red channel
         const inv = 255 - maskVal;
         d1[i]   = (d1[i]   * maskVal + d2[i]   * inv) / 255;
         d1[i+1] = (d1[i+1] * maskVal + d2[i+1] * inv) / 255;
         d1[i+2] = (d1[i+2] * maskVal + d2[i+2] * inv) / 255;
     }
 
-    const outCanvas = document.createElement("canvas");
-    outCanvas.width = width;
-    outCanvas.height = height;
-    outCanvas.getContext("2d").putImageData(imgData1, 0, 0);
-    return outCanvas;
+    const { canvas, ctx } = newCanvas(width, height);
+    ctx.putImageData(data1, 0, 0);
+    return canvas;
 }
 
-const maskBlendCache = new Map();
-export async function maskBlendUrl(imgUrlA, imgUrlB, maskUrl) {
-    const key = `${imgUrlA}|${imgUrlB}|${maskUrl}`;
-    if (maskBlendCache.has(key))
-        return maskBlendCache.get(key);
+export function maskImage(sourceImg, maskImg) {
+    const { width, height } = sourceImg;
+    if (maskImg.width !== width || maskImg.height !== height)
+        throw new Error("Images must have the same size");
 
-    const imgA = await loadImage(imgUrlA);
-    const imgB = await loadImage(imgUrlB);
-    const maskImg = await loadImage(maskUrl);
-    const canvas = maskBlend(imgA, imgB, maskImg);
-    const url = await canvasToObjectURL(canvas);
+    const { canvas, ctx, imageData: srcImageData } = imageToCanvas(sourceImg);
+    const { imageData: maskImageData } = imageToCanvas(maskImg);
 
-    maskBlendCache.set(key, url);
-    return url;
+    const srcData = srcImageData.data;
+    const maskData = maskImageData.data;
+    for (let i = 0; i < srcData.length; i += 4) {
+        const srcAlpha = srcData[i + 3];
+        srcData[i + 3] = Math.round(srcAlpha * (maskData[i] / 255));
+    }
+
+    ctx.putImageData(srcImageData, 0, 0);
+    return canvas;
 }
+
+export const combineBlendUrl = createCachedImageWrapper(combineBlend, 2, true);
+export const linearBlendUrl = createCachedImageWrapper(linearBlend, 2, true);
+export const maskBlendUrl = createCachedImageWrapper(maskBlend, 3);
+export const maskImageUrl = createCachedImageWrapper(maskImage, 2);

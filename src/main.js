@@ -51,6 +51,6 @@ if (NL_ARGS.includes("--run-tests")) {
     setupTestHarness().then(runTests);
 } else {
     loadTemplates().then(templates => {
-        buildTemplate(templates[0]).then(publishTemplate);
+        buildTemplate(templates[1]).then(publishTemplate);
     });
 }
