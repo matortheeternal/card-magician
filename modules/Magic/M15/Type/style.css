@@ -9,4 +9,5 @@
     height: inherit;
     font-family: "Beleren Bold", serif;
     font-size: 17px;
+    font-kerning: none;
 }
