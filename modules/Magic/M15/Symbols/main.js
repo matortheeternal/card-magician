@@ -14,7 +14,7 @@ export default async function(card, utils) {
             const match = converter.match(str);
             if (match) return [converter, match];
         }
-        return [{convert: () => str[0]}, [{length: 1}]];
+        throw new Error('could not find matching symbol converter');
     }
 
     async function convertSymbols(str, size) {
