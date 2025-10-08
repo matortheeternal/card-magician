@@ -19,7 +19,7 @@ export default async function(card, utils) {
     });
 
     Alpine.effect(() => {
-        if (!card.rulesText) return;
+        if (card.rulesText === undefined) return;
         card.rulesHTML = card.formatText(card.rulesText);
     });
 
