@@ -107,5 +107,12 @@ export const buildSymbolConverters = (utils) => ([
         convert: async (size, [str]) => {
             return img(await utils.assetURL(`${size}/tap/${str}.png`));
         }
+    },
+    {
+        name: 'default',
+        match: str => str.match(/^./),
+        convert: async (size, [str]) => {
+            return str
+        }
     }
 ]);
