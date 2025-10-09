@@ -19,6 +19,10 @@ export default async function(card, utils) {
         return /vehicle/i.test(card.subType);
     };
 
+    card.isSnow = function() {
+        return /snow/i.test(card.superType);
+    };
+
     card.addField({
         id: 'superType',
         displayName: 'Super Type'
