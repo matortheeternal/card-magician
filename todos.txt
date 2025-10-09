@@ -1,6 +1,4 @@
-- artifact bg support
-- hybrid bg support
-- snow bg support
+- 2-color multicolor masking
 - configuration support
 - simple set support
 - card image exporting

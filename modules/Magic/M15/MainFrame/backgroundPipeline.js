@@ -22,16 +22,18 @@ export const buildPipeline = (utils) => [{
     useBackground: card => !card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
         const key = card.getCardColorKey();
-        bgs.base = await background(utils, `card/${key}.jpg`, -10);
+        const folder = card.isSnow() ? 'snow' : 'card';
+        bgs.base = await background(utils, `${folder}/${key}.jpg`, -10);
     }
 }, {
     name: 'hybrid',
     useBackground: card => card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
         const [c1, c2] = card.colorIdentity.colors;
+        const folder = card.isSnow() ? 'snow' : 'card';
         const images = await Promise.all([
-            utils.assetURL(`card/${c1.char}.jpg`),
-            utils.assetURL(`card/${c2.char}.jpg`)
+            utils.assetURL(`${folder}/${c1.char}.jpg`),
+            utils.assetURL(`${folder}/${c2.char}.jpg`)
         ]);
         const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
         bgs.base = { url, zIndex: -10 };
@@ -40,7 +42,8 @@ export const buildPipeline = (utils) => [{
     name: 'artifact',
     useBackground: card => card.isArtifact(),
     apply: async (card, bgs) => {
-        const artifactUrl = await utils.assetURL('card/a.jpg');
+        const folder = card.isSnow() ? 'snow' : 'card';
+        const artifactUrl = await utils.assetURL(`${folder}/a.jpg`);
         const maskUrl = await utils.assetURL('masks/blend/artifact.png');
         bgs.base.url = await utils.maskedBlend(bgs.base.url, artifactUrl, maskUrl);
     }
@@ -55,7 +58,8 @@ export const buildPipeline = (utils) => [{
     }
 }, {
     name: 'nyx',
-    useBackground: card => card.isEnchantment() && !card.colorIdentity.isHybrid(),
+    useBackground: card => card.isEnchantment() &&
+        !card.colorIdentity.isHybrid() && !card.isSnow(),
     apply: async (card, bgs) => {
         const key = card.getCardColorKey();
         const nyxUrl = await utils.assetURL(`nyx/${key}.png`);
@@ -65,7 +69,8 @@ export const buildPipeline = (utils) => [{
     }
 }, {
     name: 'hybrid nyx',
-    useBackground: card => card.isEnchantment() && card.colorIdentity.isHybrid(),
+    useBackground: card => card.isEnchantment() &&
+        card.colorIdentity.isHybrid() && !card.isSnow(),
     apply: async (card, bgs) => {
         const [c1, c2] = card.colorIdentity.colors;
         const images = await Promise.all([
