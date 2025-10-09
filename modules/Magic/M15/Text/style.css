@@ -18,8 +18,12 @@
     margin: 4px 0;
 }
 
-.text p:first-of-type, .text p:last-of-type {
-    margin: 0;
+.text p:first-of-type {
+    margin-top: 0;
+}
+
+.text p:last-of-type {
+    margin-bottom: 0;
 }
 
 .text img.sym {
