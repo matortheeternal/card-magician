@@ -4,6 +4,7 @@ import registerScope from './directives/scope.js';
 import { buildTemplate, loadTemplates } from './templateBuilder';
 import { setupTestHarness, runTests } from './tests';
 import { buildForms } from './formBuilder';
+import { saveHTMLAsImage } from './gfx/imageProcessing';
 
 // BASE SETUP
 Neutralino.init();
@@ -43,6 +44,9 @@ function publishTemplate(templateModel) {
                 await card.load(cardData[card.id]);
             }
         },
+        exportImg: async function() {
+            await saveHTMLAsImage(templateContainer, 'card.png');
+        }
     });
 }
 

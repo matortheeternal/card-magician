@@ -1,4 +1,10 @@
-- 2-color multicolor masking
-- configuration support
 - simple set support
-- card image exporting
+- configuration options
+- set icons
+- card text to html conversion
+- 2-color multicolor masking
+- auto zindexing
+- larger cards
+- keywords
+- inline editing
+- favicon

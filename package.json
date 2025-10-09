@@ -34,7 +34,8 @@
     "testEnvironment": "jsdom"
   },
   "dependencies": {
-    "alpinejs": "^3.15.0"
+    "alpinejs": "^3.15.0",
+    "html2canvas": "^1.4.1"
   },
   "devDependencies": {
     "esbuild": "^0.25.10"
