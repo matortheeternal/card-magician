@@ -1,3 +1,5 @@
+import html2canvas from 'html2canvas';
+
 export function imageToCanvas(img) {
     const canvas = document.createElement("canvas");
     canvas.width = img.width;
@@ -64,4 +66,18 @@ export function createCachedImageWrapper(coreFunction, numImageArgs, shortcut = 
 
         return url;
     };
+}
+
+export async function saveHTMLAsImage(node, filename) {
+  try {
+    const canvas = await html2canvas(node);
+    const dataUrl = canvas.toDataURL('image/png');
+    const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+    const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    await Neutralino.filesystem.writeBinaryFile(filename, binaryData);
+
+    console.log(`Saved image to ${filename}`);
+  } catch (err) {
+    console.error('Failed to save image:', err);
+  }
 }

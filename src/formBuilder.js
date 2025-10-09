@@ -71,6 +71,7 @@ export function buildForms(cardNamespace) {
         buildCardForm(form, card);
         form.appendChild(makeFormButton('save', 'await save()'));
         form.appendChild(makeFormButton('load', 'await load()'));
+        form.appendChild(makeFormButton('export', 'await exportImg()'));
         formsContainer.appendChild(form);
     }
     return formsContainer;
