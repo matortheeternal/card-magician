@@ -6,8 +6,16 @@
     color: white;
 }
 
+.__id__-info > div {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    align-items: center;
+}
+
 .__id__-info .illustrator-name {
     font-size: 10px;
+    line-height: 9px;
     font-weight: initial;
     font-family: "Beleren Small Caps Bold", sans-serif;
 }
@@ -19,8 +27,7 @@
     font-family: "MPlantin", sans-serif;
 }
 
-.illustrator-brush {
+.illustrator-brush svg {
     width: 12px;
-    height: 7px;
-    filter: invert(100%);
+    height: 8px;
 }
