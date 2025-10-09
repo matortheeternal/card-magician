@@ -1,5 +1,6 @@
 export default async function(card, utils) {
-    const { buildSymbolConverters } = await utils.import('symbolizer.js');
+    const { symbolParsers } = await utils.import('symbolParsers.js');
+    const { Symbol } = await utils.import('Symbol.js');
 
     const tallUrl = await utils.assetURL(`tall/circle.png`);
     const flatUrl = await utils.assetURL(`flat/circle.png`);
@@ -7,25 +8,13 @@ export default async function(card, utils) {
     card.flatManaCircleStyle = { backgroundImage: `url("${flatUrl}")` };
 
     const symbolExpr = /([1-9WUBRGwubrgTXYZ]+)([,:])/g;
-    const symbolConverters = buildSymbolConverters(utils);
 
-    function findSymbolConverter(str) {
-        for (let converter of symbolConverters) {
-            const match = converter.match(str);
-            if (match) return [converter, match];
+    function findSymbolParser(str) {
+        for (let parser of symbolParsers) {
+            const match = parser.match(str);
+            if (match) return [parser, match];
         }
-        throw new Error('could not find matching symbol converter');
-    }
-
-    async function convertSymbols(str, size) {
-        let remainingStr = str;
-        let output = [];
-        while (remainingStr.length) {
-            const [converter, match] = findSymbolConverter(remainingStr);
-            output.push(await converter.convert(size, match));
-            remainingStr = remainingStr.slice(match[0].length);
-        }
-        return output.join('');
+        return str;
     }
 
     async function replaceAsync(str, regex, asyncFn) {
@@ -38,9 +27,30 @@ export default async function(card, utils) {
         return str.replace(regex, () => data.shift());
     }
 
+    card.parseSymbols = function(str) {
+        let remainingStr = str;
+        let output = [];
+        while (remainingStr.length) {
+            const [parser, match] = findSymbolParser(remainingStr);
+            output.push(new Symbol(parser.name, match[0]));
+            remainingStr = remainingStr.slice(match[0].length);
+        }
+        return output;
+    };
+
+    card.symbolsToHTML = async function(symbols, useTall) {
+        const size = useTall ? 'tall' : 'flat';
+        return (await Promise.all(
+            symbols.map(async sym => {
+                return sym.toHTML ? await sym.toHTML(utils, size) : sym;
+            })
+        )).join('');
+    };
+
     card.generateSymbols = async function(str, useTall) {
         if (!str) return '';
-        return convertSymbols(str, useTall ? 'tall' : 'flat');
+        const symbols = card.parseSymbols(str);
+        return await card.symbolsToHTML(symbols, useTall);
     };
 
     card.formatText = async function(text) {

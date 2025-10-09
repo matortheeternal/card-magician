@@ -1,8 +1,9 @@
 export default async function(card, utils) {
     card.showPT = true;
 
-    async function updatePtStyle({ color }) {
-        const url = await utils.assetURL(color + 'pt.png');
+    async function updatePtStyle() {
+        const key = card.isVehicle() ? 'v' : card.getCardColorKey();
+        const url = await utils.assetURL(key + '.png');
         card.ptStyle = { backgroundImage: `url("${url}")` };
     }
 
@@ -11,8 +12,8 @@ export default async function(card, utils) {
     });
 
     Alpine.effect(() => {
-        if (!card.color) return;
-        updatePtStyle(card.color);
+        if (!card.colorIdentity) return;
+        updatePtStyle();
     });
 
     card.addField({
