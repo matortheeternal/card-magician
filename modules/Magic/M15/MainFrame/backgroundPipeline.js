@@ -21,7 +21,8 @@ function getBorderMaskPath(card) {
 export const buildPipeline = (utils) => [{
     name: 'colorless, monocolor, multicolor base',
     useBackground: card => {
-        return card.color.c.length === 1;
+        return card.color.colors.length <= 1 ||
+            card.color.colors.length >= 3;
     },
     apply: async (card, bgs) => {
         const { c } = card.color;
@@ -29,10 +30,15 @@ export const buildPipeline = (utils) => [{
     }
 }, {
     name: 'two-color base',
-    useBackground: card => card.color.c.length === 2,
+    useBackground: card => card.color.colors.length === 2,
     apply: async (card, bgs) => {
-        const { colors } = card.color;
-        //bgs.base =
+        const [c1, c2] = card.color.colors;
+        const images = await Promise.all([
+            utils.assetURL(`card/${c1}.jpg`),
+            utils.assetURL(`card/${c2}.jpg`)
+        ]);
+        const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
+        bgs.base = { url, zIndex: -10 };
     }
 }, {
     name: 'artifact blend',
