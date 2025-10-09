@@ -3,12 +3,6 @@ async function background(utils, path, zIndex) {
     return { url, zIndex };
 }
 
-async function maskedBg(utils, {url: imgUrl, zIndex}, maskPath, color = 'black') {
-    const maskUrl = await utils.assetURL(maskPath);
-    const url = await utils.maskImage(imgUrl, maskUrl);
-    return { url, backgroundColor: color, zIndex };
-}
-
 function resolveCrown(card) {
     const { c } = card.color;
     const crownPath = ['crowns'];
@@ -44,7 +38,9 @@ export const buildPipeline = (utils) => [{
     name: 'artifact blend',
     useBackground: card => card.isArtifact(),
     apply: async (card, bgs) => {
-        //bgs.base =
+        const artifactUrl = await utils.assetURL('card/a.jpg');
+        const maskUrl = await utils.assetURL('masks/blend/artifact.png');
+        bgs.base.url = await utils.maskedBlend(bgs.base.url, artifactUrl, maskUrl);
     }
 }, {
     name: 'vehicle blend and mask',

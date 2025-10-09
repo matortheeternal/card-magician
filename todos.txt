@@ -1,6 +1,6 @@
-- nyx bg support
-- vehicle bg support
+- artifact bg support
 - hybrid bg support
+- snow bg support
 - configuration support
 - simple set support
 - card image exporting
