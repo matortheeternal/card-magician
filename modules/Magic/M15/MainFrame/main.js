@@ -1,3 +1,5 @@
+const allDefined = (...args) => args.every(arg => arg !== undefined);
+
 export default async function(card, utils) {
     const { buildPipeline } = await utils.import('backgroundPipeline.js');
     const backgroundPipeline = buildPipeline(utils);
@@ -23,7 +25,7 @@ export default async function(card, utils) {
     }
 
     Alpine.effect(async () => {
-        const canGenerate = card.color !== undefined && card.superType !== undefined;
+        const canGenerate = allDefined(card.color, card.superType, card.subType);
         card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
     });
 
