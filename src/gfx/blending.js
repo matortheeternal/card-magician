@@ -1,5 +1,6 @@
 import { imageToCanvas, newCanvas, createCachedImageWrapper } from './imageProcessing';
 import { blendFuncs } from './blendFuncs.js';
+import Color from './Color.js';
 
 function blendImageData(baseData, topData, mode) {
     const func = blendFuncs[mode];
@@ -108,7 +109,28 @@ export function maskImage(sourceImg, maskImg) {
     return canvas;
 }
 
+export function maskColor(maskImg, hexColor) {
+    const color = Color.fromHex(hexColor);
+    const { width, height } = maskImg;
+    const { canvas, ctx } = newCanvas(width, height);
+    const { imageData: maskImageData } = imageToCanvas(maskImg);
+    const maskData = maskImageData.data;
+
+    const imageData = ctx.createImageData(width, height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = color.r;
+        data[i + 1] = color.g;
+        data[i + 2] = color.b;
+        data[i + 3] = Math.round(color.a * (maskData[i] / 255));
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    return canvas;
+}
+
 export const combineBlendUrl = createCachedImageWrapper(combineBlend, 2, true);
 export const linearBlendUrl = createCachedImageWrapper(linearBlend, 2, true);
 export const maskBlendUrl = createCachedImageWrapper(maskBlend, 3);
 export const maskImageUrl = createCachedImageWrapper(maskImage, 2);
+export const maskColorUrl = createCachedImageWrapper(maskColor, 1);

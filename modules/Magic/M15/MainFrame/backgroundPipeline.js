@@ -9,6 +9,21 @@ async function maskedBg(utils, {url: imgUrl, zIndex}, maskPath, color = 'black')
     return { url, backgroundColor: color, zIndex };
 }
 
+function resolveCrown(card) {
+    const { c } = card.color;
+    const crownPath = ['crowns'];
+    if (card.isEnchantment()) crownPath.push('nyx');
+    crownPath.push(`${c}.png`);
+    return crownPath.join('/');
+}
+
+function getBorderMaskPath(card) {
+    const filenameParts = [];
+    if (card.isLegendary()) filenameParts.push('crown');
+    const filename = filenameParts.join('_') || 'base';
+    return ['masks', 'border', `${filename}.png`].join('/');
+}
+
 export const buildPipeline = (utils) => [{
     name: 'colorless, monocolor, multicolor base',
     useBackground: card => {
@@ -54,8 +69,14 @@ export const buildPipeline = (utils) => [{
     name: 'legendary crown and mask',
     useBackground: card => card.isLegendary(),
     apply: async (card, bgs) => {
-        const { c } = card.color;
-        bgs.base = await maskedBg(utils, bgs.base, 'masks/crown_mask.png');
-        bgs.crown = await background(`crowns/${c}.jpg`, -8);
+        bgs.crown = await background(utils, resolveCrown(card), -8);
+    }
+}, {
+    name: 'border',
+    useBackground: () => true,
+    apply: async (card, bgs) => {
+        const maskUrl = await utils.assetURL(getBorderMaskPath(card));
+        const borderUrl = await utils.maskColor(maskUrl, '#000000');
+        bgs.border = { url: borderUrl, zIndex: -1 };
     }
 }];

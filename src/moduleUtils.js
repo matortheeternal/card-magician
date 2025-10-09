@@ -1,7 +1,7 @@
 import { getImageUrl, loadFont, loadImport } from './fsHelpers';
 import { parseBlob } from './gfx/imageProcessing';
 import {
-    maskImageUrl, combineBlendUrl, linearBlendUrl, maskBlendUrl
+    maskImageUrl, combineBlendUrl, linearBlendUrl, maskBlendUrl, maskColorUrl
 } from './gfx/blending';
 
 export const buildModuleUtils = (modulePath) => ({
@@ -19,6 +19,9 @@ export const buildModuleUtils = (modulePath) => ({
     },
     parseBlob(text) {
         return parseBlob(text);
+    },
+    async maskColor(sourceUrl, color) {
+        return await maskColorUrl(sourceUrl, color);
     },
     async maskImage(sourceUrl, maskUrl) {
         return await maskImageUrl(sourceUrl, maskUrl);
