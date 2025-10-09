@@ -8,8 +8,8 @@ const colorNames = {
 
 function getColorlessIdentity(superType) {
     return superType.includes('Artifact')
-        ? { c: 'a', color: 'artifact' }
-        : { c: 'c', color: 'colorless' };
+        ? { c: 'a', color: 'artifact', colors: [] }
+        : { c: 'c', color: 'colorless', colors: [] };
 }
 
 export default async function(card, utils) {
@@ -24,8 +24,8 @@ export default async function(card, utils) {
         if (colors.length === 0)
             return getColorlessIdentity(card.superType || '');
         if (colors.length === 1)
-            return { c: colors[0], color: colorNames[colors[0]] };
-        return { c: 'm', color: 'gold', colors: colors.map(c => colorNames[c]) };
+            return { c: colors[0], color: colorNames[colors[0]], colors };
+        return { c: 'm', color: 'gold', colors };
     };
 
     card.isMulticolor = function() {
