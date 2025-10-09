@@ -3,11 +3,10 @@ async function background(utils, path, zIndex) {
     return { url, zIndex };
 }
 
-function resolveCrown(card) {
-    const { c } = card.color;
+function resolveCrown(card, key) {
     const crownPath = ['crowns'];
     if (card.isEnchantment()) crownPath.push('nyx');
-    crownPath.push(`${c}.png`);
+    crownPath.push(`${key}.png`);
     return crownPath.join('/');
 }
 
@@ -19,29 +18,26 @@ function getBorderMaskPath(card) {
 }
 
 export const buildPipeline = (utils) => [{
-    name: 'colorless, monocolor, multicolor base',
-    useBackground: card => {
-        return card.color.colors.length <= 1 ||
-            card.color.colors.length >= 3;
-    },
+    name: 'card',
+    useBackground: card => !card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        const { c } = card.color;
-        bgs.base = await background(utils, `card/${c}.jpg`, -10);
+        const key = card.getCardColorKey();
+        bgs.base = await background(utils, `card/${key}.jpg`, -10);
     }
 }, {
-    name: 'two-color base',
-    useBackground: card => card.color.colors.length === 2,
+    name: 'hybrid',
+    useBackground: card => card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        const [c1, c2] = card.color.colors;
+        const [c1, c2] = card.colorIdentity.colors;
         const images = await Promise.all([
-            utils.assetURL(`card/${c1}.jpg`),
-            utils.assetURL(`card/${c2}.jpg`)
+            utils.assetURL(`card/${c1.char}.jpg`),
+            utils.assetURL(`card/${c2.char}.jpg`)
         ]);
         const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
         bgs.base = { url, zIndex: -10 };
     }
 }, {
-    name: 'artifact blend',
+    name: 'artifact',
     useBackground: card => card.isArtifact(),
     apply: async (card, bgs) => {
         const artifactUrl = await utils.assetURL('card/a.jpg');
@@ -49,7 +45,7 @@ export const buildPipeline = (utils) => [{
         bgs.base.url = await utils.maskedBlend(bgs.base.url, artifactUrl, maskUrl);
     }
 }, {
-    name: 'vehicle blend and mask',
+    name: 'vehicle',
     useBackground: card => card.isVehicle(),
     apply: async (card, bgs) => {
         const vehicleUrl = await utils.assetURL(`trims/vehicle.png`);
@@ -58,20 +54,45 @@ export const buildPipeline = (utils) => [{
         bgs.vehicle = { url: blendUrl, zIndex: -9 };
     }
 }, {
-    name: 'enchantment blend (nyx)',
-    useBackground: card => card.isEnchantment(),
+    name: 'nyx',
+    useBackground: card => card.isEnchantment() && !card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        const { c } = card.color;
-        const nyxUrl = await utils.assetURL(`nyx/${c}.png`);
+        const key = card.getCardColorKey();
+        const nyxUrl = await utils.assetURL(`nyx/${key}.png`);
         const maskUrl = await utils.assetURL(`masks/375x523 trim mask.png`);
         const blendUrl = await utils.maskImage(nyxUrl, maskUrl);
         bgs.nyx = { url: blendUrl, zIndex: -9 };
     }
 }, {
-    name: 'legendary crown and mask',
-    useBackground: card => card.isLegendary(),
+    name: 'hybrid nyx',
+    useBackground: card => card.isEnchantment() && card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        bgs.crown = await background(utils, resolveCrown(card), -8);
+        const [c1, c2] = card.colorIdentity.colors;
+        const images = await Promise.all([
+            utils.assetURL(`nyx/${c1.char}.jpg`),
+            utils.assetURL(`nyx/${c2.char}.jpg`)
+        ]);
+        const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
+        bgs.nyx = { url, zIndex: -9 };
+    }
+}, {
+    name: 'crown',
+    useBackground: card => card.isLegendary() && !card.colorIdentity.isHybrid(),
+    apply: async (card, bgs) => {
+        const crownPath = resolveCrown(card, card.getCardColorKey());
+        bgs.crown = await background(utils, crownPath, -8);
+    }
+}, {
+    name: 'hybrid crown',
+    useBackground: card => card.isLegendary() && card.colorIdentity.isHybrid(),
+    apply: async (card, bgs) => {
+        const [c1, c2] = card.colorIdentity.colors;
+        const images = await Promise.all([
+            utils.assetURL(resolveCrown(card, c1.char)),
+            utils.assetURL(resolveCrown(card, c2.char))
+        ]);
+        const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
+        bgs.crown = { url, zIndex: -9 };
     }
 }, {
     name: 'border',

@@ -25,7 +25,7 @@ export default async function(card, utils) {
     }
 
     Alpine.effect(async () => {
-        const canGenerate = allDefined(card.color, card.superType, card.subType);
+        const canGenerate = allDefined(card.colorIdentity, card.superType, card.subType);
         card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
     });
 
