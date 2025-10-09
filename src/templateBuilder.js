@@ -13,6 +13,8 @@ function initCard(key) {
     const dom = document.createElement('div');
     dom.className = `${key}-container`;
     dom.setAttribute('x-scope', key);
+    const style = document.createElement('style');
+    const styles = [];
     return Alpine.reactive({
         id: key,
         dom,
@@ -27,12 +29,12 @@ function initCard(key) {
             targetElement.innerHTML = compileTemplate(this, html);
         },
         addStyle(css) {
-            const styleFragment = document.createElement('style');
-            styleFragment.innerHTML = compileTemplate(this, css);
-            dom.prepend(styleFragment);
+            styles.push(compileTemplate(this, css));
+            style.innerHTML = styles.join('\n\n');
         },
         setFrame(html) {
             dom.innerHTML = compileTemplate(this, html);
+            dom.prepend(style);
         },
         async save() {
             const cardData = {};
