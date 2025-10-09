@@ -1,10 +1,9 @@
-- simple set support
-- configuration options
-- set icons
 - card text to html conversion
 - 2-color multicolor masking
 - auto zindexing
-- larger cards
+- larger card support
 - keywords
 - inline editing
-- favicon
+- configuration options
+- simple set support
+- set icons
