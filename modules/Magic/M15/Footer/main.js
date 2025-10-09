@@ -1,5 +1,5 @@
 export default async function(card, utils) {
-    card.brushUrl = await utils.assetURL('art.png');
+    card.brushSvg = await utils.loadFile('assets/art.svg');
 
     card.addField({
         id: 'collectorNumber',
@@ -28,15 +28,15 @@ export default async function(card, utils) {
 
     card.publishElement('info',
         `<div>
-            <span x-text="rarityCharacter"></span>
-            <span x-text="collectorNumber"></span>
+            <div x-text="rarityCharacter"></div>
+            <div x-text="collectorNumber"></div>
         </div>
         <div>
-            <span x-text="setCode"></span>
-            <span>&bullet;</span>
-            <span x-text="language"></span>
-            <img class="illustrator-brush" :src="brushUrl" />
-            <span class="illustrator-name" x-text="illustrator"></span>
+            <div x-text="setCode"></div>
+            <div>&bullet;</div>
+            <div x-text="language"></div>
+            <div class="illustrator-brush" x-html="brushSvg"></div>
+            <div class="illustrator-name" x-text="illustrator"></div>
         </div>`
     );
 
