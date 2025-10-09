@@ -21,7 +21,10 @@ export async function loadImport(filePath) {
             return;
         }
 
-        const sourceCode = await Neutralino.filesystem.readFile(filePath);
+        const sourceCode = [
+            `//# sourceURL=${filePath}`,
+            await Neutralino.filesystem.readFile(filePath)
+        ].join('\n')
         const blob = new Blob([sourceCode], { type: 'application/javascript' });
         const blobUrl = URL.createObjectURL(blob);
         return await import(blobUrl);
@@ -35,7 +38,6 @@ export async function loadModule(modulePath, card, utils) {
         const mainPath = `./modules/${modulePath}/main.js`;
         const module = await loadImport(mainPath);
         console.log('Loading module', mainPath);
-        // console.log(Alpine.raw(card), utils);
         await module.default(card, utils);
     } catch (error) {
         console.error('Failed to load module:', error);
