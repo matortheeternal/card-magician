@@ -21,7 +21,8 @@ export const buildPipeline = (utils) => [{
     name: 'card',
     useBackground: card => !card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        const key = card.getCardColorKey();
+        let key = card.getCardColorKey();
+        if (card.isLand()) key += 'l';
         const folder = card.isSnow() ? 'snow' : 'card';
         bgs.base = await background(utils, `${folder}/${key}.jpg`, -10);
     }
@@ -29,7 +30,8 @@ export const buildPipeline = (utils) => [{
     name: 'hybrid',
     useBackground: card => card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
-        const [c1, c2] = card.colorIdentity.colors;
+        let [c1, c2] = card.colorIdentity.colors;
+        if (card.isLand()) c1 += 'l', c2 += 'l';
         const folder = card.isSnow() ? 'snow' : 'card';
         const images = await Promise.all([
             utils.assetURL(`${folder}/${c1.char}.jpg`),
@@ -42,8 +44,9 @@ export const buildPipeline = (utils) => [{
     name: 'artifact',
     useBackground: card => card.isArtifact(),
     apply: async (card, bgs) => {
+        const key = card.isLand() ? 'al' : 'a';
         const folder = card.isSnow() ? 'snow' : 'card';
-        const artifactUrl = await utils.assetURL(`${folder}/a.jpg`);
+        const artifactUrl = await utils.assetURL(`${folder}/${key}.jpg`);
         const maskUrl = await utils.assetURL('masks/blend/artifact.png');
         bgs.base.url = await utils.maskedBlend(bgs.base.url, artifactUrl, maskUrl);
     }
