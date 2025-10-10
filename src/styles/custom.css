@@ -30,11 +30,26 @@ nav {
     border-bottom: 1px solid var(--sl-input-border-color);
     color: var(--sl-input-label-color);
     background: var(--sl-color-neutral-0);
+    user-select: none;
+}
+
+nav img {
+    width: 32px;
+    height: 32px;
+    margin: 0 4px;
+    border: 1px solid grey;
+    box-sizing: content-box;
 }
 
 nav sl-button::part(base) {
     border: none;
     border-radius: 0;
+}
+
+nav .menu-items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .forms-container {
