@@ -22,55 +22,19 @@ main {
 }
 
 
-form {
+.form {
     background: #000;
     color: #fff;
     padding: 1em;
     border-radius: 10px;
     min-width: 30em;
+    font-family: var(--sl-font-sans);
+    max-height: 80vh;
+    overflow: auto;
 }
 
-form label {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-form input, form textarea, form select {
-    min-width: 60%;
-}
-
-label {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1em;
-    padding: 0.2em;
-}
-
-input[type="text"] {
-    min-width: 60%;
-    background: black;
-    color: white;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: green;
-    box-shadow: 0 0 2px 0 green;
-}
-
-textarea {
-    width: 60% !important;
-    min-height: 6em;
-    background: black;
-    color: white;
-    font-family: "Mplantin", sans-serif;
-}
-
-textarea:focus {
-    outline: none;
-    border-color: green;
-    box-shadow: 0 0 2px 0 green;
+.form section > * {
+    margin-bottom: var(--sl-spacing-x-small);
 }
 
 .card-container {

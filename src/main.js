@@ -1,5 +1,6 @@
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import '@shoelace-style/shoelace/dist/themes/dark.css';
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import Alpine from 'alpinejs';
 import registerFitText from './directives/fitText.js';
 import registerScope from './directives/scope.js';
@@ -9,6 +10,7 @@ import { buildForms } from './formBuilder';
 import { saveHTMLAsImage } from './gfx/imageProcessing';
 
 // BASE SETUP
+setBasePath('/shoelace')
 Neutralino.init();
 Neutralino.events.on("windowClose", () => Neutralino.app.exit(0));
 window.Alpine = Alpine;
