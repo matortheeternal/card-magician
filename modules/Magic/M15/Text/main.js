@@ -1,31 +1,32 @@
-const vStart = '87%';
-const hStart = '80%';
-const ptPolygon = `polygon(${hStart} ${vStart}, 100% ${vStart}, 100% 100%, ${hStart} 100%)`;
-
 export default async function(card, utils) {
     const { textToHTML } = await utils.import('textToHTML.js');
-    card.wrapShapeStyle = {
-        shapeOutside: ptPolygon,
-        clipPath: ptPolygon
-    };
     const flavorBarUrl = await utils.assetURL('grey bar.png');
     card.flavorBarStyle = { backgroundImage: `url("${flavorBarUrl}")` };
+    card.forbiddenRects = [];
 
-    Alpine.effect(() => {
-        card.wrapShapeStyle = {
-            shapeOutside: ptPolygon,
-            clipPath: ptPolygon
-        };
-    });
+    function updateForbiddenRects() {
+        card.forbiddenRects = [];
+        if (card.showPT) {
+            const ptContainer = card.dom.querySelector(`.${card.id}-pt-container`);
+            card.forbiddenRects.push(...ptContainer.getClientRects());
+        }
+        if (card.showStamp) {
+            // TODO: stamp rect
+        }
+    }
 
     Alpine.effect(() => {
         card.rulesHTML = textToHTML(card.rulesText, card);
-        card.rulesHTML = card.formatText(card.rulesText);
     });
 
     Alpine.effect(() => {
         card.showFlavorBar = card.flavorText && card.rulesText;
     });
+
+    Alpine.effect(() => {
+        if ((card.showPT || card.showStamp) && card.rulesHTML)
+            Alpine.nextTick(updateForbiddenRects);
+    })
 
     card.addField({
         id: 'rulesText',
@@ -40,8 +41,7 @@ export default async function(card, utils) {
     });
 
     card.publishElement('text-box',
-        `<div class="text" x-fit-text="[rulesText, flavorText]">
-            <div class="text-wrap-shape" :style="wrapShapeStyle"></div>
+        `<div class="text" x-fit-text="{text: [rulesHTML, flavorText], forbiddenRects}">
             <div class="rules-text" x-html="rulesHTML"></div>
             <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
             <div class="flavor-text" x-text="flavorText"></div>

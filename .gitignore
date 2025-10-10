@@ -15,5 +15,6 @@ neutralino.js
 # Custom
 node_modules
 .tmp/auth_info.json
-
 /resources/js
+.tmp/
+card.json
