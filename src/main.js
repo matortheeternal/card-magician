@@ -21,7 +21,8 @@ Alpine.start();
 
 async function makeDraggable() {
     await Neutralino.window.setSize({ resizable: true });
-    const exclusions = await Neutralino.window.setDraggableRegion('title-bar');
+    const result = await Neutralino.window.setDraggableRegion('title-bar');
+    console.log('Draggable region initialized:', result);
 }
 
 function publishTemplate(templateModel) {
