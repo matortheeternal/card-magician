@@ -1,9 +1,8 @@
-- card text to html conversion
-- 2-color multicolor masking
-- auto zindexing
-- larger card support
-- keywords
-- inline editing
-- configuration options
 - simple set support
 - set icons
+- configuration options
+- 2-color multicolor masking
+- inline editing
+- auto zindexing
+- keywords
+- larger card support

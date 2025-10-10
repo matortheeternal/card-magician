@@ -24,20 +24,20 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --minify --target=es2020",
-    "dev": "esbuild src/main.js --bundle --outfile=resources/js/main.js --format=iife --target=es2020 --sourcemap",
-    "start": "npm run dev && neu run",
-    "test": "npm run dev && neu run -- --run-tests"
-  },
-  "jest": {
-    "transform": {},
-    "testEnvironment": "jsdom"
+    "build": "node esbuild.config.js --minify",
+    "dev": "node esbuild.config.js --watch",
+    "start": "concurrently \"npm run dev\" \"neu run\"",
+    "test": "concurrently \"npm run dev\" \"neu run -- --run-tests\""
   },
   "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
     "alpinejs": "^3.15.0",
     "html2canvas": "^1.4.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.10"
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.25.10",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-css-modules": "^0.3.0"
   }
 }
