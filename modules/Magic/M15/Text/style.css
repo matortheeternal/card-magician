@@ -11,18 +11,18 @@
 }
 
 .text i {
-    font-family: "Times New Roman", serif;
+    font-family: "MPlantin-Italic", serif;
 }
 
-.text p {
+.rules-text > div {
     margin: 4px 0;
 }
 
-.text p:first-of-type {
+.rules-text > div:first-of-type {
     margin-top: 0;
 }
 
-.text p:last-of-type {
+.rules-text > div:last-of-type {
     margin-bottom: 0;
 }
 

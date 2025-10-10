@@ -3,7 +3,7 @@ const hStart = '80%';
 const ptPolygon = `polygon(${hStart} ${vStart}, 100% ${vStart}, 100% 100%, ${hStart} 100%)`;
 
 export default async function(card, utils) {
-    card.rulesHTML = '';
+    const { textToHTML } = await utils.import('textToHTML.js');
     card.wrapShapeStyle = {
         shapeOutside: ptPolygon,
         clipPath: ptPolygon
@@ -19,7 +19,7 @@ export default async function(card, utils) {
     });
 
     Alpine.effect(() => {
-        if (card.rulesText === undefined) return;
+        card.rulesHTML = textToHTML(card.rulesText, card);
         card.rulesHTML = card.formatText(card.rulesText);
     });
 
