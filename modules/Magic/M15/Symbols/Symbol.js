@@ -52,7 +52,7 @@ export class Symbol {
         const adapter = imagePathAdapters[this.type];
         if (!adapter) throw new Error('No image path adapter found for ' + this.type);
 
-        const imgTag = img(await utils.assetURL(adapter(size, this)));
-        return `<div class="sym">${imgTag}</div>`;
+        const url = await utils.assetURL(adapter(size, this));
+        return `<div class="sym" style="background-image: url('${url}')"></div>`;
     }
 }

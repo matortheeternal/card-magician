@@ -41,12 +41,28 @@ function textIntersects(node, forbiddenRects) {
     return false;
 }
 
+function isFitTextClass(str) {
+    return /ft-(fontsize|lineheight)-\d{3}/.test(str);
+}
+
+function getBaseClasses(el) {
+    return el.className.split(' ').filter(str => !isFitTextClass(str));
+}
+
+function updateClasses(el, fontSize, lineHeight) {
+    const classes = getBaseClasses(el);
+    classes.push(`ft-fontsize-${fontSize.toFixed(1).replace('.', '')}`);
+    classes.push(`ft-lineheight-${lineHeight.toFixed(2).replace('.', '')}`);
+    return classes.join(' ');
+}
+
 export default function(Alpine) {
     let timeout = null;
     Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => {
         const adjustFontSize = (forbiddenRects) => {
             el.style.fontSize = '';
             el.style.lineHeight = '';
+            el.className = getBaseClasses(el).join(' ');
             const baseStyle = getComputedStyle(el);
             const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
             const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
@@ -70,6 +86,7 @@ export default function(Alpine) {
                 }
                 el.style.lineHeight = `${lineHeight}`;
                 el.style.fontSize = `${fontSize}px`;
+                el.className = updateClasses(el, fontSize, lineHeight);
             }
         };
 

@@ -5,11 +5,7 @@
     margin-top: 1px;
 }
 
-.__id__-mana-cost img {
-    height: 19px;
-}
-
-div.mana-circle {
+div.sym {
     height: 19px;
     width: 19px;
     background-size: 100% 100%;
