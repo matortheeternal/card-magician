@@ -20,7 +20,8 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'manaCost',
-        displayName: 'Mana Cost'
+        displayName: 'Mana Cost',
+        group: 'header'
     });
 
     card.publishElement('mana-cost',
