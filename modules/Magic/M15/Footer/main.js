@@ -3,27 +3,32 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'collectorNumber',
-        displayName: 'Collector Number'
+        displayName: 'Collector Number',
+        group: 'footer'
     });
 
     card.addField({
         id: 'setCode',
-        displayName: 'Set Code'
+        displayName: 'Set Code',
+        group: 'footer'
     });
 
     card.addField({
         id: 'language',
-        displayName: 'Language'
+        displayName: 'Language',
+        group: 'footer'
     });
 
     card.addField({
         id: 'illustrator',
-        displayName: 'Illustrator'
+        displayName: 'Illustrator',
+        group: 'footer'
     });
 
     card.addField({
         id: 'legalText',
-        displayName: 'Legal Text'
+        displayName: 'Legal Text',
+        group: 'footer'
     });
 
     card.publishElement('info',

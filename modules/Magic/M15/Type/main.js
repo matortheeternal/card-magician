@@ -25,12 +25,14 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'superType',
-        displayName: 'Super Type'
+        displayName: 'Super Type',
+        group: 'typeLine'
     });
 
     card.addField({
         id: 'subType',
-        displayName: 'Sub Type'
+        displayName: 'Sub Type',
+        group: 'typeLine'
     });
 
     card.publishElement('type',

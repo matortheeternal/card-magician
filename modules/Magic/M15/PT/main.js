@@ -18,12 +18,14 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'power',
-        displayName: 'Power'
+        displayName: 'Power',
+        group: 'PT',
     });
 
     card.addField({
         id: 'toughness',
-        displayName: 'Toughness'
+        displayName: 'Toughness',
+        group: 'PT',
     });
 
     card.publishElement('pt-container',
