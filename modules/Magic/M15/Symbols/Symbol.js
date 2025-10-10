@@ -19,21 +19,16 @@ const imagePathAdapters = {
         (size, sym) => `${size}/tap/${sym.value}.png`,
 };
 
-const manaCircle = (size, text) => [
-    `<div class="sym mana-circle" :style="${size}ManaCircleStyle">`,
-        text,
-    `</div>`
-].join('');
-
-const img = (src) => `<img src="${src}"/>`;
+const manaCircle = (size, text) =>
+    `<div class="sym" :style="${size}ManaCircleStyle">${text}</div>`;
 
 export class Symbol {
     constructor(type, value) {
         this.type = type;
         this.value = value.toLowerCase();
         this.parts = this.value.split('/');
-        this.colorKey = this.parts
-            .filter(c => 'wubrgc'.includes(c))
+        this.colorKey = 'wubrgc'.split('')
+            .filter(c => this.parts.includes(c))
             .join('');
     }
 
