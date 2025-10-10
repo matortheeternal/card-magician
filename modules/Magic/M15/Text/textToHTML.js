@@ -49,7 +49,7 @@ export async function textToHTML(text, card) {
     if (!text || !text.length) return '';
     const paragraphs = [];
     for (const content of text.split('\n'))
-        paragraphs.push(`<div>${await convertContent(content, card)}</div>`);
+        paragraphs.push(`<div class="t">${await convertContent(content, card)}</div>`);
 
     return paragraphs.join('\n');
 }

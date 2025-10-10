@@ -20,12 +20,12 @@ const imagePathAdapters = {
 };
 
 const manaCircle = (size, text) => [
-    `<div class="mana-circle" :style="${size}ManaCircleStyle">`,
+    `<div class="sym mana-circle" :style="${size}ManaCircleStyle">`,
         text,
     `</div>`
 ].join('');
 
-const img = (src) => `<img class="sym" src="${src}"/>`;
+const img = (src) => `<img src="${src}"/>`;
 
 export class Symbol {
     constructor(type, value) {
@@ -52,6 +52,7 @@ export class Symbol {
         const adapter = imagePathAdapters[this.type];
         if (!adapter) throw new Error('No image path adapter found for ' + this.type);
 
-        return img(await utils.assetURL(adapter(size, this)));
+        const imgTag = img(await utils.assetURL(adapter(size, this)));
+        return `<div class="sym">${imgTag}</div>`;
     }
 }
