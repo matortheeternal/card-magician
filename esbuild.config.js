@@ -4,9 +4,8 @@ import cssModulesPlugin from 'esbuild-plugin-css-modules';
 
 const args = process.argv.slice(2);
 const shouldMinify = args.includes('--minify');
-const shouldWatch = args.includes('--watch');
 
-const jsCtx = await esbuild.context({
+await esbuild.build({
     entryPoints: ['src/main.js'],
     bundle: true,
     outdir: 'resources/js',
@@ -27,7 +26,7 @@ const jsCtx = await esbuild.context({
     ],
 });
 
-const cssCtx = await esbuild.context({
+await esbuild.build({
     entryPoints: ['src/styles/main.css'],
     bundle: true,
     minify: shouldMinify,
@@ -37,17 +36,3 @@ const cssCtx = await esbuild.context({
     },
     plugins: [cssModulesPlugin()],
 });
-
-if (shouldWatch) {
-    await Promise.all([
-        jsCtx.watch(),
-        cssCtx.watch(),
-    ]);
-    console.log('watching...');
-} else {
-    await Promise.all([
-        jsCtx.rebuild(),
-        cssCtx.rebuild(),
-    ]);
-    console.log('built')
-}
