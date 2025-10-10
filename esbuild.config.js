@@ -20,7 +20,7 @@ await esbuild.build({
                 from: [
                     './node_modules/@shoelace-style/shoelace/dist/assets/**/*',
                 ],
-                to: ['./resources/shoelace'],
+                to: ['./resources/shoelace/assets'],
             },
         }),
     ],
