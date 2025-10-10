@@ -13,10 +13,16 @@ import { saveHTMLAsImage } from './gfx/imageProcessing';
 setBasePath('/shoelace')
 Neutralino.init();
 Neutralino.events.on("windowClose", () => Neutralino.app.exit(0));
+makeDraggable();
 window.Alpine = Alpine;
 registerFitText(Alpine);
 registerScope(Alpine);
 Alpine.start();
+
+async function makeDraggable() {
+    await Neutralino.window.setSize({ resizable: true });
+    const exclusions = await Neutralino.window.setDraggableRegion('title-bar');
+}
 
 function publishTemplate(templateModel) {
     window.templateModel = templateModel;

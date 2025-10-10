@@ -5,10 +5,11 @@
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
+    height: 100vh;
     background-color: #111;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 main {
@@ -18,6 +19,22 @@ main {
     gap: 2em;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    overflow: hidden;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--sl-input-border-color);
+    color: var(--sl-input-label-color);
+    background: var(--sl-color-neutral-0);
+}
+
+nav sl-button::part(base) {
+    border: none;
+    border-radius: 0;
 }
 
 .forms-container {
@@ -25,7 +42,7 @@ main {
     align-self: stretch;
     flex-direction: row;
     justify-content: stretch;
-    flex-basis: 33%;
+    overflow-y: auto;
 }
 
 .template-container {
@@ -42,7 +59,7 @@ main {
     justify-content: stretch;
     align-items: center;
     padding: 1em;
-    min-width: 30em;
+    min-width: 35em;
     border-radius: 10px;
     overflow: auto;
     background: #000;
