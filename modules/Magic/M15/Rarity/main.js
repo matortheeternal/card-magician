@@ -8,7 +8,7 @@ export default async function(card) {
     card.addField({
         id: 'rarity',
         type: 'select',
-        options: ['Common', 'Uncommon', 'Rare', 'Mythic Rare'],
+        options: ['Common', 'Uncommon', 'Rare', 'Mythic'],
         displayName: 'Rarity',
         default: "Common",
     });
