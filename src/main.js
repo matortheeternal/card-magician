@@ -1,3 +1,5 @@
+import '@shoelace-style/shoelace/dist/shoelace.js';
+import '@shoelace-style/shoelace/dist/themes/dark.css';
 import Alpine from 'alpinejs';
 import registerFitText from './directives/fitText.js';
 import registerScope from './directives/scope.js';
