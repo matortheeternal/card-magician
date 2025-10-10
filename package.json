@@ -25,9 +25,9 @@
   "main": "index.js",
   "scripts": {
     "build": "node esbuild.config.js --minify",
-    "dev": "node esbuild.config.js --watch",
-    "start": "concurrently \"npm run dev\" \"neu run\"",
-    "test": "concurrently \"npm run dev\" \"neu run -- --run-tests\""
+    "dev": "node esbuild.config.js",
+    "start": "npm run dev && neu run",
+    "test": "npm run dev && neu run -- --run-tests"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
@@ -35,7 +35,6 @@
     "html2canvas": "^1.4.1"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "esbuild": "^0.25.10",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-css-modules": "^0.3.0"

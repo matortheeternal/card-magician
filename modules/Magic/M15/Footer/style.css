@@ -18,6 +18,7 @@
     line-height: 9px;
     font-weight: initial;
     font-family: "Beleren Small Caps Bold", sans-serif;
+    font-kerning: none;
 }
 
 .__id__-legal-text {
