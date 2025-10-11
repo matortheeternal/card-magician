@@ -61,6 +61,11 @@ nav .menu-item > div:first-of-type {
     margin-right: 5em;
 }
 
+nav .menu-active > sl-button::part(base) {
+    background-color: var(--sl-color-primary-50);
+    color: var(--sl-color-primary-700);
+}
+
 .forms-container {
     display: flex;
     align-self: stretch;
