@@ -6,32 +6,40 @@
   <title>Card Magician</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body class="sl-theme-dark">
+<body class="sl-theme-dark" x-data="view">
   <nav id="title-bar">
     <div class="menu-items">
       <img src="icons/appIcon.png" />
-      <sl-dropdown>
-        <sl-button slot="trigger">File</sl-button>
-        <sl-menu>
-          <sl-menu-item value="new">New</sl-menu-item>
-          <sl-menu-item value="open">Open</sl-menu-item>
-          <sl-menu-item value="saveAs">Save as</sl-menu-item>
-          <sl-menu-item value="close">Close project</sl-menu-item>
-          <sl-divider></sl-divider>
-          <sl-menu-item value="exit">Exit</sl-menu-item>
-        </sl-menu>
-      </sl-dropdown>
+      <template x-for="menu in menuBarItems">
+        <sl-dropdown>
+          <sl-button slot="trigger" x-text="menu.title"></sl-button>
+          <sl-menu>
+            <template x-for="item in menu.items">
+              <span>
+                <template x-if="!item.isDivider">
+                  <sl-menu-item value="item.value" @click="item.action">
+                    <div class="menu-item">
+                      <div x-text="item.label"></div>
+                      <div x-text="item.hotkey"></div>
+                    </div>
+                  </sl-menu-item>
+                </template>
+                <template x-if="item.isDivider">
+                  <sl-divider style="--spacing: 0.5rem;"></sl-divider>
+                </template>
+              </span>
+            </template>
+          </sl-menu>
+        </sl-dropdown>
+      </template>
     </div>
     <div class="window-actions">
       <sl-button id="minimize-app" onclick="Neutralino.window.minimize()">
         <sl-icon name="dash-lg"></sl-icon>
       </sl-button>
-      <sl-button id="maximize-app" x-if="await Neutralino.window.isMaximized()" onclick="Neutralino.window.maximize()">
-        <sl-icon name="box-arrow-up-right"></sl-icon>
+      <sl-button id="maximize-app" @click="toggleMaximize()">
+        <sl-icon :name="isMaximized ? 'box-arrow-down-left' : 'box-arrow-up-right'"></sl-icon>
       </sl-button>
-<!--      <sl-button id="restore-app" x-if="!await Neutralino.window.isMaximized()" onclick="Neutralino.window.unmaximize()">-->
-<!--        <sl-icon name="box-arrow-down-left"></sl-icon>-->
-<!--      </sl-button>-->
       <sl-button id="close-window" onclick="Neutralino.app.exit()">
         <sl-icon name="x-lg"></sl-icon>
       </sl-button>
