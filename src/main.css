@@ -1,3 +1,6 @@
+@import "@shoelace-style/shoelace/dist/themes/dark.css";
+@import "views/titleBar/titleBar.css";
+
 * {
     box-sizing: border-box;
 }
@@ -21,49 +24,6 @@ main {
     justify-content: center;
     height: 100%;
     overflow: hidden;
-}
-
-nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--sl-input-border-color);
-    color: var(--sl-input-label-color);
-    background: var(--sl-color-neutral-0);
-    user-select: none;
-}
-
-nav img {
-    width: 32px;
-    height: 32px;
-    margin: 0 4px;
-    border: 1px solid grey;
-    box-sizing: content-box;
-}
-
-nav sl-button::part(base) {
-    border: none;
-    border-radius: 0;
-}
-
-nav .menu-items {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-nav .menu-item {
-    display: flex;
-    justify-content: space-between;
-}
-
-nav .menu-item > div:first-of-type {
-    margin-right: 5em;
-}
-
-nav .menu-active > sl-button::part(base) {
-    background-color: var(--sl-color-primary-50);
-    color: var(--sl-color-primary-700);
 }
 
 .forms-container {
@@ -101,7 +61,7 @@ nav .menu-active > sl-button::part(base) {
 }
 
 .card-container {
-   /* zoom: 1.5;*/
+    /* zoom: 1.5;*/
 }
 
 h1, h2, h3, h4, h5, h6 {

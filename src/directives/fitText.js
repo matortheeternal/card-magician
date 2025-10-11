@@ -1,3 +1,5 @@
+import Alpine from 'alpinejs';
+
 function elementOverflows(el) {
     return el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth;
 }
@@ -56,45 +58,43 @@ function updateClasses(el, fontSize, lineHeight) {
     return classes.join(' ');
 }
 
-export default function(Alpine) {
-    let timeout = null;
-    Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => {
-        const adjustFontSize = (forbiddenRects) => {
-            el.style.fontSize = '';
-            el.style.lineHeight = '';
-            el.className = getBaseClasses(el).join(' ');
-            const baseStyle = getComputedStyle(el);
-            const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
-            const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
-            const minFontSize = 10;
-            const minLineHeight = 1.0;
-            const fontSizeStep = 0.5;
-            const lineHeightStep = 0.05;
-            const overflows = () => {
-                return elementOverflows(el) ||
-                    forbiddenRects && textIntersects(el, forbiddenRects)
-            };
-
-            let fontSize = initialFontSize;
-            let lineHeight = initialLineHeight;
-            while (overflows() && fontSize > minFontSize) {
-                if (lineHeight > minLineHeight) {
-                    lineHeight -= lineHeightStep;
-                } else {
-                    lineHeight = initialLineHeight;
-                    fontSize -= fontSizeStep;
-                }
-                el.style.lineHeight = `${lineHeight}`;
-                el.style.fontSize = `${fontSize}px`;
-                el.className = updateClasses(el, fontSize, lineHeight);
-            }
+let timeout = null;
+Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => {
+    const adjustFontSize = (forbiddenRects) => {
+        el.style.fontSize = '';
+        el.style.lineHeight = '';
+        el.className = getBaseClasses(el).join(' ');
+        const baseStyle = getComputedStyle(el);
+        const initialFontSize = parseFloat(baseStyle.fontSize) || 16;
+        const initialLineHeight = parseFloat(baseStyle.lineHeight) || 1.2;
+        const minFontSize = 10;
+        const minLineHeight = 1.0;
+        const fontSizeStep = 0.5;
+        const lineHeightStep = 0.05;
+        const overflows = () => {
+            return elementOverflows(el) ||
+                forbiddenRects && textIntersects(el, forbiddenRects)
         };
 
-        effect(() => {
-            evaluateLater(expression)((result) => {
-                if (timeout) clearTimeout(timeout);
-                timeout = setTimeout(() => adjustFontSize(result.forbiddenRects), 100);
-            });
+        let fontSize = initialFontSize;
+        let lineHeight = initialLineHeight;
+        while (overflows() && fontSize > minFontSize) {
+            if (lineHeight > minLineHeight) {
+                lineHeight -= lineHeightStep;
+            } else {
+                lineHeight = initialLineHeight;
+                fontSize -= fontSizeStep;
+            }
+            el.style.lineHeight = `${lineHeight}`;
+            el.style.fontSize = `${fontSize}px`;
+            el.className = updateClasses(el, fontSize, lineHeight);
+        }
+    };
+
+    effect(() => {
+        evaluateLater(expression)((result) => {
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => adjustFontSize(result.forbiddenRects), 100);
         });
     });
-}
+});

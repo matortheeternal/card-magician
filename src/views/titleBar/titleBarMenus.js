@@ -1,10 +1,4 @@
-function toCamelCase(str) {
-    return str.split(' ').map((word, n) => {
-        return n > 0
-            ? word[0].toUpperCase() + word.slice(1).toLowerCase()
-            : word.toLowerCase();
-    });
-}
+import { toCamelCase } from '../../utils.js';
 
 function menuItem(label, hotkey, action) {
     const value = toCamelCase(label);
@@ -29,7 +23,7 @@ const actions = {
     deleteCards: () => console.log('Delete cards'),
 };
 
-export const menuBarItems = [{
+export const titleBarMenus = [{
     title: 'File',
     items: [
         menuItem('New', 'Ctrl+N', actions.makeNewSet),
@@ -59,22 +53,3 @@ export const menuBarItems = [{
         menuItem('Delete Cards', 'Delete', actions.deleteCards),
     ]
 }];
-
-let openMenu = null;
-export const menuEvents = {
-    menuHidden: ({ target: menu }) => {
-        menu.classList.remove('menu-active');
-        if (openMenu === menu) openMenu = null;
-    },
-    menuShown: ({ target: menu }) => {
-        if (openMenu && openMenu !== menu) openMenu.hide();
-        openMenu = menu;
-        menu.classList.add('menu-active');
-    },
-    onMenuEnter: ({ target: button }) => {
-        const menu = button.parentNode;
-        if (!openMenu || openMenu === menu) return;
-        openMenu.hide();
-        menu.show();
-    }
-};

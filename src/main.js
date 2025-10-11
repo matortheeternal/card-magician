@@ -1,13 +1,11 @@
+import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
-import '@shoelace-style/shoelace/dist/themes/dark.css';
 import './components/ImageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import Alpine from 'alpinejs';
-import registerFitText from './directives/fitText.js';
-import registerScope from './directives/scope.js';
 import { loadTemplates } from './templateBuilder';
-import { loadViewData } from './views/baseView.js';
 import { setupTestHarness, runTests } from './tests';
+import './directives/*.js';
+import './views/**/*.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -29,10 +27,7 @@ function setupNeutralino() {
 
 function setupAlpine() {
     window.Alpine = Alpine;
-    registerFitText(Alpine);
-    registerScope(Alpine);
     window.view = Alpine.reactive({});
-    loadViewData();
     Alpine.start();
 }
 
