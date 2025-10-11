@@ -8,6 +8,7 @@ import { buildTemplate, loadTemplates } from './templateBuilder';
 import { setupTestHarness, runTests } from './tests';
 import { buildForms } from './formBuilder';
 import { saveHTMLAsImage } from './gfx/imageProcessing';
+import { menuBarItems } from './menuBarItems.js';
 
 // BASE SETUP
 setBasePath('/shoelace')
@@ -17,6 +18,16 @@ makeDraggable();
 window.Alpine = Alpine;
 registerFitText(Alpine);
 registerScope(Alpine);
+window.view = Alpine.reactive({
+    toggleMaximize: async () => {
+        view.isMaximized
+            ? await Neutralino.window.unmaximize()
+            : await Neutralino.window.maximize();
+        view.isMaximized = await Neutralino.window.isMaximized();
+    },
+    menuBarItems,
+    isMaximized: false
+});
 Alpine.start();
 
 async function makeDraggable() {

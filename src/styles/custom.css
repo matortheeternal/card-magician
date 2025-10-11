@@ -52,6 +52,15 @@ nav .menu-items {
     align-items: center;
 }
 
+nav .menu-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav .menu-item > div:first-of-type {
+    margin-right: 5em;
+}
+
 .forms-container {
     display: flex;
     align-self: stretch;
@@ -99,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 0 0.5em;
 }
 
-.input--medium input[type="file"].input__control {
+sl-input[type="file"]::part(input) {
     padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);
 }
 
@@ -116,3 +125,4 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: row;
     gap: var(--sl-spacing-x-small);
 }
+
