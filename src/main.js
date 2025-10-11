@@ -8,7 +8,7 @@ import { buildTemplate, loadTemplates } from './templateBuilder';
 import { setupTestHarness, runTests } from './tests';
 import { buildForms } from './formBuilder';
 import { saveHTMLAsImage } from './gfx/imageProcessing';
-import { menuBarItems } from './menuBarItems.js';
+import { menuBarItems, menuEvents } from './menuBarItems.js';
 
 // BASE SETUP
 setBasePath('/shoelace')
@@ -19,6 +19,7 @@ window.Alpine = Alpine;
 registerFitText(Alpine);
 registerScope(Alpine);
 window.view = Alpine.reactive({
+    ...menuEvents,
     toggleMaximize: async () => {
         view.isMaximized
             ? await Neutralino.window.unmaximize()

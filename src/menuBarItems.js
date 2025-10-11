@@ -58,4 +58,23 @@ export const menuBarItems = [{
         menuItem('Add Card', 'Ctrl+Enter', actions.addCard),
         menuItem('Delete Cards', 'Delete', actions.deleteCards),
     ]
-}];
+}];d
+
+let openMenu = null;
+export const menuEvents = {
+    menuHidden: ({ target: menu }) => {
+        menu.classList.remove('menu-active');
+        if (openMenu === menu) openMenu = null;
+    },
+    menuShown: ({ target: menu }) => {
+        if (openMenu && openMenu !== menu) openMenu.hide();
+        openMenu = menu;
+        menu.classList.add('menu-active');
+    },
+    onMenuEnter: ({ target: button }) => {
+        const menu = button.parentNode;
+        if (!openMenu || openMenu === menu) return;
+        openMenu.hide();
+        menu.show();
+    }
+};

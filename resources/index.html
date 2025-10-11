@@ -11,8 +11,8 @@
     <div class="menu-items">
       <img src="icons/appIcon.png" />
       <template x-for="menu in menuBarItems">
-        <sl-dropdown>
-          <sl-button slot="trigger" x-text="menu.title"></sl-button>
+        <sl-dropdown @sl-hide="menuHidden" @sl-show="menuShown">
+          <sl-button slot="trigger" x-text="menu.title" @mouseenter="onMenuEnter"></sl-button>
           <sl-menu>
             <template x-for="item in menu.items">
               <span>
