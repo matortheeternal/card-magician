@@ -12,7 +12,7 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'artImage',
-        type: 'file',
+        type: 'image',
         displayName: 'Art Image',
         save: async () => {
             if (!card.artImageUrl) return null;

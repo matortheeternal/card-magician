@@ -12,7 +12,8 @@ const applyOnChange = function(field, input) {
 
 const TYPES_TO_TAGS = {
     textarea: 'sl-textarea',
-    select: 'sl-select'
+    select: 'sl-select',
+    image: 'image-select'
 };
 
 const addSelectOptions = function(select, field) {
