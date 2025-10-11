@@ -7,45 +7,9 @@
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="sl-theme-dark" x-data="view">
-  <nav id="title-bar">
-    <div class="menu-items">
-      <img src="icons/appIcon.png" />
-      <template x-for="menu in menuBarItems">
-        <sl-dropdown @sl-hide="menuHidden" @sl-show="menuShown">
-          <sl-button slot="trigger" x-text="menu.title" @mouseenter="onMenuEnter"></sl-button>
-          <sl-menu>
-            <template x-for="item in menu.items">
-              <span>
-                <template x-if="!item.isDivider">
-                  <sl-menu-item value="item.value" @click="item.action">
-                    <div class="menu-item">
-                      <div x-text="item.label"></div>
-                      <div x-text="item.hotkey"></div>
-                    </div>
-                  </sl-menu-item>
-                </template>
-                <template x-if="item.isDivider">
-                  <sl-divider style="--spacing: 0.5rem;"></sl-divider>
-                </template>
-              </span>
-            </template>
-          </sl-menu>
-        </sl-dropdown>
-      </template>
-    </div>
-    <div class="window-actions">
-      <sl-button id="minimize-app" onclick="Neutralino.window.minimize()">
-        <sl-icon name="dash-lg"></sl-icon>
-      </sl-button>
-      <sl-button id="maximize-app" @click="toggleMaximize()">
-        <sl-icon :name="isMaximized ? 'box-arrow-down-left' : 'box-arrow-up-right'"></sl-icon>
-      </sl-button>
-      <sl-button id="close-window" onclick="Neutralino.app.exit()">
-        <sl-icon name="x-lg"></sl-icon>
-      </sl-button>
-    </div>
-  </nav>
+  <nav id="title-bar" x-view="title-bar"></nav>
   <main></main>
+
   <script src="/js/neutralino.js"></script>
   <script type="module" src="/js/main.js"></script>
 </body>
