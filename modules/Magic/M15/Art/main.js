@@ -1,43 +1,15 @@
 export default async function(card, utils) {
-    card.artImageUrl = '';
-    card.showArtImage = false;
-
-    card.updateArtImage = function(event) {
-        const { image, filename } = event.detail;
-        card.artImage = filename;
-        card.artImageUrl = image;
-        card.showArtImage = true;
-    };
+    card.artImage = { image: null, filename: '' };
 
     card.addField({
         id: 'artImage',
         type: 'image',
-        displayName: 'Art Image',
-        save: async () => {
-            if (!card.artImageUrl) return null;
-            const response = await fetch(card.artImageUrl);
-            const blob = await response.blob();
-            return await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error('Failed to read data stream.'));
-                reader.readAsDataURL(blob);
-            });
-        },
-        load: async (cardData) => {
-            utils.disposeImage(card, 'artImageUrl');
-            if (!cardData.artImage) return null;
-            const blob = utils.parseBlob(cardData.artImage);
-            card.artImageUrl = URL.createObjectURL(blob);
-            card.showArtImage = true;
-            return '';
-        },
-        onChange: 'updateArtImage($event)'
+        displayName: 'Art Image'
     });
 
     card.publishElement('art-image',
-        `<img x-show="showArtImage" :src="artImageUrl" alt="Card Art" />
-         <img x-show="!showArtImage" :src="defaultImageUrl" alt="Placeholder image" />`
+        `<img x-show="artImage.image" :src="artImage.image" alt="Card Art" />
+         <img x-show="!artImage.image" :src="defaultImageUrl" alt="Placeholder image" />`
     );
 
     card.addStyle(await utils.loadFile('style.css'));
