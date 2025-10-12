@@ -3,10 +3,9 @@ export default async function(card, utils) {
     card.showArtImage = false;
 
     card.updateArtImage = function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        utils.disposeImage(card, 'artImageUrl');
-        card.artImageUrl = URL.createObjectURL(file);
+        const { image, filename } = event.detail;
+        card.artImage = filename;
+        card.artImageUrl = image;
         card.showArtImage = true;
     };
 
