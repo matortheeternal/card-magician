@@ -1,9 +1,10 @@
 import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
-import './components/ImageSelect.js';
+import './webComponents/ImageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './templateBuilder';
 import { setupTestHarness, runTests } from './tests';
+import './components/**/*.js';
 import './directives/*.js';
 import './views/**/*.js';
 
@@ -27,7 +28,9 @@ function setupNeutralino() {
 
 function setupAlpine() {
     window.Alpine = Alpine;
-    window.view = Alpine.reactive({});
+    window.view = Alpine.reactive({
+        activeSet: { cards: [] }
+    });
     Alpine.start();
 }
 
@@ -37,7 +40,7 @@ async function startApp() {
         await runTests();
         return;
     }
-    view.templates = await loadTemplates();
+    await loadTemplates();
 }
 
 startApp();

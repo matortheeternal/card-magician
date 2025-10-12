@@ -48,6 +48,7 @@ function initCard(key) {
             return cardData;
         },
         async load(cardData) {
+            if (!cardData) return;
             for (const field of this.fields)
                 this[field.id] = field.hasOwnProperty('load')
                     ? await field.load(cardData)
@@ -98,20 +99,20 @@ async function buildCard(parent, key, def) {
     return card;
 }
 
-async function buildCards(cardNamespace, template) {
+async function buildCards(templateModel, template) {
     for (const [key, def] of Object.entries(template))
-        cardNamespace[key] = await buildCard(cardNamespace, key, def);
+        templateModel[key] = await buildCard(templateModel, key, def);
 }
 
 export async function buildTemplate({ info }) {
     const { template } = info;
-    const cardNamespace = {};
-    await buildCards(cardNamespace, template);
-    return cardNamespace;
+    const templateModel = {};
+    await buildCards(templateModel, template);
+    return templateModel;
 }
 
+const templates = [];
 export async function loadTemplates() {
-    const templates = [];
     const templateFolders = await Neutralino.filesystem.readDirectory(
         'templates',
         { recursion: true }
@@ -127,5 +128,8 @@ export async function loadTemplates() {
         template.info = await loadJson(infoPath);
         templates.push(template);
     }
-    return templates;
+}
+
+export function getTemplate(templateName) {
+    return templates.find(t => t.info.name === templateName);
 }

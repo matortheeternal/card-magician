@@ -2,7 +2,7 @@ import { registerView } from '../../viewRegistry.js';
 import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html';
 
-registerView('title-bar', { html }, function(scope) {
+registerView('title-bar', html, function(scope) {
     let openMenu = null;
 
     scope.menuHidden = ({ target: menu }) => {

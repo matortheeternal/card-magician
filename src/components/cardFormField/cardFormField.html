@@ -1,0 +1,16 @@
+<template x-if="field.type === 'textarea'">
+    <sl-textarea resize="auto" spellcheck="false" :label="field.displayName" :x-model="field.id"></sl-textarea>
+</template>
+<template x-if="field.type === 'select'">
+    <sl-select :label="field.displayName" :x-model="field.id">
+        <template x-for="option in field.options">
+            <sl-option :value="option" x-text="option"></sl-option>
+        </template>
+    </sl-select>
+</template>
+<template x-if="field.type === 'image'">
+    <image-select :label="field.displayName" :x-model="field.id"></image-select>
+</template>
+<template x-if="field.type === 'input'">
+    <sl-input :type="field.inputType" :label="field.displayName" :x-model="field.id"></sl-input>
+</template>

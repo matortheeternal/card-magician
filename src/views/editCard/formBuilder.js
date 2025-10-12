@@ -1,3 +1,4 @@
+// TODO: template-ize this.  (it's made a bit difficult by the groups)
 function useInputDebounce(field) {
     return field.type === 'text' || field.type === 'textarea' || !field.type;
 }
@@ -42,13 +43,6 @@ const makeFormInput = function(field) {
     return input;
 }
 
-function makeFormButton(label, action) {
-    const button = document.createElement('sl-button');
-    button.textContent = label;
-    button.setAttribute('x-on:click', action);
-    return button;
-}
-
 function getFieldContainer(groups, field, container) {
     if (!field.group) return container;
     if (groups.hasOwnProperty(field.group))
@@ -61,7 +55,9 @@ function getFieldContainer(groups, field, container) {
     return group;
 }
 
-function buildCardForm(container, card) {
+export function buildCardForm(card) {
+    const container = document.createElement('div');
+    container.className = 'form';
     const h2 = document.createElement('h2');
     h2.textContent = card.id;
     container.appendChild(h2);
@@ -75,22 +71,5 @@ function buildCardForm(container, card) {
     for (let subcard of Object.values(card.subCards))
         buildCardForm(section, subcard);
     container.appendChild(section);
-}
-
-export function buildForms(cardNamespace) {
-    const formsContainer = document.createElement('div');
-    formsContainer.className = 'forms-container';
-    for (let card of Object.values(cardNamespace)) {
-        const form = document.createElement('div');
-        form.className = 'form';
-        buildCardForm(form, card);
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.className = 'buttons-container';
-        buttonsContainer.appendChild(makeFormButton('save', 'await save()'));
-        buttonsContainer.appendChild(makeFormButton('load', 'await load()'));
-        buttonsContainer.appendChild(makeFormButton('export', 'await exportImg()'));
-        form.appendChild(buttonsContainer);
-        formsContainer.appendChild(form);
-    }
-    return formsContainer;
+    return container;
 }
