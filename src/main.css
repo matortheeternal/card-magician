@@ -1,5 +1,6 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "views/titleBar/titleBar.css";
+@import "views/editCard/editCard.css";
 
 * {
     box-sizing: border-box;
@@ -27,3 +28,7 @@ main {
     overflow: hidden;
 }
 
+.edit-card-modal {
+    display: flex;
+    flex-direction: row;
+}

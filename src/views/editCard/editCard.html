@@ -1,24 +1,2 @@
 <div class="template-container" x-scope="templateModel"></div>
-<div class="forms-container">
-    <template x-for="model in Object.values(templateModel)">
-        <div class="form">
-            <h2 x-text="model.id"></h2>
-            <section :x-scope="model.id">
-                <template x-for="entry in formEntries(model)">
-                    <div>
-                        <template x-if="entry.isGroup">
-                            <div class="field-group">
-                                <template x-for="field in entry.fields">
-                                    <div x-component="card-form-field"></div>
-                                </template>
-                            </div>
-                        </template>
-                        <template x-if="!entry.isGroup">
-                            <div x-component="card-form-field"></div>
-                        </template>
-                    </div>
-                </template>
-            </section>
-        </div>
-    </template>
-</div>
+<div class="forms-container" x-scope="templateModel"></div>
