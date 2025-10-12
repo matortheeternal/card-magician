@@ -8,10 +8,13 @@
 </head>
 <body class="sl-theme-dark" x-data="view">
   <nav id="title-bar" x-view="title-bar"></nav>
-  <main x-view="set-view"></main>
-  <template x-if="view.activeCard">
-    <div x-view="edit-card" class="edit-card-modal"></div>
-  </template>
+
+  <main>
+    <div x-view="set-view"></div>
+    <template x-if="view.activeCard">
+      <div x-view="edit-card" class="edit-card-modal"></div>
+    </template>
+  </main>
 
   <script src="/js/neutralino.js"></script>
   <script type="module" src="/js/main.js"></script>
