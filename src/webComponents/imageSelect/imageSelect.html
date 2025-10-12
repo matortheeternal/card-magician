@@ -1,4 +1,3 @@
-export default ({label}) => `
 <style>
     :host {
         display: flex;
@@ -6,80 +5,73 @@ export default ({label}) => `
         font-family: var(--sl-font-sans);
         color: var(--sl-color-gray-900);
     }
-    
+
     sl-card {
-        cursor: pointer; 
+        cursor: pointer;
         user-select: none;
         position: relative;
         text-align: center;
         transition: background-color 0.2s, border-color 0.2s;
     }
-    
+
     sl-card::part(base) {
         background-color: var(--sl-input-background-color);
         box-shadow: var(--sl-shadow-x-small);
         border: solid var(--sl-input-border-width) var(--sl-input-border-color);
     }
-    
+
     sl-card.dragover {
         border: 2px dashed var(--sl-color-primary-600);
         background-color: var(--sl-color-primary-50);
-    
-    
+    }
+
     .form-control__label {
         margin-bottom: var(--sl-spacing-3x-small);
     }
-    
-    #upload-prompt {
+
+    .upload-prompt {
         color: var(--sl-color-neutral-700);
     }
-    
-    #preview {
-        display: none;
-    }
-    
-    #preview img {
+
+    .preview img {
         max-height: 160px;
         border-radius: var(--sl-border-radius-medium);
     }
-    
-    #preview-name {
+
+    .preview-name {
         font-size: small;
     }
-    
-    #remove-btn {
+
+    .remove-btn {
         cursor: pointer;
         position: absolute;
         top: 0;
         right: 0;
     }
-    
-    #remove-btn::part(base) {
+
+    .remove-btn::part(base) {
         padding: var(--sl-spacing-2x-small);
         color: var(--sl-color-danger-600);
     }
 </style>
 
-<label
-  part="form-control-label"
-  class="form-control__label"
-  for="file-input"
->
-  <slot name="label">${label}</slot>
+<label part="form-control-label" class="form-control__label">
+    <slot name="label"></slot>
 </label>
-<sl-card id="dropzone">
-    <div id="upload-prompt">
-        <sl-icon name="image"  style="font-size: 4em;"></sl-icon>
+
+<sl-card class="dropzone" part="dropzone">
+    <div class="upload-prompt" part="upload-prompt">
+        <sl-icon name="image" style="font-size: 4em;"></sl-icon>
         <div>Select image</div>
     </div>
-    
-    <div id="preview">
+
+    <div class="preview" part="preview" style="display: none">
         <sl-tooltip content="Clear selection">
-            <sl-icon-button id="remove-btn" name="x-lg"></sl-icon-button>
+            <sl-icon-button class="remove-btn" name="x-lg" part="remove-btn"></sl-icon-button>
         </sl-tooltip>
-        <img id="preview-image" alt="Preview" hidden />
-        <div id="preview-name""></div>
+        <img class="preview-image" alt="Preview" hidden part="preview-image" />
+        <div class="preview-name" part="preview-name"></div>
     </div>
-    
-    <input type="file" id="file-input" hidden />
-</sl-card>`;
+
+    <input type="file" class="file-input" hidden />
+</sl-card>

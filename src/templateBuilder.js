@@ -9,6 +9,43 @@ function compileTemplate(context, src) {
         : output;
 }
 
+async function saveImage(data, field) {
+    if (!data[field.id].image) return null;
+    const response = await fetch(data[field.id]);
+    const blob = await response.blob();
+    return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Failed to read data stream.'));
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function loadImage(model, dataToLoad, field) {
+    utils.disposeImage(model[field.id], 'image');
+    const imageDataToLoad = dataToLoad[field.id];
+    if (!imageDataToLoad) return null;
+    const blob = utils.parseBlob(imageDataToLoad.image);
+    const image = URL.createObjectURL(blob);
+    return { image, filename: imageDataToLoad.filename };
+}
+
+async function saveField(data, field) {
+    if (field.hasOwnProperty('save'))
+        return await field.save();
+    if (field.type === 'image')
+        return await saveImage(data, field);
+    return data[field.id];
+}
+
+async function loadField(model, dataToLoad, field) {
+    if (field.hasOwnProperty('load'))
+        return await field.load(dataToLoad);
+    if (field.type === 'image')
+        return await loadImage(model, dataToLoad, field);
+    return dataToLoad[field.id];
+}
+
 function initCard(key) {
     const dom = document.createElement('div');
     dom.className = `${key}-container`;
@@ -39,23 +76,17 @@ function initCard(key) {
         async save() {
             const cardData = {};
             for (const field of this.fields)
-                cardData[field.id] = field.hasOwnProperty('save')
-                    ? await field.save()
-                    : this[field.id];
-            for (const subCard of this.subCards) {
+                cardData[field.id] = await saveField(this, field);
+            for (const subCard of this.subCards)
                 cardData[subCard.id] = await subCard.save();
-            }
             return cardData;
         },
         async load(cardData) {
             if (!cardData) return;
             for (const field of this.fields)
-                this[field.id] = field.hasOwnProperty('load')
-                    ? await field.load(cardData)
-                    : cardData[field.id];
-            for (const subCard of this.subCards) {
+                this[field.id] = await loadField(this, cardData, field);
+            for (const subCard of this.subCards)
                 await subCard.load(cardData[subCard.id]);
-            }
         }
     });
 }

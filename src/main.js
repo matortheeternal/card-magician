@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
-import './webComponents/ImageSelect.js';
+import './webComponents/imageSelect/imageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './templateBuilder';
 import { setupTestHarness, runTests } from './tests';
