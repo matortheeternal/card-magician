@@ -4,20 +4,30 @@ export default ({label}) => `
         display: flex;
         flex-direction: column;
         font-family: var(--sl-font-sans);
-        color: var(--sl-color-neutral-700);
+        color: var(--sl-color-gray-900);
     }
     
     sl-card {
-        cursor: default; 
+        cursor: pointer; 
         user-select: none;
         position: relative;
         text-align: center;
         transition: background-color 0.2s, border-color 0.2s;
     }
     
+    sl-card::part(base) {
+        background-color: var(--sl-input-background-color);
+        box-shadow: var(--sl-shadow-x-small);
+        border: solid var(--sl-input-border-width) var(--sl-input-border-color);
+    }
+    
     sl-card.dragover {
         border: 2px dashed var(--sl-color-primary-600);
         background-color: var(--sl-color-primary-50);
+    
+    
+    .form-control__label {
+        margin-bottom: var(--sl-spacing-3x-small);
     }
     
     #upload-prompt {
