@@ -24,7 +24,7 @@ export const buildPipeline = (utils) => [{
         let key = card.getCardColorKey();
         if (card.isLand()) key += 'l';
         const folder = card.isSnow() ? 'snow' : 'card';
-        bgs.base = await background(utils, `${folder}/${key}.jpg`, -10);
+        bgs.base = await background(utils, `${folder}/${key}.jpg`, 0);
     }
 }, {
     name: 'hybrid',
@@ -38,7 +38,7 @@ export const buildPipeline = (utils) => [{
             utils.assetURL(`${folder}/${c2.char}.jpg`)
         ]);
         const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
-        bgs.base = { url, zIndex: -10 };
+        bgs.base = { url, zIndex: 0 };
     }
 }, {
     name: 'artifact',
@@ -57,7 +57,7 @@ export const buildPipeline = (utils) => [{
         const vehicleUrl = await utils.assetURL(`trims/vehicle.png`);
         const maskUrl = await utils.assetURL(`masks/375x523 trim mask.png`);
         const blendUrl = await utils.maskImage(vehicleUrl, maskUrl);
-        bgs.vehicle = { url: blendUrl, zIndex: -9 };
+        bgs.vehicle = { url: blendUrl, zIndex: 1 };
     }
 }, {
     name: 'nyx',
@@ -68,7 +68,7 @@ export const buildPipeline = (utils) => [{
         const nyxUrl = await utils.assetURL(`nyx/${key}.png`);
         const maskUrl = await utils.assetURL(`masks/375x523 trim mask.png`);
         const blendUrl = await utils.maskImage(nyxUrl, maskUrl);
-        bgs.nyx = { url: blendUrl, zIndex: -9 };
+        bgs.nyx = { url: blendUrl, zIndex: 1 };
     }
 }, {
     name: 'hybrid nyx',
@@ -81,14 +81,14 @@ export const buildPipeline = (utils) => [{
             utils.assetURL(`nyx/${c2.char}.jpg`)
         ]);
         const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
-        bgs.nyx = { url, zIndex: -9 };
+        bgs.nyx = { url, zIndex: 1 };
     }
 }, {
     name: 'crown',
     useBackground: card => card.isLegendary() && !card.colorIdentity.isHybrid(),
     apply: async (card, bgs) => {
         const crownPath = resolveCrown(card, card.getCardColorKey());
-        bgs.crown = await background(utils, crownPath, -8);
+        bgs.crown = await background(utils, crownPath, 2);
     }
 }, {
     name: 'hybrid crown',
@@ -100,7 +100,7 @@ export const buildPipeline = (utils) => [{
             utils.assetURL(resolveCrown(card, c2.char))
         ]);
         const url = await utils.linearBlend(...images, 0.4, 0, 0.6, 0);
-        bgs.crown = { url, zIndex: -9 };
+        bgs.crown = { url, zIndex: 2 };
     }
 }, {
     name: 'border',
@@ -108,6 +108,6 @@ export const buildPipeline = (utils) => [{
     apply: async (card, bgs) => {
         const maskUrl = await utils.assetURL(getBorderMaskPath(card));
         const borderUrl = await utils.maskColor(maskUrl, '#000000');
-        bgs.border = { url: borderUrl, zIndex: -1 };
+        bgs.border = { url: borderUrl, zIndex: 3 };
     }
 }];
