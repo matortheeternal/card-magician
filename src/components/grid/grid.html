@@ -1,0 +1,14 @@
+<div class="grid-header">
+    <template x-for="column in columns">
+        <div x-text="column.label"></div>
+    </template>
+</div>
+<div class="grid-rows">
+    <template x-for="row in rows">
+        <div class="row">
+            <template x-for="column in columns">
+                <div @click="onClick(column, row)" x-html="column.html(row)"></div>
+            </template>
+        </div>
+    </template>
+</div>

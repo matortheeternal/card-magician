@@ -19,7 +19,14 @@ const actions = {
     copy: () => console.log('Copy'),
     paste: () => console.log('Paste'),
     editPreferences: () => console.log('Edit preferences'),
-    addCard: () => console.log('Add card'),
+    addCard: () => {
+        Alpine.nextTick(() => {
+            view.activeSet.cards.push({
+                template: 'M15Mainframe',
+                name: 'New card'
+            });
+        });
+    },
     deleteCards: () => console.log('Delete cards'),
 };
 
@@ -44,7 +51,7 @@ export const titleBarMenus = [{
         menuItem('Copy', 'Ctrl+P', actions.copy),
         menuItem('Paste', '', actions.paste),
         DIVIDER,
-        menuItem('Preference', '', actions.editPreferences),
+        menuItem('Preferences', '', actions.editPreferences),
     ]
 }, {
     title: 'Cards',
