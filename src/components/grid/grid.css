@@ -1,0 +1,18 @@
+.grid-header, .grid-row {
+    display: grid;
+    grid-template-columns: var(--grid-template-columns, auto);
+}
+
+.grid-header-cell {
+    position: relative;
+}
+
+.grid-header-cell .resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 1;
+}

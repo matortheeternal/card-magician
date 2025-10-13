@@ -1,6 +1,7 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "views/titleBar/titleBar.css";
 @import "views/editCard/editCard.css";
+@import "components/grid/grid.css";
 
 * {
     box-sizing: border-box;
@@ -32,4 +33,8 @@ main {
     background-color: #111;
     display: flex;
     flex-direction: row;
+}
+
+.set-view {
+    padding: 1em;
 }

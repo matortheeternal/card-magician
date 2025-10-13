@@ -13,13 +13,6 @@ export const buildModuleUtils = (modulePath) => ({
         const filePath = ['modules', modulePath, filename].join('/');
         return await Neutralino.filesystem.readFile(filePath);
     },
-    disposeImage(card, key) {
-        if (!card[key]) return;
-        URL.revokeObjectURL(card[key]);
-    },
-    parseBlob(text) {
-        return parseBlob(text);
-    },
     async maskColor(sourceUrl, color) {
         return await maskColorUrl(sourceUrl, color);
     },
