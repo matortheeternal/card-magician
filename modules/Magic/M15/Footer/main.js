@@ -2,33 +2,33 @@ export default async function(card, utils) {
     card.brushSvg = await utils.loadFile('assets/art.svg');
 
     card.addField({
-        id: 'collectorNumber',
-        displayName: 'Collector Number',
-        group: 'footer'
-    });
-
-    card.addField({
-        id: 'setCode',
-        displayName: 'Set Code',
-        group: 'footer'
-    });
-
-    card.addField({
-        id: 'language',
-        displayName: 'Language',
-        group: 'footer'
-    });
-
-    card.addField({
         id: 'illustrator',
         displayName: 'Illustrator',
         group: 'footer'
     });
 
     card.addField({
+        id: 'collectorNumber',
+        displayName: 'Collector Number',
+        group: 'footer-ext'
+    });
+
+    card.addField({
+        id: 'setCode',
+        displayName: 'Set Code',
+        group: 'footer-ext'
+    });
+
+    card.addField({
+        id: 'language',
+        displayName: 'Language',
+        group: 'footer-ext'
+    });
+
+    card.addField({
         id: 'legalText',
         displayName: 'Legal Text',
-        group: 'footer'
+        group: 'footer-ext'
     });
 
     card.publishElement('info',

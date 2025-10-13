@@ -10,6 +10,7 @@ export default async function(card) {
         type: 'select',
         options: ['Common', 'Uncommon', 'Rare', 'Mythic'],
         displayName: 'Rarity',
+        group: 'footer',
         default: "Common",
     });
 
