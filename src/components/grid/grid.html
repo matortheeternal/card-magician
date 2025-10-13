@@ -1,5 +1,5 @@
 <div class="grid-header">
-    <template x-for="column in columns">
+    <template x-for="column in activeColumns">
         <div class="grid-header-cell">
             <span x-text="column.label"></span>
             <div class="resize-handle"></div>
@@ -7,12 +7,12 @@
     </template>
 </div>
 <div class="grid-rows">
-    <template x-for="row in rows">
+    <template x-for="row in activeRows">
         <div class="grid-row">
-            <template x-for="column in columns">
-                <div @click="onCellClick(column, row)" class="grid-cell">
-                    <span x-text="row.data[column.id]"></span>
-                </div>
+            <template x-for="column in activeColumns">
+                <div @click="onCellClick(column, row)"
+                     class="grid-cell"
+                     x-html="column.display(row)"></div>
             </template>
         </div>
     </template>

@@ -27,14 +27,17 @@ Alpine.directive('component', (element, { expression }, { evaluate }) => {
             return;
         }
 
-        const dataId = toCamelCase(id, '-');
-        const parentScope = evaluate(collectScopePath(element).join('.'));
-        const scope = { ...data };
-        parentScope[dataId] = scope;
         const { controller } = component;
-        controller && controller(scope, { parentScope, data, element });
+        if (controller) {
+            const dataId = toCamelCase(id, '-');
+            const parentScope = evaluate(collectScopePath(element).join('.'));
+            const scope = Alpine.reactive({ ...data });
+            parentScope[dataId] = scope;
+            controller(scope, { parentScope, data, element });
 
-        element.setAttribute('x-scope', dataId);
+            element.setAttribute('x-scope', dataId);
+        }
+
         element.innerHTML = component.html;
     });
 });
