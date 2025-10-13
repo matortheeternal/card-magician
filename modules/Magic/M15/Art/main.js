@@ -1,10 +1,9 @@
 export default async function(card, utils) {
-    card.artImage = { image: null, filename: '' };
-
     card.addField({
         id: 'artImage',
         type: 'image',
-        displayName: 'Art Image'
+        displayName: 'Art Image',
+        default: { image: null, filename: '' }
     });
 
     card.publishElement('art-image',

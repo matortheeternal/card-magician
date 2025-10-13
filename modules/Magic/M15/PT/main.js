@@ -12,7 +12,7 @@ export default async function(card, utils) {
     });
 
     Alpine.effect(() => {
-        if (!card.colorIdentity) return;
+        if (!card.colorIdentity || card.superType === undefined) return;
         updatePtStyle();
     });
 

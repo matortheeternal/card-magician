@@ -26,7 +26,7 @@ async function loadImage(model, dataToLoad, field) {
     const currentImage = model[field.id]?.image;
     if (currentImage) URL.revokeObjectURL(currentImage);
     const imageDataToLoad = dataToLoad[field.id];
-    if (!imageDataToLoad) return null;
+    if (!imageDataToLoad) return { image: null, filename: '' };
     const blob = parseBlob(imageDataToLoad.image);
     const image = URL.createObjectURL(blob);
     return { image, filename: imageDataToLoad.filename };
@@ -86,7 +86,8 @@ function initCard(key) {
         async load(cardData) {
             if (!cardData) return;
             for (const field of this.fields)
-                this[field.id] = await loadField(this, cardData, field);
+                if (cardData.hasOwnProperty(field.id))
+                    this[field.id] = await loadField(this, cardData, field);
             for (const subCard of this.subCards)
                 await subCard.load(cardData[subCard.id]);
         }
@@ -137,8 +138,8 @@ async function buildCardFaces(model, template) {
         model[key] = await buildCardFace(model, key, def);
 }
 
-export async function buildCard(baseCard) {
-    const template = getTemplate(baseCard.template);
+export async function buildCard(templateName) {
+    const template = getTemplate(templateName);
     const model = {};
     await buildCardFaces(model, template.structure);
     return { template: template.name, model };
