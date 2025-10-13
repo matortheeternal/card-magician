@@ -2,10 +2,11 @@
     font-family: var(--sl-font-sans);
     display: grid;
     grid-template-columns: var(--grid-template-columns, auto);
+    user-select: none;
+    cursor: default;
 }
 
 .grid-header {
-    user-select: none;
     border-bottom: 1px solid var(--sl-color-neutral-200);
 }
 
