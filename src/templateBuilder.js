@@ -105,7 +105,7 @@ const componentLoaders = [
     {
         type: 'card',
         useLoader: component => component.constructor === Object,
-        load: buildCards
+        load: buildCardFaces
     }
 ];
 
@@ -113,7 +113,7 @@ function getComponentLoader(component) {
     return componentLoaders.find(loader => loader.useLoader(component));
 }
 
-async function buildCard(parent, key, def) {
+async function buildCardFace(parent, key, def) {
     const card = initCard(key);
     card.parent = () => parent;
     if (parent.subCards) parent.subCards.push(Alpine.raw(card));
@@ -132,23 +132,22 @@ async function buildCard(parent, key, def) {
     return card;
 }
 
-async function buildCards(templateModel, template) {
+async function buildCardFaces(model, template) {
     for (const [key, def] of Object.entries(template))
-        templateModel[key] = await buildCard(templateModel, key, def);
+        model[key] = await buildCardFace(model, key, def);
 }
 
-export async function buildTemplate({ info }) {
-    const { template } = info;
-    const templateModel = {};
-    await buildCards(templateModel, template);
-    return templateModel;
+export async function buildCard(template) {
+    const model = {};
+    await buildCardFaces(model, template.template);
+    return { template: template.name, model };
 }
 
 const templates = [];
 export async function loadTemplates() {
     const templateFolders = await Neutralino.filesystem.readDirectory(
         'templates',
-        { recursion: true }
+        { recursive: true }
     );
     for (let templateFolder of templateFolders) {
         console.info('Reading template from', templateFolder.path);
@@ -157,12 +156,11 @@ export async function loadTemplates() {
             console.info('No template.json found at', jsonPath);
             continue;
         }
-        const template = {};
-        template.info = await loadJson(jsonPath);
+        const template = await loadJson(jsonPath)
         templates.push(template);
     }
 }
 
 export function getTemplate(templateName) {
-    return templates.find(t => t.info.name === templateName);
+    return templates.find(t => t.name === templateName);
 }

@@ -10,6 +10,7 @@ const DIVIDER = { isDivider: true };
 const actions = {
     makeNewSet: () => console.log('Make new set'),
     openSet: () => console.log('Open set'),
+    save: () => console.log('Save'),
     saveAs: () => console.log('Save as'),
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
@@ -21,10 +22,7 @@ const actions = {
     editPreferences: () => console.log('Edit preferences'),
     addCard: () => {
         Alpine.nextTick(() => {
-            view.activeSet.cards.push({
-                template: 'M15Mainframe',
-                name: 'New card'
-            });
+            view.activeSet.cards.push(view.game.newCard());
         });
     },
     deleteCards: () => console.log('Delete cards'),
@@ -35,6 +33,7 @@ export const titleBarMenus = [{
     items: [
         menuItem('New', 'Ctrl+N', actions.makeNewSet),
         menuItem('Open', 'Ctrl+O', actions.openSet),
+        menuItem('Save', 'Ctrl+S', actions.save),
         menuItem('Save as', 'Ctrl+Shift+S', actions.saveAs),
         DIVIDER,
         menuItem('Print', 'Ctrl+P', actions.print),

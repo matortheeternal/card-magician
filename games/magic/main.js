@@ -7,4 +7,13 @@ export default async function(game, utils) {
     const columns = buildColumns({ calculateCmc, calculateColors });
     for (let column of columns)
         game.gridColumns.push(column);
+
+    game.newCard = function() {
+        return {
+            template: 'M15Mainframe',
+            model: {
+                card: { name: 'New Card' }
+            }
+        }
+    }
 };

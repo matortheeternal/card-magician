@@ -10,7 +10,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         label: 'Name',
         width: '5fr',
         data: row => collect(row, 'name'),
-        onItemClick: card => (view.activeCard = card)
+        onItemClick: row => (view.activeCard = row.original)
     }, {
         label: 'Cost',
         width: '1fr',
@@ -35,10 +35,10 @@ export function buildColumns({ calculateCmc, calculateColors }) {
     }, {
         label: 'Rarity',
         width: '2fr',
-        data: row => row.card?.rarity
+        data: row => row.card?.rarity || ''
     }, {
         label: 'Number',
         width: '1fr',
-        data: row => row.card?.collectorNumber
+        data: row => row.card?.collectorNumber || ''
     }];
 }
