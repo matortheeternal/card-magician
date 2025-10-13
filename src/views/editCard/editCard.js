@@ -6,10 +6,11 @@ import { buildCardForm } from './formBuilder.js';
 registerView('edit-card', html, async function(scope, { element }) {
     const templateContainer = element.querySelector('.template-container');
     const formsContainer = element.querySelector('.forms-container');
-    scope.card = await buildCard(view.activeCard);
+    const { activeCard } = view;
+    scope.card = await buildCard(activeCard.template);
 
     for (let face of Object.values(scope.card.model)) {
-        await face.load(scope.card[face.id]);
+        await face.load(activeCard.model[face.id]);
         templateContainer.appendChild(face.dom);
         formsContainer.appendChild(buildCardForm(face));
     }
