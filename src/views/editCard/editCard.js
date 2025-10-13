@@ -1,16 +1,15 @@
 import { registerView } from '../../viewRegistry.js';
 import html from './editCard.html';
-import { getTemplate, buildCard } from '../../templateBuilder';
+import { buildCard } from '../../templateBuilder';
 import { buildCardForm } from './formBuilder.js';
 
 registerView('edit-card', html, async function(scope, { element }) {
     const templateContainer = element.querySelector('.template-container');
     const formsContainer = element.querySelector('.forms-container');
-    const template = getTemplate(view.activeCard.template);
-    scope.card = await buildCard(template);
+    scope.card = await buildCard(view.activeCard);
 
     for (let face of Object.values(scope.card.model)) {
-        await face.load(view.activeCard[face.id]);
+        await face.load(scope.card[face.id]);
         templateContainer.appendChild(face.dom);
         formsContainer.appendChild(buildCardForm(face));
     }

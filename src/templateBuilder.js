@@ -137,9 +137,10 @@ async function buildCardFaces(model, template) {
         model[key] = await buildCardFace(model, key, def);
 }
 
-export async function buildCard(template) {
+export async function buildCard(baseCard) {
+    const template = getTemplate(baseCard.template);
     const model = {};
-    await buildCardFaces(model, template.template);
+    await buildCardFaces(model, template.structure);
     return { template: template.name, model };
 }
 

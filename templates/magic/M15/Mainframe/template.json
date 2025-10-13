@@ -2,7 +2,7 @@
   "name": "M15Mainframe",
   "description": "The M15 main card frame.",
   "version": "0.0",
-  "template": {
+  "structure": {
     "card": [
       "Magic/M15/MainFrame",
       "Magic/M15/Symbols",
