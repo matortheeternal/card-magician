@@ -11,7 +11,7 @@ Alpine.directive('view', (element, { expression: id }) => {
 
     const dataId = toCamelCase(id, '-');
     const parentScope = Alpine.closestDataStack(element)[0];
-    const scope = {};
+    const scope = Alpine.reactive({});
     parentScope[dataId] = scope;
     element.innerHTML = view.html;
     element.setAttribute('x-scope', dataId);
