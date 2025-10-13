@@ -17,7 +17,7 @@ const textTransformers = [
     },
     {
         match: str => str.match(/(CARDNAME|~)/),
-        apply: async (card) => card.cardName
+        apply: async (card) => card.name
     }
 ];
 
