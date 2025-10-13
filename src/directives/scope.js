@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 
-function collectScopePath(el) {
+export function collectScopePath(el) {
     const scopes = [];
     let current = el.parentElement;
     while (current) {

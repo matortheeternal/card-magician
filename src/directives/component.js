@@ -1,8 +1,9 @@
 import Alpine from 'alpinejs';
 import { getComponent } from '../componentRegistry.js';
 import { toCamelCase } from '../utils';
+import { collectScopePath } from './scope';
 
-function handleExpression(expressionOrId, evaluateLater) {
+function handleExpression(expressionOrId, evaluate) {
     return new Promise((resolve, reject) => {
         try {
             if (!/^{/.test(expressionOrId)) {
@@ -10,17 +11,16 @@ function handleExpression(expressionOrId, evaluateLater) {
                 return;
             }
 
-            evaluateLater(expressionOrId)(({ id, ...data }) => {
-                resolve([id, data]);
-            });
+            const { id, ...data } = evaluate(expressionOrId);
+            resolve([id, data]);
         } catch (e) {
             reject(e);
         }
     });
 }
 
-Alpine.directive('component', (el, { expression: expressionOrId }, { evaluateLater }) => {
-    handleExpression(expressionOrId, evaluateLater).then(([id, data]) => {
+Alpine.directive('component', (element, { expression }, { evaluate }) => {
+    handleExpression(expression, evaluate).then(([id, data]) => {
         const component = getComponent(id);
         if (!component) {
             console.error(`Component not registered: ${id}`);
@@ -28,13 +28,13 @@ Alpine.directive('component', (el, { expression: expressionOrId }, { evaluateLat
         }
 
         const dataId = toCamelCase(id, '-');
-        const parentScope = Alpine.closestDataStack(el)[0];
+        const parentScope = evaluate(collectScopePath(element).join('.'));
         const scope = { ...data };
         parentScope[dataId] = scope;
         const { controller } = component;
-        controller && controller(scope, { parentScope, data });
+        controller && controller(scope, { parentScope, data, element });
 
-        el.setAttribute('x-scope', dataId);
-        el.innerHTML = component.html;
+        element.setAttribute('x-scope', dataId);
+        element.innerHTML = component.html;
     });
 });

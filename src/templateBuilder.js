@@ -1,5 +1,6 @@
 import { checkFileExists, loadJson, loadModule } from './fsHelpers';
 import { buildModuleUtils } from './moduleUtils.js';
+import { parseBlob } from './gfx/imageProcessing.js';
 
 function compileTemplate(context, src) {
     const parent = context.parent();
@@ -22,10 +23,11 @@ async function saveImage(data, field) {
 }
 
 async function loadImage(model, dataToLoad, field) {
-    utils.disposeImage(model[field.id], 'image');
+    const currentImage = model[field.id]?.image;
+    if (currentImage) URL.revokeObjectURL(currentImage);
     const imageDataToLoad = dataToLoad[field.id];
     if (!imageDataToLoad) return null;
-    const blob = utils.parseBlob(imageDataToLoad.image);
+    const blob = parseBlob(imageDataToLoad.image);
     const image = URL.createObjectURL(blob);
     return { image, filename: imageDataToLoad.filename };
 }
@@ -95,9 +97,9 @@ const componentLoaders = [
     {
         type: 'module',
         useLoader: component => component.constructor === String,
-        load: (card, component) => {
+        load: async (card, component) => {
             const utils = buildModuleUtils(component);
-            return loadModule(component, card, utils);
+            return await loadModule(component, card, utils);
         }
     },
     {
@@ -150,13 +152,13 @@ export async function loadTemplates() {
     );
     for (let templateFolder of templateFolders) {
         console.info('Reading template from', templateFolder.path);
-        const infoPath = ['.', templateFolder.path, 'info.json'].join('/');
-        if (!await checkFileExists(infoPath)) {
-            console.info('No info.json found at', infoPath)
+        const jsonPath = ['.', templateFolder.path, 'template.json'].join('/');
+        if (!await checkFileExists(jsonPath)) {
+            console.info('No template.json found at', jsonPath);
             continue;
         }
         const template = {};
-        template.info = await loadJson(infoPath);
+        template.info = await loadJson(jsonPath);
         templates.push(template);
     }
 }

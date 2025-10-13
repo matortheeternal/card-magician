@@ -3,6 +3,7 @@ import '@shoelace-style/shoelace/dist/shoelace.js';
 import './webComponents/imageSelect/imageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './templateBuilder';
+import { loadGames, setGame } from './gameService';
 import { setupTestHarness, runTests } from './tests';
 import './components/**/*.js';
 import './directives/*.js';
@@ -29,7 +30,8 @@ function setupNeutralino() {
 function setupAlpine() {
     window.Alpine = Alpine;
     window.view = Alpine.reactive({
-        activeSet: { cards: [] }
+        activeSet: null,
+        activeCard: null
     });
     Alpine.start();
 }
@@ -40,7 +42,10 @@ async function startApp() {
         await runTests();
         return;
     }
+    await loadGames();
+    view.game = await setGame('magic');
     await loadTemplates();
+    view.activeSet = { cards: [] };
 }
 
 startApp();

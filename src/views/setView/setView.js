@@ -1,12 +1,12 @@
 import { registerView } from '../../viewRegistry.js';
 import html from './setView.html';
 
-registerView('set-view', html, function(scope, { parentScope }) {
-    scope.gridColumns = [{
-        label: 'Name',
-        html: () => `<span x-text="row.name || 'Unnamed card'"></span>`,
-        onItemClick: (card) => {
-            parentScope.activeCard = card;
-        }
-    }];
+registerView('set-view', html, function(scope, { parentScope, element }) {
+    scope.gridColumns = view.game.gridColumns;
+
+    scope.setActiveCard = function(card) {
+        parentScope.activeCard = card;
+    };
+
+    Alpine.initTree(element);
 });
