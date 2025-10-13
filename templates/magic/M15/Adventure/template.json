@@ -2,7 +2,7 @@
   "name": "M15Adventure",
   "description": "This is a template for adventure cards which builds off of the M15 main frame.",
   "version": "0.0",
-  "template": {
+  "structure": {
     "card": [
       "Magic/M15/MainFrame",
       "Magic/M15/Symbols",
