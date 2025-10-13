@@ -9,7 +9,7 @@ registerView('edit-card', html, async function(scope, { element }) {
     const { activeCard } = view;
     scope.card = await buildCard(activeCard.template);
 
-    for (let face of Object.values(scope.card.model)) {
+    for (const face of Object.values(scope.card.model)) {
         await face.load(activeCard.model[face.id]);
         templateContainer.appendChild(face.dom);
         formsContainer.appendChild(buildCardForm(face));
@@ -33,5 +33,15 @@ registerView('edit-card', html, async function(scope, { element }) {
             fieldContainer.push(field);
         }
         return entries;
+    };
+
+    scope.save = async function() {
+        for (const face of Object.values(scope.card.model))
+            activeCard.model[face.id] = await face.save();
+    };
+
+    scope.close = async function() {
+        await save();
+        view.activeCard = null;
     };
 });

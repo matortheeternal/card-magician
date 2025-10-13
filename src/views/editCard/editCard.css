@@ -63,3 +63,10 @@ sl-input[type="file"]::part(input) {
     flex-direction: row;
     gap: var(--sl-spacing-x-small);
 }
+
+.close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: var(--sl-color-danger-600);
+}
