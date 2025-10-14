@@ -15,8 +15,8 @@ export default async function(card, utils) {
         }
     }
 
-    Alpine.effect(() => {
-        card.rulesHTML = textToHTML(card.rulesText, card);
+    Alpine.effect(async () => {
+        card.rulesHTML = await textToHTML(card.rulesText, card);
     });
 
     Alpine.effect(() => {

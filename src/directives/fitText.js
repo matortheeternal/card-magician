@@ -58,7 +58,6 @@ function updateClasses(el, fontSize, lineHeight) {
     return classes.join(' ');
 }
 
-let timeout = null;
 Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => {
     const adjustFontSize = (forbiddenRects) => {
         el.style.fontSize = '';
@@ -91,10 +90,11 @@ Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => 
         }
     };
 
+    let timeout = null;
     effect(() => {
         evaluateLater(expression)((result) => {
             if (timeout) clearTimeout(timeout);
-            timeout = setTimeout(() => adjustFontSize(result.forbiddenRects), 100);
+            timeout = Alpine.nextTick(() => adjustFontSize(result.forbiddenRects));
         });
     });
 });
