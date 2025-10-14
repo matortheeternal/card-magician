@@ -67,6 +67,6 @@ sl-input[type="file"]::part(input) {
 .close-btn {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 1em;
     color: var(--sl-color-danger-600);
 }

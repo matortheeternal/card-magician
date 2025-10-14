@@ -3,6 +3,9 @@ import { toCamelCase } from '../../utils.js';
 import html from './grid.html';
 
 registerComponent('grid', html, function(scope, { element, data }) {
+    scope.activeColumns = [];
+    scope.activeRows = [];
+
     Alpine.effect(() => {
         const gridTemplateColumns = data.columns.map(column => {
             return column.width ? column.width : '1fr';

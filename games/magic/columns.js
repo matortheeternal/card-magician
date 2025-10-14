@@ -5,6 +5,15 @@ function collect(row, key, separator = ' // ') {
     return values.join(separator);
 }
 
+function collectMap(row, fn, separator = ' // ') {
+    const values = [];
+    for (const face of Object.values(row)) {
+        const value = fn(face);
+        if (value) values.push(value);
+    }
+    return values.join(separator);
+}
+
 export function buildColumns({ calculateCmc, calculateColors }) {
     return [{
         label: 'Name',
@@ -14,20 +23,24 @@ export function buildColumns({ calculateCmc, calculateColors }) {
     }, {
         label: 'Cost',
         width: '1fr',
-        data: row => collect(row, 'cost').toUpperCase()
+        data: row => collect(row, 'manaCost').toUpperCase()
     }, {
         label: 'CMC',
         width: '1fr',
-        data: row => calculateCmc(row.card?.cost)
+        data: row => calculateCmc(row.card?.manaCost)
     }, {
         label: 'Type',
         width: '4fr',
-        data: row => collect(row, f => `${f.superType} — ${f.subType}`)
+        data: row => collectMap(row, f => {
+            if (!f.superType && !f.subType) return '';
+            if (!f.subType) return f.superType;
+            return `${f.superType || ''} — ${f.subType}`;
+        })
     }, {
         label: 'P/T',
         id: 'pt',
         width: '1fr',
-        data: row => collect(row, f => `${f.power} / ${f.toughness}`)
+        data: row => collectMap(row, f => `${f.power || ''} / ${f.toughness || ''}`)
     }, {
         label: 'Color',
         width: '3fr',
