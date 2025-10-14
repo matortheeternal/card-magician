@@ -1,72 +1,72 @@
-.forms-container {
-    display: flex;
-    align-self: stretch;
-    flex-direction: row;
-    justify-content: stretch;
-    overflow-y: auto;
-}
+/*.forms-container {*/
+/*    display: flex;*/
+/*    align-self: stretch;*/
+/*    flex-direction: row;*/
+/*    justify-content: stretch;*/
+/*    overflow-y: auto;*/
+/*}*/
 
-.template-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+/*.template-container {*/
+/*    flex-grow: 1;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
 
-.form {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    align-items: center;
-    padding: 1em;
-    min-width: 35em;
-    border-radius: 10px;
-    overflow: auto;
-    background: #000;
-    font-family: var(--sl-font-sans);
-}
+/*.form {*/
+/*    flex-grow: 1;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: stretch;*/
+/*    align-items: center;*/
+/*    padding: 1em;*/
+/*    min-width: 35em;*/
+/*    border-radius: 10px;*/
+/*    overflow: auto;*/
+/*    background: #000;*/
+/*    font-family: var(--sl-font-sans);*/
+/*}*/
 
-.form section > * {
-    margin-bottom: var(--sl-spacing-x-small);
-}
+/*.form section > * {*/
+/*    margin-bottom: var(--sl-spacing-x-small);*/
+/*}*/
 
-.card-container {
-    color: black;
-    /* zoom: 1.5;*/
-}
+/*.card-container {*/
+/*    color: black;*/
+/*    !* zoom: 1.5;*!*/
+/*}*/
 
-h1, h2, h3, h4, h5, h6 {
-    text-transform: capitalize;
-    text-align: center;
-    border-bottom: 1px solid;
-    font-family: monospace;
-    zoom: 1.5;
-    margin: 0 0 0.5em;
-}
+/*h1, h2, h3, h4, h5, h6 {*/
+/*    text-transform: capitalize;*/
+/*    text-align: center;*/
+/*    border-bottom: 1px solid;*/
+/*    font-family: monospace;*/
+/*    zoom: 1.5;*/
+/*    margin: 0 0 0.5em;*/
+/*}*/
 
-sl-input[type="file"]::part(input) {
-    padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);
-}
+/*sl-input[type="file"]::part(input) {*/
+/*    padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);*/
+/*}*/
 
-.field-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--sl-spacing-small);
-    row-gap: var(--sl-spacing-x-small);
-}
+/*.field-group {*/
+/*    display: grid;*/
+/*    grid-template-columns: 1fr 1fr;*/
+/*    column-gap: var(--sl-spacing-small);*/
+/*    row-gap: var(--sl-spacing-x-small);*/
+/*}*/
 
-.buttons-container {
-    margin-top: var(--sl-spacing-medium);
-    display: flex;
-    flex-direction: row;
-    gap: var(--sl-spacing-x-small);
-}
+/*.buttons-container {*/
+/*    margin-top: var(--sl-spacing-medium);*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    gap: var(--sl-spacing-x-small);*/
+/*}*/
 
-.close-btn {
-    position: absolute;
-    top: 0;
-    right: 1em;
-    color: var(--sl-color-danger-600);
-}
+/*.close-btn {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 1em;*/
+/*    color: var(--sl-color-danger-600);*/
+/*}*/

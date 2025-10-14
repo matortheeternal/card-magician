@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { toCamelCase } from '../../utils.js';
+import { toCamelCase, emit } from '../../utils.js';
 import html from './grid.html';
 
 function makeDefaultDisplayFunction(column) {
@@ -52,7 +52,11 @@ Alpine.data('grid', (config) => ({
         this.$root.style.setProperty('--grid-template-columns', gridTemplateColumns);
     },
 
-    onCellClick(column, row) {
-        column.onItemClick && column.onItemClick(row, Alpine);
-    }
+    onRowClick(row) {
+        emit(this.$root, 'row-selected', { row })
+    },
+
+    // onCellClick(column, row) {
+    //     column.onItemClick && column.onItemClick(row, Alpine);
+    // }
 }));
