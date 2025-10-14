@@ -3,7 +3,7 @@ import html from './imageSelect.html';
 
 class ImageSelect extends HTMLElement {
   static get observedAttributes() {
-    return ['label'];
+    return ['label', 'src', 'filename'];
   }
 
   constructor() {
@@ -16,6 +16,23 @@ class ImageSelect extends HTMLElement {
     this.bindElements();
     this.bindEvents();
     this.assignLabel();
+    this.loadValue();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'label') {
+      this._label = newValue;
+      if (this.elements) this.assignLabel();
+    } else if (name === 'src' || name === 'filename') {
+      this.loadValue();
+    }
+  }
+
+  loadValue() {
+    const src = this.getAttribute('src');
+    const filename = this.getAttribute('filename');
+    if (src && filename)
+      this.displayPreview(src, filename, true);
   }
 
   bindElements() {
@@ -54,7 +71,7 @@ class ImageSelect extends HTMLElement {
       labelSlot.textContent = this.getAttribute('label');
   }
 
-  displayPreview(image, filename = 'uploaded_file') {
+  displayPreview(image, filename = 'uploaded_file', skipEmit = false) {
     const { uploadPrompt, preview, previewImage, previewName } = this.elements;
 
     hide(uploadPrompt);
@@ -63,7 +80,7 @@ class ImageSelect extends HTMLElement {
     previewImage.src = image;
     previewImage.hidden = false;
 
-    emit(this, 'input', { image, filename });
+    if (!skipEmit) emit(this, 'input', { image, filename });
   }
 
   async handleFile(file) {
