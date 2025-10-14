@@ -7,7 +7,6 @@ registerComponent('edit-card', html, async function(scope, { element }) {
     const templateContainer = element.querySelector('.template-container');
     const formsContainer = element.querySelector('.forms-container');
     const { activeCard } = view;
-    console.log(Alpine.closestDataStack(formsContainer));
     scope.topCard = await buildCard(activeCard.template);
 
     Alpine.nextTick(async () => {

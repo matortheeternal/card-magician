@@ -29,8 +29,10 @@ const addSelectOptions = function(select, field) {
 const makeFormInput = function(field) {
     const tagName = TYPES_TO_TAGS[field.type] || 'sl-input';
     const input = document.createElement(tagName);
-    if (field.type === 'select')
+    if (field.type === 'select') {
         addSelectOptions(input, field);
+        input.setAttribute('x-sl-fix', '');
+    }
     if (field.type === 'textarea') {
         input.setAttribute('resize', 'auto');
         input.setAttribute('spellcheck', 'false');
