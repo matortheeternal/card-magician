@@ -22,6 +22,8 @@ main {
     position: relative;
     height: 100%;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .edit-card-modal {
@@ -36,5 +38,5 @@ main {
 }
 
 .set-view {
-    padding: 1em;
+    padding: var(--sl-spacing-x-small);
 }

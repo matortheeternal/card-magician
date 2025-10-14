@@ -9,14 +9,13 @@
 <body class="sl-theme-dark" x-data>
   <nav id="title-bar" x-data="titleBar()"></nav>
 
-  <main>
-    <template x-if="$store.views.activeSet">
+  <template x-if="$store.views.loaded">
+    <main>
+      <div x-data="displayCard($store.views.activeCard)" class="display-card-view"></div>
       <div x-data="setView($store.views.activeSet)" class="set-view"></div>
-    </template>
-    <template x-if="$store.views.activeCard">
-      <div x-data="editCard($store.views.activeCard)" class="edit-card-modal"></div>
-    </template>
-  </main>
+      <div x-data="cardForm($store.views.activeCard)" class="card-form-view"></div>
+    </main>
+  </template>
 
   <script src="/js/neutralino.js"></script>
   <script type="module" src="/js/main.js"></script>
