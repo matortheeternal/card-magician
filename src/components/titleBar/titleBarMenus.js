@@ -1,4 +1,5 @@
 import { toCamelCase } from '../../utils.js';
+import { loadJson } from '../../fsHelpers';
 
 function menuItem(label, hotkey, action) {
     const value = toCamelCase(label);
@@ -9,9 +10,30 @@ const DIVIDER = { isDivider: true };
 
 const actions = {
     makeNewSet: () => console.log('Make new set'),
-    openSet: () => console.log('Open set'),
+    openSet: async () => {
+        const [filePath] = await Neutralino.os.showOpenDialog('Open a set', {
+            filters: [
+                { name: 'JSON Files', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] }
+            ]
+        });
+        if (!filePath) return;
+        console.info('Opening set:', filePath);
+        view.activeSet = await loadJson(filePath);
+    },
     save: () => console.log('Save'),
-    saveAs: () => console.log('Save as'),
+    saveAs: async () => {
+        const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
+            defaultPath: `${view.activeSet.title || 'My Set'}.json`,
+            filters: [
+                { name: 'JSON Files', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] }
+            ]
+        });
+        if (!filePath) return;
+        console.info('Saving set to:', filePath);
+        await saveJson(filePath, view.activeSet, false);
+    },
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
     undo: () => console.log('Undo'),

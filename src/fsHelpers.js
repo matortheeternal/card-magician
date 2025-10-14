@@ -1,3 +1,8 @@
+export async function saveJson(filePath, data, minify = true) {
+    const text = JSON.stringify(data, null, minify ? 0 : 2);
+    await Neutralino.filesystem.writeFile(filePath, text);
+}
+
 export async function loadJson(filePath) {
     const text = await Neutralino.filesystem.readFile(filePath);
     return JSON.parse(text);
