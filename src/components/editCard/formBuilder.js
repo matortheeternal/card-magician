@@ -39,6 +39,10 @@ const makeFormInput = function(field) {
     }
     if (tagName === 'sl-input' && field.type)
         input.setAttribute('type', field.type);
+    if (tagName === 'image-select') {
+        input.setAttribute(':src', [field.id, 'image'].join('.'));
+        input.setAttribute(':filename', [field.id, 'filename'].join('.'));
+    }
     input.setAttribute('label', field.displayName);
     input.setAttribute('x-model', field.id);
     applyOnChange(field, input);
