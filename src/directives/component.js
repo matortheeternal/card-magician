@@ -10,7 +10,7 @@ function handleExpression(expressionOrId, evaluate) {
     return [id, data];
 }
 
-Alpine.directive('component', async (element, { expression }, { evaluate }) => {
+Alpine.directive('component', async (element, { expression }, { evaluate, effect }) => {
     const [id, scopeData] = handleExpression(expression, evaluate);
 
     const component = getComponent(id);
@@ -19,7 +19,12 @@ Alpine.directive('component', async (element, { expression }, { evaluate }) => {
     const { controller, html } = component;
     const parentScope = Alpine.closestDataStack(element)[0];
 
-    await mountAlpineEntity({
+    const scope = await mountAlpineEntity({
         element, html, controller, parentScope, scopeData
     });
+
+    effect(() => {
+        const [, scopeData] = handleExpression(expression, evaluate);
+        Object.assign(scope, scopeData);
+    })
 });
