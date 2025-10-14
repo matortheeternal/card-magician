@@ -1,6 +1,6 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
-@import "views/titleBar/titleBar.css";
-@import "views/editCard/editCard.css";
+@import "components/titleBar/titleBar.css";
+@import "components/editCard/editCard.css";
 @import "components/grid/grid.css";
 
 * {
