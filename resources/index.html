@@ -7,11 +7,11 @@
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="sl-theme-dark" x-data="view">
-  <nav id="title-bar" x-view="title-bar"></nav>
+  <nav id="title-bar" x-component="title-bar"></nav>
 
   <main>
     <template x-if="activeSet">
-      <div x-view="set-view" class="set-view"></div>
+      <div x-component="set-view" class="set-view"></div>
     </template>
     <template x-if="activeCard">
       <div x-component="edit-card" class="edit-card-modal"></div>
