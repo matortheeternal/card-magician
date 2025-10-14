@@ -12,7 +12,7 @@ export default async function(card, utils) {
     };
 
     card.publishElement('name',
-        `<span x-text="name" x-fit-text="{text: name}"></span>`
+        `<span x-text="face.name" x-fit-text="{text: [face.name]}"></span>`
     );
 
     await utils.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');

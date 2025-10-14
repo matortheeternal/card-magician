@@ -50,10 +50,23 @@ async function loadField(model, dataToLoad, field) {
     return dataToLoad[field.id];
 }
 
-function initCard(key) {
+function createFormGroup(form, groupName) {
+    const group = { groupName, isGroup: true, fields: [] };
+    form.push(group);
+    return group;
+}
+
+function getFormContainer(form, field) {
+    if (!field.group) return form;
+    const group = form.find(entry => {
+        return entry.isGroup && entry.groupName === field.group;
+    }) || createFormGroup(form, field.group);
+    return group.fields;
+}
+
+function initCardFace(key) {
     const dom = document.createElement('div');
     dom.className = `${key}-container`;
-    dom.setAttribute('x-scope', key);
     const style = document.createElement('style');
     const styles = [];
     return Alpine.reactive({
@@ -61,9 +74,12 @@ function initCard(key) {
         dom,
         subCards: [],
         fields: [],
+        form: [],
         addField(field) {
             this.fields.push(field);
             this[field.id] = field.default || '';
+            const formContainer = getFormContainer(this.form, field);
+            formContainer.push(field);
         },
         publishElement(selector, html) {
             const targetElement = dom.querySelector(`.${key}-${selector}`);
@@ -117,7 +133,7 @@ function getComponentLoader(component) {
 }
 
 async function buildCardFace(parent, key, def) {
-    const card = initCard(key);
+    const card = initCardFace(key);
     card.parent = () => parent;
     if (parent.subCards) parent.subCards.push(Alpine.raw(card));
 

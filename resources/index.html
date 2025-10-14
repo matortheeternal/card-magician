@@ -6,15 +6,15 @@
   <title>Card Magician</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body class="sl-theme-dark" x-data="view">
-  <nav id="title-bar" x-component="title-bar"></nav>
+<body class="sl-theme-dark" x-data>
+  <nav id="title-bar" x-data="titleBar()"></nav>
 
   <main>
-    <template x-if="activeSet">
-      <div x-component="set-view" class="set-view"></div>
+    <template x-if="$store.views.activeSet">
+      <div x-data="setView($store.views.activeSet)" class="set-view"></div>
     </template>
-    <template x-if="activeCard">
-      <div x-component="edit-card" class="edit-card-modal"></div>
+    <template x-if="$store.views.activeCard">
+      <div x-data="editCard($store.views.activeCard)" class="edit-card-modal"></div>
     </template>
   </main>
 

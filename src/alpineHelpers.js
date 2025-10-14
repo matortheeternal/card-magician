@@ -1,4 +1,3 @@
-// alpineMount.js
 import Alpine from 'alpinejs';
 
 export async function mountAlpineEntity({

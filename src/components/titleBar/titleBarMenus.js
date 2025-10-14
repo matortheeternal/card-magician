@@ -1,3 +1,4 @@
+import Alpine from 'alpinejs';
 import { toCamelCase } from '../../utils.js';
 import { loadJson } from '../../fsHelpers';
 
@@ -19,12 +20,13 @@ const actions = {
         });
         if (!filePath) return;
         console.info('Opening set:', filePath);
-        view.activeSet = await loadJson(filePath);
+        Alpine.store('views').activeSet = await loadJson(filePath);
     },
     save: () => console.log('Save'),
     saveAs: async () => {
+        const { activeSet } = Alpine.store('views');
         const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
-            defaultPath: `${view.activeSet.title || 'My Set'}.json`,
+            defaultPath: `${activeSet.title || 'My Set'}.json`,
             filters: [
                 { name: 'JSON Files', extensions: ['json'] },
                 { name: 'All files', extensions: ['*'] }
@@ -32,7 +34,7 @@ const actions = {
         });
         if (!filePath) return;
         console.info('Saving set to:', filePath);
-        await saveJson(filePath, view.activeSet, false);
+        await saveJson(filePath, activeSet, false);
     },
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
@@ -43,8 +45,10 @@ const actions = {
     paste: () => console.log('Paste'),
     editPreferences: () => console.log('Edit preferences'),
     addCard: () => {
+        const { activeSet } = Alpine.store('views');
+        const game = Alpine.store('game');
         Alpine.nextTick(() => {
-            view.activeSet.cards.push(view.game.newCard());
+            activeSet.cards.push(game.newCard());
         });
     },
     deleteCards: () => console.log('Delete cards'),

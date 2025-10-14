@@ -41,10 +41,10 @@ export default async function(card, utils) {
     });
 
     card.publishElement('text-box',
-        `<div class="text" x-fit-text="{text: [rulesHTML, flavorText], forbiddenRects}">
-            <div class="rules-text" x-html="rulesHTML"></div>
-            <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
-            <div class="flavor-text" x-text="flavorText"></div>
+        `<div class="text" x-fit-text="{text: [face.rulesHTML, face.flavorText], forbiddenRects: face.forbiddenRects}">
+            <div class="rules-text" x-html="face.rulesHTML"></div>
+            <div class="flavor-bar" x-show="face.showFlavorBar" :style="face.flavorBarStyle"></div>
+            <div class="flavor-text" x-text="face.flavorText"></div>
         </div>`
     );
 

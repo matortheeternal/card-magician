@@ -1,12 +1,20 @@
-import { registerComponent } from '../../componentRegistry.js';
+import Alpine from 'alpinejs';
 import html from './setView.html';
 
-registerComponent('set-view', html, function(scope, { parentScope, element }) {
-    scope.gridColumns = view.game.gridColumns;
+Alpine.data('setView', () => ({
+    gridRows: [],
+    gridColumns: [],
 
-    scope.setActiveCard = function(card) {
-        parentScope.activeCard = card;
-    };
+    async init() {
+        this.$root.innerHTML = html;
+        this.gridColumns = Alpine.store('game').gridColumns;
+        this.gridRows = Alpine.store('views').activeSet.cards;
 
-    Alpine.initTree(element);
-});
+        this.$watch('$store.views.activeSet', (set) => {
+            const cards = set.cards || [];
+            this.gridRows.splice(0, this.gridRows.length, ...cards);
+        });
+
+        Alpine.initTree(this.$root);
+    }
+}));

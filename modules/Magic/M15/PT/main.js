@@ -29,8 +29,8 @@ export default async function(card, utils) {
     });
 
     card.publishElement('pt-container',
-        `<div class="pt-text" :style="ptStyle">
-            <span x-text="power"></span>/<span x-text="toughness"></span>
+        `<div class="pt-text" :style="face.ptStyle">
+            <span x-text="face.power"></span>/<span x-text="face.toughness"></span>
         </div>`
     );
 
