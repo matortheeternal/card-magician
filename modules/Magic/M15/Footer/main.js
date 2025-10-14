@@ -33,20 +33,20 @@ export default async function(card, utils) {
 
     card.publishElement('info',
         `<div>
-            <div x-text="face.rarityCharacter"></div>
-            <div x-text="face.collectorNumber"></div>
+            <div x-text="rarityCharacter"></div>
+            <div x-text="collectorNumber"></div>
         </div>
         <div>
-            <div x-text="face.setCode"></div>
+            <div x-text="setCode"></div>
             <div>&bullet;</div>
-            <div x-text="face.language"></div>
-            <div class="illustrator-brush" x-html="face.brushSvg"></div>
-            <div class="illustrator-name" x-text="face.illustrator"></div>
+            <div x-text="language"></div>
+            <div class="illustrator-brush" x-html="brushSvg"></div>
+            <div class="illustrator-name" x-text="illustrator"></div>
         </div>`
     );
 
     card.publishElement('legal-text',
-        `<span x-text="face.legalText"></span>`
+        `<span x-text="legalText"></span>`
     );
 
     await utils.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');

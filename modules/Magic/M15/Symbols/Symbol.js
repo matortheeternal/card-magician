@@ -20,7 +20,7 @@ const imagePathAdapters = {
 };
 
 const manaCircle = (size, text) =>
-    `<div class="sym" :style="face.${size}ManaCircleStyle">${text}</div>`;
+    `<div class="sym" :style="${size}ManaCircleStyle">${text}</div>`;
 
 export class Symbol {
     constructor(type, value) {

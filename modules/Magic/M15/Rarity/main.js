@@ -15,6 +15,6 @@ export default async function(card) {
     });
 
     card.publishElement('expansion-symbol',
-        `<span :class="face.rarityClass" x-text="face.rarityCharacter"></span>`
+        `<span :class="rarityClass" x-text="rarityCharacter"></span>`
     );
 }
