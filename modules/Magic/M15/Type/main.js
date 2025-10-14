@@ -36,10 +36,10 @@ export default async function(card, utils) {
     });
 
     card.publishElement('type',
-        `<div class="type-text" x-fit-text="{text: [face.superType, face.subType]}">
-            <span x-text="face.superType"></span>
-            <span x-show="face.subType">&nbsp;—&nbsp;</span>
-            <span x-text="face.subType"></span>
+        `<div class="type-text" x-fit-text="{text: [superType, subType]}">
+            <span x-text="superType"></span>
+            <span x-show="subType">&nbsp;—&nbsp;</span>
+            <span x-text="subType"></span>
         </div>`
     );
 

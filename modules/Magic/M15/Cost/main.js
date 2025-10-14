@@ -25,7 +25,7 @@ export default async function(card, utils) {
     });
 
     card.publishElement('mana-cost',
-        `<span x-html="face.manaCostHTML"></span>`
+        `<span x-html="manaCostHTML"></span>`
     );
 
     card.addStyle(await utils.loadFile('style.css'));
