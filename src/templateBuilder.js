@@ -11,12 +11,14 @@ function compileTemplate(context, src) {
 }
 
 async function saveImage(data, field) {
-    if (!data[field.id].image) return null;
-    const response = await fetch(data[field.id]);
+    const imageUrl = data[field.id]?.image;
+    if (!imageUrl) return { image: null, filename: '' };
+    const response = await fetch(imageUrl);
     const blob = await response.blob();
+    const filename = data[field.id].filename;
     return await new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve({ image: reader.result, filename });
         reader.onerror = () => reject(new Error('Failed to read data stream.'));
         reader.readAsDataURL(blob);
     });
@@ -26,7 +28,7 @@ async function loadImage(model, dataToLoad, field) {
     const currentImage = model[field.id]?.image;
     if (currentImage) URL.revokeObjectURL(currentImage);
     const imageDataToLoad = dataToLoad[field.id];
-    if (!imageDataToLoad) return { image: null, filename: '' };
+    if (!imageDataToLoad?.image) return { image: null, filename: '' };
     const blob = parseBlob(imageDataToLoad.image);
     const image = URL.createObjectURL(blob);
     return { image, filename: imageDataToLoad.filename };
