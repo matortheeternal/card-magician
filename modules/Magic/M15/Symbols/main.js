@@ -7,7 +7,6 @@ export default async function(card, utils) {
     card.tallManaCircleStyle = { backgroundImage: `url("${tallUrl}")` };
     card.flatManaCircleStyle = { backgroundImage: `url("${flatUrl}")` };
 
-
     function findSymbolParser(str) {
         for (let parser of symbolParsers) {
             const match = parser.match(str);

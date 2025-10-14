@@ -19,7 +19,9 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         label: 'Name',
         width: '5fr',
         data: row => collect(row, 'name'),
-        onItemClick: row => (view.activeCard = row.original)
+        onItemClick: (row, Alpine) => {
+            Alpine.store('views').activeCard = row.original;
+        }
     }, {
         label: 'Cost',
         width: '1fr',

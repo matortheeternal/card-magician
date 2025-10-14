@@ -1,35 +1,34 @@
-import { registerComponent } from '../../componentRegistry.js';
+import Alpine from 'alpinejs';
 import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html';
 
-registerComponent('title-bar', html, function(scope) {
-    let openMenu = null;
-
-    scope.menuHidden = ({ target: menu }) => {
+Alpine.data('titleBar', () => ({
+    async init() {
+        this.$root.innerHTML = html;
+        Alpine.initTree(this.$root);
+    },
+    openMenu: null,
+    isMaximized: false,
+    menus: titleBarMenus,
+    menuHidden({ target: menu }) {
         menu.classList.remove('menu-active');
-        if (openMenu === menu) openMenu = null;
-    };
-
-    scope.menuShown = ({ target: menu }) => {
-        if (openMenu && openMenu !== menu) openMenu.hide();
-        openMenu = menu;
+        if (this.openMenu === menu) this.openMenu = null;
+    },
+    menuShown({ target: menu }) {
+        if (this.openMenu && this.openMenu !== menu) this.openMenu.hide();
+        this.openMenu = menu;
         menu.classList.add('menu-active');
-    };
-
-    scope.onMenuEnter = ({ target: button }) => {
+    },
+    onMenuEnter({ target: button }) {
         const menu = button.parentNode;
-        if (!openMenu || openMenu === menu) return;
-        openMenu.hide();
+        if (!this.openMenu || this.openMenu === menu) return;
+        this.openMenu.hide();
         menu.show();
-    };
-
-    scope.toggleMaximize = async () => {
-        scope.isMaximized
+    },
+    async toggleMaximize() {
+        this.isMaximized
             ? await Neutralino.window.unmaximize()
             : await Neutralino.window.maximize();
-        scope.isMaximized = await Neutralino.window.isMaximized();
-    };
-
-    scope.isMaximized = false;
-    scope.menus = titleBarMenus;
-});
+        this.isMaximized = await Neutralino.window.isMaximized();
+    },
+}));

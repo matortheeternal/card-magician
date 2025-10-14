@@ -28,9 +28,13 @@ function setupNeutralino() {
 
 function setupAlpine() {
     window.Alpine = Alpine;
-    window.view = Alpine.reactive({
+    Alpine.store('views', {
+        game: null,
         activeSet: null,
-        activeCard: null
+        activeCard: null,
+        hide(key) {
+            this[key] = null;
+        }
     });
     Alpine.start();
 }
@@ -42,9 +46,9 @@ async function startApp() {
         return;
     }
     await loadGames();
-    view.game = await setGame('magic');
+    Alpine.store('game', await setGame('magic'));
     await loadTemplates();
-    view.activeSet = { cards: [] };
+    Alpine.store('views').activeSet = { cards: [] };
 }
 
 startApp();

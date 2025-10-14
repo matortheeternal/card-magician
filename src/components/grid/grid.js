@@ -1,46 +1,58 @@
-import { registerComponent } from '../../componentRegistry.js';
+import Alpine from 'alpinejs';
 import { toCamelCase } from '../../utils.js';
 import html from './grid.html';
 
-registerComponent('grid', html, function(scope, { element, data }) {
-    scope.activeColumns = [];
-    scope.activeRows = [];
+function makeDefaultDisplayFunction(column) {
+    return (row) => `<span>${row.data[column.id]}</span>`;
+}
 
-    Alpine.effect(() => {
-        const gridTemplateColumns = data.columns.map(column => {
-            return column.width ? column.width : '1fr';
-        }).join(' ');
-        element.style.setProperty('--grid-template-columns', gridTemplateColumns);
-    });
+Alpine.data('grid', (config) => ({
+    columns: config.columns || [],
+    rows: config.rows || [],
+    activeColumns: [],
+    activeRows: [],
+    async init() {
+        this.$watch('columns', () => this.computeColumns());
+        this.$watch('rows', () => this.computeRows());
+        this.$watch('activeColumns', () => this.computeRows());
+        this.$watch('columns', () => this.updateGridTemplate());
 
-    Alpine.effect(() => {
-        scope.activeColumns = scope.columns.map(column => {
-            const activeColumn = { ...column };
-            if (!activeColumn.id)
-                activeColumn.id = toCamelCase(column.label);
-            if (!activeColumn.display)
-                activeColumn.display = makeDefaultDisplayFunction(activeColumn);
-            return activeColumn;
+        this.computeColumns();
+        this.computeRows();
+        this.updateGridTemplate();
+
+        this.$root.innerHTML = html;
+        Alpine.initTree(this.$root);
+    },
+
+    computeColumns() {
+        this.activeColumns = this.columns.map(col => {
+            const active = { ...col };
+            if (!active.id) active.id = toCamelCase(col.label);
+            if (!active.display) active.display = makeDefaultDisplayFunction(active);
+            return active;
         });
-    });
+    },
 
-    Alpine.effect(() => {
-        scope.activeRows = scope.rows.map(row => {
-            const cols = scope.activeColumns || [];
+    computeRows() {
+        this.activeRows = this.rows.map(row => {
+            const cols = this.activeColumns || [];
             const data = cols.reduce((obj, col) => {
                 obj[col.id] = col.data(row.model);
                 return obj;
             }, {});
             return { data, selected: false, original: row };
         });
-    });
+    },
 
-    function makeDefaultDisplayFunction(column) {
-        return (row) => `<span>${row.data[column.id]}</span>`
+    updateGridTemplate() {
+        const gridTemplateColumns = this.columns
+            .map(col => col.width || '1fr')
+            .join(' ');
+        this.$root.style.setProperty('--grid-template-columns', gridTemplateColumns);
+    },
+
+    onCellClick(column, row) {
+        column.onItemClick && column.onItemClick(row, Alpine);
     }
-
-    // TODO: sorting, filtering, column selection, item selection, column resizing
-    scope.onCellClick = function(column, row) {
-        column.onItemClick && column.onItemClick(row);
-    };
-});
+}));
