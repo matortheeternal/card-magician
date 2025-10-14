@@ -34,6 +34,7 @@ const makeFormInput = function(field) {
         input.setAttribute('x-sl-fix', '');
     }
     if (field.type === 'textarea') {
+        input.setAttribute('rows', '2');
         input.setAttribute('resize', 'auto');
         input.setAttribute('spellcheck', 'false');
     }
