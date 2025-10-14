@@ -13,8 +13,8 @@ function isMulticolor(colors) {
 export function calculateColors(row) {
     const colorsFound = {};
     for (const face of Object.values(row)) {
-        if (!face.cost) continue;
-        const costChars = face.cost.split('');
+        if (!face.manaCost) continue;
+        const costChars = face.manaCost.toLowerCase().split('');
         'wubrg'.split('')
             .filter(c => costChars.includes(c))
             .forEach(c => colorsFound[colorNames[c]] = 1);
@@ -23,7 +23,7 @@ export function calculateColors(row) {
     }
     let colors = Object.keys(colorsFound);
     if (isMulticolor(colors))
-        colors.push('multicolor');
+        colors.unshift('multicolor');
     if (colors.length === 0)
         return 'colorless';
     return colors.join(', ');
