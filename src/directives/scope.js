@@ -4,9 +4,10 @@ export function collectScopePath(el) {
     const scopes = [];
     let current = el.parentElement;
     while (current) {
+        if (current.hasAttribute('x-data')) break;
+        if (current.hasAttribute('x-component')) break;
         if (current.hasAttribute('x-scope'))
             scopes.unshift(current.getAttribute('x-scope'));
-        if (current.hasAttribute('x-data')) break;
         current = current.parentElement;
     }
     return scopes;
@@ -41,5 +42,4 @@ Alpine.directive('scope', (el, { expression }, { evaluate, effect }) => {
     });
 
     Alpine.addScopeToNode(el, proxy);
-    Alpine.initTree(el);
 });

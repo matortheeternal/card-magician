@@ -1,15 +1,16 @@
-import { registerView } from '../../viewRegistry.js';
+import { registerComponent } from '../../componentRegistry.js';
 import html from './editCard.html';
 import { buildCard } from '../../templateBuilder';
 import { buildCardForm } from './formBuilder.js';
 
-registerView('edit-card', html, async function(scope, { element }) {
+registerComponent('edit-card', html, async function(scope, { element }) {
     const templateContainer = element.querySelector('.template-container');
     const formsContainer = element.querySelector('.forms-container');
     const { activeCard } = view;
-    scope.card = await buildCard(activeCard.template);
+    console.log(Alpine.closestDataStack(formsContainer));
+    scope.topCard = await buildCard(activeCard.template);
 
-    for (const face of Object.values(scope.card.model)) {
+    for (const face of Object.values(scope.topCard.model)) {
         await face.load(activeCard.model[face.id]);
         templateContainer.appendChild(face.dom);
         formsContainer.appendChild(buildCardForm(face));
@@ -36,12 +37,12 @@ registerView('edit-card', html, async function(scope, { element }) {
     };
 
     scope.save = async function() {
-        for (const face of Object.values(scope.card.model))
+        for (const face of Object.values(scope.topCard.model))
             activeCard.model[face.id] = await face.save();
     };
 
     scope.close = async function() {
-        await save();
+        await scope.save();
         view.activeCard = null;
     };
 });
