@@ -1,0 +1,36 @@
+<div class="menu-items">
+    <img src="icons/appIcon.png" />
+    <template x-for="menu in menus">
+        <sl-dropdown @sl-hide="menuHidden" @sl-show="menuShown">
+            <sl-button slot="trigger" x-text="menu.title" @mouseenter="onMenuEnter"></sl-button>
+            <sl-menu>
+                <template x-for="item in menu.items">
+                    <div>
+                        <template x-if="!item.isDivider">
+                            <sl-menu-item value="item.value" @click="item.action">
+                                <div class="menu-item">
+                                    <div x-text="item.label"></div>
+                                    <div x-text="item.hotkey"></div>
+                                </div>
+                            </sl-menu-item>
+                        </template>
+                        <template x-if="item.isDivider">
+                            <sl-divider style="--spacing: 0.5rem;"></sl-divider>
+                        </template>
+                    </div>
+                </template>
+            </sl-menu>
+        </sl-dropdown>
+    </template>
+</div>
+<div class="window-actions">
+    <sl-button id="minimize-app" onclick="Neutralino.window.minimize()">
+        <sl-icon name="dash-lg"></sl-icon>
+    </sl-button>
+    <sl-button id="maximize-app" @click="toggleMaximize()">
+        <sl-icon :name="isMaximized ? 'box-arrow-down-left' : 'box-arrow-up-right'"></sl-icon>
+    </sl-button>
+    <sl-button id="close-window" onclick="Neutralino.app.exit()">
+        <sl-icon name="x-lg"></sl-icon>
+    </sl-button>
+</div>

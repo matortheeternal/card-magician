@@ -7,7 +7,6 @@ import { loadGames, setGame } from './gameService';
 import { setupTestHarness, runTests } from './tests';
 import './components/**/*.js';
 import './directives/*.js';
-import './views/**/*.js';
 
 // BASE SETUP
 setupNeutralino();
