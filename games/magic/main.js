@@ -12,7 +12,7 @@ export default async function(game, utils) {
         return {
             template: 'M15Mainframe',
             model: {
-                card: { name: 'New Card' }
+                card: { name: 'New Card', rarity: 'Common' }
             }
         }
     }
