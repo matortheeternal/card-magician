@@ -1,8 +1,8 @@
-import { registerView } from '../../viewRegistry.js';
+import { registerComponent } from '../../componentRegistry.js';
 import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html';
 
-registerView('title-bar', html, function(scope) {
+registerComponent('title-bar', html, function(scope) {
     let openMenu = null;
 
     scope.menuHidden = ({ target: menu }) => {

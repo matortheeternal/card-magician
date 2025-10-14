@@ -1,45 +1,25 @@
 import Alpine from 'alpinejs';
 
-export function collectScopePath(el) {
-    const scopes = [];
-    let current = el.parentElement;
-    while (current) {
-        if (current.hasAttribute('x-data')) break;
-        if (current.hasAttribute('x-component')) break;
-        if (current.hasAttribute('x-scope'))
-            scopes.unshift(current.getAttribute('x-scope'));
-        current = current.parentElement;
-    }
-    return scopes;
-}
-
 Alpine.directive('scope', (el, { expression }, { evaluate, effect }) => {
-    const parentScope = Alpine.closestDataStack(el)[0];
-    const path = [...collectScopePath(el), expression].flatMap(p => p.split('.'));
-    const subScope = evaluate(path.join('.'));
-
-    function getParentValue() {
-        return path.reduce((acc, key) => acc?.[key], parentScope);
-    }
+    const parentStack = Alpine.closestDataStack(el);
+    const parentScope = parentStack[0];
+    const subScope = evaluate(expression, { scope: parentScope }) || {};
 
     const proxy = new Proxy(subScope, {
         get(target, prop) {
-            // TODO: Support magics like $el, $refs, etc. if needed
-            if (prop in target) return target[prop];
-            const current = getParentValue();
-            return current?.[prop];
+            return prop in target ? target[prop] : parentScope?.[prop];
         },
         set(target, prop, value) {
-            const current = getParentValue();
-            if (current) current[prop] = value;
+            if (prop in target) target[prop] = value;
+            else if (parentScope) parentScope[prop] = value;
             return true;
         }
     });
 
     effect(() => {
-        const current = getParentValue();
-        Object.assign(proxy, current);
+        Object.assign(proxy, subScope);
     });
 
     Alpine.addScopeToNode(el, proxy);
+    el._x_dataStack = [proxy, ...parentStack];
 });

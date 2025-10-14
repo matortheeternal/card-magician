@@ -10,11 +10,13 @@ registerComponent('edit-card', html, async function(scope, { element }) {
     console.log(Alpine.closestDataStack(formsContainer));
     scope.topCard = await buildCard(activeCard.template);
 
-    for (const face of Object.values(scope.topCard.model)) {
-        await face.load(activeCard.model[face.id]);
-        templateContainer.appendChild(face.dom);
-        formsContainer.appendChild(buildCardForm(face));
-    }
+    Alpine.nextTick(async () => {
+        for (const face of Object.values(scope.topCard.model)) {
+            await face.load(activeCard.model[face.id]);
+            templateContainer.appendChild(face.dom);
+            formsContainer.appendChild(buildCardForm(face));
+        }
+    });
 
     function getFieldContainer(entries, groups, field) {
         if (!field.group) return entries;

@@ -40,7 +40,10 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         label: 'P/T',
         id: 'pt',
         width: '1fr',
-        data: row => collectMap(row, f => `${f.power || ''} / ${f.toughness || ''}`)
+        data: row => collectMap(row, f => {
+            if (!f.power && !f.toughness) return '';
+            return `${f.power || ''} / ${f.toughness || ''}`;
+        })
     }, {
         label: 'Color',
         width: '3fr',
