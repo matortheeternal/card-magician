@@ -2,12 +2,24 @@ import Alpine from 'alpinejs';
 import html from './cardForm.html';
 
 Alpine.data('cardForm', () => ({
+    hasCard: false,
+
     async init() {
         this.$root.innerHTML = html;
-        this.card = Alpine.store('views').activeCard;
-        this.$watch('$store.views.activeCard', (newValue) => {
-            this.card = newValue;
+        this.$watch('$store.views.activeCard', (newValue, oldValue) => {
+            if (newValue === oldValue) return;
+            this.hasCard = false;
+            Alpine.nextTick(() => {
+                this.hasCard = true;
+                this.card = newValue;
+            });
         });
+        
+        this.bindEvents();
+        Alpine.initTree(this.$root);
+    },
+
+    bindEvents() {
         let timeout = null;
         const debouncedSave = () => {
             if (timeout) clearTimeout(timeout);
@@ -15,8 +27,8 @@ Alpine.data('cardForm', () => ({
         };
         this.$root.addEventListener('input', debouncedSave);
         this.$root.addEventListener('change', debouncedSave);
-        Alpine.initTree(this.$root);
     },
+
     async save() {
         const { activeCard, selectedCard} = Alpine.store('views');
         for (const face of Object.values(activeCard.model))

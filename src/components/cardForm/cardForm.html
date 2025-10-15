@@ -1,23 +1,25 @@
-<div class="forms-container">
-    <template x-for="(face, faceId) in card.model">
-        <div class="form">
-            <h2 x-text="faceId"></h2>
-            <section>
-                <template x-for="entry in face.form">
-                    <div>
-                        <template x-if="entry.isGroup">
-                            <div class="field-group">
-                                <template x-for="field in entry.fields">
-                                    <div x-data="cardFormField(field, faceId)"></div>
-                                </template>
-                            </div>
-                        </template>
-                        <template x-if="!entry.isGroup">
-                            <div x-data="cardFormField(entry, faceId)"></div>
-                        </template>
-                    </div>
-                </template>
-            </section>
-        </div>
-    </template>
-</div>
+<template x-if="hasCard">
+    <div class="forms-container">
+        <template x-for="(face, faceId) in card.model">
+            <div class="form">
+                <h2 x-text="faceId"></h2>
+                <section>
+                    <template x-for="entry in face.form">
+                        <div>
+                            <template x-if="entry.isGroup">
+                                <div class="field-group">
+                                    <template x-for="field in entry.fields">
+                                        <div x-data="cardFormField(field, faceId)"></div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="!entry.isGroup">
+                                <div x-data="cardFormField(entry, faceId)"></div>
+                            </template>
+                        </div>
+                    </template>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>
