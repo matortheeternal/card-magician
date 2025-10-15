@@ -9,11 +9,7 @@ export default async function(game, utils) {
         game.gridColumns.push(column);
 
     game.newCard = function() {
-        return {
-            template: 'M15Mainframe',
-            model: {
-                card: { name: 'New Card', rarity: 'Common' }
-            }
-        }
-    }
+        const card = { name: 'New Card', rarity: 'Common' };
+        return { template: 'M15Mainframe', model: { card } };
+    };
 };

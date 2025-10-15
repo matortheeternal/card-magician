@@ -1,5 +1,6 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "components/titleBar/titleBar.css";
+@import "components/setView/setView.css";
 @import "components/displayCard/displayCard.css";
 @import "components/cardForm/cardForm.css";
 @import "components/grid/grid.css";
@@ -25,34 +26,4 @@ main {
     overflow: hidden;
     display: flex;
     flex-direction: row;
-}
-
-.edit-card-modal {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #111;
-    display: flex;
-    flex-direction: row;
-}
-
-.set-view {
-    flex-grow: 1;
-    border-left: 1px solid var(--sl-color-neutral-400);
-    border-right: 1px solid var(--sl-color-neutral-400);
-    overflow: auto;
-}
-
-.display-card-view {
-    min-width: 391px;
-    padding: var(--sl-spacing-x-small);
-}
-
-.card-form-view {
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    min-width: 30em;
 }
