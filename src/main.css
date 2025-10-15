@@ -50,5 +50,8 @@ main {
 }
 
 .card-form-view {
-    min-width: 35em;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    min-width: 30em;
 }

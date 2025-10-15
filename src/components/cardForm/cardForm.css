@@ -4,6 +4,7 @@
     flex-direction: row;
     justify-content: stretch;
     overflow-y: auto;
+    height: 100%;
 }
 
 .form {
@@ -13,9 +14,7 @@
     justify-content: stretch;
     align-items: center;
     padding: 1em;
-    min-width: 35em;
     border-radius: 10px;
-    overflow: auto;
     background: #000;
     font-family: var(--sl-font-sans);
 }
