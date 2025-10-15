@@ -1,9 +1,7 @@
 <style>
     :host {
-        display: flex;
-        flex-direction: column;
         font-family: var(--sl-font-sans);
-        color: var(--sl-color-gray-900);
+        color: var(--sl-input-label-color);
     }
 
     sl-card {
@@ -25,8 +23,17 @@
         background-color: var(--sl-color-primary-50);
     }
 
+    .form-control {
+        display: flex;
+        flex-direction: column;
+    }
+
     .form-control__label {
         margin-bottom: var(--sl-spacing-3x-small);
+    }
+
+    .form-control--small .form-control__label {
+        font-size: var(--sl-input-label-font-size-small);
     }
 
     .upload-prompt {
@@ -55,23 +62,25 @@
     }
 </style>
 
-<label part="form-control-label" class="form-control__label">
-    <slot name="label"></slot>
-</label>
+<div part="form-control" class="form-control">
+    <label part="form-control-label" class="form-control__label">
+        <slot name="label"></slot>
+    </label>
 
-<sl-card class="dropzone" part="dropzone">
-    <div class="upload-prompt" part="upload-prompt">
-        <sl-icon name="image" style="font-size: 4em;"></sl-icon>
-        <div>Select image</div>
-    </div>
+    <sl-card class="dropzone" part="dropzone">
+        <div class="upload-prompt" part="upload-prompt">
+            <sl-icon name="image" style="font-size: 4em;"></sl-icon>
+            <div>Select image</div>
+        </div>
 
-    <div class="preview" part="preview" style="display: none">
-        <sl-tooltip content="Clear selection">
-            <sl-icon-button class="remove-btn" name="x-lg" part="remove-btn"></sl-icon-button>
-        </sl-tooltip>
-        <img class="preview-image" alt="Preview" hidden part="preview-image" />
-        <div class="preview-name" part="preview-name"></div>
-    </div>
+        <div class="preview" part="preview" style="display: none">
+            <sl-tooltip content="Clear selection">
+                <sl-icon-button class="remove-btn" name="x-lg" part="remove-btn"></sl-icon-button>
+            </sl-tooltip>
+            <img class="preview-image" alt="Preview" hidden part="preview-image" />
+            <div class="preview-name" part="preview-name"></div>
+        </div>
 
-    <input type="file" class="file-input" hidden />
-</sl-card>
+        <input type="file" class="file-input" hidden />
+    </sl-card>
+</div>

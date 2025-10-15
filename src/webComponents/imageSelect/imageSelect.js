@@ -3,7 +3,7 @@ import html from './imageSelect.html';
 
 class ImageSelect extends HTMLElement {
   static get observedAttributes() {
-    return ['label', 'src', 'filename'];
+    return ['label', 'src', 'filename', 'size'];
   }
 
   constructor() {
@@ -17,6 +17,8 @@ class ImageSelect extends HTMLElement {
     this.bindEvents();
     this.assignLabel();
     this.loadValue();
+    this.applySize();
+    this.updateFormControlClass();
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -25,7 +27,23 @@ class ImageSelect extends HTMLElement {
       if (this.elements) this.assignLabel();
     } else if (name === 'src' || name === 'filename') {
       this.loadValue();
+    } else if (name === 'size') {
+      this._size = newValue;
+      this.applySize();
     }
+
+    if (!this.elements) return;
+    this.updateFormControlClass();
+  }
+
+  applySize() {
+    if (!this.elements) return;
+    const paddingValue = {
+      small: 'var(--sl-spacing-small)',
+      medium: 'var(--sl-spacing-medium)',
+      large: 'var(--sl-spacing-large)',
+    }[this._size] || 'var(--sl-spacing-medium)';
+    this.elements.dropzone.style = `--padding: ${paddingValue}`;
   }
 
   loadValue() {
@@ -38,6 +56,7 @@ class ImageSelect extends HTMLElement {
   bindElements() {
     const query = (sel) => this.shadowRoot.querySelector(sel);
     this.elements = {
+      formControl: query('div'),
       labelSlot: query('slot[name="label"]'),
       dropzone: query('.dropzone'),
       fileInput: query('.file-input'),
@@ -69,6 +88,13 @@ class ImageSelect extends HTMLElement {
     if (labelSlot.assignedNodes().length) return;
     if (this.hasAttribute('label'))
       labelSlot.textContent = this.getAttribute('label');
+  }
+
+  updateFormControlClass() {
+    const formControlClasses = ['form-control'];
+    if (this._label) formControlClasses.push('form-control--has-label');
+    if (this._size) formControlClasses.push(`form-control--${this._size}`);
+    this.elements.formControl.className = formControlClasses.join(' ');
   }
 
   displayPreview(image, filename = 'uploaded_file', skipEmit = false) {
