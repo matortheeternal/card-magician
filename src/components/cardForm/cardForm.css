@@ -1,3 +1,11 @@
+.card-form-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    min-width: 30em;
+    background-color: #040404;
+}
+
 .forms-container {
     display: flex;
     align-self: stretch;
@@ -15,7 +23,6 @@
     align-items: center;
     padding: 1em;
     border-radius: 10px;
-    background: #000;
     font-family: var(--sl-font-sans);
 }
 

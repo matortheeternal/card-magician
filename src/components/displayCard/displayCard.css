@@ -1,3 +1,9 @@
+.display-card-view {
+    background-color: #0D0D0D;
+    min-width: 391px;
+    padding: var(--sl-spacing-x-small);
+}
+
 .template-container {
     display: flex;
     flex-direction: column;

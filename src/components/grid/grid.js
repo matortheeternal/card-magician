@@ -37,13 +37,20 @@ Alpine.data('grid', (config) => ({
     },
 
     computeRows() {
+        const oldRowMap = new Map((this.activeRows || []).map(r => [r.original, r]));
         this.activeRows = this.rows.map(row => {
             const cols = this.activeColumns || [];
             const data = cols.reduce((obj, col) => {
                 obj[col.id] = col.data(row.model);
                 return obj;
             }, {});
-            return { data, selected: false, original: row };
+            const oldRow = oldRowMap.get(row);
+            return {
+                data,
+                selected: oldRow?.selected || false,
+                lastSelected: oldRow?.lastSelected || false,
+                original: row
+            };
         });
     },
 
