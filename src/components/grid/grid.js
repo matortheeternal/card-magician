@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import { toCamelCase, emit } from '../../utils.js';
+import { selectRow } from './rowSelectionService.js';
 import html from './grid.html';
 
 function makeDefaultDisplayFunction(column) {
@@ -19,10 +20,11 @@ Alpine.data('grid', (config) => ({
 
         this.computeColumns();
         this.computeRows();
-        this.updateGridTemplate();
 
         this.$root.innerHTML = html;
         Alpine.initTree(this.$root);
+
+        this.updateGridTemplate();
     },
 
     computeColumns() {
@@ -46,17 +48,18 @@ Alpine.data('grid', (config) => ({
     },
 
     updateGridTemplate() {
-        const gridTemplateColumns = this.columns
-            .map(col => col.width || '1fr')
-            .join(' ');
-        this.$root.style.setProperty('--grid-template-columns', gridTemplateColumns);
+        const colgroup = this.$root.querySelector('colgroup');
+        if (!colgroup) return;
+
+        colgroup.innerHTML = this.activeColumns
+            .map(col => `<col style="width:${col.width || 'auto'}">`)
+            .join('');
     },
 
-    onRowClick(row) {
-        emit(this.$root, 'row-selected', { row })
+    onRowClick(event, row) {
+        const multiSelect = event.ctrlKey;
+        const rangeSelect = event.shiftKey;
+        selectRow(this.activeRows, row, multiSelect, rangeSelect);
+        emit(this.$root, 'row-selected', { row });
     },
-
-    // onCellClick(column, row) {
-    //     column.onItemClick && column.onItemClick(row, Alpine);
-    // }
 }));

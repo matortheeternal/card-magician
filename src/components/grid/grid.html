@@ -1,18 +1,22 @@
-<div class="grid-header">
+<table class="grid-table">
+    <colgroup></colgroup>
+    <thead>
+    <tr>
     <template x-for="column in activeColumns">
-        <div class="grid-header-cell">
+        <th>
             <span x-text="column.label"></span>
             <div class="resize-handle"></div>
-        </div>
+        </th>
     </template>
-</div>
-<div class="grid-rows">
+    </tr>
+    </thead>
+    <tbody>
     <template x-for="row in activeRows">
-        <div class="grid-row" @click="onRowClick(row)">
+        <tr @click="onRowClick($event, row)" :class="{ 'selected': row.selected, 'last-selected': row.lastSelected }">
             <template x-for="column in activeColumns">
-                <div class="grid-cell"
-                     x-html="column.display(row)"></div>
+                <td x-html="column.display(row)"></td>
             </template>
-        </div>
+        </tr>
     </template>
-</div>
+    </tbody>
+</table>
