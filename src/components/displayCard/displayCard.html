@@ -1,5 +1,7 @@
-<div class="template-container">
-    <template x-for="(face, faceId) in card.model">
-        <div x-data="cardFace(face)"></div>
-    </template>
-</div>
+<template x-if="hasCard">
+    <div class="template-container" x-show="hasCard" x-transition.opacity.duration.100ms>
+        <template x-for="(face, faceId) in card.model">
+            <div x-data="cardFace(face)"></div>
+        </template>
+    </div>
+</template>
