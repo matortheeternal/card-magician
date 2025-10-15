@@ -8,10 +8,9 @@
 </div>
 <div class="grid-rows">
     <template x-for="row in activeRows">
-        <div class="grid-row">
+        <div class="grid-row" @click="onRowClick(row)">
             <template x-for="column in activeColumns">
-                <div @click="onCellClick(column, row)"
-                     class="grid-cell"
+                <div class="grid-cell"
                      x-html="column.display(row)"></div>
             </template>
         </div>
