@@ -29,7 +29,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         data: row => calculateCmc(row.card?.manaCost)
     }, {
         label: 'Type',
-        width: '4fr',
+        width: '5fr',
         data: row => collectMap(row, f => {
             if (!f.superType && !f.subType) return '';
             if (!f.subType) return f.superType;
@@ -45,7 +45,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         })
     }, {
         label: 'Color',
-        width: '3fr',
+        width: '2fr',
         data: row => calculateColors(row)
     }, {
         label: 'Rarity',
