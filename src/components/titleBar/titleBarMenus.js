@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { toCamelCase } from '../../utils.js';
-import { loadJson } from '../../fsHelpers';
+import { loadJson, saveJson } from '../../fsHelpers';
 
 function menuItem(label, hotkey, action) {
     const value = toCamelCase(label);
