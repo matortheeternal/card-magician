@@ -1,49 +1,76 @@
-.grid-header, .grid-row {
+.grid-table {
     font-family: var(--sl-font-sans);
-    display: grid;
-    grid-template-columns: var(--grid-template-columns, auto);
+    font-size: var(--sl-font-size-small);
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
     user-select: none;
     cursor: default;
-    font-size: var(--sl-font-size-small);
 }
 
-.grid-header {
+.grid-table th, .grid-table td {
+    padding: var(--sl-spacing-2x-small);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.grid-table th:first-of-type, .grid-table tr td:first-of-type {
+    padding-left: var(--sl-spacing-x-small);
+}
+
+.grid-table th {
+    text-align: left;
+    font-weight: normal;
+}
+
+.grid-table tr td:first-of-type {
+    border-inline-start: 3px solid transparent;
+}
+
+.grid-table tr.selected {
+    background-color: var(--sl-color-neutral-100);
+}
+
+.grid-table tr.selected td:first-of-type {
+    border-inline-start-color: var(--sl-color-primary-600);
+}
+
+.grid-table tr.last-selected td:first-of-type {
+    border-inline-start-color: var(--sl-color-primary-800);
+}
+
+.grid-table thead {
     border-bottom: 1px solid var(--sl-color-neutral-200);
 }
 
-.grid-header-cell, .grid-cell {
-    position: relative;
-    padding: var(--sl-spacing-2x-small);
-}
-
-.grid-header-cell .resize-handle {
-    display: flex;
-    justify-content: center;
+.resize-handle {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 16px;
+    right: -3px;
+    width: 8px;
     height: 100%;
     z-index: 1;
     cursor: col-resize;
     transition: background 0.3s ease;
 }
 
-.grid-header-cell:last-of-type .resize-handle {
+th:last-of-type .resize-handle {
     display: none;
 }
 
-.grid-header-cell .resize-handle::after {
+.resize-handle::after {
     content: '';
     display: block;
     width: 2px;
     height: 100%;
 }
 
-.grid-header-cell:hover .resize-handle::after {
+th:hover .resize-handle::after {
     background-color: var(--sl-color-primary-600);
 }
 
-.grid-header-cell:has(+ .grid-header-cell:hover) .resize-handle::after {
+th:has(+ th:hover) .resize-handle::after {
     background-color: var(--sl-color-primary-600);
 }
