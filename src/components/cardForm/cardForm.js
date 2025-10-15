@@ -8,11 +8,18 @@ Alpine.data('cardForm', () => ({
         this.$watch('$store.views.activeCard', (newValue) => {
             this.card = newValue;
         });
+        let timeout = null;
+        const debouncedSave = () => {
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(this.save, 300);
+        };
+        this.$root.addEventListener('input', debouncedSave);
+        this.$root.addEventListener('change', debouncedSave);
         Alpine.initTree(this.$root);
     },
     async save() {
-        const selectedCard = Alpine.store('views').selectedCard;
-        for (const face of Object.values(this.card.model))
+        const { activeCard, selectedCard} = Alpine.store('views');
+        for (const face of Object.values(activeCard.model))
             selectedCard.model[face.id] = await face.save();
     }
 }));
