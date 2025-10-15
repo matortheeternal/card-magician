@@ -52,7 +52,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         width: '2fr',
         data: row => row.card?.rarity || ''
     }, {
-        label: 'Number',
+        label: '#',
         width: '1fr',
         data: row => row.card?.collectorNumber || ''
     }];

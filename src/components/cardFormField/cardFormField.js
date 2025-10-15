@@ -2,7 +2,7 @@ import Alpine from 'alpinejs';
 
 const HTMLMap = {
     textarea: field => (
-        `<sl-textarea resize="auto" spellcheck="false" 
+        `<sl-textarea resize="auto" spellcheck="false" rows="2"
                       name="${field.id}"
                       label="${field.displayName}" 
                       x-model="face.${field.id}"></sl-textarea>`

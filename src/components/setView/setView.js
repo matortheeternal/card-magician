@@ -31,6 +31,6 @@ Alpine.data('setView', () => ({
         const card = await buildCard(selectedCard.template);
         for (const face of Object.values(card.model))
             await face.load(selectedCard.model[face.id]);
-        views.activeCard = card;
+        views.activeCard = Alpine.reactive(card);
     }
 }));
