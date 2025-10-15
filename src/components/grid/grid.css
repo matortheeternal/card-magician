@@ -4,6 +4,7 @@
     grid-template-columns: var(--grid-template-columns, auto);
     user-select: none;
     cursor: default;
+    font-size: var(--sl-font-size-small);
 }
 
 .grid-header {
