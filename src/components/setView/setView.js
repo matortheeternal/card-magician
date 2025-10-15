@@ -3,17 +3,17 @@ import html from './setView.html';
 import { buildCard } from '../../templateBuilder';
 
 Alpine.data('setView', () => ({
-    gridRows: [],
-    gridColumns: [],
+    rows: [],
+    columns: [],
 
     async init() {
         this.$root.innerHTML = html;
-        this.gridColumns = Alpine.store('game').gridColumns;
-        this.gridRows = Alpine.store('views').activeSet.cards;
+        this.columns = Alpine.store('game').columns;
+        this.rows = Alpine.store('views').activeSet.cards;
 
         this.$watch('$store.views.activeSet', (set) => {
             const cards = set.cards || [];
-            this.gridRows.splice(0, this.gridRows.length, ...cards);
+            this.rows.splice(0, this.rows.length, ...cards);
         });
 
         this.$root.addEventListener('row-selected', (event) => {

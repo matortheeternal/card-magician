@@ -1,13 +1,13 @@
 import Alpine from 'alpinejs';
 import { toCamelCase, emit } from '../../utils.js';
 import { selectRow } from './rowSelectionService.js';
-import html from './grid.html';
+import html from './listView.html';
 
 function makeDefaultDisplayFunction(column) {
     return (row) => `<span>${row.data[column.id]}</span>`;
 }
 
-Alpine.data('grid', (config) => ({
+Alpine.data('listView', (config) => ({
     columns: config.columns || [],
     rows: config.rows || [],
     activeColumns: [],
@@ -16,7 +16,7 @@ Alpine.data('grid', (config) => ({
         this.$watch('columns', () => this.computeColumns());
         this.$watch('rows', () => this.computeRows());
         this.$watch('activeColumns', () => this.computeRows());
-        this.$watch('columns', () => this.updateGridTemplate());
+        this.$watch('columns', () => this.updateColumnSizes());
 
         this.computeColumns();
         this.computeRows();
@@ -24,7 +24,7 @@ Alpine.data('grid', (config) => ({
         this.$root.innerHTML = html;
         Alpine.initTree(this.$root);
 
-        this.updateGridTemplate();
+        this.updateColumnSizes();
     },
 
     computeColumns() {
@@ -54,7 +54,7 @@ Alpine.data('grid', (config) => ({
         });
     },
 
-    updateGridTemplate() {
+    updateColumnSizes() {
         const colgroup = this.$root.querySelector('colgroup');
         if (!colgroup) return;
 

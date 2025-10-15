@@ -44,7 +44,7 @@ export async function loadGames() {
         }
         const game = await loadJson(jsonPath);
         game.folder = gameFolder.path;
-        game.gridColumns = [];
+        game.columns = [];
         games.push(game);
     }
 }

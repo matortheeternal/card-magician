@@ -5,8 +5,7 @@ export default async function(game, utils) {
     const { calculateColors } = await utils.import('colorCalculator.js');
 
     const columns = buildColumns({ calculateCmc, calculateColors });
-    for (let column of columns)
-        game.gridColumns.push(column);
+    for (let column of columns) game.columns.push(column);
 
     game.newCard = function() {
         const card = { name: 'New Card', rarity: 'Common' };

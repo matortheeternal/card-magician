@@ -3,7 +3,7 @@
 @import "components/setView/setView.css";
 @import "components/displayCard/displayCard.css";
 @import "components/cardForm/cardForm.css";
-@import "components/grid/grid.css";
+@import "components/listView/listView.css";
 
 * {
     box-sizing: border-box;
