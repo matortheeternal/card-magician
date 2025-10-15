@@ -1,4 +1,4 @@
-<template x-if="hasCard">
+<template x-swap="{ '$store.views.activeCard': 'card' }">
     <div class="forms-container">
         <template x-for="(face, faceId) in card.model">
             <div class="form">

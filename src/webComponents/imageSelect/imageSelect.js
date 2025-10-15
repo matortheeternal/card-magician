@@ -22,9 +22,10 @@ class ImageSelect extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    if (!this.elements) return;
     if (name === 'label') {
       this._label = newValue;
-      if (this.elements) this.assignLabel();
+      this.assignLabel();
     } else if (name === 'src' || name === 'filename') {
       this.loadValue();
     } else if (name === 'size') {
@@ -32,7 +33,6 @@ class ImageSelect extends HTMLElement {
       this.applySize();
     }
 
-    if (!this.elements) return;
     this.updateFormControlClass();
   }
 

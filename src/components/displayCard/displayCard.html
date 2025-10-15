@@ -1,5 +1,5 @@
-<template x-if="hasCard">
-    <div class="template-container" x-show="hasCard" x-transition.opacity.duration.100ms>
+<template x-swap="{ '$store.views.activeCard': 'card' }">
+    <div class="template-container">
         <template x-for="(face, faceId) in card.model">
             <div x-data="cardFace(face)"></div>
         </template>
