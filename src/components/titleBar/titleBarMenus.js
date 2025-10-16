@@ -51,13 +51,7 @@ const actions = {
     paste: () => console.log('Paste'),
     editPreferences: () => console.log('Edit preferences'),
     editSetInfo: () => console.log('Edit Set Info'),
-    addCard: () => {
-        const { activeSet } = Alpine.store('views');
-        const game = Alpine.store('game');
-        Alpine.nextTick(() => {
-            activeSet.cards.push(game.newCard());
-        });
-    },
+    addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };
 
