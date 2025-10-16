@@ -28,10 +28,7 @@ const actions = {
         console.info('Saving set to:', filePath);
         await saveJson(filePath, activeSet, false);
     },
-    exportAs: async () => {
-        const cardNode = document.querySelector('.card-container');
-        await saveHTMLAsImage(cardNode, 'card.png');
-    },
+    exportAs: () => executeAction('export-card-image'),
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
     undo: () => console.log('Undo'),
