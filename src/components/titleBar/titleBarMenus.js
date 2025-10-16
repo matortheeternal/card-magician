@@ -1,7 +1,8 @@
 import Alpine from 'alpinejs';
-import { toCamelCase, emit } from '../../utils.js';
+import { toCamelCase } from '../../utils.js';
 import { loadJson, saveJson } from '../../fsHelpers';
 import { saveHTMLAsImage } from '../../gfx/imageProcessing';
+import { executeAction } from '../../actionRegistry';
 
 function menuItem(label, hotkey, action) {
     const value = toCamelCase(label);
@@ -57,10 +58,7 @@ const actions = {
             activeSet.cards.push(game.newCard());
         });
     },
-    deleteCards: () => {
-        const listView = document.querySelector('.list-view-table');
-        emit(listView, 'delete-selection');
-    },
+    deleteCards: () => executeAction('delete-selected-cards'),
 };
 
 export const titleBarMenus = [{
