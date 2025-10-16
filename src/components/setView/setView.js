@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
 import { buildCard } from '../../templateBuilder';
+import { registerAction } from '../../actionRegistry';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -17,12 +18,7 @@ Alpine.data('setView', () => ({
             this.rows.splice(0, this.rows.length, ...cards);
         });
 
-        this.$root.addEventListener('row-selected', (event) => {
-            event.stopPropagation();
-            const { row } = event.detail;
-            this.selectCard(row.original);
-        });
-
+        this.bindEvents();
         Alpine.initTree(this.$root);
     },
 
@@ -33,5 +29,25 @@ Alpine.data('setView', () => ({
         for (const face of Object.values(card.model))
             await face.load(selectedCard.model[face.id]);
         views.activeCard = Alpine.reactive(card);
+    },
+
+    bindEvents() {
+        this.$root.addEventListener('row-selected', (event) => {
+            event.stopPropagation();
+            const { row } = event.detail;
+            this.selectCard(row.original);
+        });
+
+        registerAction('add-card', this.addCard);
+    },
+
+    addCard() {
+        const game = Alpine.store('game');
+        const { activeSet } = Alpine.store('views');
+        activeSet.cards.push(game.newCard());
+    },
+
+    openSet() {
+
     }
 }));
