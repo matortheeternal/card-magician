@@ -7,12 +7,15 @@
             <sl-button size="large" @click="openSet">Open a set</sl-button>
         </div>
         <div class="recent-sets-container" x-show="recentSets.length">
-            <span>Load recent set</span>
-            <template x-for="set in recentSets">
-                <sl-button variant="text" size="large" class="recent-set">
-                    <span x-text="set.path"></span>
-                </sl-button>
-            </template>
+            <span>Recent sets</span>
+            <div class="buttons-container">
+                <template x-for="set in recentSets">
+                    <sl-button variant="text" size="small" class="recent-set"
+                               @click="openSet(set)">
+                        <span x-text="set"></span>
+                    </sl-button>
+                </template>
+            </div>
         </div>
     </div>
 </template>

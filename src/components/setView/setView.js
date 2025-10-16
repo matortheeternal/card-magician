@@ -3,11 +3,12 @@ import html from './setView.html';
 import { buildCard } from '../../templateBuilder';
 import { registerAction, executeAction } from '../../actionRegistry';
 import { loadJson } from '../../fsHelpers';
+import appConfig from '../../appConfig';
 
 Alpine.data('setView', () => ({
     rows: [],
     columns: [],
-    recentSets: [],
+    recentSets: appConfig.recentFiles,
 
     async init() {
         this.$root.innerHTML = html;
@@ -18,6 +19,10 @@ Alpine.data('setView', () => ({
             const cards = set.cards || [];
             this.rows.splice(0, this.rows.length, ...cards);
         });
+
+        this.$watch('$store.appConfig.recentFiles', (recentFiles) => {
+            this.recentFiles = recentFiles.slice(0, 4);
+        })
 
         this.bindEvents();
         Alpine.initTree(this.$root);
@@ -62,8 +67,8 @@ Alpine.data('setView', () => ({
         activeSet.cards.push(game.newCard());
     },
 
-    async openSet() {
-        const [filePath] = await Neutralino.os.showOpenDialog('Open a set', {
+    async openSet(filePath) {
+        filePath = filePath || await Neutralino.os.showOpenDialog('Open a set', {
             filters: [
                 { name: 'JSON Files', extensions: ['json'] },
                 { name: 'All files', extensions: ['*'] }
@@ -72,5 +77,6 @@ Alpine.data('setView', () => ({
         if (!filePath) return;
         console.info('Opening set:', filePath);
         Alpine.store('views').activeSet = await loadJson(filePath);
+        appConfig.addRecentFile(filePath);
     }
 }));
