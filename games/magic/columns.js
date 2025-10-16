@@ -21,7 +21,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         data: row => collect(row, 'name')
     }, {
         label: 'Cost',
-        width: '88px',
+        width: '87px',
         data: row => collect(row, 'manaCost').toUpperCase()
     }, {
         label: 'CMC',
