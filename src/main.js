@@ -5,6 +5,7 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 import { loadTemplates } from './templateBuilder';
 import { loadGames, setGame } from './gameService';
 import { setupTestHarness, runTests } from './tests';
+import appConfig from './appConfig';
 import './components/**/*.js';
 import './directives/*.js';
 
@@ -46,6 +47,7 @@ async function startApp() {
         await runTests();
         return;
     }
+    Alpine.store('appConfig', appConfig);
     await loadGames();
     Alpine.store('game', await setGame('magic'));
     await loadTemplates();
