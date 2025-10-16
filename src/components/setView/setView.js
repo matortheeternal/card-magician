@@ -2,6 +2,7 @@ import Alpine from 'alpinejs';
 import html from './setView.html';
 import { buildCard } from '../../templateBuilder';
 import { registerAction } from '../../actionRegistry';
+import { loadJson } from '../../fsHelpers';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -39,6 +40,7 @@ Alpine.data('setView', () => ({
         });
 
         registerAction('add-card', this.addCard);
+        registerAction('open-set', this.openSet);
     },
 
     addCard() {
@@ -47,7 +49,15 @@ Alpine.data('setView', () => ({
         activeSet.cards.push(game.newCard());
     },
 
-    openSet() {
-
+    async openSet() {
+        const [filePath] = await Neutralino.os.showOpenDialog('Open a set', {
+            filters: [
+                { name: 'JSON Files', extensions: ['json'] },
+                { name: 'All files', extensions: ['*'] }
+            ]
+        });
+        if (!filePath) return;
+        console.info('Opening set:', filePath);
+        Alpine.store('views').activeSet = await loadJson(filePath);
     }
 }));
