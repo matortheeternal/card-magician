@@ -17,11 +17,11 @@ function collectMap(row, fn, separator = ' // ') {
 export function buildColumns({ calculateCmc, calculateColors }) {
     return [{
         label: 'Name',
-        width: '220px',
+        width: '250px',
         data: row => collect(row, 'name')
     }, {
         label: 'Cost',
-        width: '80px',
+        width: '88px',
         data: row => collect(row, 'manaCost').toUpperCase()
     }, {
         label: 'CMC',
@@ -29,7 +29,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         data: row => calculateCmc(row.card?.manaCost)
     }, {
         label: 'Type',
-        width: '220px',
+        width: '230px',
         data: row => collectMap(row, f => {
             if (!f.superType && !f.subType) return '';
             if (!f.subType) return f.superType;
@@ -45,7 +45,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         })
     }, {
         label: 'Color',
-        width: '200px',
+        width: '210px',
         data: row => calculateColors(row)
     }, {
         label: 'Rarity',
@@ -53,7 +53,7 @@ export function buildColumns({ calculateCmc, calculateColors }) {
         data: row => row.card?.rarity || ''
     }, {
         label: '#',
-        width: '40px',
+        width: '50px',
         data: row => row.card?.collectorNumber || ''
     }];
 }
