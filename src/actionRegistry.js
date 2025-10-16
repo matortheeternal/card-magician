@@ -7,5 +7,7 @@ export function registerAction(id, action) {
 }
 
 export function executeAction(id, args = []) {
-    return actions.get(id)(...args);
+    const action = actions.get(id);
+    if (!action) throw new Error('Could not find action: ' + id);
+    return action(...args);
 }
