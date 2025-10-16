@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { toCamelCase } from '../../utils.js';
-import { loadJson, saveJson } from '../../fsHelpers';
+import { saveJson } from '../../fsHelpers';
 import { saveHTMLAsImage } from '../../gfx/imageProcessing';
 import { executeAction } from '../../actionRegistry';
 
@@ -13,17 +13,7 @@ const DIVIDER = { isDivider: true };
 
 const actions = {
     makeNewSet: () => console.log('Make new set'),
-    openSet: async () => {
-        const [filePath] = await Neutralino.os.showOpenDialog('Open a set', {
-            filters: [
-                { name: 'JSON Files', extensions: ['json'] },
-                { name: 'All files', extensions: ['*'] }
-            ]
-        });
-        if (!filePath) return;
-        console.info('Opening set:', filePath);
-        Alpine.store('views').activeSet = await loadJson(filePath);
-    },
+    openSet: () => executeAction('open-set'),
     save: () => console.log('Save'),
     saveAs: async () => {
         const { activeSet } = Alpine.store('views');
