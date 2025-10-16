@@ -1,3 +1,11 @@
+body.column-resizing {
+    cursor: col-resize !important;
+}
+
+body.column-resizing * {
+    cursor: col-resize;
+}
+
 .grid-table {
     font-family: var(--sl-font-sans);
     font-size: var(--sl-font-size-small);

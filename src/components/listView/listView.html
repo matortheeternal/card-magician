@@ -2,10 +2,10 @@
     <colgroup></colgroup>
     <thead>
     <tr>
-    <template x-for="column in activeColumns">
+    <template x-for="(column, index) in activeColumns">
         <th>
             <span x-text="column.label"></span>
-            <div class="resize-handle"></div>
+            <div class="resize-handle" @mousedown="onResizeMouseDown($event, index)"></div>
         </th>
     </template>
     </tr>

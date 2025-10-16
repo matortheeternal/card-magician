@@ -55,12 +55,36 @@ Alpine.data('listView', (config) => ({
     },
 
     updateColumnSizes() {
-        const colgroup = this.$root.querySelector('colgroup');
-        if (!colgroup) return;
+        this.colGroup = this.$root.querySelector('colgroup');
+        if (!this.colGroup) return;
 
-        colgroup.innerHTML = this.activeColumns
+        this.colGroup.innerHTML = this.activeColumns
             .map(col => `<col style="width:${col.width || 'auto'}">`)
             .join('');
+    },
+
+    onResizeMouseDown(e, colIndex) {
+        e.stopImmediatePropagation();
+
+        document.body.classList.add('column-resizing');
+        const column = this.colGroup.children[colIndex];
+        const startX = e.clientX;
+        const startWidth = e.target.parentNode.offsetWidth;
+
+        function onMouseMove(moveEvent) {
+            const delta = moveEvent.clientX - startX;
+            const newWidth = Math.max(40, startWidth + delta);
+            column.style.width = newWidth + 'px';
+        }
+
+        function onMouseUp() {
+            document.body.classList.remove('column-resizing');
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
     },
 
     onRowClick(event, row) {
