@@ -20,6 +20,7 @@ Alpine.data('listView', (config) => ({
 
         this.computeColumns();
         this.computeRows();
+        this.bindEvents();
 
         this.$root.innerHTML = html;
         Alpine.initTree(this.$root);
@@ -51,6 +52,20 @@ Alpine.data('listView', (config) => ({
                 lastSelected: oldRow?.lastSelected || false,
                 original: row
             };
+        });
+    },
+
+    bindEvents() {
+        this.$root.addEventListener('delete-selection', () => {
+            const setCards = Alpine.store('views').activeSet.cards;
+            this.activeRows.filter(r => r.selected).forEach(r => {
+                const index = setCards.indexOf(r.original);
+                if (index === -1) {
+                    console.warn(`Couldn't find card:`, r.original);
+                    return;
+                }
+                setCards.splice(index, 1);
+            });
         });
     },
 

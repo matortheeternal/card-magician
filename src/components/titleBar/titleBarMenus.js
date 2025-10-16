@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { toCamelCase } from '../../utils.js';
+import { toCamelCase, emit } from '../../utils.js';
 import { loadJson, saveJson } from '../../fsHelpers';
 import { saveHTMLAsImage } from '../../gfx/imageProcessing';
 
@@ -57,7 +57,10 @@ const actions = {
             activeSet.cards.push(game.newCard());
         });
     },
-    deleteCards: () => console.log('Delete cards'),
+    deleteCards: () => {
+        const listView = document.querySelector('.list-view-table');
+        emit(listView, 'delete-selection');
+    },
 };
 
 export const titleBarMenus = [{
