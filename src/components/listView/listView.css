@@ -6,7 +6,7 @@ body.column-resizing * {
     cursor: col-resize;
 }
 
-.grid-table {
+.list-view-table {
     font-family: var(--sl-font-sans);
     font-size: var(--sl-font-size-small);
     border-collapse: collapse;
@@ -16,7 +16,7 @@ body.column-resizing * {
     cursor: default;
 }
 
-.grid-table th, .grid-table td {
+.list-view-table th, .list-view-table td {
     padding: var(--sl-spacing-2x-small);
     white-space: nowrap;
     overflow: hidden;
@@ -24,33 +24,33 @@ body.column-resizing * {
     position: relative;
 }
 
-.grid-table th:first-of-type, .grid-table tr td:first-of-type {
+.list-view-table th:first-of-type, .list-view-table tr td:first-of-type {
     padding-left: var(--sl-spacing-x-small);
 }
 
-.grid-table th {
+.list-view-table th {
     text-align: left;
     font-weight: normal;
     overflow: visible;
 }
 
-.grid-table tr td:first-of-type {
+.list-view-table tr td:first-of-type {
     border-inline-start: 3px solid transparent;
 }
 
-.grid-table tr.selected {
+.list-view-table tr.selected {
     background-color: var(--sl-color-neutral-100);
 }
 
-.grid-table tr.selected td:first-of-type {
+.list-view-table tr.selected td:first-of-type {
     border-inline-start-color: var(--sl-color-primary-600);
 }
 
-.grid-table tr.last-selected td:first-of-type {
+.list-view-table tr.last-selected td:first-of-type {
     border-inline-start-color: var(--sl-color-primary-800);
 }
 
-.grid-table thead {
+.list-view-table thead {
     position: sticky;
     top: 0;
     z-index: 1;
