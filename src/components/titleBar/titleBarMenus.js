@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
 import { toCamelCase } from '../../utils.js';
 import { loadJson, saveJson } from '../../fsHelpers';
+import { saveHTMLAsImage } from '../../gfx/imageProcessing';
 
 function menuItem(label, hotkey, action) {
     const value = toCamelCase(label);
@@ -36,6 +37,10 @@ const actions = {
         console.info('Saving set to:', filePath);
         await saveJson(filePath, activeSet, false);
     },
+    exportAs: async () => {
+        const cardNode = document.querySelector('.card-container');
+        await saveHTMLAsImage(cardNode, 'card.png');
+    },
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
     undo: () => console.log('Undo'),
@@ -62,6 +67,7 @@ export const titleBarMenus = [{
         menuItem('Open', 'Ctrl+O', actions.openSet),
         menuItem('Save', 'Ctrl+S', actions.save),
         menuItem('Save as', 'Ctrl+Shift+S', actions.saveAs),
+        menuItem('Export', 'Ctrl+Shift+E', actions.exportAs),
         DIVIDER,
         menuItem('Print', 'Ctrl+P', actions.print),
         DIVIDER,
