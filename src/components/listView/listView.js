@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
 import { toCamelCase, emit } from '../../utils.js';
 import { selectRow } from './rowSelectionService.js';
+import { registerAction } from '../../actionRegistry';
 import html from './listView.html';
 
 function makeDefaultDisplayFunction(column) {
@@ -56,7 +57,7 @@ Alpine.data('listView', (config) => ({
     },
 
     bindEvents() {
-        this.$root.addEventListener('delete-selection', () => {
+        registerAction('delete-selected-cards', () => {
             const setCards = Alpine.store('views').activeSet.cards;
             this.activeRows.filter(r => r.selected).forEach(r => {
                 const index = setCards.indexOf(r.original);

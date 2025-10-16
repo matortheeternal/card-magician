@@ -1,5 +1,4 @@
 - listview sorting
-- card deletion
 - new set creation
 - copy/cut/paste
 - hotkeys
