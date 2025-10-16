@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
 import { buildCard } from '../../templateBuilder';
-import { registerAction } from '../../actionRegistry';
+import { registerAction, executeAction } from '../../actionRegistry';
 import { loadJson } from '../../fsHelpers';
 
 Alpine.data('setView', () => ({
@@ -41,6 +41,19 @@ Alpine.data('setView', () => ({
 
         registerAction('add-card', this.addCard);
         registerAction('open-set', this.openSet);
+        registerAction('delete-selected-cards', this.deleteSelectedCards);
+    },
+
+    deleteSelectedCards() {
+        const { activeSet } = Alpine.store('views');
+        executeAction('get-listview-selection').forEach(r => {
+            const index = activeSet.cards.indexOf(r.original);
+            if (index === -1) {
+                console.warn(`Couldn't find card:`, r.original);
+                return;
+            }
+            activeSet.cards.splice(index, 1);
+        });
     },
 
     addCard() {

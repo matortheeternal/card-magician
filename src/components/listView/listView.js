@@ -57,16 +57,8 @@ Alpine.data('listView', (config) => ({
     },
 
     bindEvents() {
-        registerAction('delete-selected-cards', () => {
-            const setCards = Alpine.store('views').activeSet.cards;
-            this.activeRows.filter(r => r.selected).forEach(r => {
-                const index = setCards.indexOf(r.original);
-                if (index === -1) {
-                    console.warn(`Couldn't find card:`, r.original);
-                    return;
-                }
-                setCards.splice(index, 1);
-            });
+        registerAction('get-listview-selection', () => {
+            return this.activeRows.filter(r => r.selected);
         });
     },
 
@@ -77,6 +69,10 @@ Alpine.data('listView', (config) => ({
         this.colGroup.innerHTML = this.activeColumns
             .map(col => `<col style="width:${col.width || 'auto'}">`)
             .join('');
+    },
+
+    onHeaderClick(e, colIndex) {
+        // TODO: sort
     },
 
     onResizeMouseDown(e, colIndex) {
