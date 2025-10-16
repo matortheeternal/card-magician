@@ -1,8 +1,14 @@
-- simple set support
+- listview sorting
+- card deletion
+- new set creation
+- copy/cut/paste
+- hotkeys
 - set icons
+- tabbed form view
 - configuration options
 - 2-color multicolor masking
 - inline editing
 - auto zindexing
 - keywords
 - larger card support
+- undo/redo
