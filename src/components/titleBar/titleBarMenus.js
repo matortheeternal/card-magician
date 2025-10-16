@@ -44,6 +44,7 @@ const actions = {
     copy: () => console.log('Copy'),
     paste: () => console.log('Paste'),
     editPreferences: () => console.log('Edit preferences'),
+    editSetInfo: () => console.log('Edit Set Info'),
     addCard: () => {
         const { activeSet } = Alpine.store('views');
         const game = Alpine.store('game');
@@ -76,6 +77,7 @@ export const titleBarMenus = [{
         menuItem('Copy', 'Ctrl+P', actions.copy),
         menuItem('Paste', '', actions.paste),
         DIVIDER,
+        menuItem('Set Info', '', actions.editSetInfo),
         menuItem('Preferences', '', actions.editPreferences),
     ]
 }, {

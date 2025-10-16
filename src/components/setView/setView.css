@@ -3,4 +3,36 @@
     border-left: 1px solid var(--sl-color-neutral-400);
     border-right: 1px solid var(--sl-color-neutral-400);
     overflow: auto;
+    position: relative;
+}
+
+.no-cards-prompt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    font-size: var(--sl-font-size-2x-large);
+    font-family: var(--sl-font-sans);
+}
+
+.no-cards-prompt .buttons-container {
+    padding: var(--sl-spacing-small);
+}
+
+.no-cards-prompt .buttons-container > sl-button {
+    padding: var(--sl-spacing-2x-small);
+}
+
+.no-cards-prompt sl-button::part(base) {
+    font-size: var(--sl-font-size-large);
+}
+
+.recent-sets-container {
+    font-size: var(--sl-font-size-small);
 }

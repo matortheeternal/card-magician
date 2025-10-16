@@ -5,6 +5,7 @@ import { buildCard } from '../../templateBuilder';
 Alpine.data('setView', () => ({
     rows: [],
     columns: [],
+    recentSets: [],
 
     async init() {
         this.$root.innerHTML = html;
