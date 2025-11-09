@@ -3,6 +3,7 @@ const allDefined = (...args) => args.every(arg => arg !== undefined);
 export default async function(card, utils) {
     const { buildPipeline } = await utils.import('backgroundPipeline.js');
     const backgroundPipeline = buildPipeline(utils);
+    card.showFaceSymbol = false;
 
     function makeStyles(backgrounds) {
         const styles = Object.values(backgrounds);
