@@ -1,3 +1,8 @@
+const rarity = (name, id) => ({
+    id: id || name.toLowerCase(),
+    name
+});
+
 export default async function(card) {
     Alpine.effect(() => {
         if (!card.rarity) return;
@@ -8,7 +13,12 @@ export default async function(card) {
     card.addField({
         id: 'rarity',
         type: 'select',
-        options: ['Common', 'Uncommon', 'Rare', 'Mythic'],
+        options: [
+            rarity('Common'),
+            rarity('Uncommon'),
+            rarity('Rare'),
+            rarity('Mythic Rare', 'mythic'),
+        ],
         displayName: 'Rarity',
         group: 'footer',
         default: "Common",
