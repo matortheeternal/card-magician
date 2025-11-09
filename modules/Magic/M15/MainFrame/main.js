@@ -13,6 +13,10 @@ export default async function(card, utils) {
         return styles;
     }
 
+    function getFrameFolder() {
+        return card.isSnow() ? 'snow' : card.id;
+    }
+
     card.buildBackgrounds = async function() {
         const backgrounds = {};
         card.backgroundsUsed = [];
@@ -26,6 +30,7 @@ export default async function(card, utils) {
 
     Alpine.effect(async () => {
         const canGenerate = allDefined(card.colorIdentity, card.superType, card.subType);
+        card.frameFolder = canGenerate ? getFrameFolder() : card.id;
         card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
     });
 
