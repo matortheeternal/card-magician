@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { toCamelCase, emit } from '../../utils.js';
+import { emit } from '../../utils.js';
 import { selectRow } from './rowSelectionService.js';
 import { registerAction } from '../../actionRegistry';
 import html from './listView.html';
@@ -32,7 +32,7 @@ Alpine.data('listView', (config) => ({
     computeColumns() {
         this.activeColumns = this.columns.map(col => {
             const active = { ...col };
-            if (!active.id) active.id = toCamelCase(col.label);
+            if (!active.id) active.id = col.label.toCamelCase();
             if (!active.display) active.display = makeDefaultDisplayFunction(active);
             return active;
         });

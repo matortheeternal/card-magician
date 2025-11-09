@@ -2,6 +2,7 @@ import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './webComponents/imageSelect/imageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+import './extensions.js';
 import { loadTemplates } from './templateBuilder';
 import { loadGames, setGame } from './gameService';
 import { setupTestHarness, runTests } from './tests';
