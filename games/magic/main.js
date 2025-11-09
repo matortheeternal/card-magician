@@ -8,7 +8,7 @@ export default async function(game, utils) {
     for (let column of columns) game.columns.push(column);
 
     game.newCard = function() {
-        const card = { name: 'New Card', rarity: 'Common' };
+        const card = { name: 'New Card', rarity: 'common' };
         return { template: 'M15Mainframe', model: { card } };
     };
 };
