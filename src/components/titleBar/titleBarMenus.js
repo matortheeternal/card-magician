@@ -1,12 +1,9 @@
 import Alpine from 'alpinejs';
-import { toCamelCase } from '../../utils.js';
 import { saveJson } from '../../fsHelpers';
-import { saveHTMLAsImage } from '../../gfx/imageProcessing';
 import { executeAction } from '../../actionRegistry';
 
 function menuItem(label, hotkey, action) {
-    const value = toCamelCase(label);
-    return { label, value, hotkey, action };
+    return { label, value: label.toCamelCase(), hotkey, action };
 }
 
 const DIVIDER = { isDivider: true };
