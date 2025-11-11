@@ -163,6 +163,18 @@ export async function buildCard(templateId) {
     return { template: template.id, model };
 }
 
+export function remapFaces(card, oldTemplateId, newTemplateId) {
+    const oldTemplate = getTemplate(oldTemplateId);
+    const newTemplate = getTemplate(newTemplateId);
+    const oldKeys = Object.keys(oldTemplate.structure);
+    const newKeys = Object.keys(newTemplate.structure);
+    const size = Math.min(oldKeys.length, newKeys.length);
+    for (let i = 0; i < size; i++) {
+        card.model[newKeys[i]] = card.model[oldKeys[i]];
+        delete card.model[oldKeys[i]];
+    }
+}
+
 const templates = [];
 export async function loadTemplates() {
     const templateFolders = await Neutralino.filesystem.readDirectory(
@@ -183,4 +195,8 @@ export async function loadTemplates() {
 
 export function getTemplate(templateId) {
     return templates.find(t => t.id === templateId);
+}
+
+export function getTemplates() {
+    return templates.slice();
 }

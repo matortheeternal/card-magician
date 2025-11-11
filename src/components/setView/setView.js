@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
-import { buildCard } from '../../templateBuilder';
+import { buildCard, remapFaces } from '../../templateBuilder';
 import { registerAction, executeAction } from '../../actionRegistry';
 import { loadJson } from '../../fsHelpers';
 import appConfig from '../../appConfig';
@@ -28,13 +28,25 @@ Alpine.data('setView', () => ({
         Alpine.initTree(this.$root);
     },
 
+    async setActiveCard(views) {
+        const card = await buildCard(views.selectedCard.template);
+        for (const face of Object.values(card.model))
+            await face.load(views.selectedCard.model[face.id]);
+        views.activeCard = Alpine.reactive(card);
+    },
+
     async selectCard(selectedCard) {
         const views = Alpine.store('views');
         views.selectedCard = selectedCard;
-        const card = await buildCard(selectedCard.template);
-        for (const face of Object.values(card.model))
-            await face.load(selectedCard.model[face.id]);
-        views.activeCard = Alpine.reactive(card);
+        await this.setActiveCard(views);
+    },
+
+    async changeTemplate(newTemplate) {
+        const views = Alpine.store('views');
+        const oldTemplate = views.selectedCard.template;
+        views.selectedCard.template = newTemplate;
+        remapFaces(views.selectedCard, oldTemplate, newTemplate);
+        await this.setActiveCard(views);
     },
 
     bindEvents() {
@@ -42,6 +54,12 @@ Alpine.data('setView', () => ({
             event.stopPropagation();
             const { row } = event.detail;
             this.selectCard(row.original);
+        });
+
+        document.addEventListener('change-template', (event) => {
+            event.stopPropagation();
+            const { templateId } = event.detail;
+            this.changeTemplate(templateId);
         });
 
         registerAction('add-card', this.addCard);

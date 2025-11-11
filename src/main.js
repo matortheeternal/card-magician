@@ -3,7 +3,7 @@ import '@shoelace-style/shoelace/dist/shoelace.js';
 import './webComponents/imageSelect/imageSelect.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import './extensions.js';
-import { loadTemplates } from './templateBuilder';
+import { loadTemplates, getTemplates } from './templateBuilder';
 import { loadGames, setGame } from './gameService';
 import { setupTestHarness, runTests } from './tests';
 import appConfig from './appConfig';
@@ -52,6 +52,7 @@ async function startApp() {
     await loadGames();
     Alpine.store('game', await setGame('magic'));
     await loadTemplates();
+    Alpine.store('templates', getTemplates());
     Alpine.store('views').loaded = true;
 }
 
