@@ -1,5 +1,6 @@
 {
-  "name": "M15Mainframe",
+  "id": "M15Mainframe",
+  "label": "Magic 2015 Frame",
   "description": "The M15 main card frame.",
   "version": "0.0",
   "structure": {

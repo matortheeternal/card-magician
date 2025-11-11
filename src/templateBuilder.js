@@ -156,11 +156,11 @@ async function buildCardFaces(model, template) {
         model[key] = await buildCardFace(model, key, def);
 }
 
-export async function buildCard(templateName) {
-    const template = getTemplate(templateName);
+export async function buildCard(templateId) {
+    const template = getTemplate(templateId);
     const model = {};
     await buildCardFaces(model, template.structure);
-    return { template: template.name, model };
+    return { template: template.id, model };
 }
 
 const templates = [];
@@ -181,6 +181,6 @@ export async function loadTemplates() {
     }
 }
 
-export function getTemplate(templateName) {
-    return templates.find(t => t.name === templateName);
+export function getTemplate(templateId) {
+    return templates.find(t => t.id === templateId);
 }
