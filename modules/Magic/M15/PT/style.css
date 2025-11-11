@@ -6,3 +6,9 @@
     font-family: 'Beleren Bold', serif;
     font-size: 22px;
 }
+
+.notch-pt-text {
+    font-family: 'Beleren Bold', serif;
+    font-size: 15px;
+    text-align: right;
+}

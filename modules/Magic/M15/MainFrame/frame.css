@@ -79,6 +79,15 @@
     z-index: 3;
 }
 
+.__id__-notch-pt-container {
+    position: absolute;
+    bottom: 64px;
+    height: fit-content;
+    right: 30px;
+    min-width: fit-content;
+    z-index: 3;
+}
+
 .__id__-pt-wrap-shape {
     float: right;
     width: 78px;
