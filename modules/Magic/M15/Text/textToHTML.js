@@ -1,10 +1,10 @@
 const textTransformers = [
-    {
-        match: str => str.match(/([0-9wubrgtxyz]+)([,:])/i),
-        apply: async (card, match) => {
-            return await card.generateSymbols(match[1]) + match[2];
-        }
-    },
+    // {
+    //     match: str => str.match(/([0-9wubrgtxyz]+)([,:])/i),
+    //     apply: async (card, match) => {
+    //         return await card.generateSymbols(match[1]) + match[2];
+    //     }
+    // },
     {
         match: str => str.match(/<sym>([^<]+)<\/sym>/i),
         apply: async (card, match) => {
