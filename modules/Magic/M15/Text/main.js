@@ -19,6 +19,14 @@ export default async function(card, utils) {
         card.forbiddenRects = forbiddenRects;
     }
 
+    // TODO: probably should use a keyword system instead or be just user-configured
+    card.isTransform = function() {
+        return /\bTransform\b/i.test(card.rulesText)
+            || /\bDaybound\b/i.test(card.rulesText)
+            || /\bDisturb\b/i.test(card.rulesText)
+            || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
+    };
+
     Alpine.effect(async () => {
         card.rulesHTML = await textToHTML(card.rulesText, card);
     });
