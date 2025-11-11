@@ -35,5 +35,8 @@ export const buildModuleUtils = (modulePath) => ({
     import(localPath) {
         const filePath = ['modules', modulePath, localPath].join('/');
         return loadImport(filePath);
+    },
+    subscribe() {
+        return Array.from(arguments).every(arg => arg !== undefined);
     }
 });
