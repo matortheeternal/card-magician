@@ -1,5 +1,14 @@
 <template x-swap="{ '$store.views.activeCard': 'card' }">
     <div class="forms-container">
+        <div class="form" x-show="card.model">
+            <sl-select size="small" name="template" label="Template" x-model="card.template">
+                <template x-for="template in $store.templates">
+                    <sl-option x-bind:value="template.id">
+                        <span x-text="template.label"></span>
+                    </sl-option>
+                </template>
+            </sl-select>
+        </div>
         <template x-for="(face, faceId) in card.model">
             <div class="form">
                 <h2 x-text="faceId"></h2>
@@ -9,12 +18,12 @@
                             <template x-if="entry.isGroup">
                                 <div class="field-group">
                                     <template x-for="field in entry.fields">
-                                        <div x-data="cardFormField(field, faceId)"></div>
+                                        <div x-data="cardFormField(field)"></div>
                                     </template>
                                 </div>
                             </template>
                             <template x-if="!entry.isGroup">
-                                <div x-data="cardFormField(entry, faceId)"></div>
+                                <div x-data="cardFormField(entry)"></div>
                             </template>
                         </div>
                     </template>
