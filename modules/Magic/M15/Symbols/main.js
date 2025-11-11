@@ -20,7 +20,7 @@ export default async function(card, utils) {
         let output = [];
         while (remainingStr.length) {
             const [parser, match] = findSymbolParser(remainingStr);
-            if (!parser) continue;
+            if (!parser) break;
             output.push(new Symbol(parser.name, match[0]));
             remainingStr = remainingStr.slice(match[0].length);
         }
