@@ -32,7 +32,7 @@ function getTextTransformer(token) {
 async function convertToken(token, card) {
     const [transformer, match] = getTextTransformer(token);
     return transformer
-        ? await transformer.apply(card, match)
+        ? await transformer.apply(card, match) + token.slice(match[0].length)
         : token;
 }
 
