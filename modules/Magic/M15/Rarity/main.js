@@ -6,7 +6,7 @@ const rarity = (name, id) => ({
 export default async function(card) {
     Alpine.effect(() => {
         if (!card.rarity) return;
-        card.rarityCharacter = card.rarity.slice(0, 1);
+        card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
         card.rarityClass = `rarity-${card.rarity.toLowerCase()}`;
     });
 
