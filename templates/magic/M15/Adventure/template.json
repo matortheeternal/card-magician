@@ -1,5 +1,6 @@
 {
-  "name": "M15Adventure",
+  "id": "M15Adventure",
+  "label": "M15 Adventure",
   "description": "This is a template for adventure cards which builds off of the M15 main frame.",
   "version": "0.0",
   "structure": {

@@ -1,5 +1,6 @@
 {
-  "name": "M15DoubleFaceCard",
+  "id": "M15DoubleFaceCard",
+  "label": "M15 DFC",
   "description": "This is a template for double-face cards which builds off of the M15 main frame.",
   "version": "0.0",
   "structure": {
@@ -13,6 +14,7 @@
       "Magic/M15/DefaultArt",
       "Magic/M15/Type",
       "Magic/M15/Text",
+      "Magic/M15/Flag",
       "Magic/M15/PT",
       "Magic/M15/Rarity",
       "Magic/M15/Footer"
@@ -27,6 +29,7 @@
       "Magic/M15/DefaultArt",
       "Magic/M15/Type",
       "Magic/M15/Text",
+      "Magic/M15/Flag",
       "Magic/M15/PT",
       "Magic/M15/Rarity",
       "Magic/M15/Footer"
