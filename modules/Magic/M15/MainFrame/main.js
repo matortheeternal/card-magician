@@ -15,6 +15,8 @@ export default async function(card, utils) {
     }
 
     function getFrameFolder() {
+        if (card.id === 'front' && card.isTransform())
+            return 'notched';
         return card.isSnow() ? 'snow' : card.id;
     }
 
@@ -27,10 +29,10 @@ export default async function(card, utils) {
             await pipe.apply(card, backgrounds);
         }
         return makeStyles(backgrounds);
-    }
+    };
 
     Alpine.effect(async () => {
-        const canGenerate = allDefined(card.colorIdentity, card.superType, card.subType);
+        const canGenerate = allDefined(card.colorIdentity, card.superType, card.subType, card.rulesText);
         card.frameFolder = canGenerate ? getFrameFolder() : card.id;
         card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
     });
