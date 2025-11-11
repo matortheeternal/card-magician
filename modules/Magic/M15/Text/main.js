@@ -23,8 +23,12 @@ export default async function(card, utils) {
         card.rulesHTML = await textToHTML(card.rulesText, card);
     });
 
+    Alpine.effect(async () => {
+        card.flavorHTML = await textToHTML(card.flavorText, card);
+    });
+
     Alpine.effect(() => {
-        card.showFlavorBar = card.flavorText && card.rulesText;
+        card.showFlavorBar = Boolean(card.flavorText && card.rulesText);
     });
 
     Alpine.effect(() => {
@@ -49,7 +53,7 @@ export default async function(card, utils) {
         `<div class="__id__-text" :class="showFlag && 'flag-padding'" x-fit-text="{text: [rulesHTML, flavorHTML], forbiddenRects: forbiddenRects}">
             <div class="rules-text" x-html="rulesHTML"></div>
             <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
-            <div class="flavor-text" x-text="flavorText"></div>
+            <div class="flavor-text" x-html="flavorHTML"></div>
         </div>`
     );
 
