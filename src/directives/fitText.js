@@ -94,7 +94,7 @@ Alpine.directive('fit-text', (el, { expression }, { effect, evaluateLater }) => 
     effect(() => {
         evaluateLater(expression)((result) => {
             if (timeout) clearTimeout(timeout);
-            timeout = Alpine.nextTick(() => adjustFontSize(result.forbiddenRects));
+            timeout = setTimeout(() => adjustFontSize(result.forbiddenRects), 10);
         });
     });
 });

@@ -5,14 +5,16 @@ export default async function(card, utils) {
     card.forbiddenRects = [];
 
     function updateForbiddenRects() {
-        card.forbiddenRects = [];
+        const forbiddenRects = [];
         if (card.showPT) {
             const ptContainer = card.dom.querySelector(`.${card.id}-pt-container`);
-            card.forbiddenRects.push(...ptContainer.getClientRects());
+            const rects = ptContainer.getClientRects();
+            forbiddenRects.push(...rects);
         }
         if (card.showStamp) {
             // TODO: stamp rect
         }
+        card.forbiddenRects = forbiddenRects;
     }
 
     Alpine.effect(async () => {
@@ -24,9 +26,10 @@ export default async function(card, utils) {
     });
 
     Alpine.effect(() => {
-        if ((card.showPT || card.showStamp) && card.rulesHTML)
-            Alpine.nextTick(updateForbiddenRects);
-    })
+        if (!utils.subscribe(card.rulesHTML, card.showPT))
+            return;
+        Alpine.nextTick(() => requestAnimationFrame(updateForbiddenRects));
+    });
 
     card.addField({
         id: 'rulesText',
