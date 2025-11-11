@@ -85,16 +85,22 @@ Alpine.data('setView', () => ({
         activeSet.cards.push(game.newCard());
     },
 
-    async openSet(filePath) {
-        filePath = filePath || await Neutralino.os.showOpenDialog('Open a set', {
-            filters: [
-                { name: 'JSON Files', extensions: ['json'] },
-                { name: 'All files', extensions: ['*'] }
-            ]
-        });
+    async openSet(filePath = null) {
+        filePath = filePath || await openSingleFileDialog();
         if (!filePath) return;
         console.info('Opening set:', filePath);
         Alpine.store('views').activeSet = await loadJson(filePath);
         appConfig.addRecentFile(filePath);
     }
 }));
+
+async function openSingleFileDialog() {
+    const res = await Neutralino.os.showOpenDialog('Open a set', {
+        filters: [
+            { name: 'JSON Files', extensions: ['json'] },
+            { name: 'All files', extensions: ['*'] }
+        ]
+    });
+    if (!res) return;
+    return res[0];
+}
