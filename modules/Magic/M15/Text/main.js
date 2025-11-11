@@ -3,6 +3,8 @@ export default async function(card, utils) {
     const flavorBarUrl = await utils.assetURL('grey bar.png');
     card.flavorBarStyle = { backgroundImage: `url("${flavorBarUrl}")` };
     card.forbiddenRects = [];
+    card.showFlag = card.showFlag || false;
+    card.textToHTML = textToHTML;
 
     function updateForbiddenRects() {
         const forbiddenRects = [];
@@ -44,7 +46,7 @@ export default async function(card, utils) {
     });
 
     card.publishElement('text-box',
-        `<div class="text" x-fit-text="{text: [rulesHTML, flavorText], forbiddenRects: forbiddenRects}">
+        `<div class="__id__-text" :class="showFlag && 'flag-padding'" x-fit-text="{text: [rulesHTML, flavorHTML], forbiddenRects: forbiddenRects}">
             <div class="rules-text" x-html="rulesHTML"></div>
             <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
             <div class="flavor-text" x-text="flavorText"></div>

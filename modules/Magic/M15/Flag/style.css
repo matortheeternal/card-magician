@@ -1,0 +1,43 @@
+.__id__-flag-container {
+    position: absolute;
+    z-index: 100;
+    bottom: 37px;
+    left: 14px;
+    width: 160px;
+    height: 20px;
+}
+
+.__id__-flag {
+    width: 100%;
+    height: 100%;
+    padding: 0 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.__id__-flag .flag-left {
+    font-family: "Beleren Bold", serif;
+    font-size: 12px;
+    font-kerning: none;
+}
+
+.front-flag {
+    color: white;
+}
+
+.__id__-flag .flag-right {
+    font-size: 13px;
+    font-family: 'MPlantin', serif;
+    margin-bottom: 1px;
+}
+
+.__id__-flag div.sym {
+    font-size: 100%;
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 2px;
+    margin-right: 2px;
+}
