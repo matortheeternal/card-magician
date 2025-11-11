@@ -1,17 +1,28 @@
-const faceSymbol = id => ({
+const faceSymbol = (id, url) => ({
     id,
     name: id.normalizeWords().toTitleCase(),
-    url: `${id}.png`
+    ...(id === 'autodetect' ? {} : { url: url || `${id}.png`})
 });
 
 const separator = () => ({ separator: true });
 
-const colorChars = 'wubrgamc'.split('');
+const colorOptions = [
+    { id: 'autodetect' },
+    { id: 'white', c: 'w' },
+    { id: 'blue', c: 'u' },
+    { id: 'black', c: 'b' },
+    { id: 'red', c: 'r' },
+    { id: 'green', c: 'g' },
+    { id: 'multicolor', c: 'm' },
+    { id: 'colorless', c: 'c' },
+    { id: 'artifact', c: 'a' },
+]
 
 const faceSymbolGroup = (groupId, items) => ({
+    id: groupId,
     name: groupId.normalizeWords().toTitleCase(),
-    items: items || colorChars.map(c =>
-        faceSymbol(`${groupId}/${c}.png`)
+    items: items || colorOptions.map(opt =>
+        faceSymbol(`${groupId}/${opt.id}`, `${groupId}/${opt.c}.png`)
     )
 });
 
