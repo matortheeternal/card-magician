@@ -3,11 +3,15 @@ export default async function(card, utils) {
         id: 'artImage',
         type: 'image',
         displayName: 'Art Image',
-        default: { image: null, filename: '' }
+        default: {
+            image: null, filename: '',
+            width: '', height: '',
+            xOffset: 0, yOffset: 0,
+        }
     });
 
     card.publishElement('art-image',
-        `<img x-show="artImage.image" :src="artImage.image" alt="Card Art" />
+        `<div x-crop-image="artImage"></div>
          <img x-show="!artImage.image" :src="defaultImageUrl" alt="Placeholder image" />`
     );
 
