@@ -2,8 +2,14 @@ import Alpine from 'alpinejs';
 
 const selectDividerSpacing = "--spacing: var(--sl-spacing-3x-small)";
 
+function menuPrefixIcon(option) {
+    if (!option.imageURL) return '';
+    return `<img class="icon" slot="prefix" src="${option.imageURL}" />`;
+}
+
 function submenu(option) {
     return `<sl-menu-item>
+      ${menuPrefixIcon(option.items[0])}
       ${option.name}
       <sl-menu slot="submenu">
         ${option.items.map(sub => menuItem(sub)).join('')}
@@ -13,7 +19,7 @@ function submenu(option) {
 
 function menuItem(option) {
     return `<sl-menu-item value="${option.id}">
-        ${option.imageURL ? `<img class="icon" slot="prefix" src="${option.imageURL}" />` : ''}
+        ${menuPrefixIcon(option)}
         ${option.name}
     </sl-menu-item>`;
 }
