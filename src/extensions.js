@@ -22,8 +22,8 @@ function addPrototypeFunction(ctor, name, descriptor) {
  * @name String#separate
  * @returns {string}
  * @description Insert a space before uppercase letters in camelCase or PascalCase strings.
- * Examples: 'camelCase'.separate() → 'camel Case',
- *           'HTMLParser'.separate() → 'HTML Parser'
+ * Examples: `'camelCase'.separate()` → `'camel Case'`,
+ *           `'HTMLParser'.separate()` → `'HTML Parser'`
  */
 addPrototypeFunction(String, 'separate', {
     value: function separate() {
@@ -37,7 +37,7 @@ addPrototypeFunction(String, 'separate', {
  * @returns {string}
  * @param {RegExp} [sep] - Regex matching separators (defaults to /[^a-z0-9]+/gi)
  * @description Normalizes a string to be lowercase and separated by spaces.
- * Example: `'modal_back'.normalizeWords() -> 'modal back'`
+ * Example: `'modal_back'.normalizeWords()` -> `'modal back'`
  */
 addPrototypeFunction(String, 'normalizeWords', {
     value: function normalizeWords(sep = /[^a-z0-9]+/gi) {
@@ -52,7 +52,7 @@ addPrototypeFunction(String, 'normalizeWords', {
  * @name String#toTitleCase
  * @returns {string}
  * @description Converts a space-separated string to Title Case.
- * Example: `'modal back'.toTitleCase() -> 'Modal Back'`
+ * Example: `'modal back'.toTitleCase()` -> `'Modal Back'`
  */
 addPrototypeFunction(String, 'toTitleCase', {
     value: function toTitleCase() {
@@ -67,7 +67,7 @@ addPrototypeFunction(String, 'toTitleCase', {
  * @name String#toCamelCase
  * @returns {string}
  * @description Converts a space-separated string into camelCase.
- * Example: `'modal_back'.toCamelCase() -> 'modalBack'`
+ * Example: `'modal_back'.toCamelCase()` -> `'modalBack'`
  */
 addPrototypeFunction(String, 'toCamelCase', {
     value: function toCamelCase() {
@@ -78,3 +78,19 @@ addPrototypeFunction(String, 'toCamelCase', {
     }
 });
 
+/**
+ * @method
+ * @name Object#except
+ * @param {...string} keysToExclude - A variable number of string keys to remove from
+ *  the object.
+ * @returns {object}
+ * @description Creates a new object that has the specified keys removed.
+ * Example: `{ a: 1, b: 2 }.except('a')` -> `{ b: 2 }`
+ */
+addPrototypeFunction(Object, 'except', {
+    value: function except(...keysToExclude) {
+        return Object.fromEntries(
+            Object.entries(this).filter(([key]) => !keysToExclude.includes(key))
+        );
+    }
+});
