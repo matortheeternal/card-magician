@@ -72,7 +72,7 @@ export default [
     faceSymbolGroup('non_standard', [
         faceSymbol('conspiracy'),
         faceSymbol('dungeon'),
-        faceSymbol('emblem'),
+        faceSymbol('emblem', 'Emblem', 'aetherprint.png'),
         faceSymbol('hero'),
         faceSymbol('phenomenon'),
         faceSymbol('plane'),
