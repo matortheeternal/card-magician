@@ -1,4 +1,5 @@
 import Alpine from 'alpinejs';
+import { emit } from '../../utils.js';
 
 const selectDividerSpacing = "--spacing: var(--sl-spacing-3x-small)";
 
@@ -9,11 +10,11 @@ function menuPrefixIcon(option) {
 
 function submenu(option) {
     return `<sl-menu-item>
-      ${menuPrefixIcon(option.items[0])}
-      ${option.name}
-      <sl-menu slot="submenu">
-        ${option.items.map(sub => menuItem(sub)).join('')}
-      </sl-menu>
+        ${menuPrefixIcon(option.items[0])}
+        ${option.name}
+        <sl-menu slot="submenu">
+            ${option.items.map(sub => menuItem(sub)).join('')}
+        </sl-menu>
     </sl-menu-item>`;
 }
 
@@ -35,29 +36,14 @@ function buildSelectHTML(field) {
 
     return `
     <div class="sl-select-field">
-      <div class="sl-field__label" @click="$el.nextElementSibling.show()">
-        ${field.displayName}
-      </div>
-      <div>
+        <div class="sl-field__label">${field.displayName}</div>
         <sl-dropdown class="select-like" hoist sync="width">
-          <sl-button slot="trigger" size="small" caret>
-            <span x-text="selectedLabel"></span>
-          </sl-button>
-          <sl-menu @sl-select="onItemSelected($event)">
-            ${optionsHTML}
-          </sl-menu>
+            <sl-button slot="trigger" size="small" x-html="triggerHTML" caret></sl-button>
+                <sl-menu @sl-select="onItemSelected($event)">
+                ${optionsHTML}
+            </sl-menu>
         </sl-dropdown>
-      </div>
     </div>`;
-}
-
-function resolveItemLabel(field, initialValue) {
-    if (!initialValue) return field.options[0].name;
-    const options = field.options
-        .flatMap(opt => (opt.items ? opt.items : [opt]))
-        .filter(o => !o.separator);
-    const found = options.find(o => o.id === initialValue);
-    return found ? found.name : field.options[0].name;
 }
 
 function updateSelectedClasses(root, selectedId) {
@@ -70,16 +56,36 @@ function updateSelectedClasses(root, selectedId) {
     });
 }
 
+function getOptionHTML(option, parent) {
+    let html = menuPrefixIcon(option);
+    if (parent) html += parent.name + ' / ';
+    return html + option.name;
+}
+
+function getTriggerHTML(selectedValue, field) {
+    for (const option of field.options) {
+        if (option.id === selectedValue)
+            return getOptionHTML(option);
+        if (!option.items) continue;
+        for (const item of option.items) {
+            if (item.id === selectedValue)
+                return getOptionHTML(item, option);
+        }
+    }
+    return `<span class="error">ERROR: ${selectedValue}</span>`;
+}
+
 Alpine.data('formSelect', ({ field, face }) => ({
     field,
     face,
+    triggerHTML: '',
     selectedLabel: '',
 
     init() {
         this.$root.innerHTML = buildSelectHTML(field);
 
         const initialValue = this.face[field.id];
-        this.selectedLabel = resolveItemLabel(field, initialValue);
+        this.triggerHTML = getTriggerHTML(initialValue, field);
         updateSelectedClasses(this.$root, initialValue);
 
         Alpine.initTree(this.$root);
@@ -88,7 +94,8 @@ Alpine.data('formSelect', ({ field, face }) => ({
     onItemSelected(event) {
         const { item } = event.detail;
         this.face[this.field.id] = item.value;
-        this.selectedLabel = item.textContent.trim();
+        this.triggerHTML = getTriggerHTML(item.value, field);
         updateSelectedClasses(this.$root, item.value);
+        emit(this.$root, 'change');
     }
 }));

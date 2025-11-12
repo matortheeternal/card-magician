@@ -64,7 +64,7 @@ sl-dropdown.select-like sl-menu-item::part(prefix) {
     width: 2em;
 }
 
-sl-dropdown.select-like sl-menu-item img.icon {
+sl-dropdown.select-like img.icon {
     max-height: 24px;
     max-width: 32px;
 }
