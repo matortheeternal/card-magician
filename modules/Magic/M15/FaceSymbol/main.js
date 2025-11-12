@@ -79,8 +79,7 @@ export default async function(card, utils) {
         id: 'faceSymbol',
         type: 'select',
         options,
-        displayName: 'Face Symbol',
-        group: 'header'
+        displayName: 'Face Symbol'
     });
 
     card.publishElement('face-symbol',
