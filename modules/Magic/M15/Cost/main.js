@@ -2,14 +2,14 @@ export default async function(card, utils) {
     const { ColorIdentity } = await utils.import('ColorIdentity.js');
     card.colorIdentity = new ColorIdentity();
 
-    async function processManaCost() {
+    async function renderManaCost() {
         if (!utils.subscribe(card.manaCost)) return;
         card.manaCostSymbols = card.parseSymbols(card.manaCost);
         card.colorIdentity.addColorSource('card', card.manaCostSymbols);
         card.manaCostHTML = await card.symbolsToHTML(card.manaCostSymbols, true);
     }
 
-    Alpine.effect(processManaCost);
+    Alpine.effect(renderManaCost);
 
     card.getCardColorKey = function() {
         const colors = card.colorIdentity.colors;
