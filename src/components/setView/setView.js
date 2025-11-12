@@ -62,9 +62,17 @@ Alpine.data('setView', () => ({
             this.changeTemplate(templateId);
         });
 
+        registerAction('new-set', this.newSet);
         registerAction('add-card', this.addCard);
         registerAction('open-set', this.openSet);
         registerAction('delete-selected-cards', this.deleteSelectedCards);
+    },
+
+    newSet() {
+        const views = Alpine.store('views');
+        views.setFilePath = null;
+        views.activeSet = { cards: [] };
+        views.activeCard = {};
     },
 
     deleteSelectedCards() {

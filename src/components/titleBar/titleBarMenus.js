@@ -24,7 +24,7 @@ async function saveAs() {
 }
 
 const actions = {
-    makeNewSet: () => console.log('Make new set'),
+    makeNewSet: () => executeAction('new-set'),
     openSet: () => executeAction('open-set'),
     save: async () => {
         const { activeSet, setFilePath } = Alpine.store('views');
