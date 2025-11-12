@@ -1,7 +1,14 @@
 <template x-swap="{ '$store.views.activeCard': 'card' }">
-    <div class="template-container">
+    <div class="template-container"
+         :class="card.useFlip && 'flip-container'">
         <template x-for="(face, faceId) in card.model">
             <div x-data="cardFace(face)"></div>
         </template>
     </div>
 </template>
+<div class="buttons-container" x-show="useFlip">
+    <sl-button @click="flipCard()">
+        <sl-icon name="arrow-repeat"></sl-icon>
+        <span x-text="flipLabel"></span>
+    </sl-button>
+</div>
