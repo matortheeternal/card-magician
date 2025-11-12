@@ -32,7 +32,8 @@ export async function loadImport(filePath) {
         ].join('\n')
         const blob = new Blob([sourceCode], { type: 'application/javascript' });
         const blobUrl = URL.createObjectURL(blob);
-        return await import(blobUrl);
+        const res = await import(blobUrl);
+        return res && Object.hasOwn(res, 'default') ? res.default : res;
     } catch (error) {
         console.error(`Failed to import ${filePath}:`, error);
     }
@@ -43,7 +44,7 @@ export async function loadModule(modulePath, card, utils) {
         const mainPath = `./modules/${modulePath}/main.js`;
         const module = await loadImport(mainPath);
         console.log('Loading module', mainPath);
-        await module.default(card, utils);
+        await module(card, utils);
     } catch (error) {
         console.error('Failed to load module:', error);
     }

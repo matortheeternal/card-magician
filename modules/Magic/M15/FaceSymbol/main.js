@@ -1,5 +1,5 @@
 export default async function(card, utils) {
-    const { default: options } = await utils.import('options.js');
+    const options = await utils.import('options.js');
     card.showFaceSymbol = true;
     card.faceSymbolStyle = {};
 
