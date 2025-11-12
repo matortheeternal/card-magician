@@ -89,7 +89,9 @@ Alpine.data('setView', () => ({
         filePath = filePath || await openSingleFileDialog();
         if (!filePath) return;
         console.info('Opening set:', filePath);
-        Alpine.store('views').activeSet = await loadJson(filePath);
+        const views = Alpine.store('views');
+        views.setFilePath = filePath;
+        views.activeSet = await loadJson(filePath);
         appConfig.addRecentFile(filePath);
     }
 }));
