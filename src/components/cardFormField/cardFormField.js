@@ -51,8 +51,13 @@ const HTMLMap = {
     ),
     image: field => (
         `<image-select size="small" label="${field.displayName}" 
-                       x-model="face.${field.id}" :src="face.${field.id}.image" 
-                       :filename="face.${field.id}.filename"></image-select>`
+                       :src="face.${field.id}.image" 
+                       x-model="face.${field.id}"
+                       :filename="face.${field.id}.filename" 
+                       :crop-width="face.${field.id}.width"
+                       :crop-height="face.${field.id}.height"
+                       :crop-x="face.${field.id}.xOffset"
+                       :crop-y="face.${field.id}.yOffset"></image-select>`
     ),
     input: field => (
         `<sl-input autocomplete="off" size="small" type="${field.type || 'text'}" 

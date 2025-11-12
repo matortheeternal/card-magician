@@ -1,10 +1,8 @@
-.__id__-art-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+.__id__-art-image img {
+    width: 100%;
 }
 
-.__id__-art-image img {
+.__id__-art-image div {
+    height: 100%;
     width: 100%;
 }

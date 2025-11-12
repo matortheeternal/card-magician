@@ -10,15 +10,25 @@ function compileTemplate(context, src) {
         : output;
 }
 
+const imageKeys = ['filename', 'xOffset', 'yOffset', 'width', 'height'];
+function imageFields(obj) {
+    return imageKeys.reduce((acc, key) => {
+        if (key in obj) acc[key] = obj[key];
+        return acc;
+    }, {});
+}
+
 async function saveImage(data, field) {
     const imageUrl = data[field.id]?.image;
     if (!imageUrl) return { image: null, filename: '' };
     const response = await fetch(imageUrl);
     const blob = await response.blob();
-    const filename = data[field.id].filename;
     return await new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve({ image: reader.result, filename });
+        reader.onload = () => resolve({
+            image: reader.result,
+            ...imageFields(data[field.id])
+        });
         reader.onerror = () => reject(new Error('Failed to read data stream.'));
         reader.readAsDataURL(blob);
     });
@@ -31,7 +41,7 @@ async function loadImage(model, dataToLoad, field) {
     if (!imageDataToLoad?.image) return { image: null, filename: '' };
     const blob = parseBlob(imageDataToLoad.image);
     const image = URL.createObjectURL(blob);
-    return { image, filename: imageDataToLoad.filename };
+    return { image, ...imageFields(imageDataToLoad) };
 }
 
 async function saveField(data, field) {

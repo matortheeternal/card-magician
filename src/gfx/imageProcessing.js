@@ -81,3 +81,17 @@ export async function saveHTMLAsImage(node, filename) {
     console.error('Failed to save image:', err);
   }
 }
+
+export function getImageSize(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            resolve({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+        };
+        img.onerror = reject;
+        img.src = url;
+    });
+}
