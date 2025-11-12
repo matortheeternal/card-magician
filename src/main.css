@@ -4,7 +4,7 @@
 @import "components/displayCard/displayCard.css";
 @import "components/cardForm/cardForm.css";
 @import "components/listView/listView.css";
-@import "components/setInfo/setInfo.css";
+@import "components/setInfoModal/setInfoModal.css";
 
 * {
     box-sizing: border-box;

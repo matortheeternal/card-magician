@@ -1,13 +1,13 @@
 import Alpine from 'alpinejs';
-import html from './setInfo.html';
+import html from './setInfoModal.html';
 
-Alpine.data('setInfo', () => ({
+Alpine.data('setInfoModal', () => ({
     async init() {
         this.$root.innerHTML = html;
         this.set = Alpine.store('views').activeSet;
         Alpine.initTree(this.$root);
     },
     closeModal() {
-        Alpine.store('views').showSetInfo = false;
+        Alpine.store('views').activeModal = null;
     }
 }));

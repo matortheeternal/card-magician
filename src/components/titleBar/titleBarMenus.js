@@ -42,7 +42,7 @@ const actions = {
     copy: () => console.log('Copy'),
     paste: () => console.log('Paste'),
     editPreferences: () => console.log('Edit preferences'),
-    editSetInfo: () => Alpine.store('views').showSetInfo = true,
+    editSetInfo: () => (Alpine.store('views').activeModal = 'set-info'),
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };
