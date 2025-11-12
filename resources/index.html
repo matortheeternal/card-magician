@@ -17,8 +17,8 @@
     </main>
   </template>
 
-  <template x-if="$store.views.showSetInfo">
-    <div x-data="setInfo()" class="modal-container set-info-modal"></div>
+  <template x-if="$store.views.activeModal === 'set-info'">
+    <div x-data="setInfoModal()" class="modal-container set-info-modal"></div>
   </template>
 
   <script src="/js/neutralino.js"></script>
