@@ -1,6 +1,17 @@
 export default async function(card, utils) {
-    // TODO
     async function getIndicatorImage() {
+        if (!card.colorIndicator) return '';
+        const colors = card.colorIdentity.colors;
+        if (colors.length === 1) {
+            const key = card.getCardColorKey();
+            return await utils.assetURL(`indicator/${key}.png`);
+        }
+        if (colors.length === 2) {
+            const [c1, c2] = colors;
+            const img1 = await utils.assetURL(`indicator/${c1.char}.png`);
+            const img2 = await utils.assetURL(`indicator/${c2.char}.png`);
+            return await utils.linearBlend(img1, img2, 0.5, 0.5, 0.499, 0.499);
+        }
         return '';
     }
 
@@ -15,7 +26,7 @@ export default async function(card, utils) {
 
     card.addField({
         id: 'colorIndicator',
-        displayName: 'Color Indicator',
+        displayName: 'Color (Override)',
         group: 'manaCost'
     });
 

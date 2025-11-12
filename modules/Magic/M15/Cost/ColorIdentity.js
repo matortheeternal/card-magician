@@ -42,6 +42,7 @@ export class ColorIdentity {
     getColorsFromOverride() {
         const colors = {};
         this.override.split('').forEach(char => {
+            if (!colorNames[char]) return;
             addColor(colors, char, 'override');
         });
         return colors;
