@@ -5,6 +5,7 @@
 @import "components/cardForm/cardForm.css";
 @import "components/listView/listView.css";
 @import "components/setInfoModal/setInfoModal.css";
+@import "components/formSelect/formSelect.css";
 
 * {
     box-sizing: border-box;
