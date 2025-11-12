@@ -1,0 +1,28 @@
+<div class="modal">
+    <div class="modal-title-bar">
+        <div>Set Info</div>
+        <div class="close-modal" @click="closeModal()">
+            <sl-icon name="x-lg"></sl-icon>
+        </div>
+    </div>
+    <div class="modal-body">
+        <sl-input label="Title"
+                  x-model="set.title"
+                  autocomplete="off"></sl-input>
+        <sl-input label="Description"
+                  x-model="set.description"
+                  autocomplete="off"></sl-input>
+        <sl-input label="Default Artist"
+                  x-model="set.defaultArtist"
+                  autocomplete="off"></sl-input>
+        <sl-input label="Copyright"
+                  x-model="set.defaultLegelText"
+                  autocomplete="off"></sl-input>
+        <sl-input label="Set code"
+                  x-model="set.code"
+                  autocomplete="off"></sl-input>
+        <sl-input label="Language"
+                  x-model="set.language"
+                  autocomplete="off"></sl-input>
+    </div>
+</div>

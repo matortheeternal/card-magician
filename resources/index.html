@@ -17,6 +17,10 @@
     </main>
   </template>
 
+  <template x-if="$store.views.showSetInfo">
+    <div x-data="setInfo()" class="modal-container set-info-modal"></div>
+  </template>
+
   <script src="/js/neutralino.js"></script>
   <script type="module" src="/js/main.js"></script>
 </body>
