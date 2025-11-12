@@ -1,9 +1,8 @@
-const allDefined = (...args) => args.every(arg => arg !== undefined);
-
 export default async function(card, utils) {
     const { buildPipeline } = await utils.import('backgroundPipeline.js');
     const backgroundPipeline = buildPipeline(utils);
     card.showFaceSymbol = false;
+    card.showFlag = false;
 
     function makeStyles(backgrounds) {
         const styles = Object.values(backgrounds);
@@ -20,6 +19,14 @@ export default async function(card, utils) {
         return card.isSnow() ? 'snow' : card.id;
     }
 
+    async function updateBackgrounds() {
+        const canGenerate = utils.subscribe(
+            card.colorIdentity, card.superType, card.subType, card.rulesText
+        );
+        card.frameFolder = canGenerate ? getFrameFolder() : card.id;
+        card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
+    }
+
     card.buildBackgrounds = async function() {
         const backgrounds = {};
         card.backgroundsUsed = [];
@@ -31,11 +38,7 @@ export default async function(card, utils) {
         return makeStyles(backgrounds);
     };
 
-    Alpine.effect(async () => {
-        const canGenerate = allDefined(card.colorIdentity, card.superType, card.subType, card.rulesText);
-        card.frameFolder = canGenerate ? getFrameFolder() : card.id;
-        card.backgrounds = canGenerate ? await card.buildBackgrounds() : [];
-    });
+    Alpine.effect(updateBackgrounds);
 
     card.setFrame(await utils.loadFile('frame.html'));
     card.addStyle(await utils.loadFile('frame.css'));

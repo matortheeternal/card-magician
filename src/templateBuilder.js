@@ -3,7 +3,7 @@ import { buildModuleUtils } from './moduleUtils.js';
 import { parseBlob } from './gfx/imageProcessing.js';
 
 function compileTemplate(context, src) {
-    const parent = context.parent();
+    const parent = context.parent && context.parent();
     const output = src.replaceAll('__id__', context.id);
     return parent
         ? output.replaceAll('__parentId__', parent.id)
@@ -144,8 +144,10 @@ function getComponentLoader(component) {
 
 async function buildCardFace(parent, key, def) {
     const card = initCardFace(key);
-    card.parent = () => parent;
-    if (parent.subCards) parent.subCards.push(Alpine.raw(card));
+    if (parent.subCards) {
+        card.parent = () => parent;
+        parent.subCards.push(Alpine.raw(card));
+    }
 
     const components = Array.isArray(def) ? def : def.components;
     for (let component of components) {
@@ -164,6 +166,9 @@ async function buildCardFace(parent, key, def) {
 async function buildCardFaces(model, template) {
     for (const [key, def] of Object.entries(template))
         model[key] = await buildCardFace(model, key, def);
+    Object.keys(template).forEach(key => {
+        model[key].parent = () => model;
+    });
 }
 
 export async function buildCard(templateId) {
