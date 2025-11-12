@@ -21,6 +21,10 @@
     <div x-data="setInfoModal()" class="modal-container set-info-modal"></div>
   </template>
 
+  <template x-if="$store.views.activeModal === 'crop-image'">
+    <div x-data="cropImageModal()" class="modal-container crop-image-modal"></div>
+  </template>
+
   <script src="/js/neutralino.js"></script>
   <script type="module" src="/js/main.js"></script>
 </body>
