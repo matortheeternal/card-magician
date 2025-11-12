@@ -1,0 +1,6 @@
+.set-info-modal .modal {
+    min-width: 35em;
+    background: black;
+    border: 1px solid;
+    position: relative;
+}

@@ -4,6 +4,7 @@
 @import "components/displayCard/displayCard.css";
 @import "components/cardForm/cardForm.css";
 @import "components/listView/listView.css";
+@import "components/setInfo/setInfo.css";
 
 * {
     box-sizing: border-box;
@@ -27,4 +28,40 @@ main {
     overflow: hidden;
     display: flex;
     flex-direction: row;
+}
+
+.modal-container {
+    display: flex;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-body {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.modal-title-bar {
+    text-align: left;
+    padding: 0.5em;
+    border-bottom: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.close-modal {
+    color: var(--sl-color-danger-300);
+    margin-right: 2px;
+    cursor: pointer;
+    display: flex;
 }
