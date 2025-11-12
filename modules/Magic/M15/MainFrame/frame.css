@@ -59,6 +59,10 @@
     margin: 1.5px 3px;
 }
 
+.__id__-type {
+    flex: 1;
+}
+
 .__id__-expansion-symbol {
     min-width: 10px;
     min-height: 10px;

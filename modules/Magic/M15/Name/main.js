@@ -1,8 +1,7 @@
 export default async function(card, utils) {
     card.addField({
         id: 'name',
-        displayName: 'Name',
-        group: 'header'
+        displayName: 'Name'
     });
 
     card.getLegendName = function() {

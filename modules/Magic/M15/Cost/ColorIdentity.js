@@ -6,7 +6,7 @@ const colorNames = {
     u: 'blue'
 };
 
-function addColor(colors, colorCharacter, isHybrid) {
+function addColor(colors, colorCharacter, sourceKey = 'normal') {
     if (!colors.hasOwnProperty(colorCharacter))
         colors[colorCharacter] = {
             char: colorCharacter,
@@ -14,27 +14,43 @@ function addColor(colors, colorCharacter, isHybrid) {
             sources: {}
         };
 
-    const sourceKey = isHybrid ? 'hybrid' : 'normal';
     colors[colorCharacter].sources[sourceKey] = true;
 }
 
 export class ColorIdentity {
     constructor() {
         this.colorSources = {};
-        this.overrides = {};
+        this.override = null;
         this.colors = [];
     }
 
-    getColors() {
+    getColorsFromSources() {
         const colors = {};
         Object.values(this.colorSources).forEach(src => {
             if (src.commanderOnly) return;
             src.symbols.forEach(sym => {
                 if (!sym.isColored()) return;
-                const isHybrid = sym.isTwoColorHybrid();
-                sym.parts.forEach(p => addColor(colors, p, isHybrid));
+                const sourceKey = sym.isTwoColorHybrid()
+                    ? 'hybrid'
+                    : 'normal';
+                sym.parts.forEach(p => addColor(colors, p, sourceKey));
             });
         });
+        return colors;
+    }
+
+    getColorsFromOverride() {
+        const colors = {};
+        this.override.split('').forEach(char => {
+            addColor(colors, char, 'override');
+        });
+        return colors;
+    }
+
+    getColors() {
+        const colors = this.override
+            ? this.getColorsFromOverride()
+            : this.getColorsFromSources();
         return Object.values(colors);
     }
 
@@ -43,6 +59,11 @@ export class ColorIdentity {
             commanderOnly,
             symbols
         };
+        this.colors = this.getColors();
+    }
+
+    setOverride(str) {
+        this.override = str && str.length ? str : null;
         this.colors = this.getColors();
     }
 
