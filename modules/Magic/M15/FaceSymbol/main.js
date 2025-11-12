@@ -1,5 +1,6 @@
 export default async function(card, utils) {
     const options = await utils.import('options.js');
+    options[0].compute = await utils.import('autodetect.js');
     card.showFaceSymbol = true;
     card.faceSymbolStyle = {};
     await loadFaceSymbolImages();
@@ -52,7 +53,27 @@ export default async function(card, utils) {
         card.faceSymbolClass = getFaceSymbolClass(selectedOption);
     }
 
+    function computeOption(option, optionsToSearch) {
+        if (!option.compute) return;
+        const res = option.compute(card, optionsToSearch);
+        if (res) option.imageURL = res.imageURL;
+    }
+
+    function updateAutoSymbols() {
+        if (!utils.subscribe(
+            card.faceSymbol, card.parent, card.colorIdentity, card.superType
+        )) return;
+        console.log('%cupdateAutoSymbols, ', 'color:red', card.id, card.parent());
+        for (const option of options) {
+            computeOption(option, options);
+            if (!option.items) continue;
+            for (const item of option.items)
+                computeOption(item, option.items);
+        }
+    }
+
     Alpine.effect(renderFaceSymbol);
+    Alpine.effect(updateAutoSymbols);
 
     card.addField({
         id: 'faceSymbol',
