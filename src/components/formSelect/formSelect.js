@@ -9,7 +9,7 @@ function menuPrefixIcon(option) {
 }
 
 function submenu(option) {
-    return `<sl-menu-item>
+    return `<sl-menu-item data-id="${option.id}">
         ${menuPrefixIcon(option.items[0])}
         ${option.name}
         <sl-menu slot="submenu">
@@ -19,7 +19,7 @@ function submenu(option) {
 }
 
 function menuItem(option) {
-    return `<sl-menu-item value="${option.id}">
+    return `<sl-menu-item value="${option.id}" data-id="${option.id}">
         ${menuPrefixIcon(option)}
         ${option.name}
     </sl-menu-item>`;
@@ -46,33 +46,30 @@ function buildSelectHTML(field) {
     </div>`;
 }
 
-function updateSelectedClasses(root, selectedId) {
+function updateSelectedClasses(root, selectedId, groupId) {
     root.querySelectorAll('sl-menu-item').forEach(el => {
-        const isSelected = el.getAttribute('value') === selectedId;
+        const itemId = el.getAttribute('data-id');
+        if (!itemId) return;
+        const isSelected = itemId === selectedId || itemId === groupId;
         el.classList.toggle('selected', isSelected);
-        if (!isSelected) el.removeAttribute('checked');
-        el.setAttribute('type', isSelected ? 'checkbox' : 'normal');
-        if (isSelected) el.setAttribute('checked', true);
     });
 }
 
 function getOptionHTML(option, parent) {
+    if (!option)
+        return `<span class="error">ERROR: ${selectedValue}</span>`;
     let html = menuPrefixIcon(option);
     if (parent) html += parent.name + ' / ';
     return html + option.name;
 }
 
-function getTriggerHTML(selectedValue, field) {
+function resolveOption(selectedValue, field) {
     for (const option of field.options) {
-        if (option.id === selectedValue)
-            return getOptionHTML(option);
+        if (option.id === selectedValue) return [option, null];
         if (!option.items) continue;
-        for (const item of option.items) {
-            if (item.id === selectedValue)
-                return getOptionHTML(item, option);
-        }
+        for (const item of option.items)
+            if (item.id === selectedValue) return [item, option];
     }
-    return `<span class="error">ERROR: ${selectedValue}</span>`;
 }
 
 Alpine.data('formSelect', ({ field, face }) => ({
@@ -85,8 +82,9 @@ Alpine.data('formSelect', ({ field, face }) => ({
         this.$root.innerHTML = buildSelectHTML(field);
 
         const initialValue = this.face[field.id];
-        this.triggerHTML = getTriggerHTML(initialValue, field);
-        updateSelectedClasses(this.$root, initialValue);
+        const [option, parent] = resolveOption(initialValue, field);
+        this.triggerHTML = getOptionHTML(option, parent);
+        updateSelectedClasses(this.$root, initialValue, parent?.id);
 
         Alpine.initTree(this.$root);
     },
@@ -94,8 +92,9 @@ Alpine.data('formSelect', ({ field, face }) => ({
     onItemSelected(event) {
         const { item } = event.detail;
         this.face[this.field.id] = item.value;
-        this.triggerHTML = getTriggerHTML(item.value, field);
-        updateSelectedClasses(this.$root, item.value);
+        const [option, parent] = resolveOption(item.value, field);
+        this.triggerHTML = getOptionHTML(option, parent);
+        updateSelectedClasses(this.$root, item.value, parent?.id);
         emit(this.$root, 'change');
     }
 }));
