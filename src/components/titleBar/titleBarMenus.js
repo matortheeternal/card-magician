@@ -11,7 +11,7 @@ const DIVIDER = { isDivider: true };
 async function saveAs() {
     const views = Alpine.store('views');
     const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
-        defaultPath: `${activeSet.title || 'My Set'}.json`,
+        defaultPath: `${views.activeSet.title || 'My Set'}.json`,
         filters: [
             { name: 'JSON Files', extensions: ['json'] },
             { name: 'All files', extensions: ['*'] }
