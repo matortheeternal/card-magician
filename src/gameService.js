@@ -29,7 +29,7 @@ export async function setGame(gameId) {
     const mainPath = [game.folder, 'main.js'].join('/');
     const module = await loadImport(mainPath);
     const moduleUtils = buildGameUtils(game.folder);
-    await module.default(game, moduleUtils);
+    await module(game, moduleUtils);
     return game;
 }
 
