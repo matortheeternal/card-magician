@@ -2,21 +2,24 @@ export default async function(card, utils) {
     card.showFlag = true;
 
     async function updateFlagStyle() {
+        if (!card.colorIdentity || card.superType === undefined) return;
         const key = card.getCardColorKey();
         const folder = card.id === 'back' ? 'back' : 'front';
         const url = await utils.assetURL(`${folder}/${key}.png`);
         card.flagStyle = { backgroundImage: `url("${url}")` };
     }
 
-    Alpine.effect(() => {
-        const frontCard = card.parent().front;
-        card.showFlag = frontCard && frontCard.frameFolder !== 'notched'
-    });
+    function updateShowFlag() {
+        if (!utils.subscribe(card.frameFolder, card.parent)) return;
+        if (card.id !== 'front') return;
+        const showFlag = card.frameFolder !== 'notched';
+        card.showFlag = showFlag;
+        const backCard = card.parent().back;
+        if (backCard) backCard.showFlag = showFlag;
+    }
 
-    Alpine.effect(() => {
-        if (!card.colorIdentity || card.superType === undefined) return;
-        updateFlagStyle();
-    });
+    Alpine.effect(updateShowFlag);
+    Alpine.effect(updateFlagStyle);
 
     Alpine.effect(() => {
         if (card.flagRight === undefined) return;

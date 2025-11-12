@@ -3,7 +3,6 @@ export default async function(card, utils) {
     const flavorBarUrl = await utils.assetURL('grey bar.png');
     card.flavorBarStyle = { backgroundImage: `url("${flavorBarUrl}")` };
     card.forbiddenRects = [];
-    card.showFlag = card.showFlag || false;
     card.textToHTML = textToHTML;
 
     function updateForbiddenRects() {

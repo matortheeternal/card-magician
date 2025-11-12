@@ -8,7 +8,7 @@ export default async function(card, utils) {
     }
 
     function updateFrontNotchPt() {
-        if (card.id !== 'back') return;
+        if (!utils.subscribe(card.parent) || card.id !== 'back') return;
         const frontCard = card.parent().front;
         frontCard.showNotchPT = card.showPT && frontCard.frameFolder === 'notched';
         frontCard.notchPtText = `${card.power}/${card.toughness}`;
