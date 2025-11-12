@@ -2,16 +2,30 @@ export default async function(card, utils) {
     const options = await utils.import('options.js');
     card.showFaceSymbol = true;
     card.faceSymbolStyle = {};
+    await loadFaceSymbolImages();
 
-    async function loadFaceSymbol(symbolOption) {
-        if (symbolOption.id !== 'autodetect')
-            return await utils.assetURL(symbolOption.url);
-        // TODO: autodetect logic
-        return await utils.assetURL(options[1].url);
+    function loadImage(opt) {
+        return utils.assetURL(opt.imagePath).then(imageURL => {
+            opt.imageURL = imageURL;
+        });
     }
 
-    function findOption(options, id) {
-        return options.find(opt => opt.id === id);
+    function loadFaceSymbolImages() {
+        return Promise.all(
+            options
+                .concat(options.flatMap(opt => opt.items || []))
+                .filter(opt => Boolean(opt.imagePath))
+                .map(opt => loadImage(opt))
+        );
+    }
+
+    function findOption(options, id, includeNested = false) {
+        for (const option of options) {
+            if (option.id === id) return option;
+            if (!includeNested || !option.items) continue;
+            for (const subOption of option.items)
+                if (subOption.id === id) return subOption;
+        }
     }
 
     function resolveGroupOption(groupId, symbolId) {
@@ -24,19 +38,21 @@ export default async function(card, utils) {
         const symbolParts = symbolId.split('/');
         return symbolParts.length > 1
             ? resolveGroupOption(symbolParts[0], symbolId)
-            : findOption(options, symbolId);
+            : findOption(options, symbolId, true);
     }
 
     function getFaceSymbolClass(option) {
         return option.id.replaceAll('_', '-').replaceAll('/', ' ');
     }
 
-    Alpine.effect(async () => {
-        if (card.faceSymbol === undefined) return;
+    function renderFaceSymbol() {
+        if (!utils.subscribe(card.faceSymbol)) return;
         const selectedOption = resolveOption(card.faceSymbol) ||  options[1];
-        card.faceSymbolUrl = await loadFaceSymbol(selectedOption);
+        card.faceSymbolUrl = selectedOption.imageURL;
         card.faceSymbolClass = getFaceSymbolClass(selectedOption);
-    });
+    }
+
+    Alpine.effect(renderFaceSymbol);
 
     card.addField({
         id: 'faceSymbol',
