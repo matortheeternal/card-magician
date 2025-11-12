@@ -43,27 +43,28 @@ export default async function(card, utils) {
     }
 
     function getFaceSymbolClass(option) {
-        return option.id.replaceAll('_', '-').replaceAll('/', ' ');
+        const id = option.res ? option.res.id : option.id;
+        return id.replaceAll('_', '-').replaceAll('/', ' ');
     }
 
     function renderFaceSymbol() {
         if (!utils.subscribe(card.faceSymbol)) return;
-        const selectedOption = resolveOption(card.faceSymbol) ||  options[1];
-        card.faceSymbolUrl = selectedOption.imageURL;
-        card.faceSymbolClass = getFaceSymbolClass(selectedOption);
+        card.selectedFaceSymbol = resolveOption(card.faceSymbol) || options[1];
+        card.faceSymbolClass = getFaceSymbolClass(card.selectedFaceSymbol);
     }
 
     function computeOption(option, optionsToSearch) {
         if (!option.compute) return;
-        const res = option.compute(card, optionsToSearch);
-        if (res) option.imageURL = res.imageURL;
+        option.resolved = option.compute(card, optionsToSearch);
+        if (option.resolved) option.imageURL = option.resolved.imageURL;
     }
 
     function updateAutoSymbols() {
-        if (!utils.subscribe(
-            card.faceSymbol, card.parent, card.colorIdentity, card.superType
-        )) return;
-        console.log('%cupdateAutoSymbols, ', 'color:red', card.id, card.parent());
+        const subscriptions = [
+            card.faceSymbol, card.parent, card.colorIdentity,
+            card.superType, card.manaCost
+        ];
+        if (!utils.subscribe(...subscriptions)) return;
         for (const option of options) {
             computeOption(option, options);
             if (!option.items) continue;
@@ -79,11 +80,12 @@ export default async function(card, utils) {
         id: 'faceSymbol',
         type: 'select',
         options,
+        default: 'autodetect',
         displayName: 'Face Symbol'
     });
 
     card.publishElement('face-symbol',
-        `<img :src="faceSymbolUrl" :class="faceSymbolClass" />`
+        `<img :src="selectedFaceSymbol.imageURL" :class="faceSymbolClass" />`
     );
 
     card.addStyle(await utils.loadFile('style.css'));
