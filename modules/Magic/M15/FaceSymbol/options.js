@@ -1,13 +1,19 @@
-const faceSymbol = (id, url) => ({
-    id,
-    name: id.normalizeWords().toTitleCase(),
-    ...(id === 'autodetect' ? {} : { url: url || `${id}.png`})
-});
-
 const separator = () => ({ separator: true });
 
+const faceSymbol = (id, name, imagePath, extra) => ({
+    id,
+    name: name || id.normalizeWords().toTitleCase(),
+    ...(id.includes('autodetect') ? {} : { imagePath: imagePath || `${id}.png`}),
+    ...(extra ? extra.except('id', 'name', 'imagePath') : {})
+});
+
+function computeAutoColor(card, options) {
+    const colorKey = card.getCardColorKey();
+    return options.find(opt => opt.c === colorKey);
+}
+
 const colorOptions = [
-    { id: 'autodetect' },
+    { id: 'autodetect', name: 'Auto', compute: computeAutoColor },
     { id: 'white', c: 'w' },
     { id: 'blue', c: 'u' },
     { id: 'black', c: 'b' },
@@ -23,18 +29,19 @@ const faceSymbolGroup = (groupId, items) => ({
     name: groupId.normalizeWords().toTitleCase(),
     items: items || colorOptions.map(opt => faceSymbol(
         `${groupId}/${opt.id}`,
-        opt.id.toTitleCase(),
+        opt.name || opt.id.toTitleCase(),
         `${groupId}/${opt.c}.png`,
         opt
     ))
 });
 
 export default [
-    faceSymbol('autodetect'),
+    faceSymbol('autodetect', 'Auto'),
     faceSymbol('none'),
     separator(),
     faceSymbolGroup('modal_front'),
     faceSymbolGroup('modal_back'),
+    faceSymbolGroup('sparker'),
     separator(),
     faceSymbolGroup('front', [
         faceSymbol('front_triangle'),
@@ -52,7 +59,6 @@ export default [
         faceSymbol('specialized'),
         faceSymbol('aetherprint'),
     ]),
-    faceSymbolGroup('sparker'),
     separator(),
     faceSymbol('lesson'),
     faceSymbol('comedy'),
