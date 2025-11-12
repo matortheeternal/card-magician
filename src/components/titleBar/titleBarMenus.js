@@ -8,23 +8,31 @@ function menuItem(label, hotkey, action) {
 
 const DIVIDER = { isDivider: true };
 
+async function saveAs() {
+    const views = Alpine.store('views');
+    const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
+        defaultPath: `${activeSet.title || 'My Set'}.json`,
+        filters: [
+            { name: 'JSON Files', extensions: ['json'] },
+            { name: 'All files', extensions: ['*'] }
+        ]
+    });
+    if (!filePath) return;
+    console.info('Saving set to:', filePath);
+    views.setFilePath = filePath;
+    await saveJson(filePath, views.activeSet, false);
+}
+
 const actions = {
     makeNewSet: () => console.log('Make new set'),
     openSet: () => executeAction('open-set'),
-    save: () => console.log('Save'),
-    saveAs: async () => {
-        const { activeSet } = Alpine.store('views');
-        const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
-            defaultPath: `${activeSet.title || 'My Set'}.json`,
-            filters: [
-                { name: 'JSON Files', extensions: ['json'] },
-                { name: 'All files', extensions: ['*'] }
-            ]
-        });
-        if (!filePath) return;
-        console.info('Saving set to:', filePath);
-        await saveJson(filePath, activeSet, false);
+    save: async () => {
+        const { activeSet, setFilePath } = Alpine.store('views');
+        if (!setFilePath) return await saveAs();
+        console.info('Saving set to:', setFilePath);
+        await saveJson(setFilePath, activeSet, false);
     },
+    saveAs: saveAs,
     exportAs: () => executeAction('export-card-image'),
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),
