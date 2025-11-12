@@ -1,5 +1,5 @@
 {
-  "name": "M15Art",
+  "id": "M15Art",
   "description": "Defines the card art field and its corresponding display for M15 Magic: The Gathering Card templates.",
   "version": "0.0"
 }
