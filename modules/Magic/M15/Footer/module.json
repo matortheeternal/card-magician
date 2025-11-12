@@ -1,5 +1,5 @@
 {
-  "name": "M15Footer",
+  "id": "M15Footer",
   "description": "Defines the card set code, collector number, language, artist, and legal text fields and their corresponding display.",
   "version": "0.0"
 }
