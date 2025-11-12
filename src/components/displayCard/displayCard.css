@@ -14,3 +14,39 @@
     color: black;
     user-select: text;
 }
+
+.flip-container {
+    min-height: 523px;
+    display: block;
+    transition: transform 200ms;
+    transform-style: preserve-3d;
+}
+
+.flip-container.flipped {
+    transition: transform 750ms;
+    transform: rotateY(-180deg);
+}
+
+.flip-container > div {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.flip-container > div:first-of-type {
+    transform: rotateY(0deg);
+}
+
+.flip-container > div:last-of-type {
+    transform: rotateY(180deg);
+}
+
+.display-card-view .buttons-container {
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
