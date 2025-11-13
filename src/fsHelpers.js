@@ -18,20 +18,29 @@ export async function checkFileExists(filePath) {
     }
 }
 
+const sourceCodeCache = new Map();
+async function loadSourceCode(filePath) {
+    if (sourceCodeCache.has(filePath))
+        return sourceCodeCache.get(filePath);
+    const exists = await checkFileExists(filePath);
+    if (!exists) {
+        console.error(`Module not found: ${filePath}`);
+        return;
+    }
+
+    const sourceCode = [
+        `//# sourceURL=${filePath}`,
+        await Neutralino.filesystem.readFile(filePath)
+    ].join('\n')
+    const blob = new Blob([sourceCode], { type: 'application/javascript' });
+    const blobURL = URL.createObjectURL(blob);
+    sourceCodeCache.set(filePath, blobURL);
+    return blobURL;
+}
+
 export async function loadImport(filePath) {
     try {
-        const exists = await checkFileExists(filePath);
-        if (!exists) {
-            console.error(`Module not found: ${filePath}`);
-            return;
-        }
-
-        const sourceCode = [
-            `//# sourceURL=${filePath}`,
-            await Neutralino.filesystem.readFile(filePath)
-        ].join('\n')
-        const blob = new Blob([sourceCode], { type: 'application/javascript' });
-        const blobUrl = URL.createObjectURL(blob);
+        const blobUrl = await loadSourceCode(filePath);
         const res = await import(blobUrl);
         return res && Object.hasOwn(res, 'default') ? res.default : res;
     } catch (error) {
