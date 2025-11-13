@@ -1,5 +1,5 @@
 export default async function(card, utils) {
-    const options = await utils.import('options.js');
+    const options = Alpine.reactive(await utils.import('options.js'));
     options[0].compute = await utils.import('autodetect.js');
     card.showFaceSymbol = true;
     card.faceSymbolStyle = {};
@@ -61,8 +61,7 @@ export default async function(card, utils) {
 
     function updateAutoSymbols() {
         const subscriptions = [
-            card.faceSymbol, card.parent, card.colorIdentity,
-            card.superType, card.manaCost
+            card.faceSymbol, card.parent, card.colorIdentity, card.superType
         ];
         if (!utils.subscribe(...subscriptions)) return;
         for (const option of options) {
