@@ -79,14 +79,17 @@ Alpine.data('formSelect', ({ field, face }) => ({
     selectedLabel: '',
 
     init() {
-        this.$root.innerHTML = buildSelectHTML(field);
+        this.render();
+        this.$watch('field.options', () => this.render(), { deep: true });
+        Alpine.initTree(this.$root);
+    },
 
+    render() {
+        this.$root.innerHTML = buildSelectHTML(field);
         const initialValue = this.face[field.id];
         const [option, parent] = resolveOption(initialValue, field);
         this.triggerHTML = getOptionHTML(option, parent);
         updateSelectedClasses(this.$root, initialValue, parent?.id);
-
-        Alpine.initTree(this.$root);
     },
 
     onItemSelected(event) {
