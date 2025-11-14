@@ -32,7 +32,6 @@ function setupAlpine() {
     window.Alpine = Alpine;
     Alpine.store('views', {
         loaded: false,
-        game: null,
         activeSet: { cards: [] },
         activeCard: {},
         hide(key) {
