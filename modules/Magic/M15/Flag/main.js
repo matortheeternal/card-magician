@@ -1,5 +1,6 @@
 export default async function(card, utils) {
     card.showFlag = true;
+    card.flagStyle = {};
 
     async function updateFlagStyle() {
         if (!card.colorIdentity || card.superType === undefined) return;
