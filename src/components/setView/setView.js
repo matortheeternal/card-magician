@@ -44,6 +44,7 @@ Alpine.data('setView', () => ({
     async changeTemplate(newTemplate) {
         const views = Alpine.store('views');
         const oldTemplate = views.selectedCard.template;
+        if (oldTemplate === newTemplate) return;
         views.selectedCard.template = newTemplate;
         remapFaces(views.selectedCard, oldTemplate, newTemplate);
         await this.setActiveCard(views);
