@@ -149,10 +149,12 @@ class ImageSelect extends HTMLElement {
     cropRegion.style.setProperty('top', `${srcY * yFactor}px`);
 
     if (skipEmit) return;
-    emit(this, 'input', {
-      image, filename,
-      xOffset: 0, yOffset: 0,
-      width: srcW.toString(), height: srcH.toString()
+    emit(this, 'change', {
+      value: {
+        image, filename,
+        xOffset: 0, yOffset: 0,
+        width: srcW.toString(), height: srcH.toString()
+      }
     });
   }
 
@@ -181,10 +183,12 @@ class ImageSelect extends HTMLElement {
     previewName.textContent = '';
     fileInput.value = '';
 
-    emit(this, 'input', {
-      image: null, filename: '',
-      xOffset: 0, yOffset: 0,
-      width: '', height: ''
+    emit(this, 'change', {
+      value: {
+        image: null, filename: '',
+        xOffset: 0, yOffset: 0,
+        width: '', height: ''
+      }
     });
   }
 }
