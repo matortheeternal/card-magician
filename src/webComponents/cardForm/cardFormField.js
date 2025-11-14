@@ -19,6 +19,8 @@ function renderTextarea(field, face) {
     return (
         `<sl-textarea
           size="small"
+          resize="auto"
+          autocomplete="off"
           name="${esc(field.id)}"
           label="${esc(field.displayName)}"
           value="${esc(face[field.id])}"
