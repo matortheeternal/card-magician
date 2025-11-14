@@ -1,4 +1,4 @@
-.card-form-view {
+.card-form-view, card-form {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
