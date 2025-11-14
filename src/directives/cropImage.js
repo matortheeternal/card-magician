@@ -1,8 +1,7 @@
 import Alpine from 'alpinejs';
 import { getImageSize } from '../gfx/imageProcessing.js';
 
-Alpine.directive('crop-image', (el, { expression }, { evaluateLater, cleanup }) => {
-    const evaluate = evaluateLater(expression);
+Alpine.directive('crop-image', (el, { expression }, { evaluateLater, cleanup, effect }) => {
     let currentValue = null;
 
     const displayImage = async ({ image, width, height, xOffset, yOffset }) => {
@@ -28,10 +27,11 @@ Alpine.directive('crop-image', (el, { expression }, { evaluateLater, cleanup }) 
 
     ro.observe(el);
 
-    evaluate((v) => {
-        currentValue = v;
-        displayImage(v);
+    effect(() => {
+        evaluateLater(expression)((v) => {
+            currentValue = v;
+            displayImage(v);
+        });
     });
-
     cleanup(() => ro.disconnect());
 });
