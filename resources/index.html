@@ -13,7 +13,7 @@
     <main>
       <div x-data="displayCard()" class="display-card-view"></div>
       <div x-data="setView()" class="set-view"></div>
-      <div x-data="cardForm()" class="card-form-view"></div>
+      <card-form x-prop:card="$store.views.activeCard"></card-form>
     </main>
   </template>
 

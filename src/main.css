@@ -2,10 +2,10 @@
 @import "components/titleBar/titleBar.css";
 @import "components/setView/setView.css";
 @import "components/displayCard/displayCard.css";
-@import "components/cardForm/cardForm.css";
 @import "components/listView/listView.css";
 @import "components/setInfoModal/setInfoModal.css";
 @import "components/formSelect/formSelect.css";
+@import "webComponents/cardForm/cardForm.css";
 
 * {
     box-sizing: border-box;
