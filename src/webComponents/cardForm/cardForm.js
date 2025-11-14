@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import { esc, renderField } from './cardFormField.js';
+import { emit } from '../../utils.js';
 
 function renderCardFormHTML(card) {
     return card && card.model ? (
@@ -12,20 +13,20 @@ function renderCardFormHTML(card) {
     ) : '';
 }
 
-function renderTemplateOption(template, card) {
-    const selected = card.template === template.id ? 'selected' : '';
+function renderTemplateOption(template) {
     return (
-        `<sl-option value="${esc(template.id)}" ${selected}>
+        `<sl-option value="${esc(template.id)}">
             ${esc(template.label)}
         </sl-option>`
     );
 }
 
 function renderTemplateSelector(card) {
-    return card.template && card.templates ? (
+    const templates = Alpine.store('templates');
+    return card.template && templates ? (
         `<div class="form">
-            <sl-select size="small" name="template" label="Template">
-                ${card.templates.map(t => renderTemplateOption(t, card)).join('')}
+            <sl-select size="small" name="template" label="Template" value="${card.template}">
+                ${templates.map(t => renderTemplateOption(t, card)).join('')}
             </sl-select>
         </div>`
     ) : '';
@@ -86,6 +87,10 @@ class CardForm extends HTMLElement {
     }
 
     bindEvents() {
+        this.addEventListener('sl-change', e => {
+            if (e.target.getAttribute('name') !== 'template') return;
+            emit(this, 'change-template', { templateId: e.target.value });
+        });
         this.faceForms.forEach((faceFormEl) => {
             faceFormEl.addEventListener('input', this.onChange);
             faceFormEl.addEventListener('change', this.onChange);
