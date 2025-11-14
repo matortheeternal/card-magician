@@ -1,15 +1,19 @@
 import Alpine from 'alpinejs';
 import { getImageSize } from '../gfx/imageProcessing.js';
 
-Alpine.directive('crop-image', (el, { expression }, { effect, evaluateLater }) => {
-    const displayImage = async function({ image, width, height, xOffset, yOffset }) {
-        const viewportWidth = el.clientWidth;
-        const viewportHeight = el.clientHeight;
+Alpine.directive('crop-image', (el, { expression }, { evaluateLater, cleanup }) => {
+    const evaluate = evaluateLater(expression);
+    let currentValue = null;
+
+    const displayImage = async ({ image, width, height, xOffset, yOffset }) => {
+        const { clientWidth: viewportWidth, clientHeight: viewportHeight } = el;
+        if (!viewportWidth || !viewportHeight) return;
 
         const src = await getImageSize(image);
+
         const bgWidth = viewportWidth / width * src.width;
-        const bgOffsetX = -1 * (viewportWidth / width * xOffset);
         const bgHeight = viewportHeight / height * src.height;
+        const bgOffsetX = -1 * (viewportWidth / width * xOffset);
         const bgOffsetY = -1 * (viewportHeight / height * yOffset);
 
         el.style.backgroundImage = `url("${image}")`;
@@ -18,9 +22,16 @@ Alpine.directive('crop-image', (el, { expression }, { effect, evaluateLater }) =
         el.style.backgroundRepeat = 'no-repeat';
     };
 
-    effect(() => {
-        evaluateLater(expression)((result) => {
-            Alpine.nextTick(() => requestAnimationFrame(() => displayImage(result)));
-        });
+    const ro = new ResizeObserver(() => {
+        if (currentValue) displayImage(currentValue);
     });
+
+    ro.observe(el);
+
+    evaluate((v) => {
+        currentValue = v;
+        displayImage(v);
+    });
+
+    cleanup(() => ro.disconnect());
 });
