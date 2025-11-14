@@ -59,11 +59,11 @@ export default async function(card, utils) {
         if (option.resolved) option.imageURL = option.resolved.imageURL;
     }
 
-    function updateAutoSymbols() {
-        const subscriptions = [
+    async function updateAutoSymbols() {
+        const ready = utils.subscribe(
             card.faceSymbol, card.parent, card.colorIdentity, card.superType
-        ];
-        if (!utils.subscribe(...subscriptions)) return;
+        );
+        if (!await ready) return;
         for (const option of options) {
             computeOption(option, options);
             if (!option.items) continue;
