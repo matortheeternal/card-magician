@@ -1,3 +1,4 @@
+import Alpine from 'alpinejs';
 import { esc, renderField } from './cardFormField.js';
 
 function renderCardFormHTML(card) {
@@ -52,6 +53,7 @@ class CardForm extends HTMLElement {
         super();
         // this allows us to pass onChange to an event listener
         this.onChange = this.onChange.bind(this);
+        this.save = Alpine.debounce(this.save, 300);
     }
 
     connectedCallback() {
@@ -99,13 +101,20 @@ class CardForm extends HTMLElement {
 
     get card() { return this._card; }
 
+    async save() {
+        const { activeCard, selectedCard } = Alpine.store('views');
+        for (const face of Object.values(activeCard.model))
+            selectedCard.model[face.id] = await face.save();
+    }
+
     onChange(e) {
         const faceForm = e.currentTarget;
         const faceId = faceForm.dataset.faceId;
-        const fieldId = e.target.name;
+        const fieldId = e.target.getAttribute('name');
         if (!faceId || !fieldId) return;
         const face = this._card.model[faceId];
-        face[fieldId] = e?.detail?.value || e.target.value;
+        face[fieldId] = e?.detail?.value || e.target.value || '';
+        this.save();
     }
 }
 
