@@ -11,7 +11,7 @@ export default async function(card, utils) {
     });
 
     card.publishElement('art-image',
-        `<div x-crop-image="artImage"></div>
+        `<div x-show="artImage.image" x-crop-image="artImage"></div>
          <img x-show="!artImage.image" :src="defaultImageUrl" alt="Placeholder image" />`
     );
 
