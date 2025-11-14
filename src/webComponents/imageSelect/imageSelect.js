@@ -167,10 +167,8 @@ class ImageSelect extends HTMLElement {
     hide(uploadPrompt);
     show(preview);
     previewName.textContent = file.name;
-
-    const reader = new FileReader();
-    reader.onload = () => this.displayPreview(reader.result, file.name);
-    reader.readAsDataURL(file);
+    const url = URL.createObjectURL(file);
+    this.displayPreview(url, file.name);
   }
 
   clear() {
