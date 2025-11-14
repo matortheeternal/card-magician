@@ -1,9 +1,9 @@
 import { getImageUrl, loadFont, loadImport } from './fsHelpers';
-import { parseBlob } from './gfx/imageProcessing';
 import {
     maskImageUrl, combineBlendUrl, linearBlendUrl, maskBlendUrl, maskColorUrl
 } from './gfx/blending';
 
+const fileCache = new Map();
 export const buildModuleUtils = (modulePath) => ({
     async assetURL(path) {
         const filePath = ['modules', modulePath, 'assets', path].join('/');
@@ -11,7 +11,10 @@ export const buildModuleUtils = (modulePath) => ({
     },
     async loadFile(filename) {
         const filePath = ['modules', modulePath, filename].join('/');
-        return await Neutralino.filesystem.readFile(filePath);
+        if (fileCache.has(filePath)) return fileCache.get(filePath);
+        const text = await Neutralino.filesystem.readFile(filePath);
+        fileCache.set(filePath, text);
+        return text;
     },
     async maskColor(sourceUrl, color) {
         return await maskColorUrl(sourceUrl, color);
