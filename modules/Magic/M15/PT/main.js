@@ -1,52 +1,68 @@
-export default async function(card, utils) {
-    card.notchPtText = '';
-    card.showPT = true;
-    card.showNotchPT = false;
-
-    function updateShowPt() {
+export default class PTModule extends CardMagicianModule {
+    updateShowPT(card) {
         card.showPT = Boolean(card.toughness || card.power);
+        this.requestRender({ render: 'renderPT' });
     }
 
-    function updateFrontNotchPt() {
-        if (!utils.subscribe(card.parent) || card.id !== 'back') return;
+    updateFrontNotchPt(card) {
+        if (!card.parent || card.id !== 'back') return;
         const frontCard = card.parent().front;
         frontCard.showNotchPT = card.showPT && frontCard.frameFolder === 'notched';
         frontCard.notchPtText = `${card.power}/${card.toughness}`;
+        this.requestRender({ render: 'renderNotchPT' });
     }
 
-    async function updatePtStyle() {
+    async updatePtStyle(card) {
         const key = card.isVehicle() ? 'v' : card.getCardColorKey();
-        const url = await utils.assetURL(key + '.png');
-        card.ptStyle = { backgroundImage: `url("${url}")` };
+        const url = await this.assetURL(key + '.png');
+        this.ptStyle = `background-image: url('${url}')`;
+        this.requestRender({ render: 'renderPT' });
     }
 
-    Alpine.effect(updateShowPt);
-    Alpine.effect(updateFrontNotchPt);
-    Alpine.effect(updatePtStyle);
+    bind(card, watch) {
+        watch(
+            () => [card.subType, card.colorIdentity],
+            () => this.updatePtStyle(card)
+        );
+        watch(
+            () => [card.toughness, card.power],
+            () => this.updateShowPT(card)
+        );
+        watch(
+            () => card.parent,
+            () => this.updateFrontNotchPt(card)
+        );
+    }
 
-    card.addField({
-        id: 'power',
-        displayName: 'Power',
-        group: 'PT',
-    });
+    renderPT(card) {
+        if (!card.showPT) return;
+        return (
+            `<div class="pt-text" style="${this.ptStyle}">
+                ${card.power}/${card.toughness}
+            </div>`
+        );
+    }
 
-    card.addField({
-        id: 'toughness',
-        displayName: 'Toughness',
-        group: 'PT',
-    });
+    renderNotchPT(card) {
+        if (!this.showNotchPT) return;
+        return (
+            `<div class="notch-pt-text">${card.notchPtText}</div>`
+        );
+    }
 
-    card.publishElement('pt-container',
-        `<div class="pt-text" :style="ptStyle">
-            <span x-text="power"></span>/<span x-text="toughness"></span>
-        </div>`
-    );
+    get fields() {
+        return [{
+            id: 'power',
+            displayName: 'Power',
+            group: 'PT',
+        }, {
+            id: 'toughness',
+            displayName: 'Toughness',
+            group: 'PT',
+        }];
+    }
 
-    card.publishElement('notch-pt-container',
-        `<div class="notch-pt-text">
-            <span x-text="notchPtText"></span>
-         </div>`
-    );
-
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

@@ -1,14 +1,24 @@
-export default async function(card, utils) {
-    const { textToHTML } = await utils.import('textToHTML.js');
-    const flavorBarUrl = await utils.assetURL('grey bar.png');
-    card.flavorBarStyle = { backgroundImage: `url("${flavorBarUrl}")` };
-    card.forbiddenRects = [];
-    card.textToHTML = textToHTML;
+export default class TextModule extends CardMagicianModule {
+    async init(card) {
+        await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
+        const { textToHTML } = await this.import('textToHTML.js');
+        this.flavorBarUrl = await this.assetURL('grey bar.png');
+        card.textToHTML = textToHTML;
 
-    function updateForbiddenRects() {
+        // TODO: probably should use a keyword system instead or be just user-configured
+        card.isTransform = function() {
+            return /\bTransform\b/i.test(card.rulesText)
+                || /\bDaybound\b/i.test(card.rulesText)
+                || /\bDisturb\b/i.test(card.rulesText)
+                || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
+        };
+    }
+
+    updateForbiddenRects(card) {
         const forbiddenRects = [];
         if (card.showPT) {
-            const ptContainer = card.dom.querySelector(`.${card.id}-pt-container`);
+            const ptSelector = 'module-container[module="PT"]';
+            const ptContainer = card.dom.querySelector(ptSelector);
             const rects = ptContainer.getClientRects();
             forbiddenRects.push(...rects);
         }
@@ -18,52 +28,56 @@ export default async function(card, utils) {
         card.forbiddenRects = forbiddenRects;
     }
 
-    // TODO: probably should use a keyword system instead or be just user-configured
-    card.isTransform = function() {
-        return /\bTransform\b/i.test(card.rulesText)
-            || /\bDaybound\b/i.test(card.rulesText)
-            || /\bDisturb\b/i.test(card.rulesText)
-            || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
-    };
+    async renderRulesHTML(card) {
+        this.rulesHTML = await card.textToHTML(card.rulesText, card);
+        this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
+        this.requestRender();
+    }
 
-    Alpine.effect(async () => {
-        card.rulesHTML = await textToHTML(card.rulesText, card);
-    });
+    async renderFlavorHTML(card) {
+        this.flavorHTML = await card.textToHTML(card.flavorText, card);
+        this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
+        this.requestRender();
+    }
 
-    Alpine.effect(async () => {
-        card.flavorHTML = await textToHTML(card.flavorText, card);
-    });
+    bind(card, watch) {
+        watch(() => card.rulesText, () => this.renderRulesHTML(card));
+        watch(() => card.flavorText, () => this.renderFlavorHTML(card));
+        watch(() => card.showPT, () => {
+            requestAnimationFrame(() => this.updateForbiddenRects(card));
+        });
+        watch(() => card.showFlag, () => this.requestRender());
+    }
 
-    Alpine.effect(() => {
-        card.showFlavorBar = Boolean(card.flavorText && card.rulesText);
-    });
+    render(card) {
+        const flavorBarStyle = [
+            `background-image: url('${this.flavorBarUrl}')`,
+            this.showFlavorBar ? '' : 'display: none'
+        ].join('; ');
+        return (
+            // x-fit-text="{text: [rulesHTML, flavorHTML],
+            // forbiddenRects: forbiddenRects}"
+            `<div class="text ${card.showFlag ? 'flag-padding' : ''}">
+                <div class="rules-text">${this.rulesHTML}</div>
+                <div class="flavor-bar" style="${flavorBarStyle}"></div>
+                <div class="flavor-text">${this.flavorHTML}</div>
+            </div>`
+        );
+    }
 
-    Alpine.effect(() => {
-        if (!utils.subscribe(card.rulesHTML, card.showPT))
-            return;
-        Alpine.nextTick(() => requestAnimationFrame(updateForbiddenRects));
-    });
+    get fields() {
+        return [{
+            id: 'rulesText',
+            type: 'textarea',
+            displayName: 'Rules Text'
+        }, {
+            id: 'flavorText',
+            type: 'textarea',
+            displayName: 'Flavor Text'
+        }];
+    }
 
-    card.addField({
-        id: 'rulesText',
-        type: 'textarea',
-        displayName: 'Rules Text'
-    });
-
-    card.addField({
-        id: 'flavorText',
-        type: 'textarea',
-        displayName: 'Flavor Text'
-    });
-
-    card.publishElement('text-box',
-        `<div class="__id__-text" :class="showFlag && 'flag-padding'" x-fit-text="{text: [rulesHTML, flavorHTML], forbiddenRects: forbiddenRects}">
-            <div class="rules-text" x-html="rulesHTML"></div>
-            <div class="flavor-bar" x-show="showFlavorBar" :style="flavorBarStyle"></div>
-            <div class="flavor-text" x-html="flavorHTML"></div>
-        </div>`
-    );
-
-    await utils.loadFont('MPlantin-Italic', 'mplantinit.ttf');
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

@@ -1,14 +1,10 @@
-.__id__-face-symbol img {
+module-container[module="FaceSymbol"] img {
     width: 33.5px;
     margin-left: 3px;
 }
 
-.__id__-header {
-    padding-left: 36px;
-}
-
-.__id__-face-symbol img.modal-front,
-.__id__-face-symbol img.modal-back {
+module-container[module="FaceSymbol"] img.modal-front,
+module-container[module="FaceSymbol"] img.modal-back {
     margin-left: 0;
     width: 34.5px;
 }

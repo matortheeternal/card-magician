@@ -10,7 +10,7 @@ function hybridMatcher(expr, hybridCount) {
     };
 }
 
-export const symbolParsers = [
+export default [
     {
         name: 'phyrexian color',
         match: str => str.match(/^(h\/[wubrgh]|[wubrg]\/h)/i)

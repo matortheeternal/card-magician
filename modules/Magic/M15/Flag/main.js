@@ -1,50 +1,67 @@
-export default async function(card, utils) {
-    card.showFlag = true;
-    card.flagStyle = {};
-
-    async function updateFlagStyle() {
-        if (!card.colorIdentity || card.superType === undefined) return;
+export default class FlagModule extends CardMagicianModule {
+    async updateFlagStyle(card) {
         const key = card.getCardColorKey();
         const folder = card.id === 'back' ? 'back' : 'front';
-        const url = await utils.assetURL(`${folder}/${key}.png`);
-        card.flagStyle = { backgroundImage: `url("${url}")` };
+        const url = await this.assetURL(`${folder}/${key}.png`);
+        this.flagStyle = `background-image: url('${url}')`;
+        this.requestRender();
     }
 
-    function updateShowFlag() {
-        if (!utils.subscribe(card.frameFolder, card.parent)) return;
-        if (card.id !== 'front') return;
-        const showFlag = card.frameFolder !== 'notched';
-        card.showFlag = showFlag;
+    updateShowFlag(card) {
+        if (!card.parent || card.id !== 'front') return;
         const backCard = card.parent().back;
+        const showFlag = Boolean(backCard && card.frameFolder !== 'notched');
+        card.showFlag = showFlag;
         if (backCard) backCard.showFlag = showFlag;
     }
 
-    Alpine.effect(updateShowFlag);
-    Alpine.effect(updateFlagStyle);
+    async updateFlagRightHTML(card) {
+        this.flagRightHTML = await card.textToHTML(card.flagRight, card);
+        this.requestRender();
+    }
 
-    Alpine.effect(() => {
-        if (card.flagRight === undefined) return;
-        card.flagRightHTML = card.textToHTML(card.flagRight, card);
-    });
+    bind(card, watch) {
+        watch(
+            () => card.flagRight,
+            () => this.updateFlagRightHTML(card)
+        );
+        watch(
+            () => [card.colorIdentity, card.superType],
+            () => this.updateFlagStyle(card)
+        )
+        watch(
+            () => [card.frameFolder, card.parent],
+            () => this.updateShowFlag(card)
+        );
+        watch(
+            () => [card.showFlag, card.flagLeft],
+            () => this.requestRender()
+        );
+    }
 
-    card.addField({
-        id: 'flagLeft',
-        displayName: 'Flag Left',
-        group: 'flag',
-    });
+    render(card) {
+        if (!card.showFlag) return;
+        return (
+            `<div class="flag" style="${this.flagStyle}">
+                <div class="flag-left">${card.flagLeft}</div>
+                <div class="flag-right">${this.flagRightHTML}</div>
+            </div>`
+        );
+    }
 
-    card.addField({
-        id: 'flagRight',
-        displayName: 'Flag Right',
-        group: 'flag',
-    });
+    get fields() {
+        return [{
+            id: 'flagLeft',
+            displayName: 'Flag Left',
+            group: 'flag',
+        }, {
+            id: 'flagRight',
+            displayName: 'Flag Right',
+            group: 'flag',
+        }]
+    }
 
-    card.publishElement('flag-container',
-        `<div class="__id__-flag" :style="flagStyle">
-            <div class="flag-left" x-text="flagLeft"></div>
-            <div class="flag-right" x-html="flagRightHTML"></div>
-        </div>`
-    );
-
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

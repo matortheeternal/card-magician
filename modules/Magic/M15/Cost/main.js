@@ -1,34 +1,45 @@
-export default async function(card, utils) {
-    const { ColorIdentity } = await utils.import('ColorIdentity.js');
-    card.colorIdentity = new ColorIdentity();
+export default class CostModule extends CardMagicianModule {
+    async init(card) {
+        const { ColorIdentity } = await this.import('ColorIdentity.js');
+        card.colorIdentity = new ColorIdentity();
 
-    async function renderManaCost() {
-        if (!utils.subscribe(card.manaCost)) return;
-        card.manaCostSymbols = card.parseSymbols(card.manaCost);
-        card.colorIdentity.addColorSource('card', card.manaCostSymbols);
-        card.manaCostHTML = await card.symbolsToHTML(card.manaCostSymbols, true);
+        card.getCardColorKey = function() {
+            const colors = card.colorIdentity.colors;
+            if (colors.length === 0)
+                return card.superType.includes('Artifact') ? 'a' : 'c';
+            if (colors.length === 1)
+                return colors[0].char;
+            return 'm';
+        };
     }
 
-    Alpine.effect(renderManaCost);
+    async renderManaCost(card) {
+        const manaCostSymbols = card.parseSymbols(card.manaCost);
+        card.colorIdentity.addColorSource('card', manaCostSymbols);
+        this.manaCostHTML = await card.symbolsToHTML(manaCostSymbols, true);
+        this.requestRender();
+    }
 
-    card.getCardColorKey = function() {
-        const colors = card.colorIdentity.colors;
-        if (colors.length === 0)
-            return card.superType.includes('Artifact') ? 'a' : 'c';
-        if (colors.length === 1)
-            return colors[0].char;
-        return 'm';
-    };
+    bind(card, watch) {
+        watch(
+            () => card.manaCost,
+            () => this.renderManaCost(card)
+        );
+    }
 
-    card.addField({
-        id: 'manaCost',
-        displayName: 'Mana Cost',
-        group: 'manaCost'
-    });
+    get fields() {
+        return [{
+            id: 'manaCost',
+            displayName: 'Mana Cost',
+            group: 'manaCost'
+        }];
+    }
 
-    card.publishElement('mana-cost',
-        `<span x-html="manaCostHTML"></span>`
-    );
+    render() {
+        return this.manaCostHTML;
+    }
 
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

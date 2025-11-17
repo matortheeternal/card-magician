@@ -1,0 +1,25 @@
+.__id__-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.__id__-left, .__id__-right {
+    display: flex;
+    flex-basis: 50%;
+    flex-direction: column;
+    justify-content: center;
+    height: inherit;
+    padding: 6px;
+}
+
+.__id__-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 30px;
+    overflow: hidden;
+}
+
+.__id__-text-box {
+    height: 150px;
+}

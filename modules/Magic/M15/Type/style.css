@@ -1,4 +1,4 @@
-.__id__-type {
+module-container[module="Type"] {
     height: inherit;
 }
 
@@ -12,6 +12,6 @@
     font-kerning: none;
 }
 
-.back-type {
+:host(.face-back) module-container[module="Type"] {
     color: white;
 }

@@ -1,4 +1,4 @@
-.__id__-text {
+.text {
     position: relative;
     height: inherit;
     padding: 3px 11px 5px 6px;
@@ -10,11 +10,11 @@
     justify-content: center;
 }
 
-.__id__-text.flag-padding {
+.text.flag-padding {
     padding-bottom: 20px;
 }
 
-.__id__-text i {
+.text i {
     font-family: "MPlantin-Italic", serif;
 }
 
@@ -30,7 +30,7 @@
     margin-bottom: 0;
 }
 
-.__id__-text div.sym {
+.text div.sym {
     font-size: 100%;
     line-height: 1;
     height: 15px;
@@ -44,7 +44,7 @@
     margin-left: 1px;
 }
 
-.__id__-text .flavor-bar {
+.text .flavor-bar {
     width: 100%;
     height: 12px;
     flex-shrink: 0;

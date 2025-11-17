@@ -1,19 +1,35 @@
-export default async function(card, utils) {
-    card.addField({
-        id: 'name',
-        displayName: 'Name'
-    });
+export default class NameModule extends CardMagicianModule {
+    async init(card) {
+        await this.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');
+        card.getLegendName = function() {
+            if (!card.isLegendary()) return card.name;
+            const match = card.name.match(/^(.+),|(.+) the/);
+            return match ? match[1] || match[2] : card.name;
+        };
+    }
 
-    card.getLegendName = function() {
-        if (!card.isLegendary()) return card.name;
-        const match = card.name.match(/^(.+),|(.+) the/);
-        return match ? match[1] || match[2] : card.name;
-    };
+    bind(card, watch) {
+        watch(
+            () => card.name,
+            () => this.requestRender()
+        );
+    }
 
-    card.publishElement('name',
-        `<span x-text="name" x-fit-text="{text: [name]}"></span>`
-    );
+    render(card) {
+        return (
+            // x-fit-text="{text: [name]}"
+            `<span x-text="name">${card.name}</span>`
+        );
+    }
 
-    await utils.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');
-    card.addStyle(await utils.loadFile('style.css'));
+    get fields() {
+        return [{
+            id: 'name',
+            displayName: 'Name'
+        }];
+    }
+
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }
