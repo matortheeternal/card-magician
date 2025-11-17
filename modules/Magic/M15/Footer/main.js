@@ -1,56 +1,70 @@
-export default async function(card, utils) {
-    card.brushSvg = await utils.loadFile('assets/art.svg');
+export default class FooterModule extends CardMagicianModule {
+    async init() {
+        this.brushSvg = await this.loadFile('assets/art.svg');
+        await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
+        await this.loadFont('Relay Medium', 'relay-medium.ttf');
+        await this.loadFont('MPlantin', 'mplantin.ttf');
+    }
 
-    card.addField({
-        id: 'illustrator',
-        displayName: 'Illustrator',
-        group: 'footer'
-    });
+    bind(card, watch) {
+        watch(
+            () => [
+                card.rarityCharacter, card.collectorNumber,
+                card.setCode, card.language,card.illustrator
+            ],
+            () => this.requestRender({ render: 'renderInfo' })
+        );
+        watch(
+            () => card.legalText,
+            () => this.requestRender({ render: 'renderLegal' })
+        );
+    }
 
-    card.addField({
-        id: 'collectorNumber',
-        displayName: 'Collector Number',
-        group: 'footer-ext'
-    });
+    renderInfo(card) {
+        return (
+            `<div>
+                <div>${card.rarityCharacter}</div>
+                <div>${card.collectorNumber}</div>
+            </div>
+            <div>
+                <div>${card.setCode}</div>
+                <div>&bullet;</div>
+                <div>${card.language}</div>
+                <div class="illustrator-brush">${this.brushSvg}</div>
+                <div class="illustrator-name">${card.illustrator}</div>
+            </div>`
+        );
+    }
 
-    card.addField({
-        id: 'setCode',
-        displayName: 'Set Code',
-        group: 'footer-ext'
-    });
+    renderLegal(card) {
+        return card.legalText;
+    }
 
-    card.addField({
-        id: 'language',
-        displayName: 'Language',
-        group: 'footer-ext'
-    });
+    get fields() {
+        return [{
+            id: 'illustrator',
+            displayName: 'Illustrator',
+            group: 'footer'
+        }, {
+            id: 'collectorNumber',
+            displayName: 'Collector Number',
+            group: 'footer-ext'
+        }, {
+            id: 'setCode',
+            displayName: 'Set Code',
+            group: 'footer-ext'
+        }, {
+            id: 'language',
+            displayName: 'Language',
+            group: 'footer-ext'
+        }, {
+            id: 'legalText',
+            displayName: 'Legal Text',
+            group: 'footer-ext'
+        }];
+    }
 
-    card.addField({
-        id: 'legalText',
-        displayName: 'Legal Text',
-        group: 'footer-ext'
-    });
-
-    card.publishElement('info',
-        `<div>
-            <div x-text="rarityCharacter"></div>
-            <div x-text="collectorNumber"></div>
-        </div>
-        <div>
-            <div x-text="setCode"></div>
-            <div>&bullet;</div>
-            <div x-text="language"></div>
-            <div class="illustrator-brush" x-html="brushSvg"></div>
-            <div class="illustrator-name" x-text="illustrator"></div>
-        </div>`
-    );
-
-    card.publishElement('legal-text',
-        `<span x-text="legalText"></span>`
-    );
-
-    await utils.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
-    await utils.loadFont('Relay Medium', 'relay-medium.ttf');
-    await utils.loadFont('MPlantin', 'mplantin.ttf');
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

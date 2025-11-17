@@ -1,47 +1,57 @@
-export default async function(card, utils) {
-    card.isLegendary = function() {
-        return /legendary/i.test(card.superType);
-    };
+export default class TypeModule extends CardMagicianModule {
+    async init(card) {
+        card.isLegendary = function() {
+            return /legendary/i.test(card.superType);
+        };
 
-    card.isLand = function() {
-        return /land/i.test(card.superType);
-    };
+        card.isLand = function() {
+            return /land/i.test(card.superType);
+        };
 
-    card.isArtifact = function() {
-        return /artifact/i.test(card.superType);
-    };
+        card.isArtifact = function() {
+            return /artifact/i.test(card.superType);
+        };
 
-    card.isEnchantment = function() {
-        return /enchantment/i.test(card.superType);
-    };
+        card.isEnchantment = function() {
+            return /enchantment/i.test(card.superType);
+        };
 
-    card.isVehicle = function() {
-        return /vehicle/i.test(card.subType);
-    };
+        card.isVehicle = function() {
+            return /vehicle/i.test(card.subType);
+        };
 
-    card.isSnow = function() {
-        return /snow/i.test(card.superType);
-    };
+        card.isSnow = function() {
+            return /snow/i.test(card.superType);
+        };
+    }
 
-    card.addField({
-        id: 'superType',
-        displayName: 'Super Type',
-        group: 'typeLine'
-    });
+    bind(card, watch) {
+        watch(() => [card.superType, card.subType],
+              () => this.requestRender());
+    }
 
-    card.addField({
-        id: 'subType',
-        displayName: 'Sub Type',
-        group: 'typeLine'
-    });
+    render(card) {
+        return card.subType ? (
+            // x-fit-text="{text: [superType, subType]}"
+            `<div class="type-text">${card.superType} — ${card.subType}</div>`
+        ) : (
+            `<div class="type-text">${card.superType}</div>`
+        )
+    }
 
-    card.publishElement('type',
-        `<div class="type-text" x-fit-text="{text: [superType, subType]}">
-            <span x-text="superType"></span>
-            <span x-show="subType">&nbsp;—&nbsp;</span>
-            <span x-text="subType"></span>
-        </div>`
-    );
+    get fields() {
+        return [{
+            id: 'superType',
+            displayName: 'Super Type',
+            group: 'typeLine'
+        }, {
+            id: 'subType',
+            displayName: 'Sub Type',
+            group: 'typeLine'
+        }];
+    }
 
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

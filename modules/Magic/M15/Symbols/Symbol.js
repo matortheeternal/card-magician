@@ -19,10 +19,13 @@ const imagePathAdapters = {
         (size, sym) => `${size}/tap/${sym.value}.png`,
 };
 
-const manaCircle = (size, text) =>
-    `<div class="sym" :style="${size}ManaCircleStyle">${text}</div>`;
+const manaCircle = async (utils, size, text) => {
+    const circleUrl = await utils.assetURL(`${size}/circle.png`);
+    const style = `background-image: url(${circleUrl});`;
+    return `<div class="sym" style="${style}">${text}</div>`;
+}
 
-export class Symbol {
+export default class Symbol {
     constructor(type, value) {
         this.type = type;
         this.value = value.toLowerCase();
@@ -42,12 +45,13 @@ export class Symbol {
 
     async toHTML(utils, size) {
         if (this.type === 'circle with text')
-            return manaCircle(size, this.value.toUpperCase());
+            return await manaCircle(utils, size, this.value.toUpperCase());
 
         const adapter = imagePathAdapters[this.type];
         if (!adapter) throw new Error('No image path adapter found for ' + this.type);
 
         const url = await utils.assetURL(adapter(size, this));
-        return `<div class="sym" style="background-image: url('${url}')"></div>`;
+        const style = `background-image: url('${url}')`;
+        return `<div class="sym" style="${style}"></div>`;
     }
 }

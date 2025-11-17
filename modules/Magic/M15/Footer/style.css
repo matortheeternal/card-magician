@@ -1,4 +1,4 @@
-.__id__-info {
+module-container[module="Footer"][render="renderInfo"] {
     display: flex;
     flex-direction: column;
     font-family: "Relay Medium", sans-serif;
@@ -6,14 +6,14 @@
     color: white;
 }
 
-.__id__-info > div {
+module-container[module="Footer"][render="renderInfo"] > div {
     display: flex;
     flex-direction: row;
     gap: 3px;
     align-items: center;
 }
 
-.__id__-info .illustrator-name {
+module-container[module="Footer"][render="renderInfo"] .illustrator-name {
     font-size: 10px;
     line-height: 9px;
     font-weight: initial;
@@ -21,14 +21,14 @@
     font-kerning: none;
 }
 
-.__id__-legal-text {
+module-container[module="Footer"][render="renderLegal"] {
     color: white;
     font-size: 8.5px;
     font-weight: initial;
     font-family: "MPlantin", sans-serif;
 }
 
-.illustrator-brush svg {
+module-container[module="Footer"][render="renderInfo"] .illustrator-brush svg {
     width: 12px;
     height: 8px;
 }

@@ -36,6 +36,7 @@ const autoRules = [
 ];
 
 function findMatchingRule(str) {
+    if (!str) return [null, null];
     for (const rule of autoRules) {
         const matchData = rule.match(str);
         if (matchData) return [rule, matchData];

@@ -1,4 +1,4 @@
-.__id__-mana-cost span {
+module-container[module="Cost"] {
     display: flex;
     gap: 2px;
     padding: 3px 0;

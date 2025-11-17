@@ -1,91 +1,103 @@
-export default async function(card, utils) {
-    const options = Alpine.reactive(await utils.import('options.js'));
-    options[0].compute = await utils.import('autodetect.js');
-    card.showFaceSymbol = true;
-    card.faceSymbolStyle = {};
-    await loadFaceSymbolImages();
+export function findOption(options, id, includeNested = false) {
+    for (const option of options) {
+        if (option.id === id) return option;
+        if (!includeNested || !option.items) continue;
+        for (const subOption of option.items)
+            if (subOption.id === id) return subOption;
+    }
+}
 
-    function loadImage(opt) {
-        return utils.assetURL(opt.imagePath).then(imageURL => {
+export function resolveGroupOption(options, groupId, symbolId) {
+    const group = findOption(options, groupId);
+    if (!group || !group.items) return;
+    return findOption(group.items, symbolId);
+}
+
+export function resolveOption(options, symbolId) {
+    const symbolParts = symbolId.split('/');
+    return symbolParts.length > 1
+        ? resolveGroupOption(options, symbolParts[0], symbolId)
+        : findOption(options, symbolId, true);
+}
+
+export function getFaceSymbolClass(option) {
+    const id = option.res ? option.res.id : option.id;
+    return id.replaceAll('_', '-').replaceAll('/', ' ');
+}
+
+function computeOption(card, option, optionsToSearch) {
+    if (!option.compute) return;
+    option.resolved = option.compute(card, optionsToSearch);
+    if (option.resolved) option.imageURL = option.resolved.imageURL;
+}
+
+export default class FaceSymbolModule extends CardMagicianModule {
+    loadImage(opt) {
+        return this.assetURL(opt.imagePath).then(imageURL => {
             opt.imageURL = imageURL;
         });
     }
 
-    function loadFaceSymbolImages() {
+    loadFaceSymbolImages() {
         return Promise.all(
-            options
-                .concat(options.flatMap(opt => opt.items || []))
+            this.options
+                .concat(this.options.flatMap(opt => opt.items || []))
                 .filter(opt => Boolean(opt.imagePath))
-                .map(opt => loadImage(opt))
+                .map(opt => this.loadImage(opt))
         );
     }
 
-    function findOption(options, id, includeNested = false) {
-        for (const option of options) {
-            if (option.id === id) return option;
-            if (!includeNested || !option.items) continue;
-            for (const subOption of option.items)
-                if (subOption.id === id) return subOption;
-        }
+    async init() {
+        this.options = this.makeReactive(await this.import('options.js'));
+        this.options[0].compute = await this.import('autodetect.js');
+        await this.loadFaceSymbolImages();
     }
 
-    function resolveGroupOption(groupId, symbolId) {
-        const group = findOption(options, groupId);
-        if (!group || !group.items) return;
-        return findOption(group.items, symbolId);
+    renderFaceSymbol(card) {
+        this.selectedFaceSymbol = resolveOption(this.options, card.faceSymbol)
+            || this.options[1];
+        this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
+        this.requestRender();
     }
 
-    function resolveOption(symbolId) {
-        const symbolParts = symbolId.split('/');
-        return symbolParts.length > 1
-            ? resolveGroupOption(symbolParts[0], symbolId)
-            : findOption(options, symbolId, true);
-    }
-
-    function getFaceSymbolClass(option) {
-        const id = option.res ? option.res.id : option.id;
-        return id.replaceAll('_', '-').replaceAll('/', ' ');
-    }
-
-    function renderFaceSymbol() {
-        if (!utils.subscribe(card.faceSymbol)) return;
-        card.selectedFaceSymbol = resolveOption(card.faceSymbol) || options[1];
-        card.faceSymbolClass = getFaceSymbolClass(card.selectedFaceSymbol);
-    }
-
-    function computeOption(option, optionsToSearch) {
-        if (!option.compute) return;
-        option.resolved = option.compute(card, optionsToSearch);
-        if (option.resolved) option.imageURL = option.resolved.imageURL;
-    }
-
-    async function updateAutoSymbols() {
-        const ready = utils.subscribe(
-            card.faceSymbol, card.parent, card.colorIdentity, card.superType
-        );
-        if (!await ready) return;
-        for (const option of options) {
-            computeOption(option, options);
+    updateAutoSymbols(card) {
+        if (!card.parent) return;
+        for (const option of this.options) {
+            computeOption(card, option, this.options);
             if (!option.items) continue;
             for (const item of option.items)
-                computeOption(item, option.items);
+                computeOption(card, item, option.items);
         }
+
     }
 
-    Alpine.effect(renderFaceSymbol);
-    Alpine.effect(updateAutoSymbols);
+    bind(card, watch) {
+        watch(() => [card.colorIdentity, card.superType, card.parent],
+              () => this.updateAutoSymbols(card));
+        watch(() => [card.faceSymbol, card.parent],
+              () => this.renderFaceSymbol(card));
+    }
 
-    card.addField({
-        id: 'faceSymbol',
-        type: 'select',
-        options,
-        default: 'autodetect',
-        displayName: 'Face Symbol'
-    });
+    render(card) {
+        if (!card.parent || !card.parent().back) return;
+        const src = this.selectedFaceSymbol.imageURL;
+        if (!src) return '';
+        return (
+            `<img src="${src}" class="${this.faceSymbolClass}"/>`
+        );
+    }
 
-    card.publishElement('face-symbol',
-        `<img :src="selectedFaceSymbol.imageURL" :class="faceSymbolClass" />`
-    );
+    get fields() {
+        return [{
+            id: 'faceSymbol',
+            type: 'select',
+            displayName: 'Face Symbol',
+            options: this.options,
+            default: 'autodetect'
+        }];
+    }
 
-    card.addStyle(await utils.loadFile('style.css'));
+    async styles() {
+        return [await this.loadFile('style.css')];
+    }
 }

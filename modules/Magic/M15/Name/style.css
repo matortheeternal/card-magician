@@ -1,9 +1,9 @@
-.__id__-name {
+module-container[module="Name"] {
     font-size: 22px;
     font-family: 'Beleren Bold', serif;
     font-kerning: none;
 }
 
-.back-name {
+:host(.face-back) module-container[module="Name"] {
     color: white;
 }

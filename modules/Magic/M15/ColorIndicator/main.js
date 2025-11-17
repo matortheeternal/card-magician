@@ -1,36 +1,44 @@
-export default async function(card, utils) {
-    async function getIndicatorImage() {
+export default class ColorIndicatorModule extends CardMagicianModule {
+    async getIndicatorImage(card) {
         if (!card.colorIndicator) return '';
         const colors = card.colorIdentity.colors;
         if (colors.length === 1) {
             const key = card.getCardColorKey();
-            return await utils.assetURL(`indicator/${key}.png`);
+            return await this.assetURL(`indicator/${key}.png`);
         }
         if (colors.length === 2) {
             const [c1, c2] = colors;
-            const img1 = await utils.assetURL(`indicator/${c1.char}.png`);
-            const img2 = await utils.assetURL(`indicator/${c2.char}.png`);
-            return await utils.linearBlend(img1, img2, 0.5, 0.5, 0.499, 0.499);
+            const img1 = await this.assetURL(`indicator/${c1.char}.png`);
+            const img2 = await this.assetURL(`indicator/${c2.char}.png`);
+            return await this.linearBlend(img1, img2, 0.5, 0.5, 0.499, 0.499);
         }
         return '';
     }
 
-    async function processColorIdentityOverride() {
-        if (!utils.subscribe(card.colorIndicator, card.colorIdentity))
-            return;
+    async updateColorIdentity(card) {
         card.colorIdentity.setOverride(card.colorIndicator);
-        card.colorIdentityImage = await getIndicatorImage();
+        this.colorIdentityImage = await this.getIndicatorImage(card);
+        this.requestRender();
     }
 
-    Alpine.effect(processColorIdentityOverride);
+    bind(card, watch) {
+        watch(
+            () => card.colorIndicator,
+            () => this.updateColorIdentity(card)
+        );
+    }
 
-    card.addField({
-        id: 'colorIndicator',
-        displayName: 'Color (Override)',
-        group: 'manaCost'
-    });
+    render(card) {
+        return card.colorIndicator && (
+            `<img src="${this.colorIdentityImage}">`
+        );
+    }
 
-    card.publishElement('color-indicator',
-        `<img x-show="colorIndicator" :src="colorIdentityImage">`
-    );
+    get fields() {
+        return [{
+            id: 'colorIndicator',
+            displayName: 'Color (Override)',
+            group: 'manaCost'
+        }]
+    }
 }
