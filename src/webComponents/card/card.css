@@ -1,0 +1,31 @@
+cm-card {
+    user-select: text;
+    color: black;
+}
+
+cm-card.flip-container {
+    min-height: 523px;
+    display: block;
+    transition: transform 200ms;
+    transform-style: preserve-3d;
+}
+
+cm-card.flipped {
+    transition: transform 750ms;
+    transform: rotateY(-180deg);
+}
+
+cm-card.flip-container > cm-card-face {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+cm-card.flip-container  > cm-card-face:first-of-type {
+    transform: rotateY(0deg);
+}
+
+cm-card.flip-container  > cm-card-face:last-of-type {
+    transform: rotateY(180deg);
+}
