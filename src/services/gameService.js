@@ -1,6 +1,6 @@
 import {
     checkFileExists, loadJson, loadImport, getImageUrl, loadFont
-} from './fsHelpers';
+} from './fsHelpers.js';
 
 const games = [];
 
