@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import html from './displayCard.html';
 import { saveHTMLAsImage } from '../../gfx/imageProcessing';
-import { registerAction } from '../../actionRegistry';
+import { registerAction } from '../../services/actionRegistry.js';
 
 Alpine.data('displayCard', () => ({
     useFlip: false,
@@ -18,13 +18,12 @@ Alpine.data('displayCard', () => ({
         Alpine.effect(() => {
             const card = Alpine.store('views').activeCard;
             this.useFlip = Boolean(card?.model?.front && card?.model?.back);
-            card.useFlip = this.useFlip;
         });
     },
 
     flipCard() {
-        const templateContainer = this.$root.querySelector('.template-container');
-        if (templateContainer) templateContainer.classList.toggle('flipped');
+        const cmCard = this.$root.querySelector('cm-card');
+        cmCard.flip();
     },
 
     bindEvents() {
@@ -32,7 +31,7 @@ Alpine.data('displayCard', () => ({
     },
 
     async exportCardImage() {
-        const cardNode = document.querySelector('.card-container');
+        const cardNode = this.$root.querySelector('cm-card');
         await saveHTMLAsImage(cardNode, 'card.png');
     }
 }));
