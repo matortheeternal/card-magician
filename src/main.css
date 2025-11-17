@@ -6,6 +6,7 @@
 @import "components/setInfoModal/setInfoModal.css";
 @import "components/formSelect/formSelect.css";
 @import "webComponents/cardForm/cardForm.css";
+@import "webComponents/card/card.css";
 
 * {
     box-sizing: border-box;
