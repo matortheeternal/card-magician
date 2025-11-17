@@ -7,8 +7,10 @@ export default async function(game, utils) {
     const columns = buildColumns({ calculateCmc, calculateColors });
     for (let column of columns) game.columns.push(column);
 
+    game.defaultTemplateId = 'M15Main';
+
     game.newCard = function() {
-        const card = { name: 'New Card', rarity: 'common' };
-        return { template: 'M15Mainframe', model: { card } };
+        return { model: { front: {} } };
     };
+
 };

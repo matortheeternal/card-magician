@@ -87,7 +87,7 @@ class CardFormSelect extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['label', 'name', 'value', 'data-options'];
+        return ['label', 'name', 'value'];
     }
 
     get name() {

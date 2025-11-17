@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
-import { saveJson } from '../../fsHelpers';
-import { executeAction } from '../../actionRegistry';
+import { saveJson } from '../../services/fsHelpers.js';
+import { executeAction } from '../../services/actionRegistry.js';
 
 function menuItem(label, hotkey, action) {
     return { label, value: label.toCamelCase(), hotkey, action };

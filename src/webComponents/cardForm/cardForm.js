@@ -1,35 +1,12 @@
 import Alpine from 'alpinejs';
 import { esc, renderField } from './cardFormField.js';
-import { emit } from '../../utils.js';
 
-function renderCardFormHTML(card) {
-    return card && card.model ? (
-        `<div class="forms-container">
-            ${renderTemplateSelector(card)}
-            ${Object.entries(card.model).map(([faceId, face]) =>
-                renderFaceSection(faceId, face)
-            ).join('')}
+function renderEntry(entry, face) {
+    return entry.isGroup ? (
+        `<div class="field-group">
+            ${entry.fields.map(f => renderField(f, face)).join("")}
         </div>`
-    ) : '';
-}
-
-function renderTemplateOption(template) {
-    return (
-        `<sl-option value="${esc(template.id)}">
-            ${esc(template.label)}
-        </sl-option>`
-    );
-}
-
-function renderTemplateSelector(card) {
-    const templates = Alpine.store('templates');
-    return card.template && templates ? (
-        `<div class="form">
-            <sl-select size="small" name="template" label="Template" value="${card.template}">
-                ${templates.map(t => renderTemplateOption(t, card)).join('')}
-            </sl-select>
-        </div>`
-    ) : '';
+    ) : renderField(entry, face);
 }
 
 const renderFaceSection = (faceId, face) => (
@@ -41,12 +18,14 @@ const renderFaceSection = (faceId, face) => (
     </div>`
 );
 
-function renderEntry(entry, face) {
-    return entry.isGroup ? (
-        `<div class="field-group">
-                ${entry.fields.map(f => renderField(f, face)).join("")}
+function renderCardFormHTML(card) {
+    return card && card.model ? (
+        `<div class="forms-container">
+            ${Object.entries(card.model).map(([faceId, face]) =>
+                renderFaceSection(faceId, face)
+            ).join('')}
         </div>`
-    ) : renderField(entry, face);
+    ) : '';
 }
 
 class CardForm extends HTMLElement {
@@ -87,10 +66,6 @@ class CardForm extends HTMLElement {
     }
 
     bindEvents() {
-        this.addEventListener('sl-change', e => {
-            if (e.target.getAttribute('name') !== 'template') return;
-            emit(this, 'change-template', { templateId: e.target.value });
-        });
         this.faceForms.forEach((faceFormEl) => {
             faceFormEl.addEventListener('input', this.onChange);
             faceFormEl.addEventListener('change', this.onChange);

@@ -55,7 +55,8 @@ async function startApp() {
     }
     Alpine.store('appConfig', appConfig);
     await loadGames();
-    Alpine.store('game', await setGame('magic'));
+    const game = await setGame('magic');
+    Alpine.store('game', game);
     await loadTemplates();
     Alpine.store('templates', getTemplates());
     Alpine.store('views').loaded = true;
