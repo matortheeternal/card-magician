@@ -1,9 +1,9 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
-import { buildCard, remapFaces } from '../../templateBuilder';
-import { registerAction, executeAction } from '../../actionRegistry';
-import { loadJson } from '../../fsHelpers';
+import { registerAction, executeAction } from '../../services/actionRegistry.js';
+import { loadJson } from '../../services/fsHelpers.js';
 import appConfig from '../../appConfig';
+import { buildCard } from '../../services/cardBuilder.js';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -29,9 +29,7 @@ Alpine.data('setView', () => ({
     },
 
     async setActiveCard(views) {
-        const card = await buildCard(views.selectedCard.template);
-        for (const face of Object.values(card.model))
-            await face.load(views.selectedCard.model[face.id]);
+        const card = await buildCard(views.selectedCard.model);
         views.activeCard = Alpine.reactive(card);
     },
 
@@ -41,26 +39,11 @@ Alpine.data('setView', () => ({
         await this.setActiveCard(views);
     },
 
-    async changeTemplate(newTemplate) {
-        const views = Alpine.store('views');
-        const oldTemplate = views.selectedCard.template;
-        if (oldTemplate === newTemplate) return;
-        views.selectedCard.template = newTemplate;
-        remapFaces(views.selectedCard, oldTemplate, newTemplate);
-        await this.setActiveCard(views);
-    },
-
     bindEvents() {
         this.$root.addEventListener('row-selected', (event) => {
             event.stopPropagation();
             const { row } = event.detail;
             this.selectCard(row.original);
-        });
-
-        document.addEventListener('change-template', (event) => {
-            event.stopPropagation();
-            const { templateId } = event.detail;
-            this.changeTemplate(templateId);
         });
 
         registerAction('new-set', this.newSet);

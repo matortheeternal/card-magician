@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { emit } from '../../utils.js';
 import { selectRow } from './rowSelectionService.js';
-import { registerAction } from '../../actionRegistry';
+import { registerAction } from '../../services/actionRegistry.js';
 import html from './listView.html';
 
 function makeDefaultDisplayFunction(column) {
