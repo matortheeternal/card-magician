@@ -36,7 +36,7 @@ export async function setGame(gameId) {
 export async function loadGames() {
     const gameFolders = await Neutralino.filesystem.readDirectory('games');
     for (let gameFolder of gameFolders) {
-        console.info('Reading game from', gameFolder.path);
+        console.info('%cReading game:', 'color:gold', gameFolder.path);
         const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');
         if (!await checkFileExists(jsonPath)) {
             console.info('No game.json found at', jsonPath);
