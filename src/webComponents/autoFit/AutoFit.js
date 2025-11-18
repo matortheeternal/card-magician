@@ -28,7 +28,11 @@ export default class AutoFit extends HTMLElement {
 
     queueFit() {
         cancelAnimationFrame(this._raf);
-        this._raf = requestAnimationFrame(() => this.fit());
+        this._raf = requestAnimationFrame(() => {
+            this.resizeObserver.disconnect();
+            this.fit();
+            this.resizeObserver.observe(this);
+        });
     }
 
     checkFit() {
