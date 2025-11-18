@@ -82,7 +82,7 @@ export function initCardFace(key) {
             formContainer.push(field);
         },
         publishElement(selector, html) {
-            const targetElement = dom.querySelector(`.${key}-${selector}`);
+            const targetElement = dom.querySelector(selector);
             targetElement.innerHTML = html;
         },
         addStyle(css) {
