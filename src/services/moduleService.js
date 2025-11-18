@@ -28,10 +28,10 @@ export function setupRenderPipeline(card, modules) {
 
 export async function initializeModules(card, modules) {
     await Promise.all(modules.map(module => {
-        return module.init && module.init(card);
+        return module.init(card);
     }));
     for (const module of modules)
-        (module.fields || []).forEach(field => card.addField(field));
+        module.fields.forEach(field => card.addField(field));
     return Promise.all(modules.map(async module => {
         if (!module.styles) return;
         const styles = await module.styles();
@@ -41,7 +41,6 @@ export async function initializeModules(card, modules) {
 
 export function bindEffects(card) {
     card.modules().forEach(module => {
-        if (!module.bind) return;
         const watch = (getDependencies, callback) => {
             Alpine.effect(async () => {
                 getDependencies();
