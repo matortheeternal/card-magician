@@ -54,14 +54,13 @@ export default class TextModule extends CardMagicianModule {
             `background-image: url('${this.flavorBarUrl}')`,
             this.showFlavorBar ? '' : 'display: none'
         ].join('; ');
+        const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
-            // x-fit-text="{text: [rulesHTML, flavorHTML],
-            // forbiddenRects: forbiddenRects}"
-            `<div class="text ${card.showFlag ? 'flag-padding' : ''}">
+            `<auto-fit-text class="${className}">
                 <div class="rules-text">${this.rulesHTML}</div>
                 <div class="flavor-bar" style="${flavorBarStyle}"></div>
                 <div class="flavor-text">${this.flavorHTML}</div>
-            </div>`
+            </auto-fit-text>`
         );
     }
 

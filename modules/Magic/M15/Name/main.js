@@ -17,8 +17,7 @@ export default class NameModule extends CardMagicianModule {
 
     render(card) {
         return (
-            // x-fit-text="{text: [name]}"
-            `<span x-text="name">${card.name}</span>`
+            `<auto-fit-line>${card.name}</auto-fit-line>`
         );
     }
 

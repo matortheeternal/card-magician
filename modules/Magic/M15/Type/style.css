@@ -1,14 +1,11 @@
 module-container[module="Type"] {
-    height: inherit;
-}
-
-.type-text {
     display: flex;
     align-items: center;
-    overflow: hidden;
     height: inherit;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
     font-family: "Beleren Bold", serif;
-    font-size: 17px;
     font-kerning: none;
 }
 

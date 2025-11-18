@@ -107,3 +107,8 @@ div.footer {
     position: relative;
     z-index: 10;
 }
+
+auto-fit-line {
+    display: block;
+    overflow: hidden;
+}

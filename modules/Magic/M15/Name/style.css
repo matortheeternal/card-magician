@@ -1,4 +1,9 @@
 module-container[module="Name"] {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
     font-size: 22px;
     font-family: 'Beleren Bold', serif;
     font-kerning: none;
