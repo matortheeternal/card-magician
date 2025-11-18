@@ -14,9 +14,9 @@ async function buildSubcard(parent, key, value, subcardData) {
     await setupRenderPipeline(subcard, modules);
     await initializeModules(subcard, modules);
     await subcard.load(subcardData);
+    subcard.parent = () => parent;
+    subcard.modules = () => modules;
     parent[key] = subcard;
-    card.parent = () => parent;
-    await bindEffects(subcard, modules);
     return subcard;
 }
 
@@ -54,13 +54,22 @@ async function buildCardFace(parent, key, faceData) {
     await card.load(faceData);
     card.subcards = await buildSubcards(card, template.subcards, faceData);
     card.parent = () => parent;
+    card.modules = () => modules;
     parent[key] = card;
-    await bindEffects(card, modules);
+    return card;
 }
 
 export async function buildCard(baseModel) {
     const model = {};
-    for (const key of Object.keys(baseModel))
-        await buildCardFace(model, key, baseModel[key]);
+    const cardFaces = [];
+    for (const key of Object.keys(baseModel)) {
+        const cardFace = await buildCardFace(model, key, baseModel[key]);
+        cardFaces.push(cardFace);
+    }
+    for (const cardFace of cardFaces) {
+        await bindEffects(cardFace);
+        for (const subcard of cardFace.subcards)
+            await bindEffects(subcard);
+    }
     return { model };
 }
