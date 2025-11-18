@@ -2,7 +2,8 @@ module-container[module="Art"] img {
     width: 100%;
 }
 
-module-container[module="Art"] div {
+module-container[module="Art"] crop-image {
+    display: block;
     height: 100%;
     width: 100%;
 }
