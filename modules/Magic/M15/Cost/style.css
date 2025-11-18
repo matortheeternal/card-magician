@@ -1,7 +1,7 @@
 module-container[module="Cost"] {
     display: flex;
     gap: 2px;
-    padding: 3px 0;
+    padding: 4px 2px;
 }
 
 div.sym {
