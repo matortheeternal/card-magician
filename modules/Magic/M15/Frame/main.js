@@ -46,7 +46,8 @@ export default class FrameModule extends CardMagicianModule {
     backgroundKeyChanged(card) {
         const newBackgroundKey = getBackgroundKey(card);
         const res = newBackgroundKey !== this.backgroundKey;
-        console.log(newBackgroundKey, this.backgroundKey, res);
+        if (res) console.log('%cBackgrounds changed: %s, %s', 'color:gold',
+            this.backgroundKey, newBackgroundKey);
         this.backgroundKey = newBackgroundKey;
         return res;
     }
