@@ -49,9 +49,15 @@ export default class ArtModule extends CardMagicianModule {
     }
 
     render(card) {
-        const src = card.artImage.image || card.defaultImageUrl;
-        if (!src) return '';
-        return (`<img src="${src}" />`);
+        if (!card.defaultImageUrl && !card.artImage.image) return '';
+        return card.artImage.image ? (
+            `<crop-image crop-width="${card.artImage.width}" 
+                         crop-height="${card.artImage.height}"
+                         offset-x="${card.artImage.xOffset}"
+                         offset-y="${card.artImage.yOffset}"
+                         src="${card.artImage.image}">
+            </crop-image>`
+        ) : `<img src="${card.defaultImageUrl}" />`;
     }
 
     get fields() {
