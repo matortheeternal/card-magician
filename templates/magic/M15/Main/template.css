@@ -25,12 +25,16 @@
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 2px 6px 2px 39px;
+    padding: 2px 5px 2px 35px;
     height: 32px;
 }
 
+module-container[module="Name"] {
+    padding: 0 4px;
+}
+
 .header:has(module-container[module="FaceSymbol"][style*="display: none"]) {
-    padding-left: 8px;
+    padding-left: 4px;
 }
 
 module-container[module="FaceSymbol"] {
