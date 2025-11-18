@@ -32,7 +32,7 @@ Alpine.data('listView', (config) => ({
     computeColumns() {
         this.activeColumns = this.columns.map(col => {
             const active = { ...col };
-            if (!active.id) active.id = col.label.toCamelCase();
+            if (!active.id) active.id = col.label.normalizeWords().toCamelCase();
             if (!active.display) active.display = makeDefaultDisplayFunction(active);
             return active;
         });
