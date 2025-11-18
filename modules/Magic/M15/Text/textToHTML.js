@@ -48,8 +48,12 @@ async function convertContent(content, card) {
 export async function textToHTML(text, card) {
     if (!text || !text.length) return '';
     const paragraphs = [];
-    for (const content of text.split('\n'))
-        paragraphs.push(`<div class="t">${await convertContent(content, card)}</div>`);
+    for (const content of text.split('\n')) {
+        let className = 't';
+        if (content.startsWith('“')) className += ' q';
+        const html = await convertContent(content, card);
+        paragraphs.push(`<div class="${className}">${html}</div>`);
+    }
 
     return paragraphs.join('\n');
 }

@@ -32,6 +32,10 @@ export default class PTModule extends CardMagicianModule {
             () => card.parent,
             () => this.updateFrontNotchPt(card)
         );
+        watch(
+            () => card.showNotchPT,
+            () => this.requestRender({ render: 'renderNotchPT' })
+        );
     }
 
     renderPT(card) {
@@ -44,7 +48,7 @@ export default class PTModule extends CardMagicianModule {
     }
 
     renderNotchPT(card) {
-        if (!this.showNotchPT) return;
+        if (!card.showNotchPT) return;
         return (
             `<div class="notch-pt-text">${card.notchPtText}</div>`
         );
