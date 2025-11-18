@@ -14,20 +14,6 @@ export default class TextModule extends CardMagicianModule {
         };
     }
 
-    updateForbiddenRects(card) {
-        const forbiddenRects = [];
-        if (card.showPT) {
-            const ptSelector = 'module-container[module="PT"]';
-            const ptContainer = card.dom.querySelector(ptSelector);
-            const rects = ptContainer.getClientRects();
-            forbiddenRects.push(...rects);
-        }
-        if (card.showStamp) {
-            // TODO: stamp rect
-        }
-        card.forbiddenRects = forbiddenRects;
-    }
-
     async renderRulesHTML(card) {
         this.rulesHTML = await card.textToHTML(card.rulesText, card);
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
@@ -43,10 +29,16 @@ export default class TextModule extends CardMagicianModule {
     bind(card, watch) {
         watch(() => card.rulesText, () => this.renderRulesHTML(card));
         watch(() => card.flavorText, () => this.renderFlavorHTML(card));
-        watch(() => card.showPT, () => {
-            requestAnimationFrame(() => this.updateForbiddenRects(card));
-        });
-        watch(() => card.showFlag, () => this.requestRender());
+        watch(() => [card.showPT, card.showFlag], () => this.requestRender());
+    }
+
+    getAvoidSelectors(card) {
+        const a = [];
+        if (card.showPT || card.showNotchPT)
+            a.push(`module-container[module='PT']`);
+        if (card.showStamp)
+            a.push(`module-container[module='Stamp']`);
+        return a;
     }
 
     render(card) {
@@ -54,9 +46,10 @@ export default class TextModule extends CardMagicianModule {
             `background-image: url('${this.flavorBarUrl}')`,
             this.showFlavorBar ? '' : 'display: none'
         ].join('; ');
+        const avoid = this.getAvoidSelectors(card).join(', ');
         const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
-            `<auto-fit-text class="${className}">
+            `<auto-fit-text class="${className}" avoid="${avoid}">
                 <div class="rules-text">${this.rulesHTML}</div>
                 <div class="flavor-bar" style="${flavorBarStyle}"></div>
                 <div class="flavor-text">${this.flavorHTML}</div>
