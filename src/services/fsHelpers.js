@@ -114,7 +114,7 @@ function convertToBase64(rawData) {
 export async function loadFont(fontName, fontPath) {
     try {
         if (fontCache.hasOwnProperty(fontName)) return;
-        if (!checkFileExists(fontPath)) {
+        if (!await checkFileExists(fontPath)) {
             console.error('Font file not found at ', fontPath);
             return;
         }
