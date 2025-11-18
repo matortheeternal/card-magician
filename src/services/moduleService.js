@@ -39,8 +39,8 @@ export async function initializeModules(card, modules) {
     }));
 }
 
-export function bindEffects(card, modules) {
-    modules.forEach(module => {
+export function bindEffects(card) {
+    card.modules().forEach(module => {
         if (!module.bind) return;
         const watch = (getDependencies, callback) => {
             Alpine.effect(async () => {
