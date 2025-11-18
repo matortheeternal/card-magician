@@ -3,6 +3,7 @@ import '@shoelace-style/shoelace/dist/shoelace.js';
 import './webComponents/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import './extensions.js';
+import './shoelaceFixes.js';
 import CardMagicianModule from './CardMagicianModule.js';
 import { loadTemplates, getTemplates } from './services/templateService.js';
 import { loadGames, setGame } from './services/gameService.js';
