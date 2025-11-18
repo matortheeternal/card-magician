@@ -81,7 +81,7 @@ Alpine.data('setView', () => ({
     async openSet(filePath = null) {
         filePath = filePath || await openSingleFileDialog();
         if (!filePath) return;
-        console.info('Opening set:', filePath);
+        console.info('%cOpening set:', 'color:gold', filePath);
         const views = Alpine.store('views');
         views.setFilePath = filePath;
         views.activeSet = await loadJson(filePath);

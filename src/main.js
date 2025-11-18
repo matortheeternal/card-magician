@@ -26,7 +26,7 @@ function setupNeutralino() {
     Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
     Neutralino.window.setSize({ resizable: true });
     Neutralino.window.setDraggableRegion('title-bar').then(result => {
-        console.log('Draggable region initialized:', result);
+        console.debug('%cDraggable region initialized:', 'color:salmon', result);
     });
 }
 

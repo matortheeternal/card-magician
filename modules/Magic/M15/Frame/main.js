@@ -2,16 +2,15 @@ function getBackgroundKey(card) {
     return [
         card.frameFolder,
         '_',
-        card.colorIdentity.isHybrid() ? 'H' : 'X',
-        ...card.colorIdentity.colors.map(c => c.char),
+        card.colorIdentity.isHybrid() ? 'H' : '',
         ...card.colorIdentity.colors.map(c => c.char),
         '_',
-        card.isSnow() ? 'S' : 'X',
-        card.isLegendary() ? 'G' : 'X',
-        card.isLand() ? 'L' : 'X',
-        card.isArtifact() ? 'A' : 'X',
-        card.isEnchantment() ? 'E' : 'X',
-        card.isVehicle() ? 'V' : 'X',
+        card.isSnow() ? 'S' : '',
+        card.isLegendary() ? 'G' : '',
+        card.isLand() ? 'L' : '',
+        card.isArtifact() ? 'A' : '',
+        card.isEnchantment() ? 'E' : '',
+        card.isVehicle() ? 'V' : '',
     ].join('');
 }
 
@@ -46,7 +45,7 @@ export default class FrameModule extends CardMagicianModule {
     backgroundKeyChanged(card) {
         const newBackgroundKey = getBackgroundKey(card);
         const res = newBackgroundKey !== this.backgroundKey;
-        if (res) console.log('%cBackgrounds changed: %s, %s', 'color:gold',
+        if (res) console.debug('%cBackgrounds changed: %s, %s', 'color:dodgerblue',
             this.backgroundKey, newBackgroundKey);
         this.backgroundKey = newBackgroundKey;
         return res;
