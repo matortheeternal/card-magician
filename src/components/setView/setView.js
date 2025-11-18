@@ -43,6 +43,7 @@ Alpine.data('setView', () => ({
         this.$root.addEventListener('row-selected', (event) => {
             event.stopPropagation();
             const { row } = event.detail;
+            console.log('%cSelected card:', 'color:orange', row.data.name);
             this.selectCard(row.original);
         });
 
