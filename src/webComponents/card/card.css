@@ -29,3 +29,15 @@ cm-card.flip-container  > cm-card-face:first-of-type {
 cm-card.flip-container  > cm-card-face:last-of-type {
     transform: rotateY(180deg);
 }
+
+cm-card.initializing:not(.flipped) > cm-card-face:last-of-type {
+    backface-visibility: visible !important;
+    position: static !important;
+    visibility: hidden !important;
+}
+
+cm-card.initializing.flipped > cm-card-face:first-of-type {
+    backface-visibility: visible !important;
+    position: static !important;
+    visibility: hidden !important;
+}

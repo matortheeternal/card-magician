@@ -1,3 +1,5 @@
+import { emit } from '../utils.js';
+
 function getModuleContainers(card, module) {
     const selector = `module-container[module="${module.name}"]`;
     const containers = Array.from(card.dom.querySelectorAll(selector));
@@ -49,6 +51,12 @@ export default class RenderScheduler {
         }
     }
 
+    static flushComplete(queue) {
+        const uniqueCards = new Set(queue.map(task => task.card));
+        for (const card of uniqueCards)
+            emit(card.dom.getRootNode(), 'RenderScheduler:flushed', { tasks: queue });
+    }
+
     static flush() {
         this.scheduled = false;
         const queue = this.queue.slice();
@@ -63,5 +71,6 @@ export default class RenderScheduler {
             renderModule(card, module, renderKey, subcardKey);
         }
         this.queue = [];
+        this.flushComplete(queue);
     }
 }

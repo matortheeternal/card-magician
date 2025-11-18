@@ -1,6 +1,14 @@
+import { emit } from '../../utils.js';
+
 class Card extends HTMLElement {
     _card;
     canFlip = false;
+    initializedFaces = new Set();
+
+    constructor() {
+        super();
+        this.finishInitializing = this.finishInitializing.bind(this);
+    }
 
     connectedCallback() {
         if (!this._card) return;
@@ -17,10 +25,36 @@ class Card extends HTMLElement {
         return this._card;
     }
 
+    startInitializing() {
+        this.initializedFaces.clear();
+        this.expectedFaceCount = Object.keys(this._card.model).length;
+        emit(document, 'freeze-resize');
+        this.classList.add('initializing');
+        this.addEventListener(
+            'card-face:initialized',
+            this.finishInitializing
+        );
+    }
+
+    finishInitializing(e) {
+        const face = e.target;
+        this.initializedFaces.add(face);
+        if (this.expectedFaceCount !== this.initializedFaces.size)
+            return;
+
+        this.classList.remove('initializing');
+        this.removeEventListener(
+            'card-face:initialized',
+            this.finishInitializing
+        );
+        emit(document, 'thaw-resize');
+    }
+
     renderFaces() {
         this.innerHTML = '';
-        if (!this._card) return;
+        if (!this._card?.model) return;
 
+        this.startInitializing();
         for (const faceName of Object.keys(this._card.model)) {
             const faceData = this._card.model[faceName];
             const faceEl = document.createElement('cm-card-face');
