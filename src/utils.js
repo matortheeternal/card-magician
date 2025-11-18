@@ -27,3 +27,23 @@ export function bindCustomDragEvents(element, callbacks) {
         callbacks.onDrop && callbacks.onDrop();
     })
 }
+
+export function binarySearch(min, max, check, maxIt) {
+    let low = min;
+    let high = max;
+    let best = low;
+
+    for (let i = 0; i < maxIt; i++) {
+        const mid = (low + high) / 2;
+        const fits = check(mid);
+
+        if (fits) {
+            best = mid;
+            low = mid;
+        } else {
+            high = mid;
+        }
+    }
+
+    return best;
+}
