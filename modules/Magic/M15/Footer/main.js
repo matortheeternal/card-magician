@@ -23,15 +23,15 @@ export default class FooterModule extends CardMagicianModule {
     renderInfo(card) {
         return (
             `<div>
-                <div>${card.rarityCharacter}</div>
                 <div>${card.collectorNumber}</div>
+                <div>${card.setCode} &bullet; ${card.language}</div>
             </div>
             <div>
-                <div>${card.setCode}</div>
-                <div>&bullet;</div>
-                <div>${card.language}</div>
-                <div class="illustrator-brush">${this.brushSvg}</div>
-                <div class="illustrator-name">${card.illustrator}</div>
+                <div>${card.rarityCharacter}</div>
+                <div class="illustrator-container">
+                    <div class="illustrator-brush">${this.brushSvg}</div>
+                    <div class="illustrator-name">${card.illustrator}</div>
+                </div>
             </div>`
         );
     }

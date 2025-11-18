@@ -1,20 +1,23 @@
 module-container[module="Footer"][render="renderInfo"] {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 4px;
     font-family: "Relay Medium", sans-serif;
-    font-size: 9.3px;
+    font-size: 8px;
+    letter-spacing: 0.5px;
     color: white;
 }
 
 module-container[module="Footer"][render="renderInfo"] > div {
     display: flex;
-    flex-direction: row;
-    gap: 3px;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 module-container[module="Footer"][render="renderInfo"] .illustrator-name {
-    font-size: 10px;
+    margin-top: 1px;
+    font-size: 9px;
+    letter-spacing: normal;
     line-height: 9px;
     font-weight: initial;
     font-family: "Beleren Small Caps Bold", sans-serif;
@@ -29,6 +32,17 @@ module-container[module="Footer"][render="renderLegal"] {
 }
 
 module-container[module="Footer"][render="renderInfo"] .illustrator-brush svg {
-    width: 12px;
-    height: 8px;
+    width: 10px;
+    height: 6px;
+}
+
+module-container[module="Footer"][render="renderInfo"] .illustrator-brush {
+    margin-left: 1px;
+    margin-right: 2px;
+}
+
+.illustrator-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1px;
 }

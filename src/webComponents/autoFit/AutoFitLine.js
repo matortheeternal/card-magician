@@ -4,7 +4,7 @@ import AutoFit from './AutoFit.js';
 class AutoFitLine extends AutoFit {
     constructor() {
         super();
-        this.maxFont = 22;
+        this.maxFont = 20;
     }
 
     connectedCallback() {
