@@ -1,19 +1,25 @@
-.card-form-view, card-form {
+cm-card-form {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     min-width: 30em;
     background-color: #040404;
-    overflow-y: auto;
 }
 
-.forms-container {
+/* propagate flex all the way down tab groups to content  */
+sl-tab-group,
+sl-tab-group::part(base),
+sl-tab-group::part(body),
+sl-tab-panel[active],
+sl-tab-panel::part(base) {
     display: flex;
-    flex-grow: 1;
-    align-self: stretch;
     flex-direction: column;
-    justify-content: stretch;
-    min-height: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+sl-tab-panel::part(base) {
+    overflow-y: auto;
 }
 
 .form {
@@ -21,7 +27,9 @@
     flex-direction: column;
     justify-content: stretch;
     align-items: center;
-    padding: 1em 2.5em;
+    position: relative;
+    flex: 1;
+    padding: 0 2.5em;
     border-radius: 10px;
     font-family: var(--sl-font-sans);
 }
@@ -48,4 +56,10 @@ h1, h2, h3, h4, h5, h6 {
 
 sl-input[type="file"]::part(input) {
     padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);
+}
+
+cm-card-form .no-content-prompt {
+    text-align: center;
+    padding: 1em;
+    font-size: var(--sl-font-size-x-large);
 }
