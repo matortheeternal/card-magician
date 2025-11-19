@@ -9,22 +9,62 @@ function renderEntry(entry, face) {
     ) : renderField(entry, face);
 }
 
+function noBackFace() {
+    return (
+        `<div class="no-content-prompt">
+            <span>This card does not have a back face.</span>
+            <div class="buttons-container">
+                <sl-button size="large">Add Back Face</sl-button>
+            </div>
+        </div>`
+    );
+}
+
+function faceFieldsForm(face) {
+    return face ? (
+        face.form.map(entry => renderEntry(entry, face)).join('')
+    ) : noBackFace();
+}
+
 const renderFaceSection = (faceId, face) => (
     `<div class="form" data-face-id="${faceId}">
-        <h2>${esc(faceId)}</h2>
-        <section>
-            ${face.form.map(entry => renderEntry(entry, face)).join('')}
-        </section>
+        <section>${faceFieldsForm(face)}</section>
     </div>`
 );
 
+function faceStyleForm(style) {
+    return style ? (
+        style.form.map(entry => renderEntry(entry, style)).join('')
+    ) : noBackFace();
+}
+
+const renderStyleOptions = (faceId, style) => (
+    `<div class="form" data-face-id="${faceId}">
+        <section>${faceStyleForm(style)}</section>
+    </div>`
+)
+
 function renderCardFormHTML(card) {
     return card && card.model ? (
-        `<div class="forms-container">
-            ${Object.entries(card.model).map(([faceId, face]) =>
-                renderFaceSection(faceId, face)
-            ).join('')}
-        </div>`
+        `<sl-tab-group>
+            <sl-tab slot="nav" panel="frontFields">Front Fields</sl-tab>
+            <sl-tab slot="nav" panel="backFields">Back Fields</sl-tab>
+            <sl-tab slot="nav" panel="frontStyle">Front Style</sl-tab>
+            <sl-tab slot="nav" panel="backStyle">Back Style</sl-tab>
+            
+            <sl-tab-panel name="frontFields">
+                ${renderFaceSection('front', card.model.front)}
+            </sl-tab-panel>
+            <sl-tab-panel name="backFields">
+                ${renderFaceSection('back', card.model.back)}
+            </sl-tab-panel>
+            <sl-tab-panel name="frontStyle">
+                ${renderStyleOptions('front', card.style?.front)}
+            </sl-tab-panel>
+            <sl-tab-panel name="backStyle">
+                ${renderStyleOptions('back', card.style?.back)}
+            </sl-tab-panel>
+        </sl-tab-group>`
     ) : '';
 }
 
@@ -98,4 +138,4 @@ class CardForm extends HTMLElement {
     }
 }
 
-customElements.define('card-form', CardForm);
+customElements.define('cm-card-form', CardForm);
