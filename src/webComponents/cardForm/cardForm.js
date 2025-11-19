@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { esc, renderField } from './cardFormField.js';
+import { renderField } from './cardFormField.js';
 
 function renderEntry(entry, face) {
     return entry.isGroup ? (

@@ -34,6 +34,44 @@ sl-tab-panel::part(base) {
     font-family: var(--sl-font-sans);
 }
 
+sl-tab-group::part(body) {
+    position: relative;
+    overflow: hidden;
+}
+
+sl-tab-panel {
+    display: flex; /* override shoelace's display: none */
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(30%);
+    transition:
+            transform 300ms cubic-bezier(.2, .7, .3, 1),
+            opacity 250ms ease;
+}
+
+sl-tab-panel[active] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    z-index: 2;
+}
+
+/* Any panel AFTER the active one slides to the right */
+sl-tab-panel[active] ~ sl-tab-panel {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Any panel BEFORE the active one slides to the left. */
+sl-tab-panel:has(~ sl-tab-panel[active]) {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+}
+
 .form section > * {
     margin-bottom: var(--sl-spacing-x-small);
 }

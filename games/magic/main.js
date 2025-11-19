@@ -10,7 +10,7 @@ export default async function(game, utils) {
     game.defaultTemplateId = 'M15Main';
 
     game.newCard = function() {
-        return { model: { front: {} } };
+        return { model: { front: {} }, style: { front: {} } };
     };
 
 };
