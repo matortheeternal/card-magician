@@ -1,3 +1,5 @@
+import computeAutoSymbol from './computeAutoSymbol.js';
+
 const separator = () => ({ separator: true });
 
 const faceSymbol = (id, name, imagePath, extra) => ({
@@ -12,8 +14,14 @@ function computeAutoColor(card, options) {
     return options.find(opt => opt.c === colorKey);
 }
 
+const autodetectOption = (compute) => ({
+    id: 'autodetect',
+    name: 'Auto',
+    compute
+});
+
 const colorOptions = [
-    { id: 'autodetect', name: 'Auto', compute: computeAutoColor },
+    autodetectOption(computeAutoColor),
     { id: 'white', c: 'w' },
     { id: 'blue', c: 'u' },
     { id: 'black', c: 'b' },
@@ -36,7 +44,7 @@ const faceSymbolGroup = (groupId, items) => ({
 });
 
 export default [
-    faceSymbol('autodetect', 'Auto'),
+    autodetectOption(computeAutoSymbol),
     faceSymbol('none'),
     separator(),
     faceSymbolGroup('modal_front'),
