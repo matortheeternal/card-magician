@@ -3,6 +3,7 @@ import {
     buildLinearBlendTests,
     buildMaskBlendTests
 } from './tests/blendTests';
+import { buildImportTests } from './tests/importTests.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
@@ -47,4 +48,5 @@ export async function runTests() {
     buildCombineBlendTests();
     buildLinearBlendTests();
     buildMaskBlendTests();
+    buildImportTests();
 }
