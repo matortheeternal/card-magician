@@ -49,11 +49,11 @@ export class FrameProvider extends ColoredProvider {
     zIndex = 0;
 
     get folder() {
-        return this.card.frameFolder;
+        return `frame/${this.card.frameFolder}`;
     }
 
     get hasLandTemplates() {
-        return true;
+        return this.card.frameFolder !== 'energy';
     }
 }
 
@@ -61,13 +61,30 @@ export class CrownProvider extends ColoredProvider {
     zIndex = 1;
 
     static enabled(card) {
-        return card.isLegendary();
+        return card.isLegendary?.();
     }
 
     get folder() {
-        return this.card.isEnchantment() ? 'crowns/nyx' : 'crowns';
+        return 'element/crown';
+    }
+
+    get subfolder() {
+        if (this.card.isEnchantment?.()) return 'nyx';
+        if (this.card.isBorderless?.()) return 'borderless';
+        if (this.card.isBrawl?.())
+            return this.card.hasFaceSymbol?.()
+                ? 'brawl_with_face_symbol'
+                : 'brawl';
+        if (this.card.isCompanion?.()) return 'companion';
+        return 'normal';
+    }
+
+    async resolve(key) {
+        const path = `${this.folder}/${this.subfolder}/${key}.png`;
+        return await this.assetURL(path);
     }
 }
+
 
 export class VehicleTrimProvider extends Provider {
     zIndex = 2;
@@ -81,7 +98,7 @@ export class VehicleTrimProvider extends Provider {
     }
 
     async resolve() {
-        return await this.assetURL('trims/vehicle.png');
+        return await this.assetURL('element/vehicle/trim.png');
     }
 }
 
@@ -102,7 +119,7 @@ export class NyxTrimProvider extends ColoredProvider {
 
     async resolve(key) {
         // necessary because nyx trims are PNGs, not JPGs
-        return await this.assetURL(`${this.folder}/${key}.png`);
+        return await this.assetURL(`element/${this.folder}/${key}.png`);
     }
 }
 
@@ -111,17 +128,45 @@ export class BorderProvider extends Provider {
 
     async resolve() {
         const borderMaskPath = this.card.isLegendary()
-            ? 'masks/border/crown.png'
-            : 'masks/border/base.png';
+            ? 'mask/border/crown.png'
+            : 'mask/border/base.png';
         const maskUrl = await this.assetURL(borderMaskPath);
         return await this.utils.maskColor(maskUrl, '#000000');
     }
 }
 
+export class MiracleTrimProvider extends ColoredProvider {
+    zIndex = 10;
+
+    static enabled(card) {
+        return card.isMiracle?.();
+    }
+
+    get folder() {
+        return 'element/miracle';
+    }
+
+    get subfolder() {
+        if (this.card.isFNM?.()) return 'fnm';
+        if (this.card.isInverted?.()) return 'inverted';
+        if (this.card.isShifted?.()) return 'shifted';
+        if (this.card.isBeyond?.()) return 'beyond';
+        if (this.card.isSnow?.()) return 'snow';
+        return 'normal';
+    }
+
+    async resolve(key) {
+        return this.card.isClear?.() || this.card.clearTops?.()
+            ? await this.assetURL(`${this.folder}/normal/x.png`)
+            : await this.assetURL(`${this.folder}/${this.subfolder}/${key}.png`)
+    }
+}
+
 export default [
     FrameProvider,
+    BorderProvider,
     CrownProvider,
-    VehicleTrimProvider,
     NyxTrimProvider,
-    BorderProvider
+    VehicleTrimProvider,
+    MiracleTrimProvider,
 ]
