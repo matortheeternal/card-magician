@@ -1,11 +1,11 @@
 import Alpine from 'alpinejs';
-import { loadImport } from './fsHelpers.js';
+import { loadImport } from './importService.js';
 import RenderScheduler from './renderScheduler.js';
 
 export async function loadModule(card, modulePath) {
     try {
         const mainPath = `./modules/${modulePath}/main.js`;
-        const Module = await loadImport(mainPath);
+        const { default: Module } = await loadImport(mainPath);
         return new Module(card, modulePath);
     } catch (error) {
         console.error('Failed to load module:', error);
