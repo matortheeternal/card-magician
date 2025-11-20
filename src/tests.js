@@ -38,7 +38,8 @@ export async function setupTestHarness() {
     await loadStyle(jasmineStyle);
     for (const src of scripts)
         await loadScript(src);
-    document.querySelector('main').remove();
+    document.querySelectorAll('nav, template').forEach(el => el.remove());
+    document.body.style.userSelect = 'auto';
     return true;
 }
 
