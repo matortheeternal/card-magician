@@ -1,4 +1,4 @@
-import { buildPipeline } from './src/backgroundPipeline.js';
+import { runPipeline } from './src/pipeline.js';
 
 function getBackgroundKey(card) {
     return [
@@ -17,10 +17,6 @@ function getBackgroundKey(card) {
 }
 
 export default class FrameModule extends CardMagicianModule {
-    async init() {
-        this.backgroundPipeline = buildPipeline(this);
-    }
-
     getFrameFolder(card) {
         const hasTwoFaces = Boolean(card.parent().back);
         if (hasTwoFaces && card.id === 'front' && card.isTransform && card.isTransform())
@@ -30,17 +26,6 @@ export default class FrameModule extends CardMagicianModule {
         if (hasTwoFaces)
             return card.id;
         return 'card';
-    }
-
-    async buildBackgrounds(card) {
-        const backgrounds = {};
-        card.backgroundsUsed = [];
-        for (let pipe of this.backgroundPipeline) {
-            if (!pipe.useBackground(card)) continue;
-            card.backgroundsUsed.push(pipe.name);
-            await pipe.apply(card, backgrounds);
-        }
-        return Object.values(backgrounds);
     }
 
     backgroundKeyChanged(card) {
@@ -56,7 +41,7 @@ export default class FrameModule extends CardMagicianModule {
         if (!card.parent) return;
         card.frameFolder = this.getFrameFolder(card);
         if (!this.backgroundKeyChanged(card)) return;
-        this.backgrounds = await this.buildBackgrounds(card);
+        this.backgrounds = await runPipeline(card, this);
         this.requestRender();
     }
 
