@@ -1,3 +1,5 @@
+import { buildPipeline } from './src/backgroundPipeline.js';
+
 function getBackgroundKey(card) {
     return [
         card.frameFolder,
@@ -16,7 +18,6 @@ function getBackgroundKey(card) {
 
 export default class FrameModule extends CardMagicianModule {
     async init() {
-        const { buildPipeline } = await this.import('backgroundPipeline.js');
         this.backgroundPipeline = buildPipeline(this);
     }
 

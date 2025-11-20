@@ -45,7 +45,7 @@ async function convertContent(content, card) {
     return result.join(' ');
 }
 
-export async function textToHTML(text, card) {
+export default async function textToHTML(text, card) {
     if (!text || !text.length) return '';
     const paragraphs = [];
     for (const content of text.split('\n')) {

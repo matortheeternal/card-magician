@@ -1,6 +1,7 @@
+import ColorIdentity from './src/ColorIdentity.js';
+
 export default class CostModule extends CardMagicianModule {
     async init(card) {
-        const { ColorIdentity } = await this.import('ColorIdentity.js');
         card.colorIdentity = new ColorIdentity();
 
         card.getCardColorKey = function() {

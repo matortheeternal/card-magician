@@ -1,35 +1,5 @@
-export function findOption(options, id, includeNested = false) {
-    for (const option of options) {
-        if (option.id === id) return option;
-        if (!includeNested || !option.items) continue;
-        for (const subOption of option.items)
-            if (subOption.id === id) return subOption;
-    }
-}
-
-export function resolveGroupOption(options, groupId, symbolId) {
-    const group = findOption(options, groupId);
-    if (!group || !group.items) return;
-    return findOption(group.items, symbolId);
-}
-
-export function resolveOption(options, symbolId) {
-    const symbolParts = symbolId.split('/');
-    return symbolParts.length > 1
-        ? resolveGroupOption(options, symbolParts[0], symbolId)
-        : findOption(options, symbolId, true);
-}
-
-export function getFaceSymbolClass(option) {
-    const id = option.res ? option.res.id : option.id;
-    return id.replaceAll('_', '-').replaceAll('/', ' ');
-}
-
-function computeOption(card, option, optionsToSearch) {
-    if (!option.compute) return;
-    option.resolved = option.compute(card, optionsToSearch);
-    if (option.resolved) option.imageURL = option.resolved.imageURL;
-}
+import options from './src/options.js';
+import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
 
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
@@ -48,8 +18,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     async init() {
-        this.options = this.makeReactive(await this.import('options.js'));
-        this.options[0].compute = await this.import('autodetect.js');
+        this.options = this.makeReactive(options);
         await this.loadFaceSymbolImages();
     }
 
