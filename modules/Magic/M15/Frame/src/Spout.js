@@ -2,9 +2,9 @@
  * @abstract
  */
 export default class Spout {
-    constructor(thing) {
-        this.card = thing.card;
-        this.utils = thing.utils;
+    constructor(spoutOrProvider) {
+        this.card = spoutOrProvider.card;
+        this.utils = spoutOrProvider.utils;
     }
 
     assetURL(path) {
@@ -23,5 +23,14 @@ export default class Spout {
         const url = await this.apply();
         const zIndex = this.provider.zIndex;
         return { url, zIndex };
+    }
+
+    hasSpout(callback) {
+        let cursor = this;
+        while (cursor instanceof Spout) {
+            if (callback(cursor)) return true;
+            cursor = cursor.target;
+        }
+        return false;
     }
 }
