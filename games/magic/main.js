@@ -13,4 +13,7 @@ export default async function(game, utils) {
         return { model: { front: {} }, style: { front: {} } };
     };
 
+    game.newSet = function() {
+        return { cards: [], info: { setCode: "TEST" } };
+    }
 };
