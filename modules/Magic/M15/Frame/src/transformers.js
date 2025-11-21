@@ -15,8 +15,9 @@ export class Transformer extends Spout {
         return false;
     }
 
-    constructor(spout) {
+    constructor(spout, spouts) {
         super(spout);
+        this.allSpouts = spouts;
         this.target = spout;
         this.provider = spout.provider;
     }

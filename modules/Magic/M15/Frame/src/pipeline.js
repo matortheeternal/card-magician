@@ -21,13 +21,16 @@ export function buildResolvers(providers, card) {
 }
 
 export function buildSpouts(resolvers, card) {
-    return resolvers.map(resolver => {
-        return Object.values(Transformers).reduce((current, Transformer) => {
+    const spouts = [];
+    resolvers.forEach(resolver => {
+        const spout = Object.values(Transformers).reduce((current, Transformer) => {
             if (Transformer.matches(card, current))
-                return new Transformer(current);
+                return new Transformer(current, spouts);
             return current;
         }, resolver);
+        spouts.push(spout);
     });
+    return spouts;
 }
 
 export function runPipeline(card, module) {
