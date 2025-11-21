@@ -14,7 +14,7 @@ export default async function(game, utils) {
     };
 
     game.newSet = function() {
-        return { cards: [], info: { setCode: "TEST" } };
+        return { cards: [], info: { language: "EN", setCode: "" } };
     };
 
     game.renderSetInfo = function() {
