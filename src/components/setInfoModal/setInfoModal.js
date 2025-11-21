@@ -5,8 +5,9 @@ Alpine.data('setInfoModal', () => ({
     async init() {
         this.$root.innerHTML = html;
         this.set = Alpine.store('views').activeSet;
+        this.game = Alpine.store('game');
+        document.getElementById('set-info-modal-body').innerHTML = this.game.renderSetInfo();
         Alpine.initTree(this.$root);
-        console.log(this.set);
     },
     closeModal() {
         Alpine.store('views').activeModal = null;
