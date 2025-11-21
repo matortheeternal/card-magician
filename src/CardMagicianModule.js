@@ -381,7 +381,7 @@ export default class CardMagicianModule {
     /**
      * Returns the current active set 
      *
-     * @returns {Object}
+     * @returns {object}
      */
     getActiveSet() {
         return Alpine.store('views').activeSet;
