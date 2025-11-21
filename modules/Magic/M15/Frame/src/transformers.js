@@ -28,24 +28,57 @@ export class TrimMaskTransformer extends Transformer {
         return spout.provider.isTrim;
     }
 
+    useDoubleTrim() {
+        return this.allSpouts.some(spout => {
+            return spout.hasSpout(s => {
+                return s.provider.zIndex <= this.provider.zIndex
+                    && s instanceof TrimMaskTransformer;
+            });
+        });
+    }
+
+    get folder() {
+        return this.useDoubleTrim() ? 'doubletrim' : 'trim';
+    }
+
+    get filename() {
+        if (this.card.isSaga?.()) return 'saga.png';
+        if (this.card.isDKA?.()) return 'fullart.png';
+        if (this.card.isPuma?.()) return 'puma.png';
+        return 'normal.png';
+    }
+
+    async resolveBase() {
+        const baseURL = await this.target.apply();
+        if (!this.card.isDevoid?.()) return baseURL;
+        const maskURL = await this.assetURL('mask/trim/devoid.png');
+        return await this.utils.maskImage(baseURL, maskURL);
+    }
+
     async apply() {
-        const maskUrl = await this.assetURL('mask/trim.png');
-        const baseUrl = await this.target.apply();
+        const maskPath = `mask/${this.folder}/${this.filename}`;
+        const maskUrl = await this.assetURL(maskPath);
+        const baseUrl = await this.resolveBase();
         return await this.utils.maskImage(baseUrl, maskUrl);
     }
 }
 
 export class ArtifactBlendTransformer extends Transformer {
     static matches(card, spout) {
-        return card.isArtifact()
+        return card.isArtifact?.()
             && spout.provider instanceof FrameProvider;
+    }
+
+    get maskPath() {
+        // TODO: change folder?
+        return 'mask/normal/artifact_blend.png';
     }
 
     async apply() {
         const key = this.card.isLand() ? 'al' : 'a';
         const artifactPath = `${this.card.frameFolder}/${key}.jpg`;
         const artifactUrl = await this.assetURL(artifactPath);
-        const maskUrl = await this.assetURL('mask/artifact_blend.png');
+        const maskUrl = await this.assetURL(this.maskPath);
         const baseUrl = await this.target.apply();
         return await this.utils.maskedBlend(baseUrl, artifactUrl, maskUrl);
     }
@@ -91,18 +124,6 @@ export class FrameMaskTransformer extends Transformer {
     }
 }
 
-export class DevoidTrimMaskTransformer extends Transformer {
-    static matches(card, spout) {
-        return card.isDevoid?.() && spout.provider.isTrim();
-    }
-
-    async apply() {
-        const baseURL = await this.target.apply();
-        const maskURL = await this.assetURL('mask/devoid_trim.png');
-        return await this.utils.maskImage(baseURL, maskURL);
-    }
-}
-
 export class CrownMaskTransformer extends Transformer {
     static matches(card, spout) {
         return spout.provider instanceof CrownProvider;
@@ -134,11 +155,9 @@ export class CrownMaskTransformer extends Transformer {
     }
 }
 
-
 export default [
     FrameMaskTransformer,
     ArtifactBlendTransformer,
     TrimMaskTransformer,
-    DevoidTrimMaskTransformer,
     CrownMaskTransformer
 ];
