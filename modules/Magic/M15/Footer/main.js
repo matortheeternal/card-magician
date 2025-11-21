@@ -21,10 +21,13 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderInfo(card) {
+        const set = this.getActiveSet();
+        const setCode = card.setCode ? card.setCode : set.info.setCode;
+
         return (
             `<div>
                 <div>${card.collectorNumber}</div>
-                <div>${card.setCode} &bullet; ${card.language}</div>
+                <div>${setCode} &bullet; ${card.language}</div>
             </div>
             <div>
                 <div>${card.rarityCharacter}</div>
