@@ -60,6 +60,13 @@ Alpine.data('listView', (config) => ({
         registerAction('get-listview-selection', () => {
             return this.activeRows.filter(r => r.selected);
         });
+        registerAction('set-listview-selection', (indexesToSelect) => {
+            const maxIndex = Math.max.apply(null, indexesToSelect);
+            for (let i = 0; i < this.activeRows.length; i++) {
+                this.activeRows[i].lastSelected = i === maxIndex;
+                this.activeRows[i].selected = indexesToSelect.includes(i);
+            }
+        });
     },
 
     updateColumnSizes() {
