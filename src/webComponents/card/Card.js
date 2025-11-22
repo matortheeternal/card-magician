@@ -17,7 +17,7 @@ class Card extends HTMLElement {
 
     set card(card) {
         this._card = card;
-        this.canFlip = Boolean(card?.model.front && card?.model.back);
+        this.canFlip = Boolean(card?.model?.front && card?.model?.back);
         if (this.isConnected) this.renderFaces();
     }
 
