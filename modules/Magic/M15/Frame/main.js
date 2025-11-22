@@ -19,6 +19,7 @@ function getBackgroundKey(card) {
 
 export default class FrameModule extends CardMagicianModule {
     async init(card) {
+        card.hybridStyle = 'grey';
         card.isMap = () => false;
         card.isDKA = () => false;
         card.isShifted = () => false;
@@ -53,7 +54,7 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     async updateBackgrounds(card) {
-        if (!card.parent) return;
+        if (!card.parent || card.rulesHTML === undefined) return;
         card.frameFolder = getFrameFolder(card);
         if (!this.backgroundKeyChanged(card)) return;
         this.backgrounds = await runPipeline(card, this);
@@ -65,7 +66,7 @@ export default class FrameModule extends CardMagicianModule {
             card.colorIdentity,
             card.superType,
             card.subType,
-            card.rulesText,
+            card.rulesHTML,
             card.parent
         ], () => this.updateBackgrounds(card))
     }

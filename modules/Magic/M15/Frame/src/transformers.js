@@ -31,8 +31,9 @@ export class TrimMaskTransformer extends Transformer {
     useDoubleTrim() {
         return this.allSpouts.some(spout => {
             return spout.hasSpout(s => {
-                return s.provider.zIndex <= this.provider.zIndex
-                    && s instanceof TrimMaskTransformer;
+                return s.provider.isTrim
+                    && s.provider !== this.provider
+                    && s.provider.zIndex < this.provider.zIndex;
             });
         });
     }
@@ -142,9 +143,11 @@ class ColorBlendTransformer extends Transformer {
         return `${this.provider.maskFolder}/blend_${key}.png`;
     }
 
-    get maskHybridWithGold() {
-        // TODO: controlled by style config
-        return true;
+    get colorKey() {
+        if (this.card.hybridStyle === 'gold')
+            return 'm';
+        if (this.card.hybridStyle === 'grey')
+            return 'c';
     }
 }
 
@@ -152,17 +155,17 @@ class LandBlendMaskTransformer extends ColorBlendTransformer {
     static matches(card, spout) {
         return spout.provider instanceof ColoredProvider
             && card.isLand?.()
+            && card.hybridStyle !== 'hybrid'
             && card.colorIdentity?.isMulticolor();
     }
 
     async apply() {
         const maskPath = this.getBlendMaskPath('hybrid')
         const maskUrl = await this.assetURL(maskPath);
-        const baseUrl = await this.target.apply();
-        const multicolorUrl = await this.provider.resolve('m');
-        const [imgToMaskUrl, imgUrl] = this.maskHybridWithGold
-            ? [multicolorUrl, baseUrl]
-            : [baseUrl, multicolorUrl];
+        const [imgToMaskUrl, imgUrl] = await Promise.all([
+            this.target.apply(),
+            this.provider.resolve(this.colorKey)
+        ]);
         return await this.utils.maskedBlend(imgToMaskUrl, imgUrl, maskUrl);
     }
 }
@@ -179,18 +182,15 @@ class MulticolorBlendMaskTransformer extends ColorBlendTransformer {
         const maskUrl = await this.assetURL(maskPath);
         const baseUrl = await this.target.apply();
         const multicolorUrl = await this.provider.resolve('m');
-        return await this.utils.maskedBlend(multicolorUrl, baseUrl, maskUrl);
+        return await this.utils.maskedBlend(baseUrl, multicolorUrl, maskUrl);
     }
 }
 
 class HybridBlendMaskTransformer extends ColorBlendTransformer {
     static matches(card, spout) {
         return spout.provider instanceof ColoredProvider
+            && card.hybridStyle !== 'hybrid'
             && card.isHybrid?.();
-    }
-
-    get colorKey() {
-        return this.maskHybridWithGold ? 'm' : 'c';
     }
 
     async apply() {
@@ -213,7 +213,7 @@ class ArtifactBlendMaskTransformer extends ColorBlendTransformer {
         const maskUrl = await this.assetURL(maskPath);
         const baseUrl = await this.target.apply();
         const artifactUrl = await this.provider.resolve('a');
-        return await this.utils.maskedBlend(artifactUrl, baseUrl, maskUrl);
+        return await this.utils.maskedBlend(baseUrl, artifactUrl, maskUrl);
     }
 }
 
