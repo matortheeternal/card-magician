@@ -4,7 +4,6 @@ import { registerAction, executeAction } from '../../services/actionRegistry.js'
 import { loadJson } from '../../services/fsHelpers.js';
 import appConfig from '../../appConfig';
 import { buildCard } from '../../services/cardBuilder.js';
-import { selectRow } from '../listView/rowSelectionService.js';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -52,12 +51,6 @@ Alpine.data('setView', () => ({
         registerAction('add-card', this.addCard);
         registerAction('open-set', this.openSet);
         registerAction('delete-selected-cards', this.deleteSelectedCards);
-        registerAction('copy', this.copyCard);
-        registerAction('paste', this.pasteCard);
-        registerAction('cut', () => {
-            this.copyCard();
-            this.deleteSelectedCards();
-        });
     },
 
     newSet() {
@@ -93,29 +86,6 @@ Alpine.data('setView', () => ({
         views.setFilePath = filePath;
         views.activeSet = await loadJson(filePath);
         appConfig.addRecentFile(filePath);
-    },
-
-    copyCard() {
-        const clipboard = [];
-
-        executeAction('get-listview-selection').forEach(r => {
-            clipboard.push(r.original);
-        });
-
-        navigator.clipboard.writeText(JSON.stringify(clipboard));
-    },
-
-    async pasteCard() {
-        const clipboard = JSON.parse(await navigator.clipboard.readText()) || [];
-        const { activeSet } = Alpine.store('views');
-
-        clipboard.forEach(card => {
-            activeSet.cards.push(card);
-        });
-    },
-
-    cutCard() {
-        
     }
 }));
 
