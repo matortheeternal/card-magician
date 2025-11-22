@@ -112,10 +112,6 @@ Alpine.data('setView', () => ({
         clipboard.forEach(card => {
             activeSet.cards.push(card);
         });
-    },
-
-    cutCard() {
-        
     }
 }));
 
@@ -129,3 +125,4 @@ async function openSingleFileDialog() {
     if (!res) return;
     return res[0];
 }
+
