@@ -31,6 +31,10 @@ export async function setGame(gameId) {
     const { default: Module } = await loadImport(mainPath);
     const moduleUtils = buildGameUtils(game.folder);
     await Module(game, moduleUtils);
+    const set = game.newSet();
+    if (!set.cards || !Array.isArray(set.cards)) set.cards = [];
+    if (!set.info) set.info = {};
+    Alpine.store('views').activeSet = set;
     return game;
 }
 
