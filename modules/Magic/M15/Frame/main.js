@@ -65,6 +65,7 @@ export default class FrameModule extends CardMagicianModule {
             card.colorIdentity,
             card.superType,
             card.subType,
+            card.rulesText,
             card.parent
         ], () => this.updateBackgrounds(card))
     }
