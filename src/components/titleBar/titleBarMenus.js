@@ -40,7 +40,7 @@ const actions = {
     redo: () => console.log('Redo'),
     cut: () => executeAction('cut'),
     copy: () => executeAction('copy'),
-    paste: () => executeAction('cut'),
+    paste: () => executeAction('paste'),
     editPreferences: () => console.log('Edit preferences'),
     editSetInfo: () => (Alpine.store('views').activeModal = 'set-info'),
     addCard: () => executeAction('add-card'),
@@ -80,3 +80,4 @@ export const titleBarMenus = [{
         menuItem('Delete Cards', 'Delete', actions.deleteCards),
     ]
 }];
+
