@@ -16,7 +16,9 @@ export default class TextModule extends CardMagicianModule {
     }
 
     async renderRulesHTML(card) {
-        this.rulesHTML = await card.textToHTML(card.rulesText, card);
+        const textSymbols = [];
+        this.rulesHTML = await card.textToHTML(card.rulesText, card, textSymbols);
+        card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
     }

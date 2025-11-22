@@ -29,7 +29,7 @@ export default class SymbolsModule extends CardMagicianModule {
         return output;
     }
 
-    async symbolsToHTML(symbols, useTall) {
+    async symbolsToHTML(symbols, useTall = false) {
         const size = useTall ? 'tall' : 'flat';
         return (await Promise.all(
             symbols.map(async sym => {
