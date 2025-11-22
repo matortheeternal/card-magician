@@ -1,8 +1,10 @@
 import Alpine from 'alpinejs';
 import { saveJson } from '../../services/fsHelpers.js';
 import { executeAction } from '../../services/actionRegistry.js';
+import { registerHotkey } from '../../services/hotkeyService.js';
 
 function menuItem(label, hotkey, action) {
+    if (hotkey !== '') registerHotkey(hotkey, action);
     return { label, value: label.toCamelCase(), hotkey, action };
 }
 
@@ -66,11 +68,11 @@ export const titleBarMenus = [{
         menuItem('Undo', 'Ctrl+Z', actions.undo),
         menuItem('Redo', 'Ctrl+Shift+Z', actions.redo),
         DIVIDER,
-        menuItem('Cut', 'Ctrl+Shift+S', actions.cut),
-        menuItem('Copy', 'Ctrl+P', actions.copy),
-        menuItem('Paste', '', actions.paste),
+        menuItem('Cut', 'Ctrl+X', actions.cut),
+        menuItem('Copy', 'Ctrl+C', actions.copy),
+        menuItem('Paste', 'Ctrl+V', actions.paste),
         DIVIDER,
-        menuItem('Set Info', '', actions.editSetInfo),
+        menuItem('Set Info', 'Ctrl+I', actions.editSetInfo),
         menuItem('Preferences', '', actions.editPreferences),
     ]
 }, {
