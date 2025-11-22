@@ -101,25 +101,24 @@ Alpine.data('setView', () => ({
     },
 
     copyCard() {
-        const clipboard = [];
+        const cards = [];
 
         executeAction('get-listview-selection').forEach(r => {
-            clipboard.push(r.original);
+            cards.push(r.original);
         });
 
-        navigator.clipboard.writeText(JSON.stringify(clipboard));
+        navigator.clipboard.writeText(JSON.stringify({ cards }));
     },
 
     async pasteCard() {
         try {
             const clipboardText = await navigator.clipboard.readText();
             const clipboard = JSON.parse(clipboardText) || [];
-            if (!clipboard.length) return;
+            if (!clipboard?.cards?.length) return;
             const { activeSet } = Alpine.store('views');
 
             let indexToSelect = -1;
             clipboard.forEach(card => {
-                //if (!looksLikeCard(card)) return;
                 indexToSelect = activeSet.cards.push(card) - 1;
             });
             if (indexToSelect === -1) return;
