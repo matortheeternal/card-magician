@@ -1,6 +1,7 @@
 import {
-    checkFileExists, loadJson, loadImport, getImageUrl, loadFont
+    checkFileExists, loadJson, getImageUrl, loadFont
 } from './fsHelpers.js';
+import { loadImport } from './importService.js';
 
 const games = [];
 
@@ -27,7 +28,7 @@ export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) throw new Error('Could not find game:', gameId);
     const mainPath = [game.folder, 'main.js'].join('/');
-    const module = await loadImport(mainPath);
+    const { default: Module } = await loadImport(mainPath);
     const moduleUtils = buildGameUtils(game.folder);
     await module(game, moduleUtils);
     const set = game.newSet();

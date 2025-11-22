@@ -1,4 +1,4 @@
-import { getImageUrl, loadFont, loadImport, loadTextFile } from './services/fsHelpers.js';
+import { getImageUrl, loadFont, loadTextFile } from './services/fsHelpers.js';
 import {
     combineBlendUrl,
     linearBlendUrl,
@@ -7,6 +7,7 @@ import {
     maskImageUrl
 } from './gfx/blending.js';
 import Alpine from 'alpinejs';
+import { loadImport } from './services/importService.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().

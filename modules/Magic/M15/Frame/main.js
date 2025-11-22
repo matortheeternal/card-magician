@@ -1,3 +1,6 @@
+import { runPipeline } from './src/pipeline.js';
+import { getFrameFolder } from './src/frameFolders.js';
+
 function getBackgroundKey(card) {
     return [
         card.frameFolder,
@@ -15,31 +18,29 @@ function getBackgroundKey(card) {
 }
 
 export default class FrameModule extends CardMagicianModule {
-    async init() {
-        const { buildPipeline } = await this.import('backgroundPipeline.js');
-        this.backgroundPipeline = buildPipeline(this);
-    }
-
-    getFrameFolder(card) {
-        const hasTwoFaces = Boolean(card.parent().back);
-        if (hasTwoFaces && card.id === 'front' && card.isTransform && card.isTransform())
-            return 'notched';
-        if (card.isSnow && card.isSnow())
-            return 'snow';
-        if (hasTwoFaces)
-            return card.id;
-        return 'card';
-    }
-
-    async buildBackgrounds(card) {
-        const backgrounds = {};
-        card.backgroundsUsed = [];
-        for (let pipe of this.backgroundPipeline) {
-            if (!pipe.useBackground(card)) continue;
-            card.backgroundsUsed.push(pipe.name);
-            await pipe.apply(card, backgrounds);
-        }
-        return Object.values(backgrounds);
+    async init(card) {
+        card.isMap = () => false;
+        card.isDKA = () => false;
+        card.isShifted = () => false;
+        card.isInverted = () => false;
+        card.isBeyond = () => false;
+        card.isFNM = () => false;
+        card.isEnergyLand = () => false;
+        card.isMiracle = () => false;
+        card.isFrameless = () => false;
+        card.isBorderless = () => false;
+        card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
+        card.isClear = () => false;
+        card.isDevoid = () => false;
+        card.isClearTop = () => false;
+        card.isPuma = () => false;
+        card.isMutate = () => false;
+        card.isBrawl = () => false;
+        card.isCompanion = () => false;
+        card.hasFaceSymbol = () => false;
+        card.isDFC = () => Object.hasOwn(card.parent(), 'back');
+        card.isFrontDFC = () => card.isDFC() && card.id === 'front';
+        card.isBackDFC = () => card.isDFC() && card.id === 'back';
     }
 
     backgroundKeyChanged(card) {
@@ -53,9 +54,9 @@ export default class FrameModule extends CardMagicianModule {
 
     async updateBackgrounds(card) {
         if (!card.parent) return;
-        card.frameFolder = this.getFrameFolder(card);
+        card.frameFolder = getFrameFolder(card);
         if (!this.backgroundKeyChanged(card)) return;
-        this.backgrounds = await this.buildBackgrounds(card);
+        this.backgrounds = await runPipeline(card, this);
         this.requestRender();
     }
 
@@ -64,6 +65,7 @@ export default class FrameModule extends CardMagicianModule {
             card.colorIdentity,
             card.superType,
             card.subType,
+            card.rulesText,
             card.parent
         ], () => this.updateBackgrounds(card))
     }
