@@ -1,5 +1,5 @@
 import Spout from './Spout.js';
-import { CrownProvider, FrameProvider, NyxTrimProvider } from './providers.js';
+import { CrownProvider, FrameProvider, ColoredProvider } from './providers.js';
 
 /**
  * @abstract
