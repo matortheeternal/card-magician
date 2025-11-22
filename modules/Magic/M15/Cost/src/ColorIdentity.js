@@ -9,7 +9,7 @@ const colorNames = {
 function addColor(colors, colorCharacter, sourceKey = 'normal') {
     if (!colors.hasOwnProperty(colorCharacter))
         colors[colorCharacter] = {
-            char: colorCharacter,
+            char: colorCharacter.toLowerCase(),
             name: colorNames[colorCharacter],
             sources: {}
         };

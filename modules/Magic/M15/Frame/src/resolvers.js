@@ -17,7 +17,7 @@ export class Resolver extends Spout {
 
 export class ColorResolver extends Resolver {
     static matches(card, provider) {
-        return !card.colorIdentity.isHybrid()
+        return card.colorIdentity.colors.length !== 2
             && provider instanceof ColoredProvider;
     }
 
@@ -31,7 +31,7 @@ export class ColorResolver extends Resolver {
 
 export class HybridResolver extends Resolver {
     static matches(card, provider) {
-        return card.colorIdentity.isHybrid()
+        return card.colorIdentity.colors.length === 2
             && provider instanceof ColoredProvider;
     }
 
@@ -42,8 +42,8 @@ export class HybridResolver extends Resolver {
             c2 += 'l';
         }
         const images = await Promise.all([
-            this.provider.resolve(c1),
-            this.provider.resolve(c2)
+            this.provider.resolve(c2),
+            this.provider.resolve(c1)
         ]);
         return await this.utils.linearBlend(...images, 0.4, 0, 0.6, 0);
     }
@@ -60,7 +60,7 @@ export class BaseResolver extends Resolver {
 }
 
 export default [
-    ColorResolver,
     HybridResolver,
+    ColorResolver,
     BaseResolver
 ];

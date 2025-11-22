@@ -28,6 +28,10 @@ export class Provider {
 }
 
 export class ColoredProvider extends Provider {
+    get ext() {
+        return '.jpg';
+    }
+
     get hasLandTemplates() {
         return false;
     }
@@ -49,7 +53,7 @@ export class ColoredProvider extends Provider {
     }
 
     async resolve(key) {
-        return await this.assetURL(`${this.folder}/${key}.jpg`);
+        return await this.assetURL(`${this.folder}/${key}${this.ext}`);
     }
 }
 
@@ -64,7 +68,7 @@ export class FrameProvider extends ColoredProvider {
         if (this.card.isMap?.()) return 'mask/map';
         if (this.card.isEnergyLand?.()) return 'mask/energy';
         if (this.card.isDKA?.()) return 'mask/dka';
-        return 'normal';
+        return 'mask/normal';
     }
 
     get hasLandTemplates() {
@@ -73,7 +77,7 @@ export class FrameProvider extends ColoredProvider {
 }
 
 export class CrownProvider extends ColoredProvider {
-    zIndex = 1;
+    zIndex = 8;
 
     static enabled(card) {
         return card.isLegendary?.();
@@ -104,12 +108,39 @@ export class CrownProvider extends ColoredProvider {
     }
 }
 
-
-export class VehicleTrimProvider extends Provider {
-    zIndex = 2;
+export class SnowTrimProvider extends ColoredProvider {
+    zIndex = 3;
 
     static enabled(card) {
-        return card.isVehicle();
+        return card.isSnow?.();
+    }
+
+    get ext() {
+        return '.png';
+    }
+
+    get isTrim() {
+        return true;
+    }
+
+    get hasLandTemplates() {
+        return true;
+    }
+
+    get maskFolder() {
+        return 'mask/snow';
+    }
+
+    get folder() {
+        return 'element/snow';
+    }
+}
+
+export class VehicleTrimProvider extends Provider {
+    zIndex = 4;
+
+    static enabled(card) {
+        return card.isVehicle?.();
     }
 
     get isTrim() {
@@ -122,10 +153,14 @@ export class VehicleTrimProvider extends Provider {
 }
 
 export class NyxTrimProvider extends ColoredProvider {
-    zIndex = 2;
+    zIndex = 5;
 
     static enabled(card) {
-        return card.isEnchantment();
+        return card.isEnchantment?.();
+    }
+
+    get ext() {
+        return '.png';
     }
 
     get maskFolder() {
@@ -133,21 +168,16 @@ export class NyxTrimProvider extends ColoredProvider {
     }
 
     get folder() {
-        return 'nyx';
+        return 'element/nyx';
     }
 
     get isTrim() {
         return true;
     }
-
-    async resolve(key) {
-        // necessary because nyx trims are PNGs, not JPGs
-        return await this.assetURL(`element/${this.folder}/${key}.png`);
-    }
 }
 
 export class BorderProvider extends Provider {
-    zIndex = 3;
+    zIndex = 9;
 
     async resolve() {
         const borderMaskPath = this.card.isLegendary()
@@ -194,6 +224,7 @@ export default [
     BorderProvider,
     CrownProvider,
     NyxTrimProvider,
+    SnowTrimProvider,
     VehicleTrimProvider,
     MiracleTrimProvider,
 ]

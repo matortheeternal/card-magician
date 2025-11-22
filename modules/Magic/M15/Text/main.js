@@ -17,7 +17,7 @@ export default class TextModule extends CardMagicianModule {
 
     async renderRulesHTML(card) {
         const textSymbols = [];
-        this.rulesHTML = await card.textToHTML(card.rulesText, card, textSymbols);
+        card.rulesHTML = await card.textToHTML(card.rulesText, card, textSymbols);
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
@@ -53,7 +53,7 @@ export default class TextModule extends CardMagicianModule {
         const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
             `<auto-fit-text class="${className}" avoid="${avoid}">
-                <div class="rules-text">${this.rulesHTML}</div>
+                <div class="rules-text">${card.rulesHTML}</div>
                 <div class="flavor-bar" style="${flavorBarStyle}"></div>
                 <div class="flavor-text">${this.flavorHTML}</div>
             </auto-fit-text>`
