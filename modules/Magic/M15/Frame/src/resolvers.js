@@ -22,7 +22,9 @@ export class ColorResolver extends Resolver {
     }
 
     async apply() {
-        const key = this.card.getCardColorKey();
+        let key = this.card.getCardColorKey();
+        if (this.provider.hasLandTemplates && this.card.isLand())
+            key += 'l';
         return await this.provider.resolve(key);
     }
 }
