@@ -30,7 +30,7 @@ export async function setGame(gameId) {
     const mainPath = [game.folder, 'main.js'].join('/');
     const { default: Module } = await loadImport(mainPath);
     const moduleUtils = buildGameUtils(game.folder);
-    await module(game, moduleUtils);
+    await Module(game, moduleUtils);
     const set = game.newSet();
     if (!set.cards || !Array.isArray(set.cards)) set.cards = [];
     if (!set.info) set.info = {};
