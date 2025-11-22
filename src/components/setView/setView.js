@@ -29,15 +29,16 @@ Alpine.data('setView', () => ({
         Alpine.initTree(this.$root);
     },
 
-    async setActiveCard(views) {
-        const card = await buildCard(views.selectedCard.model);
+    async setActiveCard(selectedCard) {
+        const views = Alpine.store('views');
+        const card = selectedCard ? await buildCard(selectedCard.model) : {};
         views.activeCard = Alpine.reactive(card);
     },
 
     async selectCard(selectedCard) {
         const views = Alpine.store('views');
-        views.selectedCard = selectedCard;
-        await this.setActiveCard(views);
+        views.selectedCard = selectedCard || {};
+        await this.setActiveCard(selectedCard);
     },
 
     bindEvents() {
@@ -48,12 +49,12 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
-        registerAction('new-set', this.newSet);
-        registerAction('add-card', this.addCard);
-        registerAction('open-set', this.openSet);
-        registerAction('delete-selected-cards', this.deleteSelectedCards);
-        registerAction('copy', this.copyCard);
-        registerAction('paste', this.pasteCard);
+        registerAction('new-set', () => this.newSet());
+        registerAction('add-card', () => this.addCard());
+        registerAction('open-set', () => this.openSet());
+        registerAction('delete-selected-cards', () => this.deleteSelectedCards());
+        registerAction('copy', () => this.copyCard());
+        registerAction('paste', () => this.pasteCard());
         registerAction('cut', () => {
             this.copyCard();
             this.deleteSelectedCards();
@@ -76,6 +77,10 @@ Alpine.data('setView', () => ({
                 return;
             }
             activeSet.cards.splice(index, 1);
+            Alpine.nextTick(() => {
+                executeAction('set-listview-selection', [index - 1]);
+                this.selectCard(activeSet.cards[index - 1]);
+            });
         });
     },
 
@@ -106,12 +111,25 @@ Alpine.data('setView', () => ({
     },
 
     async pasteCard() {
-        const clipboard = JSON.parse(await navigator.clipboard.readText()) || [];
-        const { activeSet } = Alpine.store('views');
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            const clipboard = JSON.parse(clipboardText) || [];
+            if (!clipboard.length) return;
+            const { activeSet } = Alpine.store('views');
 
-        clipboard.forEach(card => {
-            activeSet.cards.push(card);
-        });
+            let indexToSelect = -1;
+            clipboard.forEach(card => {
+                //if (!looksLikeCard(card)) return;
+                indexToSelect = activeSet.cards.push(card) - 1;
+            });
+            if (indexToSelect === -1) return;
+            Alpine.nextTick(() => {
+                executeAction('set-listview-selection', [indexToSelect]);
+                this.selectCard(activeSet.cards[indexToSelect]);
+            });
+        } catch (e) {
+            console.debug('%cPaste failed', 'color:red', e.message);
+        }
     }
 }));
 
