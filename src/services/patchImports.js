@@ -45,6 +45,18 @@ export class SideEffectImportRule extends ImportParserRule {
     }
 }
 
+function resolveImportPath(localPath, parentPath) {
+    return [
+        ...parentPath.split('/').slice(0, -1),
+        ...localPath.split('/')
+    ].reduce((parts, part) => {
+        if (part === '.') return parts;
+        if (part === '..') return parts.slice(0, -1);
+        parts.push(part);
+        return parts;
+    }, []).join('/');
+}
+
 export class ImportNamedRule extends ImportParserRule {
     static match(str) {
         const m = str.match(/^\s*import\s+([\s\S]*?)\s*from\s+['"]([^'"]+)['"]\s*;?/);
@@ -56,8 +68,9 @@ export class ImportNamedRule extends ImportParserRule {
         return [ m[0], bindings, m[2] ];
     }
 
-    static process([ raw, namedBlock, path ], filePath) {
-        return `const ${namedBlock} = await __MODULE_IMPORT__('${path}', '${filePath}');`;
+    static process([ raw, namedBlock, localPath ], currentFilePath) {
+        const filePath = resolveImportPath(localPath, currentFilePath);
+        return `const ${namedBlock} = await __MODULE_IMPORT__('${filePath}');`;
     }
 }
 
@@ -73,9 +86,10 @@ export class ImportDefaultRule extends ImportParserRule {
         return [ m[0], bindings, m[2] ];
     }
 
-    static process([ raw, defaultName, path ], filePath) {
+    static process([ raw, defaultName, localPath ], currentFilePath) {
+        const filePath = resolveImportPath(localPath, currentFilePath);
         return `const ${defaultName} = ` +
-            `await __MODULE_DEFAULT_IMPORT__('${path}', '${filePath}');`
+            `await __MODULE_DEFAULT_IMPORT__('${filePath}');`
     }
 }
 
