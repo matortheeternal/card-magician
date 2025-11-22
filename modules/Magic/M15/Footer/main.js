@@ -22,7 +22,7 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
-        const setCode = card.setCode ? card.setCode : set.info.setCode;
+        const setCode = card.setCode ? card.setCode : set.info?.setCode || '';
 
         return (
             `<div>
