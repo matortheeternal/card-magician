@@ -1,5 +1,5 @@
 import Spout from './Spout.js';
-import { CrownProvider, FrameProvider } from './providers.js';
+import { CrownProvider, FrameProvider, NyxTrimProvider } from './providers.js';
 
 /**
  * @abstract
@@ -63,27 +63,6 @@ export class TrimMaskTransformer extends Transformer {
     }
 }
 
-export class ArtifactBlendTransformer extends Transformer {
-    static matches(card, spout) {
-        return card.isArtifact?.()
-            && spout.provider instanceof FrameProvider;
-    }
-
-    get maskPath() {
-        // TODO: change folder?
-        return 'mask/normal/artifact_blend.png';
-    }
-
-    async apply() {
-        const key = this.card.isLand() ? 'al' : 'a';
-        const artifactPath = `${this.card.frameFolder}/${key}.jpg`;
-        const artifactUrl = await this.assetURL(artifactPath);
-        const maskUrl = await this.assetURL(this.maskPath);
-        const baseUrl = await this.target.apply();
-        return await this.utils.maskedBlend(baseUrl, artifactUrl, maskUrl);
-    }
-}
-
 export class FrameMaskTransformer extends Transformer {
     static matches(card, spout) {
         return spout.provider instanceof FrameProvider;
@@ -117,10 +96,10 @@ export class FrameMaskTransformer extends Transformer {
     }
 
     async apply() {
-        const base = await this.target.apply();
+        const baseUrl = await this.target.apply();
         const maskPath = `mask/frame/${this.maskFileName}`;
-        const mask = await this.assetURL(maskPath);
-        return await this.utils.maskImage(base, mask);
+        const maskUrl = await this.assetURL(maskPath);
+        return await this.utils.maskImage(baseUrl, maskUrl);
     }
 }
 
@@ -155,9 +134,95 @@ export class CrownMaskTransformer extends Transformer {
     }
 }
 
+/**
+ * @abstract
+ */
+class ColorBlendTransformer extends Transformer {
+    getBlendMaskPath(key) {
+        return `${this.provider.maskFolder}/blend_${key}.png`;
+    }
+
+    get maskHybridWithGold() {
+        // TODO: controlled by style config
+        return true;
+    }
+}
+
+class LandBlendMaskTransformer extends ColorBlendTransformer {
+    static matches(card, spout) {
+        return spout.provider instanceof ColoredProvider
+            && card.isLand?.()
+            && card.colorIdentity?.isMulticolor();
+    }
+
+    async apply() {
+        const maskPath = this.getBlendMaskPath('hybrid')
+        const maskUrl = await this.assetURL(maskPath);
+        const baseUrl = await this.target.apply();
+        const multicolorUrl = await this.provider.resolve('m');
+        const [imgToMaskUrl, imgUrl] = this.maskHybridWithGold
+            ? [multicolorUrl, baseUrl]
+            : [baseUrl, multicolorUrl];
+        return await this.utils.maskedBlend(imgToMaskUrl, imgUrl, maskUrl);
+    }
+}
+
+class MulticolorBlendMaskTransformer extends ColorBlendTransformer {
+    static matches(card, spout) {
+        return spout.provider instanceof ColoredProvider
+            && !card.isLand?.()
+            && card.colorIdentity?.isMulticolor();
+    }
+
+    async apply() {
+        const maskPath = this.getBlendMaskPath('multicolor');
+        const maskUrl = await this.assetURL(maskPath);
+        const baseUrl = await this.target.apply();
+        const multicolorUrl = await this.provider.resolve('m');
+        return await this.utils.maskedBlend(multicolorUrl, baseUrl, maskUrl);
+    }
+}
+
+class HybridBlendMaskTransformer extends ColorBlendTransformer {
+    static matches(card, spout) {
+        return spout.provider instanceof ColoredProvider
+            && card.isHybrid?.();
+    }
+
+    get colorKey() {
+        return this.maskHybridWithGold ? 'm' : 'c';
+    }
+
+    async apply() {
+        const maskPath = this.getBlendMaskPath('hybrid');
+        const maskUrl = await this.assetURL(maskPath);
+        const baseUrl = await this.target.apply();
+        const colorUrl = await this.provider.resolve(this.colorKey);
+        return await this.utils.maskedBlend(colorUrl, baseUrl, maskUrl);
+    }
+}
+
+class ArtifactBlendMaskTransformer extends ColorBlendTransformer {
+    static matches(card, spout) {
+        return spout.provider instanceof ColoredProvider
+            && card.isArtifact?.();
+    }
+
+    async apply() {
+        const maskPath = this.getBlendMaskPath('artifact');
+        const maskUrl = await this.assetURL(maskPath);
+        const baseUrl = await this.target.apply();
+        const artifactUrl = await this.provider.resolve('a');
+        return await this.utils.maskedBlend(artifactUrl, baseUrl, maskUrl);
+    }
+}
+
 export default [
+    LandBlendMaskTransformer,
+    MulticolorBlendMaskTransformer,
+    HybridBlendMaskTransformer,
+    ArtifactBlendMaskTransformer,
     FrameMaskTransformer,
-    ArtifactBlendTransformer,
     TrimMaskTransformer,
     CrownMaskTransformer
 ];

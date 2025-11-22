@@ -36,6 +36,14 @@ export class ColoredProvider extends Provider {
      * @abstract
      * @return string
      */
+    get maskFolder() {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * @abstract
+     * @return string
+     */
     get folder() {
         throw new Error('Not implemented');
     }
@@ -52,6 +60,13 @@ export class FrameProvider extends ColoredProvider {
         return `frame/${this.card.frameFolder}`;
     }
 
+    get maskFolder() {
+        if (this.card.isMap?.()) return 'mask/map';
+        if (this.card.isEnergyLand?.()) return 'mask/energy';
+        if (this.card.isDKA?.()) return 'mask/dka';
+        return 'normal';
+    }
+
     get hasLandTemplates() {
         return this.card.frameFolder !== 'energy';
     }
@@ -62,6 +77,10 @@ export class CrownProvider extends ColoredProvider {
 
     static enabled(card) {
         return card.isLegendary?.();
+    }
+
+    get maskFolder() {
+        return 'mask/crown';
     }
 
     get folder() {
@@ -109,6 +128,10 @@ export class NyxTrimProvider extends ColoredProvider {
         return card.isEnchantment();
     }
 
+    get maskFolder() {
+        return 'mask/nyx';
+    }
+
     get folder() {
         return 'nyx';
     }
@@ -140,6 +163,10 @@ export class MiracleTrimProvider extends ColoredProvider {
 
     static enabled(card) {
         return card.isMiracle?.();
+    }
+
+    get maskFolder() {
+        return 'mask/miracle';
     }
 
     get folder() {
