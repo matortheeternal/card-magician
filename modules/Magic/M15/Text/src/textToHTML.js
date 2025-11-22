@@ -6,7 +6,8 @@ const textTransformers = [
     //     }
     // },
     {
-        match: str => str.match(/<sym>([^<]+)<\/sym>/i),
+        match: str => str.match(/<sym>(.+?)<\/sym>/i)
+                   || str.match(/{(.+?)}/),
         apply: async (card, match, outputSymbols) => {
             const symbols = card.parseSymbols(match[1]);
             outputSymbols.push(...symbols);
@@ -34,7 +35,7 @@ function getTextTransformer(token) {
 async function convertToken(token, card, symbols) {
     const [transformer, match] = getTextTransformer(token);
     return transformer
-        ? await transformer.apply(card, match, symbols) + token.slice(match[0].length)
+        ? token.replace(match[0], await transformer.apply(card, match, symbols))
         : token;
 }
 
