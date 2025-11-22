@@ -1,16 +1,23 @@
-import Providers from './providers.js';
-import Resolvers from './resolvers.js';
-import Transformers from './transformers.js';
+//  ║      ║   o╗   ╚╣        ║     ╚══╝       ╚═══╬═══════════╗
+//═╗║  ╔═══╣    ╚═══╗╚╗  Welcome to the background pipeline    ║
+// ║║  ║   ╚══════╗ ║╔╝       ║     ╔══o           ║           ║
+// ║╚══╩╦═══╗     ║ ╚╩════╗  o╩══════╗             ║    ╔══════╝
+// ╠════╬═╗ ╚══╗ o╩o      ║         ╚╝            o╩══════o
+// ╚╗   ║ ╚o   ║          ╚o❄️️
+// 👑  ✨     🔲
+
+import Providers from './providers/index.js';
+import Resolvers from './resolvers/index.js';
+import Transformers from './transformers/index.js';
 
 export function buildProviders(card, module) {
-    return Object.values(Providers)
-        .filter(Provider => Provider.enabled(card))
+    return Providers.filter(Provider => Provider.enabled(card))
         .map(Provider => new Provider(card, module));
 }
 
 export function buildResolvers(providers, card) {
     return providers.map(provider => {
-        const Resolver = Object.values(Resolvers).find(Resolver =>
+        const Resolver = Resolvers.find(Resolver =>
             Resolver.matches(card, provider)
         );
         if (!Resolver) throw new Error(
@@ -23,7 +30,7 @@ export function buildResolvers(providers, card) {
 export function buildSpouts(resolvers, card) {
     const spouts = [];
     resolvers.forEach(resolver => {
-        const spout = Object.values(Transformers).reduce((current, Transformer) => {
+        const spout = Transformers.reduce((current, Transformer) => {
             if (Transformer.matches(card, current))
                 return new Transformer(current, spouts);
             return current;
