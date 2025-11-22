@@ -1,19 +1,12 @@
 import { checkFileExists } from './fsHelpers.js';
 import { patchImports } from './patchImports.js';
 
-async function resolveModuleImport(localPath, parentPath) {
-    return await loadImport([
-        ...parentPath.split('/').slice(0, -1),
-        localPath.replace(/^\.\//, '')
-    ].join('/'));
-}
-
-window.__MODULE_IMPORT__ = async function(localPath, parentPath) {
-    return await resolveModuleImport(localPath, parentPath);
+window.__MODULE_IMPORT__ = async function(filePath) {
+    return await loadImport(filePath);
 };
 
-window.__MODULE_DEFAULT_IMPORT__ = async function(localPath, parentPath) {
-    const mod = await resolveModuleImport(localPath, parentPath);
+window.__MODULE_DEFAULT_IMPORT__ = async function(filePath) {
+    const mod = await loadImport(filePath);
     return mod?.default ?? mod;
 }
 
