@@ -4,6 +4,7 @@ import { registerAction, executeAction } from '../../services/actionRegistry.js'
 import { loadJson } from '../../services/fsHelpers.js';
 import appConfig from '../../appConfig';
 import { buildCard } from '../../services/cardBuilder.js';
+import { selectRow } from '../listView/rowSelectionService.js';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -28,15 +29,16 @@ Alpine.data('setView', () => ({
         Alpine.initTree(this.$root);
     },
 
-    async setActiveCard(views) {
-        const card = await buildCard(views.selectedCard.model);
+    async setActiveCard(selectedCard) {
+        const views = Alpine.store('views');
+        const card = selectedCard ? await buildCard(selectedCard.model) : {};
         views.activeCard = Alpine.reactive(card);
     },
 
     async selectCard(selectedCard) {
         const views = Alpine.store('views');
-        views.selectedCard = selectedCard;
-        await this.setActiveCard(views);
+        views.selectedCard = selectedCard || {};
+        await this.setActiveCard(selectedCard);
     },
 
     bindEvents() {
@@ -47,16 +49,22 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
-        registerAction('new-set', this.newSet);
-        registerAction('add-card', this.addCard);
-        registerAction('open-set', this.openSet);
-        registerAction('delete-selected-cards', this.deleteSelectedCards);
+        registerAction('new-set', () => this.newSet());
+        registerAction('add-card', () => this.addCard());
+        registerAction('open-set', () => this.openSet());
+        registerAction('delete-selected-cards', () => this.deleteSelectedCards());
+        registerAction('copy', () => this.copyCard());
+        registerAction('paste', () => this.pasteCard());
+        registerAction('cut', () => {
+            this.copyCard();
+            this.deleteSelectedCards();
+        });
     },
 
     newSet() {
         const views = Alpine.store('views');
         views.setFilePath = null;
-        views.activeSet = { cards: [] };
+        views.activeSet = Alpine.store('game').newSet();
         views.activeCard = {};
     },
 
@@ -69,6 +77,10 @@ Alpine.data('setView', () => ({
                 return;
             }
             activeSet.cards.splice(index, 1);
+            Alpine.nextTick(() => {
+                executeAction('set-listview-selection', [index - 1]);
+                this.selectCard(activeSet.cards[index - 1]);
+            });
         });
     },
 
@@ -86,6 +98,37 @@ Alpine.data('setView', () => ({
         views.setFilePath = filePath;
         views.activeSet = await loadJson(filePath);
         appConfig.addRecentFile(filePath);
+    },
+
+    copyCard() {
+        const cards = [];
+
+        executeAction('get-listview-selection').forEach(r => {
+            cards.push(r.original);
+        });
+
+        navigator.clipboard.writeText(JSON.stringify({ cards }));
+    },
+
+    async pasteCard() {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            const clipboard = JSON.parse(clipboardText) || [];
+            if (!clipboard?.cards?.length) return;
+            const { activeSet } = Alpine.store('views');
+
+            let indexToSelect = -1;
+            clipboard.forEach(card => {
+                indexToSelect = activeSet.cards.push(card) - 1;
+            });
+            if (indexToSelect === -1) return;
+            Alpine.nextTick(() => {
+                executeAction('set-listview-selection', [indexToSelect]);
+                this.selectCard(activeSet.cards[indexToSelect]);
+            });
+        } catch (e) {
+            console.debug('%cPaste failed', 'color:red', e.message);
+        }
     }
 }));
 
@@ -99,3 +142,4 @@ async function openSingleFileDialog() {
     if (!res) return;
     return res[0];
 }
+
