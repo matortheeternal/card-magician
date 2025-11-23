@@ -87,7 +87,12 @@ Alpine.data('setView', () => ({
     addCard() {
         const game = Alpine.store('game');
         const { activeSet } = Alpine.store('views');
-        activeSet.cards.push(game.newCard());
+        const card = game.newCard();
+        const indexToSelect = activeSet.cards.push(card) - 1;
+        Alpine.nextTick(() => {
+            executeAction('set-listview-selection', [indexToSelect]);
+            this.selectCard(card);
+        });
     },
 
     async openSet(filePath = null) {
