@@ -72,7 +72,7 @@ export const titleBarMenus = [{
         menuItem('Copy', 'Ctrl+C', actions.copy),
         menuItem('Paste', 'Ctrl+V', actions.paste),
         DIVIDER,
-        menuItem('Set Info', 'Ctrl+I', actions.editSetInfo),
+        menuItem('Set Info', '', actions.editSetInfo),
         menuItem('Preferences', '', actions.editPreferences),
     ]
 }, {
