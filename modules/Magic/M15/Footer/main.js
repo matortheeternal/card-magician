@@ -22,18 +22,20 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
-        const setCode = card.setCode ? card.setCode : set.info?.setCode || '';
+        const setCode = card.setCode || set.info?.setCode || '';
+        const language = card.language || set.info?.language || '';
+        const illustrator = card.illustrator || set.info?.illustrator || '';
 
         return (
             `<div>
                 <div>${card.collectorNumber}</div>
-                <div>${setCode} &bullet; ${card.language}</div>
+                <div>${setCode} &bullet; ${language}</div>
             </div>
             <div>
                 <div>${card.rarityCharacter}</div>
                 <div class="illustrator-container">
                     <div class="illustrator-brush">${this.brushSvg}</div>
-                    <div class="illustrator-name">${card.illustrator}</div>
+                    <div class="illustrator-name">${illustrator}</div>
                 </div>
             </div>`
         );
