@@ -40,9 +40,9 @@ const actions = {
     exit: () => Neutralino.app.exit(0),
     undo: () => console.log('Undo'),
     redo: () => console.log('Redo'),
-    cut: () => console.log('Cut'),
-    copy: () => console.log('Copy'),
-    paste: () => console.log('Paste'),
+    cut: () => executeAction('cut'),
+    copy: () => executeAction('copy'),
+    paste: () => executeAction('paste'),
     editPreferences: () => console.log('Edit preferences'),
     editSetInfo: () => (Alpine.store('views').activeModal = 'set-info'),
     addCard: () => executeAction('add-card'),
@@ -72,7 +72,7 @@ export const titleBarMenus = [{
         menuItem('Copy', 'Ctrl+C', actions.copy),
         menuItem('Paste', 'Ctrl+V', actions.paste),
         DIVIDER,
-        menuItem('Set Info', 'Ctrl+I', actions.editSetInfo),
+        menuItem('Set Info', '', actions.editSetInfo),
         menuItem('Preferences', '', actions.editPreferences),
     ]
 }, {
@@ -82,3 +82,4 @@ export const titleBarMenus = [{
         menuItem('Delete Cards', 'Delete', actions.deleteCards),
     ]
 }];
+
