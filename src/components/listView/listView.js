@@ -11,6 +11,7 @@ function makeDefaultDisplayFunction(column) {
 Alpine.data('listView', (config) => ({
     columns: config.columns || [],
     rows: config.rows || [],
+    addRowLabel: config.addRowLabel || 'Click to add a row',
     activeColumns: [],
     activeRows: [],
     async init() {
@@ -112,4 +113,8 @@ Alpine.data('listView', (config) => ({
         selectRow(this.activeRows, row, multiSelect, rangeSelect);
         emit(this.$root, 'row-selected', { row });
     },
+
+    addRowClick() {
+        emit(this.$root, 'add-row-click');
+    }
 }));

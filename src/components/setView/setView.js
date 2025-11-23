@@ -15,6 +15,7 @@ Alpine.data('setView', () => ({
         this.$root.innerHTML = html;
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards;
+        this.addRowLabel = 'Click to add a card or press Ctrl+Enter';
 
         this.$watch('$store.views.activeSet', (set) => {
             const cards = set.cards || [];
@@ -49,6 +50,7 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
+        this.$root.addEventListener('add-row-click', () => this.addCard());
         registerAction('new-set', () => this.newSet());
         registerAction('add-card', () => this.addCard());
         registerAction('open-set', () => this.openSet());
