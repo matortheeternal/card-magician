@@ -4,9 +4,10 @@ import html from './setInfoModal.html';
 Alpine.data('setInfoModal', () => ({
     async init() {
         this.$root.innerHTML = html;
-        this.set = Alpine.store('views').activeSet;
+        const views = Alpine.store('views');
         this.game = Alpine.store('game');
-        document.getElementById('set-info-modal-body').innerHTML = this.game.renderSetInfo();
+        views.activeSet = Object.assign(this.game.newSet(), views.activeSet);
+        this.set = views.activeSet;
         Alpine.initTree(this.$root);
     },
     closeModal() {
