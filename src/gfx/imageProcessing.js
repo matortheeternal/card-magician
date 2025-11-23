@@ -1,4 +1,5 @@
 import html2canvas from 'html2canvas';
+import { checkFileExists } from '../services/fsHelpers.js';
 
 export function imageToCanvas(img) {
     const canvas = document.createElement("canvas");
@@ -38,33 +39,55 @@ export function loadImage(url) {
     });
 }
 
-export function canvasToObjectURL(canvas, type = 'image/png', quality = 0.92) {
+const CANVAS_TYPE = 'image/png';
+const CANVAS_QUALITY = 0.92;
+export function writeCanvasToDisk(canvas, fullPath) {
     return new Promise((resolve, reject) => {
-        canvas.toBlob(blob => {
+        canvas.toBlob(async blob => {
             if (!blob) return reject(new Error('Failed to create blob from canvas'));
-            const url = URL.createObjectURL(blob);
-            resolve(url);
-        }, type, quality);
+            const arrayBuffer = await blob.arrayBuffer();
+            const uint8 = new Uint8Array(arrayBuffer);
+            await Neutralino.filesystem.writeBinaryFile(fullPath, uint8);
+            resolve();
+        }, CANVAS_TYPE, CANVAS_QUALITY);
     });
 }
 
-export function createCachedImageWrapper(coreFunction, numImageArgs, shortcut = false) {
+function fnv1a(str) {
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+        hash ^= str.charCodeAt(i);
+        hash = (hash * 0x01000193) >>> 0;
+    }
+    return (hash >>> 0).toString(16);
+}
+
+export function cacheImages(coreFunction, numImageArgs, shortcut = false) {
     const cache = new Map();
+    const cachePath = NL_DATAPATH + '/cache/images';
 
     return async function (...args) {
         if (shortcut && !args[1]) return args[0];
 
         const key = args.join('|');
-        if (cache.has(key)) return cache.get(key);
+        const filename = `${coreFunction.name}_${fnv1a(key)}.png`;
+        const localPath = `cache/images/${filename}`;
+        const fullPath = `${cachePath}/${filename}`;
+        if (cache.has(fullPath))
+            return cache.get(fullPath);
+        if (await checkFileExists(fullPath)) {
+            cache.set(fullPath, localPath);
+            return fullPath;
+        }
 
         const imageArgs = args.slice(0, numImageArgs);
         const otherArgs = args.slice(numImageArgs);
         const images = await Promise.all(imageArgs.map(url => loadImage(url)));
         const canvas = coreFunction(...images, ...otherArgs);
-        const url = await canvasToObjectURL(canvas);
-        cache.set(key, url);
+        await writeCanvasToDisk(canvas, fullPath);
 
-        return url;
+        cache.set(fullPath, localPath);
+        return localPath;
     };
 }
 
