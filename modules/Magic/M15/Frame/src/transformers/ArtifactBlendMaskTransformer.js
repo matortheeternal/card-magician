@@ -9,10 +9,10 @@ class ArtifactBlendMaskTransformer extends ColorBlendTransformer {
 
     async apply() {
         const maskPath = this.getBlendMaskPath('artifact');
-        const maskUrl = await this.assetURL(maskPath);
+        const maskUrl = this.resolveAsset(maskPath);
         const baseUrl = await this.target.apply();
         const artifactUrl = await this.provider.resolve('a');
-        return await this.utils.maskedBlend(baseUrl, artifactUrl, maskUrl);
+        return await this.ctx.maskedBlend(baseUrl, artifactUrl, maskUrl);
     }
 }
 

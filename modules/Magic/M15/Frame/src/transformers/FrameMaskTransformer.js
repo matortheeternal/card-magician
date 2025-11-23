@@ -36,7 +36,7 @@ export default class FrameMaskTransformer extends Transformer {
     async apply() {
         const baseUrl = await this.target.apply();
         const maskPath = `mask/frame/${this.maskFileName}`;
-        const maskUrl = await this.assetURL(maskPath);
-        return await this.utils.maskImage(baseUrl, maskUrl);
+        const maskUrl = this.resolveAsset(maskPath);
+        return await this.ctx.maskImage(baseUrl, maskUrl);
     }
 }

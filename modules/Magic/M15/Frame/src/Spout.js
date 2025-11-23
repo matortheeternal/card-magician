@@ -4,11 +4,11 @@
 export default class Spout {
     constructor(spoutOrProvider) {
         this.card = spoutOrProvider.card;
-        this.utils = spoutOrProvider.utils;
+        this.ctx = spoutOrProvider.ctx;
     }
 
-    assetURL(path) {
-        return this.utils.assetURL(path);
+    resolveAsset(path) {
+        return this.ctx.resolveAsset(path);
     }
 
     /**

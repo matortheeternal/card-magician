@@ -3,23 +3,19 @@ import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.
 
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
-        return this.assetURL(opt.imagePath).then(imageURL => {
-            opt.imageURL = imageURL;
-        });
+        opt.imageURL = this.resolveAsset(opt.imagePath);
     }
 
     loadFaceSymbolImages() {
-        return Promise.all(
-            this.options
-                .concat(this.options.flatMap(opt => opt.items || []))
-                .filter(opt => Boolean(opt.imagePath))
-                .map(opt => this.loadImage(opt))
-        );
+        this.options
+            .concat(this.options.flatMap(opt => opt.items || []))
+            .filter(opt => Boolean(opt.imagePath))
+            .map(opt => this.loadImage(opt))
     }
 
     async init() {
         this.options = this.makeReactive(options);
-        await this.loadFaceSymbolImages();
+        this.loadFaceSymbolImages();
     }
 
     renderFaceSymbol(card) {
