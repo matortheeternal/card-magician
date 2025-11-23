@@ -1,10 +1,7 @@
-export default async function(game, utils) {
-    const { buildColumns } = await utils.import('columns.js');
-    const { calculateCmc } = await utils.import('cmcCalculator.js');
-    // TODO: eventually we can remove this because we will store colors on the card
-    const { calculateColors } = await utils.import('colorCalculator.js');
+import { buildColumns } from './columns.js';
 
-    const columns = buildColumns({ calculateCmc, calculateColors });
+export default async function(game) {
+    const columns = buildColumns();
     for (let column of columns) game.columns.push(column);
 
     game.defaultTemplateId = 'M15Main';
@@ -18,7 +15,7 @@ export default async function(game, utils) {
     };
 
     game.renderSetInfo = function() {
-        return ( 
+        return (
             `<sl-input label="Title"
                 x-model="set.info.title"
                 autocomplete="off"></sl-input>

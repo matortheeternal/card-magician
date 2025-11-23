@@ -21,7 +21,10 @@ export async function checkFileExists(filePath) {
 const fileCache = new Map();
 export async function loadTextFile(filePath) {
     if (fileCache.has(filePath)) return fileCache.get(filePath);
-    const text = await Neutralino.filesystem.readFile(filePath);
+    const response = await fetch(filePath);
+    if (!response.ok)
+        throw new Error(`Failed to load file ${filePath}, ${response.status}`);
+    const text = await response.text();
     fileCache.set(filePath, text);
     return text;
 }

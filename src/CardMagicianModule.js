@@ -7,7 +7,6 @@ import {
     maskImageUrl
 } from './gfx/blending.js';
 import Alpine from 'alpinejs';
-import { loadImport } from './services/importService.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -182,6 +181,16 @@ export default class CardMagicianModule {
     }
 
     /**
+     * Returns a path for a file in this module's folder.
+     *
+     * @param {string} localPath - Path relative to the module's directory.
+     * @returns {string} - Fully qualified path for the file.
+     */
+    resolvePath(localPath) {
+        return ['modules', this.modulePath, localPath].join('/');
+    }
+
+    /**
      * Returns a path for a file in this module's assets folder.
      *
      * @param {string} assetPath - Path relative to the module's `assets` directory.
@@ -196,12 +205,11 @@ export default class CardMagicianModule {
      * The file is cached on first read.
      *
      * @async
-     * @param {string} filename - Filename relative to the module root.
+     * @param {string} localPath - Path relative to the module root.
      * @returns {Promise<string>} Resolves with the file's text content.
      */
-    async loadFile(filename) {
-        const filePath = ['modules', this.modulePath, filename].join('/');
-        return await loadTextFile(filePath);
+    async loadFile(localPath) {
+        return await loadTextFile(this.resolvePath(localPath));
     }
 
     /**
@@ -281,20 +289,7 @@ export default class CardMagicianModule {
      * @returns {Promise<void>}
      */
     async loadFont(fontName, localPath) {
-        const filePath = ['modules', this.modulePath, 'assets', localPath].join('/');
-        await loadFont(fontName, filePath);
-    }
-
-    /**
-     * Dynamically imports a JavaScript module from within this module folder.
-     *
-     * @async
-     * @param {string} localPath - Module path relative to the module folder.
-     * @returns {Promise<any>} The imported module or its default export.
-     */
-    async import(localPath) {
-        const filePath = ['modules', this.modulePath, localPath].join('/');
-        return await loadImport(filePath);
+        await loadFont(fontName, this.resolveAsset(localPath));
     }
 
     /**
