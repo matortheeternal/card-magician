@@ -1,4 +1,5 @@
-import { getImageUrl, loadFont, loadTextFile } from './services/fsHelpers.js';
+import { loadTextFile } from './services/fsHelpers.js';
+import { loadFont } from './services/fontService.js';
 import {
     combineBlendUrl,
     linearBlendUrl,
