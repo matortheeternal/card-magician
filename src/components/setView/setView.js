@@ -64,7 +64,7 @@ Alpine.data('setView', () => ({
     newSet() {
         const views = Alpine.store('views');
         views.setFilePath = null;
-        views.activeSet = { cards: [] };
+        views.activeSet = Alpine.store('game').newSet();
         views.activeCard = {};
     },
 
