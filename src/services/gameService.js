@@ -1,7 +1,6 @@
 import {
     checkFileExists, loadJson, getImageUrl, loadFont
 } from './fsHelpers.js';
-import { loadImport } from './importService.js';
 
 const games = [];
 
@@ -17,10 +16,6 @@ export const buildGameUtils = (gamePath) => ({
     async loadFont(fontName, localPath) {
         const filePath = [gamePath, 'assets', localPath].join('/');
         await loadFont(fontName, filePath);
-    },
-    import(localPath) {
-        const filePath = [gamePath, localPath].join('/');
-        return loadImport(filePath);
     }
 });
 
@@ -28,7 +23,7 @@ export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) throw new Error('Could not find game:', gameId);
     const mainPath = [game.folder, 'main.js'].join('/');
-    const { default: Module } = await loadImport(mainPath);
+    const { default: Module } = await import(mainPath);
     const moduleUtils = buildGameUtils(game.folder);
     await Module(game, moduleUtils);
     const set = game.newSet();
@@ -48,7 +43,7 @@ export async function loadGames() {
             continue;
         }
         const game = await loadJson(jsonPath);
-        game.folder = gameFolder.path;
+        game.folder = '/' + gameFolder.path;
         game.columns = [];
         games.push(game);
     }
