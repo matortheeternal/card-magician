@@ -14,7 +14,7 @@ export default class PTModule extends CardMagicianModule {
 
     async updatePtStyle(card) {
         const key = card.isVehicle() ? 'v' : card.getCardColorKey();
-        const url = await this.assetURL(key + '.png');
+        const url = this.resolveAsset(key + '.png');
         this.ptStyle = `background-image: url('${url}')`;
         this.requestRender({ render: 'renderPT' });
     }

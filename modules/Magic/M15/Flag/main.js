@@ -1,8 +1,8 @@
 export default class FlagModule extends CardMagicianModule {
-    async updateFlagStyle(card) {
+    updateFlagStyle(card) {
         const key = card.getCardColorKey();
         const folder = card.id === 'back' ? 'back' : 'front';
-        const url = await this.assetURL(`${folder}/${key}.png`);
+        const url = this.resolveAsset(`${folder}/${key}.png`);
         this.flagStyle = `background-image: url('${url}')`;
         this.requestRender();
     }

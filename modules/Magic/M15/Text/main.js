@@ -3,7 +3,7 @@ import textToHTML from './src/textToHTML.js';
 export default class TextModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
-        this.flavorBarUrl = await this.assetURL('grey bar.png');
+        this.flavorBarUrl = this.resolveAsset('grey bar.png');
         card.textToHTML = textToHTML;
 
         // TODO: probably should use a keyword system instead or be just user-configured

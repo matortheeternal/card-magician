@@ -26,6 +26,6 @@ export default class CrownProvider extends ColoredProvider {
 
     async resolve(key) {
         const path = `${this.folder}/${this.subfolder}/${key}.png`;
-        return await this.assetURL(path);
+        return this.resolveAsset(path);
     }
 }
