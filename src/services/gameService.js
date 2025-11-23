@@ -1,14 +1,9 @@
-import {
-    checkFileExists, loadJson, getImageUrl, loadFont
-} from './fsHelpers.js';
+import { checkFileExists, loadJson } from './fsHelpers.js';
+import { loadFont } from './fontService.js';
 
 const games = [];
 
 export const buildGameUtils = (gamePath) => ({
-    async assetURL(path) {
-        const filePath = [gamePath, 'assets', path].join('/');
-        return await getImageUrl(filePath);
-    },
     async loadFile(filename) {
         const filePath = [gamePath, filename].join('/');
         return await Neutralino.filesystem.readFile(filePath);
