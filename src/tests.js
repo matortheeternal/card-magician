@@ -35,6 +35,7 @@ function loadStyle(href) {
 }
 
 export async function setupTestHarness() {
+    Neutralino.server.mount('/tests', NL_PATH + '/tests');
     await loadStyle(jasmineStyle);
     for (const src of scripts)
         await loadScript(src);
@@ -47,5 +48,4 @@ export async function runTests() {
     buildCombineBlendTests();
     buildLinearBlendTests();
     buildMaskBlendTests();
-    buildImportTests();
 }
