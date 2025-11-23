@@ -24,6 +24,9 @@ function setupShoelace() {
 
 function setupNeutralino() {
     Neutralino.init();
+    Neutralino.server.mount('/modules', NL_PATH + '/modules');
+    Neutralino.server.mount('/templates', NL_PATH + '/templates');
+    Neutralino.server.mount('/games', NL_PATH + '/games');
     Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
     Neutralino.window.setSize({ resizable: true });
     Neutralino.window.setDraggableRegion('title-bar').then(result => {
