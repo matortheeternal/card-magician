@@ -182,6 +182,17 @@ export default class CardMagicianModule {
     }
 
     /**
+     * Returns a path for a file in this module's assets folder.
+     *
+     * @async
+     * @param {string} path - Path relative to the module's `assets` directory.
+     * @returns {string} - Fully qualified path for the asset.
+     */
+    resolveAsset(path) {
+        return ['/modules', this.modulePath, 'assets', path].join('/');
+    }
+
+    /**
      * Returns a blob URL for an image in this module's assets folder.
      *
      * @async
@@ -189,8 +200,7 @@ export default class CardMagicianModule {
      * @returns {Promise<BlobURL|undefined>} Blob URL for the image, or undefined if missing.
      */
     async assetURL(path) {
-        const filePath = ['modules', this.modulePath, 'assets', path].join('/');
-        return await getImageUrl(filePath);
+        return this.resolveAssetPath(path);
     }
 
     /**
@@ -380,7 +390,7 @@ export default class CardMagicianModule {
     renderNamed(card) {}
 
     /**
-     * Returns the current active set 
+     * Returns the current active set
      *
      * @returns {object}
      */
