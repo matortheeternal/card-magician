@@ -5,6 +5,7 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 import './extensions.js';
 import './shoelaceFixes.js';
 import CardMagicianModule from './CardMagicianModule.js';
+import CardMagicianGame from './CardMagicianGame.js';
 import { loadTemplates, getTemplates } from './services/templateService.js';
 import { loadGames, setGame } from './services/gameService.js';
 import { setupTestHarness, runTests } from './tests';
@@ -64,6 +65,7 @@ function setupAlpine() {
 
 function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
+    window.CardMagicianGame = CardMagicianGame;
 }
 
 async function startApp() {

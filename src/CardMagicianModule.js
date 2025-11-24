@@ -304,6 +304,15 @@ export default class CardMagicianModule {
     }
 
     /**
+     * Returns the current active set
+     *
+     * @returns {object}
+     */
+    getActiveSet() {
+        return Alpine.store('views').activeSet;
+    }
+
+    /**
      * Request that this module perform a render update.
      *
      * NOTE:
@@ -372,13 +381,4 @@ export default class CardMagicianModule {
      * @returns {string|undefined}
      */
     renderNamed(card) {}
-
-    /**
-     * Returns the current active set
-     *
-     * @returns {object}
-     */
-    getActiveSet() {
-        return Alpine.store('views').activeSet;
-    }
 }
