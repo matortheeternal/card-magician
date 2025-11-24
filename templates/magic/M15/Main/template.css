@@ -74,8 +74,9 @@ module-container[module="ColorIndicator"] img {
 }
 
 module-container[render="renderExpansionSymbol"] {
-    min-width: 10px;
-    min-height: 10px;
+    min-width: 18px;
+    min-height: 18px;
+    padding-left: 4px;
 }
 
 module-container[module="Text"] {
