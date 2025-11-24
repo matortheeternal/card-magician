@@ -22,9 +22,9 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
-        const setCode = card.setCode || set.info?.setCode || '';
-        const language = card.language || set.info?.language || '';
-        const illustrator = card.illustrator || set.info?.illustrator || '';
+        const setCode = card.setCode || set.info.setCode || '';
+        const language = card.language || set.info.language || '';
+        const illustrator = card.illustrator || set.info.illustrator || '';
 
         return (
             `<div>
