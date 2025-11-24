@@ -109,7 +109,6 @@ Alpine.data('setView', () => ({
 
     copyCard() {
         const cards = [];
-
         executeAction('get-listview-selection').forEach(r => {
             cards.push(r.original);
         });
@@ -125,7 +124,7 @@ Alpine.data('setView', () => ({
             const { activeSet } = Alpine.store('views');
 
             let indexToSelect = -1;
-            clipboard.forEach(card => {
+            clipboard.cards.forEach(card => {
                 indexToSelect = activeSet.cards.push(card) - 1;
             });
             if (indexToSelect === -1) return;
