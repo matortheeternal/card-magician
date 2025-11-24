@@ -11,6 +11,7 @@ import { setupTestHarness, runTests } from './tests';
 import appConfig from './appConfig';
 import './components/**/*.js';
 import './directives/*.js';
+import cacheManager from './gfx/CacheManager.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -77,6 +78,7 @@ async function startApp() {
     Alpine.store('game', game);
     await loadTemplates();
     Alpine.store('templates', getTemplates());
+    await cacheManager.preload();
     Alpine.store('views').loaded = true;
 }
 

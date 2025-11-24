@@ -1,6 +1,7 @@
-import { imageToCanvas, newCanvas, cacheImages } from './imageProcessing';
+import { imageToCanvas, newCanvas } from './imageProcessing';
 import { blendFuncs } from './blendFuncs.js';
 import Color from './Color.js';
+import cacheManager from './CacheManager.js';
 
 function blendImageData(baseData, topData, mode) {
     const func = blendFuncs[mode];
@@ -129,8 +130,8 @@ export function maskColor(maskImg, hexColor) {
     return canvas;
 }
 
-export const combineBlendUrl = cacheImages(combineBlend, 2, true);
-export const linearBlendUrl = cacheImages(linearBlend, 2, true);
-export const maskBlendUrl = cacheImages(maskBlend, 3);
-export const maskImageUrl = cacheImages(maskImage, 2);
-export const maskColorUrl = cacheImages(maskColor, 1);
+export const combineBlendUrl = cacheManager.cacheRoutine(combineBlend, 2, true);
+export const linearBlendUrl = cacheManager.cacheRoutine(linearBlend, 2, true);
+export const maskBlendUrl = cacheManager.cacheRoutine(maskBlend, 3);
+export const maskImageUrl = cacheManager.cacheRoutine(maskImage, 2);
+export const maskColorUrl = cacheManager.cacheRoutine(maskColor, 1);

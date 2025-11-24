@@ -61,15 +61,6 @@ export function writeCanvasToDisk(canvas, fullPath, cache, localPath) {
     });
 }
 
-function fnv1a(str) {
-    let hash = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-        hash ^= str.charCodeAt(i);
-        hash = (hash * 0x01000193) >>> 0;
-    }
-    return (hash >>> 0).toString(16);
-}
-
 export function cacheImages(coreFunction, numImageArgs, shortcut = false) {
     const cache = new Map();
     const cachePath = NL_DATAPATH + '/cache/images';
