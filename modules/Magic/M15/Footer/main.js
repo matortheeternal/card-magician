@@ -28,7 +28,7 @@ export default class FooterModule extends CardMagicianModule {
 
         return (
             `<div>
-                <div>${card.collectorNumber}</div>
+                <div>${card.collectorNumber || '&nbsp;'}</div>
                 <div>${setCode} &bullet; ${language}</div>
             </div>
             <div>
