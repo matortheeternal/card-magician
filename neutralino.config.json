@@ -35,6 +35,7 @@
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/resources/icons/appIcon.png",
+      "webviewArgs": "--disable-features=Autofill,PasswordManager,AutofillServerCommunication",
       "enableInspector": true,
       "openInspectorOnStartup": false,
       "borderless": true,
