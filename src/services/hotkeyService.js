@@ -37,9 +37,25 @@ export function registerHotkey(hotkeyStr, action) {
     return hotkey;
 }
 
+function userHasTextSelected() {
+    const sel = window.getSelection();
+    return sel?.type === 'Range'
+        && sel.toString().trim().length > 0;
+}
+
+function isUserEditing() {
+    const el = document.activeElement;
+    if (!el) return false;
+
+    return el.tagName === 'SL-INPUT'
+        || el.tagName === 'SL-TEXTAREA'
+        || userHasTextSelected();
+}
+
 function onKeyDown(event) {
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
+    if (isUserEditing()) return;
     hotkey.action?.();
 }
 
