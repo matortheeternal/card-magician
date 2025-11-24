@@ -83,7 +83,7 @@ export default class CardMagicianGame {
      * Returns an object representing a new card for this game.
      *
      * @abstract
-     * @returns {Record<string, any>}
+     * @returns {Object}
      */
     newCard() {
         return { model: { front: {} } };
@@ -93,11 +93,21 @@ export default class CardMagicianGame {
      * Returns an object representing a new set for this game.
      *
      * @abstract
-     * @returns {Record<string, any>}
+     * @returns {Object}
      */
     newSet() {
         return { cards: [], info: {} };
-    };
+    }
+
+    /**
+     * Patches a set object, ensuring required properties are present.
+     * Use for backwards compatibility.
+     *
+     * @abstract
+     * @param {Object} set - Set object.
+     * @returns {Object}
+     */
+    loadSet(set) { return set; }
 
     /**
      * Returns an HTML string containing the form inputs to render

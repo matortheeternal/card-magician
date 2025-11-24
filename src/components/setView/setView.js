@@ -101,9 +101,10 @@ Alpine.data('setView', () => ({
         filePath = filePath || await openSingleFileDialog();
         if (!filePath) return;
         console.info('%cOpening set:', 'color:gold', filePath);
+        const game = Alpine.store('game');
         const views = Alpine.store('views');
         views.setFilePath = filePath;
-        views.activeSet = await loadJson(filePath);
+        views.activeSet = game.loadSet(await loadJson(filePath));
         appConfig.addRecentFile(filePath);
     },
 
