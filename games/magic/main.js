@@ -3,6 +3,7 @@ import { buildColumns } from './columns.js';
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.setInfoHtml = await this.loadFile('setInfo.html');
+        this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
     }
 
     get columns () {
@@ -13,12 +14,19 @@ export default class MagicTheGathering extends CardMagicianGame {
         return 'M15Main';
     }
 
+    loadSet(set) {
+        const newSet = this.newSet();
+        const info = { ...newSet.info, ...(set?.info ?? {}) };
+        return { ...newSet, ...set, info };
+    }
+
     newCard() {
         return { model: { front: {} } };
     }
 
     newSet() {
-        return { cards: [], info: { language: 'EN', setCode: '' } };
+        const info = { language: 'EN', setCode: '', symbol: this.defaultSetSymbol };
+        return { cards: [], info };
     }
 
     renderSetInfo() {
