@@ -56,7 +56,7 @@ export class CacheManager {
             if (!routine) continue;
             const localPath = `${this.localPath}/${entry}`
             const fullPath = `${this.cachePath}/${entry}`;
-            await loadImage(fullPath);
+            await loadImage(localPath);
             routine.cache.set(fullPath, localPath);
         }
     }

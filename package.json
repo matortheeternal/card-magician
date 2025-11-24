@@ -26,7 +26,8 @@
   "scripts": {
     "build": "node esbuild.config.js --minify",
     "dev": "node esbuild.config.js",
-    "start": "npm run dev && neu run",
+    "release": "neu build --release",
+    "start": "npm run dev && neu run -- --window-enable-inspector",
     "test": "npm run dev && neu run -- --run-tests"
   },
   "dependencies": {
