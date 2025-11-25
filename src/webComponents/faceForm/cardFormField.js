@@ -8,6 +8,7 @@ function renderInput(field, face) {
           size="small"
           name="${esc(field.id)}"
           label="${esc(field.displayName)}"
+          placeholder="${esc(field.placeholder || '')}"
           autocomplete="off"
           type="${field.inputType || 'text'}"
           value="${esc(face[field.id])}"
