@@ -4,7 +4,7 @@ import { emit } from '../../utils.js';
 
 function renderAddButton(label) {
     return (
-        `<sl-button class="add-button" size="small" variant="success" outline>
+        `<sl-button class="add-field-btn" size="small" variant="success" outline>
             <sl-icon slot="prefix" name="plus-lg"></sl-icon>
             Add ${label}
         </sl-button>`
@@ -27,6 +27,7 @@ function createToggle(formGroup, className) {
 }
 
 function renderGroups(face, element) {
+    if (!face.form) return;
     const formGroups = face.form.root.querySelectorAll('form-group');
     formGroups.forEach(formGroup => {
         const showKey = formGroup.getAttribute('show');
@@ -42,12 +43,13 @@ function renderGroups(face, element) {
             formGroup.toggleAttribute('active', show);
             const label = formGroup.getAttribute('label');
             toggleGroup.innerHTML = renderToggle(show, label);
-            emit(element, 'save-face');
+            emit(element, 'save-card');
         });
     });
 }
 
 function renderFields(face, element) {
+    if (!face.fields) return;
     face.fields.forEach(field => {
         const selector = `form-field[field-id="${field.id}"]`;
         const container = face.form.root.querySelector(selector);
@@ -62,7 +64,7 @@ function renderFields(face, element) {
                 && face[field.id] !== undefined;
             childField.style.display = show ? 'block' : 'none';
             toggleField.innerHTML = renderToggle(show, field.displayName);
-            emit(element, 'save-face');
+            emit(element, 'save-card');
         });
     });
 }
@@ -72,8 +74,16 @@ function missingFaceMessage(faceId) {
         `<div class="no-content-prompt">
             <span>This card does not have a ${faceId} face.</span>
             <div class="buttons-container">
-                <sl-button size="large">Add ${faceId} face</sl-button>
+                <sl-button class="add-face-btn" size="large">Add ${faceId} face</sl-button>
             </div>
+        </div>`
+    );
+}
+
+function missingFormMessage() {
+    return (
+        `<div class="no-content-prompt">
+            <span>This face does not have any fields to display.</span>
         </div>`
     );
 }
@@ -112,13 +122,20 @@ class FaceForm extends HTMLElement {
         this.removeEventListener('change', this.onChange);
     }
 
+    getBaseHTML() {
+        const faceId = this.dataset.faceId
+        if (!this._face) return missingFaceMessage(faceId);
+        if (!this._face.form || !this._face.fields)
+            return missingFormMessage();
+        return '';
+    }
+
     render() {
-        const faceId = this.dataset.faceId;
-        this.innerHTML = this.face ? '' : missingFaceMessage(faceId);
-        if (!this.face) return;
-        renderFields(this.face, this);
-        renderGroups(this.face, this);
-        this.appendChild(this.face.form.root);
+        this.innerHTML = this.getBaseHTML();
+        if (!this._face || !this._face.form || !this._face.fields) return;
+        renderFields(this._face, this);
+        renderGroups(this._face, this);
+        this.appendChild(this._face.form.root);
     }
 
     set face(value) {
@@ -187,7 +204,7 @@ class FaceForm extends HTMLElement {
         const fieldId = e.target.getAttribute('name');
         if (!fieldId) return;
         this.face[fieldId] = e?.detail?.value || e.target.value || '';
-        emit(this, 'save-face');
+        emit(this, 'save-card');
     }
 }
 
