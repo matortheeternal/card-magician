@@ -13,16 +13,20 @@ export default class FaceSymbolModule extends CardMagicianModule {
             .map(opt => this.loadImage(opt))
     }
 
-    async init() {
+    async init(card) {
         this.options = this.makeReactive(options);
         this.loadFaceSymbolImages();
     }
 
     renderFaceSymbol(card) {
-        this.selectedFaceSymbol = resolveOption(this.options, card.faceSymbol)
-            || this.options[1];
+        this.selectedFaceSymbol = resolveOption(this.options, card.faceSymbol);
         this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
         this.requestRender();
+    }
+
+    updateDisplay(card) {
+        if (!card.faceSymbol && card.isDFC?.())
+            card.faceSymbol = 'autodetect';
     }
 
     updateAutoSymbols(card) {
@@ -41,11 +45,12 @@ export default class FaceSymbolModule extends CardMagicianModule {
               () => this.updateAutoSymbols(card));
         watch(() => [card.faceSymbol, card.parent],
               () => this.renderFaceSymbol(card));
+        watch(() => card.isDFC?.(), () => this.updateDisplay(card))
     }
 
     render(card) {
-        if (!card.parent || !card.parent().back) return;
-        const src = this.selectedFaceSymbol.imageURL;
+        if (!card.faceSymbol) return;
+        const src = this.selectedFaceSymbol?.imageURL;
         if (!src) return '';
         return (
             `<img src="${src}" class="${this.faceSymbolClass}"/>`
@@ -58,7 +63,8 @@ export default class FaceSymbolModule extends CardMagicianModule {
             type: 'select',
             displayName: 'Face Symbol',
             options: this.options,
-            default: 'autodetect'
+            initialValue: 'autodetect',
+            default: null
         }];
     }
 

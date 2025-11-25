@@ -22,7 +22,7 @@ export const frameFolderRules = [
     new FrameFolderRule('notched', card => {
         return card.isFrontDFC?.() && card.isTransform?.()
     }),
-    new FrameFolderRule('front', card => card.isFrontDFC?.()),
+    new FrameFolderRule('front', card => Boolean(card.faceSymbol)),
     new FrameFolderRule('back',  card => card.isBackDFC?.()),
     new FrameFolderRule('devoid',  card => card.isDevoid?.()),
     new FrameFolderRule('normal', () => true),

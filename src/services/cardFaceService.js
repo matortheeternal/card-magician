@@ -51,48 +51,29 @@ async function loadField(model, dataToLoad, field) {
     return dataToLoad[field.id];
 }
 
-function createFormGroup(form, groupName) {
-    const group = { groupName, isGroup: true, fields: [] };
-    form.push(group);
-    return group;
-}
+class DOMBuilder {
+    root = document.createElement('div');
+    style = document.createElement('style');
+    styles = [];
 
-function getFormContainer(form, field) {
-    if (!field.group) return form;
-    const group = form.find(entry => {
-        return entry.isGroup && entry.groupName === field.group;
-    }) || createFormGroup(form, field.group);
-    return group.fields;
+    setHTML(html) {
+        this.root.innerHTML = html;
+        this.root.prepend(this.style);
+    }
+
+    addCSS(css) {
+        this.styles.push(css);
+        this.style.innerHTML = this.styles.join('\n\n');
+    }
 }
 
 export function initCardFace(key) {
-    const style = document.createElement('style');
-    const styles = [];
-    const dom = document.createElement('div');
     return Alpine.reactive({
         id: key,
-        dom,
+        dom: new DOMBuilder(),
+        form: new DOMBuilder(),
         subCards: [],
         fields: [],
-        form: [],
-        addField(field) {
-            this.fields.push(field);
-            this[field.id] = field.default || '';
-            const formContainer = getFormContainer(this.form, field);
-            formContainer.push(field);
-        },
-        publishElement(selector, html) {
-            const targetElement = dom.querySelector(selector);
-            targetElement.innerHTML = html;
-        },
-        addStyle(css) {
-            styles.push(css);
-            style.innerHTML = styles.join('\n\n');
-        },
-        setFrame(html) {
-            dom.innerHTML = html;
-            dom.prepend(style);
-        },
         async save() {
             const cardData = {};
             for (const field of this.fields)

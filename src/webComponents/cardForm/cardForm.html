@@ -1,0 +1,19 @@
+<sl-tab-group>
+    <sl-tab slot="nav" panel="frontFields">Front Fields</sl-tab>
+    <sl-tab slot="nav" panel="backFields">Back Fields</sl-tab>
+    <sl-tab slot="nav" panel="frontStyle">Front Style</sl-tab>
+    <sl-tab slot="nav" panel="backStyle">Back Style</sl-tab>
+
+    <sl-tab-panel name="frontFields">
+        <cm-face-form data-face-id="front"></cm-face-form>
+    </sl-tab-panel>
+    <sl-tab-panel name="backFields">
+        <cm-face-form data-face-id="back"></cm-face-form>
+    </sl-tab-panel>
+    <sl-tab-panel name="frontStyle">
+        <cm-face-form data-type="style" data-face-id="front"></cm-face-form>
+    </sl-tab-panel>
+    <sl-tab-panel name="backStyle">
+        <cm-face-form data-type="style" data-face-id="back"></cm-face-form>
+    </sl-tab-panel>
+</sl-tab-group>

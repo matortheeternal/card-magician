@@ -28,7 +28,8 @@ sl-dropdown.select-like sl-menu {
 
 sl-dropdown.select-like sl-menu-item::part(base) {
     padding: var(--sl-spacing-2x-small) var(--sl-spacing-small);
-    line-height: 1.5;
+    line-height: 1.7;
+    font-size: 95%;
 }
 
 sl-dropdown.select-like sl-menu-item::part(checked-icon) {
@@ -59,7 +60,7 @@ sl-menu-item.selected::part(base) {
     color: var(--sl-color-primary-700);
 }
 
-sl-dropdown.select-like sl-menu-item::part(prefix) {
+sl-dropdown.select-like.has-icons sl-menu-item::part(prefix) {
     width: 2em;
 }
 

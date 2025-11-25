@@ -7,6 +7,7 @@
 @import "webComponents/cardForm/cardForm.css";
 @import "webComponents/cardFormSelect/cardFormSelect.css";
 @import "webComponents/card/card.css";
+@import "webComponents/faceForm/faceForm.css";
 
 * {
     box-sizing: border-box;

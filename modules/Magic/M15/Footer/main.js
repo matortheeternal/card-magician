@@ -1,9 +1,10 @@
 export default class FooterModule extends CardMagicianModule {
-    async init() {
+    async init(card) {
         this.brushSvg = await this.loadFile('assets/art.svg');
         await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
         await this.loadFont('Relay Medium', 'relay-medium.ttf');
         await this.loadFont('MPlantin', 'mplantin.ttf');
+        card.showFooterOverrides = false;
     }
 
     bind(card, watch) {
