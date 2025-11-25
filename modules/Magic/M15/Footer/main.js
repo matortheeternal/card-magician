@@ -43,14 +43,17 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderLegal(card) {
-        return card.legalText;
+        const set = this.getActiveSet();
+        return card.legalText || set.info.legalText;
     }
 
     get fields() {
+        const set = this.getActiveSet();
         return [{
             id: 'illustrator',
             displayName: 'Illustrator',
-            group: 'footer'
+            group: 'footer',
+            placeholder: set.info.illustrator
         }, {
             id: 'collectorNumber',
             displayName: 'Collector Number',
@@ -58,15 +61,18 @@ export default class FooterModule extends CardMagicianModule {
         }, {
             id: 'setCode',
             displayName: 'Set Code',
-            group: 'footer-ext'
+            group: 'footer-ext',
+            placeholder: set.info.setCode
         }, {
             id: 'language',
             displayName: 'Language',
-            group: 'footer-ext'
+            group: 'footer-ext',
+            placeholder: set.info.language
         }, {
             id: 'legalText',
             displayName: 'Legal Text',
-            group: 'footer-ext'
+            group: 'footer-ext',
+            placeholder: set.info.legalText
         }];
     }
 
