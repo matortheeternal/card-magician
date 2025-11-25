@@ -49,7 +49,7 @@ function setupTemplate(card, faceData) {
     return template;
 }
 
-async function buildCardFace(parent, key, faceData) {
+export async function buildCardFace(parent, key, faceData) {
     const card = initCardFace(key);
     const template = setupTemplate(card, faceData);
     const modules = await loadModules(card, template.card || []);
