@@ -24,11 +24,6 @@ export default class FaceSymbolModule extends CardMagicianModule {
         this.requestRender();
     }
 
-    updateDisplay(card) {
-        if (!card.faceSymbol && card.isDFC?.())
-            card.faceSymbol = 'autodetect';
-    }
-
     updateAutoSymbols(card) {
         if (!card.parent) return;
         for (const option of this.options) {
@@ -45,7 +40,6 @@ export default class FaceSymbolModule extends CardMagicianModule {
               () => this.updateAutoSymbols(card));
         watch(() => [card.faceSymbol, card.parent],
               () => this.renderFaceSymbol(card));
-        watch(() => card.isDFC?.(), () => this.updateDisplay(card))
     }
 
     render(card) {
