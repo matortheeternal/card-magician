@@ -25,17 +25,30 @@ export function setupRenderPipeline(card, modules) {
     });
 }
 
+function loadFields(card, modules) {
+    for (const module of modules)
+        module.fields.forEach(field => {
+            card.fields.push(field);
+            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+        });
+}
+
+function loadStyles(card, modules) {
+    return Promise.all(
+        modules.map(async module => {
+            if (!module.styles) return;
+            const styles = await module.styles();
+            styles.forEach(style => card.dom.addCSS(style));
+        })
+    );
+}
+
 export async function initializeModules(card, modules) {
     await Promise.all(modules.map(module => {
         return module.init(card);
     }));
-    for (const module of modules)
-        module.fields.forEach(field => card.addField(field));
-    return Promise.all(modules.map(async module => {
-        if (!module.styles) return;
-        const styles = await module.styles();
-        styles.forEach(style => card.addStyle(style));
-    }));
+    loadFields(card, modules);
+    return loadStyles(card, modules);
 }
 
 export function bindEffects(card) {

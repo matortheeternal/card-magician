@@ -2,7 +2,7 @@ import { emit } from '../utils.js';
 
 function getModuleContainers(card, module) {
     const selector = `module-container[module="${module.name}"]`;
-    const containers = Array.from(card.dom.querySelectorAll(selector));
+    const containers = Array.from(card.dom.root.querySelectorAll(selector));
     return containers.map(element => ({
         renderKey: element.getAttribute('render') || 'render',
         subcardKey: element.getAttribute('subcard'),
@@ -53,8 +53,10 @@ export default class RenderScheduler {
 
     static flushComplete(queue) {
         const uniqueCards = new Set(queue.map(task => task.card));
-        for (const card of uniqueCards)
-            emit(card.dom.getRootNode(), 'RenderScheduler:flushed', { tasks: queue });
+        for (const card of uniqueCards) {
+            const root = card.dom.root.getRootNode();
+            emit(root, 'RenderScheduler:flushed', { tasks: queue });
+        }
     }
 
     static flush() {

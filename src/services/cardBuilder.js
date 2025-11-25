@@ -27,21 +27,25 @@ function buildSubcards(card, subcards, faceData) {
     }));
 }
 
+const templateField = () => ({
+    id: 'template',
+    type: 'select',
+    displayName: 'Template',
+    options: Alpine.store('templates').map(template => ({
+        id: template.id,
+        name: template.label
+    }))
+})
+
 function setupTemplate(card, faceData) {
-    card.addField({
-        id: 'template',
-        type: 'select',
-        displayName: 'Template',
-        options: Alpine.store('templates').map(t => ({
-            id: t.id,
-            name: t.label
-        })),
-        default: Alpine.store('game').defaultTemplateId,
-    });
+    card.fields.push(templateField());
+    card.template = Alpine.store('game').defaultTemplateId;
     const templateId = faceData.template || card.template;
     const template = getTemplate(templateId);
-    card.setFrame(template.html);
-    card.addStyle(template.css);
+    card.dom.setHTML(template.html);
+    card.dom.addCSS(template.css);
+    card.form.setHTML(template.formHTML);
+    card.form.addCSS(template.formCSS);
     return template;
 }
 

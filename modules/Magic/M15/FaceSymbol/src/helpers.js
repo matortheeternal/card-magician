@@ -14,6 +14,7 @@ export function resolveGroupOption(options, groupId, symbolId) {
 }
 
 export function resolveOption(options, symbolId) {
+    if (!symbolId) return;
     const symbolParts = symbolId.split('/');
     return symbolParts.length > 1
         ? resolveGroupOption(options, symbolParts[0], symbolId)
@@ -21,6 +22,7 @@ export function resolveOption(options, symbolId) {
 }
 
 export function getFaceSymbolClass(option) {
+    if (!option) return '';
     const id = option.res ? option.res.id : option.id;
     return id.replaceAll('_', '-').replaceAll('/', ' ');
 }
