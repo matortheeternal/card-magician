@@ -1,4 +1,3 @@
-import html2canvas from 'html2canvas';
 import { checkFileExists } from '../services/fsHelpers.js';
 
 export function imageToCanvas(img) {
@@ -88,20 +87,6 @@ export function cacheImages(coreFunction, numImageArgs, shortcut = false) {
         const canvas = coreFunction(...images, ...otherArgs);
         return await writeCanvasToDisk(canvas, fullPath, cache, localPath);
     };
-}
-
-export async function saveHTMLAsImage(node, filename) {
-  try {
-    const canvas = await html2canvas(node);
-    const dataUrl = canvas.toDataURL('image/png');
-    const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
-    const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-    await Neutralino.filesystem.writeBinaryFile(filename, binaryData);
-
-    console.log(`Saved image to ${filename}`);
-  } catch (err) {
-    console.error('Failed to save image:', err);
-  }
 }
 
 export function getImageSize(url) {

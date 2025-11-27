@@ -1,4 +1,4 @@
-:host {
+:host > div {
     display: block;
     overflow: hidden;
     position: relative;
