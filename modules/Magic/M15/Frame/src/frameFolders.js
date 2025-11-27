@@ -20,9 +20,11 @@ export const frameFolderRules = [
     new FrameFolderRule('snow', card => card.isSnow?.()),
     new FrameFolderRule('energy', card => card.isEnergyLand?.()),
     new FrameFolderRule('notched', card => {
-        return card.isFrontDFC?.() && card.isTransform?.()
+        return card.isFrontDFC?.() && card.isTransform?.();
     }),
-    new FrameFolderRule('front', card => Boolean(card.faceSymbol)),
+    new FrameFolderRule('front', card => {
+        return Boolean(card.faceSymbol) && card.id === 'front';
+    }),
     new FrameFolderRule('back',  card => card.isBackDFC?.()),
     new FrameFolderRule('devoid',  card => card.isDevoid?.()),
     new FrameFolderRule('normal', () => true),
