@@ -80,6 +80,8 @@ export function initCardFace(key) {
             const cardData = {};
             for (const field of this.fields)
                 cardData[field.id] = await saveField(this, field);
+            for (const option of this.options)
+                cardData[option.id] = await saveField(this, option);
             for (const subCard of this.subCards)
                 cardData[subCard.id] = await subCard.save();
             return cardData;
@@ -89,6 +91,9 @@ export function initCardFace(key) {
             for (const field of this.fields)
                 if (cardData.hasOwnProperty(field.id))
                     this[field.id] = await loadField(this, cardData, field);
+            for (const option of this.options)
+                if (cardData.hasOwnProperty(option.id))
+                    this[option.id] = await loadField(this, cardData, option);
         }
     });
 }
