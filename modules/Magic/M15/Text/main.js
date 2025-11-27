@@ -49,7 +49,7 @@ export default class TextModule extends CardMagicianModule {
             `background-image: url('${this.flavorBarUrl}')`,
             this.showFlavorBar ? '' : 'display: none'
         ].join('; ');
-        const avoid = this.getAvoidSelectors(card).join(', ');
+        const avoid = this.getAvoidSelectors(card).join('; ');
         const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
             `<auto-fit-text class="${className}" avoid="${avoid}">
