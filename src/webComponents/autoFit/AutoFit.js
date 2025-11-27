@@ -1,9 +1,6 @@
 import { binarySearch } from '../../utils.js';
 
 export default class AutoFit extends HTMLElement {
-    _frozen = false;
-    _fitting = false;
-
     static get observedAttributes() {
         return ['min', 'max'];
     }
@@ -11,34 +8,19 @@ export default class AutoFit extends HTMLElement {
     constructor() {
         super();
         this.minFont = 8;
-        this.freeze = this.freeze.bind(this);
-        this.thaw = this.thaw.bind(this);
-        this.resizeObserver = new ResizeObserver(() => {
-            if (!this._fitting && !this._frozen)
-                this.queueFit();
-        });
+        this.queueFit = this.queueFit.bind(this);
+        this.resizeObserver = new ResizeObserver(this.queueFit);
     }
 
     connectedCallback() {
-        document.addEventListener('freeze-resize', this.freeze);
-        document.addEventListener('thaw-resize', this.thaw);
+        this.addEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.observe(this);
-        this.queueFit();
+        document.fonts.ready.then(() => this.queueFit());
     }
 
     disconnectedCallback() {
-        document.removeEventListener('freeze-resize', this.freeze);
-        document.removeEventListener('thaw-resize', this.thaw);
+        this.removeEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.disconnect();
-    }
-
-    freeze() {
-        this._frozen = true;
-    }
-
-    thaw() {
-        this._frozen = false;
-        this.queueFit();
     }
 
     attributeChangedCallback(name, _, value) {
@@ -48,8 +30,12 @@ export default class AutoFit extends HTMLElement {
     }
 
     queueFit() {
-        cancelAnimationFrame(this._raf);
-        this._raf = requestAnimationFrame(() => this.fit());
+        if (this._pending) return;
+        this._pending = true;
+        queueMicrotask(() => {
+            this._pending = false;
+            this.fit();
+        });
     }
 
     checkFit() {
@@ -57,10 +43,7 @@ export default class AutoFit extends HTMLElement {
     }
 
     fit() {
-        if (this.checkFit(this.maxFont)) return;
-        if (!this.checkFit(this.minFont)) return;
-        this._fitting = true;
-
+        if (window.__EXPORTING__) return;
         const best = binarySearch(
             this.minFont,
             this.maxFont,
@@ -68,6 +51,5 @@ export default class AutoFit extends HTMLElement {
             6
         );
         this.style.fontSize = `${best}px`;
-        this._fitting = false;
     }
 }
