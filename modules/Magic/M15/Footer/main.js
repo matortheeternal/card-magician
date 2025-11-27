@@ -48,32 +48,15 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     get fields() {
-        const set = this.getActiveSet();
-        return [{
-            id: 'illustrator',
-            displayName: 'Illustrator',
-            group: 'footer',
-            placeholder: set.info.illustrator
-        }, {
-            id: 'collectorNumber',
-            displayName: 'Collector Number',
-            group: 'footer-ext'
-        }, {
-            id: 'setCode',
-            displayName: 'Set Code',
-            group: 'footer-ext',
-            placeholder: set.info.setCode
-        }, {
-            id: 'language',
-            displayName: 'Language',
-            group: 'footer-ext',
-            placeholder: set.info.language
-        }, {
-            id: 'legalText',
-            displayName: 'Legal Text',
-            group: 'footer-ext',
-            placeholder: set.info.legalText
-        }];
+        const setInfo = this.getActiveSet()?.info || {};
+        const { illustrator, setCode, language, legalText } = setInfo;
+        return [
+            { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
+            { id: 'collectorNumber', displayName: 'Collector Number' },
+            { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
+            { id: 'language', displayName: 'Language', placeholder: language },
+            { id: 'legalText', displayName: 'Legal Text', placeholder: legalText }
+        ];
     }
 
     async styles() {

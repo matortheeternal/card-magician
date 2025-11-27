@@ -50,15 +50,10 @@ export default class FlagModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{
-            id: 'flagLeft',
-            displayName: 'Flag Left',
-            group: 'flag',
-        }, {
-            id: 'flagRight',
-            displayName: 'Flag Right',
-            group: 'flag',
-        }]
+        return [
+            { id: 'flagLeft', displayName: 'Flag Left' },
+            { id: 'flagRight', displayName: 'Flag Right' }
+        ];
     }
 
     async styles() {
