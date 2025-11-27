@@ -32,7 +32,10 @@ export default class TextModule extends CardMagicianModule {
     bind(card, watch) {
         watch(() => card.rulesText, () => this.renderRulesHTML(card));
         watch(() => card.flavorText, () => this.renderFlavorHTML(card));
-        watch(() => [card.showPT, card.showFlag], () => this.requestRender());
+        watch(
+            () => [card.showPT, card.showFlag, card.maxFontSize],
+            () => this.requestRender()
+        );
     }
 
     getAvoidSelectors(card) {
@@ -51,8 +54,9 @@ export default class TextModule extends CardMagicianModule {
         ].join('; ');
         const avoid = this.getAvoidSelectors(card).join('; ');
         const className = `text${card.showFlag ? ' flag-padding' : ''}`;
+        const maxFont = card.maxFontSize || '19';
         return (
-            `<auto-fit-text class="${className}" avoid="${avoid}">
+            `<auto-fit-text max="${maxFont}" class="${className}" avoid="${avoid}">
                 <div class="rules-text">${card.rulesHTML}</div>
                 <div class="flavor-bar" style="${flavorBarStyle}"></div>
                 <div class="flavor-text">${this.flavorHTML}</div>
@@ -80,8 +84,8 @@ export default class TextModule extends CardMagicianModule {
             id: 'chopBottom',
             displayName: 'Chop Bottom'
         }, {
-            id: 'fontCap',
-            displayName: 'Font Cap'
+            id: 'maxFontSize',
+            displayName: 'Max Font Size'
         }]
     }
 
