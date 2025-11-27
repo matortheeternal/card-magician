@@ -29,6 +29,9 @@ export function bindCustomDragEvents(element, callbacks) {
 }
 
 export function binarySearch(min, max, check, maxIt) {
+    if (check(max)) return max;
+    if (!check(min)) return min;
+
     let low = min;
     let high = max;
     let best = low;

@@ -1,5 +1,3 @@
-import { emit } from '../../utils.js';
-
 class Card extends HTMLElement {
     _card;
     canFlip = false;
@@ -28,7 +26,6 @@ class Card extends HTMLElement {
     startInitializing() {
         this.initializedFaces.clear();
         this.expectedFaceCount = Object.keys(this._card.model).length;
-        emit(document, 'freeze-resize');
         this.classList.add('initializing');
         this.addEventListener(
             'card-face:initialized',
@@ -47,7 +44,6 @@ class Card extends HTMLElement {
             'card-face:initialized',
             this.finishInitializing
         );
-        emit(document, 'thaw-resize');
     }
 
     renderFaces() {
