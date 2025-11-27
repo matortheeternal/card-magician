@@ -43,7 +43,7 @@ class AutoFitText extends AutoFit {
     }
 
     updateForbiddenRects(value) {
-        const selectors = value.split(',')
+        const selectors = value.split(';')
             .map(s => s.trim())
             .filter(Boolean);
         const root = this.getRootNode();
