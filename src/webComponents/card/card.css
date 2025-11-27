@@ -6,38 +6,44 @@ cm-card {
 cm-card.flip-container {
     min-height: 523px;
     display: block;
-    transition: transform 200ms;
-    transform-style: preserve-3d;
+    position: relative;
 }
 
-cm-card.flipped {
-    transition: transform 750ms;
+cm-card.flipping {
+    transition: transform 750ms ease;
+    transform-style: preserve-3d;
     transform: rotateY(-180deg);
+    pointer-events: none;
+}
+
+cm-card.flipping:not(.flipped) {
+    transition: transform 200ms;
 }
 
 cm-card.flip-container > cm-card-face {
     backface-visibility: hidden;
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
 }
 
-cm-card.flip-container  > cm-card-face:first-of-type {
+cm-card.flip-container:not(.flipping) > cm-card-face.front,
+cm-card.flip-container.flipped:not(.flipping) > cm-card-face.back {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+cm-card.flip-container:not(.flipping) > cm-card-face.back,
+cm-card.flip-container.flipped:not(.flipping) > cm-card-face.front {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+cm-card.flipping.flipped > cm-card-face.front,
+cm-card.flipping:not(.flipped) > cm-card-face.back {
     transform: rotateY(0deg);
 }
 
-cm-card.flip-container  > cm-card-face:last-of-type {
+cm-card.flipping.flipped > cm-card-face.back,
+cm-card.flipping:not(.flipped) > cm-card-face.front {
     transform: rotateY(180deg);
-}
-
-cm-card.initializing:not(.flipped) > cm-card-face:last-of-type {
-    backface-visibility: visible !important;
-    position: static !important;
-    visibility: hidden !important;
-}
-
-cm-card.initializing.flipped > cm-card-face:first-of-type {
-    backface-visibility: visible !important;
-    position: static !important;
-    visibility: hidden !important;
 }

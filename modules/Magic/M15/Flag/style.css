@@ -22,7 +22,7 @@ module-container[module="Flag"] {
     font-kerning: none;
 }
 
-:host(.face-front) module-container[module="Flag"] {
+:host(.front) module-container[module="Flag"] {
     color: white;
 }
 
