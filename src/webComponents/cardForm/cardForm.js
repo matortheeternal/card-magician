@@ -40,7 +40,7 @@ class CardForm extends HTMLElement {
     async handleOnClick(event) {
         const btn = event.target.closest('sl-button');
         if (!btn || !btn.classList.contains('add-face-btn')) return;
-        const faceForm = btn.closest('cm-face-form');
+        const faceForm = btn.closest('cm-face-form, cm-options-form');
         const faceId = faceForm?.dataset?.faceId;
         this._card[faceId] = {};
         this._card[faceId] = await buildCardFace(this._card, faceId);
