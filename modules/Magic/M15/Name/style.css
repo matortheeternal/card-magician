@@ -9,6 +9,6 @@ module-container[module="Name"] {
     font-kerning: none;
 }
 
-:host(.face-back) module-container[module="Name"] {
+:host(.back) module-container[module="Name"] {
     color: white;
 }
