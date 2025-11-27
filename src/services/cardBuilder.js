@@ -37,37 +37,39 @@ const templateField = () => ({
     }))
 })
 
-function setupTemplate(card, faceData) {
-    card.fields.push(templateField());
-    card.template = Alpine.store('game').defaultTemplateId;
-    const templateId = faceData.template || card.template;
+function setupTemplate(face, faceData) {
+    face.fields.push(templateField());
+    face.template = Alpine.store('game').defaultTemplateId;
+    const templateId = faceData.template || face.template;
     const template = getTemplate(templateId);
-    card.dom.setHTML(template.html);
-    card.dom.addCSS(template.css);
-    card.form.setHTML(template.formHTML);
-    card.form.addCSS(template.formCSS);
+    face.dom.setHTML(template.html);
+    face.dom.addCSS(template.css);
+    face.form.setHTML(template.form.html);
+    face.form.addCSS(template.form.css);
+    face.optionsForm.setHTML(template.options.html);
+    face.optionsForm.addCSS(template.options.css);
     return template;
 }
 
-export async function buildCardFace(parent, key, faceData) {
-    const card = initCardFace(key);
-    const template = setupTemplate(card, faceData);
-    const modules = await loadModules(card, template.card || []);
-    await setupRenderPipeline(card, modules);
-    await initializeModules(card, modules);
-    await card.load(faceData);
-    card.subcards = await buildSubcards(card, template.subcards, faceData);
-    card.parent = () => parent;
-    card.modules = () => modules;
-    parent[key] = card;
-    return card;
+export async function buildCardFace(card, key, faceData) {
+    const face = initCardFace(key);
+    const template = setupTemplate(face, faceData);
+    const modules = await loadModules(face, template.card || []);
+    await setupRenderPipeline(face, modules);
+    await initializeModules(face, modules);
+    await face.load(faceData);
+    face.subcards = await buildSubcards(face, template.subcards, faceData);
+    face.parent = () => card;
+    face.modules = () => modules;
+    card[key] = face;
+    return face;
 }
 
-export async function buildCard(baseModel) {
-    const model = {};
+export async function buildCard(baseCard) {
+    const card = {};
     const cardFaces = [];
-    for (const key of Object.keys(baseModel)) {
-        const cardFace = await buildCardFace(model, key, baseModel[key]);
+    for (const key of Object.keys(baseCard)) {
+        const cardFace = await buildCardFace(card, key, baseCard[key]);
         cardFaces.push(cardFace);
     }
     for (const cardFace of cardFaces) {
@@ -75,5 +77,5 @@ export async function buildCard(baseModel) {
         for (const subcard of cardFace.subcards)
             await bindEffects(subcard);
     }
-    return { model };
+    return card;
 }

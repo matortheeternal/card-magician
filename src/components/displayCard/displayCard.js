@@ -17,7 +17,7 @@ Alpine.data('displayCard', () => ({
     setupFlip() {
         Alpine.effect(() => {
             const card = Alpine.store('views').activeCard;
-            this.useFlip = Boolean(card?.model?.front && card?.model?.back);
+            this.useFlip = Boolean(card?.front && card?.back);
         });
     },
 

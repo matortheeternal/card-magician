@@ -72,8 +72,10 @@ export function initCardFace(key) {
         id: key,
         dom: new DOMBuilder(),
         form: new DOMBuilder(),
+        optionsForm: new DOMBuilder(),
         subCards: [],
         fields: [],
+        options: [],
         async save() {
             const cardData = {};
             for (const field of this.fields)

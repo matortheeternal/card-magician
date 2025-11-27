@@ -1,11 +1,19 @@
-import { checkFileExists, loadJson, loadTextFile } from './fsHelpers.js';
+import { checkFileExists, loadTextFile } from './fsHelpers.js';
 
 const templates = [];
 
-async function loadTemplateFile(templateFolder, load, filename) {
+async function loadTemplateFile(templateFolder, filename) {
     const filePath = ['.', templateFolder.path, filename].join('/');
     if (!await checkFileExists(filePath)) return '';
-    return await load(filePath);
+    const text = await loadTextFile(filePath);
+    return filePath.endsWith('.json') ? JSON.parse(text) : text;
+}
+
+async function loadTemplateView(templateFolder, baseName) {
+    return {
+        css: await loadTemplateFile(templateFolder, `${baseName}.css`),
+        html: await loadTemplateFile(templateFolder, `${baseName}.html`)
+    };
 }
 
 export async function loadTemplates() {
@@ -14,14 +22,13 @@ export async function loadTemplates() {
         { recursive: true }
     );
     for (const folder of templateFolders) {
-        const template = await loadTemplateFile(folder, loadJson, 'template.json');
+        const template = await loadTemplateFile(folder, 'template.json');
         if (!template) continue;
         template.folder = folder;
-        template.css = await loadTemplateFile(folder, loadTextFile, 'template.css');
-        template.html = await loadTemplateFile(folder, loadTextFile, 'template.html');
-        template.formCSS = await loadTemplateFile(folder, loadTextFile, 'form.css');
-        template.formHTML = await loadTemplateFile(folder, loadTextFile, 'form.html');
-        if (!template.css || !template.html || !template.formHTML) {
+        Object.assign(template, await loadTemplateView(folder, 'template'));
+        template.form = await loadTemplateView(folder, 'form');
+        template.options = await loadTemplateView(folder, 'options');
+        if (!template.css || !template.html || !template.form.html) {
             console.warn(`Incomplete template found at`, folder.path);
             continue;
         }

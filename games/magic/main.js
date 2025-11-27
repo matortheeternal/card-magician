@@ -21,7 +21,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     newCard() {
-        return { model: { front: {} } };
+        return { front: {} };
     }
 
     newSet() {

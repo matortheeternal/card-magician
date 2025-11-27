@@ -122,21 +122,14 @@ import Alpine from 'alpinejs';
  *   additional reactive properties to it, which become visible to other
  *   modules. Only core properties are documented here.
  *
- * INTERNAL:
- *   Some methods are internal to the module system and should generally
- *   not be used by modules.  These methods are marked @internal @private.
  *
  * @typedef {object} CardFace
  *
  * @property {string} id                             - Face key. e.g. 'front'
- * @property {HTMLElement} dom                       @internal @private
- * @property {Array<Field>} fields                   @internal @private
- * @property {Array<object>} form                    @internal @private
+ * @property {HTMLElement} dom
+ * @property {HTMLElement} form
+ * @property {Array<Field>} fields
  * @property {Array<CardFace>} subCards              - Nested subcards.
- *
- * @property {function(Field):void} addField         @internal @private
- * @property {function(string):void} addStyle        @internal @private
- * @property {function(string):void} setFrame        @internal @private
  *
  * @property {function():Promise<object>} save       @internal @private
  * @property {function(object):Promise<void>} load   @internal @private
@@ -172,7 +165,7 @@ import Alpine from 'alpinejs';
  */
 export default class CardMagicianModule {
     /**
-     * @param {object} card - The card instance that owns this module.
+     * @param {CardFace} card - The card face this module is associated with.
      * @param {string} modulePath - Filesystem path of the module.
      */
     constructor(card, modulePath) {
@@ -333,13 +326,20 @@ export default class CardMagicianModule {
     async init(card) {}
 
     /**
-     * Returns all field definitions this module contributes
-     * to the card form UI.
+     * Returns the card field definitions for this module.
      *
      * @abstract
      * @returns {Array<Field>}
      */
     get fields() { return []; }
+
+    /**
+     * Returns the option field definitions for this module.
+     *
+     * @abstract
+     * @returns {Array<Field>}
+     */
+    get options() { return []; }
 
     /**
      * Returns CSS styles to be injected for this module.

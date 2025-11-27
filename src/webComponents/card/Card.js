@@ -15,7 +15,7 @@ class Card extends HTMLElement {
 
     set card(card) {
         this._card = card;
-        this.canFlip = Boolean(card?.model?.front && card?.model?.back);
+        this.canFlip = Boolean(card?.front && card?.back);
         if (this.isConnected) this.renderFaces();
     }
 
@@ -25,7 +25,7 @@ class Card extends HTMLElement {
 
     startInitializing() {
         this.initializedFaces.clear();
-        this.expectedFaceCount = Object.keys(this._card.model).length;
+        this.expectedFaceCount = Object.keys(this._card).length;
         this.classList.add('initializing');
         this.addEventListener(
             'card-face:initialized',
@@ -48,11 +48,11 @@ class Card extends HTMLElement {
 
     renderFaces() {
         this.innerHTML = '';
-        if (!this._card?.model) return;
+        if (!this._card) return;
 
         this.startInitializing();
-        for (const faceName of Object.keys(this._card.model)) {
-            const faceData = this._card.model[faceName];
+        for (const faceName of Object.keys(this._card)) {
+            const faceData = this._card[faceName];
             const faceEl = document.createElement('cm-card-face');
             faceEl.face = faceData;
             this.appendChild(faceEl);

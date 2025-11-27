@@ -1,4 +1,5 @@
-cm-face-form > div {
+cm-face-form > div,
+cm-options-form > div {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -48,7 +49,8 @@ sl-input[type="file"]::part(input) {
     padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);
 }
 
-cm-face-form .no-content-prompt {
+cm-face-form .no-content-prompt,
+cm-options-form .no-content-prompt {
     text-align: center;
     padding: 1em;
     font-size: var(--sl-font-size-x-large);

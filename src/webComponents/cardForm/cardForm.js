@@ -16,22 +16,20 @@ class CardForm extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = this._card?.model ? html : '';
+        this.innerHTML = this._card ? html : '';
         this.bind();
     }
 
     bind() {
         this.faceForms.forEach(faceForm => {
             const faceId = faceForm.dataset.faceId;
-            const key = faceForm.dataset.type || 'model';
-            faceForm.face = this._card[key]?.[faceId];
+            faceForm.face = this._card[faceId];
         });
     }
 
     get faceForms() {
-        return this.querySelectorAll('cm-face-form');
+        return this.querySelectorAll('cm-face-form, cm-options-form');
     }
-
     set card(value) {
         this._card = value;
         this.render();
@@ -44,21 +42,15 @@ class CardForm extends HTMLElement {
         if (!btn || !btn.classList.contains('add-face-btn')) return;
         const faceForm = btn.closest('cm-face-form');
         const faceId = faceForm?.dataset?.faceId;
-        if (!faceId) return;
-        this._card.style ||= {};
-        this._card.style[faceId] = {};
-        if (faceForm.dataset.type !== 'style') {
-            const game = Alpine.store('game');
-            const faceData = { template: game.defaultTemplateId };
-            await buildCardFace(this._card.model, faceId, faceData);
-        }
+        this._card[faceId] = {};
+        this._card[faceId] = await buildCardFace(this._card, faceId);
         this.bind();
     }
 
     async save() {
         const { activeCard, selectedCard } = Alpine.store('views');
-        for (const face of Object.values(activeCard.model))
-            selectedCard.model[face.id] = await face.save();
+        for (const face of Object.values(activeCard))
+            selectedCard[face.id] = await face.save();
     }
 }
 
