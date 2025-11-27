@@ -35,6 +35,10 @@ export default class FrameModule extends CardMagicianModule {
         this.requestRender();
     }
 
+    updateCardColors(card) {
+        card.colors = card.colorIdentity.colors;
+    }
+
     bind(card, watch) {
         watch(() => [
             card.colorIdentity,
@@ -42,7 +46,8 @@ export default class FrameModule extends CardMagicianModule {
             card.subType,
             card.rulesHTML,
             card.parent
-        ], () => this.updateBackgrounds(card))
+        ], () => this.updateBackgrounds(card));
+        watch(() => card.colorIdentity, () => this.updateCardColors(card));
     }
 
     renderBackgrounds() {
@@ -57,5 +62,9 @@ export default class FrameModule extends CardMagicianModule {
 
     async styles() {
         return [await this.loadFile('style.css')];
+    }
+
+    get fields() {
+        return [{ id: 'colors', type: 'computed' }];
     }
 }
