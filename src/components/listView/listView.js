@@ -44,7 +44,7 @@ Alpine.data('listView', (config) => ({
         this.activeRows = this.rows.map(row => {
             const cols = this.activeColumns || [];
             const data = cols.reduce((obj, col) => {
-                obj[col.id] = col.data(row.model);
+                obj[col.id] = col.data(row);
                 return obj;
             }, {});
             const oldRow = oldRowMap.get(row);

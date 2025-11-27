@@ -72,6 +72,19 @@ export default class TextModule extends CardMagicianModule {
         }];
     }
 
+    get options() {
+        return [{
+            id: 'chopTop',
+            displayName: 'Chop Top'
+        }, {
+            id: 'chopBottom',
+            displayName: 'Chop Bottom'
+        }, {
+            id: 'fontCap',
+            displayName: 'Font Cap'
+        }]
+    }
+
     async styles() {
         return [await this.loadFile('style.css')];
     }

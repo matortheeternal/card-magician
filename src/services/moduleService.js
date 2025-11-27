@@ -33,6 +33,14 @@ function loadFields(card, modules) {
         });
 }
 
+function loadOptions(card, modules) {
+    for (const module of modules)
+        module.options.forEach(field => {
+            card.options.push(field);
+            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+        });
+}
+
 function loadStyles(card, modules) {
     return Promise.all(
         modules.map(async module => {
@@ -48,6 +56,7 @@ export async function initializeModules(card, modules) {
         return module.init(card);
     }));
     loadFields(card, modules);
+    loadOptions(card, modules);
     return loadStyles(card, modules);
 }
 
