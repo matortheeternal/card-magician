@@ -1,4 +1,5 @@
 import { emit } from '../utils.js';
+import { morphHTML } from './morphHTML.js';
 
 function getModuleContainers(card, module) {
     const selector = `module-container[module="${module.name}"]`;
@@ -26,7 +27,7 @@ function renderModule(card, module, renderKey, subcardKey) {
         const render = module[renderKey].bind(module);
         const content = render(card);
         element.style.display = content === undefined ? 'none' : '';
-        element.innerHTML = content || '';
+        morphHTML(element, content || '');
     }
 }
 
