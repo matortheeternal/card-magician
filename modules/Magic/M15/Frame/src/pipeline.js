@@ -6,16 +6,16 @@
 // ╚╗   ║ ╚o   ║          ╚o❄️️
 // 👑  ✨     🔲
 
-import Providers from './providers/index.js';
-import Resolvers from './resolvers/index.js';
-import Transformers from './transformers/index.js';
+import BaseProviders from './providers/index.js';
+import BaseResolvers from './resolvers/index.js';
+import BaseTransformers from './transformers/index.js';
 
-export function buildProviders(card, module) {
+export function buildProviders(Providers, card, module) {
     return Providers.filter(Provider => Provider.enabled(card))
         .map(Provider => new Provider(card, module));
 }
 
-export function buildResolvers(providers, card) {
+export function buildResolvers(Resolvers, providers, card) {
     return providers.map(provider => {
         const Resolver = Resolvers.find(Resolver =>
             Resolver.matches(card, provider)
@@ -27,7 +27,7 @@ export function buildResolvers(providers, card) {
     });
 }
 
-export function buildSpouts(resolvers, card) {
+export function buildSpouts(Transformers, resolvers, card) {
     const spouts = [];
     resolvers.forEach(resolver => {
         const spout = Transformers.reduce((current, Transformer) => {
@@ -40,9 +40,14 @@ export function buildSpouts(resolvers, card) {
     return spouts;
 }
 
-export function runPipeline(card, module) {
-    const providers = buildProviders(card, module);
-    const resolvers = buildResolvers(providers, card);
-    const spouts =  buildSpouts(resolvers, card);
+export function runPipeline(
+    card, module,
+    Providers = BaseProviders,
+    Resolvers = BaseResolvers,
+    Transformers = BaseTransformers
+) {
+    const providers = buildProviders(Providers, card, module);
+    const resolvers = buildResolvers(Resolvers, providers, card);
+    const spouts =  buildSpouts(Transformers, resolvers, card);
     return Promise.all(spouts.map(spout => spout.finalize()));
 }
