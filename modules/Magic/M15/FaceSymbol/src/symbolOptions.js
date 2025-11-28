@@ -43,7 +43,7 @@ const faceSymbolGroup = (groupId, items) => ({
     ))
 });
 
-export default [
+export default () => ([
     autodetectOption(computeAutoSymbol),
     faceSymbol('none'),
     separator(),
@@ -93,4 +93,4 @@ export default [
         faceSymbol('scheme'),
         faceSymbol('vanguard'),
     ]),
-]
+]);
