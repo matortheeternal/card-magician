@@ -1,5 +1,9 @@
 export function autoNumberCards(set) {
-    return set.sort(collectorNumberSort);
+    set.sort(collectorNumberSort);
+    
+    for (const [ i, card ] of set.entries()) {
+        card.model.front.autoCollectorNumber = i;
+    }
 }
 
 const color_indexes = {
@@ -18,10 +22,10 @@ const color_indexes = {
 
 function collectorNumberSort(a, b) {
     if (getColorIndex(a) == getColorIndex(b)) {
-        return a > b;
-    } else {
-        return getColorIndex(a) - getColorIndex(b);
+        return a < b ? 1 : -1;
     }
+
+    return getColorIndex(a) - getColorIndex(b);
 }
 
 function getColorIndex(card) {
