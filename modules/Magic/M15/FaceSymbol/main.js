@@ -1,4 +1,4 @@
-import symbolOptions from './src/symbolOptions.js';
+import makeSymbolOptions from './src/symbolOptions.js';
 import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
 
 export default class FaceSymbolModule extends CardMagicianModule {
@@ -14,7 +14,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     async init(card) {
-        this.symbolOptions = this.makeReactive(symbolOptions);
+        this.symbolOptions = this.makeReactive(makeSymbolOptions());
         this.loadFaceSymbolImages();
     }
 
@@ -32,7 +32,6 @@ export default class FaceSymbolModule extends CardMagicianModule {
             for (const item of option.items)
                 computeOption(card, item, option.items);
         }
-
     }
 
     bind(card, watch) {
