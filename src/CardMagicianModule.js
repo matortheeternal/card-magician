@@ -306,6 +306,15 @@ export default class CardMagicianModule {
     }
 
     /**
+     * Returns the current active game
+     *
+     * @returns {object}
+     */
+    getActiveGame() {
+        return Alpine.store('game');
+    }
+
+    /**
      * Request that this module perform a render update.
      *
      * NOTE:
