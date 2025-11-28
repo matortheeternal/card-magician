@@ -10,8 +10,8 @@ export default class FooterModule extends CardMagicianModule {
     bind(card, watch) {
         watch(
             () => [
-                card.rarityCharacter, card.collectorNumber,
-                card.setCode, card.language,card.illustrator
+                card.rarityCharacter, card.collectorNumber, card.autoCollectorNumber,
+                card.setCode, card.language, card.illustrator
             ],
             () => this.requestRender({ render: 'renderInfo' })
         );
@@ -29,7 +29,7 @@ export default class FooterModule extends CardMagicianModule {
 
         return (
             `<div>
-                <div>${card.collectorNumber || '&nbsp;'}</div>
+                <div>${card.collectorNumber || card.autoCollectorNumber || '&nbsp;'}</div>
                 <div>${setCode} &bullet; ${language}</div>
             </div>
             <div>
@@ -53,6 +53,7 @@ export default class FooterModule extends CardMagicianModule {
         return [
             { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
             { id: 'collectorNumber', displayName: 'Collector Number' },
+            { id: 'autoCollectorNumber', displayName: 'Collector Number' },
             { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
             { id: 'language', displayName: 'Language', placeholder: language },
             { id: 'legalText', displayName: 'Legal Text', placeholder: legalText }

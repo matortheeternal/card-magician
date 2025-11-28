@@ -5,6 +5,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
+        this.autoNumberCards = autoNumberCards;
     }
 
     get columns () {
