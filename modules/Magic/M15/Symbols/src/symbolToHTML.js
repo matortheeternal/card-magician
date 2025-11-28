@@ -1,8 +1,14 @@
+const rawSymbolTypes = ['typedMana', 'tap', 'untap'];
+
 export function getKey(sym) {
     const order = 'wubrgc';
-    return sym.raw.toLowerCase().split('').sort((a, b) => {
-        return order.indexOf(a) - order.indexOf(b);
-    }).join('');
+    if (rawSymbolTypes.includes(sym.type))
+        return sym.raw.toLowerCase();
+    if (sym.colors.length === 0) return 'c';
+    return sym.colors
+        .map(c => c.toLowerCase())
+        .sort((a, b) => order.indexOf(a) - order.indexOf(b))
+        .join('');
 }
 
 const imagePathAdapters = [{
@@ -19,7 +25,7 @@ const imagePathAdapters = [{
     resolve: (sym, size) => `${size}/hybrid5/wubrg.png`,
 }, {
     match: sym => sym.type === 'threeColorHybridMana',
-    resolve: (sym, size) => `${size}/hybrid3/2${getKey(sym)}.png`,
+    resolve: (sym, size) => `${size}/hybrid3/${getKey(sym)}.png`,
 }, {
     match: sym => sym.type === 'twoColorHybridMana',
     resolve: (sym, size) => `${size}/hybrid2/${getKey(sym)}.png`,
@@ -46,9 +52,7 @@ const imagePathAdapters = [{
 }];
 
 const symbolDiv = (imageUrl, text = '') => (
-    `<div class="sym" style="background-image: url('${imageUrl}')">
-        ${text}
-    </div>`
+    `<div class="sym" style="background-image: url('${imageUrl}')">${text}</div>`
 );
 
 const warned = {};
