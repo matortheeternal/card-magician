@@ -7,14 +7,19 @@ const colorNames = {
 };
 
 function addColor(colors, colorCharacter, sourceKey = 'normal') {
-    if (!colors.hasOwnProperty(colorCharacter))
-        colors[colorCharacter] = {
-            char: colorCharacter.toLowerCase(),
-            name: colorNames[colorCharacter],
+    const char = colorCharacter.toLowerCase();
+    if (!colors.hasOwnProperty(char))
+        colors[char] = {
+            char,
+            name: colorNames[char],
             sources: {}
         };
 
-    colors[colorCharacter].sources[sourceKey] = true;
+    colors[char].sources[sourceKey] = true;
+}
+
+function isHybrid(sym) {
+    return sym.constructor.prototype.constructor.name === 'HybridManaSymbol';
 }
 
 export default class ColorIdentity {
@@ -29,11 +34,9 @@ export default class ColorIdentity {
         Object.values(this.colorSources).forEach(src => {
             if (src.commanderOnly) return;
             src.symbols.forEach(sym => {
-                if (!sym.isColored()) return;
-                const sourceKey = sym.isTwoColorHybrid()
-                    ? 'hybrid'
-                    : 'normal';
-                sym.parts.forEach(p => addColor(colors, p, sourceKey));
+                if (!sym.colors.length) return;
+                const sourceKey = isHybrid(sym) ? 'hybrid' : 'normal';
+                sym.colors.forEach(c => addColor(colors, c, sourceKey));
             });
         });
         return colors;
