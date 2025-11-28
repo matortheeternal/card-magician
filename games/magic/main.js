@@ -1,4 +1,5 @@
 import { buildColumns } from './columns.js';
+import { autoNumberCards } from './collectorNumber.js'
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
