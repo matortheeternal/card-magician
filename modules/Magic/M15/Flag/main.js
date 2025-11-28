@@ -16,7 +16,7 @@ export default class FlagModule extends CardMagicianModule {
     }
 
     async updateFlagRightHTML(card) {
-        this.flagRightHTML = await card.textToHTML(card.flagRight, card);
+        this.flagRightHTML = card.textToHTML(card.flagRight);
         this.requestRender();
     }
 

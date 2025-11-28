@@ -4,7 +4,14 @@ export default class TextModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
-        card.textToHTML = textToHTML;
+
+        card.textToHTML = function(text, outputSymbols) {
+            return textToHTML(text, card).map(p => {
+                if (outputSymbols)
+                    p.symbols.forEach(sym => outputSymbols.push(sym));
+                return p.html;
+            }).join('');
+        };
 
         // TODO: probably should use a keyword system instead or be just user-configured
         card.isTransform = function() {
@@ -17,14 +24,14 @@ export default class TextModule extends CardMagicianModule {
 
     async renderRulesHTML(card) {
         const textSymbols = [];
-        card.rulesHTML = await card.textToHTML(card.rulesText, card, textSymbols);
+        card.rulesHTML = card.textToHTML(card.rulesText, textSymbols);
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
     }
 
     async renderFlavorHTML(card) {
-        this.flavorHTML = await card.textToHTML(card.flavorText, card);
+        this.flavorHTML = await card.textToHTML(card.flavorText);
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
     }
