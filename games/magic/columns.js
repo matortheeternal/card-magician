@@ -1,3 +1,6 @@
+import { calculateCmc } from './cmcCalculator.js';
+import { calculateColors } from './colorCalculator.js';
+
 function collect(row, key, separator = ' // ') {
     const values = [];
     for (const face of Object.values(row))
@@ -14,7 +17,7 @@ function collectMap(row, fn, separator = ' // ') {
     return values.join(separator);
 }
 
-export function buildColumns({ calculateCmc, calculateColors }) {
+export function buildColumns() {
     return [{
         label: 'Name',
         width: '250px',

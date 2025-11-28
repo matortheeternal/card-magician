@@ -1,4 +1,4 @@
-:host {
+:host > div {
     display: block;
     overflow: hidden;
     position: relative;
@@ -19,7 +19,7 @@
     border-radius: 4px;
     padding: 10px 6px 0;
     position: relative;
-    z-index: 10;
+    z-index: 200;
 }
 
 .header {
@@ -74,8 +74,9 @@ module-container[module="ColorIndicator"] img {
 }
 
 module-container[render="renderExpansionSymbol"] {
-    min-width: 10px;
-    min-height: 10px;
+    min-width: 18px;
+    min-height: 18px;
+    padding-left: 4px;
 }
 
 module-container[module="Text"] {
@@ -109,7 +110,7 @@ div.footer {
     align-items: end;
     padding: 0 10px;
     position: relative;
-    z-index: 10;
+    z-index: 200;
 }
 
 auto-fit-line {

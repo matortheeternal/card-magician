@@ -1,11 +1,10 @@
 import Alpine from 'alpinejs';
-import { loadImport } from './importService.js';
 import RenderScheduler from './renderScheduler.js';
 
 export async function loadModule(card, modulePath) {
     try {
-        const mainPath = `./modules/${modulePath}/main.js`;
-        const { default: Module } = await loadImport(mainPath);
+        const mainPath = `/modules/${modulePath}/main.js`;
+        const { default: Module } = await import(mainPath);
         return new Module(card, modulePath);
     } catch (error) {
         console.error('Failed to load module:', error);
@@ -26,17 +25,39 @@ export function setupRenderPipeline(card, modules) {
     });
 }
 
+function loadFields(card, modules) {
+    for (const module of modules)
+        module.fields.forEach(field => {
+            card.fields.push(field);
+            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+        });
+}
+
+function loadOptions(card, modules) {
+    for (const module of modules)
+        module.options.forEach(field => {
+            card.options.push(field);
+            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+        });
+}
+
+function loadStyles(card, modules) {
+    return Promise.all(
+        modules.map(async module => {
+            if (!module.styles) return;
+            const styles = await module.styles();
+            styles.forEach(style => card.dom.addCSS(style));
+        })
+    );
+}
+
 export async function initializeModules(card, modules) {
     await Promise.all(modules.map(module => {
         return module.init(card);
     }));
-    for (const module of modules)
-        module.fields.forEach(field => card.addField(field));
-    return Promise.all(modules.map(async module => {
-        if (!module.styles) return;
-        const styles = await module.styles();
-        styles.forEach(style => card.addStyle(style));
-    }));
+    loadFields(card, modules);
+    loadOptions(card, modules);
+    return loadStyles(card, modules);
 }
 
 export function bindEffects(card) {

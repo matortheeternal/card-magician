@@ -1,5 +1,3 @@
-import { emit } from '../../utils.js';
-
 class Card extends HTMLElement {
     _card;
     canFlip = false;
@@ -17,7 +15,7 @@ class Card extends HTMLElement {
 
     set card(card) {
         this._card = card;
-        this.canFlip = Boolean(card?.model?.front && card?.model?.back);
+        this.canFlip = Boolean(card?.front && card?.back);
         if (this.isConnected) this.renderFaces();
     }
 
@@ -27,8 +25,7 @@ class Card extends HTMLElement {
 
     startInitializing() {
         this.initializedFaces.clear();
-        this.expectedFaceCount = Object.keys(this._card.model).length;
-        emit(document, 'freeze-resize');
+        this.expectedFaceCount = Object.keys(this._card).length;
         this.classList.add('initializing');
         this.addEventListener(
             'card-face:initialized',
@@ -47,27 +44,42 @@ class Card extends HTMLElement {
             'card-face:initialized',
             this.finishInitializing
         );
-        emit(document, 'thaw-resize');
     }
 
     renderFaces() {
         this.innerHTML = '';
-        if (!this._card?.model) return;
+        if (!this._card) return;
 
         this.startInitializing();
-        for (const faceName of Object.keys(this._card.model)) {
-            const faceData = this._card.model[faceName];
+        for (const faceName of Object.keys(this._card)) {
+            const faceData = this._card[faceName];
             const faceEl = document.createElement('cm-card-face');
             faceEl.face = faceData;
             this.appendChild(faceEl);
         }
 
-        this.classList.toggle('flip-container', this.canFlip);
+        if (this.canFlip) this.classList.add('flip-container');
     }
 
     flip() {
-        if (!this.canFlip) return;
+        if (!this.canFlip || window.__EXPORTING__) return;
+        if (this.classList.contains('flipping')) {
+            this.classList.toggle('flipped');
+            return;
+        }
+
+        this.classList.add('flipping');
+
+        const onEnd = e => {
+            if (!(e.target instanceof Element) || e.propertyName !== 'transform') return;
+            this.classList.remove('flipping');
+            this.dispatchEvent(new CustomEvent('card-flip-end', { bubbles: true }));
+            this.removeEventListener('transitionend', onEnd);
+        };
+
         this.classList.toggle('flipped');
+        this.dispatchEvent(new CustomEvent('card-flip-start', { bubbles: true }));
+        this.addEventListener('transitionend', onEnd);
     }
 }
 

@@ -17,6 +17,6 @@ export default class HybridResolver extends Resolver {
             this.provider.resolve(c2),
             this.provider.resolve(c1)
         ]);
-        return await this.utils.linearBlend(...images, 0.4, 0, 0.6, 0);
+        return await this.ctx.linearBlend(...images, 0.4, 0, 0.6, 0);
     }
 }

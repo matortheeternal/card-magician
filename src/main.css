@@ -7,6 +7,7 @@
 @import "webComponents/cardForm/cardForm.css";
 @import "webComponents/cardFormSelect/cardFormSelect.css";
 @import "webComponents/card/card.css";
+@import "webComponents/faceForm/faceForm.css";
 
 * {
     box-sizing: border-box;
@@ -30,6 +31,30 @@ main {
     overflow: hidden;
     display: flex;
     flex-direction: row;
+}
+
+.square-spinner {
+    width: 4em;
+    height: 4em;
+    background: var(--sl-color-primary-500);
+    animation: rotate-square 1.66s ease-in-out infinite;
+}
+
+@keyframes rotate-square {
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+main.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main.spinner-container > div {
+    padding: 1em;
 }
 
 .modal-container {

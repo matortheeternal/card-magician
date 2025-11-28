@@ -17,9 +17,9 @@ function submenu(option) {
 
 function menuItem(option) {
     return `<sl-menu-item value="${option.id}" data-id="${option.id}">
-    ${menuPrefixIcon(option)}
-    ${option.name}
-  </sl-menu-item>`;
+        ${menuPrefixIcon(option)}
+        ${option.name}
+    </sl-menu-item>`;
 }
 
 function buildSelectHTML(label, options) {
@@ -33,17 +33,20 @@ function buildSelectHTML(label, options) {
         return menuItem(option);
     }).join('');
 
-    return `
-    <div class="sl-select-field">
-      <div class="sl-field__label">${label ?? ""}</div>
-      <sl-dropdown class="select-like" hoist sync="width">
-        <sl-button slot="trigger" size="small" caret></sl-button>
-        <sl-menu>
-          ${optionsHTML}
-        </sl-menu>
-      </sl-dropdown>
-    </div>
-  `;
+    const optionsHaveIcons = options.some(opt => Boolean(opt.imageURL));
+    const className = [
+        'sl-select-field',
+        optionsHaveIcons ? ['has-icons'] : []
+    ].flat().join(' ');
+    return(
+        `<div class="${className}">
+             <div class="sl-field__label">${label ?? ""}</div>
+             <sl-dropdown class="select-like" hoist sync="width">
+                 <sl-button slot="trigger" size="small" caret></sl-button>
+                 <sl-menu>${optionsHTML}</sl-menu>
+             </sl-dropdown>
+         </div>`
+    );
 }
 
 function updateSelectedClasses(root, selectedId, groupId) {

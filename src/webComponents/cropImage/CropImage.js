@@ -1,20 +1,22 @@
 import { getImageSize } from '../../gfx/imageProcessing.js';
 
 class CropImage extends HTMLElement {
+    _src = null;
+    _srcWidth = 0;
+    _srcHeight = 0;
+    _cropWidth = 1;
+    _cropHeight = 1;
+    _offsetX = 0;
+    _offsetY = 0;
+
     static get observedAttributes() {
         return ['src', 'crop-width', 'crop-height', 'offset-x', 'offset-y'];
     }
 
     constructor() {
         super();
-
-        this._src = null;
-        this._cropWidth = 1;
-        this._cropHeight = 1;
-        this._offsetX = 0;
-        this._offsetY = 0;
-
-        this._ro = new ResizeObserver(() => this.update());
+        this.requestUpdate = this.requestUpdate.bind(this);
+        this._ro = new ResizeObserver(this.requestUpdate);
     }
 
     connectedCallback() {
@@ -22,10 +24,12 @@ class CropImage extends HTMLElement {
         this.style.backgroundPosition = '0px 0px';
 
         this._ro.observe(this);
-        this.update();
+        this.addEventListener('dom-morphed', this.requestUpdate);
+        this.requestUpdate();
     }
 
     disconnectedCallback() {
+        this.removeEventListener('dom-morphed', this.requestUpdate);
         this._ro.disconnect();
     }
 
@@ -34,6 +38,11 @@ class CropImage extends HTMLElement {
         switch (name) {
             case 'src':
                 this._src = newVal;
+                getImageSize(this._src).then(({width, height}) => {
+                    this._srcWidth = width;
+                    this._srcHeight = height;
+                    this.requestUpdate();
+                });
                 break;
             case 'crop-width':
                 this._cropWidth = parseFloat(newVal) || 1;
@@ -49,19 +58,27 @@ class CropImage extends HTMLElement {
                 break;
         }
 
-        this.update();
+        this.requestUpdate();
     }
 
-    async update() {
-        if (!this._src) return;
+    requestUpdate() {
+        if (this._pending) return;
+        this._pending = true;
+        queueMicrotask(() => {
+            this._pending = false;
+            this.update();
+        });
+    }
+
+    update() {
+        if (!this._src || window.__EXPORTING__) return;
         const viewportWidth  = this.clientWidth;
         const viewportHeight = this.clientHeight;
 
         if (!viewportWidth || !viewportHeight) return;
 
-        const { width, height } = await getImageSize(this._src);
-        const bgWidth  = viewportWidth  / this._cropWidth  * width;
-        const bgHeight = viewportHeight / this._cropHeight * height;
+        const bgWidth  = viewportWidth  / this._cropWidth  * this._srcWidth;
+        const bgHeight = viewportHeight / this._cropHeight * this._srcHeight;
         const bgOffsetX = -1 * (viewportWidth  / this._cropWidth  * this._offsetX);
         const bgOffsetY = -1 * (viewportHeight / this._cropHeight * this._offsetY);
 

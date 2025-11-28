@@ -26,13 +26,14 @@
   "scripts": {
     "build": "node esbuild.config.js --minify",
     "dev": "node esbuild.config.js",
-    "start": "npm run dev && neu run",
+    "release": "neu build --release",
+    "start": "npm run dev && neu run -- --window-enable-inspector",
     "test": "npm run dev && neu run -- --run-tests"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
-    "alpinejs": "^3.15.0",
-    "html2canvas": "^1.4.1"
+    "@zumer/snapdom": "^2.0.0",
+    "alpinejs": "^3.15.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.10",

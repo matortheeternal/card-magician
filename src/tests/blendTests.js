@@ -1,5 +1,4 @@
 import { combineBlend, linearBlend, maskBlend } from '../gfx/blending.js';
-import { getImageUrl } from '../services/fsHelpers.js';
 
 async function saveCanvasToFile(canvas, filePath) {
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
@@ -45,8 +44,8 @@ export function buildCombineBlendTests() {
         const results = {};
 
         beforeAll(async () => {
-            const photoUrl = await getImageUrl('tests/fixtures/photo.jpg');
-            const gradientUrl = await getImageUrl('tests/fixtures/gradient.png');
+            const photoUrl = '/tests/fixtures/photo.jpg';
+            const gradientUrl = '/tests/fixtures/gradient.png';
 
             photo = await loadImage(photoUrl);
             gradient = await loadImage(gradientUrl);
@@ -88,8 +87,8 @@ export function buildLinearBlendTests() {
         const results = {};
 
         beforeAll(async () => {
-            const photoUrl = await getImageUrl('tests/fixtures/photo.jpg');
-            const gradientUrl = await getImageUrl('tests/fixtures/gradient.png');
+            const photoUrl = '/tests/fixtures/photo.jpg';
+            const gradientUrl = '/tests/fixtures/gradient.png';
 
             photo = await loadImage(photoUrl);
             gradient = await loadImage(gradientUrl);
@@ -125,9 +124,9 @@ export function buildMaskBlendTests() {
         const results = {};
 
         beforeAll(async () => {
-            const img1Url = await getImageUrl('tests/fixtures/photo.jpg');
-            const img2Url = await getImageUrl('tests/fixtures/gradient.png');
-            const maskUrl = await getImageUrl('tests/fixtures/softmask.png');
+            const img1Url = '/tests/fixtures/photo.jpg';
+            const img2Url = '/tests/fixtures/gradient.png';
+            const maskUrl = '/tests/fixtures/softmask.png';
 
             img1 = await loadImage(img1Url);
             img2 = await loadImage(img2Url);

@@ -34,8 +34,8 @@ class CardFace extends HTMLElement {
     render() {
         if (!this.#face?.dom) return;
         this.shadowRoot.innerHTML = '';
-        this.classList.add(`face-${this.#face.id}`);
-        this.shadowRoot.appendChild(this.#face.dom);
+        this.classList.add(this.#face.id);
+        this.shadowRoot.appendChild(this.#face.dom.root);
     }
 }
 

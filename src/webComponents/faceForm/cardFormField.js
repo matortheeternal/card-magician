@@ -8,6 +8,7 @@ function renderInput(field, face) {
           size="small"
           name="${esc(field.id)}"
           label="${esc(field.displayName)}"
+          placeholder="${esc(field.placeholder || '')}"
           autocomplete="off"
           type="${field.inputType || 'text'}"
           value="${esc(face[field.id])}"
@@ -49,7 +50,7 @@ function renderSelect(field, face) {
         `<card-form-select 
           name="${esc(field.id)}"
           label="${esc(field.displayName)}" 
-          value="${esc(face[field.id])}"
+          value="${esc(face[field.id] || field.initialValue)}"
           data-field-id="${esc(field.id)}"
         ></card-form-select>`
     );

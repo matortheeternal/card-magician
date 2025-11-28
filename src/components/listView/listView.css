@@ -89,3 +89,14 @@ th:hover .resize-handle::after {
 th:has(+ th:hover) .resize-handle::after {
     background-color: var(--sl-color-primary-600);
 }
+
+.add-row {
+    font-style: italic;
+    color: var(--sl-input-color);
+    transition: color 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.add-row:hover {
+    color: var(--sl-color-primary-600);
+}

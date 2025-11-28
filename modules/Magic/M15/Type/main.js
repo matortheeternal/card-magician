@@ -39,15 +39,10 @@ export default class TypeModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{
-            id: 'superType',
-            displayName: 'Super Type',
-            group: 'typeLine'
-        }, {
-            id: 'subType',
-            displayName: 'Sub Type',
-            group: 'typeLine'
-        }];
+        return [
+            { id: 'superType', displayName: 'Super Type' },
+            { id: 'subType', displayName: 'Sub Type' }
+        ];
     }
 
     async styles() {

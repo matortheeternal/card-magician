@@ -1,42 +1,35 @@
-export default async function(game, utils) {
-    const { buildColumns } = await utils.import('columns.js');
-    const { calculateCmc } = await utils.import('cmcCalculator.js');
-    // TODO: eventually we can remove this because we will store colors on the card
-    const { calculateColors } = await utils.import('colorCalculator.js');
+import { buildColumns } from './columns.js';
 
-    const columns = buildColumns({ calculateCmc, calculateColors });
-    for (let column of columns) game.columns.push(column);
-
-    game.defaultTemplateId = 'M15Main';
-
-    game.newCard = function() {
-        return { model: { front: {} }, style: { front: {} } };
-    };
-
-    game.newSet = function() {
-        return { cards: [], info: { language: "EN", setCode: "" } };
-    };
-
-    game.renderSetInfo = function() {
-        return ( 
-            `<sl-input label="Title"
-                x-model="set.info.title"
-                autocomplete="off"></sl-input>
-            <sl-input label="Description"
-                x-model="set.info.description"
-                autocomplete="off"></sl-input>
-            <sl-input label="Default Artist"
-                x-model="set.info.defaultArtist"
-                autocomplete="off"></sl-input>
-            <sl-input label="Copyright"
-                x-model="set.info.defaultLegalText"
-                autocomplete="off"></sl-input>
-            <sl-input label="Set code"
-                x-model="set.info.setCode"
-                autocomplete="off"></sl-input>
-            <sl-input label="Language"
-                x-model="set.info.language"
-                autocomplete="off"></sl-input>`
-        );
+export default class MagicTheGathering extends CardMagicianGame {
+    async init() {
+        this.setInfoHtml = await this.loadFile('setInfo.html');
+        this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
     }
-};
+
+    get columns () {
+        return buildColumns();
+    }
+
+    get defaultTemplateId() {
+        return 'M15Main';
+    }
+
+    loadSet(set) {
+        const newSet = this.newSet();
+        const info = { ...newSet.info, ...(set?.info ?? {}) };
+        return { ...newSet, ...set, info };
+    }
+
+    newCard() {
+        return { front: {} };
+    }
+
+    newSet() {
+        const info = { language: 'EN', setCode: '', symbol: this.defaultSetSymbol };
+        return { cards: [], info };
+    }
+
+    renderSetInfo() {
+        return this.setInfoHtml;
+    }
+}

@@ -2,9 +2,9 @@
  * @abstract
  */
 export default class Provider {
-    constructor(card, utils) {
+    constructor(card, ctx) {
         this.card = card;
-        this.utils = utils;
+        this.ctx = ctx;
         if (this.zIndex === undefined) this.zIndex = 0;
     }
 
@@ -21,7 +21,7 @@ export default class Provider {
         return false;
     }
 
-    assetURL(path) {
-        return this.utils.assetURL(path);
+    resolveAsset(path) {
+        return this.ctx.resolveAsset(path);
     }
 }

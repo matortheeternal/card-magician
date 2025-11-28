@@ -10,10 +10,10 @@ class MulticolorBlendMaskTransformer extends ColorBlendTransformer {
 
     async apply() {
         const maskPath = this.getBlendMaskPath('multicolor');
-        const maskUrl = await this.assetURL(maskPath);
+        const maskUrl = this.resolveAsset(maskPath);
         const baseUrl = await this.target.apply();
         const multicolorUrl = await this.provider.resolve('m');
-        return await this.utils.maskedBlend(baseUrl, multicolorUrl, maskUrl);
+        return await this.ctx.maskedBlend(baseUrl, multicolorUrl, maskUrl);
     }
 }
 

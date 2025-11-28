@@ -24,7 +24,7 @@ export default class MiracleTrimProvider extends ColoredProvider {
 
     async resolve(key) {
         return this.card.isClear?.() || this.card.clearTops?.()
-            ? await this.assetURL(`${this.folder}/normal/x.png`)
-            : await this.assetURL(`${this.folder}/${this.subfolder}/${key}.png`);
+            ? this.resolveAsset(`${this.folder}/normal/x.png`)
+            : this.resolveAsset(`${this.folder}/${this.subfolder}/${key}.png`);
     }
 }

@@ -3,7 +3,7 @@ import textToHTML from './src/textToHTML.js';
 export default class TextModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
-        this.flavorBarUrl = await this.assetURL('grey bar.png');
+        this.flavorBarUrl = this.resolveAsset('grey bar.png');
         card.textToHTML = textToHTML;
 
         // TODO: probably should use a keyword system instead or be just user-configured
@@ -32,7 +32,10 @@ export default class TextModule extends CardMagicianModule {
     bind(card, watch) {
         watch(() => card.rulesText, () => this.renderRulesHTML(card));
         watch(() => card.flavorText, () => this.renderFlavorHTML(card));
-        watch(() => [card.showPT, card.showFlag], () => this.requestRender());
+        watch(
+            () => [card.showPT, card.showFlag, card.maxFontSize],
+            () => this.requestRender()
+        );
     }
 
     getAvoidSelectors(card) {
@@ -49,10 +52,11 @@ export default class TextModule extends CardMagicianModule {
             `background-image: url('${this.flavorBarUrl}')`,
             this.showFlavorBar ? '' : 'display: none'
         ].join('; ');
-        const avoid = this.getAvoidSelectors(card).join(', ');
+        const avoid = this.getAvoidSelectors(card).join('; ');
         const className = `text${card.showFlag ? ' flag-padding' : ''}`;
+        const maxFont = card.maxFontSize || '19';
         return (
-            `<auto-fit-text class="${className}" avoid="${avoid}">
+            `<auto-fit-text max="${maxFont}" class="${className}" avoid="${avoid}">
                 <div class="rules-text">${card.rulesHTML}</div>
                 <div class="flavor-bar" style="${flavorBarStyle}"></div>
                 <div class="flavor-text">${this.flavorHTML}</div>
@@ -61,15 +65,18 @@ export default class TextModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{
-            id: 'rulesText',
-            type: 'textarea',
-            displayName: 'Rules Text'
-        }, {
-            id: 'flavorText',
-            type: 'textarea',
-            displayName: 'Flavor Text'
-        }];
+        return [
+            { id: 'rulesText', type: 'textarea', displayName: 'Rules Text' },
+            { id: 'flavorText', type: 'textarea', displayName: 'Flavor Text' }
+        ];
+    }
+
+    get options() {
+        return [
+            { id: 'chopTop', displayName: 'Chop Top' },
+            { id: 'chopBottom', displayName: 'Chop Bottom' },
+            { id: 'maxFontSize', displayName: 'Max Font Size' }
+        ];
     }
 
     async styles() {
