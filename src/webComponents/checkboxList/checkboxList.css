@@ -1,0 +1,20 @@
+cm-checkbox-list {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+cm-checkbox-list .label {
+    display: inline-block;
+    user-select: none;
+    margin-bottom: var(--sl-spacing-3x-small);
+    font-size: var(--sl-font-size-small);
+    font-weight: var(--sl-font-weight-medium);
+    color: var(--sl-input-label-color);
+    cursor: default;
+}
+
+cm-checkbox-list .checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}

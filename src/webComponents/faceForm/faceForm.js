@@ -1,7 +1,7 @@
 import { emit } from '../../utils.js';
 import {
     missingFaceMessage, missingFormMessage,
-    handleFormGroup, renderFormField, attachSelectOptions
+    handleFormGroup, renderFormField, attachOptions
 } from './faceFormHelpers.js'
 
 export default class FaceForm extends HTMLElement {
@@ -13,8 +13,8 @@ export default class FaceForm extends HTMLElement {
     }
 
     hydrate() {
-        this.querySelectorAll('card-form-select')
-            .forEach(el => attachSelectOptions(el, this));
+        this.querySelectorAll('cm-select, cm-checkbox-list')
+            .forEach(el => attachOptions(el, this));
     }
 
     connectedCallback() {

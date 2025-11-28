@@ -126,8 +126,8 @@ import Alpine from 'alpinejs';
  * @typedef {object} CardFace
  *
  * @property {string} id                             - Face key. e.g. 'front'
- * @property {HTMLElement} dom
- * @property {HTMLElement} form
+ * @property {DOMBuilder} dom
+ * @property {DOMBuilder} form
  * @property {Array<Field>} fields
  * @property {Array<CardFace>} subCards              - Nested subcards.
  *

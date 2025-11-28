@@ -81,34 +81,20 @@ function getOptionHTML(option, parent, rawValue) {
     return html + option.name;
 }
 
-class CardFormSelect extends HTMLElement {
+class DropdownSelect extends HTMLElement {
     constructor() {
         super();
         this._options = [];
         this._value = '';
-        this._handleSelect = this._handleSelect.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
 
     static get observedAttributes() {
         return ['label', 'name', 'value'];
     }
 
-    get name() {
-        return this.getAttribute('name') || '';
-    }
-
-    set name(v) {
-        if (v == null) this.removeAttribute('name');
-        else this.setAttribute('name', v);
-    }
-
     get label() {
         return this.getAttribute('label') || '';
-    }
-
-    set label(v) {
-        if (v == null) this.removeAttribute('label');
-        else this.setAttribute('label', v);
     }
 
     get value() {
@@ -120,7 +106,7 @@ class CardFormSelect extends HTMLElement {
         if (newVal === this._value) return;
         this._value = newVal;
         this.setAttribute('value', newVal);
-        this._updateUIFromValue();
+        this.loadValue();
     }
 
     get options() {
@@ -129,33 +115,33 @@ class CardFormSelect extends HTMLElement {
 
     set options(opts) {
         this._options = Array.isArray(opts) ? opts : [];
-        this._render();
+        this.render();
     }
 
     connectedCallback() {
         this._value = this.getAttribute('value') ?? '';
-        this._render();
+        this.render();
     }
 
     disconnectedCallback() {
         const menu = this.querySelector('sl-menu');
         if (!menu) return;
-        menu.removeEventListener('sl-select', this._handleSelect);
+        menu.removeEventListener('sl-select', this.handleSelect);
     }
 
-    _render() {
+    render() {
         this.innerHTML = buildSelectHTML(this.label, this._options);
 
         const menu = this.querySelector('sl-menu');
         if (menu) {
-            menu.removeEventListener('sl-select', this._handleSelect);
-            menu.addEventListener('sl-select', this._handleSelect);
+            menu.removeEventListener('sl-select', this.handleSelect);
+            menu.addEventListener('sl-select', this.handleSelect);
         }
 
-        this._updateUIFromValue();
+        this.loadValue();
     }
 
-    _updateUIFromValue() {
+    loadValue() {
         const dropdownRoot = this;
         const triggerButton = this.querySelector(`sl-button[slot="trigger"]`);
         if (!triggerButton) return;
@@ -166,7 +152,7 @@ class CardFormSelect extends HTMLElement {
         updateSelectedClasses(dropdownRoot, this._value, parent?.id);
     }
 
-    _handleSelect(event) {
+    handleSelect(event) {
         const { item } = event.detail || {};
         if (!item) return;
         this.value = item.value;
@@ -181,4 +167,4 @@ class CardFormSelect extends HTMLElement {
     }
 }
 
-customElements.define('card-form-select', CardFormSelect);
+customElements.define('cm-select', DropdownSelect);
