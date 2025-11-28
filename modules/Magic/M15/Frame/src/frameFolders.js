@@ -11,7 +11,6 @@ export class FrameFolderRule {
 
 export const frameFolderRules = [
     new FrameFolderRule('saga', card => card.isSaga?.()),
-    new FrameFolderRule('map', card => card.isMap?.()),
     new FrameFolderRule('dka', card => card.isDKA?.()),
     new FrameFolderRule('shifted', card => card.isShifted?.()),
     new FrameFolderRule('inverted', card => card.isInverted?.()),

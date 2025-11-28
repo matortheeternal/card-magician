@@ -1,25 +1,27 @@
 import { runPipeline } from './src/pipeline.js';
 import { getFrameFolder } from './src/frameFolders.js';
+import makeFrameOptions from './src/frameOptions.js'
+import makeTrimOptions from './src/trimOptions.js'
 
 export default class FrameModule extends CardMagicianModule {
     async init(card) {
-        card.hybridStyle = 'grey';
-        card.isMap = () => false;
+        this.frameOptions = this.makeReactive(makeFrameOptions());
+        this.trimOptions = this.makeReactive(makeTrimOptions());
         card.isDKA = () => false;
-        card.isShifted = () => false;
-        card.isInverted = () => false;
-        card.isBeyond = () => false;
-        card.isFNM = () => false;
+        card.isShifted = () => card.frame.planeshifted;
+        card.isInverted = () => card.frame.inverted;
+        card.isBeyond = () => card.frame.ub;
+        card.isFNM = () => card.frame.fnm;
         card.isEnergyLand = () => false;
-        card.isMiracle = () => false;
-        card.isFrameless = () => false;
-        card.isBorderless = () => false;
+        card.isMiracle = () => card.trims.miracle;
+        card.isFrameless = () => card.frame.frameless;
+        card.isBorderless = () => card.frame.borderless;
         card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
-        card.isClear = () => false;
-        card.isDevoid = () => false;
+        card.isClear = () => card.frame.clear;
+        card.isDevoid = () => card.frame.devoid;
         card.isClearTop = () => false;
-        card.isPuma = () => false;
-        card.isMutate = () => false;
+        card.isPuma = () => card.frame.puma;
+        card.isMutate = () => card.frame.mutate;
         card.isBrawl = () => false;
         card.isCompanion = () => false;
         card.hasFaceSymbol = () => false;
@@ -35,8 +37,11 @@ export default class FrameModule extends CardMagicianModule {
         this.requestRender();
     }
 
-    updateCardColors(card) {
-        card.colors = card.colorIdentity.colors;
+    updateTopClasses(card) {
+        const classes = [];
+        for (const [key, value] of Object.entries(card.frame))
+            if (value) classes.push(`frame-${key}`);
+        card.dom.root.className = classes.join(' ');
     }
 
     bind(card, watch) {
@@ -45,9 +50,11 @@ export default class FrameModule extends CardMagicianModule {
             card.superType,
             card.subType,
             card.rulesHTML,
-            card.parent
+            card.parent,
+            card.frame,
+            card.trims
         ], () => this.updateBackgrounds(card));
-        watch(() => card.colorIdentity, () => this.updateCardColors(card));
+        watch(() => card.frame, () => this.updateTopClasses(card))
     }
 
     renderBackgrounds() {
