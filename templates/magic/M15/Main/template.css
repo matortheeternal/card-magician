@@ -113,7 +113,7 @@ module-container[module="Text"] {
     z-index: 2;
     padding: 3px 13px;
     height: 160px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 module-container[render="renderPT"] {
@@ -139,7 +139,7 @@ div.footer {
     flex-direction: row;
     justify-content: space-between;
     align-items: end;
-    padding: 0 16px;
+    padding: 0 10px;
     position: relative;
     z-index: 2;
 }
