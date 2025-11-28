@@ -5,6 +5,7 @@
   "version": "0.0",
   "card": [
     "Magic/M15/Frame",
+    "Magic/M15/Color",
     "Magic/M15/Symbols",
     "Magic/M15/FaceSymbol",
     "Magic/M15/Name",
