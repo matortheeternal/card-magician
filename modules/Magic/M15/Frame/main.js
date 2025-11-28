@@ -64,7 +64,27 @@ export default class FrameModule extends CardMagicianModule {
         return [await this.loadFile('style.css')];
     }
 
-    get fields() {
-        return [{ id: 'colors', type: 'computed' }];
+    get options() {
+        return [{
+            id: 'frame',
+            displayName: 'Frame',
+            type: 'checkboxlist',
+            options: this.frameOptions
+        }, {
+            id: 'trims',
+            type: 'checkboxlist',
+            displayName: 'Trims',
+            options: this.trimOptions
+        }, {
+            id: 'hybridStyle',
+            type: 'select',
+            displayName: 'Hybrid Style',
+            default: 'grey',
+            options: [
+                { id: 'grey', name: 'Grey' },
+                { id: 'gold', name: 'Gold' },
+                { id: 'hybrid', name: 'Hybrid' },
+            ]
+        }];
     }
 }
