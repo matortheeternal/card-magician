@@ -1,4 +1,4 @@
-import { renderField } from './cardFormField.js';
+import { renderField } from './formField.js';
 import { emit } from '../../utils.js';
 import Alpine from 'alpinejs';
 
@@ -82,14 +82,16 @@ export function missingFormMessage() {
     );
 }
 
-export function attachSelectOptions(el, faceForm) {
+export function attachOptions(el, faceForm) {
     const fieldId = el.dataset.fieldId;
     const field = faceForm.getField(fieldId);
     if (!field) {
         console.error(`Failed to resolve field ${fieldId}`);
         return;
     }
-    if (!field.options)
-        console.error(`Field ${fieldId} has no options`);
-    el.options = field.options || [];
+    Alpine.effect(() => {
+        if (!field.options)
+            console.error(`Field ${fieldId} has no options`);
+        el.options = field.options || [];
+    });
 }
