@@ -39,23 +39,28 @@ async function convertToken(token, card, symbols) {
         : token;
 }
 
+function fixQuotes(html) {
+    if (html.startsWith('“'))
+        html = `<span class="q">“</span>${html.slice(1)}`;
+    if (html.endsWith('”'))
+        html = `${html.slice(0, -1)}<span class="q">”</span>`;
+    return html;
+}
+
 async function convertContent(content, card, symbols) {
     const tokens = content.split(' ');
-    let result = [];
+    const result = [];
     for (let token of tokens)
         result.push(await convertToken(token, card, symbols));
-
-    return result.join(' ');
+    return fixQuotes(result.join(' '));
 }
 
 export default async function textToHTML(text, card, symbols = []) {
     if (!text || !text.length) return '';
     const paragraphs = [];
     for (const content of text.split('\n')) {
-        let className = 't';
-        if (content.startsWith('“')) className += ' q';
         const html = await convertContent(content, card, symbols);
-        paragraphs.push(`<div class="${className}">${html}</div>`);
+        paragraphs.push(`<div class="t">${html}</div>`);
     }
 
     return paragraphs.join('\n');

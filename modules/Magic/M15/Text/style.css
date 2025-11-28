@@ -62,6 +62,13 @@
     font-style: italic;
 }
 
-.flavor-text > div.q {
-    text-indent: -0.2em;
+.text span.q:last-child {
+    display: inline-block;
+    width: 8px;
+    margin-left: -2px;
+}
+
+.text span.q:first-child {
+    display: inline-block;
+    margin-left: -2px;
 }
