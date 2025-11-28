@@ -1,5 +1,4 @@
-import { calculateCmc } from './cmcCalculator.js';
-import { calculateColors } from './colorCalculator.js';
+
 
 function collect(row, key, separator = ' // ') {
     const values = [];
@@ -17,7 +16,17 @@ function collectMap(row, fn, separator = ' // ') {
     return values.join(separator);
 }
 
-export function buildColumns() {
+function collectUnique(row, fn, separator = ', ') {
+    const values = new Set();
+    for (const face of Object.values(row)) {
+        const valuesToAdd = fn(face);
+        if (valuesToAdd.length)
+            valuesToAdd.forEach(v => values.add(v));
+    }
+    return [...values].join(separator);
+}
+
+export function buildColumns({ ManaCost }) {
     return [{
         label: 'Name',
         width: '250px',
@@ -29,7 +38,10 @@ export function buildColumns() {
     }, {
         label: 'CMC',
         width: '60px',
-        data: row => calculateCmc(row.card?.manaCost)
+        data: row => collectMap(row, f => {
+            if (!f.manaCost) return '';
+            return ManaCost.parse(f.manaCost).cmc.toString();
+        })
     }, {
         label: 'Type',
         width: '230px',
@@ -49,14 +61,17 @@ export function buildColumns() {
     }, {
         label: 'Color',
         width: '210px',
-        data: row => calculateColors(row)
+        data: row => collectUnique(row, f => {
+            if (!f.colors) return [];
+            return f.colors.map(c => c.name);
+        })
     }, {
         label: 'Rarity',
         width: '100px',
-        data: row => row.card?.rarity || ''
+        data: row => row.card?.front.rarity || ''
     }, {
         label: '#',
         width: '50px',
-        data: row => row.card?.collectorNumber || ''
+        data: row => row.card?.front.collectorNumber || ''
     }];
 }
