@@ -1,55 +1,29 @@
-import {
-    checkFileExists, loadJson, getImageUrl, loadFont
-} from './fsHelpers.js';
-import { loadImport } from './importService.js';
+import { checkFileExists, loadJson } from './fsHelpers.js';
 
 const games = [];
-
-export const buildGameUtils = (gamePath) => ({
-    async assetURL(path) {
-        const filePath = [gamePath, 'assets', path].join('/');
-        return await getImageUrl(filePath);
-    },
-    async loadFile(filename) {
-        const filePath = [gamePath, filename].join('/');
-        return await Neutralino.filesystem.readFile(filePath);
-    },
-    async loadFont(fontName, localPath) {
-        const filePath = [gamePath, 'assets', localPath].join('/');
-        await loadFont(fontName, filePath);
-    },
-    import(localPath) {
-        const filePath = [gamePath, localPath].join('/');
-        return loadImport(filePath);
-    }
-});
 
 export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) throw new Error('Could not find game:', gameId);
-    const mainPath = [game.folder, 'main.js'].join('/');
-    const { default: Module } = await loadImport(mainPath);
-    const moduleUtils = buildGameUtils(game.folder);
-    await Module(game, moduleUtils);
-    const set = game.newSet();
-    if (!set.cards || !Array.isArray(set.cards)) set.cards = [];
-    if (!set.info) set.info = {};
-    Alpine.store('views').activeSet = set;
-    return game;
+    const mainPath = [game.path, 'main.js'].join('/');
+    const { default: Module } = await import('/' + mainPath);
+    const activeGame = await new Module(game.path);
+    await activeGame.init();
+    Alpine.store('views').activeSet = activeGame.newSet();
+    return activeGame;
 }
 
 export async function loadGames() {
     const gameFolders = await Neutralino.filesystem.readDirectory('games');
     for (let gameFolder of gameFolders) {
-        console.info('%cReading game:', 'color:gold', gameFolder.path);
+        console.debug('%cReading game:', 'color:gold', gameFolder.path);
         const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');
         if (!await checkFileExists(jsonPath)) {
-            console.info('No game.json found at', jsonPath);
+            console.debug('No game.json found at', jsonPath);
             continue;
         }
         const game = await loadJson(jsonPath);
-        game.folder = gameFolder.path;
-        game.columns = [];
+        game.path = gameFolder.path;
         games.push(game);
     }
 }

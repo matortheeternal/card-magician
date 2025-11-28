@@ -26,6 +26,6 @@ export default class ColoredProvider extends Provider {
     }
 
     async resolve(key) {
-        return await this.assetURL(`${this.folder}/${key}${this.ext}`);
+        return this.resolveAsset(`${this.folder}/${key}${this.ext}`);
     }
 }

@@ -29,14 +29,14 @@ export default class TrimMaskTransformer extends Transformer {
     async resolveBase() {
         const baseURL = await this.target.apply();
         if (!this.card.isDevoid?.()) return baseURL;
-        const maskURL = await this.assetURL('mask/trim/devoid.png');
-        return await this.utils.maskImage(baseURL, maskURL);
+        const maskURL = this.resolveAsset('mask/trim/devoid.png');
+        return await this.ctx.maskImage(baseURL, maskURL);
     }
 
     async apply() {
         const maskPath = `mask/${this.folder}/${this.filename}`;
-        const maskUrl = await this.assetURL(maskPath);
+        const maskUrl = this.resolveAsset(maskPath);
         const baseUrl = await this.resolveBase();
-        return await this.utils.maskImage(baseUrl, maskUrl);
+        return await this.ctx.maskImage(baseUrl, maskUrl);
     }
 }

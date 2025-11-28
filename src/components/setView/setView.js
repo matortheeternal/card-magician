@@ -15,6 +15,7 @@ Alpine.data('setView', () => ({
         this.$root.innerHTML = html;
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards;
+        this.addRowLabel = 'Click to add a card or press Ctrl+Enter';
 
         this.$watch('$store.views.activeSet', (set) => {
             const cards = set.cards || [];
@@ -31,7 +32,7 @@ Alpine.data('setView', () => ({
 
     async setActiveCard(selectedCard) {
         const views = Alpine.store('views');
-        const card = selectedCard ? await buildCard(selectedCard.model) : {};
+        const card = selectedCard ? await buildCard(selectedCard) : {};
         views.activeCard = Alpine.reactive(card);
     },
 
@@ -49,6 +50,7 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
+        this.$root.addEventListener('add-row-click', () => this.addCard());
         registerAction('new-set', () => this.newSet());
         registerAction('add-card', () => this.addCard());
         registerAction('open-set', () => this.openSet());
@@ -87,22 +89,27 @@ Alpine.data('setView', () => ({
     addCard() {
         const game = Alpine.store('game');
         const { activeSet } = Alpine.store('views');
-        activeSet.cards.push(game.newCard());
+        const card = game.newCard();
+        const indexToSelect = activeSet.cards.push(card) - 1;
+        Alpine.nextTick(() => {
+            executeAction('set-listview-selection', [indexToSelect]);
+            this.selectCard(card);
+        });
     },
 
     async openSet(filePath = null) {
         filePath = filePath || await openSingleFileDialog();
         if (!filePath) return;
         console.info('%cOpening set:', 'color:gold', filePath);
+        const game = Alpine.store('game');
         const views = Alpine.store('views');
         views.setFilePath = filePath;
-        views.activeSet = await loadJson(filePath);
+        views.activeSet = game.loadSet(await loadJson(filePath));
         appConfig.addRecentFile(filePath);
     },
 
     copyCard() {
         const cards = [];
-
         executeAction('get-listview-selection').forEach(r => {
             cards.push(r.original);
         });
@@ -118,7 +125,7 @@ Alpine.data('setView', () => ({
             const { activeSet } = Alpine.store('views');
 
             let indexToSelect = -1;
-            clipboard.forEach(card => {
+            clipboard.cards.forEach(card => {
                 indexToSelect = activeSet.cards.push(card) - 1;
             });
             if (indexToSelect === -1) return;

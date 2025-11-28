@@ -9,6 +9,6 @@ module-container[module="Type"] {
     font-kerning: none;
 }
 
-:host(.face-back) module-container[module="Type"] {
+:host(.back) module-container[module="Type"] {
     color: white;
 }

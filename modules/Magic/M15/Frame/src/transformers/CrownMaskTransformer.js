@@ -25,8 +25,8 @@ export default class CrownMaskTransformer extends Transformer {
         let imgURL = await this.target.apply();
         const masks = this.getMasks();
         for (const maskPath of masks) {
-            const maskURL = await this.assetURL(maskPath);
-            imgURL = await this.utils.maskImage(imgURL, maskURL);
+            const maskURL = this.resolveAsset(maskPath);
+            imgURL = await this.ctx.maskImage(imgURL, maskURL);
         }
         return imgURL;
     }

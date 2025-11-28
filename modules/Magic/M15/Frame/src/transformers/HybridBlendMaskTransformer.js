@@ -10,10 +10,10 @@ class HybridBlendMaskTransformer extends ColorBlendTransformer {
 
     async apply() {
         const maskPath = this.getBlendMaskPath('hybrid');
-        const maskUrl = await this.assetURL(maskPath);
+        const maskUrl = this.resolveAsset(maskPath);
         const baseUrl = await this.target.apply();
         const colorUrl = await this.provider.resolve(this.colorKey);
-        return await this.utils.maskedBlend(colorUrl, baseUrl, maskUrl);
+        return await this.ctx.maskedBlend(colorUrl, baseUrl, maskUrl);
     }
 }
 

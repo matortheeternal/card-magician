@@ -10,6 +10,6 @@ export default class VehicleTrimProvider extends Provider {
     }
 
     async resolve() {
-        return await this.assetURL('element/vehicle/trim.png');
+        return this.resolveAsset('element/vehicle/trim.png');
     }
 }

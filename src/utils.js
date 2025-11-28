@@ -29,6 +29,9 @@ export function bindCustomDragEvents(element, callbacks) {
 }
 
 export function binarySearch(min, max, check, maxIt) {
+    if (check(max)) return max;
+    if (!check(min)) return min;
+
     let low = min;
     let high = max;
     let best = low;
@@ -46,4 +49,13 @@ export function binarySearch(min, max, check, maxIt) {
     }
 
     return best;
+}
+
+export function fnv1a(str) {
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+        hash ^= str.charCodeAt(i);
+        hash = (hash * 0x01000193) >>> 0;
+    }
+    return (hash >>> 0).toString(16);
 }

@@ -7,7 +7,14 @@
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="sl-theme-dark" x-data>
-  <nav id="title-bar" x-data="titleBar()"></nav>
+  <nav id="title-bar" x-show="$store.views.loaded" x-data="titleBar()"></nav>
+
+  <template x-if="!$store.views.loaded">
+    <main class="spinner-container">
+      <div class="square-spinner"></div>
+      <div class="loading-message">Loading...</div>
+    </main>
+  </template>
 
   <template x-if="$store.views.loaded">
     <main>

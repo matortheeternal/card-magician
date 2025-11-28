@@ -1,38 +1,33 @@
-import options from './src/options.js';
+import symbolOptions from './src/symbolOptions.js';
 import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
 
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
-        return this.assetURL(opt.imagePath).then(imageURL => {
-            opt.imageURL = imageURL;
-        });
+        opt.imageURL = this.resolveAsset(opt.imagePath);
     }
 
     loadFaceSymbolImages() {
-        return Promise.all(
-            this.options
-                .concat(this.options.flatMap(opt => opt.items || []))
-                .filter(opt => Boolean(opt.imagePath))
-                .map(opt => this.loadImage(opt))
-        );
+        this.symbolOptions
+            .concat(this.symbolOptions.flatMap(opt => opt.items || []))
+            .filter(opt => Boolean(opt.imagePath))
+            .map(opt => this.loadImage(opt))
     }
 
-    async init() {
-        this.options = this.makeReactive(options);
-        await this.loadFaceSymbolImages();
+    async init(card) {
+        this.symbolOptions = this.makeReactive(symbolOptions);
+        this.loadFaceSymbolImages();
     }
 
     renderFaceSymbol(card) {
-        this.selectedFaceSymbol = resolveOption(this.options, card.faceSymbol)
-            || this.options[1];
+        this.selectedFaceSymbol = resolveOption(this.symbolOptions, card.faceSymbol);
         this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
         this.requestRender();
     }
 
     updateAutoSymbols(card) {
         if (!card.parent) return;
-        for (const option of this.options) {
-            computeOption(card, option, this.options);
+        for (const option of this.symbolOptions) {
+            computeOption(card, option, this.symbolOptions);
             if (!option.items) continue;
             for (const item of option.items)
                 computeOption(card, item, option.items);
@@ -48,8 +43,8 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     render(card) {
-        if (!card.parent || !card.parent().back) return;
-        const src = this.selectedFaceSymbol.imageURL;
+        if (!card.faceSymbol) return;
+        const src = this.selectedFaceSymbol?.imageURL;
         if (!src) return '';
         return (
             `<img src="${src}" class="${this.faceSymbolClass}"/>`
@@ -61,8 +56,9 @@ export default class FaceSymbolModule extends CardMagicianModule {
             id: 'faceSymbol',
             type: 'select',
             displayName: 'Face Symbol',
-            options: this.options,
-            default: 'autodetect'
+            options: this.symbolOptions,
+            initialValue: 'autodetect',
+            default: null
         }];
     }
 

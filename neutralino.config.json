@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  "applicationId": "js.neutralino.sample",
+  "applicationId": "cardmagician",
   "version": "1.0.0",
   "defaultMode": "window",
   "port": 0,
@@ -9,6 +9,8 @@
   "enableServer": true,
   "enableNativeAPI": true,
   "tokenSecurity": "one-time",
+  "dataLocation": "system",
+  "storageLocation": "system",
   "logging": {
     "enabled": true,
     "writeToLogFile": true
@@ -19,7 +21,8 @@
     "debug.log",
     "filesystem.*",
     "window.*",
-    "storage.*"
+    "storage.*",
+    "server.*"
   ],
   "modes": {
     "window": {
@@ -32,7 +35,9 @@
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/resources/icons/appIcon.png",
+      "webviewArgs": "--disable-features=Autofill,PasswordManager,AutofillServerCommunication",
       "enableInspector": true,
+      "openInspectorOnStartup": false,
       "borderless": true,
       "transparent": true,
       "moveable": true,
@@ -74,6 +79,7 @@
     "clientVersion": "6.3.0",
     "copyItems": [
       "/modules/",
+      "/games/",
       "/templates/"
     ]
   }

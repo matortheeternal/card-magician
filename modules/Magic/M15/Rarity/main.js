@@ -6,7 +6,6 @@ export const rarity = (name, id) => ({
 export default class RarityModule extends CardMagicianModule {
     updateRarity(card) {
         card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
-        this.rarityClass = `rarity-${card.rarity.toLowerCase()}`;
         this.requestRender();
     }
 
@@ -14,15 +13,13 @@ export default class RarityModule extends CardMagicianModule {
         watch(
             () => card.rarity,
             () => this.updateRarity(card)
-        )
+        );
     }
 
     renderExpansionSymbol(card) {
-        return (
-            `<span class="${this.rarityClass}">
-                ${card.rarityCharacter}
-            </span>`
-        );
+        const set = this.getActiveSet();
+        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
+        return (`<span class="${rarityClass}">${set.info.symbol || ''}</span>`);
     }
 
     get fields() {
@@ -39,5 +36,9 @@ export default class RarityModule extends CardMagicianModule {
             ],
             default: 'common',
         }];
+    }
+
+    async styles() {
+        return [await this.loadFile('style.css')];
     }
 }

@@ -3,7 +3,6 @@ import {
     buildLinearBlendTests,
     buildMaskBlendTests
 } from './tests/blendTests';
-import { buildImportTests } from './tests/importTests.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
@@ -36,6 +35,7 @@ function loadStyle(href) {
 }
 
 export async function setupTestHarness() {
+    Neutralino.server.mount('/tests', NL_PATH + '/tests');
     await loadStyle(jasmineStyle);
     for (const src of scripts)
         await loadScript(src);
@@ -48,5 +48,4 @@ export async function runTests() {
     buildCombineBlendTests();
     buildLinearBlendTests();
     buildMaskBlendTests();
-    buildImportTests();
 }
