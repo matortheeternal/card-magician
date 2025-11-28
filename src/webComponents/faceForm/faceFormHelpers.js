@@ -95,3 +95,8 @@ export function attachOptions(el, faceForm) {
         el.options = field.options || [];
     });
 }
+
+export function setCheckboxListValue(el, faceForm) {
+    const fieldId = el.dataset.fieldId;
+    el.value = faceForm.face[fieldId] || {};
+}

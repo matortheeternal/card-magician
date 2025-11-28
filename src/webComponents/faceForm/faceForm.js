@@ -1,7 +1,7 @@
 import { emit } from '../../utils.js';
 import {
-    missingFaceMessage, missingFormMessage,
-    handleFormGroup, renderFormField, attachOptions
+    missingFaceMessage, missingFormMessage, handleFormGroup,
+    renderFormField, attachOptions, setCheckboxListValue
 } from './faceFormHelpers.js'
 
 export default class FaceForm extends HTMLElement {
@@ -15,6 +15,8 @@ export default class FaceForm extends HTMLElement {
     hydrate() {
         this.querySelectorAll('cm-select, cm-checkbox-list')
             .forEach(el => attachOptions(el, this));
+        this.querySelectorAll('cm-checkbox-list')
+            .forEach(el => setCheckboxListValue(el, this));
     }
 
     connectedCallback() {
