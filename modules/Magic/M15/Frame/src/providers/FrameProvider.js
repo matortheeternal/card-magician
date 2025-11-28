@@ -6,7 +6,6 @@ export default class FrameProvider extends ColoredProvider {
     }
 
     get maskFolder() {
-        if (this.card.isMap?.()) return 'mask/map';
         if (this.card.isEnergyLand?.()) return 'mask/energy';
         if (this.card.isDKA?.()) return 'mask/dka';
         return 'mask/normal';
