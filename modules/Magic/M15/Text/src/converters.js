@@ -1,3 +1,12 @@
+export const WhitespaceConverter = {
+    match(str) {
+        return str.match(/^\s+/);
+    },
+    convert(match) {
+        return match[0];
+    }
+}
+
 export const ParenthesisConverter = {
     match(str, res, state) {
         return state.inItalics
@@ -44,8 +53,7 @@ export const CardNameConverter = {
 
 export const FallbackConverter = {
     match(str) {
-        return str.match(/^\s+/)
-            || str.match(/^[^\s{)”<]+/)
+        return str.match(/^[^\s{)”<]+/)
             || str.match(/^./);
     },
     convert(match) {
@@ -54,6 +62,7 @@ export const FallbackConverter = {
 }
 
 export const converters = [
+    WhitespaceConverter,
     ParenthesisConverter,
     SymbolConverter,
     LegendNameConverter,
