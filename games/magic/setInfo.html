@@ -5,3 +5,4 @@
 <sl-input label="Set code" x-model="set.info.setCode"></sl-input>
 <sl-input label="Language" x-model="set.info.language"></sl-input>
 <sl-textarea label="Set symbol" x-model="set.info.symbol" resize="auto"></sl-textarea>
+<cm-select label="Collector Number Format" :value="set.info.collectorNumberFormat" data-info-id="collectorNumberFormat" x-prop:options="$store.game.collectorNumberOptions"></cm-select>
