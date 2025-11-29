@@ -326,6 +326,15 @@ export default class CardMagicianModule {
         return sanitizeHtml(str, options);
     }
 
+    escapeHTML(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+
     /**
      * Request that this module perform a render update.
      *

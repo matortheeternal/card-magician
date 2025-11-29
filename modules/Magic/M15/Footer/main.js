@@ -29,14 +29,14 @@ export default class FooterModule extends CardMagicianModule {
 
         return (
             `<div>
-                <div>${card.collectorNumber || '&nbsp;'}</div>
-                <div>${setCode} &bullet; ${language}</div>
+                <div>${this.escapeHTML(card.collectorNumber) || '&nbsp;'}</div>
+                <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
             </div>
             <div>
                 <div>${card.rarityCharacter}</div>
                 <div class="illustrator-container">
                     <div class="illustrator-brush">${this.brushSvg}</div>
-                    <div class="illustrator-name">${illustrator}</div>
+                    <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
                 </div>
             </div>`
         );
