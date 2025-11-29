@@ -21,13 +21,15 @@ function addPrototypeFunction(ctor, name, descriptor) {
  * @method
  * @name String#separate
  * @returns {string}
- * @description Insert a space before uppercase letters in camelCase or PascalCase strings.
+ * @description Insert a separator before uppercase letters in camelCase
+ *              or PascalCase strings.
  * Examples: `'camelCase'.separate()` → `'camel Case'`,
  *           `'HTMLParser'.separate()` → `'HTML Parser'`
+ *           `'MyCoolClass'.separate('-')` → `'My-Cool-Class'`
  */
 addPrototypeFunction(String, 'separate', {
-    value: function separate() {
-        return this.replace(/([a-z])([A-Z])/g, '$1 $2');
+    value: function separate(separator = ' ') {
+        return this.replace(/([a-z])([A-Z])/g, `$1${separator}$2`);
     }
 });
 
@@ -67,7 +69,7 @@ addPrototypeFunction(String, 'toTitleCase', {
  * @name String#toCamelCase
  * @returns {string}
  * @description Converts a space-separated string into camelCase.
- * Example: `'modal_back'.toCamelCase()` -> `'modalBack'`
+ * Example: `'modal back'.toCamelCase()` -> `'modalBack'`
  */
 addPrototypeFunction(String, 'toCamelCase', {
     value: function toCamelCase() {
