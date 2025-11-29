@@ -7,6 +7,22 @@ export function autoNumberCards(set) {
     }
 }
 
+export function formatCollectorNumber(set, n) {
+    const strN = n.toString();
+    switch (set.info.collectorNumberFormat) {
+        case "0001":
+            return addLeadingZeroes(strN, 4);
+        case "001/099":
+            return addLeadingZeroes(strN, 3) + "/" + addLeadingZeroes(set.cards.length.toString(), 3);
+        default:
+            return strN;
+    }
+}
+
+function addLeadingZeroes(str, targetLength) {
+    return "0".repeat(targetLength - str.length) + str;
+}
+
 const color_indexes = {
     colorless: 0,
     white: 1,

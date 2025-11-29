@@ -23,13 +23,17 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
+        const game = this.getActiveGame();
+        
         const setCode = card.setCode || set.info.setCode || '';
         const language = card.language || set.info.language || '';
         const illustrator = card.illustrator || set.info.illustrator || '';
+        const number = card.collectorNumber || card.autoCollectorNumber;
+        const numberFormatted = number ? game.formatCollectorNumber(set, number) : '&nbsp';
 
         return (
             `<div>
-                <div>${card.collectorNumber || card.autoCollectorNumber || '&nbsp;'}</div>
+                <div>${numberFormatted}</div>
                 <div>${setCode} &bullet; ${language}</div>
             </div>
             <div>
