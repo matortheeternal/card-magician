@@ -4,4 +4,5 @@
 <sl-input label="Copyright" x-model="set.info.legalText"></sl-input>
 <sl-input label="Set code" x-model="set.info.setCode"></sl-input>
 <sl-input label="Language" x-model="set.info.language"></sl-input>
+<cm-select label="Collector Number Format" :value="set.info.collectorNumberFormat" x-prop:options="set.collectorNumberOptions"></cm-select>
 <sl-textarea label="Set symbol" x-model="set.info.symbol" resize="auto"></sl-textarea>
