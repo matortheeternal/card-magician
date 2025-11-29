@@ -25,11 +25,23 @@ export function setupRenderPipeline(card, modules) {
     });
 }
 
+function getDefaultValue(field) {
+    if (field.hasOwnProperty('default')) return field.default;
+    if (field.type === 'checkboxlist') return {};
+    if (field.type === 'select') return field.options?.[0]?.id || null;
+    if (field.type === 'image') return {
+        image: null, filename: '',
+        width: '', height: '',
+        xOffset: 0, yOffset: 0,
+    };
+    return '';
+}
+
 function loadFields(card, modules) {
     for (const module of modules)
         module.fields.forEach(field => {
             card.fields.push(field);
-            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+            card[field.id] = getDefaultValue(field);
         });
 }
 
@@ -37,7 +49,7 @@ function loadOptions(card, modules) {
     for (const module of modules)
         module.options.forEach(field => {
             card.options.push(field);
-            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+            card[field.id] = getDefaultValue(field);
         });
 }
 

@@ -86,7 +86,6 @@ export default class FrameModule extends CardMagicianModule {
             id: 'hybridStyle',
             type: 'select',
             displayName: 'Hybrid Style',
-            default: 'grey',
             options: [
                 { id: 'grey', name: 'Grey' },
                 { id: 'gold', name: 'Gold' },
