@@ -8,8 +8,8 @@ function getBaseHTML(label, options, values) {
                 <sl-checkbox
                     data-id="${opt.id}"
                     size="small"
-                    ?checked="${values[opt.id] ? 'true' : ''}"
-                    ?disabled="${opt.disabled ? 'true' : ''}">
+                    ${values[opt.id] ? 'checked' : ''}
+                    ${opt.disabled ? 'disabled' : ''}>
                     ${opt.label}
                 </sl-checkbox>
             `).join('')}

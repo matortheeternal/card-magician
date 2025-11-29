@@ -58,7 +58,7 @@ class Card extends HTMLElement {
             this.appendChild(faceEl);
         }
 
-        if (this.canFlip) this.classList.add('flip-container');
+        this.classList.toggle('flip-container', this.canFlip);
     }
 
     flip() {

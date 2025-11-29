@@ -1,46 +1,26 @@
-import Symbol from './src/Symbol.js';
-import symbolParsers from './src/symbolParsers.js';
+import { symbolToHTML } from './src/symbolToHTML.js'
 
 export default class SymbolsModule extends CardMagicianModule {
     async init(card) {
-        card.findSymbolParser = this.findSymbolParser.bind(this);
+        const magic = this.getActiveGame();
+        this.ActivationCost = magic.ManaScribe.ActivationCost;
         card.parseSymbols = this.parseSymbols.bind(this);
         card.symbolsToHTML = this.symbolsToHTML.bind(this);
-        card.generateSymbols = this.generateSymbols.bind(this);
-    }
-
-    findSymbolParser(str) {
-        for (let parser of symbolParsers) {
-            const match = parser.match(str);
-            if (match) return [parser, match];
-        }
-        return [null, null];
     }
 
     parseSymbols(str) {
-        let remainingStr = str;
-        let output = [];
-        while (remainingStr.length) {
-            const [parser, match] = this.findSymbolParser(remainingStr);
-            if (!parser) break;
-            output.push(new Symbol(parser.name, match[0]));
-            remainingStr = remainingStr.slice(match[0].length);
-        }
-        return output;
+        const cost = this.ActivationCost.parse(str);
+        return cost.symbols;
     }
 
-    async symbolsToHTML(symbols, useTall = false) {
+    symbolsToHTML(symbols, useTall = false) {
         const size = useTall ? 'tall' : 'flat';
-        return (await Promise.all(
-            symbols.map(async sym => {
-                return sym.toHTML ? await sym.toHTML(this, size) : sym;
-            })
-        )).join('');
+        return symbols.map(sym => symbolToHTML(this, sym, size)).join('');
     }
 
-    async generateSymbols(str, useTall) {
+    generateSymbols(str, useTall) {
         if (!str) return '';
         const symbols = this.parseSymbols(str);
-        return await this.symbolsToHTML(symbols, useTall);
+        return this.symbolsToHTML(symbols, useTall);
     }
 }

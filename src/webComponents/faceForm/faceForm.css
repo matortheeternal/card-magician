@@ -36,13 +36,14 @@ sl-button.add-field-btn sl-icon {
     height: 1.6em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+cm-face-form h2 {
     text-transform: capitalize;
-    text-align: center;
     border-bottom: 1px solid;
-    font-family: monospace;
+    font-family: var(--sl-font-sans);
     zoom: 1.5;
-    margin: 0 0 0.5em;
+    margin: 1em 0 0 0;
+    font-size: var(--sl-font-size-x-small);
+    font-weight: normal;
 }
 
 sl-input[type="file"]::part(input) {

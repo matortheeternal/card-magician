@@ -55,7 +55,7 @@ function setupAlpine() {
     Alpine.store('views', {
         loaded: false,
         activeSet: { cards: [] },
-        activeCard: {},
+        activeCard: null,
         hide(key) {
             this[key] = null;
         }
