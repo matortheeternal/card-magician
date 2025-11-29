@@ -30,7 +30,7 @@ function getDefaultValue(field) {
     if (field.type === 'checkboxlist') return {};
     if (field.type === 'select') return field.options?.[0]?.id || null;
     if (field.type === 'image') return {
-        image: null, filename: '',
+        imageUrl: null, filename: '',
         width: '', height: '',
         xOffset: 0, yOffset: 0,
     };
