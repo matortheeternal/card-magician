@@ -47,7 +47,12 @@ export default class FaceForm extends HTMLElement {
 
     renderFields() {
         if (!this.fields) return;
-        this.fields.forEach(field => renderFormField(field, this));
+        this.fields.forEach(field => renderFormField(this.face, field, this));
+        this.subcards.forEach(subcard => {
+            subcard.fields.forEach(
+                field => renderFormField(subcard, field, this)
+            );
+        });
     }
 
     render() {
@@ -64,11 +69,10 @@ export default class FaceForm extends HTMLElement {
         this.hydrate();
     }
 
-    get face() { return this._face; }
-
-    get fields() { return this._face.fields }
-
+    get face() { return this._face }
     get form() { return this._face.form }
+    get fields() { return this._face.fields }
+    get subcards() { return this._face.subcards }
 
     getField(fieldId) {
         return this.fields.find(field => field.id === fieldId);
@@ -125,9 +129,12 @@ export default class FaceForm extends HTMLElement {
     }
 
     onChange(e) {
-        const fieldId = e.target.getAttribute('name');
+        const formField = e.target.closest('form-field');
+        const fieldId = formField?.getAttribute('field-id');
         if (!fieldId) return;
-        this.face[fieldId] = e?.detail?.value || e.target.value || '';
+        const subcardId = formField?.getAttribute('subcard-id');
+        const target = subcardId ? this.face[subcardId] : this.face;
+        target[fieldId] = e?.detail?.value || e.target.value || '';
         emit(this, 'save-card');
     }
 }
