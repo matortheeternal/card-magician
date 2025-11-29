@@ -6,10 +6,6 @@
 // ╚╗   ║ ╚o   ║          ╚o❄️️
 // 👑  ✨     🔲
 
-import BaseProviders from './providers/index.js';
-import BaseResolvers from './resolvers/index.js';
-import BaseTransformers from './transformers/index.js';
-
 export function buildProviders(Providers, card, module) {
     return Providers.filter(Provider => Provider.enabled(card))
         .map(Provider => new Provider(card, module));
@@ -40,12 +36,7 @@ export function buildSpouts(Transformers, resolvers, card) {
     return spouts;
 }
 
-export function runPipeline(
-    card, module,
-    Providers = BaseProviders,
-    Resolvers = BaseResolvers,
-    Transformers = BaseTransformers
-) {
+export function runPipeline(card, module, Providers, Resolvers, Transformers) {
     const providers = buildProviders(Providers, card, module);
     const resolvers = buildResolvers(Resolvers, providers, card);
     const spouts =  buildSpouts(Transformers, resolvers, card);

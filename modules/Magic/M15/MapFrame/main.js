@@ -21,7 +21,5 @@ export default class MapFrameModule extends FrameModule {
         watch(() => card.colorIdentity, () => this.updateBackgrounds(card));
     }
 
-    get options() {
-        return [];
-    }
+    get options() { return [] }
 }
