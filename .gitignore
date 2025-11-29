@@ -13,7 +13,7 @@ neutralino.js
 *.log
 
 # Custom
-node_modules
+/node_modules
 .tmp/auth_info.json
 /resources/js
 /resources/css
