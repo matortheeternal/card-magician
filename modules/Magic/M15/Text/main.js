@@ -1,12 +1,18 @@
 import textToHTML from './src/textToHTML.js';
 
+const allowedTags = [
+    'b', 'ol', 'pre', 'ul', 'li', 'br', 'code',
+    'em', 'q', 'strong', 'sub', 'sup', 'u', 'sym'
+];
+
 export default class TextModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
-        card.textToHTML = function(text, outputSymbols) {
-            return textToHTML(text, card).map(p => {
+        card.textToHTML = (text, outputSymbols) => {
+            const html = this.sanitize(text, { allowedTags });
+            return textToHTML(html, card).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;
