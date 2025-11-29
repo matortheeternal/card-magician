@@ -60,7 +60,7 @@ export function buildColumns({ ManaCost }) {
         })
     }, {
         label: 'Color',
-        width: '210px',
+        width: '200px',
         data: row => collectUnique(row, f => {
             if (!f.colors) return [];
             return f.colors.map(c => c.name);
@@ -68,10 +68,14 @@ export function buildColumns({ ManaCost }) {
     }, {
         label: 'Rarity',
         width: '100px',
-        data: row => row.card?.front.rarity || ''
+        data: row => row.front.rarity || ''
     }, {
         label: '#',
         width: '50px',
-        data: row => row.card?.front.collectorNumber || ''
+        data: row => {
+            return parseInt(row.front?.collectorNumber || '0')
+                .toString()
+                .padStart(4, '0');
+        }
     }];
 }
