@@ -1,8 +1,9 @@
 export function autoNumberCards(set) {
-    set.sort(collectorNumberSort);
-    
-    for (const [ i, card ] of set.entries()) {
-        card.model.front.autoCollectorNumber = i;
+    const sorted_cards = set.cards.slice().sort(collectorNumberSort);
+
+    for (const [ i, card ] of sorted_cards.entries()) {
+        const set_card = set.cards[set.cards.indexOf(card)];
+        set_card.front.autoCollectorNumber = i;
     }
 }
 
@@ -29,29 +30,33 @@ function collectorNumberSort(a, b) {
 }
 
 function getColorIndex(card) {
-    const card_model = card.model.front;
-
-    if (card_model.superType.includes("Basic Land")) {
-        return color_indexes.basic_land;
-    }
-
-    if (card_model.superType.includes("Land")) {
-        return color_indexes.land;
-    }
-
-    if (card_model.colors.length == 0 && !card_model.superType.includes("Artifact")) {
+    const num_keys = Object.keys(card.front).length;
+    
+    if (num_keys < 2) { // autoCollectorNumber is being set for whatever reason, this just checks if the card is empty
         return color_indexes.colorless;
     }
 
-    if (card_model.colors.length == 0 && card_model.superType.includes("Artifact")) {
+    if (card.front.superType.includes("Basic Land")) {
+        return color_indexes.basic_land;
+    }
+
+    if (card.front.superType.includes("Land")) {
+        return color_indexes.land;
+    }
+
+    if (card.front.colors.length == 0 && !card.front.superType.includes("Artifact")) {
+        return color_indexes.colorless;
+    }
+
+    if (card.front.colors.length == 0 && card.front.superType.includes("Artifact")) {
         return color_indexes.artifact;
     }
     
-    if (card_model.colors.length > 1) {
+    if (card.front.colors.length > 1) {
         return color_indexes.multicolor;
     }
 
-    const card_color = card_model.colors[0];
+    const card_color = card.front.colors[0];
     const color_index = color_indexes[card_color.name];
 
     return color_index || color_indexes.other;
