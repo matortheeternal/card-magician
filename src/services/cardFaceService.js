@@ -1,55 +1,5 @@
 import Alpine from 'alpinejs';
-import { parseBlob } from '../gfx/imageProcessing.js';
-
-const imageKeys = ['filename', 'xOffset', 'yOffset', 'width', 'height'];
-function imageFields(obj) {
-    return imageKeys.reduce((acc, key) => {
-        if (key in obj) acc[key] = obj[key];
-        return acc;
-    }, {});
-}
-
-async function saveImage(data, field) {
-    const imageUrl = data[field.id]?.image;
-    if (!imageUrl) return { image: null, filename: '' };
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({
-            image: reader.result,
-            ...imageFields(data[field.id])
-        });
-        reader.onerror = () => reject(new Error('Failed to read data stream.'));
-        reader.readAsDataURL(blob);
-    });
-}
-
-async function loadImage(model, dataToLoad, field) {
-    const currentImage = model[field.id]?.image;
-    if (currentImage) URL.revokeObjectURL(currentImage);
-    const imageDataToLoad = dataToLoad[field.id];
-    if (!imageDataToLoad?.image) return { image: null, filename: '' };
-    const blob = parseBlob(imageDataToLoad.image);
-    const image = URL.createObjectURL(blob);
-    return { image, ...imageFields(imageDataToLoad) };
-}
-
-async function saveField(data, field) {
-    if (field.hasOwnProperty('save'))
-        return await field.save();
-    if (field.type === 'image')
-        return await saveImage(data, field);
-    return data[field.id];
-}
-
-async function loadField(model, dataToLoad, field) {
-    if (field.hasOwnProperty('load'))
-        return await field.load(dataToLoad);
-    if (field.type === 'image')
-        return await loadImage(model, dataToLoad, field);
-    return dataToLoad[field.id];
-}
+import { loadImage, saveImage } from './imageFieldHelpers.js';
 
 class DOMBuilder {
     root = document.createElement('div');
@@ -67,33 +17,76 @@ class DOMBuilder {
     }
 }
 
-export function initCardFace(key) {
-    return Alpine.reactive({
-        id: key,
-        dom: new DOMBuilder(),
-        form: new DOMBuilder(),
-        optionsForm: new DOMBuilder(),
-        subCards: [],
-        fields: [],
-        options: [],
-        async save() {
-            const cardData = {};
-            for (const field of this.fields)
-                cardData[field.id] = await saveField(this, field);
-            for (const option of this.options)
-                cardData[option.id] = await saveField(this, option);
-            for (const subCard of this.subCards)
-                cardData[subCard.id] = await subCard.save();
-            return cardData;
-        },
-        async load(cardData) {
-            if (!cardData) return;
-            for (const field of this.fields)
-                if (cardData.hasOwnProperty(field.id))
-                    this[field.id] = await loadField(this, cardData, field);
-            for (const option of this.options)
-                if (cardData.hasOwnProperty(option.id))
-                    this[option.id] = await loadField(this, cardData, option);
+class BaseCardModel {
+    fields = [];
+    options = [];
+
+    constructor(key) {
+        this.id = key;
+    }
+
+    async saveField(field) {
+        if (field.hasOwnProperty('save'))
+            return await field.save();
+        if (field.type === 'image')
+            return await saveImage(this, field);
+        return this[field.id];
+    }
+
+    async loadField(dataToLoad, field) {
+        if (field.hasOwnProperty('load'))
+            return await field.load(dataToLoad);
+        if (field.type === 'image')
+            return await loadImage(this, dataToLoad, field);
+        return dataToLoad[field.id];
+    }
+
+    async save() {
+        const cardData = {};
+        for (const field of this.fields.concat(this.options))
+            cardData[field.id] = await this.saveField(field);
+        return cardData;
+    }
+
+    async load(cardData) {
+        if (!cardData) return;
+        for (const field of this.fields.concat(this.options)) {
+            if (!cardData.hasOwnProperty(field.id)) continue;
+            this[field.id] = await this.loadField(cardData, field);
         }
-    });
+    }
+}
+
+class CardFaceModel extends BaseCardModel {
+    dom = new DOMBuilder();
+    form = new DOMBuilder();
+    optionsForm = new DOMBuilder();
+    subcards = [];
+
+    async save() {
+        const cardData = await super.save();
+        for (const subCard of this.subcards)
+            cardData[subCard.id] = await subCard.save();
+        return cardData;
+    }
+
+    async load(cardData) {
+        await super.load(cardData);
+        for (const subcard of this.subcards) {
+            if (!cardData.hasOwnProperty(subcard.id)) continue;
+            await subcard.load(cardData[subcard.id]);
+        }
+    }
+}
+
+class SubCardModel extends BaseCardModel {
+    isSubcard = true;
+}
+
+export function initCardFace(key) {
+    return Alpine.reactive(new CardFaceModel(key));
+}
+
+export function initSubCardFace(key) {
+    return Alpine.reactive(new SubCardModel(key));
 }

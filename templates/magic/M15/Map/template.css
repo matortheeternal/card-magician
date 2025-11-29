@@ -22,10 +22,10 @@ module-container[module="MapFrame"] {
 .header {
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 2;
     padding: 2px 35px;
     height: 40px;
-    z-index: 2;
-    position: relative;
 }
 
 module-container[module="Name"] {
@@ -49,23 +49,23 @@ module-container[module="Rarity"] {
 }
 
 module-container[module="Art"] {
+    position: relative;
+    z-index: 0;
     height: 241px;
     overflow: hidden;
     box-sizing: border-box;
-    position: relative;
-    z-index: 0;
     display: block;
 }
 
 .type-line {
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 2;
     padding: 4px 8px;
     height: 28px;
     align-items: center;
     margin: 1.5px 3px;
-    position: relative;
-    z-index: 2;
 }
 
 module-container[module="Type"] {
@@ -74,12 +74,12 @@ module-container[module="Type"] {
 }
 
 module-container[module="Text"] {
+    position: relative;
+    z-index: 2;
     padding: 12px 24px;
     height: 155px;
     margin-bottom: 6px;
     display: flex;
-    position: relative;
-    z-index: 2;
 }
 
 module-container[module="Text"] .text {

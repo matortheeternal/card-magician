@@ -8,6 +8,7 @@ import {
     maskImageUrl
 } from './gfx/blending.js';
 import Alpine from 'alpinejs';
+import sanitizeHtml from 'sanitize-html';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -312,6 +313,26 @@ export default class CardMagicianModule {
      */
     getActiveGame() {
         return Alpine.store('game');
+    }
+
+    /**
+     * Sanitizes an input string using sanitize-html.
+     *
+     * @param {string} str - the string to sanitize
+     * @param {object} options - sanitze HTML options
+     * @returns {string}
+     */
+    sanitize(str, options) {
+        return sanitizeHtml(str, options);
+    }
+
+    escapeHTML(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
     }
 
     /**

@@ -20,7 +20,7 @@ export default class NameModule extends CardMagicianModule {
         game.autoNumberCards(this.getActiveSet());
 
         return (
-            `<auto-fit-line>${card.name}</auto-fit-line>`
+            `<auto-fit-line>${this.escapeHTML(card.name)}</auto-fit-line>`
         );
     }
 

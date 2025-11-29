@@ -1,6 +1,6 @@
 import { emit } from '../../utils.js';
 
-class CardFace extends HTMLElement {
+export default class DisplayCardFace extends HTMLElement {
     #face;
     initialized = false;
 
@@ -39,4 +39,4 @@ class CardFace extends HTMLElement {
     }
 }
 
-customElements.define('cm-card-face', CardFace);
+customElements.define('cm-card-face', DisplayCardFace);

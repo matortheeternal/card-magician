@@ -1,6 +1,11 @@
 import ColoredProvider from './ColoredProvider.js';
 
 export default class FrameProvider extends ColoredProvider {
+    get ext() {
+        if (this.card.frameFolder === 'devoid') return '.png';
+        return '.jpg';
+    }
+
     get folder() {
         return `frame/${this.card.frameFolder}`;
     }
@@ -12,6 +17,7 @@ export default class FrameProvider extends ColoredProvider {
     }
 
     get hasLandTemplates() {
-        return this.card.frameFolder !== 'energy';
+        return this.card.frameFolder !== 'energy'
+            && this.card.frameFolder !== 'devoid';
     }
 }

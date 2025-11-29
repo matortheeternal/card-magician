@@ -55,9 +55,14 @@ export function handleFormGroup(formGroup, faceForm) {
     });
 }
 
-export function renderFormField(field, faceForm) {
-    const face = faceForm.face;
-    const selector = `form-field[field-id="${field.id}"]`;
+function getSelector(face, field) {
+    return `form-field[field-id="${field.id}"]` + (face.isSubcard
+        ? `[subcard-id="${face.id}"]`
+        : ':not([subcard-id])');
+}
+
+export function renderFormField(face, field, faceForm) {
+    const selector = getSelector(face, field);
     const container = faceForm.form.root.querySelector(selector);
     if (!container) return;
     const optional = container.hasAttribute('optional');
@@ -94,4 +99,9 @@ export function attachOptions(el, faceForm) {
             console.error(`Field ${fieldId} has no options`);
         el.options = field.options || [];
     });
+}
+
+export function setCheckboxListValue(el, faceForm) {
+    const fieldId = el.dataset.fieldId;
+    el.value = faceForm.face[fieldId] || {};
 }

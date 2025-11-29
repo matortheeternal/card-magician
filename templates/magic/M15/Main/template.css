@@ -13,28 +13,27 @@
     user-select: text;
 }
 
-.frame {
-    display: flex;
-    flex-direction: column;
-    border-radius: 4px;
-    padding: 10px 6px 0;
-    position: relative;
-    z-index: 200;
+module-container[module="Frame"] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    padding: 2px 5px 2px 35px;
-    height: 32px;
+    position: relative;
+    z-index: 2;
+    padding: 12px 10px 2px 40px;
+    height: 40px;
 }
 
 module-container[module="Name"] {
-    padding: 0 4px;
+    padding: 0 5px;
 }
 
 .header:has(module-container[module="FaceSymbol"][style*="display: none"]) {
-    padding-left: 4px;
+    padding-left: 10px;
 }
 
 module-container[module="FaceSymbol"] {
@@ -46,17 +45,46 @@ module-container[module="FaceSymbol"] {
 }
 
 module-container[module="Art"] {
-    height: 232px;
+    display: block;
+    position: relative;
+    z-index: 0;
+    height: 234px;
     overflow: hidden;
     border: 1px solid #000;
     box-sizing: border-box;
-    margin: 2px 9px 2px 8px;
+    margin: 2px 14px 3.5px 13px;
+}
+
+.frame-clear module-container[module="Art"],
+.frame-devoid module-container[module="Art"] {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 1.5px;
+    overflow: visible;
+}
+
+.frame-clear module-container[module="Art"] crop-image {
+    display: block;
+    height: 203%;
+    position: absolute;
+    left: 0;
+    top: -18.5%;
+}
+
+.frame-devoid module-container[module="Art"] crop-image {
+    display: block;
+    height: 205%;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .type-line {
     display: flex;
     justify-content: space-between;
-    padding: 4px 8px;
+    position: relative;
+    z-index: 2;
+    padding: 4px 14px;
     height: 28px;
     align-items: center;
     margin: 1.5px 3px;
@@ -80,9 +108,12 @@ module-container[render="renderExpansionSymbol"] {
 }
 
 module-container[module="Text"] {
-    padding: 3px 7px;
-    height: 159px;
-    margin-bottom: 6px;
+    display: flex;
+    position: relative;
+    z-index: 2;
+    padding: 6px 13px;
+    height: 165px;
+    margin-bottom: 0.5px;
 }
 
 module-container[render="renderPT"] {
@@ -110,7 +141,7 @@ div.footer {
     align-items: end;
     padding: 0 10px;
     position: relative;
-    z-index: 200;
+    z-index: 2;
 }
 
 auto-fit-line {
