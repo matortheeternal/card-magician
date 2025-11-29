@@ -21,5 +21,6 @@ Alpine.directive('prop', (
         }
     );
 
+    el[propName] = evaluate(expression);
     cleanup(propWatcher);
 });
