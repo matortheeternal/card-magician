@@ -43,7 +43,7 @@ export default class FlagModule extends CardMagicianModule {
         if (!card.showFlag) return;
         return (
             `<div class="flag" style="${this.flagStyle}">
-                <div class="flag-left">${card.flagLeft}</div>
+                <div class="flag-left">${this.escapeHTML(card.flagLeft)}</div>
                 <div class="flag-right">${this.flagRightHTML}</div>
             </div>`
         );
