@@ -6,6 +6,10 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.ManaScribe = ManaScribe;
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
+        this.collectorNumberOptions = [
+            { id: 'four', name: '0001' },
+            { id: 'threeOutOf', name: '001/999' },
+        ];
     }
 
     get columns () {
@@ -27,7 +31,12 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     newSet() {
-        const info = { language: 'EN', setCode: '', symbol: this.defaultSetSymbol };
+        const info = {
+            language: 'EN',
+            setCode: '',
+            symbol: this.defaultSetSymbol,
+            collectorNumberFormat: this.collectorNumberOptions[0].id
+        };
         return { cards: [], info };
     }
 
