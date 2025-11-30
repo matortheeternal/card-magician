@@ -1,0 +1,14 @@
+form-group[group-id="type"] {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
+}
+
+form-group[group-id="bottom"] {
+    grid-template-columns: 0.5fr 0.5fr 1.5fr;
+}
+
+sl-input::part(input) {
+    width: 20px;
+}

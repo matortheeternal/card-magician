@@ -36,7 +36,8 @@ sl-button.add-field-btn sl-icon {
     height: 1.6em;
 }
 
-cm-face-form h2 {
+cm-face-form h2,
+cm-options-form h2 {
     text-transform: capitalize;
     border-bottom: 1px solid;
     font-family: var(--sl-font-sans);
