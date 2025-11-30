@@ -13,7 +13,7 @@ export default class CostModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{ id: 'manaCost', displayName: 'Mana Cost' }];
+        return [{ id: 'manaCost', label: 'Mana Cost' }];
     }
 
     render() {

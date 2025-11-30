@@ -91,18 +91,18 @@ export default class FrameModule extends CardMagicianModule {
     get options() {
         return [{
             id: 'frame',
-            displayName: 'Frame',
+            label: 'Frame',
             type: 'checkboxlist',
             options: this.frameOptions
         }, {
             id: 'trims',
             type: 'checkboxlist',
-            displayName: 'Trims',
+            label: 'Trims',
             options: this.trimOptions
         }, {
             id: 'hybridStyle',
             type: 'select',
-            displayName: 'Hybrid Style',
+            label: 'Hybrid Style',
             options: [
                 { id: 'grey', name: 'Grey' },
                 { id: 'gold', name: 'Gold' },

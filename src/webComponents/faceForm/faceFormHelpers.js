@@ -1,6 +1,6 @@
-import { renderField } from './formField.js';
 import { emit } from '../../utils.js';
 import Alpine from 'alpinejs';
+import { renderField } from '../../services/fieldElementRegistry.js';
 
 function renderAddButton(label) {
     return (
@@ -51,7 +51,6 @@ export function handleFormGroup(formGroup, faceForm) {
         formGroup.toggleAttribute('active', show);
         const label = formGroup.getAttribute('label');
         toggleGroup.innerHTML = renderToggle(show, label);
-        emit(faceForm, 'save-card');
     });
 }
 
@@ -66,7 +65,7 @@ export function renderFormField(face, field, faceForm) {
     const container = faceForm.form.root.querySelector(selector);
     if (!container) return;
     const optional = container.hasAttribute('optional');
-    container.innerHTML = renderField(field, face);
+    renderField(container, field);
     if (!optional) return;
     const childField = container.firstElementChild;
     const toggleField = createToggle(container, 'toggle-field');
@@ -74,8 +73,7 @@ export function renderFormField(face, field, faceForm) {
         const show = face[field.id] !== null
             && face[field.id] !== undefined;
         childField.style.display = show ? 'block' : 'none';
-        toggleField.innerHTML = renderToggle(show, field.displayName);
-        emit(faceForm, 'save-card');
+        toggleField.innerHTML = renderToggle(show, field.label);
     });
 }
 
@@ -85,23 +83,4 @@ export function missingFormMessage() {
             <span>This face does not have any fields to display.</span>
         </div>`
     );
-}
-
-export function attachOptions(el, faceForm) {
-    const fieldId = el.dataset.fieldId;
-    const field = faceForm.getField(fieldId);
-    if (!field) {
-        console.error(`Failed to resolve field ${fieldId}`);
-        return;
-    }
-    Alpine.effect(() => {
-        if (!field.options)
-            console.error(`Field ${fieldId} has no options`);
-        el.options = field.options || [];
-    });
-}
-
-export function setCheckboxListValue(el, faceForm) {
-    const fieldId = el.dataset.fieldId;
-    el.value = faceForm.face[fieldId] || {};
 }

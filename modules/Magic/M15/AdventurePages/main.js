@@ -27,14 +27,14 @@ export default class AdventurePagesModule extends FrameModule {
     get options() {
         return [{
             id: 'pageStyle',
-            displayName: 'Page Style',
+            label: 'Page Style',
             type: 'select',
             options: [
-                { id: 'blank', label: 'Blank' },
-                { id: 'name', label: 'Name' },
-                { id: 'name_flat', label: 'Flat Name' },
                 { id: 'name_and_type', label: 'Name and Type' },
                 { id: 'name_and_type_flat', label: 'Flat Name and Type' },
+                { id: 'name_flat', label: 'Flat Name' },
+                { id: 'name', label: 'Name' },
+                { id: 'blank', label: 'Blank' },
             ]
         }]
     }

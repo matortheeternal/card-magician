@@ -5,8 +5,8 @@
 @import "components/listView/listView.css";
 @import "components/setInfoModal/setInfoModal.css";
 @import "webComponents/cardForm/cardForm.css";
-@import "webComponents/dropdownSelect/dropdownSelect.css";
-@import "webComponents/checkboxList/checkboxList.css";
+@import "webComponents/formFields/selectField.css";
+@import "webComponents/formFields/checkboxListField.css";
 @import "webComponents/card/card.css";
 @import "webComponents/faceForm/faceForm.css";
 

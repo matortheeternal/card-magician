@@ -3,7 +3,7 @@ export default class FooterModule extends CardMagicianModule {
         this.brushSvg = await this.loadFile('assets/art.svg');
         this.collectorNumberField = {
             id: 'collectorNumber',
-            displayName: 'Collector Number'
+            label: 'Collector Number'
         };
 
         await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
@@ -62,12 +62,12 @@ export default class FooterModule extends CardMagicianModule {
         const setInfo = this.getActiveSet()?.info || {};
         const { illustrator, setCode, language, legalText } = setInfo;
         return [
-            { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
-            { id: 'autoCollectorNumber', displayName: 'Auto Collector Number' },
+            { id: 'illustrator', label: 'Illustrator', placeholder: illustrator },
+            { id: 'autoCollectorNumber', label: 'Auto Collector Number' },
             this.collectorNumberField,
-            { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
-            { id: 'language', displayName: 'Language', placeholder: language },
-            { id: 'legalText', displayName: 'Legal Text', placeholder: legalText }
+            { id: 'setCode', label: 'Set Code', placeholder: setCode },
+            { id: 'language', label: 'Language', placeholder: language },
+            { id: 'legalText', label: 'Legal Text', placeholder: legalText }
         ];
     }
 

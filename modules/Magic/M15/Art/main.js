@@ -64,7 +64,7 @@ export default class ArtModule extends CardMagicianModule {
         return [{
             id: 'artImage',
             type: 'image',
-            displayName: 'Art Image'
+            label: 'Art Image'
         }];
     }
 

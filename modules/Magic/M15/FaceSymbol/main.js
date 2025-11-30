@@ -54,7 +54,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         return [{
             id: 'faceSymbol',
             type: 'select',
-            displayName: 'Face Symbol',
+            label: 'Face Symbol',
             options: this.symbolOptions,
             initialValue: 'autodetect',
             default: null
