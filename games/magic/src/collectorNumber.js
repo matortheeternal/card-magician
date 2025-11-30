@@ -22,28 +22,54 @@ function formatCollectorNumber(set, n) {
 }
 
 function collectorNumberSort(a, b) {
-    if (getColorIndex(a) == getColorIndex(b)) {
+    const indexA = getSortIndex(a);
+    const indexB = getSortIndex(b); 
+
+    if (indexA === indexB) {
         return a.front.name > b.front.name ? 1 : -1;
     }
 
-    return getColorIndex(a) - getColorIndex(b);
+    return indexA - indexB;
 }
 
+function isColorless(card) {
+    return  card.front.colors?.length === 0 && !card.front.superType?.includes("Artifact") && !card.front.superType?.includes("Land");
+}
+
+function isUninitializedCard(card) {
+    return Object.keys(card.front).length < 2;
+}
+
+function isMonoColor(card, color) {
+    return card.front.colors?.length === 1 && card.front.colors?.[0].name === color;
+}
+
+function isArtifact(card) {  
+  return /\bArtifact\b/i.test(card.front.superType || ''); 
+}
+
+function isLand(card) {  
+  return /\bLand\b/i.test(card.front.superType || ''); 
+}  
+
+function isBasic(card) {  
+  return /\bBasic\b/i.test(card.front.superType || ''); 
+}
 
 const numberingRules = [
-    (card) => Object.keys(card.front).length < 2 || (card.front.colors.length == 0 && !card.front.superType.includes("Artifact") && !card.front.superType.includes("Land")),
-    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "white",
-    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "blue",
-    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "black",
-    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "red",
-    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "green",
-    (card) => card.front.colors.length > 1,
-    (card) => card.front.superType.includes("Artifact") && !card.front.superType.includes("Land"),
-    (card) => card.front.superType.includes("Land") && !card.front.superType.includes("Basic Land"),
-    (card) => card.front.superType.includes("Basic Land"),
+    (card) => isUninitializedCard(card) || isColorless(card),
+    (card) => isMonoColor(card, "white"),
+    (card) => isMonoColor(card, "blue"),
+    (card) => isMonoColor(card, "black"),
+    (card) => isMonoColor(card, "red"),
+    (card) => isMonoColor(card, "green"),
+    (card) => card.front.colors?.length > 1,
+    (card) => isArtifact(card) && !isLand(card),
+    (card) => isLand(card) && !isBasic(card),
+    (card) => isBasic(card),
     (card) => true
 ];
 
-function getColorIndex(card) {
+function getSortIndex(card) {
     return numberingRules.findIndex(rule => rule(card));
 }
