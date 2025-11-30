@@ -116,6 +116,52 @@ auto-fit-line {
     overflow: hidden;
 }
 
+/* ADVENTURE SPOTLIGHT FRAME */
+.frame-spotlight module-container[module="Name"] {
+    padding-left: 30px;
+}
+
+.frame-spotlight module-container[module="Type"]:not([subcard]) {
+    justify-content: center;
+    padding: 0 45px;
+}
+
+.frame-spotlight module-container[render="renderExpansionSymbol"] {
+    position: absolute;
+    right: 17px;
+    top: 4px;
+}
+
+.frame-spotlight .text-box {
+    padding: 4px 10px 20px;
+}
+
+.frame-spotlight .left .header {
+    margin-top: 2px;
+}
+
+.frame-spotlight .left .type-line {
+    margin-bottom: 8px;
+}
+
+.frame-spotlight .right {
+    padding-top: 8px;
+}
+
+.frame-spotlight module-container[module="Art"] {
+    margin: 0 0 5.5px;
+    overflow: visible;
+}
+
+.frame-spotlight module-container[module="Art"] crop-image {
+    display: block;
+    height: 127%;
+    position: absolute;
+    left: 0;
+    top: -17%;
+}
+
+/* ADVENTURE PAGES */
 .text-box {
     display: flex;
     flex-direction: row;
@@ -132,7 +178,7 @@ auto-fit-line {
     font-size: 17px;
 }
 
-.frame-reversed .text-box {
+.frame-reversed:not(.frame-spotlight) .text-box {
     flex-direction: row-reverse;
 }
 
@@ -144,14 +190,14 @@ auto-fit-line {
     justify-content: center;
 }
 
-.left {
-    padding-left: 8px;
-    padding-right: 8px;
-}
-
 .right {
     padding-right: 4px;
     padding-left: 15px;
+}
+
+.left {
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .left .header {
