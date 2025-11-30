@@ -21,20 +21,6 @@ function formatCollectorNumber(set, n) {
     }
 }
 
-const color_indexes = {
-    colorless: 0,
-    white: 1,
-    blue: 2,
-    black: 3,
-    red: 4,
-    green: 5,
-    multicolor: 6,
-    artifact: 7,
-    land: 8,
-    basic_land: 9,
-    other: 10
-};
-
 function collectorNumberSort(a, b) {
     if (getColorIndex(a) == getColorIndex(b)) {
         return a.front.name > b.front.name ? 1 : -1;
@@ -43,35 +29,21 @@ function collectorNumberSort(a, b) {
     return getColorIndex(a) - getColorIndex(b);
 }
 
+
+const numberingRules = [
+    (card) => card.front.colors.length == 0 && !card.superType.includes("Artifact"),
+    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "white",
+    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "blue",
+    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "black",
+    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "red",
+    (card) => card.front.colors.length == 1 && card.front.colors[0].name == "green",
+    (card) => card.front.colors.length > 1,
+    (card) => card.front.superType.includes("Artifact") && !card.front.superType.includes("Land"),
+    (card) => card.front.superType.includes("Land") && !card.front.superType.includes("Basic Land"),
+    (card) => card.front.superType.includes("Basic Land"),
+    (card) => true
+];
+
 function getColorIndex(card) {
-    const num_keys = Object.keys(card.front).length;
-    
-    if (num_keys < 2) { // autoCollectorNumber is being set for whatever reason, this just checks if the card is empty
-        return color_indexes.colorless;
-    }
-
-    if (card.front.superType.includes('Basic Land')) {
-        return color_indexes.basic_land;
-    }
-
-    if (card.front.superType.includes('Land')) {
-        return color_indexes.land;
-    }
-
-    if (card.front.colors.length == 0 && !card.front.superType.includes('Artifact')) {
-        return color_indexes.colorless;
-    }
-
-    if (card.front.colors.length == 0 && card.front.superType.includes('Artifact')) {
-        return color_indexes.artifact;
-    }
-    
-    if (card.front.colors.length > 1) {
-        return color_indexes.multicolor;
-    }
-
-    const card_color = card.front.colors[0];
-    const color_index = color_indexes[card_color.name];
-
-    return color_index || color_indexes.other;
+    return numberingRules.findIndex(rule => rule(card));
 }
