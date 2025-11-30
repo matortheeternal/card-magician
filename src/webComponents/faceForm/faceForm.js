@@ -1,34 +1,22 @@
 import { emit } from '../../utils.js';
 import {
-    missingFaceMessage, missingFormMessage, handleFormGroup,
-    renderFormField, attachOptions, setCheckboxListValue
+    missingFaceMessage, missingFormMessage,
+    handleFormGroup, renderFormField
 } from './faceFormHelpers.js'
+import { hydrateFields } from '../../services/fieldElementRegistry.js';
 
 export default class FaceForm extends HTMLElement {
     constructor() {
         super();
-        // this allows us to pass these to event listeners
-        this.onChange = this.onChange.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
-    }
-
-    hydrate() {
-        this.querySelectorAll('cm-select, cm-checkbox-list')
-            .forEach(el => attachOptions(el, this));
-        this.querySelectorAll('cm-checkbox-list')
-            .forEach(el => setCheckboxListValue(el, this));
     }
 
     connectedCallback() {
         this.addEventListener('click', this.onButtonClick);
-        this.addEventListener('input', this.onChange);
-        this.addEventListener('change', this.onChange);
     }
 
     disconnectedCallback() {
         this.removeEventListener('click', this.onButtonClick);
-        this.removeEventListener('input', this.onChange);
-        this.removeEventListener('change', this.onChange);
     }
 
     getBaseHTML() {
@@ -57,7 +45,7 @@ export default class FaceForm extends HTMLElement {
 
     render() {
         this.innerHTML = this.getBaseHTML();
-        if (!this._face || !this.form || !this.fields) return;
+        if (!this.face || !this.form || !this.fields) return;
         this.renderFields();
         this.handleGroups();
         this.appendChild(this.form.root);
@@ -66,7 +54,7 @@ export default class FaceForm extends HTMLElement {
     set face(value) {
         this._face = value;
         this.render();
-        this.hydrate();
+        hydrateFields(this);
     }
 
     get face() { return this._face }
@@ -119,6 +107,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('add-field-btn')) return;
         const added = this.addField(btn) || this.addGroup(btn);
         if (!added) console.error(`Failed to add`, btn.textContent.trim());
+        if (added) emit(this, 'save-card');
     }
 
     onIconButtonClick(event) {
@@ -126,16 +115,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('remove-btn')) return;
         const removed = this.removeField(btn) || this.removeGroup(btn);
         if (!removed) console.error('Failed to remove', btn.textContent.trim());
-    }
-
-    onChange(e) {
-        const formField = e.target.closest('form-field');
-        const fieldId = formField?.getAttribute('field-id');
-        if (!fieldId) return;
-        const subcardId = formField?.getAttribute('subcard-id');
-        const target = subcardId ? this.face[subcardId] : this.face;
-        target[fieldId] = e?.detail?.value || e.target.value || '';
-        emit(this, 'save-card');
+        if (removed) emit(this, 'save-card');
     }
 }
 

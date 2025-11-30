@@ -22,7 +22,7 @@ export default class NameModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{ id: 'name', displayName: 'Name' }];
+        return [{ id: 'name', label: 'Name' }];
     }
 
     async styles() {

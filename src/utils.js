@@ -59,3 +59,7 @@ export function fnv1a(str) {
     }
     return (hash >>> 0).toString(16);
 }
+
+export function esc(str) {
+    return String(str ?? '').replace(/"/g, "&quot;");
+}

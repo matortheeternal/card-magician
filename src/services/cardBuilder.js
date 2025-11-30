@@ -29,7 +29,7 @@ function buildSubcards(card, subcards, faceData) {
 const templateField = () => ({
     id: 'template',
     type: 'select',
-    displayName: 'Template',
+    label: 'Template',
     options: Alpine.store('templates').map(template => ({
         id: template.id,
         name: template.label
