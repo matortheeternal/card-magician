@@ -1,25 +1,188 @@
-.__id__-container {
-    display: flex;
-    flex-direction: row;
+:host > div {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 375px;
+    height: 523px;
+    border-radius: 16px;
+    padding: 15px;
 }
 
-.__id__-left, .__id__-right {
-    display: flex;
-    flex-basis: 50%;
-    flex-direction: column;
-    justify-content: center;
-    height: inherit;
-    padding: 6px;
+* {
+    box-sizing: border-box;
+    user-select: text;
 }
 
-.__id__-header {
+module-container[module="AdventureFrame"] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+    padding: 12px 10px 2px 40px;
+    height: 40px;
+}
+
+module-container[module="Name"] {
+    padding: 0 5px;
+}
+
+.header:has(module-container[module="FaceSymbol"][style*="display: none"]) {
+    padding-left: 10px;
+}
+
+module-container[module="FaceSymbol"] {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 34.5px;
+    height: 34.5px;
+}
+
+module-container[module="Art"] {
+    display: block;
+    position: relative;
+    z-index: 0;
+    height: 234px;
+    overflow: hidden;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    margin: 2px 14px 3.5px 13px;
+}
+
+.type-line {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+    padding: 4px 14px;
+    height: 28px;
+    align-items: center;
+    margin: 1.5px 3px;
+}
+
+module-container[module="Type"] {
+    flex: 1;
+}
+
+module-container[module="ColorIndicator"] img {
+    width: 15px;
+    height: 15px;
+    margin-right: 4px;
+    margin-top: 2px;
+}
+
+module-container[render="renderExpansionSymbol"] {
+    min-width: 18px;
+    min-height: 18px;
+    padding-left: 4px;
+}
+
+module-container[module="Text"] {
+    display: flex;
+    min-height: 0;
+    height: auto;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+module-container[render="renderPT"] {
+    position: absolute;
+    bottom: 21px;
+    height: 37px;
+    right: 22px;
+    width: 70px;
+    z-index: 3;
+}
+
+div.footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 30px;
+    align-items: end;
+    padding: 0 10px;
+    position: relative;
+    z-index: 2;
+}
+
+auto-fit-line {
+    display: block;
     overflow: hidden;
 }
 
-.__id__-text-box {
-    height: 150px;
+.text-box {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    height: 162px;
+    padding: 4px 6px;
+    overflow: hidden;
+    margin-bottom: 2px;
+}
+
+.left .text,
+.right .text {
+    padding: 0;
+    font-size: 17px;
+}
+
+.frame-reversed .text-box {
+    flex-direction: row-reverse;
+}
+
+.left, .right {
+    display: flex;
+    flex: 0 0 50%;
+    width: 50%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.right {
+    padding-right: 4px;
+    padding-left: 15px;
+}
+
+.left .header {
+    padding: 0;
+    height: 22px;
+}
+
+.left .header div.sym {
+    height: 16px;
+    width: 16px;
+    font-size: 15.5px;
+}
+
+.left module-container[module="Name"] {
+    font-size: 14.5px;
+    color: white;
+    padding-left: 0;
+}
+
+.left module-container[module="Cost"] {
+    padding: 3px 0;
+    gap: 1px;
+}
+
+.left module-container[module="Type"] {
+    font-size: 14.5px;
+}
+
+.left .type-line {
+    height: 24px;
+    color: white;
+    padding: 0;
+    margin: 0 0 4px;
 }

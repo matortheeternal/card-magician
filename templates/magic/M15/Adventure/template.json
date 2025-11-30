@@ -1,11 +1,13 @@
 {
   "id": "M15Adventure",
   "label": "M15 Adventure",
-  "description": "This is a template for Magic 2015 adventure cards.",
+  "description": "Template for Magic 2015 adventure cards.",
   "version": "0.0",
   "card": [
-    "Magic/M15/Frame",
+    "Magic/M15/AdventureFrame",
+    "Magic/M15/Color",
     "Magic/M15/Symbols",
+    "Magic/M15/FaceSymbol",
     "Magic/M15/Name",
     "Magic/M15/Cost",
     "Magic/M15/Art",
@@ -18,8 +20,11 @@
   ],
   "subcards": {
     "adventure": [
+      "Magic/M15/AdventurePages",
+      "Magic/M15/Color",
       "Magic/M15/Symbols",
       "Magic/M15/Name",
+      "Magic/M15/Cost",
       "Magic/M15/Type",
       "Magic/M15/Text"
     ]
