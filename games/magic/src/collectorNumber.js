@@ -37,7 +37,7 @@ const color_indexes = {
 
 function collectorNumberSort(a, b) {
     if (getColorIndex(a) == getColorIndex(b)) {
-        return a < b ? 1 : -1;
+        return a.front.name > b.front.name ? 1 : -1;
     }
 
     return getColorIndex(a) - getColorIndex(b);
