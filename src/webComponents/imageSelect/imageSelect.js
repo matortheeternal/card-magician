@@ -123,7 +123,7 @@ class ImageSelect extends HTMLElement {
     this.elements.formControl.className = formControlClasses.join(' ');
   }
 
-  async displayPreview(image, filename = 'uploaded_file', options = {}, skipEmit = false) {
+  async displayPreview(imageUrl, filename = 'uploaded_file', options = {}, skipEmit = false) {
     const {
       uploadPrompt, preview, previewImage, previewName, cropRegion
     } = this.elements;
@@ -131,10 +131,10 @@ class ImageSelect extends HTMLElement {
     hide(uploadPrompt);
     show(preview);
     previewName.textContent = filename;
-    previewImage.src = image;
+    previewImage.src = imageUrl;
     previewImage.hidden = false;
 
-    const { width: srcW, height: srcH } = await getImageSize(image);
+    const { width: srcW, height: srcH } = await getImageSize(imageUrl);
     const { maxWidth, maxHeight } = getPreviewConstraints(previewImage);
     const { prevW, prevH } = computePreviewSize(srcW, srcH, maxWidth, maxHeight);
     const xFactor = prevW / srcW;
@@ -151,7 +151,7 @@ class ImageSelect extends HTMLElement {
     if (skipEmit) return;
     emit(this, 'change', {
       value: {
-        image, filename,
+        imageUrl, filename,
         xOffset: 0, yOffset: 0,
         width: srcW.toString(), height: srcH.toString()
       }
@@ -183,7 +183,7 @@ class ImageSelect extends HTMLElement {
 
     emit(this, 'change', {
       value: {
-        image: null, filename: '',
+        imageUrl: null, filename: '',
         xOffset: 0, yOffset: 0,
         width: '', height: ''
       }
