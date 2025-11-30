@@ -3,24 +3,22 @@ export function autoNumberCards(set) {
 
     for (const [ i, card ] of sorted_cards.entries()) {
         const set_card = set.cards[set.cards.indexOf(card)];
-        set_card.front.autoCollectorNumber = i;
+        set_card.front.collectorNumber = card.collectorNumberOverride || formatCollectorNumber(set, i + 1) || '';
     }
 }
 
-export function formatCollectorNumber(set, n) {
+function formatCollectorNumber(set, n) {
+    if (!n) return null;
+
     const strN = n.toString();
     switch (set.info.collectorNumberFormat) {
-        case "0001":
-            return addLeadingZeroes(strN, 4);
-        case "001/099":
-            return addLeadingZeroes(strN, 3) + "/" + addLeadingZeroes(set.cards.length.toString(), 3);
+        case 'four':
+            return strN.padStart(4, '0');
+        case 'threeOutOf':
+            return addLeadingZeroes(strN, 3) + '/' + set.cards.length.toString().padStart(3, '0');
         default:
             return strN;
     }
-}
-
-function addLeadingZeroes(str, targetLength) {
-    return "0".repeat(targetLength - str.length) + str;
 }
 
 const color_indexes = {
@@ -52,19 +50,19 @@ function getColorIndex(card) {
         return color_indexes.colorless;
     }
 
-    if (card.front.superType.includes("Basic Land")) {
+    if (card.front.superType.includes('Basic Land')) {
         return color_indexes.basic_land;
     }
 
-    if (card.front.superType.includes("Land")) {
+    if (card.front.superType.includes('Land')) {
         return color_indexes.land;
     }
 
-    if (card.front.colors.length == 0 && !card.front.superType.includes("Artifact")) {
+    if (card.front.colors.length == 0 && !card.front.superType.includes('Artifact')) {
         return color_indexes.colorless;
     }
 
-    if (card.front.colors.length == 0 && card.front.superType.includes("Artifact")) {
+    if (card.front.colors.length == 0 && card.front.superType.includes('Artifact')) {
         return color_indexes.artifact;
     }
     
