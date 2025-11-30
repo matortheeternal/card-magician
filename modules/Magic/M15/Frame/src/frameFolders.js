@@ -2,10 +2,12 @@ export class FrameFolderRule {
     /**
      * @param {string} folder
      * @param {(card) => boolean} predicate
+     * @param {string='.jpg'} ext
      */
-    constructor(folder, predicate) {
+    constructor(folder, predicate, ext = '.jpg') {
         this.folder = folder;
         this.test = predicate;
+        this.ext = ext;
     }
 }
 
@@ -26,12 +28,11 @@ export default class FrameFolderRegistry {
             return Boolean(card.faceSymbol) && card.id === 'front';
         }),
         new FrameFolderRule('back',  card => card.isBackDFC?.()),
-        new FrameFolderRule('devoid',  card => card.isDevoid?.()),
+        new FrameFolderRule('devoid',  card => card.isDevoid?.(), '.png'),
         new FrameFolderRule('normal', () => true),
     ];
 
-    resolveFolder(card) {
-        const rule = this.rules.find(r => r.test(card));
-        return rule.folder;
+    resolveRule(card) {
+        return this.rules.find(r => r.test(card));
     }
 }

@@ -6,14 +6,32 @@
     left: 3%;
 }
 
-.bg.left-page {
+.bg.left-page,
+.frame-reversed .bg.right-page {
     right: 50%;
     left: 0;
     width: 50%;
 }
 
-.bg.right-page {
+.bg.right-page,
+.frame-reversed .bg.left-page {
     right: 0;
     left: 50%;
     width: 50%;
+}
+
+.frame-reversed .bg.right-page,
+.frame-reversed .bg.left-page {
+    transform: scaleX(-1);
+}
+
+.frame-spotlight .bg.right-page,
+.frame-spotlight .bg.binding {
+    display: none;
+}
+
+.frame-spotlight .bg.left-page {
+    left: 4.5px;
+    top: -4px;
+    height: 169px;
 }
