@@ -11,7 +11,7 @@ class CardForm extends HTMLElement {
 
     connectedCallback() {
         this.render();
-        this.addEventListener('save-card', this.save);
+        this.addEventListener('cm-field-changed', this.save);
         this.addEventListener('click', this.handleOnClick);
     }
 
