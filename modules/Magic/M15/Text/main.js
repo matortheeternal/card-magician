@@ -47,7 +47,7 @@ export default class TextModule extends CardMagicianModule {
         watch(() => card.flavorText, () => this.renderFlavorHTML(card));
         watch(
             () => [card.showPT, card.showFlag, card.maxFontSize,
-                   card.chopTop, card.chopBottom],
+                   card.chopTop, card.chopBottom, card.centerText],
             () => this.requestRender()
         );
     }
@@ -68,19 +68,33 @@ export default class TextModule extends CardMagicianModule {
         ].join('; ')
     }
 
+    shouldCenter(card) {
+        if (card.centerText === 'always') return true;
+        return card.centerText === 'short'
+            && card.rulesText.length < 15
+            && !card.flavorText.length;
+    }
+
     getTextStyle(card) {
         return [
             card.chopTop ? `margin-top: ${card.chopTop}px` : '',
-            card.chopBottom ? `margin-bottom: ${card.chopBottom}px` : ''
+            card.chopBottom ? `margin-bottom: ${card.chopBottom}px` : '',
+            this.shouldCenter(card) ? 'text-align: center' : '',
         ].filter(Boolean).join('; ');
     }
 
+    getTextClassName(card) {
+        return [
+            'text',
+            card.showFlag ? 'flag-padding' : '',
+        ].filter(Boolean).join(' ');
+    }
+
     render(card) {
-        const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
             `<auto-fit-text 
-               max="${card.maxFontSize || '19'}" 
-               class="${className}" 
+               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''} 
+               class="${this.getTextClassName(card)}" 
                avoid="${this.getAvoidSelectors(card).join('; ')}"
                style="${this.getTextStyle(card)}"
               >
@@ -102,7 +116,17 @@ export default class TextModule extends CardMagicianModule {
         return [
             { id: 'chopTop', displayName: 'Chop Top' },
             { id: 'chopBottom', displayName: 'Chop Bottom' },
-            { id: 'maxFontSize', displayName: 'Max Font Size' }
+            { id: 'maxFontSize', displayName: 'Max Font Size' },
+            {
+                id: 'centerText',
+                displayName: 'Center Text',
+                type: 'select',
+                options: [
+                    { id: 'never', name: 'Never' },
+                    { id: 'always', name: 'Always' },
+                    { id: 'short', name: 'Short Text' },
+                ]
+            },
         ];
     }
 
