@@ -42,7 +42,7 @@ export default class PTModule extends CardMagicianModule {
         if (!card.showPT) return;
         return (
             `<div class="pt-text" style="${this.ptStyle}">
-                ${card.power}/${card.toughness}
+                ${this.escapeHTML(card.power)}/${this.escapeHTML(card.toughness)}
             </div>`
         );
     }
@@ -50,7 +50,7 @@ export default class PTModule extends CardMagicianModule {
     renderNotchPT(card) {
         if (!card.showNotchPT) return;
         return (
-            `<div class="notch-pt-text">${card.notchPtText}</div>`
+            `<div class="notch-pt-text">${this.escapeHTML(card.notchPtText)}</div>`
         );
     }
 

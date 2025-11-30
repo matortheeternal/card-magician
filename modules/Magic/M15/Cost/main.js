@@ -1,31 +1,15 @@
-import ColorIdentity from './src/ColorIdentity.js';
-
 export default class CostModule extends CardMagicianModule {
-    async init(card) {
-        card.colorIdentity = new ColorIdentity();
-
-        card.getCardColorKey = function() {
-            const colors = card.colorIdentity.colors;
-            if (colors.length === 0)
-                return card.superType.includes('Artifact') ? 'a' : 'c';
-            if (colors.length === 1)
-                return colors[0].char;
-            return 'm';
-        };
-    }
-
     async renderManaCost(card) {
-        const manaCostSymbols = card.parseSymbols(card.manaCost);
-        card.colorIdentity.addColorSource('card', manaCostSymbols);
-        this.manaCostHTML = await card.symbolsToHTML(manaCostSymbols, true);
+        const game = this.getActiveGame();
+        const ManaCost = game.ManaScribe.ManaCost;
+        const manaCost = ManaCost.parse(card.manaCost);
+        card.colorIdentity.addColorSource('card', manaCost.symbols);
+        this.manaCostHTML = await card.symbolsToHTML(manaCost.symbols, true);
         this.requestRender();
     }
 
     bind(card, watch) {
-        watch(
-            () => card.manaCost,
-            () => this.renderManaCost(card)
-        );
+        watch(() => card.manaCost, () => this.renderManaCost(card));
     }
 
     get fields() {

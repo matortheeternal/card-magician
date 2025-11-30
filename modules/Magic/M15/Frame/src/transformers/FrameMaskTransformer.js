@@ -14,7 +14,6 @@ export default class FrameMaskTransformer extends Transformer {
     }
 
     get maskFileName() {
-        if (this.card.isMap?.()) return 'map.png';
         if (this.card.isClear?.() || this.card.isDevoid?.())
             return 'clear.png';
         if (this.card.isEnergyLand?.()) return 'energy.png';

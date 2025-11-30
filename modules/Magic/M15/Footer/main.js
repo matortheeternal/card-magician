@@ -10,8 +10,8 @@ export default class FooterModule extends CardMagicianModule {
     bind(card, watch) {
         watch(
             () => [
-                card.rarityCharacter, card.collectorNumber,
-                card.setCode, card.language,card.illustrator
+                card.rarityCharacter, card.collectorNumberOverride, card.collectorNumber,
+                card.setCode, card.language, card.illustrator
             ],
             () => this.requestRender({ render: 'renderInfo' })
         );
@@ -23,20 +23,22 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
+        const game = this.getActiveGame();
+        
         const setCode = card.setCode || set.info.setCode || '';
         const language = card.language || set.info.language || '';
         const illustrator = card.illustrator || set.info.illustrator || '';
 
         return (
             `<div>
-                <div>${card.collectorNumber || '&nbsp;'}</div>
-                <div>${setCode} &bullet; ${language}</div>
+                <div>${this.escapeHTML(card.collectorNumber || '')}</div>
+                <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
             </div>
             <div>
                 <div>${card.rarityCharacter}</div>
                 <div class="illustrator-container">
                     <div class="illustrator-brush">${this.brushSvg}</div>
-                    <div class="illustrator-name">${illustrator}</div>
+                    <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
                 </div>
             </div>`
         );
@@ -52,6 +54,8 @@ export default class FooterModule extends CardMagicianModule {
         const { illustrator, setCode, language, legalText } = setInfo;
         return [
             { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
+            { id: 'collectorNumberOverride', displayName: 'Collector Number' },
+            { id: 'autoCollectorNumber', displayName: 'Auto Collector Number' },
             { id: 'collectorNumber', displayName: 'Collector Number' },
             { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
             { id: 'language', displayName: 'Language', placeholder: language },

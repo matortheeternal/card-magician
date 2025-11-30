@@ -1,0 +1,19 @@
+{
+  "id": "M15Map",
+  "label": "Ixalan Map",
+  "description": "This template is for the Ixalan Map Frame.",
+  "version": "0.0",
+  "card": [
+    "Magic/M15/MapFrame",
+    "Magic/M15/Color",
+    "Magic/M15/Symbols",
+    "Magic/M15/FaceSymbol",
+    "Magic/M15/Name",
+    "Magic/M15/Art",
+    "Magic/M15/Type",
+    "Magic/M15/Text",
+    "Magic/M15/PT",
+    "Magic/M15/Rarity",
+    "Magic/M15/Footer"
+  ]
+}

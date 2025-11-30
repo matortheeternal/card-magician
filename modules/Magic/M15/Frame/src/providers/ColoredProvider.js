@@ -26,6 +26,7 @@ export default class ColoredProvider extends Provider {
     }
 
     async resolve(key) {
-        return this.resolveAsset(`${this.folder}/${key}${this.ext}`);
+        const ext = key === 'x' ? '.png' : this.ext;
+        return this.resolveAsset(`${this.folder}/${key}${ext}`);
     }
 }

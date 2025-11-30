@@ -36,13 +36,14 @@ sl-button.add-field-btn sl-icon {
     height: 1.6em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+cm-face-form h2 {
     text-transform: capitalize;
-    text-align: center;
     border-bottom: 1px solid;
-    font-family: monospace;
+    font-family: var(--sl-font-sans);
     zoom: 1.5;
-    margin: 0 0 0.5em;
+    margin: 1em 0 0 0;
+    font-size: var(--sl-font-size-x-small);
+    font-weight: normal;
 }
 
 sl-input[type="file"]::part(input) {
@@ -66,4 +67,12 @@ cm-options-form .no-content-prompt {
 .remove-btn::part(base) {
     padding: var(--sl-spacing-2x-small);
     color: var(--sl-color-danger-600);
+}
+
+form-group.with-border {
+    border: 1px solid var(--sl-input-border-color);
+    border-radius: 5px;
+    margin-top: var(--sl-spacing-medium);
+    padding: var(--sl-spacing-small);
+    padding-top: var(--sl-spacing-3x-small);
 }

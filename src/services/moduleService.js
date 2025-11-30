@@ -25,11 +25,23 @@ export function setupRenderPipeline(card, modules) {
     });
 }
 
+function getDefaultValue(field) {
+    if (field.hasOwnProperty('default')) return field.default;
+    if (field.type === 'checkboxlist') return {};
+    if (field.type === 'select') return field.options?.[0]?.id || null;
+    if (field.type === 'image') return {
+        imageUrl: null, filename: '',
+        width: '', height: '',
+        xOffset: 0, yOffset: 0,
+    };
+    return '';
+}
+
 function loadFields(card, modules) {
     for (const module of modules)
         module.fields.forEach(field => {
             card.fields.push(field);
-            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+            card[field.id] = getDefaultValue(field);
         });
 }
 
@@ -37,27 +49,34 @@ function loadOptions(card, modules) {
     for (const module of modules)
         module.options.forEach(field => {
             card.options.push(field);
-            card[field.id] = field.hasOwnProperty('default') ? field.default : '';
+            card[field.id] = getDefaultValue(field);
         });
 }
 
-function loadStyles(card, modules) {
+function hasLoadedModule(parent, module) {
+    return parent && parent.modules().some(m => {
+        return m.constructor === module.constructor;
+    });
+}
+
+export function loadStyles(card, modules, parent) {
+    const target = parent || card;
     return Promise.all(
         modules.map(async module => {
-            if (!module.styles) return;
+            if (!module.styles || hasLoadedModule(parent, module)) return;
             const styles = await module.styles();
-            styles.forEach(style => card.dom.addCSS(style));
+            styles.forEach(style => target.dom.addCSS(style));
         })
     );
 }
 
-export async function initializeModules(card, modules) {
+export async function initializeModules(card, modules, parent) {
     await Promise.all(modules.map(module => {
         return module.init(card);
     }));
     loadFields(card, modules);
     loadOptions(card, modules);
-    return loadStyles(card, modules);
+    await loadStyles(card, modules, parent);
 }
 
 export function bindEffects(card) {
