@@ -3,7 +3,7 @@ export function autoNumberCards(set) {
 
     for (const [ i, card ] of sorted_cards.entries()) {
         const set_card = set.cards[set.cards.indexOf(card)];
-        set_card.front.collectorNumber = card.collectorNumberOverride || formatCollectorNumber(set, i + 1) || '';
+        set_card.front.autoCollectorNumber = formatCollectorNumber(set, i + 1);
     }
 }
 
