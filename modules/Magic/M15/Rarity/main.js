@@ -1,8 +1,3 @@
-export const rarity = (name, id) => ({
-    id: id || name.toLowerCase(),
-    name
-});
-
 export default class RarityModule extends CardMagicianModule {
     updateRarity(card) {
         card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
@@ -29,12 +24,11 @@ export default class RarityModule extends CardMagicianModule {
             displayName: 'Rarity',
             group: 'footer',
             options: [
-                rarity('Common'),
-                rarity('Uncommon'),
-                rarity('Rare'),
-                rarity('Mythic Rare', 'mythic'),
-            ],
-            default: 'common',
+                { id: 'common', name: 'Common' },
+                { id: 'uncommon', name: 'Uncommon' },
+                { id: 'rare', name: 'Rare' },
+                { id: 'mythic', name: 'Mythic Rare' }
+            ]
         }];
     }
 

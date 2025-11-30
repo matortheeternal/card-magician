@@ -49,13 +49,13 @@ export default class ArtModule extends CardMagicianModule {
     }
 
     render(card) {
-        if (!card.defaultImageUrl && !card.artImage.image) return '';
-        return card.artImage.image ? (
+        if (!card.defaultImageUrl && !card.artImage.imageUrl) return '';
+        return card.artImage.imageUrl ? (
             `<crop-image crop-width="${card.artImage.width}" 
                          crop-height="${card.artImage.height}"
                          offset-x="${card.artImage.xOffset}"
                          offset-y="${card.artImage.yOffset}"
-                         src="${card.artImage.image}">
+                         src="${card.artImage.imageUrl}">
             </crop-image>`
         ) : `<img src="${card.defaultImageUrl}" />`;
     }
@@ -64,15 +64,7 @@ export default class ArtModule extends CardMagicianModule {
         return [{
             id: 'artImage',
             type: 'image',
-            displayName: 'Art Image',
-            default: {
-                image: null,
-                filename: '',
-                width: '',
-                height: '',
-                xOffset: 0,
-                yOffset: 0,
-            }
+            displayName: 'Art Image'
         }];
     }
 

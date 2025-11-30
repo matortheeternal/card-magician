@@ -47,12 +47,22 @@ function renderImage(field, face) {
 
 function renderSelect(field, face) {
     return (
-        `<card-form-select 
+        `<cm-select 
           name="${esc(field.id)}"
           label="${esc(field.displayName)}" 
           value="${esc(face[field.id] || field.initialValue)}"
           data-field-id="${esc(field.id)}"
-        ></card-form-select>`
+        ></cm-select>`
+    );
+}
+
+function renderCheckboxList(field) {
+    return (
+        `<cm-checkbox-list 
+          name="${esc(field.id)}"
+          label="${esc(field.displayName)}"
+          data-field-id="${esc(field.id)}"
+        ></cm-checkbox-list>`
     );
 }
 
@@ -61,12 +71,13 @@ const fieldRenderers = {
     select: renderSelect,
     image: renderImage,
     input: renderInput,
+    checkboxlist: renderCheckboxList,
 };
 
 export function renderField(field, face) {
     const renderer = fieldRenderers[field.type || 'input'];
     if (!renderer) {
-        console.error('Skippepd rendering unknown field type', field.type);
+        console.error('Skipped rendering unknown field type', field.type);
         return '';
     }
     return renderer(field, face);

@@ -5,25 +5,24 @@ import {
     loadModules,
     setupRenderPipeline
 } from './moduleService.js';
-import { initCardFace } from './cardFaceService.js';
+import { initCardFace, initSubCardFace } from './cardFaceService.js';
 
-async function buildSubcard(parent, key, value, subcardData) {
-    const subcard = initCardFace(key);
-    subcard.isSubcard = true;
-    const modules = await loadModules(subcard, value || []);
+async function buildSubcard(parent, key, modulesToLoad, subcardData) {
+    const subcard = initSubCardFace(key);
+    const modules = await loadModules(subcard, modulesToLoad || []);
     await setupRenderPipeline(subcard, modules);
-    await initializeModules(subcard, modules);
-    await subcard.load(subcardData);
-    subcard.parent = () => parent;
+    await initializeModules(subcard, modules, parent);
     subcard.modules = () => modules;
+    subcard.parent = () => parent;
+    await subcard.load(subcardData);
     parent[key] = subcard;
     return subcard;
 }
 
 function buildSubcards(card, subcards, faceData) {
     if (!subcards) return [];
-    return Promise.all(Object.entries(subcards).map(([key, value]) => {
-        return buildSubcard(card, key, value, faceData[key] || {});
+    return Promise.all(Object.entries(subcards).map(([key, modules]) => {
+        return buildSubcard(card, key, modules, faceData[key] || {});
     }));
 }
 
@@ -57,10 +56,10 @@ export async function buildCardFace(card, key, faceData) {
     const modules = await loadModules(face, template.card || []);
     await setupRenderPipeline(face, modules);
     await initializeModules(face, modules);
-    await face.load(faceData);
-    face.subcards = await buildSubcards(face, template.subcards, faceData);
-    face.parent = () => card;
     face.modules = () => modules;
+    face.parent = () => card;
+    face.subcards = await buildSubcards(face, template.subcards, faceData);
+    await face.load(faceData);
     card[key] = face;
     return face;
 }

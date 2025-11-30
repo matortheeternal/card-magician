@@ -3,7 +3,8 @@ import { morphHTML } from './morphHTML.js';
 
 function getModuleContainers(card, module) {
     const selector = `module-container[module="${module.name}"]`;
-    const containers = Array.from(card.dom.root.querySelectorAll(selector));
+    const root = card.isSubcard ? card.parent().dom.root : card.dom.root;
+    const containers = Array.from(root.querySelectorAll(selector));
     return containers.map(element => ({
         renderKey: element.getAttribute('render') || 'render',
         subcardKey: element.getAttribute('subcard'),
@@ -55,7 +56,8 @@ export default class RenderScheduler {
     static flushComplete(queue) {
         const uniqueCards = new Set(queue.map(task => task.card));
         for (const card of uniqueCards) {
-            const root = card.dom.root.getRootNode();
+            const base = card.isSubcard ? card.parent() : card;
+            const root = base.dom.root.getRootNode();
             emit(root, 'RenderScheduler:flushed', { tasks: queue });
         }
     }

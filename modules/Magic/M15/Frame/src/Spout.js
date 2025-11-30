@@ -22,7 +22,11 @@ export default class Spout {
     async finalize() {
         const url = await this.apply();
         const zIndex = this.provider.zIndex;
-        return { url, zIndex };
+        const className = this.provider.constructor.name
+            .replace('Provider', '')
+            .separate('-')
+            .toLowerCase();
+        return { url, zIndex, className };
     }
 
     hasSpout(callback) {

@@ -1,62 +1,43 @@
-const textTransformers = [
-    // {
-    //     match: str => str.match(/([0-9wubrgtxyz]+)([,:])/i),
-    //     apply: async (card, match) => {
-    //         return await card.generateSymbols(match[1]) + match[2];
-    //     }
-    // },
-    {
-        match: str => str.match(/<sym>(.+?)<\/sym>/i)
-                   || str.match(/{(.+?)}/),
-        apply: async (card, match, outputSymbols) => {
-            const symbols = card.parseSymbols(match[1]);
-            outputSymbols.push(...symbols);
-            return await card.symbolsToHTML(symbols);
-        }
-    },
-    {
-        match: str => str.match(/(LEGENDNAME|@)/),
-        apply: async (card) => card.getLegendName()
-    },
-    {
-        match: str => str.match(/(CARDNAME|~)/),
-        apply: async (card) => card.name
-    }
-];
+import { converters } from './converters.js';
 
-function getTextTransformer(token) {
-    for (let transformer of textTransformers) {
-        const match = transformer.match(token);
-        if (match) return [transformer, match];
+function getConverter(remainingStr, result, state) {
+    for (const converter of converters) {
+        const match = converter.match(remainingStr, result, state);
+        if (match) return [converter, match];
     }
     return [null, null];
 }
 
-async function convertToken(token, card, symbols) {
-    const [transformer, match] = getTextTransformer(token);
-    return transformer
-        ? token.replace(match[0], await transformer.apply(card, match, symbols))
-        : token;
-}
-
-async function convertContent(content, card, symbols) {
-    const tokens = content.split(' ');
-    let result = [];
-    for (let token of tokens)
-        result.push(await convertToken(token, card, symbols));
-
-    return result.join(' ');
-}
-
-export default async function textToHTML(text, card, symbols = []) {
-    if (!text || !text.length) return '';
-    const paragraphs = [];
-    for (const content of text.split('\n')) {
-        let className = 't';
-        if (content.startsWith('“')) className += ' q';
-        const html = await convertContent(content, card, symbols);
-        paragraphs.push(`<div class="${className}">${html}</div>`);
+class ParagraphConverter {
+    constructor(card) {
+        this.symbols = [];
+        this.card = card;
+        this.html = '';
     }
 
-    return paragraphs.join('\n');
+    convert(str) {
+        let remainingStr = str;
+        let result = '';
+        const state = {};
+        while (remainingStr.length) {
+            const [converter, match] = getConverter(remainingStr, result, state);
+            if (!converter || !match[0].length) return result;
+            result += converter.convert(match, state, this.card, this.symbols);
+            remainingStr = remainingStr.slice(match[0].length);
+        }
+        this.html += `<div class="t">${result}</div>`;
+    }
+
+    static parse(paragraph, card) {
+        const converter = new this(card);
+        converter.convert(paragraph);
+        return converter;
+    }
+}
+
+export default function textToHTML(text, card) {
+    if (!text || !text.length) return [];
+    return text.split('\n').map(paragraph => {
+        return ParagraphConverter.parse(paragraph, card);
+    });
 }
