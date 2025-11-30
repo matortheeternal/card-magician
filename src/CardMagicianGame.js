@@ -117,4 +117,13 @@ export default class CardMagicianGame {
      * @returns {string}
      */
     async renderSetInfo() { return ''; }
+
+    /**
+    * Returns the current active set
+    *
+    * @returns {object}
+    */
+    getActiveSet() {
+        return Alpine.store('views').activeSet;
+    }
 }

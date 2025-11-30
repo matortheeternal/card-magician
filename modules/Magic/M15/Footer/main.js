@@ -10,8 +10,8 @@ export default class FooterModule extends CardMagicianModule {
     bind(card, watch) {
         watch(
             () => [
-                card.rarityCharacter, card.collectorNumber,
-                card.setCode, card.language,card.illustrator
+                card.rarityCharacter, card.autoCollectorNumber, card.collectorNumber,
+                card.setCode, card.language, card.illustrator
             ],
             () => this.requestRender({ render: 'renderInfo' })
         );
@@ -23,13 +23,15 @@ export default class FooterModule extends CardMagicianModule {
 
     renderInfo(card) {
         const set = this.getActiveSet();
+        
         const setCode = card.setCode || set.info.setCode || '';
         const language = card.language || set.info.language || '';
         const illustrator = card.illustrator || set.info.illustrator || '';
+        const number = card.collectorNumber || card.autoCollectorNumber || '';
 
         return (
             `<div>
-                <div>${this.escapeHTML(card.collectorNumber) || '&nbsp;'}</div>
+                <div>${this.escapeHTML(number)}</div>
                 <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
             </div>
             <div>
@@ -52,6 +54,7 @@ export default class FooterModule extends CardMagicianModule {
         const { illustrator, setCode, language, legalText } = setInfo;
         return [
             { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
+            { id: 'autoCollectorNumber', displayName: 'Auto Collector Number' },
             { id: 'collectorNumber', displayName: 'Collector Number' },
             { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
             { id: 'language', displayName: 'Language', placeholder: language },

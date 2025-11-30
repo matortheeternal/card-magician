@@ -15,7 +15,7 @@ export default class ColorModule extends CardMagicianModule {
     }
 
     updateCardColors(card) {
-        card.colors = card.colorIdentity.colors;
+        card.colors = card.colorIdentity.colors;      
     }
 
     bind(card, watch) {
