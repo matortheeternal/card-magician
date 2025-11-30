@@ -73,7 +73,7 @@ export function buildColumns({ ManaCost }) {
         label: '#',
         width: '50px',
         data: row => {
-            return (parseInt(row.front?.collectorNumber || row.front?.autoCollectorNumber?.split("/")[0]) || 0)
+            return (parseInt(row.front?.collectorNumber || row.front?.autoCollectorNumber) || 0)
                 .toString()
                 .padStart(4, '0')
         } 
