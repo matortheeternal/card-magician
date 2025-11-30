@@ -7,12 +7,20 @@ export default class AutoFit extends HTMLElement {
 
     constructor() {
         super();
-        this.minFont = 8;
         this.queueFit = this.queueFit.bind(this);
         this.resizeObserver = new ResizeObserver(this.queueFit);
     }
 
+    get defaultMinFont() { return 8 };
+    get defaultMaxFont() {
+        delete this.style.fontSize;
+        const style = getComputedStyle(this);
+        return parseInt(style?.fontSize || '18px');
+    }
+
     connectedCallback() {
+        this.minFont ||= this.defaultMinFont;
+        this.maxFont ||= this.defaultMaxFont;
         this.addEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.observe(this);
         document.fonts.ready.then(() => this.queueFit());
@@ -24,8 +32,8 @@ export default class AutoFit extends HTMLElement {
     }
 
     attributeChangedCallback(name, _, value) {
-        if (name === 'min') this.minFont = parseFloat(value) || this.minFont;
-        if (name === 'max') this.maxFont = parseFloat(value) || this.maxFont;
+        if (name === 'min') this.minFont = parseFloat(value) || this.defaultMinFont;
+        if (name === 'max') this.maxFont = parseFloat(value) || this.defaultMaxFont;
         this.queueFit();
     }
 

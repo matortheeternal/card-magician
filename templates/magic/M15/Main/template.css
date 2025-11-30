@@ -91,6 +91,7 @@ module-container[module="Art"] {
 }
 
 module-container[module="Type"] {
+    font-size: 17px;
     flex: 1;
 }
 

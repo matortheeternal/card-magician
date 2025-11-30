@@ -32,9 +32,9 @@ export default class TypeModule extends CardMagicianModule {
 
     render(card) {
         return card.subType ? (
-            `<auto-fit-line max="17">${card.superType} — ${card.subType}</auto-fit-line>`
+            `<auto-fit-line>${card.superType} — ${card.subType}</auto-fit-line>`
         ) : (
-            `<auto-fit-line max="17">${card.superType}</auto-fit-line>`
+            `<auto-fit-line>${card.superType}</auto-fit-line>`
         )
     }
 

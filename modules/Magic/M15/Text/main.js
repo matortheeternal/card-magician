@@ -75,12 +75,18 @@ export default class TextModule extends CardMagicianModule {
         ].filter(Boolean).join('; ');
     }
 
+    getTextClassName(card) {
+        return [
+            'text',
+            card.showFlag ? 'flag-padding' : '',
+        ].filter(Boolean).join(' ');
+    }
+
     render(card) {
-        const className = `text${card.showFlag ? ' flag-padding' : ''}`;
         return (
             `<auto-fit-text 
-               max="${card.maxFontSize || '19'}" 
-               class="${className}" 
+               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''} 
+               class="${this.getTextClassName(card)}" 
                avoid="${this.getAvoidSelectors(card).join('; ')}"
                style="${this.getTextStyle(card)}"
               >
