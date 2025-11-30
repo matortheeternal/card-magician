@@ -31,7 +31,7 @@ function collectorNumberSort(a, b) {
 
 
 const numberingRules = [
-    (card) => Object.keys(card.front).length < 2 || (card.front.colors.length == 0 && !card.superType.includes("Artifact")),
+    (card) => Object.keys(card.front).length < 2 || (card.front.colors.length == 0 && !card.front.superType.includes("Artifact")),
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "white",
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "blue",
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "black",
