@@ -1,5 +1,5 @@
 export function autoNumberCards(set) {
-    const sorted_cards = set.cards.sort(collectorNumberSort);
+    const sorted_cards = set.cards.slice().sort(collectorNumberSort);
 
     for (const [ i, card ] of sorted_cards.entries()) {
         const set_card = set.cards[set.cards.indexOf(card)];
@@ -8,7 +8,7 @@ export function autoNumberCards(set) {
 }
 
 function formatCollectorNumber(set, n) {
-    if (!n) return null;
+    n = n || 0;
 
     const strN = n.toString();
     switch (set.info.collectorNumberFormat) {
@@ -31,7 +31,7 @@ function collectorNumberSort(a, b) {
 
 
 const numberingRules = [
-    (card) => card.front.colors.length == 0 && !card.superType.includes("Artifact"),
+    (card) => Object.keys(card.front).length < 2 || (card.front.colors.length == 0 && !card.superType.includes("Artifact")),
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "white",
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "blue",
     (card) => card.front.colors.length == 1 && card.front.colors[0].name == "black",
