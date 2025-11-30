@@ -105,6 +105,7 @@ Alpine.data('setView', () => ({
         const views = Alpine.store('views');
         views.setFilePath = filePath;
         views.activeSet = game.loadSet(await loadJson(filePath));
+        game.autoNumberCards(views.activeSet);
         appConfig.addRecentFile(filePath);
     },
 

@@ -1,6 +1,6 @@
 import * as ManaScribe from './node_modules/mana-scribe/src/index.js';
 import { buildColumns } from './src/columns.js';
-import { autoNumberCards } from './src/collectorNumber.js';
+import { autoNumberCards } from './src/autoNumber.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {

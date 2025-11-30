@@ -1,6 +1,11 @@
 export default class FooterModule extends CardMagicianModule {
     async init(card) {
         this.brushSvg = await this.loadFile('assets/art.svg');
+        this.collectorNumberField = {
+            id: 'collectorNumber',
+            displayName: 'Collector Number'
+        };
+
         await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
         await this.loadFont('Relay Medium', 'relay-medium.ttf');
         await this.loadFont('MPlantin', 'mplantin.ttf');
@@ -19,11 +24,15 @@ export default class FooterModule extends CardMagicianModule {
             () => card.legalText,
             () => this.requestRender({ render: 'renderLegal' })
         );
+        watch(
+            () => card.autoCollectorNumber,
+            () => (this.collectorNumberField.placeholder = card.autoCollectorNumber)
+        );
     }
 
     renderInfo(card) {
         const set = this.getActiveSet();
-        
+
         const setCode = card.setCode || set.info.setCode || '';
         const language = card.language || set.info.language || '';
         const illustrator = card.illustrator || set.info.illustrator || '';
@@ -55,7 +64,7 @@ export default class FooterModule extends CardMagicianModule {
         return [
             { id: 'illustrator', displayName: 'Illustrator', placeholder: illustrator },
             { id: 'autoCollectorNumber', displayName: 'Auto Collector Number' },
-            { id: 'collectorNumber', displayName: 'Collector Number' },
+            this.collectorNumberField,
             { id: 'setCode', displayName: 'Set Code', placeholder: setCode },
             { id: 'language', displayName: 'Language', placeholder: language },
             { id: 'legalText', displayName: 'Legal Text', placeholder: legalText }
