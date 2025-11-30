@@ -72,6 +72,10 @@ export function buildColumns({ ManaCost }) {
     }, {
         label: '#',
         width: '50px',
-        data: row => row.front.collectorNumber || '0000' 
+        data: row => {
+            return (parseInt(row.front?.collectorNumber || row.front?.autoCollectorNumber.split("/")[0]) || 0)
+                .toString()
+                .padStart(4, '0')
+        } 
     }];
 }
