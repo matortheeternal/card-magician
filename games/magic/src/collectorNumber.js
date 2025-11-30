@@ -1,5 +1,5 @@
 export function autoNumberCards(set) {
-    const sorted_cards = set.cards.slice().sort(collectorNumberSort);
+    const sorted_cards = set.cards.sort(collectorNumberSort);
 
     for (const [ i, card ] of sorted_cards.entries()) {
         const set_card = set.cards[set.cards.indexOf(card)];
