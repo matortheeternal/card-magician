@@ -15,10 +15,7 @@ export default class ColorModule extends CardMagicianModule {
     }
 
     updateCardColors(card) {
-        card.colors = card.colorIdentity.colors;
-            
-        const game = this.getActiveGame();
-        game.autoNumberCards(this.getActiveSet());
+        card.colors = card.colorIdentity.colors;      
     }
 
     bind(card, watch) {

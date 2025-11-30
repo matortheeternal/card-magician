@@ -16,9 +16,6 @@ export default class NameModule extends CardMagicianModule {
     }
 
     render(card) {
-        const game = this.getActiveGame();
-        game.autoNumberCards(this.getActiveSet());
-
         return (
             `<auto-fit-line>${this.escapeHTML(card.name)}</auto-fit-line>`
         );
