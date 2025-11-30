@@ -15,7 +15,7 @@ function formatCollectorNumber(set, n) {
         case 'four':
             return strN.padStart(4, '0');
         case 'threeOutOf':
-            return addLeadingZeroes(strN, 3) + '/' + set.cards.length.toString().padStart(3, '0');
+            return strN.padStart(3, '0') + '/' + set.cards.length.toString().padStart(3, '0');
         default:
             return strN;
     }
