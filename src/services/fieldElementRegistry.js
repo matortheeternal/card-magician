@@ -24,9 +24,12 @@ export function hydrateFields(root) {
         for (const element of elements) {
             const parentFormField = element.closest('form-field');
             const fieldId = parentFormField?.getAttribute('field-id');
+            const subcardId = parentFormField?.getAttribute('subcard-id');
             if (!fieldId) continue;
-            element.field = root.getField(fieldId);
-            element.model = root.face;
+            element.field = root.getField(subcardId, fieldId);
+            element.model = subcardId
+                ? root.subcards.find(s => s.id === subcardId)
+                : root.face;
         }
     }
 }

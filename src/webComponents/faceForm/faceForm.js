@@ -62,8 +62,11 @@ export default class FaceForm extends HTMLElement {
     get fields() { return this._face.fields }
     get subcards() { return this._face.subcards }
 
-    getField(fieldId) {
-        return this.fields.find(field => field.id === fieldId);
+    getField(subcardId, fieldId) {
+        const target = subcardId
+            ? this.subcards.find(s => s.id === subcardId)
+            : this._face;
+        return target.fields.find(field => field.id === fieldId);
     }
 
     withFieldId(btn, callback) {
@@ -83,13 +86,15 @@ export default class FaceForm extends HTMLElement {
     }
 
     addField(btn) {
+        // TODO: handle subcards
         return this.withFieldId(btn, fieldId => {
-            const field = this.getField(fieldId);
+            const field = this.getField(null, fieldId);
             this._face[fieldId] = field?.initialValue || '';
         })
     }
 
     addGroup(btn) {
+        // TODO: handle subcards
         return this.withGroupShowKey(btn, key => (this._face[key] = true));
     }
 
@@ -107,7 +112,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('add-field-btn')) return;
         const added = this.addField(btn) || this.addGroup(btn);
         if (!added) console.error(`Failed to add`, btn.textContent.trim());
-        if (added) emit(this, 'save-card');
+        if (added) emit(this, 'cm-card-changed');
     }
 
     onIconButtonClick(event) {
@@ -115,7 +120,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('remove-btn')) return;
         const removed = this.removeField(btn) || this.removeGroup(btn);
         if (!removed) console.error('Failed to remove', btn.textContent.trim());
-        if (removed) emit(this, 'save-card');
+        if (removed) emit(this, 'cm-card-changed');
     }
 }
 
