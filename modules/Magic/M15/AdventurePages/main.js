@@ -20,7 +20,7 @@ export default class AdventurePagesModule extends FrameModule {
     }
 
     bind(card, watch) {
-        watch(() => [card.colorIdentity, card.parent()?.colorIdentity],
+        watch(() => [card.colorIdentity, card.parent()?.colorIdentity, card.pageStyle],
               () => this.updateBackgrounds(card));
     }
 
@@ -30,11 +30,11 @@ export default class AdventurePagesModule extends FrameModule {
             label: 'Page Style',
             type: 'select',
             options: [
-                { id: 'name_and_type', label: 'Name and Type' },
-                { id: 'name_and_type_flat', label: 'Flat Name and Type' },
-                { id: 'name_flat', label: 'Flat Name' },
-                { id: 'name', label: 'Name' },
-                { id: 'blank', label: 'Blank' },
+                { id: 'name_and_type', name: 'Name and Type' },
+                { id: 'name_and_type_flat', name: 'Flat Name and Type' },
+                { id: 'name_flat', name: 'Flat Name' },
+                { id: 'name', name: 'Name' },
+                { id: 'blank', name: 'Blank' },
             ]
         }]
     }
