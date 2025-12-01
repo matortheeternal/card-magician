@@ -1,7 +1,7 @@
 {
   "id": "M15Main",
   "label": "Magic 2015",
-  "description": "This template is for representing normal Magic 2015 cards.",
+  "description": "Template for representing normal Magic 2015 cards.",
   "version": "0.0",
   "card": [
     "Magic/M15/Frame",

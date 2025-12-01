@@ -33,7 +33,6 @@ class AutoFitText extends AutoFit {
 
     constructor() {
         super();
-        this.maxFont = 19;
         this.forbiddenRects = [];
     }
 

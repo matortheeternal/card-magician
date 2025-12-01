@@ -1,40 +1,37 @@
-<module-container module="MainFrame" render="renderBackgrounds"></module-container>
-<div class="frame">
-    <div class="header">
-        <module-container module="FaceSymbol"></module-container>
-        <module-container module="Name"></module-container>
-        <module-container module="Cost"></module-container>
-    </div>
+<module-container module="AdventureFrame" render="renderBackgrounds"></module-container>
+<div class="header">
+    <module-container module="FaceSymbol"></module-container>
+    <module-container module="Name"></module-container>
+    <module-container module="Cost"></module-container>
+</div>
 
-    <module-container module="ArtImage"></module-container>
+<module-container module="Art"></module-container>
 
-    <div class="type-line">
-        <module-container module="ColorIndicator"></module-container>
-        <module-container module="Type"></module-container>
-        <module-container module="Rarity" render="renderExpansionSymbol"></module-container>
-    </div>
+<div class="type-line">
+    <module-container module="ColorIndicator"></module-container>
+    <module-container module="Type"></module-container>
+    <module-container module="Rarity" render="renderExpansionSymbol"></module-container>
+</div>
 
-    <div class="text-box">
-        <div class="left">
-            <div class="header">
-                <module-container module="Name" subcard="adventure"></module-container>
-                <module-container module="Cost" subcard="adventure"></module-container>
-            </div>
-
-            <div class="type-line">
-                <module-container module="Type" subcard="adventure"></module-container>
-            </div>
-
-            <module-container module="Text" subcard="adventure"></module-container>
+<div class="text-box">
+    <module-container module="AdventurePages" render="renderBackgrounds" subcard="adventure"></module-container>
+    <div class="left">
+        <div class="header">
+            <module-container module="Name" subcard="adventure"></module-container>
+            <module-container module="Cost" subcard="adventure"></module-container>
         </div>
-        <div class="right">
-            <module-container module="Text"></module-container>
+
+        <div class="type-line">
+            <module-container module="Type" subcard="adventure"></module-container>
         </div>
+
+        <module-container module="Text" subcard="adventure"></module-container>
+    </div>
+    <div class="right">
+        <module-container module="Text"></module-container>
     </div>
 </div>
-<module-container module="PT" render="renderNotchPT"></module-container>
 <module-container module="PT" render="renderPT"></module-container>
-<module-container module="Flag"></module-container>
 <div class="footer">
     <module-container module="Footer" render="renderInfo"></module-container>
     <module-container module="Footer" render="renderLegal"></module-container>

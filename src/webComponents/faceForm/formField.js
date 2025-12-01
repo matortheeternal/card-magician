@@ -35,7 +35,7 @@ function renderImage(field, face) {
         `<image-select size="small"
           name="${esc(field.id)}"
           label="${esc(field.displayName)}"
-          src="${esc(face[field.id]?.image)}"
+          src="${esc(face[field.id]?.imageUrl)}"
           filename="${esc(face[field.id]?.filename)}"
           crop-width="${esc(face[field.id]?.width)}"
           crop-height="${esc(face[field.id]?.height)}"
