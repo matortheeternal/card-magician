@@ -2,6 +2,7 @@ import Alpine from 'alpinejs';
 import { saveJson } from '../../services/fsHelpers.js';
 import { executeAction } from '../../services/actionRegistry.js';
 import { registerHotkey } from '../../services/hotkeyService.js';
+import { addStatusMessage } from '../../services/statusService.js';
 
 function menuItem(label, hotkey, action) {
     if (hotkey !== '') registerHotkey(hotkey, action);
@@ -31,8 +32,11 @@ const actions = {
     save: async () => {
         const { activeSet, setFilePath } = Alpine.store('views');
         if (!setFilePath) return await saveAs();
+        const message = addStatusMessage('Saving...', -1);
         console.info('Saving set to:', setFilePath);
         await saveJson(setFilePath, activeSet, false);
+        message.text = 'Saved.';
+        setTimeout(() => message.remove(), 1000);
     },
     saveAs: saveAs,
     exportAs: () => executeAction('export-card-image'),
