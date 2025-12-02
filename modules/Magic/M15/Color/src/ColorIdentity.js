@@ -51,7 +51,10 @@ export default class ColorIdentity {
         const colors = this.override
             ? this.getColorsFromOverride()
             : this.getColorsFromSources();
-        return Object.values(colors);
+        return 'wubrg'.split('').reduce((acc, c) => {
+            if (colors[c]) acc.push(colors[c]);
+            return acc;
+        }, []);
     }
 
     addColorSource(key, symbols, commanderOnly = false) {
