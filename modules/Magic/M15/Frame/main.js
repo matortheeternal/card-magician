@@ -71,7 +71,9 @@ export default class FrameModule extends CardMagicianModule {
             card.rulesHTML,
             card.parent,
             card.frame,
-            card.trims
+            card.trims,
+            card.hybridStyle,
+            card.hybridBlendStyle
         ], () => this.updateFrame(card));
         watch(() => card.frame, () => this.updateTopClasses(card));
     }
@@ -100,8 +102,16 @@ export default class FrameModule extends CardMagicianModule {
             options: this.trimOptions
         }, {
             id: 'hybridStyle',
-            type: 'select',
+            type: 'multiselect',
             label: 'Hybrid Style',
+            options: [
+                { id: 'reverse', name: 'Reverse' },
+                { id: 'vertical', name: 'Vertical' },
+            ]
+        }, {
+            id: 'hybridBlendStyle',
+            type: 'select',
+            label: 'Hybrid Blend Style',
             options: [
                 { id: 'grey', name: 'Grey' },
                 { id: 'gold', name: 'Gold' },
