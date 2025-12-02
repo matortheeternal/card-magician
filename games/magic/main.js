@@ -1,4 +1,4 @@
-import * as ManaScribe from './node_modules/mana-scribe/src/index.js';
+import * as ManaScribe from './mana-scribe/src/index.js';
 import { buildColumns } from './src/columns.js';
 import { autoNumberCards } from './src/autoNumber.js';
 
