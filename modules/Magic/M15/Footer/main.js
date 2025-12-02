@@ -9,7 +9,6 @@ export default class FooterModule extends CardMagicianModule {
         await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
         await this.loadFont('Relay Medium', 'relay-medium.ttf');
         await this.loadFont('MPlantin', 'mplantin.ttf');
-        card.showFooterOverrides = false;
     }
 
     bind(card, watch) {
@@ -67,7 +66,8 @@ export default class FooterModule extends CardMagicianModule {
             this.collectorNumberField,
             { id: 'setCode', label: 'Set Code', placeholder: setCode },
             { id: 'language', label: 'Language', placeholder: language },
-            { id: 'legalText', label: 'Legal Text', placeholder: legalText }
+            { id: 'legalText', label: 'Legal Text', placeholder: legalText },
+            { id: 'showFooterOverrides', default: false }
         ];
     }
 
