@@ -29,6 +29,7 @@ function getDefaultValue(field) {
     if (field.hasOwnProperty('default')) return field.default;
     if (field.type === 'checkboxlist') return {};
     if (field.type === 'select') return field.options?.[0]?.id || null;
+    if (field.type === 'multiselect') return [];
     if (field.type === 'image') return {
         imageUrl: null, filename: '',
         width: '', height: '',
