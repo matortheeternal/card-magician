@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Card Magician</title>
-  <link rel="stylesheet" href="/css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Magician</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="sl-theme-dark" x-data>
-  <nav id="title-bar" x-show="$store.views.loaded" x-data="titleBar()"></nav>
+<nav id="title-bar" x-show="$store.views.loaded" x-data="titleBar()"></nav>
 
-  <template x-if="!$store.views.loaded">
+<template x-if="!$store.views.loaded">
     <main class="spinner-container">
-      <div class="square-spinner"></div>
-      <div class="loading-message">Loading...</div>
+        <div class="square-spinner"></div>
+        <div class="loading-message">Loading...</div>
     </main>
-  </template>
+</template>
 
-  <template x-if="$store.views.loaded">
+<template x-if="$store.views.loaded">
     <main>
-      <div x-data="displayCard()" class="display-card-view"></div>
-      <div x-data="setView()" class="set-view"></div>
-      <cm-card-form x-prop:card="$store.views.activeCard"></cm-card-form>
+        <div x-data="displayCard()" class="display-card-view"></div>
+        <div x-data="setView()" class="set-view"></div>
+        <cm-card-form x-prop:card="$store.views.activeCard"></cm-card-form>
     </main>
-  </template>
+</template>
 
-  <template x-if="$store.views.activeModal === 'set-info'">
+<template x-if="$store.views.activeModal === 'set-info'">
     <div x-data="setInfoModal()" class="modal-container set-info-modal"></div>
-  </template>
+</template>
 
-  <template x-if="$store.views.activeModal === 'crop-image'">
+<template x-if="$store.views.activeModal === 'crop-image'">
     <div x-data="cropImageModal()" class="modal-container crop-image-modal"></div>
-  </template>
+</template>
 
-  <script src="/js/neutralino.js"></script>
-  <script type="module" src="/js/main.js"></script>
+<div class="status-container">
+    <template x-for="message of $store.statusMessages">
+        <div class="status-message"
+             x-text="message.text"
+             :class="message.removing && 'removing'"></div>
+    </template>
+</div>
+
+<script src="/js/neutralino.js"></script>
+<script type="module" src="/js/main.js"></script>
 </body>
 </html>

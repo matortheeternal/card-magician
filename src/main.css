@@ -93,3 +93,23 @@ main.spinner-container > div {
     cursor: pointer;
     display: flex;
 }
+
+.status-container {
+    position: fixed;
+    bottom: 0;
+    left: 2em;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+}
+
+.status-container .status-message {
+    display: block;
+    background: inherit;
+    padding: var(--sl-spacing-x-small);
+    transition: opacity 0.5s ease;
+}
+
+.status-message.removing {
+    opacity: 0;
+}

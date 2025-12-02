@@ -96,3 +96,19 @@ addPrototypeFunction(Object, 'except', {
         );
     }
 });
+
+/**
+ * @method
+ * @name Array#remove
+ * @param {any} item - An item to remove from the array.
+ * @returns {object}
+ * @description Removes the first instance of the item from the array if present.
+ * Example: `[1, 2, 3].remove(2)` -> `[1, 3]`
+ */
+addPrototypeFunction(Array, 'remove', {
+    value: function remove(item) {
+        const index = this.indexOf(item);
+        if (index > -1) this.splice(index, 1);
+        return this;
+    }
+});

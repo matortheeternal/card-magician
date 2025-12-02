@@ -13,6 +13,7 @@ import appConfig from './appConfig';
 import './components/**/*.js';
 import './directives/*.js';
 import cacheManager from './gfx/CacheManager.js';
+import { bindToAlpine } from './services/statusService.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -76,6 +77,7 @@ async function startApp() {
     }
     Alpine.store('appConfig', appConfig);
     await loadGames();
+    bindToAlpine();
     const game = await setGame('magic');
     Alpine.store('game', game);
     await loadTemplates();
