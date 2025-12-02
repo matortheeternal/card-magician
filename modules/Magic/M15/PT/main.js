@@ -1,36 +1,25 @@
 export default class PTModule extends CardMagicianModule {
-    updateShowPT(card) {
+    async updatePT(card) {
+        const activeFrame = card.activeFrame?.();
+        if (!activeFrame) return;
         card.showPT = Boolean(card.toughness || card.power);
+        const ptBackgrounds = await activeFrame.buildBackgrounds('pt', card);
+        this.ptStyle = this.objectToStyle(ptBackgrounds[0].style);
+        await this.updateFrontNotchPt(card);
         this.requestRender({ render: 'renderPT' });
     }
 
     updateFrontNotchPt(card) {
-        if (!card.parent || card.id !== 'back') return;
+        if (card.id !== 'back') return;
         const frontCard = card.parent().front;
-        frontCard.showNotchPT = card.showPT && frontCard.frameFolder === 'notched';
+        frontCard.showNotchPT = card.showPT && frontCard?.isTransform();
         frontCard.notchPtText = `${card.power}/${card.toughness}`;
-        this.requestRender({ render: 'renderNotchPT' });
-    }
-
-    async updatePtStyle(card) {
-        const key = card.isVehicle() ? 'v' : card.getCardColorKey();
-        const url = this.resolveAsset(key + '.png');
-        this.ptStyle = `background-image: url('${url}')`;
-        this.requestRender({ render: 'renderPT' });
     }
 
     bind(card, watch) {
         watch(
-            () => [card.subType, card.colorIdentity],
-            () => this.updatePtStyle(card)
-        );
-        watch(
-            () => [card.toughness, card.power],
-            () => this.updateShowPT(card)
-        );
-        watch(
-            () => card.parent,
-            () => this.updateFrontNotchPt(card)
+            () => [card.toughness, card.power, card.activeFrame],
+            () => this.updatePT(card)
         );
         watch(
             () => card.showNotchPT,

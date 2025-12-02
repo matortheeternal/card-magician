@@ -8,10 +8,9 @@ export default class FlagModule extends CardMagicianModule {
     }
 
     updateShowFlag(card) {
-        if (!card.parent || card.id !== 'front') return;
-        const backCard = card.parent().back;
-        const showFlag = Boolean(backCard && card.frameFolder !== 'notched');
+        const showFlag = card.isFrontDFC?.() && !card.isTransform?.();
         card.showFlag = showFlag;
+        const backCard = card.parent().back;
         if (backCard) backCard.showFlag = showFlag;
     }
 

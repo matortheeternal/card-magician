@@ -161,6 +161,15 @@ auto-fit-line {
     top: -17%;
 }
 
+.frame-spotlight module-container[render="renderPT"] {
+    bottom: 24px;
+    right: 14px;
+}
+
+.frame-spotlight .pt-text {
+    padding: 8px 7px 4px 7px;
+}
+
 /* ADVENTURE PAGES */
 .text-box {
     display: flex;

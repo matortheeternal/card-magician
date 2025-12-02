@@ -1,27 +1,28 @@
-import { runPipeline } from '../Frame/src/pipeline.js';
-import LeftPageProvider from './src/LeftPageProvider.js';
-import RightPageProvider from './src/RightPageProvider.js';
-import BindingProvider from './src/BindingProvider.js';
-import ParentColorResolver from './src/ParentColorResolver.js';
-import ColorResolver from '../Frame/src/resolvers/ColorResolver.js';
-import FrameModule from '../Frame/main.js';
-
-export default class AdventurePagesModule extends FrameModule {
+export default class AdventurePagesModule extends CardMagicianModule {
     async updateBackgrounds(card) {
-        this.backgrounds = await runPipeline(card, this, ...this.pipeline);
+        const activeFrame = card.parent().activeFrame?.();
+        if (!activeFrame) return;
+        this.backgrounds = await activeFrame.buildBackgrounds('pages', card.parent());
         this.requestRender();
     }
 
-    async init(card) {
-        const Providers = [LeftPageProvider, RightPageProvider, BindingProvider];
-        const Resolvers = [ParentColorResolver, ColorResolver];
-        const Transformers = [];
-        this.pipeline = [Providers, Resolvers, Transformers];
+    bind(card, watch) {
+        watch(
+            () => [
+                card.colorIdentity,
+                card.parent().colorIdentity,
+                card.pageStyle,
+                card.parent().activeFrame
+            ],
+            () => this.updateBackgrounds(card)
+        );
     }
 
-    bind(card, watch) {
-        watch(() => [card.colorIdentity, card.parent()?.colorIdentity, card.pageStyle],
-              () => this.updateBackgrounds(card));
+    renderBackgrounds() {
+        if (!this.backgrounds) return;
+        return this.backgrounds.map(bg => (
+            `<div class="bg ${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`
+        )).join('\n');
     }
 
     get options() {
@@ -37,5 +38,9 @@ export default class AdventurePagesModule extends FrameModule {
                 { id: 'blank', name: 'Blank' },
             ]
         }]
+    }
+
+    async styles() {
+        return [await this.loadFile('style.css')];
     }
 }
