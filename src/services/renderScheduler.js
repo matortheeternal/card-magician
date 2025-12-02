@@ -17,13 +17,7 @@ function renderModule(card, module, renderKey, subcardKey) {
         return (!renderKey || renderKey === c.renderKey)
             && (subcardKey === c.subcardKey);
     });
-    if (!containers.length) {
-        console.log(
-            `%cSkipped rendering %s, container not found`,
-            'color:red', module.name
-        );
-        return;
-    }
+    if (!containers.length) return;
     for (const { renderKey, element } of containers) {
         const render = module[renderKey].bind(module);
         const content = render(card);

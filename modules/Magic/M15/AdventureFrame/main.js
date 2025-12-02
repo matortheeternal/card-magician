@@ -1,5 +1,6 @@
 import FrameModule from '../Frame/main.js';
-import { FrameFolderRule } from '../Frame/src/frameFolders.js';
+import AdventureFrame from './src/AdventureFrame.js';
+import AdventureSpotlightFrame from './src/AdventureSpotlightFrame.js';
 
 export default class AdventureFrameModule extends FrameModule {
     async init(card) {
@@ -9,18 +10,9 @@ export default class AdventureFrameModule extends FrameModule {
             { id: 'reversed', label: 'Reversed Adventure' },
             { id: 'ub', label: 'Universes Beyond' },
         ]);
-        const spotlightRule = new FrameFolderRule(
-            'spotlight',
-            card => card.frame.spotlight,
-            '.png'
-        );
-        this.folderRegistry.rules.unshift(spotlightRule);
-    }
-
-    resolveAsset(path) {
-        if (path.startsWith('frame/spotlight'))
-            return super.resolveAsset(path);
-        const frameModulePath = this.modulePath.replace('/AdventureFrame', '/Frame');
-        return ['modules', frameModulePath, 'assets', path].join('/');
+        card.frames = [
+            AdventureSpotlightFrame,
+            AdventureFrame
+        ];
     }
 }

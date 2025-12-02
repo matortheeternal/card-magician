@@ -1,10 +1,8 @@
-import { runPipeline } from './src/pipeline.js';
-import FrameFolderRegistry from './src/frameFolders.js';
 import makeFrameOptions from './src/frameOptions.js';
 import makeTrimOptions from './src/trimOptions.js';
-import Transformers from './src/transformers/index.js';
-import Providers from './src/providers/index.js';
-import Resolvers from './src/resolvers/index.js';
+import DevoidFrame from './src/DevoidFrame.js';
+import NormalFrame from './src/NormalFrame.js';
+import ClearFrame from './src/ClearFrame.js';
 
 function createFrameHelpers(card) {
     card.isDKA = () => false;
@@ -28,31 +26,33 @@ function createFrameHelpers(card) {
 
 export default class FrameModule extends CardMagicianModule {
     async init(card, createHelpers = true) {
-        card.framePipeline ||= [
-            Providers.slice(),
-            Resolvers.slice(),
-            Transformers.slice()
+        card.frames = [
+            DevoidFrame,
+            ClearFrame,
+            NormalFrame
         ];
-        this.folderRegistry = new FrameFolderRegistry();
         this.frameOptions = this.makeReactive(makeFrameOptions());
         this.trimOptions = this.makeReactive(makeTrimOptions());
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
         card.isDFC = () => {
-            return card.id === 'front' || card.id === 'back'
-                && Object.hasOwn(card.parent?.(), 'back');
+            if (card.id === 'back') return true;
+            return card.id === 'front' && Object.hasOwn(card.parent(), 'back');
         };
         card.isFrontDFC = () => card.isDFC() && card.id === 'front';
         card.isBackDFC = () => card.isDFC() && card.id === 'back';
         if (createHelpers) createFrameHelpers(card);
     }
 
-    async updateBackgrounds(card) {
+    async updateFrame(card) {
         if (!card.parent || card.rulesHTML === undefined) return;
-        const folderRule = this.folderRegistry.resolveRule(card);
-        card.frameFolder = folderRule.folder;
-        card.frameExt = folderRule.ext;
-        this.backgrounds = await runPipeline(card, this, ...card.framePipeline);
+        console.log('updateFrame called');
+        const Frame = card.frames.find(frame => {
+            return frame.matches(card);
+        });
+        const activeFrame = new Frame(card, this);
+        card.activeFrame = () => activeFrame;
+        this.backgrounds = await activeFrame.buildBackgrounds('frame', card);
         this.requestRender();
     }
 
@@ -72,17 +72,14 @@ export default class FrameModule extends CardMagicianModule {
             card.parent,
             card.frame,
             card.trims
-        ], () => this.updateBackgrounds(card));
-        watch(() => card.frame, () => this.updateTopClasses(card))
+        ], () => this.updateFrame(card));
+        watch(() => card.frame, () => this.updateTopClasses(card));
     }
 
     renderBackgrounds() {
         if (!this.backgrounds) return;
-        this.backgrounds.forEach(bg => {
-            bg.style = `background-image: url('${bg.url}'); z-index: ${bg.zIndex};`;
-        });
         return this.backgrounds.map(bg => (
-            `<div class="bg ${bg.className}" style="${bg.style}"></div>`
+            `<div class="bg frame-${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`
         )).join('\n');
     }
 
