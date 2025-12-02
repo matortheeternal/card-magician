@@ -226,13 +226,14 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath('element/pt');
     }
 
+    getPtKey(card) {
+        if (card.isVehicle?.()) return 'vehicle';
+        if (card.colorIdentity.isHybrid()) return 'c';
+        return card.getCardColorKey();
+    }
+
     async resolvePt(card) {
-        const imageUrl = card.isVehicle?.()
-            ? `${this.ptFolder}/vehicle.png`
-            : await this.resolveColored(this.ptFolder, card, {
-                ext: '.png',
-                hybridMode: 'colorless'
-            });
+        const imageUrl = `${this.ptFolder}/${this.getPtKey(card)}.png`;
         return this.background('pt', imageUrl);
     }
 }
