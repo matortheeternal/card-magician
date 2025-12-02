@@ -53,8 +53,8 @@ export function linearBlend(img1, img2, x1, y1, x2, y2) {
         x1 * width, y1 * height,
         x2 * width, y2 * height
     );
-    gradient.addColorStop(0, 'rgba(0,0,0,0)');
-    gradient.addColorStop(1, 'rgba(0,0,0,1)');
+    gradient.addColorStop(0, 'rgba(0,0,0,1)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.globalCompositeOperation = 'destination-in';
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
