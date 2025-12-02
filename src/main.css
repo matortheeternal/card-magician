@@ -107,9 +107,11 @@ main.spinner-container > div {
     display: block;
     background: inherit;
     padding: var(--sl-spacing-x-small);
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease,
+                font-size 0.3s ease 0.2s;
 }
 
 .status-message.removing {
     opacity: 0;
+    font-size: 0;
 }
