@@ -40,8 +40,8 @@ export default class CardFrame {
         if (options.hybridMode === 'multicolor')
             return this.resolveColorKey(folder, 'm', options);
         return await this.ctx.linearBlend(
-            this.resolveColorKey(folder, colors[0].char, options),
             this.resolveColorKey(folder, colors[1].char, options),
+            this.resolveColorKey(folder, colors[0].char, options),
             0.4, 0, 0.6, 0
         );
     }
