@@ -4,6 +4,12 @@ const defaultColoredOptions = {
     hasLandTemplates: false
 };
 
+const reverseByDefault = ['wr', 'wg', 'ug'];
+
+function xor(x, y) {
+    return (x && !y) || (!x && y);
+}
+
 export default class CardFrame {
     constructor(card, module) {
         this.card = card;
@@ -34,15 +40,30 @@ export default class CardFrame {
         return `${folder}/${key}${landSuffix}${options.ext}`;
     }
 
-    async resolveHybridColored(folder, colors, options) {
-        if (options.hybridMode === 'colorless')
+    getHybridOrder(card, c1, c2) {
+        let order = [c1, c2];
+        const reverseOverride = Boolean(card.hybridStyle?.includes('reverse'));
+        if (xor(reverseByDefault.includes(c1 + c2), reverseOverride))
+            return order.reverse();
+        return order;
+    }
+
+    async resolveHybridColored(folder, card, options) {
+        const colors = card.colorIdentity.colors;
+        if (card.colorIdentity.isHybrid() && options.hybridMode === 'colorless')
             return this.resolveColorKey(folder, 'c', options);
-        if (options.hybridMode === 'multicolor')
+        if (card.colorIdentity.isHybrid() && options.hybridMode === 'multicolor')
             return this.resolveColorKey(folder, 'm', options);
+        if (card.colorIdentity.isHybrid() && options.hybridMode === 'first')
+            return this.resolveColorKey(folder, colors[0].char, options);
+        const [c1, c2] = this.getHybridOrder(card, colors[0].char, colors[1].char);
+        const blendCoords = card.hybridStyle?.includes('vertical')
+            ? [0, 0.4, 0, 0.6]
+            : [0.4, 0, 0.6, 0];
         return await this.ctx.linearBlend(
-            this.resolveColorKey(folder, colors[1].char, options),
-            this.resolveColorKey(folder, colors[0].char, options),
-            0.4, 0, 0.6, 0
+            this.resolveColorKey(folder, c1, options),
+            this.resolveColorKey(folder, c2, options),
+            ...blendCoords
         );
     }
 
@@ -50,7 +71,7 @@ export default class CardFrame {
         options = {...defaultColoredOptions, ...options};
         const colors = card.colorIdentity.colors;
         return colors.length === 2
-            ? await this.resolveHybridColored(folder, colors, options)
+            ? await this.resolveHybridColored(folder, card, options)
             : this.resolveColorKey(folder, card.getCardColorKey(), options);
     }
 
@@ -64,12 +85,12 @@ export default class CardFrame {
     get useLandBlend() {
         return Boolean(this.blendMaskFolder)
             && this.card.isLand?.()
-            && this.card.hybridStyle !== 'hybrid'
+            && this.card.hybridBlendStyle !== 'hybrid'
             && this.card.colorIdentity?.isMulticolor();
     }
 
     get hybridBlendKey() {
-        return (this.card.hybridStyle === 'gold') ? 'm' : 'c';
+        return (this.card.hybridBlendStyle === 'gold') ? 'm' : 'c';
     }
 
     get landBlendMaskUrl() {
@@ -88,7 +109,7 @@ export default class CardFrame {
 
     get useHybridBlend() {
         return Boolean(this.blendMaskFolder)
-            && this.card.hybridStyle !== 'hybrid'
+            && this.card.hybridBlendStyle !== 'hybrid'
             && this.card.colorIdentity?.isHybrid();
     }
 
