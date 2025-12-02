@@ -17,6 +17,7 @@ Alpine.data('setView', () => ({
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards;
         this.changeTemplate = this.changeTemplate.bind(this);
+        this.addFace = this.addFace.bind(this);
 
         this.$watch('$store.views.activeSet', (set) => {
             const cards = set.cards || [];
@@ -29,6 +30,13 @@ Alpine.data('setView', () => ({
 
         this.bindEvents();
         Alpine.initTree(this.$root);
+    },
+
+    async addFace(faceId) {
+        const views = Alpine.store('views');
+        views.selectedCard[faceId] = {};
+        const card = await buildCard(views.selectedCard);
+        views.activeCard = Alpine.reactive(card);
     },
 
     async changeTemplate(faceId, newTemplateId) {
@@ -63,6 +71,7 @@ Alpine.data('setView', () => ({
         registerAction('open-set', () => this.openSet());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
+        registerAction('add-face', this.addFace);
         registerAction('paste', () => this.pasteCard());
         registerAction('change-template', this.changeTemplate);
         registerAction('cut', () => {
