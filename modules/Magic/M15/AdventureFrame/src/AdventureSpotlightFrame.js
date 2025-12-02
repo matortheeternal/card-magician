@@ -12,6 +12,10 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
     frame = [this.resolveFrame, this.resolveBorder];
     pages = [this.resolveLeftPage];
 
+    get useHybridBlend() {
+        return false;
+    }
+
     /* --- FRAME --- */
     get frameHasLandTemplates() {
         return false;

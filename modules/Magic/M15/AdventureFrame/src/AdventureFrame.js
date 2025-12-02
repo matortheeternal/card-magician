@@ -30,7 +30,7 @@ export default class AdventureFrame extends NormalFrame {
     async resolveLeftPage(card) {
         const adventure = card.subcards.find(s => s.id === 'adventure');
         const imageUrl = await this.coloredBlend(this.leftPageUrl, adventure, {
-            hybridMode: 'grey',
+            hybridMode: 'first',
             ext: '.png'
         });
         return this.background('left-page', imageUrl, 2);
@@ -43,6 +43,7 @@ export default class AdventureFrame extends NormalFrame {
 
     async resolveRightPage(card) {
         const imageUrl = await this.coloredBlend(this.rightPageUrl, card, {
+            hybridMode: 'first',
             ext: '.png'
         });
         return this.background('right-page', imageUrl, 2);
