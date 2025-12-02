@@ -335,6 +335,12 @@ export default class CardMagicianModule {
             .replace(/'/g, "&#39;");
     }
 
+    objectToStyle(obj) {
+        return Object.entries(obj)
+            .map(([key, value]) => `${key.separate('-')}: ${value}`)
+            .join('; ');
+    }
+
     /**
      * Request that this module perform a render update.
      *
