@@ -178,7 +178,14 @@ auto-fit-line {
     height: 162px;
     padding: 4px 6px;
     overflow: hidden;
-    margin-bottom: 2px;
+    margin: 0 4px 2px 3px;
+}
+
+.page-style-blank:not(.frame-spotlight) .left .type-line,
+.page-style-name:not(.frame-spotlight) .left .type-line,
+.page-style-name_flat:not(.frame-spotlight) .left .type-line,
+.page-style-blank:not(.frame-spotlight) .left .header {
+    display: none;
 }
 
 .left .text,
