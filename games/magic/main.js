@@ -8,10 +8,22 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
-        this.collectorNumberOptions = [
-            { id: 'four', name: '0001' },
-            { id: 'threeOutOf', name: '001/999' },
-        ];
+        this.numberFormatField = {
+            id: 'collectorNumberFormat',
+            label: 'Collector Number Format',
+            options: [
+                { id: 'four', name: '0001' },
+                { id: 'threeOutOf', name: '001/999' },
+            ]
+        };
+        this.rarityOrderField = {
+            id: 'rarityOrder',
+            label: 'Footer Rarity Order',
+            options: [
+                { id: 'before', name: 'Before Collector Number' },
+                { id: 'after', name: 'After Collector Number' },
+            ]
+        };
     }
 
     get columns () {
@@ -37,7 +49,8 @@ export default class MagicTheGathering extends CardMagicianGame {
             language: 'EN',
             setCode: '',
             symbol: this.defaultSetSymbol,
-            collectorNumberFormat: this.collectorNumberOptions[0].id
+            collectorNumberFormat: this.numberFormatField.options[0].id,
+            rarityOrder: this.rarityOrderField.options[0].id,
         };
         return { cards: [], info };
     }

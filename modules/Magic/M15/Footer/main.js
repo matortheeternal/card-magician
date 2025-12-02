@@ -5,6 +5,7 @@ export default class FooterModule extends CardMagicianModule {
             id: 'collectorNumber',
             label: 'Collector Number'
         };
+        this.set = this.getActiveSet();
 
         await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
         await this.loadFont('Relay Medium', 'relay-medium.ttf');
@@ -15,7 +16,8 @@ export default class FooterModule extends CardMagicianModule {
         watch(
             () => [
                 card.rarityCharacter, card.autoCollectorNumber, card.collectorNumber,
-                card.setCode, card.language, card.illustrator
+                card.setCode, card.language, card.illustrator, this.set.info.rarityOrder,
+                this.set.info.language, this.set.info.illustrator, this.set.info.setCode
             ],
             () => this.requestRender({ render: 'renderInfo' })
         );
@@ -30,36 +32,44 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderInfo(card) {
-        const set = this.getActiveSet();
-
-        const setCode = card.setCode || set.info.setCode || '';
-        const language = card.language || set.info.language || '';
-        const illustrator = card.illustrator || set.info.illustrator || '';
+        const setCode = card.setCode || this.set.info.setCode || '';
+        const language = card.language || this.set.info.language || '';
+        const illustrator = card.illustrator || this.set.info.illustrator || '';
         const number = card.collectorNumber || card.autoCollectorNumber || '';
 
-        return (
-            `<div>
+        return this.set.info.rarityOrder === 'after' ? (
+            `<div class="column">
                 <div>${this.escapeHTML(number)}</div>
                 <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
             </div>
-            <div>
+            <div class="column">
                 <div>${card.rarityCharacter}</div>
                 <div class="illustrator-container">
                     <div class="illustrator-brush">${this.brushSvg}</div>
                     <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
                 </div>
             </div>`
-        );
+        ) : (
+            `<div class="row">
+                <div>${card.rarityCharacter}</div>
+                <div>${this.escapeHTML(number)}</div>
+            </div>
+            <div class="row">
+                <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
+                <div class="illustrator-container">
+                    <div class="illustrator-brush">${this.brushSvg}</div>
+                    <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
+                </div>
+            </div>`
+        )
     }
 
     renderLegal(card) {
-        const set = this.getActiveSet();
-        return card.legalText || set.info.legalText;
+        return card.legalText || this.set.info.legalText;
     }
 
     get fields() {
-        const setInfo = this.getActiveSet()?.info || {};
-        const { illustrator, setCode, language, legalText } = setInfo;
+        const { illustrator, setCode, language, legalText } = this.set.info;
         return [
             { id: 'illustrator', label: 'Illustrator', placeholder: illustrator },
             { id: 'autoCollectorNumber', label: 'Auto Collector Number' },

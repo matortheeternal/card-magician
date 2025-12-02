@@ -4,5 +4,6 @@
 <sl-input label="Copyright" x-model="set.info.legalText"></sl-input>
 <sl-input label="Set code" x-model="set.info.setCode"></sl-input>
 <sl-input label="Language" x-model="set.info.language"></sl-input>
-<cm-select label="Collector Number Format" :value="set.info.collectorNumberFormat" data-info-id="collectorNumberFormat" x-prop:options="$store.game.collectorNumberOptions"></cm-select>
+<cm-select x-once:field="$store.game.rarityOrderField" x-once:model="set.info"></cm-select>
+<cm-select x-once:field="$store.game.numberFormatField" x-once:model="set.info"></cm-select>
 <sl-textarea label="Set symbol" x-model="set.info.symbol" resize="auto"></sl-textarea>

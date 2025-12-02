@@ -24,3 +24,10 @@ Alpine.directive('prop', (
     el[propName] = evaluate(expression);
     cleanup(propWatcher);
 });
+
+Alpine.directive('once', (el, { expression, value: propName }, { evaluate }) => {
+    if (!propName)
+        throw new Error(`x-once must have a property name`);
+
+    el[propName] = evaluate(expression);
+});
