@@ -31,7 +31,9 @@ export default class PTModule extends CardMagicianModule {
         if (!card.showPT) return;
         return (
             `<div class="pt-text" style="${this.ptStyle}">
-                ${this.escapeHTML(card.power)}/${this.escapeHTML(card.toughness)}
+                <span>${this.escapeHTML(card.power)}</span>
+                <span class="d">/</span>
+                <span>${this.escapeHTML(card.toughness)}</span>
             </div>`
         );
     }

@@ -5,6 +5,21 @@
     text-align: center;
     font-family: 'Beleren Bold', serif;
     font-size: 19.5px;
+    display: flex;
+    justify-content: center;
+}
+
+.pt-text > span:not(.d) {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.pt-text > span:first-child {
+    text-align: right;
+}
+
+.pt-text > span:last-child {
+    text-align: left;
 }
 
 .notch-pt-text {
