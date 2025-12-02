@@ -15,6 +15,14 @@ class ParagraphConverter {
         this.html = '';
     }
 
+    fixQuotes(str) {
+        if (str.startsWith('“'))
+            str = `<span class="q">“</span>` + str.slice(1);
+        if (str.endsWith('”'))
+            str = str.slice(0, -1) + `<span class="q">”</span>`;
+        return str;
+    }
+
     convert(str) {
         let remainingStr = str;
         let result = '';
@@ -25,7 +33,7 @@ class ParagraphConverter {
             result += converter.convert(match, state, this.card, this.symbols);
             remainingStr = remainingStr.slice(match[0].length);
         }
-        this.html += `<div class="t">${result}</div>`;
+        this.html += `<div class="t">${this.fixQuotes(result)}</div>`;
     }
 
     static parse(paragraph, card) {
