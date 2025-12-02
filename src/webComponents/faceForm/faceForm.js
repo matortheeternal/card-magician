@@ -112,7 +112,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('add-field-btn')) return;
         const added = this.addField(btn) || this.addGroup(btn);
         if (!added) console.error(`Failed to add`, btn.textContent.trim());
-        if (added) emit(this, 'cm-card-changed');
+        if (added) emit(this, 'cm-field-changed');
     }
 
     onIconButtonClick(event) {
@@ -120,7 +120,7 @@ export default class FaceForm extends HTMLElement {
         if (!btn || !btn.classList.contains('remove-btn')) return;
         const removed = this.removeField(btn) || this.removeGroup(btn);
         if (!removed) console.error('Failed to remove', btn.textContent.trim());
-        if (removed) emit(this, 'cm-card-changed');
+        if (removed) emit(this, 'cm-field-changed');
     }
 }
 
