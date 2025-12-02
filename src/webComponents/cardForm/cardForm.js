@@ -6,13 +6,11 @@ class CardForm extends HTMLElement {
     constructor() {
         super();
         this.save = Alpine.debounce(this.save, 300);
-        this.handleOnClick = this.handleOnClick.bind(this);
     }
 
     connectedCallback() {
         this.render();
         this.addEventListener('cm-field-changed', this.save);
-        this.addEventListener('click', this.handleOnClick);
     }
 
     render() {
@@ -36,16 +34,6 @@ class CardForm extends HTMLElement {
     }
 
     get card() { return this._card; }
-
-    async handleOnClick(event) {
-        const btn = event.target.closest('sl-button');
-        if (!btn || !btn.classList.contains('add-face-btn')) return;
-        const faceForm = btn.closest('cm-face-form, cm-options-form');
-        const faceId = faceForm?.dataset?.faceId;
-        this._card[faceId] = {};
-        this._card[faceId] = await buildCardFace(this._card, faceId);
-        this.bind();
-    }
 
     async save() {
         const { activeCard, selectedCard } = Alpine.store('views');

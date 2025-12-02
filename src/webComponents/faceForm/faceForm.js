@@ -4,6 +4,7 @@ import {
     handleFormGroup, renderFormField
 } from './faceFormHelpers.js'
 import { hydrateFields } from '../../services/fieldElementRegistry.js';
+import { executeAction } from '../../services/actionRegistry.js';
 
 export default class FaceForm extends HTMLElement {
     constructor() {
@@ -106,21 +107,35 @@ export default class FaceForm extends HTMLElement {
         return this.withGroupShowKey(btn, key => (this._face[key] = false));
     }
 
-    onButtonClick(event) {
-        this.onIconButtonClick(event);
+    addFace(event) {
         const btn = event.target.closest('sl-button');
-        if (!btn || !btn.classList.contains('add-field-btn')) return;
-        const added = this.addField(btn) || this.addGroup(btn);
-        if (!added) console.error(`Failed to add`, btn.textContent.trim());
-        if (added) emit(this, 'cm-field-changed');
+        if (!btn || !btn.classList.contains('add-face-btn')) return;
+        executeAction('add-face', this.dataset.faceId);
+        return true;
     }
 
-    onIconButtonClick(event) {
+    removeFieldOrGroup(event) {
         const btn = event.target.closest('sl-icon-button');
         if (!btn || !btn.classList.contains('remove-btn')) return;
         const removed = this.removeField(btn) || this.removeGroup(btn);
         if (!removed) console.error('Failed to remove', btn.textContent.trim());
         if (removed) emit(this, 'cm-field-changed');
+        return true;
+    }
+
+    addFieldOrGroup(event) {
+        const btn = event.target.closest('sl-button');
+        if (!btn || !btn.classList.contains('add-field-btn')) return;
+        const added = this.addField(btn) || this.addGroup(btn);
+        if (!added) console.error(`Failed to add`, btn.textContent.trim());
+        if (added) emit(this, 'cm-field-changed');
+        return true;
+    }
+
+    onButtonClick(event) {
+        return this.addFace(event)
+            || this.removeFieldOrGroup(event)
+            || this.addFieldOrGroup(event);
     }
 }
 
