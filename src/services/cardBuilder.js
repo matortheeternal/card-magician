@@ -6,6 +6,7 @@ import {
     setupRenderPipeline
 } from './moduleService.js';
 import { initCardFace, initSubCardFace } from './cardFaceService.js';
+import { executeAction } from './actionRegistry.js';
 
 async function buildSubcard(parent, key, modulesToLoad, subcardData) {
     const subcard = initSubCardFace(key);
@@ -33,7 +34,10 @@ const templateField = () => ({
     options: Alpine.store('templates').map(template => ({
         id: template.id,
         name: template.label
-    }))
+    })),
+    onChange: (model, newValue) => {
+        executeAction('change-template', model.id, newValue);
+    }
 })
 
 function setupTemplate(face, faceData) {

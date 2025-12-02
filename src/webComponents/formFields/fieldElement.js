@@ -61,6 +61,7 @@ export default class FieldElement extends HTMLElement {
         const newValue = this.getChangedValue(event);
         if (newValue === this.value) return;
         this.value = newValue;
+        this.field.onChange?.(this.#model, newValue);
         emit(this, 'cm-field-changed');
     }
 }
