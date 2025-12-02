@@ -23,8 +23,8 @@ export default class AdventureFrame extends NormalFrame {
 
     /* --- LEFT PAGE --- */
     get leftPageUrl() {
-        // TODO: use ${this.card.pageStyle}
-        return resolveAssetPath(`page/name_and_type`);
+        const adventure = this.card.adventure;
+        return resolveAssetPath(`page/${adventure.pageStyle || 'name_and_type'}`);
     }
 
     async resolveLeftPage(card) {

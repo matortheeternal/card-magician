@@ -3,6 +3,11 @@ export default class AdventurePagesModule extends CardMagicianModule {
         const activeFrame = card.parent().activeFrame?.();
         if (!activeFrame) return;
         this.backgrounds = await activeFrame.buildBackgrounds('pages', card.parent());
+        const parentRoot = card.parent().dom.root;
+        if (this.oldPageStyle) parentRoot.classList.toggle(this.oldPageStyle, false);
+        const pageStyleClass = `page-style-${card.pageStyle}`;
+        parentRoot.classList.toggle(pageStyleClass, true);
+        this.oldPageStyle = pageStyleClass;
         this.requestRender();
     }
 
