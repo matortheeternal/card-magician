@@ -40,3 +40,11 @@ nav .menu-active > sl-button::part(base) {
     background-color: var(--sl-color-primary-50);
     color: var(--sl-color-primary-700);
 }
+
+nav sl-button::part(label) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    padding: 0;
+}
