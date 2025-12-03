@@ -48,8 +48,8 @@ Alpine.data('setView', () => ({
 
     async setActiveCard(selectedCard) {
         const views = Alpine.store('views');
-        const card = selectedCard ? await buildCard(selectedCard) : {};
-        views.activeCard = Alpine.reactive(card);
+        const card = selectedCard ? await buildCard(selectedCard) : null;
+        views.activeCard = card && Alpine.reactive(card);
         views.selectedCard = selectedCard || {};
     },
 
