@@ -2,18 +2,18 @@ import Alpine from 'alpinejs';
 import html from './setView.html';
 import { registerAction, executeAction } from '../../services/actionRegistry.js';
 import { loadJson } from '../../services/fsHelpers.js';
-import appConfig from '../../appConfig';
 import { buildCard } from '../../services/cardBuilder.js';
 import { selectRow } from '../listView/rowSelectionService.js';
 
 Alpine.data('setView', () => ({
     rows: [],
     columns: [],
-    recentSets: appConfig.recentFiles,
+    recentSets: [],
     addRowLabel: 'Click to add a card or press Ctrl+Enter',
 
     async init() {
         this.$root.innerHTML = html;
+        this.recentSets = Alpine.store('appConfig').recentFiles;
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards;
         this.changeTemplate = this.changeTemplate.bind(this);
@@ -25,7 +25,7 @@ Alpine.data('setView', () => ({
         });
 
         this.$watch('$store.appConfig.recentFiles', (recentFiles) => {
-            this.recentFiles = recentFiles.slice(0, 4);
+            this.recentSets = recentFiles.slice(0, 4);
         })
 
         this.bindEvents();
@@ -123,7 +123,7 @@ Alpine.data('setView', () => ({
         views.setFilePath = filePath;
         views.activeSet = game.loadSet(await loadJson(filePath));
         game.autoNumberCards(views.activeSet);
-        appConfig.addRecentFile(filePath);
+        Alpine.store('appConfig').addRecentFile(filePath);
     },
 
     copyCard() {
