@@ -9,6 +9,7 @@ import {
 } from './gfx/blending.js';
 import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
+import { escapeHTML } from './utils.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -327,12 +328,7 @@ export default class CardMagicianModule {
     }
 
     escapeHTML(str) {
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#39;");
+        return escapeHTML(str);
     }
 
     objectToStyle(obj) {

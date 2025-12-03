@@ -35,6 +35,7 @@ export default class FieldElement extends HTMLElement {
     set model(value) {
         this.#model = value;
         this.render();
+        this.loadValue?.();
     }
 
     get model() {
@@ -47,18 +48,19 @@ export default class FieldElement extends HTMLElement {
 
     set value(value) {
         this.#model[this.#field.id] = value;
+        this.loadValue?.();
     }
 
     render() {
         this.innerHTML = '<div>Not implemented</div>';
     }
 
-    getChangedValue(event) {
+    async getChangedValue(event) {
         return event.target.value;
     }
 
-    onChange(event) {
-        const newValue = this.getChangedValue(event);
+    async onChange(event) {
+        const newValue = await this.getChangedValue(event);
         if (newValue === this.value) return;
         this.value = newValue;
         this.field.onChange?.(this.#model, newValue);

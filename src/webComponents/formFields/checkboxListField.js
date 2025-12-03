@@ -27,7 +27,7 @@ export default class CheckboxListField extends FieldElement {
         );
     }
 
-    onChange(e) {
+    async onChange(e) {
         const optionId = e.target.dataset?.id;
         if (!optionId) return;
         this.value = { ...this.value, [optionId]: e.target.checked };

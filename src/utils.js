@@ -63,3 +63,12 @@ export function fnv1a(str) {
 export function esc(str) {
     return String(str ?? '').replace(/"/g, "&quot;");
 }
+
+export function escapeHTML(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
