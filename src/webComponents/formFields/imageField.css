@@ -1,0 +1,90 @@
+cm-image-select {
+    font-family: var(--sl-font-sans);
+    color: var(--sl-input-label-color);
+    margin-top: var(--sl-spacing-3x-small);
+    display: flex;
+    flex-direction: column;
+}
+
+cm-image-select sl-card {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    text-align: center;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+cm-image-select sl-card::part(base) {
+    background-color: var(--sl-input-background-color);
+    box-shadow: var(--sl-shadow-x-small);
+    border: solid var(--sl-input-border-width) var(--sl-input-border-color);
+}
+
+cm-image-select sl-card.dragover {
+    border: 2px dashed var(--sl-color-primary-600);
+    background-color: var(--sl-color-primary-50);
+}
+
+cm-image-select label {
+    margin-bottom: var(--sl-spacing-3x-small);
+    font-size: var(--sl-input-label-font-size-small);
+}
+
+cm-image-select .upload-prompt {
+    color: var(--sl-color-neutral-700);
+}
+
+cm-image-select .upload-prompt sl-icon {
+    font-size: 4em;
+}
+
+cm-image-select .preview-container {
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    border-radius: var(--sl-border-radius-medium);
+}
+
+cm-image-select .crop-region {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 4px dashed var(--sl-color-amber-500);
+    width: 100%;
+    height: 100%;
+}
+
+cm-image-select img.preview-image {
+    display: block;
+    max-width: 300px;
+    max-height: 160px;
+}
+
+cm-image-select .preview-name {
+    font-size: small;
+}
+
+cm-image-select .actions {
+    display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+cm-image-select .actions sl-icon-button {
+    cursor: pointer;
+}
+
+cm-image-select sl-icon-button::part(base) {
+    padding: var(--sl-spacing-2x-small);
+}
+
+cm-image-select .crop-btn::part(base) {
+    color: var(--sl-color-primary-600);
+}
+
+cm-image-select .clear-btn::part(base) {
+    color: var(--sl-color-danger-600);
+}

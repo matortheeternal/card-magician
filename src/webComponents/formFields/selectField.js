@@ -84,7 +84,6 @@ export default class SelectField extends FieldElement {
     render() {
         if (!this.field) return;
         this.innerHTML = buildSelectHTML(this.field.label, this.field.options);
-        this.loadValue();
     }
 
     isSelected(el, groupId) {
@@ -111,13 +110,8 @@ export default class SelectField extends FieldElement {
         this.updateSelectedClasses(parent?.id);
     }
 
-    getChangedValue(event) {
+    async getChangedValue(event) {
         return event.detail?.item?.value || this.value;
-    }
-
-    onChange(event) {
-        super.onChange(event);
-        this.loadValue();
     }
 }
 

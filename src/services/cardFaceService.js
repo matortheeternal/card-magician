@@ -1,5 +1,13 @@
 import Alpine from 'alpinejs';
-import { loadImage, saveImage } from './imageFieldHelpers.js';
+import ImageValue from './ImageValue.js';
+
+export async function loadImage(model, dataToLoad, field) {
+    const existingUrl = model[field.id]?.imageUrl;
+    if (existingUrl) URL.revokeObjectURL(existingUrl);
+
+    const stored = dataToLoad[field.id];
+    return await ImageValue.load(stored);
+}
 
 class DOMBuilder {
     root = document.createElement('div');
@@ -29,7 +37,7 @@ class BaseCardModel {
         if (field.hasOwnProperty('save'))
             return await field.save();
         if (field.type === 'image')
-            return await saveImage(this, field);
+            return await this[field.id].save();
         return this[field.id];
     }
 
