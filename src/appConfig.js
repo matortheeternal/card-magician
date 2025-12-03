@@ -1,16 +1,21 @@
 const RECENT_FILE_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
 
-class AppConfig {
-    constructor() {
+export default class AppConfig {
+    constructor(game) {
+        this.game = game;
         this._data = {};
         this._writeQueued = false;
         this._loadPromise = this.load();
     }
 
+    get key() {
+        return `appConfig-${this.game.id}`;
+    }
+
     async load() {
         try {
-            const raw = await Neutralino.storage.getData('appConfig');
+            const raw = await Neutralino.storage.getData(this.key);
             this._data = JSON.parse(raw) || {};
         } catch (err) {
             this._data = {};
@@ -57,8 +62,7 @@ class AppConfig {
     }
 
     async save() {
-        await Neutralino.storage.setData('appConfig', JSON.stringify(this._data));
+        const value = JSON.stringify(this._data);
+        await Neutralino.storage.setData(this.key, value);
     }
 }
-
-export default new AppConfig();

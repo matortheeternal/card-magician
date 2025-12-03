@@ -9,7 +9,7 @@ import CardMagicianGame from './CardMagicianGame.js';
 import { loadTemplates, getTemplates } from './services/templateService.js';
 import { loadGames, setGame } from './services/gameService.js';
 import { setupTestHarness, runTests } from './tests';
-import appConfig from './appConfig';
+import AppConfig from './appConfig';
 import './components/**/*.js';
 import './directives/*.js';
 import cacheManager from './gfx/CacheManager.js';
@@ -75,11 +75,12 @@ async function startApp() {
         await runTests();
         return;
     }
-    Alpine.store('appConfig', appConfig);
     await loadGames();
     bindToAlpine();
     const game = await setGame('magic');
     Alpine.store('game', game);
+    const appConfig = new AppConfig(game);
+    Alpine.store('appConfig', appConfig);
     await loadTemplates();
     Alpine.store('templates', getTemplates());
     await cacheManager.preload();
