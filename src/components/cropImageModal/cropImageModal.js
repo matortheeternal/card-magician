@@ -101,7 +101,16 @@ Alpine.data('cropImageModal', () => ({
         this.aspectRatioLocked = !this.aspectRatioLocked;
     },
     resetCrop() {
-        //TODO: default crop using aspect ratio
+        const crop = this.value.crop;
+        crop.width = this.value.width;
+        crop.height = crop.width / this.aspectRatio;
+        if (crop.height > this.value.height) {
+            crop.height = this.value.height;
+            crop.width = crop.height * this.aspectRatio;
+        }
+        this.centerCropVertically();
+        this.centerCropHorizontally();
+        this.updateCropBox();
     },
     cropToImageSize() {
         this.value.crop.width = this.value.width;
