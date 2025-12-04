@@ -44,13 +44,15 @@ cm-image-select .preview-container {
     height: fit-content;
     margin: auto;
     border-radius: var(--sl-border-radius-medium);
+    overflow: hidden;
 }
 
 cm-image-select .crop-region {
     position: absolute;
     top: 0;
     left: 0;
-    border: 4px dashed var(--sl-color-amber-500);
+    border: 1px solid black;
+    box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.45);
     width: 100%;
     height: 100%;
 }
