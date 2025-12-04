@@ -13,6 +13,10 @@ export default class ClearFrame extends NormalFrame {
         return `${folder}/x.png`;
     }
 
+    get artDimensions() {
+        return { width: 343, height: 471 };
+    }
+
     /* --- FRAME --- */
     async maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
