@@ -89,7 +89,7 @@
 }
 
 .crop-image-modal .preview-container {
-    border: 2px solid #000;
+    border: 1em solid var(--sl-input-border-color);
 }
 
 .crop-image-modal crop-image {
