@@ -13,44 +13,35 @@
             <div class="modal-body">
                 <div class="toolbox">
                     <sl-tooltip :content="aspectRatioLocked ? 'Unlock aspect ratio' : 'Lock aspect ratio'" placement="left">
-                        <sl-icon-button :name="aspectRatioLocked ? 'lock' : 'unlock'"
-                                        @click="toggleAspectRatioLock()"></sl-icon-button>
+                        <sl-icon-button :name="aspectRatioLocked ? 'lock' : 'unlock'" @click="toggleAspectRatioLock()"></sl-icon-button>
                     </sl-tooltip>
                     <sl-tooltip content="Reset crop" placement="left">
-                        <sl-icon-button name="arrow-counterclockwise"
-                                        @click="resetCrop()"></sl-icon-button>
+                        <sl-icon-button name="arrow-counterclockwise" @click="resetCrop()"></sl-icon-button>
                     </sl-tooltip>
                     <sl-tooltip content="Crop to image size" placement="left">
-                        <sl-icon-button name="arrows-fullscreen"
-                                        @click="cropToImageSize()"></sl-icon-button>
+                        <sl-icon-button name="arrows-fullscreen" @click="cropToImageSize()"></sl-icon-button>
                     </sl-tooltip>
                     <sl-tooltip content="Center crop horizontally" placement="left">
-                        <sl-icon-button name="align-center"
-                                        @click="centerCropHorizontally()"></sl-icon-button>
+                        <sl-icon-button name="align-center" @click="centerCropHorizontally()"></sl-icon-button>
                     </sl-tooltip>
                     <sl-tooltip content="Center crop vertically" placement="left">
-                        <sl-icon-button name="align-middle"
-                                        @click="centerCropVertically()"></sl-icon-button>
+                        <sl-icon-button name="align-middle" @click="centerCropVertically()"></sl-icon-button>
                     </sl-tooltip>
                 </div>
-                <div>
+                <div class="editor-container">
                     <div class="crop-container">
                         <img :src="value.imageUrl" :width="value.width + 'px'" :height="value.height + 'px'" />
                         <div class="crop-box" data-mode="move">
-                            <div class="edge vertical" style="top: -4px"
-                                 data-mode="resize-top">
+                            <div class="edge vertical" style="top: -4px" data-mode="resize-top">
                                 <div></div>
                             </div>
-                            <div class="edge vertical" style="bottom: -3px"
-                                 data-mode="resize-bottom">
+                            <div class="edge vertical" style="bottom: -3px" data-mode="resize-bottom">
                                 <div></div>
                             </div>
-                            <div class="edge horizontal" style="left: -4px"
-                                 data-mode="resize-left">
+                            <div class="edge horizontal" style="left: -4px" data-mode="resize-left">
                                 <div></div>
                             </div>
-                            <div class="edge horizontal" style="right: -3px"
-                                 data-mode="resize-right">
+                            <div class="edge horizontal" style="right: -3px" data-mode="resize-right">
                                 <div></div>
                             </div>
                             <div class="corner"
