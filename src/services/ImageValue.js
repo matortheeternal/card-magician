@@ -108,12 +108,12 @@ export default class ImageValue {
 
     removeCoordinateSpace() {
         if (!this.scale) return;
-        this.width *= this.scale;
-        this.height *= this.scale;
-        this.crop.width *= this.scale;
-        this.crop.height *= this.scale;
-        this.crop.xOffset *= this.scale;
-        this.crop.yOffset *= this.scale;
+        this.width = Math.round(this.width * this.scale);
+        this.height = Math.round(this.height * this.scale);
+        this.crop.width = Math.round(this.crop.width * this.scale);
+        this.crop.height = Math.round(this.crop.height * this.scale);
+        this.crop.xOffset = Math.round(this.crop.xOffset * this.scale);
+        this.crop.yOffset = Math.round(this.crop.yOffset * this.scale);
         delete this.scale;
     }
 }
