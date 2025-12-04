@@ -13,6 +13,7 @@ export default class NormalFrame extends CardFrame {
         this.resolveFrame,
         this.resolveVehicleTrim,
         this.resolveSnowTrim,
+        this.resolveDraftTrim,
         this.resolveNyxTrim,
         this.resolveBorder,
         this.resolveCrown,
@@ -98,7 +99,7 @@ export default class NormalFrame extends CardFrame {
         return this.background('normal', maskedUrl);
     }
 
-    // --- TRIM MASK RESOLUTION ---
+    // --- TRIM MASKS ---
     get trimMaskFilename() {
         return 'normal.png';
     }
@@ -114,6 +115,11 @@ export default class NormalFrame extends CardFrame {
     }
 
     // --- CROWNS ---
+    get showCrown() {
+        return this.card.isLegendary?.()
+            || this.card.trims.legend;
+    }
+
     get crownFolder() {
         return resolveAssetPath('element/crown/normal');
     }
@@ -123,11 +129,6 @@ export default class NormalFrame extends CardFrame {
         if (this.card.hasFaceSymbol?.())
             masks.push(resolveAssetPath('mask/crown/face_symbol.png'));
         return masks;
-    }
-
-    get showCrown() {
-        return this.card.isLegendary?.()
-            || this.card.trims.legend;
     }
 
     get crownBlendMaskFolder() {
@@ -160,14 +161,37 @@ export default class NormalFrame extends CardFrame {
         return this.background('vehicle-trim', maskedUrl);
     }
 
-    // --- NYX TRIM ---
-    get nyxFolder() {
-        return resolveAssetPath('element/nyx');
+    // --- DRAFT TRIM ---
+    get showDraftTrim() {
+        return this.card.trims.draft;
     }
 
+    get draftFolder() {
+        return resolveAssetPath('element/draft');
+    }
+
+    get draftBlendMaskFolder() {
+        return resolveAssetPath('mask/draft');
+    }
+
+    async resolveDraftTrim(card) {
+        if (!this.showDraftTrim) return null;
+        const imageUrl = await this.coloredBlend(this.draftFolder, card, {
+            ext: '.png',
+            blendMaskFolder: this.draftBlendMaskFolder
+        });
+        const maskedUrl = await this.maskTrim(imageUrl);
+        return this.background('draft-trim', maskedUrl);
+    }
+
+    // --- NYX TRIM ---
     get showNyxTrim() {
         return this.card.isEnchantment?.()
             || this.card.trims.nyx;
+    }
+
+    get nyxFolder() {
+        return resolveAssetPath('element/nyx');
     }
 
     get nyxBlendMaskFolder() {
@@ -185,13 +209,13 @@ export default class NormalFrame extends CardFrame {
     }
 
     // --- SNOW TRIM ---
-    get snowFolder() {
-        return resolveAssetPath('element/snow');
-    }
-
     get showSnowTrim() {
         return this.card.isSnow?.()
             || this.card.trims.snow;
+    }
+
+    get snowFolder() {
+        return resolveAssetPath('element/snow');
     }
 
     get snowBlendMaskFolder() {
