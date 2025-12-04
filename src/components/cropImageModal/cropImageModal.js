@@ -6,19 +6,29 @@ const cropHandlers = {
         crop.xOffset = cropStart.xOffset + dx;
         crop.yOffset = cropStart.yOffset + dy;
     },
-    'resize-top': (crop, cropStart, dx, dy) => {
+    'resize-top': (crop, cropStart, dx, dy, options) => {
         crop.yOffset = cropStart.yOffset + dy;
         crop.height = cropStart.height - dy;
+        if (options.sizeAroundCenter) crop.height -= dy;
     },
-    'resize-left': (crop, cropStart, dx) => {
+    'resize-left': (crop, cropStart, dx, dy, options) => {
         crop.xOffset = cropStart.xOffset + dx;
         crop.width = cropStart.width - dx;
+        if (options.sizeAroundCenter) crop.width -= dx;
     },
-    'resize-right': (crop, cropStart, dx) => {
+    'resize-right': (crop, cropStart, dx, dy, options) => {
         crop.width = cropStart.width + dx;
+        if (options.sizeAroundCenter) {
+            crop.width += dx;
+            crop.xOffset = cropStart.xOffset - dx;
+        }
     },
-    'resize-bottom': (crop, cropStart, dx, dy) => {
+    'resize-bottom': (crop, cropStart, dx, dy, options) => {
         crop.height = cropStart.height + dy;
+        if (options.sizeAroundCenter) {
+            crop.height += dy;
+            crop.yOffset = cropStart.yOffset - dy;
+        }
     }
 }
 
@@ -33,23 +43,23 @@ Alpine.data('cropImageModal', () => ({
         const modalData = Alpine.store('views').modalData;
         this.value = modalData.value;
         this.aspectRatio = modalData.field.aspectRatio;
-        this.updatePreviewStyle();
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;
         this.value.applyCoordinateSpace(this.maxWidth, this.maxHeight);
         this.scalingFactor = (1 / this.value.scale).toFixed(2);
-        this.clampCrop();
         this.cropBox = this.$root.querySelector('.crop-box');
+        this.clampCrop();
         this.updateCropBox();
+        this.updatePreviewStyle();
+        this.onInput = this.onInput.bind(this);
+        this.onPointerUp = this.onPointerUp.bind(this);
         this.onPointerDown = this.onPointerDown.bind(this);
         this.onPointerMove = this.onPointerMove.bind(this);
-        this.onPointerUp = this.onPointerUp.bind(this);
-        this.onInput = this.onInput.bind(this);
+        this.$root.addEventListener('input', this.onInput);
+        this.$root.addEventListener('pointerup', this.onPointerUp);
         this.$root.addEventListener('pointerdown', this.onPointerDown);
         this.$root.addEventListener('pointermove', this.onPointerMove);
-        this.$root.addEventListener('pointerup', this.onPointerUp);
-        this.$root.addEventListener('input', this.onInput);
         Alpine.initTree(this.$root);
     },
     updateRealCrop() {
@@ -162,12 +172,17 @@ Alpine.data('cropImageModal', () => ({
         if (event.target.dataset.mode)
             this.snapshot(event.target);
         if (!this.dragging) return;
-        const dx = event.clientX - this.dragging.startX;
-        const dy = event.clientY - this.dragging.startY;
-        const modes = this.dragging.mode.split(' ');
+        const { startX, startY, mode, cropStart } = this.dragging;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        const modes = mode.split(' ');
+        const options = {
+            sizeAroundCenter: event.ctrlKey,
+            keepAspectRatio: event.shiftKey
+        };
         modes.forEach(mode => {
             const cropHandler = cropHandlers[mode];
-            cropHandler?.(this.value.crop, this.dragging.cropStart, dx, dy);
+            cropHandler?.(this.value.crop, cropStart, dx, dy, options);
         });
         this.clampCrop();
         this.updateCropBox();
