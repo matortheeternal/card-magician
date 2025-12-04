@@ -15,6 +15,10 @@ export default class DevoidFrame extends NormalFrame {
         this.resolveCrown
     ];
 
+    get artDimensions() {
+        return { width: 343, height: 429 };
+    }
+
     /* --- FRAME --- */
     get frameExt() {
         return '.png';

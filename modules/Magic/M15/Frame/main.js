@@ -51,6 +51,7 @@ export default class FrameModule extends CardMagicianModule {
             return frame.matches(card);
         });
         const activeFrame = new Frame(card, this);
+        card.setAspectRatio(activeFrame.artDimensions);
         card.activeFrame = () => activeFrame;
         this.backgrounds = await activeFrame.buildBackgrounds('frame', card);
         this.requestRender();

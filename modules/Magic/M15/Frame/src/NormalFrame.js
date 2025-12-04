@@ -44,6 +44,9 @@ export default class NormalFrame extends CardFrame {
         return masks;
     }
  */
+    get artDimensions() {
+        return { width: 316, height: 223 };
+    }
 
     // --- FRAME RESOLUTION ---
     get frameExt() {

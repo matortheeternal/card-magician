@@ -73,7 +73,7 @@ module-container[module="Art"] {
 
 .frame-devoid module-container[module="Art"] crop-image {
     display: block;
-    height: 205%;
+    height: 185%;
     position: absolute;
     left: 0;
     top: 0;
