@@ -125,12 +125,17 @@ export default class NormalFrame extends CardFrame {
         return masks;
     }
 
+    get showCrown() {
+        return this.card.isLegendary?.()
+            || this.card.trims.legend;
+    }
+
     get crownBlendMaskFolder() {
         return resolveAssetPath('mask/crown');
     }
 
     async resolveCrown(card) {
-        if (!card.isLegendary?.()) return null;
+        if (!this.showCrown) return null;
         const imageUrl = await this.coloredBlend(this.crownFolder, card, {
             ext: '.png',
             blendMaskFolder: this.crownBlendMaskFolder
@@ -140,12 +145,17 @@ export default class NormalFrame extends CardFrame {
     }
 
     // --- VEHICLE TRIM ---
+    get showVehicleTrim() {
+        return this.card.isVehicle?.()
+            || this.card.trims.vehicle;
+    }
+
     get vehicleTrimUrl() {
         return resolveAssetPath('element/vehicle/trim.png');
     }
 
-    async resolveVehicleTrim(card) {
-        if (!card.isVehicle?.()) return null;
+    async resolveVehicleTrim() {
+        if (!this.showVehicleTrim) return null;
         const maskedUrl = await this.maskTrim(this.vehicleTrimUrl);
         return this.background('vehicle-trim', maskedUrl);
     }
@@ -155,12 +165,17 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath('element/nyx');
     }
 
+    get showNyxTrim() {
+        return this.card.isEnchantment?.()
+            || this.card.trims.nyx;
+    }
+
     get nyxBlendMaskFolder() {
         return resolveAssetPath('mask/nyx');
     }
 
     async resolveNyxTrim(card) {
-        if (!card.isEnchantment?.()) return null;
+        if (!this.showNyxTrim) return null;
         const imageUrl = await this.coloredBlend(this.nyxFolder, card, {
             ext: '.png',
             blendMaskFolder: this.nyxBlendMaskFolder
@@ -174,12 +189,17 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath('element/snow');
     }
 
+    get showSnowTrim() {
+        return this.card.isSnow?.()
+            || this.card.trims.snow;
+    }
+
     get snowBlendMaskFolder() {
         return resolveAssetPath('mask/snow');
     }
 
     async resolveSnowTrim(card) {
-        if (!card.isSnow?.()) return null;
+        if (!this.showSnowTrim) return null;
         const imageUrl = await this.coloredBlend(this.snowFolder, card, {
             ext: '.png',
             blendMaskFolder: this.snowBlendMaskFolder,
@@ -191,7 +211,7 @@ export default class NormalFrame extends CardFrame {
 
     // --- BORDER ---
     get borderMaskUrl() {
-        return this.card.isLegendary?.()
+        return this.showCrown
             ? resolveAssetPath('mask/border/crown.png')
             : resolveAssetPath('mask/border/base.png');
     }
@@ -211,12 +231,17 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath(`element/miracle/${this.miracleSubFolder}`);
     }
 
+    get showMiracleTrim() {
+        return this.card.isMiracle?.()
+            || this.card.trims.miracle;
+    }
+
     get miracleBlendMaskFolder() {
         return resolveAssetPath('mask/miracle');
     }
 
     async resolveMiracleTrim(card) {
-        if (!card.isMiracle?.()) return null;
+        if (!this.showMiracleTrim) return null;
         const imageUrl = await this.coloredBlend(this.miracleFolder, card, {
             ext: '.png',
             blendMaskFolder: this.miracleBlendMaskFolder
