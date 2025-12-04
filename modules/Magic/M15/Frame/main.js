@@ -118,6 +118,14 @@ export default class FrameModule extends CardMagicianModule {
                 { id: 'gold', name: 'Gold' },
                 { id: 'hybrid', name: 'Hybrid' },
             ]
+        }, {
+            id: 'other',
+            type: 'checkboxlist',
+            label: 'Extra options',
+            options: [
+                { id: 'avoidCoveringDevoid', label: 'Avoid covering devoid' }
+            ],
+            default: { avoidCoveringDevoid: true }
         }];
     }
 }
