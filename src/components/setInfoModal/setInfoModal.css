@@ -5,17 +5,3 @@
     position: relative;
     font-family: var(--sl-font-sans);
 }
-
-.modal-title-bar {
-    font-weight: bold;
-    font-size: 1.4em;
-    padding-left: 0.5em;
-}
-
-.close-modal {
-    transition: 0.2s;
-}
-
-.close-modal:hover {
-    transform: scale(1.2);
-}

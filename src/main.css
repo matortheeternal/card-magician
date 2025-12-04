@@ -4,6 +4,7 @@
 @import "components/displayCard/displayCard.css";
 @import "components/listView/listView.css";
 @import "components/setInfoModal/setInfoModal.css";
+@import "components/cropImageModal/cropImageModal.css";
 @import "webComponents/cardForm/cardForm.css";
 @import "webComponents/formFields/selectField.css";
 @import "webComponents/formFields/checkboxListField.css";
@@ -72,6 +73,11 @@ main.spinner-container > div {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
+.modal {
+    background-color: #111;
+    border: 1px solid var(--sl-input-border-color);
+}
+
 .modal-body {
     padding: 2em;
     display: flex;
@@ -81,11 +87,26 @@ main.spinner-container > div {
 
 .modal-title-bar {
     text-align: left;
-    padding: 0.5em;
-    border-bottom: 1px solid;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: var(--sl-font-sans);
+    padding: 0.5em 1em;
+    border-bottom: 1px solid var(--sl-input-border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: var(--sl-input-background-color);
+    position: relative;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    border-top: 1px solid var(--sl-input-border-color);
+    padding: var(--sl-spacing-large);
+    gap: var(--sl-spacing-small);
+    background: #080808;
 }
 
 .close-modal {
@@ -93,6 +114,20 @@ main.spinner-container > div {
     margin-right: 2px;
     cursor: pointer;
     display: flex;
+    transition: 0.2s;
+    position: absolute;
+    top: 0;
+    right: 2px;
+    height: 100%;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
+}
+
+.crop-image-modal .modal {
+    min-width: 700px;
+    min-height: 400px;
 }
 
 .status-container {

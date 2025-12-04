@@ -91,12 +91,14 @@ export default class ImageField extends FieldElement {
                         <sl-icon-button class="crop-btn" name="scissors"></sl-icon-button>
                     </sl-tooltip>
                 </div>
-                <div class="preview-container">
-                    <img class="preview-image" 
-                         alt="Preview" 
-                         src="${esc(this.value.imageUrl)}" />
-                    <div class="crop-region"></div>
-                </div>
+                <sl-tooltip content="Click to change image">
+                    <div class="preview-container">
+                        <img class="preview-image" 
+                             alt="Preview" 
+                             src="${esc(this.value.imageUrl)}" />
+                        <div class="crop-region"></div>
+                    </div>
+                </sl-tooltip>
                 <div class="preview-name">${escapeHTML(this.value.filename)}</div>
             </div>`
         );
@@ -135,13 +137,21 @@ export default class ImageField extends FieldElement {
         event.stopPropagation();
         // TODO: could we get the file input and set its value to '' instead?
         this.value = new ImageValue();
+        emit(this, 'cm-field-changed');
         return true;
     }
 
     cropImage(event) {
         if (!event.target.classList.contains('crop-btn')) return;
         event.stopPropagation();
-        emit(this, 'crop-image', { value: this.value });
+        emit(this, 'open-modal', {
+            modalKey: 'crop-image',
+            data: this.value.clone(),
+            callback: (newValue) => {
+                this.value = newValue;
+                emit(this, 'cm-field-changed');
+            }
+        });
         return true;
     }
 

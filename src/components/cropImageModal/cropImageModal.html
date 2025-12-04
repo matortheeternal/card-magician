@@ -1,11 +1,77 @@
 <div class="modal">
     <div class="modal-title-bar">
-        <div>Crop Image</div>
-        <div class="close-modal" @click="closeModal()">
-            <sl-icon name="x-lg"></sl-icon>
-        </div>
+        <div>Crop Image (<span x-text="value.filename"></span>)</div>
+        <sl-tooltip content="Close Modal">
+            <sl-icon-button name="x-lg" class="close-modal" @click="cancel()"></sl-icon-button>
+        </sl-tooltip>
     </div>
-    <div class="modal-body">
-        <div>CROP IMAGE HERE</div>
+    <sl-tab-group>
+        <sl-tab slot="nav" panel="edit">Edit Crop</sl-tab>
+        <sl-tab slot="nav" panel="preview">Preview</sl-tab>
+
+        <sl-tab-panel name="edit">
+            <div class="modal-body">
+                <div class="toolbox">
+                    <sl-tooltip :content="aspectRatioLocked ? 'Unlock aspect ratio' : 'Lock aspect ratio'" placement="left">
+                        <sl-icon-button :name="aspectRatioLocked ? 'unlock' : 'lock'"
+                                        @click="toggleAspectRatioLock()"></sl-icon-button>
+                    </sl-tooltip>
+                    <sl-tooltip content="Reset crop" placement="left">
+                        <sl-icon-button name="arrow-counterclockwise"
+                                        @click="resetCrop()"></sl-icon-button>
+                    </sl-tooltip>
+                    <sl-tooltip content="Crop to image size" placement="left">
+                        <sl-icon-button name="arrows-fullscreen"
+                                        @click="cropToImageSize()"></sl-icon-button>
+                    </sl-tooltip>
+                    <sl-tooltip content="Center crop horizontally" placement="left">
+                        <sl-icon-button name="align-center"
+                                        @click="centerCropHorizontally()"></sl-icon-button>
+                    </sl-tooltip>
+                    <sl-tooltip content="Center crop vertically" placement="left">
+                        <sl-icon-button name="align-middle"
+                                        @click="centerCropVertically()"></sl-icon-button>
+                    </sl-tooltip>
+                </div>
+                <div class="crop-container">
+                    <img :src="value.imageUrl" :width="value.width + 'px'" :height="value.height + 'px'" />
+                    <div class="crop-box" data-mode="move">
+                        <div class="edge vertical" style="top: -4px"
+                             data-mode="resize-top">
+                            <div></div>
+                        </div>
+                        <div class="edge vertical" style="bottom: -3px"
+                             data-mode="resize-bottom">
+                            <div></div>
+                        </div>
+                        <div class="edge horizontal" style="left: -4px"
+                             data-mode="resize-left">
+                            <div></div>
+                        </div>
+                        <div class="edge horizontal" style="right: -3px"
+                             data-mode="resize-right">
+                            <div></div>
+                        </div>
+                        <div class="corner" style="top: -4px; left: -4px; cursor: nw-resize"
+                             data-mode="resize-top resize-left"></div>
+                        <div class="corner" style="top: -4px; right: -4px; cursor: ne-resize"
+                             data-mode="resize-top resize-right"></div>
+                        <div class="corner" style="bottom: -4px; left: -4px; cursor: sw-resize"
+                             data-mode="resize-bottom resize-left"></div>
+                        <div class="corner" style="bottom: -4px; right: -4px; cursor: se-resize"
+                             data-mode="resize-bottom resize-right"></div>
+                    </div>
+                </div>
+            </div>
+        </sl-tab-panel>
+        <sl-tab-panel name="preview">
+            <div class="modal-body">
+                <img :src="value.imageUrl" />
+            </div>
+        </sl-tab-panel>
+    </sl-tab-group>
+    <div class="modal-actions">
+        <sl-button @click="save()">Save</sl-button>
+        <sl-button @click="cancel()">Cancel</sl-button>
     </div>
 </div>
