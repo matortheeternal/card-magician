@@ -8,19 +8,16 @@ const cropHandlers = {
     },
     'resize-top': (crop, cropStart, dx, dy, options) => {
         crop.yOffset = cropStart.yOffset + dy;
+        if (crop.yOffset < 0) {
+            dy -= crop.yOffset;
+            crop.yOffset = 0;
+        }
         crop.height = cropStart.height - dy;
         if (options.sizeAroundCenter) crop.height -= dy;
-    },
-    'resize-left': (crop, cropStart, dx, dy, options) => {
-        crop.xOffset = cropStart.xOffset + dx;
-        crop.width = cropStart.width - dx;
-        if (options.sizeAroundCenter) crop.width -= dx;
-    },
-    'resize-right': (crop, cropStart, dx, dy, options) => {
-        crop.width = cropStart.width + dx;
-        if (options.sizeAroundCenter) {
-            crop.width += dx;
-            crop.xOffset = cropStart.xOffset - dx;
+        if (options.keepAspectRatio) {
+            const aspectRatio = cropStart.width / cropStart.height;
+            crop.width = crop.height * aspectRatio;
+            crop.xOffset = cropStart.xOffset + (cropStart.width - crop.width) / 2;
         }
     },
     'resize-bottom': (crop, cropStart, dx, dy, options) => {
@@ -29,8 +26,39 @@ const cropHandlers = {
             crop.height += dy;
             crop.yOffset = cropStart.yOffset - dy;
         }
+        if (options.keepAspectRatio) {
+            const aspectRatio = cropStart.width / cropStart.height;
+            crop.width = crop.height * aspectRatio;
+            crop.xOffset = cropStart.xOffset + (cropStart.width - crop.width) / 2;
+        }
+    },
+    'resize-left': (crop, cropStart, dx, dy, options) => {
+        crop.xOffset = cropStart.xOffset + dx;
+        if (crop.xOffset < 0) {
+            dx -= crop.xOffset;
+            crop.xOffset = 0;
+        }
+        crop.width = cropStart.width - dx;
+        if (options.sizeAroundCenter) crop.width -= dx;
+        if (options.keepAspectRatio) {
+            const aspectRatio = cropStart.width / cropStart.height;
+            crop.height = crop.width / aspectRatio;
+            crop.yOffset = cropStart.yOffset + (cropStart.height - crop.height) / 2;
+        }
+    },
+    'resize-right': (crop, cropStart, dx, dy, options) => {
+        crop.width = cropStart.width + dx;
+        if (options.sizeAroundCenter) {
+            crop.width += dx;
+            crop.xOffset = cropStart.xOffset - dx;
+        }
+        if (options.keepAspectRatio) {
+            const aspectRatio = cropStart.width / cropStart.height;
+            crop.height = crop.width / aspectRatio;
+            crop.yOffset = cropStart.yOffset + (cropStart.height - crop.height) / 2;
+        }
     }
-}
+};
 
 Alpine.data('cropImageModal', () => ({
     aspectRatioLocked: false,
@@ -78,16 +106,18 @@ Alpine.data('cropImageModal', () => ({
         this.cropBox.style.height = `${crop.height}px`;
         this.updateRealCrop();
     },
-    clampCrop() {
+    clampCrop(isMove = false) {
         const crop = this.value.crop;
         const imgWidth = Math.min(this.value.width, this.maxWidth);
         const imgHeight = Math.min(this.value.height, this.maxHeight);
-        crop.width = Math.min(Math.max(crop.width, 1), imgWidth);
-        crop.height = Math.min(Math.max(crop.height, 1), imgHeight);
-        const maxOffsetX = imgWidth - crop.width;
-        const maxOffsetY = imgHeight - crop.height;
+        const maxOffsetX = imgWidth - (isMove ? crop.width : 1);
+        const maxOffsetY = imgHeight - (isMove ? crop.height : 1);
         crop.xOffset = Math.max(0, Math.min(crop.xOffset, maxOffsetX));
         crop.yOffset = Math.max(0, Math.min(crop.yOffset, maxOffsetY));
+        const maxWidth = imgWidth - crop.xOffset;
+        const maxHeight = imgHeight - crop.yOffset;
+        crop.width = Math.min(Math.max(crop.width, 1), maxWidth);
+        crop.height = Math.min(Math.max(crop.height, 1), maxHeight);
     },
     updatePreviewStyle() {
         let height = Math.min(this.maxHeight, this.value.height);
@@ -180,13 +210,13 @@ Alpine.data('cropImageModal', () => ({
         const modes = mode.split(' ');
         const options = {
             sizeAroundCenter: event.ctrlKey,
-            keepAspectRatio: event.shiftKey
+            keepAspectRatio: event.shiftKey || this.aspectRatioLocked
         };
         modes.forEach(mode => {
             const cropHandler = cropHandlers[mode];
             cropHandler?.(this.value.crop, cropStart, dx, dy, options);
         });
-        this.clampCrop();
+        this.clampCrop(mode === 'move');
         this.updateCropBox();
     },
     onPointerUp(event) {
