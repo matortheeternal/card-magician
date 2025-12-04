@@ -42,6 +42,9 @@ export default class FieldElement extends HTMLElement {
         return this.#model;
     }
 
+    /**
+     * @returns {any}
+     */
     get value() {
         return this.#model[this.#field.id];
     }

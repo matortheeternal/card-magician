@@ -64,7 +64,8 @@ export default class ArtModule extends CardMagicianModule {
         return [{
             id: 'artImage',
             type: 'image',
-            label: 'Art Image'
+            label: 'Art Image',
+            aspectRatio: 316 / 232
         }];
     }
 
