@@ -11,6 +11,7 @@
 @import "webComponents/formFields/imageField.css";
 @import "webComponents/card/card.css";
 @import "webComponents/faceForm/faceForm.css";
+@import "webComponents/inlineInput/inlineInput.css";
 
 * {
     box-sizing: border-box;
