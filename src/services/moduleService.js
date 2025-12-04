@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import RenderScheduler from './renderScheduler.js';
+import ImageValue from './ImageValue.js';
 
 export async function loadModule(card, modulePath) {
     try {
@@ -30,11 +31,7 @@ function getDefaultValue(field) {
     if (field.type === 'checkboxlist') return {};
     if (field.type === 'select') return field.options?.[0]?.id || null;
     if (field.type === 'multiselect') return [];
-    if (field.type === 'image') return {
-        imageUrl: null, filename: '',
-        width: '', height: '',
-        xOffset: 0, yOffset: 0,
-    };
+    if (field.type === 'image') return new ImageValue();
     return '';
 }
 
