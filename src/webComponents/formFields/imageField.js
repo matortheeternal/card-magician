@@ -84,7 +84,7 @@ export default class ImageField extends FieldElement {
         return (
             `<div class="preview">
                 <div class="actions">
-                    <sl-tooltip content="Clear selection">
+                    <sl-tooltip content="Remove image">
                         <sl-icon-button class="clear-btn" name="x-lg"></sl-icon-button>
                     </sl-tooltip>
                     <sl-tooltip content="Crop image">
