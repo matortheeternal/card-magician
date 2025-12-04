@@ -33,33 +33,62 @@
                                         @click="centerCropVertically()"></sl-icon-button>
                     </sl-tooltip>
                 </div>
-                <div class="crop-container">
-                    <img :src="value.imageUrl" :width="value.width + 'px'" :height="value.height + 'px'" />
-                    <div class="crop-box" data-mode="move">
-                        <div class="edge vertical" style="top: -4px"
-                             data-mode="resize-top">
-                            <div></div>
+                <div>
+                    <div class="crop-container">
+                        <img :src="value.imageUrl" :width="value.width + 'px'" :height="value.height + 'px'" />
+                        <div class="crop-box" data-mode="move">
+                            <div class="edge vertical" style="top: -4px"
+                                 data-mode="resize-top">
+                                <div></div>
+                            </div>
+                            <div class="edge vertical" style="bottom: -3px"
+                                 data-mode="resize-bottom">
+                                <div></div>
+                            </div>
+                            <div class="edge horizontal" style="left: -4px"
+                                 data-mode="resize-left">
+                                <div></div>
+                            </div>
+                            <div class="edge horizontal" style="right: -3px"
+                                 data-mode="resize-right">
+                                <div></div>
+                            </div>
+                            <div class="corner"
+                                 style="top: -4px; left: -4px; cursor: nw-resize"
+                                 data-mode="resize-top resize-left"></div>
+                            <div class="corner"
+                                 style="top: -4px; right: -4px; cursor: ne-resize"
+                                 data-mode="resize-top resize-right"></div>
+                            <div class="corner"
+                                 style="bottom: -4px; left: -4px; cursor: sw-resize"
+                                 data-mode="resize-bottom resize-left"></div>
+                            <div class="corner"
+                                 style="bottom: -4px; right: -4px; cursor: se-resize"
+                                 data-mode="resize-bottom resize-right"></div>
                         </div>
-                        <div class="edge vertical" style="bottom: -3px"
-                             data-mode="resize-bottom">
-                            <div></div>
+                    </div>
+                    <div class="info-container">
+                        <div class="image-info">
+                            <span>Image&nbsp;</span>
+                            <span x-text="realWidth"></span>
+                            <span>x</span>
+                            <span x-text="realHeight"></span>
+                            <span>, scaled to&nbsp;</span>
+                            <span x-text="value.width"></span>
+                            <span>x</span>
+                            <span x-text="value.height"></span>
                         </div>
-                        <div class="edge horizontal" style="left: -4px"
-                             data-mode="resize-left">
-                            <div></div>
+                        <div class="crop-info">
+                            <span>crop&nbsp;</span>
+                            <cm-inline-input :value="realCrop.width"></cm-inline-input>
+                            <span>x</span>
+                            <cm-inline-input :value="realCrop.height"></cm-inline-input>
+                            <span>, +</span>
+                            <cm-inline-input :value="realCrop.xOffset"></cm-inline-input>
+                            <span>x +</span>
+                            <cm-inline-input :value="realCrop.yOffset"></cm-inline-input>
+                            <span>y</span>
                         </div>
-                        <div class="edge horizontal" style="right: -3px"
-                             data-mode="resize-right">
-                            <div></div>
-                        </div>
-                        <div class="corner" style="top: -4px; left: -4px; cursor: nw-resize"
-                             data-mode="resize-top resize-left"></div>
-                        <div class="corner" style="top: -4px; right: -4px; cursor: ne-resize"
-                             data-mode="resize-top resize-right"></div>
-                        <div class="corner" style="bottom: -4px; left: -4px; cursor: sw-resize"
-                             data-mode="resize-bottom resize-left"></div>
-                        <div class="corner" style="bottom: -4px; right: -4px; cursor: se-resize"
-                             data-mode="resize-bottom resize-right"></div>
                     </div>
                 </div>
             </div>

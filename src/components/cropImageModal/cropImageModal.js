@@ -28,7 +28,11 @@ Alpine.data('cropImageModal', () => ({
     async init() {
         this.$root.innerHTML = html;
         this.value = Alpine.store('views').modalData;
+        this.realCrop = this.value.crop.clone();
+        this.realWidth = this.value.width;
+        this.realHeight = this.value.height;
         this.value.applyCoordinateSpace(600, 600);
+        this.scalingFactor = (1 / this.value.scale).toFixed(2);
         this.clampCrop();
         this.onPointerDown = this.onPointerDown.bind(this);
         this.onPointerMove = this.onPointerMove.bind(this);
