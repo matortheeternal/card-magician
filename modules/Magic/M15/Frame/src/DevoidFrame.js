@@ -11,8 +11,12 @@ export default class DevoidFrame extends NormalFrame {
 
     frame = [
         this.resolveFrame,
+        this.resolveVehicleTrim,
+        this.resolveSnowTrim,
+        this.resolveDraftTrim,
+        this.resolveNyxTrim,
         this.resolveBorder,
-        this.resolveCrown
+        this.resolveCrown,
     ];
 
     get artDimensions() {
@@ -35,6 +39,17 @@ export default class DevoidFrame extends NormalFrame {
     async maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
         return await this.ctx.maskImage(imageUrl, maskUrl);
+    }
+
+    /* --- TRIM MASKS --- */
+    get devoidTrimMaskUrl() {
+        return resolveAssetPath('mask/trim/devoid.png')
+    }
+
+    async maskTrim(imageUrl) {
+        const maskedUrl = await super.maskTrim(imageUrl);
+        if (!this.card.other.avoidCoveringDevoid) return maskedUrl;
+        return this.ctx.maskImage(maskedUrl, this.devoidTrimMaskUrl);
     }
 
     /* --- CROWN --- */
