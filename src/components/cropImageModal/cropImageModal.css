@@ -69,3 +69,22 @@
     height: inherit;
     background: #000;
 }
+
+.crop-image-modal .info-container {
+    font-size: 0.825rem;
+    font-family: var(--sl-font-mono);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2px;
+}
+
+.crop-image-modal .info-container > div {
+    display: flex;
+    gap: 2px;
+}
+
+.crop-image-modal inline-input input {
+    max-width: 10ch;
+}
+
