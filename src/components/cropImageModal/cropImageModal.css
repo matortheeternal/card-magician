@@ -84,6 +84,7 @@
     justify-content: space-between;
     gap: 2em;
     margin-top: 2px;
+    align-self: stretch;
 }
 
 .crop-image-modal .info-container > div {
