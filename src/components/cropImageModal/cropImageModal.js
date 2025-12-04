@@ -164,12 +164,14 @@ Alpine.data('cropImageModal', () => ({
         target.setPointerCapture(event.pointerId);
     },
     snapshot(target) {
-        if (this.snapshotTarget) return;
         this.snapshotTarget = target;
-        setTimeout(() => (this.snapshotTarget = null), 250);
+        clearTimeout(this.snapshotTimeout);
+        this.snapshotTimeout = setTimeout(() => {
+            this.snapshotTarget = null;
+        }, 250);
     },
     onPointerMove(event) {
-        if (event.target.dataset.mode)
+        if (event.target.classList.contains('edge'))
             this.snapshot(event.target);
         if (!this.dragging) return;
         const { startX, startY, mode, cropStart } = this.dragging;
