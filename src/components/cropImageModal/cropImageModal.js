@@ -25,13 +25,18 @@ const cropHandlers = {
 Alpine.data('cropImageModal', () => ({
     aspectRatioLocked: false,
     dragging: null,
+    maxWidth: 600,
+    maxHeight: 600,
+    previewStyle: { width: 600, height: 600 },
     async init() {
         this.$root.innerHTML = html;
-        this.value = Alpine.store('views').modalData;
+        const modalData = Alpine.store('views').modalData;
+        this.value = modalData.value;
+        this.updatePreviewStyle(modalData.field.aspectRatio);
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;
-        this.value.applyCoordinateSpace(600, 600);
+        this.value.applyCoordinateSpace(this.maxWidth, this.maxHeight);
         this.scalingFactor = (1 / this.value.scale).toFixed(2);
         this.clampCrop();
         this.onPointerDown = this.onPointerDown.bind(this);
@@ -50,11 +55,15 @@ Alpine.data('cropImageModal', () => ({
         this.cropBox.style.left = `${crop.xOffset + 6}px`;
         this.cropBox.style.width = `${crop.width}px`;
         this.cropBox.style.height = `${crop.height}px`;
+        this.realCrop.width = Math.round(crop.width * this.value.scale);
+        this.realCrop.height = Math.round(crop.height * this.value.scale);
+        this.realCrop.xOffset = Math.round(crop.xOffset * this.value.scale);
+        this.realCrop.yOffset = Math.round(crop.yOffset * this.value.scale);
     },
     clampCrop() {
         const crop = this.value.crop;
-        const imgWidth = Math.min(this.value.width, 600);
-        const imgHeight = Math.min(this.value.height, 600);
+        const imgWidth = Math.min(this.value.width, this.maxWidth);
+        const imgHeight = Math.min(this.value.height, this.maxHeight);
         crop.width = Math.min(Math.max(crop.width, 1), imgWidth);
         crop.height = Math.min(Math.max(crop.height, 1), imgHeight);
         const maxOffsetX = imgWidth - crop.width;
@@ -62,10 +71,19 @@ Alpine.data('cropImageModal', () => ({
         crop.xOffset = Math.max(0, Math.min(crop.xOffset, maxOffsetX));
         crop.yOffset = Math.max(0, Math.min(crop.yOffset, maxOffsetY));
     },
+    updatePreviewStyle(aspectRatio) {
+        let height = Math.min(this.maxHeight, this.value.height);
+        let width = height * aspectRatio;
+        if (width > this.maxWidth) {
+            width = this.maxWidth;
+            height = width / aspectRatio;
+        }
+        const previewContainer = this.$root.querySelector('.preview-container');
+        previewContainer.style.width = width + 'px';
+        previewContainer.style.height = height + 'px';
+    },
     save() {
-        const value = this.value.clone();
-        value.removeCoordinateSpace();
-        Alpine.store('views').modalCallback?.(value);
+        Alpine.store('views').modalCallback?.(this.realCrop);
         this.closeModal();
     },
     cancel() {
@@ -104,7 +122,6 @@ Alpine.data('cropImageModal', () => ({
             ? event.target
             : this.snapshotTarget;
         const mode = target?.dataset.mode;
-        console.log('pointerdown', target);
         if (!mode) return;
         event.preventDefault();
         event.stopPropagation();

@@ -135,7 +135,6 @@ export default class ImageField extends FieldElement {
     clearImage(event) {
         if (!event.target.classList.contains('clear-btn')) return;
         event.stopPropagation();
-        // TODO: could we get the file input and set its value to '' instead?
         this.value = new ImageValue();
         emit(this, 'cm-field-changed');
         return true;
@@ -146,9 +145,12 @@ export default class ImageField extends FieldElement {
         event.stopPropagation();
         emit(this, 'open-modal', {
             modalKey: 'crop-image',
-            data: this.value.clone(),
+            data: {
+                value: this.value.clone(),
+                field: this.field
+            },
             callback: (newValue) => {
-                this.value = newValue;
+                this.value.crop = newValue;
                 emit(this, 'cm-field-changed');
             }
         });

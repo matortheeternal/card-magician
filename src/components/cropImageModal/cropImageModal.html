@@ -95,7 +95,13 @@
         </sl-tab-panel>
         <sl-tab-panel name="preview">
             <div class="modal-body">
-                <img :src="value.imageUrl" />
+                <div class="preview-container">
+                    <crop-image :crop-width="realCrop.width"
+                                :crop-height="realCrop.height"
+                                :offset-x="realCrop.xOffset"
+                                :offset-y="realCrop.yOffset"
+                                :src="value.imageUrl"></crop-image>
+                </div>
             </div>
         </sl-tab-panel>
     </sl-tab-group>
