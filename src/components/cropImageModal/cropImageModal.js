@@ -32,22 +32,33 @@ Alpine.data('cropImageModal', () => ({
         this.$root.innerHTML = html;
         const modalData = Alpine.store('views').modalData;
         this.value = modalData.value;
-        this.updatePreviewStyle(modalData.field.aspectRatio);
+        this.aspectRatio = modalData.field.aspectRatio;
+        this.updatePreviewStyle();
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;
         this.value.applyCoordinateSpace(this.maxWidth, this.maxHeight);
         this.scalingFactor = (1 / this.value.scale).toFixed(2);
         this.clampCrop();
+        this.cropBox = this.$root.querySelector('.crop-box');
+        this.updateCropBox();
         this.onPointerDown = this.onPointerDown.bind(this);
         this.onPointerMove = this.onPointerMove.bind(this);
         this.onPointerUp = this.onPointerUp.bind(this);
-        this.cropBox = this.$root.querySelector('.crop-box');
-        this.updateCropBox();
+        this.onInput = this.onInput.bind(this);
         this.$root.addEventListener('pointerdown', this.onPointerDown);
         this.$root.addEventListener('pointermove', this.onPointerMove);
         this.$root.addEventListener('pointerup', this.onPointerUp);
+        this.$root.addEventListener('input', this.onInput);
         Alpine.initTree(this.$root);
+    },
+    updateRealCrop() {
+        const crop = this.value.crop;
+        const scale = this.value.scale;
+        this.realCrop.width = Math.round(crop.width * scale);
+        this.realCrop.height = Math.round(crop.height * scale);
+        this.realCrop.xOffset = Math.round(crop.xOffset * scale);
+        this.realCrop.yOffset = Math.round(crop.yOffset * scale);
     },
     updateCropBox() {
         const crop = this.value.crop;
@@ -55,10 +66,7 @@ Alpine.data('cropImageModal', () => ({
         this.cropBox.style.left = `${crop.xOffset + 6}px`;
         this.cropBox.style.width = `${crop.width}px`;
         this.cropBox.style.height = `${crop.height}px`;
-        this.realCrop.width = Math.round(crop.width * this.value.scale);
-        this.realCrop.height = Math.round(crop.height * this.value.scale);
-        this.realCrop.xOffset = Math.round(crop.xOffset * this.value.scale);
-        this.realCrop.yOffset = Math.round(crop.yOffset * this.value.scale);
+        this.updateRealCrop();
     },
     clampCrop() {
         const crop = this.value.crop;
@@ -71,12 +79,12 @@ Alpine.data('cropImageModal', () => ({
         crop.xOffset = Math.max(0, Math.min(crop.xOffset, maxOffsetX));
         crop.yOffset = Math.max(0, Math.min(crop.yOffset, maxOffsetY));
     },
-    updatePreviewStyle(aspectRatio) {
+    updatePreviewStyle() {
         let height = Math.min(this.maxHeight, this.value.height);
-        let width = height * aspectRatio;
+        let width = height * this.aspectRatio;
         if (width > this.maxWidth) {
             width = this.maxWidth;
-            height = width / aspectRatio;
+            height = width / this.aspectRatio;
         }
         const previewContainer = this.$root.querySelector('.preview-container');
         previewContainer.style.width = width + 'px';
@@ -93,7 +101,7 @@ Alpine.data('cropImageModal', () => ({
         this.aspectRatioLocked = !this.aspectRatioLocked;
     },
     resetCrop() {
-        //TODO: default crop
+        //TODO: default crop using aspect ratio
     },
     cropToImageSize() {
         this.value.crop.width = this.value.width;
@@ -162,5 +170,15 @@ Alpine.data('cropImageModal', () => ({
         event.preventDefault();
         this.cropBox.style.cursor = 'initial';
         this.dragging = null;
+    },
+    onInput(event) {
+        const input = event.target.closest('cm-inline-input');
+        const cropKey = input?.dataset?.cropKey;
+        if (!cropKey) return;
+        const parsedValue = parseFloat(input.value) || 0;
+        this.value.crop[cropKey] = parsedValue / this.value.scale;
+        this.clampCrop();
+        input.value = Math.round(this.value.crop[cropKey] * this.value.scale);
+        this.updateCropBox();
     },
 }));
