@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { saveJson } from '../../services/fsHelpers.js';
+import { saveJson, saveYAML } from '../../services/fsHelpers.js';
 import { executeAction } from '../../services/actionRegistry.js';
 import { registerHotkey } from '../../services/hotkeyService.js';
 import { addStatusMessage } from '../../services/statusService.js';
@@ -17,6 +17,7 @@ async function saveAs() {
         defaultPath: `${views.activeSet.title || 'My Set'}.json`,
         filters: [
             { name: 'JSON Files', extensions: ['json'] },
+            { name: 'YAML Files', extensions: ['yml'] },
             { name: 'All files', extensions: ['*'] }
         ]
     });

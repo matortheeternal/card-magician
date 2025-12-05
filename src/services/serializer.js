@@ -48,11 +48,12 @@ export default class Serializer {
      * and then through the specific format encoder.
      *
      * @param {any} value - The object to serialize.
+     * @param {object} options
      * @returns {Promise<any>} The serialized payload.
      */
-    async serialize(value) {
+    async serialize(value, options = {}) {
         const intermediate = await this.encodeNode(value);
-        return this.encode(intermediate);
+        return this.encode(intermediate, options);
     }
 
     /**

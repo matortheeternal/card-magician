@@ -1,8 +1,16 @@
 import JSONSerializer from './jsonSerializer.js';
+import YAMLSerializer from './yamlSerializer.js';
 
-export async function saveJson(filePath, data) {
-    const serializer = new JSONSerializer();
+export async function saveYAML(filePath, data) {
+    const serializer = new YAMLSerializer();
     const text = await serializer.serialize(data);
+    await Neutralino.filesystem.writeFile(filePath, text);
+}
+
+export async function saveJson(filePath, data, minify = true) {
+    const serializer = new JSONSerializer();
+    const options = minify ? {} : { whitespace: 2 };
+    const text = await serializer.serialize(data, options);
     await Neutralino.filesystem.writeFile(filePath, text);
 }
 
