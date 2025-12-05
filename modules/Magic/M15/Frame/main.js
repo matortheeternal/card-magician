@@ -47,14 +47,13 @@ export default class FrameModule extends CardMagicianModule {
 
     async updateFrame(card) {
         if (!card.parent || card.rulesHTML === undefined) return;
-        console.log('updateFrame called');
         const Frame = card.frames.find(frame => {
             return frame.matches(card);
         });
-        const activeFrame = new Frame(card, this);
-        card.setAspectRatio(activeFrame.artDimensions);
-        card.activeFrame = () => activeFrame;
-        this.backgrounds = await activeFrame.buildBackgrounds('frame', card);
+        this.activeFrame = new Frame(card, this);
+        card.setAspectRatio(this.activeFrame.artDimensions);
+        card.activeFrame = () => this.activeFrame;
+        this.backgrounds = await this.activeFrame.buildBackgrounds('frame', card);
         this.updateTopClasses(card);
         this.requestRender();
     }
@@ -69,7 +68,7 @@ export default class FrameModule extends CardMagicianModule {
         ], () => this.updateFrame(card));
     }
 
-    renderBackgrounds() {
+    render() {
         if (!this.backgrounds) return;
         return this.backgrounds.map(bg => (
             `<div class="bg frame-${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`

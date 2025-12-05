@@ -14,7 +14,7 @@ function getModuleContainers(card, module) {
 
 function renderModule(card, module, renderKey, subcardKey) {
     const containers = getModuleContainers(card, module).filter(c => {
-        return (!renderKey || renderKey === c.renderKey)
+        return (renderKey === '*' || renderKey === c.renderKey)
             && (subcardKey === c.subcardKey);
     });
     if (!containers.length) return;
@@ -26,6 +26,12 @@ function renderModule(card, module, renderKey, subcardKey) {
     }
 }
 
+function renderMatches(task, options) {
+    const taskRender = task.options?.render || 'render';
+    const optionsRender = options?.render || 'render';
+    return taskRender === optionsRender || taskRender === '*';
+}
+
 export default class RenderScheduler {
     static queue = [];
     static scheduled = false;
@@ -33,13 +39,14 @@ export default class RenderScheduler {
     static hasTask(module, options) {
         return this.queue.some(task => {
             return (task.module === module)
-                && (!task.options || task.options?.render === options?.render);
+                && renderMatches(task, options);
         });
     }
 
     static requestRender(card, module, options) {
-        if (!options) this.queue = this.queue.filter(task => task.module !== module);
-        if (!options || !this.hasTask(module, options))
+        if (options?.render === '*')
+            this.queue = this.queue.filter(task => task.module !== module);
+        if (!this.hasTask(module, options))
             this.queue.push({ card, module, options });
         if (!this.scheduled) {
             this.scheduled = true;
@@ -65,7 +72,7 @@ export default class RenderScheduler {
         );
         console.debug(`%cRendering %d items:`, 'color:#4f4', queue.length, prettyRender);
         for (const { card, module, options } of queue) {
-            const renderKey = options?.render;
+            const renderKey = options?.render || 'render';
             const subcardKey = card.isSubcard ? card.id : null;
             renderModule(card, module, renderKey, subcardKey);
         }

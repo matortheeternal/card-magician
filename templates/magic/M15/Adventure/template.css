@@ -13,7 +13,7 @@
     user-select: text;
 }
 
-module-container[module="AdventureFrame"] {
+module-container[module="AdventureFrame"]:not([render]) {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -77,7 +77,7 @@ module-container[module="ColorIndicator"] img {
     margin-top: 2px;
 }
 
-module-container[render="renderExpansionSymbol"] {
+module-container[module="Rarity"] {
     min-width: 18px;
     min-height: 18px;
     padding-left: 4px;
@@ -126,7 +126,7 @@ auto-fit-line {
     padding: 0 45px;
 }
 
-.frame-spotlight module-container[render="renderExpansionSymbol"] {
+.frame-spotlight module-container[module="Rarity"] {
     position: absolute;
     right: 17px;
     top: 4px;
