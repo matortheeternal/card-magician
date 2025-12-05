@@ -16,6 +16,7 @@ export default class NormalFrame extends CardFrame {
         this.resolveDraftTrim,
         this.resolveNyxTrim,
         this.resolveBorder,
+        this.resolveScrolls,
         this.resolveNode,
         this.resolveCrown,
         this.resolveMiracleTrim
@@ -121,12 +122,32 @@ export default class NormalFrame extends CardFrame {
 
     // --- CROWNS ---
     get showCrown() {
-        return this.card.isLegendary?.()
-            || this.card.trims.legend;
+        return (this.card.crownStyle !== 'disabled')
+            && (this.card.crownStyle !== 'auto' || this.card.isLegendary?.());
+    }
+
+    get brawlCrownSubfolder() {
+        return this.card.hasFaceSymbol?.() ? 'brawl_with_face_symbol' : 'brawl';
+    }
+
+    get autoCrownSubfolder() {
+        if (this.showNyxTrim) return 'nyx';
+        if (this.card.isCompanion?.()) return 'companion';
+        if (this.card.isBrawl?.()) return this.brawlCrownSubfolder;
+        return 'normal';
+    }
+
+    get crownSubfolder() {
+        if (this.card.crownStyle === 'auto') return this.autoCrownSubfolder;
+        if (this.card.crownStyle === 'brawl') return this.brawlCrownSubfolder;
+        return this.card.crownStyle;
     }
 
     get crownFolder() {
-        return resolveAssetPath('element/crown/normal');
+        let subfolder = this.crownSubfolder;
+        if (this.card.isShifted?.() && !subfolder.startsWith('brawl'))
+            subfolder = `shifted/${subfolder}`;
+        return resolveAssetPath(`element/crown/${subfolder}`);
     }
 
     get crownMasks() {
@@ -136,8 +157,16 @@ export default class NormalFrame extends CardFrame {
         return masks;
     }
 
+    get crownBlendMaskSubfolder() {
+        const subfolder = this.crownSubfolder;
+        if (subfolder.startsWith('brawl')) return 'normal';
+        return this.card.isShifted?.()
+            ? `shifted/${subfolder}`
+            : subfolder;
+    }
+
     get crownBlendMaskFolder() {
-        return resolveAssetPath('mask/crown');
+        return resolveAssetPath(`mask/crown/${this.crownBlendMaskSubfolder}`);
     }
 
     async resolveCrown(card) {
@@ -152,8 +181,8 @@ export default class NormalFrame extends CardFrame {
 
     // --- VEHICLE TRIM ---
     get showVehicleTrim() {
-        return this.card.isVehicle?.()
-            || this.card.trims.vehicle;
+        return (this.card.vehicleStyle !== 'disabled')
+            && (this.card.vehicleStyle !== 'auto' || this.card.isVehicle?.());
     }
 
     get vehicleTrimUrl() {
@@ -168,7 +197,8 @@ export default class NormalFrame extends CardFrame {
 
     // --- DRAFT TRIM ---
     get showDraftTrim() {
-        return this.card.trims.draft;
+        return (this.card.draftStyle !== 'disabled')
+            && (this.card.draftStyle !== 'auto' || this.card.isConspiracy?.());
     }
 
     get draftFolder() {
@@ -191,16 +221,33 @@ export default class NormalFrame extends CardFrame {
 
     // --- NYX TRIM ---
     get showNyxTrim() {
-        return this.card.isEnchantment?.()
-            || this.card.trims.nyx;
+        return (this.card.nyxStyle !== 'disabled')
+            && (this.card.nyxStyle !== 'auto' || this.card.isEnchantment?.());
+    }
+
+    get autoNyxSubfolder() {
+        if (this.card.isCompanion?.()) return 'companion';
+        if (this.card.isShifted?.()) return 'shifted';
+        return 'normal';
+    }
+
+    get nyxSubfolder() {
+        return this.card.nyxStyle === 'auto'
+            ? this.autoNyxSubfolder
+            : this.card.nyxStyle;
     }
 
     get nyxFolder() {
-        return resolveAssetPath('element/nyx');
+        return resolveAssetPath(`element/nyx/${this.nyxSubfolder}`);
+    }
+
+    get nyxBlendMaskSubfolder() {
+        if (this.nyxSubfolder === 'star') return 'star';
+        return 'normal';
     }
 
     get nyxBlendMaskFolder() {
-        return resolveAssetPath('mask/nyx');
+        return resolveAssetPath(`mask/nyx/${this.nyxBlendMaskSubfolder}`);
     }
 
     async resolveNyxTrim(card) {
@@ -215,8 +262,8 @@ export default class NormalFrame extends CardFrame {
 
     // --- SNOW TRIM ---
     get showSnowTrim() {
-        return this.card.isSnow?.()
-            || this.card.trims.snow;
+        return (this.card.snowStyle !== 'disabled')
+            && (this.card.snowStyle !== 'auto' || this.card.isSnow?.());
     }
 
     get snowFolder() {
@@ -251,6 +298,26 @@ export default class NormalFrame extends CardFrame {
         return this.background('border', maskedUrl);
     }
 
+    // --- SCROLLS ---
+    get showScrolls() {
+        return (this.card.scrollsStyle !== 'disabled')
+            && (this.card.scrollsStyle !== 'auto' || this.card.isConspiracy?.());
+    }
+
+    get scrollsFilename() {
+        if (this.card.isMiracle?.()) return 'miracle.png';
+        return 'normal.png';
+    }
+
+    get scrollsUrl() {
+        return resolveAssetPath(`element/scrolls/${this.scrollsFilename}`);
+    }
+
+    async resolveScrolls() {
+        if (!this.showScrolls) return null;
+        return this.background('conspiracy-scrolls', this.scrollsUrl);
+    }
+
     // --- NODE ---
     get showNode() {
         return this.card.isDFC() || this.card.hasFaceSymbol?.();
@@ -279,17 +346,17 @@ export default class NormalFrame extends CardFrame {
     }
 
     // --- MIRACLE TRIM ---
-    get miracleSubFolder() {
+    get showMiracleTrim() {
+        return (this.card.miracleStyle !== 'disabled') &&
+            (this.card.miracleStyle !== 'auto' || this.card.isMiracle?.());
+    }
+
+    get miracleSubfolder() {
         return this.card.isSnow?.() ? 'snow' : 'normal';
     }
 
     get miracleFolder() {
-        return resolveAssetPath(`element/miracle/${this.miracleSubFolder}`);
-    }
-
-    get showMiracleTrim() {
-        return this.card.isMiracle?.()
-            || this.card.trims.miracle;
+        return resolveAssetPath(`element/miracle/${this.miracleSubfolder}`);
     }
 
     get miracleBlendMaskFolder() {
@@ -311,7 +378,7 @@ export default class NormalFrame extends CardFrame {
     }
 
     getPtKey(card) {
-        if (card.isVehicle?.()) return 'vehicle';
+        if (this.showVehicleTrim) return 'vehicle';
         if (card.colorIdentity.isHybrid()) return 'c';
         return card.getCardColorKey();
     }

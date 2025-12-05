@@ -77,3 +77,7 @@ form-group.with-border {
     padding: var(--sl-spacing-small);
     padding-top: var(--sl-spacing-3x-small);
 }
+
+form-group.three-columns {
+    grid-template-columns: 1fr 1fr 1fr;
+}

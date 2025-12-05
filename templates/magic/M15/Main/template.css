@@ -79,6 +79,14 @@ module-container[module="Art"] {
     top: 0;
 }
 
+.frame-conspiracy-scrolls module-container[module="Cost"] {
+    margin-right: 14px;
+}
+
+.frame-conspiracy-scrolls module-container[render="renderExpansionSymbol"] {
+    margin-right: 10px
+}
+
 .type-line {
     display: flex;
     justify-content: space-between;
