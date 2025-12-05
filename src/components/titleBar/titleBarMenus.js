@@ -11,10 +11,28 @@ function menuItem(label, hotkey, action) {
 
 const DIVIDER = { isDivider: true };
 
+const saveStrategies = [{
+    test: filePath => /.json$/i.test(filePath),
+    save: async (filePath, data) => await saveJson(filePath, data, false)
+}, {
+    test: filePath => /.yml$/i.test(filePath),
+    save: async (filePath, data) => await saveYAML(filePath, data)
+}];
+
+async function save(filePath, data) {
+    const saveStrategy = saveStrategies.find(s => {
+        return s.test(filePath);
+    }) || saveStrategies[0];
+    await saveStrategy.save(filePath, data);
+}
+
 async function saveAs() {
     const views = Alpine.store('views');
+    const defaultPath = views.setFilePath
+        ?  views.setFilePath.split(/[\\\/]/).pop()
+        : `${views.activeSet.title || 'My Set'}.json`;
     const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
-        defaultPath: `${views.activeSet.title || 'My Set'}.json`,
+        defaultPath,
         filters: [
             { name: 'JSON Files', extensions: ['json'] },
             { name: 'YAML Files', extensions: ['yml'] },
@@ -24,7 +42,7 @@ async function saveAs() {
     if (!filePath) return;
     console.info('Saving set to:', filePath);
     views.setFilePath = filePath;
-    await saveJson(filePath, views.activeSet, false);
+    await save(filePath, views.activeSet);
 }
 
 const actions = {
@@ -35,7 +53,7 @@ const actions = {
         if (!setFilePath) return await saveAs();
         const message = addStatusMessage('Saving...', -1);
         console.info('Saving set to:', setFilePath);
-        await saveJson(setFilePath, activeSet, false);
+        await save(setFilePath, activeSet);
         message.text = 'Saved.';
         setTimeout(() => message.remove(), 1000);
     },
