@@ -37,6 +37,11 @@
     transform: scaleX(-1);
 }
 
+.frame-adventure.page-style-name_flat .left .header,
+.frame-adventure.page-style-name .left .header {
+    margin-bottom: 5px;
+}
+
 .frame-spotlight .bg.left-page {
     transform: none !important;
 }
