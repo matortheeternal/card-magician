@@ -28,12 +28,12 @@ export default class FieldElement extends HTMLElement {
         return this.#field;
     }
 
-    set field(value) {
-        this.#field = value;
+    set field(newValue) {
+        this.#field = newValue;
     }
 
-    set model(value) {
-        this.#model = value;
+    set model(newValue) {
+        this.#model = newValue;
         this.render();
         this.loadValue?.();
     }
@@ -49,8 +49,8 @@ export default class FieldElement extends HTMLElement {
         return this.#model[this.#field.id];
     }
 
-    set value(value) {
-        this.#model[this.#field.id] = value;
+    set value(newValue) {
+        this.#model[this.#field.id] = newValue;
         this.loadValue?.();
     }
 

@@ -1,14 +1,5 @@
 import { getImageSize } from '../gfx/imageProcessing.js';
 
-function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
-
 export class CropValue {
     constructor(width = 0, height = 0, xOffset = 0, yOffset = 0) {
         this.width = width;
@@ -55,7 +46,7 @@ export default class ImageValue {
     }
 
     static async fromFile(file) {
-        const imageUrl = await blobToBase64(file);
+        const imageUrl = URL.createObjectURL(file);
         const { width, height } = await getImageSize(imageUrl);
         const crop = new CropValue(width, height);
         return new this(imageUrl, file.name, width, height, crop);

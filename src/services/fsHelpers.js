@@ -1,11 +1,15 @@
-export async function saveJson(filePath, data, minify = true) {
-    const text = JSON.stringify(data, null, minify ? 0 : 2);
+import JSONSerializer from './jsonSerializer.js';
+
+export async function saveJson(filePath, data) {
+    const serializer = new JSONSerializer();
+    const text = await serializer.serialize(data);
     await Neutralino.filesystem.writeFile(filePath, text);
 }
 
 export async function loadJson(filePath) {
     const text = await Neutralino.filesystem.readFile(filePath);
-    return JSON.parse(text);
+    const serializer = new JSONSerializer();
+    return await serializer.deserialize(text);
 }
 
 export async function checkFileExists(filePath) {
