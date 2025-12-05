@@ -5,11 +5,11 @@ import AdventureSpotlightFrame from './src/AdventureSpotlightFrame.js';
 export default class AdventureFrameModule extends FrameModule {
     async init(card) {
         await super.init(card, false);
-        this.frameOptions = this.makeReactive([
-            { id: 'spotlight', label: 'Spotlight Adventure' },
-            { id: 'reversed', label: 'Reversed Adventure' },
-            { id: 'ub', label: 'Universes Beyond' },
-        ]);
+        this.frameOptions = [
+            { id: 'normal',     name: 'Adventure' },
+            { id: 'spotlight',  name: 'Spotlight Adventure' },
+            { id: 'reversed',   name: 'Reversed Adventure' },
+        ];
         card.frames = [
             AdventureSpotlightFrame,
             AdventureFrame

@@ -1,4 +1,3 @@
-import makeFrameOptions from './src/frameOptions.js';
 import makeOptions from './src/options.js';
 import DevoidFrame from './src/DevoidFrame.js';
 import NormalFrame from './src/NormalFrame.js';
@@ -28,7 +27,6 @@ export default class FrameModule extends CardMagicianModule {
             ClearFrame,
             NormalFrame
         ];
-        this.frameOptions = this.makeReactive(makeFrameOptions());
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
         card.isDFC = () => {
@@ -83,11 +81,9 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     get options() {
-        return [{
-            id: 'frame',
-            label: 'Frame',
-            type: 'checkboxlist',
-            options: this.frameOptions
-        }, ...makeOptions()];
+        const options = makeOptions();
+        const f = options.find(opt => opt.id === 'frame');
+        f.options = this.makeReactive(this.frameOptions || f.options);
+        return options;
     }
 }

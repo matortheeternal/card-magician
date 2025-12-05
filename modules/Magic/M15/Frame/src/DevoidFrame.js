@@ -6,7 +6,7 @@ function resolveAssetPath(path) {
 
 export default class DevoidFrame extends NormalFrame {
     static matches(card) {
-        return card.frame.devoid;
+        return card.frame === 'devoid';
     }
 
     frame = [
@@ -39,6 +39,10 @@ export default class DevoidFrame extends NormalFrame {
     async maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
         return await this.ctx.maskImage(imageUrl, maskUrl);
+    }
+
+    get frameId() {
+        return 'devoid';
     }
 
     /* --- TRIM MASKS --- */

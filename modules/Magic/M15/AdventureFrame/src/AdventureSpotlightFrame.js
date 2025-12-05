@@ -6,7 +6,7 @@ function resolveAssetPath(path) {
 
 export default class AdventureSpotlightFrame extends AdventureFrame {
     static matches(card) {
-        return card.frame.spotlight;
+        return card.frame === 'spotlight';
     }
 
     frame = [this.resolveFrame, this.resolveBorder];
