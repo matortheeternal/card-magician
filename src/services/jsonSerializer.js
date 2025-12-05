@@ -9,10 +9,11 @@ export default class JSONSerializer extends Serializer {
      * Convert the intermediate representation into JSON.
      *
      * @param {any} value - Intermediate representation.
+     * @param {object} options
      * @returns {Promise<string>}
      */
-    async encode(value) {
-        return JSON.stringify(value);
+    async encode(value, options = {}) {
+        return JSON.stringify(value, null, options.whitespace);
     }
 
     /**
