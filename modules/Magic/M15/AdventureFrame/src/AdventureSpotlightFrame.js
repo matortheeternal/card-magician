@@ -33,9 +33,13 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
         return imageUrl;
     }
 
-    /* --- FRAME --- */
     get frameId() {
         return 'spotlight';
+    }
+
+    /* --- BORDER --- */
+    get borderMaskFilename() {
+        return 'base.png';
     }
 
     /* --- PT --- */
