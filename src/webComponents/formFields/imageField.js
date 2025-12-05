@@ -61,6 +61,18 @@ export default class ImageField extends FieldElement {
         this.onClick = this.onClick.bind(this);
     }
 
+    get value() {
+        return super.value;
+    }
+
+    set value(newValue) {
+        const oldImageUrl = this.value?.imageUrl;
+        if (oldImageUrl)
+            setTimeout(() => URL.revokeObjectURL(oldImageUrl), 500);
+        this.model[this.field.id] = newValue;
+        this.loadValue?.();
+    }
+
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('click', this.onClick);
