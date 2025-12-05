@@ -44,6 +44,13 @@ export default class FrameModule extends CardMagicianModule {
         if (createHelpers) createFrameHelpers(card);
     }
 
+    updateTopClasses(card) {
+        const classes = [];
+        for (const bg of this.backgrounds)
+            classes.push(`frame-${bg.id}`);
+        card.dom.root.className = classes.join(' ');
+    }
+
     async updateFrame(card) {
         if (!card.parent || card.rulesHTML === undefined) return;
         console.log('updateFrame called');
@@ -55,13 +62,6 @@ export default class FrameModule extends CardMagicianModule {
         card.activeFrame = () => activeFrame;
         this.backgrounds = await activeFrame.buildBackgrounds('frame', card);
         this.requestRender();
-    }
-
-    updateTopClasses(card) {
-        const classes = [];
-        for (const [key, value] of Object.entries(card.frame))
-            if (value) classes.push(`frame-${key}`);
-        card.dom.root.className = classes.join(' ');
     }
 
     bind(card, watch) {
@@ -76,7 +76,6 @@ export default class FrameModule extends CardMagicianModule {
             card.hybridStyle,
             card.hybridBlendStyle
         ], () => this.updateFrame(card));
-        watch(() => card.frame, () => this.updateTopClasses(card));
     }
 
     renderBackgrounds() {
