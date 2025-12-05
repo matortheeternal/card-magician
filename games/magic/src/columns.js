@@ -27,7 +27,7 @@ function collectUnique(row, fn, separator = ', ') {
 export function buildColumns({ ManaCost }) {
     return [{
         label: 'Name',
-        width: '250px',
+        width: '240px',
         data: row => collect(row, 'name')
     }, {
         label: 'Cost',
