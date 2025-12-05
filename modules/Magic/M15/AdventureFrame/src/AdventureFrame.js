@@ -13,7 +13,9 @@ export default class AdventureFrame extends NormalFrame {
 
     /* --- FRAME --- */
     get frameId() {
-        return 'adventure';
+        return this.card.frame === 'reversed'
+            ? 'reversed'
+            : 'adventure';
     }
 
     /* --- BINDING --- */
@@ -28,8 +30,7 @@ export default class AdventureFrame extends NormalFrame {
 
     /* --- LEFT PAGE --- */
     get leftPageUrl() {
-        const adventure = this.card.adventure;
-        return resolveAssetPath(`page/${adventure.pageStyle || 'name_and_type'}`);
+        return resolveAssetPath(`page/${this.card.pageStyle || 'name_and_type'}`);
     }
 
     async resolveLeftPage(card) {

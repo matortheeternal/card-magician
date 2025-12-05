@@ -8,3 +8,46 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+.bg.binding {
+    position: absolute;
+    top: 0;
+    height: 10px;
+    width: 94%;
+    left: 3%;
+}
+
+.bg.left-page,
+.frame-reversed .bg.right-page {
+    right: 50%;
+    left: 0;
+    width: 50%;
+}
+
+.bg.right-page,
+.frame-reversed .bg.left-page {
+    right: 0;
+    left: 50%;
+    width: 50%;
+}
+
+.frame-reversed .bg.right-page,
+.frame-reversed:not(.page-style-blank) .bg.left-page,
+.page-style-blank .bg.left-page {
+    transform: scaleX(-1);
+}
+
+.frame-spotlight .bg.left-page {
+    transform: none !important;
+}
+
+.frame-spotlight .bg.right-page,
+.frame-spotlight .bg.binding {
+    display: none;
+}
+
+.frame-spotlight .bg.left-page {
+    left: 2.5px;
+    top: -5px;
+    height: 170px;
+}
