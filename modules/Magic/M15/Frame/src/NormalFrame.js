@@ -90,6 +90,10 @@ export default class NormalFrame extends CardFrame {
         return await this.ctx.maskImage(imageUrl, maskUrl);
     }
 
+    get frameId() {
+        return 'normal';
+    }
+
     async resolveFrame(card) {
         const imageUrl = await this.coloredBlend(this.frameFolder, card, {
             ext: this.frameExt,
@@ -97,7 +101,7 @@ export default class NormalFrame extends CardFrame {
             hasLandTemplates: this.frameHasLandTemplates
         });
         const maskedUrl = await this.maskFrame(imageUrl);
-        return this.background('normal', maskedUrl);
+        return this.background(this.frameId, maskedUrl);
     }
 
     // --- TRIM MASKS ---

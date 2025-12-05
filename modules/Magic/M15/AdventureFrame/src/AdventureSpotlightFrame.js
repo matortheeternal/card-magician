@@ -33,6 +33,11 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
         return imageUrl;
     }
 
+    /* --- FRAME --- */
+    get frameId() {
+        return 'spotlight';
+    }
+
     /* --- PT --- */
     get ptFolder() {
         return resolveAssetPath('pt');

@@ -11,6 +11,11 @@ export default class AdventureFrame extends NormalFrame {
         this.resolveRightPage
     ];
 
+    /* --- FRAME --- */
+    get frameId() {
+        return 'adventure';
+    }
+
     /* --- BINDING --- */
     get bindingUrl() {
         return resolveAssetPath('binding');
