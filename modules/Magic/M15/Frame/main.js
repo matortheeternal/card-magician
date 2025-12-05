@@ -11,7 +11,6 @@ function createFrameHelpers(card) {
     card.isBeyond = () => card.frame.ub;
     card.isFNM = () => card.frame.fnm;
     card.isEnergyLand = () => false;
-    card.isMiracle = () => card.trims.miracle;
     card.isFrameless = () => card.frame.frameless;
     card.isBorderless = () => card.frame.borderless;
     card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
@@ -19,9 +18,7 @@ function createFrameHelpers(card) {
     card.isDevoid = () => card.frame.devoid;
     card.isClearTop = () => false;
     card.isPuma = () => card.frame.puma;
-    card.isMutate = () => card.frame.mutate;
     card.isBrawl = () => false;
-    card.isCompanion = () => false;
 }
 
 export default class FrameModule extends CardMagicianModule {
@@ -40,7 +37,7 @@ export default class FrameModule extends CardMagicianModule {
             return card.id === 'front' && Object.hasOwn(card.parent(), 'back');
         };
         card.isFrontDFC = () => card.isDFC() && card.id === 'front';
-        card.isBackDFC = () => card.isDFC() && card.id === 'back';
+        card.isBackDFC = () => card.id === 'back';
         if (createHelpers) createFrameHelpers(card);
     }
 
