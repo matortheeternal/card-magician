@@ -83,7 +83,7 @@ module-container[module="Art"] {
     margin-right: 14px;
 }
 
-.frame-conspiracy-scrolls module-container[render="renderExpansionSymbol"] {
+.frame-conspiracy-scrolls module-container[module="Rarity"] {
     margin-right: 10px
 }
 
@@ -110,7 +110,7 @@ module-container[module="ColorIndicator"] img {
     margin-top: 2px;
 }
 
-module-container[render="renderExpansionSymbol"] {
+module-container[module="Rarity"] {
     min-width: 18px;
     min-height: 18px;
     padding-left: 4px;

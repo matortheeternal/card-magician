@@ -14,7 +14,6 @@ export default class CardFrame {
     constructor(card, module) {
         this.card = card;
         this.ctx = module;
-        console.log('New frame instance', this);
     }
 
     async buildBackgrounds(key, card) {
