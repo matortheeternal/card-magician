@@ -1,5 +1,5 @@
 import makeFrameOptions from './src/frameOptions.js';
-import makeTrimOptions from './src/trimOptions.js';
+import makeOptions from './src/options.js';
 import DevoidFrame from './src/DevoidFrame.js';
 import NormalFrame from './src/NormalFrame.js';
 import ClearFrame from './src/ClearFrame.js';
@@ -29,7 +29,6 @@ export default class FrameModule extends CardMagicianModule {
             NormalFrame
         ];
         this.frameOptions = this.makeReactive(makeFrameOptions());
-        this.trimOptions = this.makeReactive(makeTrimOptions());
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
         card.isDFC = () => {
@@ -58,20 +57,17 @@ export default class FrameModule extends CardMagicianModule {
         card.setAspectRatio(activeFrame.artDimensions);
         card.activeFrame = () => activeFrame;
         this.backgrounds = await activeFrame.buildBackgrounds('frame', card);
+        this.updateTopClasses(card);
         this.requestRender();
     }
 
     bind(card, watch) {
         watch(() => [
-            card.colorIdentity,
-            card.superType,
-            card.subType,
-            card.rulesHTML,
-            card.parent,
-            card.frame,
-            card.trims,
-            card.hybridStyle,
-            card.hybridBlendStyle
+            card.colorIdentity, card.superType, card.subType, card.rulesHTML,
+            card.parent, card.frame, card.hybridStyle, card.hybridBlendStyle,
+            card.crownStyle, card.nyxStyle, card.vehicleStyle, card.snowStyle,
+            card.scrollsStyle, card.draftStyle, card.miracleStyle, card.mutateStyle,
+            card.ubStyle
         ], () => this.updateFrame(card));
     }
 
@@ -92,36 +88,6 @@ export default class FrameModule extends CardMagicianModule {
             label: 'Frame',
             type: 'checkboxlist',
             options: this.frameOptions
-        }, {
-            id: 'trims',
-            type: 'checkboxlist',
-            label: 'Trims',
-            options: this.trimOptions
-        }, {
-            id: 'hybridStyle',
-            type: 'multiselect',
-            label: 'Hybrid Style',
-            options: [
-                { id: 'reverse', name: 'Reverse' },
-                { id: 'vertical', name: 'Vertical' },
-            ]
-        }, {
-            id: 'hybridBlendStyle',
-            type: 'select',
-            label: 'Hybrid Blend Style',
-            options: [
-                { id: 'grey', name: 'Grey' },
-                { id: 'gold', name: 'Gold' },
-                { id: 'hybrid', name: 'Hybrid' },
-            ]
-        }, {
-            id: 'other',
-            type: 'checkboxlist',
-            label: 'Extra options',
-            options: [
-                { id: 'avoidCoveringDevoid', label: 'Avoid covering devoid' }
-            ],
-            default: { avoidCoveringDevoid: true }
-        }];
+        }, ...makeOptions()];
     }
 }
