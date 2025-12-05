@@ -45,9 +45,13 @@ export function handleFormGroup(formGroup, faceForm) {
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
     Alpine.effect(() => {
         const show = faceForm.face[showKey];
+        if (!toggleGroup) {
+            if (!show) formGroup.style.display = 'none';
+            if (show) formGroup.style.removeProperty('display');
+            return;
+        }
         for (const child of childFields)
             child.style.display = show ? 'block' : 'none';
-        if (!toggleGroup) return;
         formGroup.toggleAttribute('active', show);
         const label = formGroup.getAttribute('label');
         toggleGroup.innerHTML = renderToggle(show, label);
