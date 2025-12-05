@@ -16,6 +16,7 @@ export default class NormalFrame extends CardFrame {
         this.resolveDraftTrim,
         this.resolveNyxTrim,
         this.resolveBorder,
+        this.resolveNode,
         this.resolveCrown,
         this.resolveMiracleTrim
     ];
@@ -61,9 +62,9 @@ export default class NormalFrame extends CardFrame {
     get frameSubfolder() {
         if (this.card.isFrontDFC?.() && this.card.isTransform?.())
             return 'notched';
-        if (this.card.id === 'back')
+        if (this.card.isBackDFC?.())
             return 'back';
-        if (this.card.hasFaceSymbol())
+        if (this.card.hasFaceSymbol() || this.card.isFrontDFC?.())
             return 'front';
         return 'normal';
     }
@@ -244,6 +245,33 @@ export default class NormalFrame extends CardFrame {
         const borderColor = card.borderColor || '#000000';
         const maskedUrl = await this.ctx.maskColor(this.borderMaskUrl, borderColor);
         return this.background('border', maskedUrl);
+    }
+
+    // --- NODE ---
+    get showNode() {
+        return this.card.isDFC() || this.card.hasFaceSymbol?.();
+    }
+
+    get nodeSubfolder() {
+        if (this.card.isShifted?.()) return 'shifted';
+        return 'normal';
+    }
+
+    get nodeFolder() {
+        return resolveAssetPath(`element/node/${this.nodeSubfolder}`);
+    }
+
+    get nodeBlendMaskFolder() {
+        return resolveAssetPath(`mask/node`);
+    }
+
+    async resolveNode(card) {
+        if (!this.showNode) return null;
+        const imageUrl = await this.coloredBlend(this.nodeFolder, card, {
+            ext: '.png',
+            blendMaskFolder: this.nodeBlendMaskFolder
+        });
+        return this.background('node', imageUrl);
     }
 
     // --- MIRACLE TRIM ---
