@@ -78,6 +78,15 @@ form-group.with-border {
     padding-top: var(--sl-spacing-3x-small);
 }
 
+form-group.with-border:has(label) {
+    margin-top: 2em;
+}
+
+form-group.with-border label {
+    position: absolute;
+    top: -25px;
+}
+
 form-group.three-columns {
     grid-template-columns: 1fr 1fr 1fr;
 }

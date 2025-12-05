@@ -1,5 +1,5 @@
 export default class AdventurePagesModule extends CardMagicianModule {
-    async updateBackgrounds(card) {
+    async updateFrame(card) {
         const activeFrame = card.parent().activeFrame?.();
         if (!activeFrame) return;
         this.backgrounds = await activeFrame.buildBackgrounds('pages', card.parent());
@@ -19,7 +19,7 @@ export default class AdventurePagesModule extends CardMagicianModule {
                 card.pageStyle,
                 card.parent().activeFrame
             ],
-            () => this.updateBackgrounds(card)
+            () => this.updateFrame(card)
         );
     }
 

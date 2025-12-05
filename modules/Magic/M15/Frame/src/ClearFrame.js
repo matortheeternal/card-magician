@@ -6,7 +6,7 @@ function resolveAssetPath(path) {
 
 export default class ClearFrame extends NormalFrame {
     static matches(card) {
-        return card.frame.clear;
+        return card.frame === 'clear';
     }
 
     async coloredBlend(folder) {
@@ -21,6 +21,10 @@ export default class ClearFrame extends NormalFrame {
     async maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
         return await this.ctx.maskImage(imageUrl, maskUrl);
+    }
+
+    get frameId() {
+        return 'clear';
     }
 
     /* --- CROWN --- */
