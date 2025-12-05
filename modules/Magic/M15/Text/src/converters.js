@@ -1,3 +1,5 @@
+import { KeywordConverters } from "./keywords.js";
+
 export const WhitespaceConverter = {
     match(str) {
         return str.match(/^\s+/);
@@ -62,6 +64,7 @@ export const FallbackConverter = {
 }
 
 export const converters = [
+    ...KeywordConverters,
     WhitespaceConverter,
     ParenthesisConverter,
     SymbolConverter,
