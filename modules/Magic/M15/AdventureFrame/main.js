@@ -15,4 +15,13 @@ export default class AdventureFrameModule extends FrameModule {
             AdventureFrame
         ];
     }
+
+    updateFrameExtras(card) {
+        card.showFrameExtras = card.frame !== 'spotlight';
+    }
+
+    bind(card, watch) {
+        super.bind(card, watch);
+        watch(() => card.frame, () => this.updateFrameExtras(card));
+    }
 }
