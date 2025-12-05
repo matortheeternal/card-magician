@@ -286,10 +286,16 @@ export default class NormalFrame extends CardFrame {
     }
 
     // --- BORDER ---
+    get borderMaskFilename() {
+        return this.showCrown ? 'crown.png' : 'base.png';
+    }
+
+    get borderMaskFolder() {
+        return 'mask/border';
+    }
+
     get borderMaskUrl() {
-        return this.showCrown
-            ? resolveAssetPath('mask/border/crown.png')
-            : resolveAssetPath('mask/border/base.png');
+        return resolveAssetPath(`${this.borderMaskFolder}/${this.borderMaskFilename}`);
     }
 
     async resolveBorder(card) {
