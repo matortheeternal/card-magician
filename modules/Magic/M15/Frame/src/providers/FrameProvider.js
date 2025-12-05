@@ -2,8 +2,7 @@ import ColoredProvider from './ColoredProvider.js';
 
 export default class FrameProvider extends ColoredProvider {
     get ext() {
-        if (this.card.frameFolder === 'devoid') return '.png';
-        return '.jpg';
+        return this.card.frameExt;
     }
 
     get folder() {

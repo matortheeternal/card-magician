@@ -107,19 +107,19 @@ export default class TextModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'rulesText', type: 'textarea', displayName: 'Rules Text' },
-            { id: 'flavorText', type: 'textarea', displayName: 'Flavor Text' }
+            { id: 'rulesText', type: 'textarea', label: 'Rules Text' },
+            { id: 'flavorText', type: 'textarea', label: 'Flavor Text' }
         ];
     }
 
     get options() {
         return [
-            { id: 'chopTop', displayName: 'Chop Top' },
-            { id: 'chopBottom', displayName: 'Chop Bottom' },
-            { id: 'maxFontSize', displayName: 'Max Font Size' },
+            { id: 'chopTop', label: 'Chop Top' },
+            { id: 'chopBottom', label: 'Chop Bottom' },
+            { id: 'maxFontSize', label: 'Max Font Size' },
             {
                 id: 'centerText',
-                displayName: 'Center Text',
+                label: 'Center Text',
                 type: 'select',
                 options: [
                     { id: 'never', name: 'Never' },

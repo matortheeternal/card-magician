@@ -34,8 +34,8 @@ export default class FrameModule extends CardMagicianModule {
             Transformers.slice()
         ];
         this.folderRegistry = new FrameFolderRegistry();
-        this.frameOptions ||= this.makeReactive(makeFrameOptions());
-        this.trimOptions ||= this.makeReactive(makeTrimOptions());
+        this.frameOptions = this.makeReactive(makeFrameOptions());
+        this.trimOptions = this.makeReactive(makeTrimOptions());
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
         card.isDFC = () => {
@@ -49,7 +49,9 @@ export default class FrameModule extends CardMagicianModule {
 
     async updateBackgrounds(card) {
         if (!card.parent || card.rulesHTML === undefined) return;
-        card.frameFolder = this.folderRegistry.resolveFolder(card);
+        const folderRule = this.folderRegistry.resolveRule(card);
+        card.frameFolder = folderRule.folder;
+        card.frameExt = folderRule.ext;
         this.backgrounds = await runPipeline(card, this, ...card.framePipeline);
         this.requestRender();
     }
@@ -91,18 +93,18 @@ export default class FrameModule extends CardMagicianModule {
     get options() {
         return [{
             id: 'frame',
-            displayName: 'Frame',
+            label: 'Frame',
             type: 'checkboxlist',
             options: this.frameOptions
         }, {
             id: 'trims',
             type: 'checkboxlist',
-            displayName: 'Trims',
+            label: 'Trims',
             options: this.trimOptions
         }, {
             id: 'hybridStyle',
             type: 'select',
-            displayName: 'Hybrid Style',
+            label: 'Hybrid Style',
             options: [
                 { id: 'grey', name: 'Grey' },
                 { id: 'gold', name: 'Gold' },

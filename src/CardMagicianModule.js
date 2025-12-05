@@ -70,7 +70,7 @@ import sanitizeHtml from 'sanitize-html';
  *
  * @typedef {object} BaseField
  * @property {string} id                 - Key under which this field’s value is stored on the card.
- * @property {string} displayName        - User-facing label.
+ * @property {string} label              - User-facing label.
  * @property {string} [group]            - Optional grouping (creates nested UI groups).
  * @property {string} [default]          - Default value used when card is created.
  */

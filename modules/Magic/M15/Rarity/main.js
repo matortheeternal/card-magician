@@ -21,7 +21,7 @@ export default class RarityModule extends CardMagicianModule {
         return [{
             id: 'rarity',
             type: 'select',
-            displayName: 'Rarity',
+            label: 'Rarity',
             group: 'footer',
             options: [
                 { id: 'common', name: 'Common' },

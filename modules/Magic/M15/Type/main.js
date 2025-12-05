@@ -40,8 +40,8 @@ export default class TypeModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'superType', displayName: 'Super Type' },
-            { id: 'subType', displayName: 'Sub Type' }
+            { id: 'superType', label: 'Super Type' },
+            { id: 'subType', label: 'Sub Type' }
         ];
     }
 

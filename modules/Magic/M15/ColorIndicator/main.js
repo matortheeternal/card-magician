@@ -35,6 +35,6 @@ export default class ColorIndicatorModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{ id: 'colorIndicator', displayName: 'Color (Override)' }]
+        return [{ id: 'colorIndicator', label: 'Color (Override)' }]
     }
 }

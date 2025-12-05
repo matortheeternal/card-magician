@@ -56,8 +56,8 @@ export default class PTModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'power', displayName: 'Power' },
-            { id: 'toughness', displayName: 'Toughness' }
+            { id: 'power', label: 'Power' },
+            { id: 'toughness', label: 'Toughness' }
         ];
     }
 
