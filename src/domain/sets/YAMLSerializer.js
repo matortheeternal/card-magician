@@ -6,7 +6,7 @@ import YAML from 'yaml';
  */
 export default class YAMLSerializer extends Serializer {
     static matches(filePath) {
-        return /.yml$/i.test(filePath);
+        return /\.yml$/i.test(filePath);
     }
 
     /**

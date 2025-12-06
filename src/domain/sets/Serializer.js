@@ -11,7 +11,7 @@ const defaultAdapters = [
  */
 export default class Serializer {
     static matches(filePath) {
-        return false;
+        return false
     }
 
     static async save(filePath, data, options = {}) {
