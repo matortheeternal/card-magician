@@ -5,6 +5,10 @@ import Serializer from './Serializer.js';
  * Produces JSON strings and parses them back.
  */
 export default class JSONSerializer extends Serializer {
+    static matches() {
+        return true;
+    }
+
     /**
      * Convert the intermediate representation into JSON.
      *

@@ -5,6 +5,9 @@ import YAML from 'yaml';
  * Serializer that converts the intermediate representation to/from YAML.
  */
 export default class YAMLSerializer extends Serializer {
+    static matches(filePath) {
+        return /.yml$/i.test(filePath);
+    }
 
     /**
      * Encode the intermediate representation as YAML.

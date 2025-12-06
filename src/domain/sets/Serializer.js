@@ -10,6 +10,22 @@ const defaultAdapters = [
  * into a final encoded format (JSON, binary, etc.).
  */
 export default class Serializer {
+    static matches(filePath) {
+        return false;
+    }
+
+    static async save(filePath, data, options = {}) {
+        const serializer = new this();
+        const text = await serializer.serialize(data, options);
+        await Neutralino.filesystem.writeFile(filePath, text);
+    }
+
+    static async load(filePath) {
+        const serializer = new this();
+        const text = await Neutralino.filesystem.readFile(filePath);
+        return await serializer.deserialize(text);
+    }
+
     /**
      * @param {Array<SerializerAdapter>} [adapters=null]
      *   List of serialization adapters.
