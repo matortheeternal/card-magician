@@ -1,10 +1,11 @@
 import Alpine from 'alpinejs';
 import JSONSerializer from './JSONSerializer.js';
 import YAMLSerializer from './YAMLSerializer.js';
+import MessagePackSerializer from './MessagePackSerializer.js';
 import { addStatusMessage } from '../../ui/systems/statusSystem.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 
-const serializers = [YAMLSerializer, JSONSerializer];
+const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
 
 export async function saveSetData(filePath, data) {
     const serializer = serializers.find(s => s.matches(filePath));
@@ -25,6 +26,7 @@ export async function saveAs() {
         defaultPath,
         filters: [
             { name: 'JSON Files', extensions: ['json'] },
+            { name: 'Packed Files', extensions: ['msgpack'] },
             { name: 'YAML Files', extensions: ['yml'] },
             { name: 'All files', extensions: ['*'] }
         ]
