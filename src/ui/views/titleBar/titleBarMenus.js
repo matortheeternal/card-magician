@@ -1,8 +1,6 @@
 import Alpine from 'alpinejs';
-import { saveJson, saveYAML } from '../../../shared/fsUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
-import { addStatusMessage } from '../../systems/statusSystem.js';
 
 function menuItem(label, hotkey, action) {
     if (hotkey !== '') registerHotkey(hotkey, action);
@@ -11,53 +9,11 @@ function menuItem(label, hotkey, action) {
 
 const DIVIDER = { isDivider: true };
 
-const saveStrategies = [{
-    test: filePath => /.json$/i.test(filePath),
-    save: async (filePath, data) => await saveJson(filePath, data, false)
-}, {
-    test: filePath => /.yml$/i.test(filePath),
-    save: async (filePath, data) => await saveYAML(filePath, data)
-}];
-
-async function save(filePath, data) {
-    const saveStrategy = saveStrategies.find(s => {
-        return s.test(filePath);
-    }) || saveStrategies[0];
-    await saveStrategy.save(filePath, data);
-}
-
-async function saveAs() {
-    const views = Alpine.store('views');
-    const defaultPath = views.setFilePath
-        ?  views.setFilePath.split(/[\\\/]/).pop()
-        : `${views.activeSet.title || 'My Set'}.json`;
-    const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
-        defaultPath,
-        filters: [
-            { name: 'JSON Files', extensions: ['json'] },
-            { name: 'YAML Files', extensions: ['yml'] },
-            { name: 'All files', extensions: ['*'] }
-        ]
-    });
-    if (!filePath) return;
-    console.info('Saving set to:', filePath);
-    views.setFilePath = filePath;
-    await save(filePath, views.activeSet);
-}
-
 const actions = {
     makeNewSet: () => executeAction('new-set'),
     openSet: () => executeAction('open-set'),
-    save: async () => {
-        const { activeSet, setFilePath } = Alpine.store('views');
-        if (!setFilePath) return await saveAs();
-        const message = addStatusMessage('Saving...', -1);
-        console.info('Saving set to:', setFilePath);
-        await save(setFilePath, activeSet);
-        message.text = 'Saved.';
-        setTimeout(() => message.remove(), 1000);
-    },
-    saveAs: saveAs,
+    save: () => executeAction('save-set'),
+    saveAs: () => executeAction('save-set-as'),
     exportAs: () => executeAction('export-card-image'),
     print: () => console.log('Print'),
     exit: () => Neutralino.app.exit(0),

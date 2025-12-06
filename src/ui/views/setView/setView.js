@@ -1,9 +1,9 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
-import { loadJson } from '../../../shared/fsUtils.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
 import { selectRow } from '../../components/listView/rowSelectionService.js';
+import { loadSetData } from '../../../domain/sets/setManager.js';
 
 Alpine.data('setView', () => ({
     rows: [],
@@ -121,7 +121,8 @@ Alpine.data('setView', () => ({
         const game = Alpine.store('game');
         const views = Alpine.store('views');
         views.setFilePath = filePath;
-        views.activeSet = game.loadSet(await loadJson(filePath));
+        const set = await loadSetData(filePath);
+        views.activeSet = game.loadSet(set);
         game.autoNumberCards(views.activeSet);
         Alpine.store('appConfig').addRecentFile(filePath);
     },
