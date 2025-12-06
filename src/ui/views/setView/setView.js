@@ -2,7 +2,6 @@ import Alpine from 'alpinejs';
 import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
-import { selectRow } from '../../components/listView/rowSelectionService.js';
 import { loadSetData } from '../../../domain/sets/setManager.js';
 
 Alpine.data('setView', () => ({
