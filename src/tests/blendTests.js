@@ -1,4 +1,4 @@
-import { combineBlend, linearBlend, maskBlend } from '../gfx/blending.js';
+import { combineBlend, linearBlend, maskBlend } from '../domain/gfx/blending.js';
 
 async function saveCanvasToFile(canvas, filePath) {
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
