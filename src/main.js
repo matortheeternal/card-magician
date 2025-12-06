@@ -1,19 +1,16 @@
 import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
-import './webComponents/**/*.js';
+import './shared/extensions.js';
+import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import './extensions.js';
-import './shoelaceFixes.js';
-import CardMagicianModule from './CardMagicianModule.js';
-import CardMagicianGame from './CardMagicianGame.js';
-import { loadTemplates, getTemplates } from './services/templateService.js';
-import { loadGames, setGame } from './services/gameService.js';
+import CardMagicianModule from './domain/template/CardMagicianModule.js';
+import CardMagicianGame from './domain/game/CardMagicianGame.js';
+import { loadTemplates, getTemplates } from './domain/template/templateRegistry.js';
+import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
-import AppConfig from './appConfig';
-import './components/**/*.js';
-import './directives/*.js';
-import cacheManager from './gfx/CacheManager.js';
-import { bindToAlpine } from './services/statusService.js';
+import AppConfig from './domain/game/appConfig.js';
+import cacheManager from './domain/gfx/CacheManager.js';
+import { bindToAlpine } from './ui/systems/statusSystem.js';
 
 // BASE SETUP
 setupNeutralino();
