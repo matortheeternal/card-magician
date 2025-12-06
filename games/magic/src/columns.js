@@ -1,5 +1,3 @@
-
-
 function collect(row, key, separator = ' // ') {
     const values = [];
     for (const face of Object.values(row))
@@ -29,7 +27,7 @@ function collectUnique(row, fn, separator = ', ') {
 export function buildColumns({ ManaCost }) {
     return [{
         label: 'Name',
-        width: '250px',
+        width: '240px',
         data: row => collect(row, 'name')
     }, {
         label: 'Cost',
@@ -76,6 +74,6 @@ export function buildColumns({ ManaCost }) {
             return (parseInt(row.front?.collectorNumber || row.front?.autoCollectorNumber) || 0)
                 .toString()
                 .padStart(4, '0')
-        } 
+        }
     }];
 }

@@ -10,6 +10,10 @@ export default class TextModule extends CardMagicianModule {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
+        card.isCompanion = () => /^companion\b/i.test(card.rulesText);
+        card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
+        card.isMutate = () => /^mutate\b/i.test(card.rulesText);
+
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
             return textToHTML(html, card).map(p => {

@@ -1,9 +1,9 @@
 const colorNames = {
-    g: 'green',
     w: 'white',
-    r: 'red',
+    u: 'blue',
     b: 'black',
-    u: 'blue'
+    r: 'red',
+    g: 'green',
 };
 
 function addColor(colors, colorCharacter, sourceKey = 'normal') {
@@ -16,10 +16,6 @@ function addColor(colors, colorCharacter, sourceKey = 'normal') {
         };
 
     colors[char].sources[sourceKey] = true;
-}
-
-function isHybrid(sym) {
-    return sym.constructor.prototype.constructor.name === 'HybridManaSymbol';
 }
 
 export default class ColorIdentity {
@@ -35,7 +31,7 @@ export default class ColorIdentity {
             if (src.commanderOnly) return;
             src.symbols.forEach(sym => {
                 if (!sym.colors.length) return;
-                const sourceKey = isHybrid(sym) ? 'hybrid' : 'normal';
+                const sourceKey = sym.hybrid ? 'hybrid' : 'normal';
                 sym.colors.forEach(c => addColor(colors, c, sourceKey));
             });
         });
@@ -55,7 +51,10 @@ export default class ColorIdentity {
         const colors = this.override
             ? this.getColorsFromOverride()
             : this.getColorsFromSources();
-        return Object.values(colors);
+        return 'wubrg'.split('').reduce((acc, c) => {
+            if (colors[c]) acc.push(colors[c]);
+            return acc;
+        }, []);
     }
 
     addColorSource(key, symbols, commanderOnly = false) {

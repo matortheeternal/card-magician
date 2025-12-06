@@ -7,7 +7,7 @@ export default class ColorModule extends CardMagicianModule {
         card.getCardColorKey = function() {
             const colors = card.colorIdentity.colors;
             if (colors.length === 0)
-                return card.superType?.includes('Artifact') ? 'a' : 'c';
+                return card.isArtifact?.() ? 'a' : 'c';
             if (colors.length === 1)
                 return colors[0].char;
             return 'm';
@@ -15,7 +15,7 @@ export default class ColorModule extends CardMagicianModule {
     }
 
     updateCardColors(card) {
-        card.colors = card.colorIdentity.colors;      
+        card.colors = card.colorIdentity.colors;
     }
 
     bind(card, watch) {

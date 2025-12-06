@@ -32,7 +32,7 @@ export function formatCollectorNumber(set, num, suffix = '') {
     if (set.info.collectorNumberFormat === 'threeOutOf') {
         const current = num.toString().padStart(3, '0') + suffix;
         const max = set.cards.length.toString().padStart(3, '0');
-        return `${current}/${max}`;
+        return `${current} / ${max}`;
     }
     return num.toString() + suffix;
 }

@@ -1,4 +1,16 @@
 export default class ArtModule extends CardMagicianModule {
+    async init(card) {
+        this.artImageField = {
+            id: 'artImage',
+            type: 'image',
+            label: 'Art Image'
+        };
+
+        card.setAspectRatio = ({ width, height }) => {
+            this.artImageField.aspectRatio = width / height;
+        };
+    }
+
     defaultImage(name) {
         return this.resolveAsset(name + '.jpg');
     }
@@ -51,21 +63,17 @@ export default class ArtModule extends CardMagicianModule {
     render(card) {
         if (!card.defaultImageUrl && !card.artImage.imageUrl) return '';
         return card.artImage.imageUrl ? (
-            `<crop-image crop-width="${card.artImage.width}" 
-                         crop-height="${card.artImage.height}"
-                         offset-x="${card.artImage.xOffset}"
-                         offset-y="${card.artImage.yOffset}"
+            `<crop-image crop-width="${card.artImage.crop.width}" 
+                         crop-height="${card.artImage.crop.height}"
+                         offset-x="${card.artImage.crop.xOffset}"
+                         offset-y="${card.artImage.crop.yOffset}"
                          src="${card.artImage.imageUrl}">
             </crop-image>`
         ) : `<img src="${card.defaultImageUrl}" />`;
     }
 
     get fields() {
-        return [{
-            id: 'artImage',
-            type: 'image',
-            label: 'Art Image'
-        }];
+        return [this.artImageField];
     }
 
     async styles() {

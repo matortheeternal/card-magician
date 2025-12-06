@@ -1,0 +1,6 @@
+[submodule "games/magic/games/magic/mana-scribe"]
+	path = games/magic/games/magic/mana-scribe
+	url = https://github.com/matortheeternal/mana-scribe
+[submodule "games/magic/mana-scribe"]
+	path = games/magic/mana-scribe
+	url = https://github.com/matortheeternal/mana-scribe

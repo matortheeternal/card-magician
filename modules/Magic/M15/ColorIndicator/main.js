@@ -1,6 +1,6 @@
 export default class ColorIndicatorModule extends CardMagicianModule {
     async getIndicatorImage(card) {
-        if (!card.colorIndicator) return '';
+        if (!card.colorIndicator?.length) return '';
         const colors = card.colorIdentity.colors;
         if (colors.length === 1) {
             const key = card.getCardColorKey();
@@ -16,7 +16,8 @@ export default class ColorIndicatorModule extends CardMagicianModule {
     }
 
     async updateColorIdentity(card) {
-        card.colorIdentity.setOverride(card.colorIndicator);
+        const overrideColors = (card.colorIndicator || []);
+        card.colorIdentity.setOverride(overrideColors.join(''));
         this.colorIdentityImage = await this.getIndicatorImage(card);
         this.requestRender();
     }
@@ -29,12 +30,23 @@ export default class ColorIndicatorModule extends CardMagicianModule {
     }
 
     render(card) {
-        return card.colorIndicator && (
+        return card.colorIndicator?.length && (
             `<img src="${this.colorIdentityImage}">`
         );
     }
 
     get fields() {
-        return [{ id: 'colorIndicator', label: 'Color (Override)' }]
+        return [{
+            id: 'colorIndicator',
+            label: 'Color (Override)',
+            type: 'multiselect',
+            options: [
+                { id: 'w', name: 'White' },
+                { id: 'u', name: 'Blue' },
+                { id: 'b', name: 'Black' },
+                { id: 'r', name: 'Red' },
+                { id: 'g', name: 'Green' },
+            ]
+        }];
     }
 }

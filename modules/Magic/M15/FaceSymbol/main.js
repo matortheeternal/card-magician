@@ -18,7 +18,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         this.loadFaceSymbolImages();
     }
 
-    renderFaceSymbol(card) {
+    updateFaceSymbol(card) {
         this.selectedFaceSymbol = resolveOption(this.symbolOptions, card.faceSymbol);
         this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
         this.requestRender();
@@ -38,7 +38,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         watch(() => [card.colorIdentity, card.superType, card.parent],
               () => this.updateAutoSymbols(card));
         watch(() => [card.faceSymbol, card.parent],
-              () => this.renderFaceSymbol(card));
+              () => this.updateFaceSymbol(card));
     }
 
     render(card) {
