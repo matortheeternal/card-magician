@@ -1,0 +1,21 @@
+<div x-data="listView({ rows, columns, addRowLabel })"></div>
+<template x-if="!rows.length">
+    <div class="no-content-prompt">
+        <span>This set has no cards in it.</span>
+        <div class="buttons-container">
+            <sl-button size="large" @click="addCard">Add a card</sl-button>
+            <sl-button size="large" @click="openSet">Open a set</sl-button>
+        </div>
+        <div class="recent-sets-container" x-show="recentSets.length">
+            <span>Recent sets</span>
+            <div class="buttons-container">
+                <template x-for="set in recentSets">
+                    <sl-button variant="text" size="small" class="recent-set"
+                               @click="openSet(set)">
+                        <span x-text="set"></span>
+                    </sl-button>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>
