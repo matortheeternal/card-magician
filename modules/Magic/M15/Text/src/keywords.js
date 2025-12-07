@@ -33,15 +33,7 @@ const englishNumber = [
     "twenty"
 ];
 
-englishNumber.X = "X";
-englishNumber.Y = "Y";
-englishNumber.Z = "Z";
-
 const englishNumberA = ["no", "a"].concat(englishNumber.slice(2));
-
-englishNumberA.X = "X";
-englishNumberA.Y = "Y";
-englishNumberA.Z = "Z";
 
 function digitalNumber(englishN) {
     if (englishN == "a" || englishN == "an") return 1;
