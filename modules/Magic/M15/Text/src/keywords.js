@@ -48,20 +48,6 @@ function digitalNumber(englishN) {
     return englishNumber.indexOf(englishN);
 }
 
-// const flying = {
-//     name: "flying",
-//     params: [],
-//     exclude: [ /gains flying/, /have flying/ ],
-//     reminderText: params => "This creature can't be blocked except by creatures with flying or reach."
-// };
-
-// const bolster = {
-//     name: "bolster",
-//     params: [ /\d?/ ],
-//     exclude: [],
-//     reminderText: params => `Choose a creature with the least toughness among creatures you control and put ${englishNumberA[parseInt(params[1])]} +1/+1 counter on it.`
-// };
-
 const bolster = {
     match: "bolster <counters:number>",
     reminderText: "Choose a creature with the least toughness among creatures you control and put <counters:number-word-or-a> +1/+1 counter<counters:handle-plural> on it.",
@@ -69,7 +55,6 @@ const bolster = {
 }
 
 const keywords = [
-    // flying,
     bolster
 ];
 
@@ -84,7 +69,6 @@ function parseKeywordExpression(str) {
 
     while (remainingStr.length) {
         const [match, token] = parseNextKeywordToken(remainingStr);
-        // if (!parser) throw new Error('no parser found for ' + remainingStr.slice(0, 10));
         res.push(token);
         remainingStr = remainingStr.slice(match[0].length);
     }
@@ -189,8 +173,6 @@ function processReminderText(tokens, params) {
     for (const token of tokens) {
         const paramFn = paramFunctions[token.type] || literalParam;
         const paramValue = params[token.value] || token.value;
-        console.log("rt", token, params, paramValue, paramFn(paramValue, token));
-        console.log(englishNumberA);
         output += paramFn(paramValue, token);
     }
 
