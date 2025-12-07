@@ -41,7 +41,7 @@ function digitalNumber(englishN) {
 }
 
 const bolster = {
-    match: "bolster <counters:number>",
+    match: "[Bb]olster <counters:number>",
     reminderText: "Choose a creature with the least toughness among creatures you control and put <counters:number-word-or-a> +1/+1 counter<counters:handle-plural> on it.",
     exclude: []
 }
@@ -165,6 +165,7 @@ function processReminderText(tokens, params) {
     for (const token of tokens) {
         const paramFn = paramFunctions[token.type] || literalParam;
         const paramValue = params[token.value] || token.value;
+        console.log(paramValue, paramFn(paramValue));
         output += paramFn(paramValue, token);
     }
 
@@ -179,7 +180,7 @@ export const KeywordConverter = {
         let reminderText = "";
 
         for (const keyword of keywords) {
-            const [ keywordMatched, params ] = keywordMatch(parseKeywordExpression(keyword.match), keyword, match[0].toLowerCase());
+            const [ keywordMatched, params ] = keywordMatch(parseKeywordExpression(keyword.match), keyword, match[0]);
             if (keywordMatched) reminderText += processReminderText(parseKeywordExpression(keyword.reminderText), params) + " ";
         }
         
