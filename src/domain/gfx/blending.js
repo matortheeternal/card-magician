@@ -2,6 +2,7 @@ import { imageToCanvas, newCanvas } from '../../shared/imageUtils.js';
 import { blendModes } from './blendModes.js';
 import Color from './Color.js';
 import cacheManager from './CacheManager.js';
+import ImageOperation from './ImageOperation.js';
 
 function blendImageData(baseData, topData, mode) {
     const func = blendModes[mode];
@@ -135,3 +136,9 @@ export const linearBlendUrl = cacheManager.cacheRoutine(linearBlend, 2, true);
 export const maskBlendUrl = cacheManager.cacheRoutine(maskBlend, 3);
 export const maskImageUrl = cacheManager.cacheRoutine(maskImage, 2);
 export const maskColorUrl = cacheManager.cacheRoutine(maskColor, 1);
+
+export const combineBlendOp = ImageOperation.register(combineBlend, 2);
+export const linearBlendOp = ImageOperation.register(linearBlend, 2);
+export const maskBlendOp = ImageOperation.register(maskBlend, 3);
+export const maskImageOp = ImageOperation.register(maskImage, 2);
+export const maskColorOp = ImageOperation.register(maskColor, 1);

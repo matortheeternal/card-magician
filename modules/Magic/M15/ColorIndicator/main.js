@@ -10,7 +10,7 @@ export default class ColorIndicatorModule extends CardMagicianModule {
             const [c1, c2] = colors;
             const img1 = this.resolveAsset(`indicator/${c1.char}.png`);
             const img2 = this.resolveAsset(`indicator/${c2.char}.png`);
-            return await this.linearBlend(img1, img2, 0.5, 0.5, 0.499, 0.499);
+            return await this.linearBlend(img1, img2, 0.5, 0.5, 0.499, 0.499).publish();
         }
         return '';
     }

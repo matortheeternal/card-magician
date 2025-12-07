@@ -29,7 +29,7 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
         return resolveAssetPath('frame/spotlight');
     }
 
-    async maskFrame(imageUrl) {
+    maskFrame(imageUrl) {
         return imageUrl;
     }
 
