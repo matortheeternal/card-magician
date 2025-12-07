@@ -86,9 +86,9 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath('mask/normal');
     }
 
-    async maskFrame(imageUrl) {
+    maskFrame(image) {
         const maskUrl = `${this.frameMaskFolder}/${this.frameMaskFilename}`
-        return await this.ctx.maskImage(imageUrl, maskUrl);
+        return this.ctx.maskImage(image, maskUrl);
     }
 
     get frameId() {
@@ -96,13 +96,13 @@ export default class NormalFrame extends CardFrame {
     }
 
     async resolveFrame(card) {
-        const imageUrl = await this.coloredBlend(this.frameFolder, card, {
+        const image = this.coloredBlend(this.frameFolder, card, {
             ext: this.frameExt,
             blendMaskFolder: this.frameBlendMaskFolder,
             hasLandTemplates: this.frameHasLandTemplates
         });
-        const maskedUrl = await this.maskFrame(imageUrl);
-        return this.background(this.frameId, maskedUrl);
+        const maskedImg = this.maskFrame(image);
+        return await this.background(this.frameId, maskedImg);
     }
 
     // --- TRIM MASKS ---
@@ -116,8 +116,8 @@ export default class NormalFrame extends CardFrame {
         return resolveAssetPath(`mask/${folder}/${this.trimMaskFilename}`);
     }
 
-    async maskTrim(imageUrl) {
-        return await this.ctx.maskImage(imageUrl, this.trimMaskUrl);
+    maskTrim(image) {
+        return this.ctx.maskImage(image, this.trimMaskUrl);
     }
 
     // --- CROWNS ---
@@ -171,12 +171,12 @@ export default class NormalFrame extends CardFrame {
 
     async resolveCrown(card) {
         if (!this.showCrown) return null;
-        const imageUrl = await this.coloredBlend(this.crownFolder, card, {
+        const image = this.coloredBlend(this.crownFolder, card, {
             ext: '.png',
             blendMaskFolder: this.crownBlendMaskFolder
         });
-        const maskedUrl = await this.applyMasks(imageUrl, this.crownMasks);
-        return this.background('crown', maskedUrl);
+        const maskedImg = this.applyMasks(image, this.crownMasks);
+        return await this.background('crown', maskedImg);
     }
 
     // --- VEHICLE TRIM ---
@@ -191,8 +191,8 @@ export default class NormalFrame extends CardFrame {
 
     async resolveVehicleTrim() {
         if (!this.showVehicleTrim) return null;
-        const maskedUrl = await this.maskTrim(this.vehicleTrimUrl);
-        return this.background('vehicle-trim', maskedUrl);
+        const maskedImg = this.maskTrim(this.vehicleTrimUrl);
+        return await this.background('vehicle-trim', maskedImg);
     }
 
     // --- DRAFT TRIM ---
@@ -211,12 +211,12 @@ export default class NormalFrame extends CardFrame {
 
     async resolveDraftTrim(card) {
         if (!this.showDraftTrim) return null;
-        const imageUrl = await this.coloredBlend(this.draftFolder, card, {
+        const image = this.coloredBlend(this.draftFolder, card, {
             ext: '.png',
             blendMaskFolder: this.draftBlendMaskFolder
         });
-        const maskedUrl = await this.maskTrim(imageUrl);
-        return this.background('draft-trim', maskedUrl);
+        const maskedImg = this.maskTrim(image);
+        return await this.background('draft-trim', maskedImg);
     }
 
     // --- NYX TRIM ---
@@ -252,12 +252,12 @@ export default class NormalFrame extends CardFrame {
 
     async resolveNyxTrim(card) {
         if (!this.showNyxTrim) return null;
-        const imageUrl = await this.coloredBlend(this.nyxFolder, card, {
+        const image = this.coloredBlend(this.nyxFolder, card, {
             ext: '.png',
             blendMaskFolder: this.nyxBlendMaskFolder
         });
-        const maskedUrl = await this.maskTrim(imageUrl);
-        return this.background('nyx-trim', maskedUrl);
+        const maskedImg = this.maskTrim(image);
+        return await this.background('nyx-trim', maskedImg);
     }
 
     // --- SNOW TRIM ---
@@ -276,13 +276,13 @@ export default class NormalFrame extends CardFrame {
 
     async resolveSnowTrim(card) {
         if (!this.showSnowTrim) return null;
-        const imageUrl = await this.coloredBlend(this.snowFolder, card, {
+        const image = this.coloredBlend(this.snowFolder, card, {
             ext: '.png',
             blendMaskFolder: this.snowBlendMaskFolder,
             hasLandTemplates: true
         });
-        const maskedUrl = await this.maskTrim(imageUrl);
-        return this.background('snow-trim', maskedUrl);
+        const maskedImg = this.maskTrim(image);
+        return await this.background('snow-trim', maskedImg);
     }
 
     // --- BORDER ---
@@ -300,8 +300,8 @@ export default class NormalFrame extends CardFrame {
 
     async resolveBorder(card) {
         const borderColor = card.borderColor || '#000000';
-        const maskedUrl = await this.ctx.maskColor(this.borderMaskUrl, borderColor);
-        return this.background('border', maskedUrl);
+        const maskedImg = this.ctx.maskColor(this.borderMaskUrl, borderColor);
+        return await this.background('border', maskedImg);
     }
 
     // --- SCROLLS ---
@@ -321,7 +321,7 @@ export default class NormalFrame extends CardFrame {
 
     async resolveScrolls() {
         if (!this.showScrolls) return null;
-        return this.background('conspiracy-scrolls', this.scrollsUrl);
+        return await this.background('conspiracy-scrolls', this.scrollsUrl);
     }
 
     // --- NODE ---
@@ -344,11 +344,11 @@ export default class NormalFrame extends CardFrame {
 
     async resolveNode(card) {
         if (!this.showNode) return null;
-        const imageUrl = await this.coloredBlend(this.nodeFolder, card, {
+        const image = this.coloredBlend(this.nodeFolder, card, {
             ext: '.png',
             blendMaskFolder: this.nodeBlendMaskFolder
         });
-        return this.background('node', imageUrl);
+        return await this.background('node', image);
     }
 
     // --- MIRACLE TRIM ---
@@ -371,11 +371,11 @@ export default class NormalFrame extends CardFrame {
 
     async resolveMiracleTrim(card) {
         if (!this.showMiracleTrim) return null;
-        const imageUrl = await this.coloredBlend(this.miracleFolder, card, {
+        const image = this.coloredBlend(this.miracleFolder, card, {
             ext: '.png',
             blendMaskFolder: this.miracleBlendMaskFolder
         });
-        return this.background('miracle-trim', imageUrl);
+        return await this.background('miracle-trim', image);
     }
 
     // --- PT ---
@@ -390,7 +390,7 @@ export default class NormalFrame extends CardFrame {
     }
 
     async resolvePt(card) {
-        const imageUrl = `${this.ptFolder}/${this.getPtKey(card)}.png`;
-        return this.background('pt', imageUrl);
+        const image = `${this.ptFolder}/${this.getPtKey(card)}.png`;
+        return await this.background('pt', image);
     }
 }

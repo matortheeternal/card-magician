@@ -18,9 +18,9 @@ export default class ClearFrame extends NormalFrame {
     }
 
     /* --- FRAME --- */
-    async maskFrame(imageUrl) {
+    maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
-        return await this.ctx.maskImage(imageUrl, maskUrl);
+        return this.ctx.maskImage(imageUrl, maskUrl);
     }
 
     get frameId() {
@@ -39,6 +39,6 @@ export default class ClearFrame extends NormalFrame {
     async resolveMiracleTrim(card) {
         if (!card.isMiracle?.()) return null;
         const imageUrl = `${this.miracleFolder}/x.png`;
-        return this.background('miracle-trim', imageUrl);
+        return await this.background('miracle-trim', imageUrl);
     }
 }

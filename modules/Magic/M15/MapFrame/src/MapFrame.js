@@ -28,7 +28,7 @@ export default class MapFrame extends NormalFrame {
         return resolveAssetPath('mask/map');
     }
 
-    async maskFrame(imageUrl) {
+    maskFrame(imageUrl) {
         // TODO: image size mismatch
         return imageUrl;
     }

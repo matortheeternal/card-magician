@@ -24,7 +24,7 @@ export default class ArtModule extends CardMagicianModule {
         if (colorCount === 2) {
             const imgUrl1 = this.defaultImage(colors[0].char);
             const imgUrl2 = this.defaultImage(colors[1].char);
-            return await this.combineBlend(imgUrl1, imgUrl2);
+            return await this.combineBlend(imgUrl1, imgUrl2).publish();
         }
         return this.defaultImage('m');
     }
@@ -44,7 +44,7 @@ export default class ArtModule extends CardMagicianModule {
         const colorImage = await this.getDefaultColorImage(card, colorCount);
         const typeImage = this.getDefaultTypeImage(card);
         card.defaultImageUrl = typeImage
-            ? await this.combineBlend(colorImage, typeImage)
+            ? await this.combineBlend(colorImage, typeImage).publish()
             : colorImage;
         this.requestRender();
     }

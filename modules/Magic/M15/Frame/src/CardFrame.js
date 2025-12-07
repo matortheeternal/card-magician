@@ -26,7 +26,8 @@ export default class CardFrame {
         return backgrounds.filter(Boolean);
     }
 
-    background(id, imageUrl, zIndex) {
+    async background(id, image, zIndex) {
+        const imageUrl = typeof image === 'string' ? image : await image.publish();
         const backgroundImage = `url('${imageUrl}')`;
         const style = { backgroundImage, zIndex: zIndex || this.zIndex++ };
         return { id, style };
@@ -47,7 +48,7 @@ export default class CardFrame {
         return order;
     }
 
-    async resolveHybridColored(folder, card, options) {
+    resolveHybridColored(folder, card, options) {
         const colors = card.colorIdentity.colors;
         if (card.colorIdentity.isHybrid() && options.hybridMode === 'colorless')
             return this.resolveColorKey(folder, 'c', options);
@@ -59,26 +60,26 @@ export default class CardFrame {
         const blendCoords = card.hybridStyle?.includes('vertical')
             ? [0, 0.4, 0, 0.6]
             : [0.4, 0, 0.6, 0];
-        return await this.ctx.linearBlend(
+        return this.ctx.linearBlend(
             this.resolveColorKey(folder, c1, options),
             this.resolveColorKey(folder, c2, options),
             ...blendCoords
         );
     }
 
-    async resolveColored(folder, card, options = {}) {
+    resolveColored(folder, card, options = {}) {
         options = {...defaultColoredOptions, ...options};
         const colors = card.colorIdentity.colors;
         return colors.length === 2
-            ? await this.resolveHybridColored(folder, card, options)
+            ? this.resolveHybridColored(folder, card, options)
             : this.resolveColorKey(folder, card.getCardColorKey(), options);
     }
 
-    async applyMaskedBlends(baseUrl, ...blendMasks) {
-        let imgUrl = baseUrl;
-        for (const [baseUrl, maskUrl] of blendMasks.filter(Boolean))
-            imgUrl = await this.ctx.maskedBlend(imgUrl, baseUrl, maskUrl);
-        return imgUrl;
+    applyMaskedBlends(base, ...blendMasks) {
+        let img = base;
+        for (const [base, mask] of blendMasks.filter(Boolean))
+            img = this.ctx.maskedBlend(img, base, mask);
+        return img;
     }
 
     get useLandBlend() {
@@ -125,11 +126,11 @@ export default class CardFrame {
         return `${this.blendMaskFolder}/blend_artifact.png`;
     }
 
-    async coloredBlend(folder, card, options = {}) {
+    coloredBlend(folder, card, options = {}) {
         options = {...defaultColoredOptions, ...options};
-        const baseUrl = await this.resolveColored(folder, card, options);
+        const base = this.resolveColored(folder, card, options);
         this.blendMaskFolder = options.blendMaskFolder;
-        return await this.applyMaskedBlends(baseUrl,
+        return this.applyMaskedBlends(base,
             this.useLandBlend && [
                 `${folder}/${this.hybridBlendKey}${options.ext}`,
                 this.landBlendMaskUrl
@@ -149,10 +150,10 @@ export default class CardFrame {
         );
     }
 
-    async applyMasks(baseUrl, masks) {
-        let imgUrl = baseUrl;
-        for (const maskUrl of masks.filter(Boolean))
-            imgUrl = await this.ctx.maskImage(imgUrl, maskUrl);
-        return imgUrl;
+    applyMasks(base, masks) {
+        let img = base;
+        for (const mask of masks.filter(Boolean))
+            img = this.ctx.maskImage(img, mask);
+        return img;
     }
 }

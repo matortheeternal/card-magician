@@ -36,9 +36,9 @@ export default class DevoidFrame extends NormalFrame {
         return resolveAssetPath('frame/devoid');
     }
 
-    async maskFrame(imageUrl) {
+    maskFrame(imageUrl) {
         const maskUrl = resolveAssetPath('mask/frame/clear.png');
-        return await this.ctx.maskImage(imageUrl, maskUrl);
+        return this.ctx.maskImage(imageUrl, maskUrl);
     }
 
     get frameId() {
@@ -50,10 +50,10 @@ export default class DevoidFrame extends NormalFrame {
         return resolveAssetPath('mask/trim/devoid.png')
     }
 
-    async maskTrim(imageUrl) {
-        const maskedUrl = await super.maskTrim(imageUrl);
-        if (!this.card.other.avoidCoveringDevoid) return maskedUrl;
-        return this.ctx.maskImage(maskedUrl, this.devoidTrimMaskUrl);
+    maskTrim(imageUrl) {
+        const maskedImg = super.maskTrim(imageUrl);
+        if (!this.card.other.avoidCoveringDevoid) return maskedImg;
+        return this.ctx.maskImage(maskedImg, this.devoidTrimMaskUrl);
     }
 
     /* --- CROWN --- */
