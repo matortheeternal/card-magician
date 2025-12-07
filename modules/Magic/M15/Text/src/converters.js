@@ -1,4 +1,4 @@
-import { KeywordConverters } from "./keywords.js";
+import { KeywordConverter, getPsuedoKeywordConverters } from "./keywords.js";
 
 export const WhitespaceConverter = {
     match(str) {
@@ -64,7 +64,9 @@ export const FallbackConverter = {
 }
 
 export const converters = [
-    ...KeywordConverters,
+    // ...getKeywordConverters(),
+    KeywordConverter,
+    ...getPsuedoKeywordConverters(),
     WhitespaceConverter,
     ParenthesisConverter,
     SymbolConverter,
