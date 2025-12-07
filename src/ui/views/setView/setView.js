@@ -12,7 +12,7 @@ Alpine.data('setView', () => ({
 
     async init() {
         this.$root.innerHTML = html;
-        this.recentSets = Alpine.store('appConfig').recentFiles;
+        this.recentSets = Alpine.store('appConfig').recentFiles || [];
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards;
         this.changeTemplate = this.changeTemplate.bind(this);
@@ -24,8 +24,8 @@ Alpine.data('setView', () => ({
         });
 
         this.$watch('$store.appConfig.recentFiles', (recentFiles) => {
-            this.recentSets = recentFiles.slice(0, 4);
-        })
+            this.recentSets = (recentFiles || []).slice(0, 4);
+        });
 
         this.bindEvents();
         Alpine.initTree(this.$root);
