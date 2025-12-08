@@ -1,8 +1,4 @@
-import ObjectUrlAdapter from './ObjectUrlAdapter.js';
-
-const defaultAdapters = [
-    new ObjectUrlAdapter()
-];
+import { getAdapters } from './adapters/adapterRegistry.js';
 
 /**
  * Abstract base class for serializers that use type adapters to transform
@@ -32,7 +28,7 @@ export default class Serializer {
      */
     constructor(adapters = null) {
         /** @type {Array<SerializerAdapter>} */
-        this.adapters = adapters || defaultAdapters;
+        this.adapters = adapters || getAdapters();
     }
 
     /**
