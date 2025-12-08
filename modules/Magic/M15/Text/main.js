@@ -18,7 +18,8 @@ export default class TextModule extends CardMagicianModule {
 
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
-            return textToHTML(html, card).map(p => {
+            const game = this.getActiveGame();
+            return textToHTML(html, card, game).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;
