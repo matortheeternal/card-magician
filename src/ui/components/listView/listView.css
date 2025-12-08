@@ -100,6 +100,11 @@ th:has(+ th:hover) .resize-handle::after {
     color: var(--sl-input-color);
     transition: color 0.3s ease-in-out;
     cursor: pointer;
+    font-family: var(--sl-font-sans);
+    font-size: var(--sl-font-size-small);
+    padding: var(--sl-spacing-2x-small);
+    padding-left: var(--sl-spacing-small);
+    margin-bottom: var(--sl-spacing-small);
 }
 
 .add-row:hover {

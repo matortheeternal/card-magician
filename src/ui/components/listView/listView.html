@@ -29,10 +29,11 @@
             </template>
         </tr>
     </template>
-    <template x-if="activeRows.length > 0">
-        <tr class="add-row" @click="addRowClick">
-            <td x-text="addRowLabel"></td>
-        </tr>
-    </template>
     </tbody>
 </table>
+
+<template x-if="activeRows.length > 0">
+    <div class="add-row" @click="addRowClick">
+        <span x-text="addRowLabel"></span>
+    </div>
+</template>
