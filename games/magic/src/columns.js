@@ -1,5 +1,6 @@
 import compareRowPTs from './compareRowPTs.js';
 import compareRowManaCosts from './compareRowManaCosts.js';
+import compareRowRarity from './compareRarity.js';
 
 function collect(row, key, separator = ' // ') {
     return [row.front[key], row.back && row.back[key]]
@@ -39,8 +40,8 @@ export function buildColumns() {
             return f.manaCost.cmc.toString();
         }),
         compare: (a, b) => {
-            return (parseInt(b.data.cmc) || 0)
-                 - (parseInt(a.data.cmc) || 0);
+            return (parseInt(a.data.cmc) || 0)
+                 - (parseInt(b.data.cmc) || 0);
         }
     }, {
         label: 'Type',
@@ -69,14 +70,18 @@ export function buildColumns() {
     }, {
         label: 'Rarity',
         width: '100px',
-        data: row => row.front.rarity || ''
+        data: row => {
+            if (!row.front.rarity) return '';
+            return row.front.rarity.slice(0, 1).toUpperCase() +
+                   row.front.rarity.slice(1);
+        },
+        compare: compareRowRarity
     }, {
         label: '#',
         width: '50px',
         data: row => {
-            return (parseInt(row.front?.collectorNumber || row.front?.autoCollectorNumber) || 0)
-                .toString()
-                .padStart(4, '0')
+            const number = row.front.collectorNumber || row.front.autoCollectorNumber;
+            return (parseInt(number) || 0).toString().padStart(4, '0');
         }
     }];
 }
