@@ -31,7 +31,6 @@ body.column-resizing * {
 .list-view-table th {
     text-align: left;
     font-weight: normal;
-    overflow: visible;
 }
 
 .list-view-table tr td:first-of-type {
@@ -69,6 +68,12 @@ body.column-resizing * {
     z-index: 1;
     cursor: col-resize;
     transition: background 0.3s ease;
+}
+
+.list-view-table th .column-sort {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.2em;
 }
 
 th:last-of-type .resize-handle {
