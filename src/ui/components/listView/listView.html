@@ -3,8 +3,19 @@
     <thead>
     <tr>
     <template x-for="(column, index) in activeColumns">
-        <th>
+        <th @click="onHeaderClick($event, column)">
             <span x-text="column.label"></span>
+            <template x-if="column.sort">
+                <div class="column-sort">
+                    <sl-tooltip hoist :content="'Sort priority ' + column.sort.priority" x-show="column.sort.priority">
+                        <sl-icon :name="(column.sort.priority || '0') + '-circle-fill'"
+                        ></sl-icon>
+                    </sl-tooltip>
+                    <sl-tooltip hoist :content="'Sorted in ' + (column.sort.direction === 'asc' ? 'ascending order' : 'descending order')">
+                        <sl-icon :name="column.sort.direction === 'asc' ? 'arrow-up' : 'arrow-down'"></sl-icon>
+                    </sl-tooltip>
+                </div>
+            </template>
             <div class="resize-handle" @mousedown="onResizeMouseDown($event, index)"></div>
         </th>
     </template>

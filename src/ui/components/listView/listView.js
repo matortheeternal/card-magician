@@ -3,6 +3,7 @@ import { emit } from '../../../shared/htmlUtils.js';
 import { selectRow } from './rowSelectionService.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import html from './listView.html';
+import { getColumnSelectMode } from './columnSortService.js';
 
 function makeDefaultDisplayFunction(column) {
     return (row) => `<span>${row.data[column.id]}</span>`;
@@ -55,6 +56,30 @@ Alpine.data('listView', (config) => ({
                 original: row
             };
         });
+        this.sortRows();
+    },
+
+    defaultCompare(col, a, b) {
+        const aData = a.data[col.id];
+        const bData = b.data[col.id];
+        return aData.localeCompare(bData);
+    },
+
+    sortRows() {
+        const sortCols = this.activeColumns
+            .filter(col => Boolean(col.sort))
+            .sort((a, b) => a.sort.priority - b.sort.priority);
+        if (!sortCols.length) return;
+        this.activeRows.sort((a, b) => {
+            for (const col of sortCols) {
+                const diff = col.compare
+                    ? col.compare(a, b)
+                    : this.defaultCompare(col, a, b);
+                if (!diff) continue;
+                return col.sort.direction === 'asc' ? -diff : diff;
+            }
+            return 0;
+        });
     },
 
     bindEvents() {
@@ -79,8 +104,11 @@ Alpine.data('listView', (config) => ({
             .join('');
     },
 
-    onHeaderClick(e, colIndex) {
-        // TODO: sort
+    onHeaderClick(e, column) {
+        e.stopImmediatePropagation();
+        const mode = getColumnSelectMode(column, e);
+        mode.select(column, this.activeColumns);
+        this.sortRows();
     },
 
     onResizeMouseDown(e, colIndex) {
