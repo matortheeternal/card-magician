@@ -1,0 +1,267 @@
+export default [
+  {
+    "label": "Adapt",
+    "type": "keyword",
+    "expression": "Adapt <number>",
+    "reminderTexts": [
+      {
+        "template": "If this creature has no +1/+1 counters on it, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it."
+      }
+    ]
+  },
+  {
+    "label": "Bloodthirst",
+    "type": "keyword",
+    "expression": "Bloodthirst <number>",
+    "reminderTexts": [
+      {
+        "match": {
+          "type": "numberIsX"
+        },
+        "template": "This creature enters with <number:number_word_or_a> +1/+1 counter<number:plural:s> on it, where X is the damage dealt to your opponents this turn."
+      },
+      {
+        "template": "If an opponent was dealt damage this turn, this creature enters with <number:number_word_or_a> +1/+1 counter<number:plural:s> on it."
+      }
+    ]
+  },
+  {
+    "label": "Renown",
+    "type": "keyword",
+    "expression": "Renown <number>",
+    "reminderTexts": [
+      {
+        "template": "When this creature deals combat damage to a player, if it isn't renowned, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it and it becomes renowned."
+      }
+    ]
+  },
+  {
+    "label": "Graft",
+    "type": "keyword",
+    "expression": "Graft <number>",
+    "reminderTexts": [
+      {
+        "template": "This <basic_super_type> enters with <number:number_word_or_a> +1/+1 counter<number:plural:s> on it. Whenever another creature enters, you may move a +1/+1 counter from this creature onto it."
+      }
+    ]
+  },
+  {
+    "label": "Bushido",
+    "type": "keyword",
+    "expression": "Bushido <number>",
+    "reminderTexts": [
+      {
+        "template": "Whenever this creature blocks or becomes blocked, it gets +<number>/+<number> until end of turn."
+      }
+    ]
+  },
+  {
+    "label": "Crew",
+    "type": "keyword",
+    "expression": "Crew <number>",
+    "reminderTexts": [
+      {
+        "template": "Tap any number of creatures you control with total power <number> or more: This Vehicle becomes an artifact creature until end of turn."
+      }
+    ]
+  },
+  {
+    "label": "Ripple",
+    "type": "keyword",
+    "expression": "Ripple <number>",
+    "reminderTexts": [
+      {
+        "template": "When you cast this spell, you may reveal the top <number:number_word_or_a> cards of your library. You may cast spells with the same name as this spell from among those cards without paying their mana costs. Put the rest on the bottom of your library."
+      }
+    ]
+  },
+  {
+    "label": "Tribute",
+    "type": "keyword",
+    "expression": "Tribute <number>",
+    "reminderTexts": [
+      {
+        "template": "As this creature enters, an opponent of your choice may put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it."
+      }
+    ]
+  },
+  {
+    "label": "Monstrosity",
+    "type": "keyword",
+    "expression": "Monstrosity <number>",
+    "reminderTexts": [
+      {
+        "template": "If this creature isn't monstrous, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it and it becomes monstrous."
+      }
+    ]
+  },
+  {
+    "label": "Toxic",
+    "type": "keyword",
+    "expression": "Toxic <number>",
+    "reminderTexts": [
+      {
+        "template": "Players dealt combat damage by this creature also get <number:number_word_or_a> poison counters."
+      }
+    ]
+  },
+  {
+    "label": "Support",
+    "type": "keyword",
+    "expression": "Support <number>",
+    "reminderTexts": [
+      {
+        "match": {
+          "type": "cardSuperType",
+          "params": {
+            "types": ["creature"]
+          }
+        },
+        "template": "Put a +1/+1 counter on each of up to <number:number_word_or_a> other target creatures."
+      },
+      {
+        "template": "Put a +1/+1 counter on each of up to <number:number_word_or_a> target creatures."
+      }
+    ]
+  },
+  {
+    "label": "Fading",
+    "type": "keyword",
+    "expression": "Fading <number>",
+    "reminderTexts": [
+      {
+        "template": "This <basic_super_type> enters with <number:number_word_or_a> fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it."
+      }
+    ]
+  },
+  {
+    "label": "Afterlife",
+    "type": "keyword",
+    "expression": "Afterlife <number>",
+    "reminderTexts": [
+      {
+        "template": "When this creature dies, create <number:number_word_or_a> 1/1 white and black Spirit creature token<number:plural:s> with flying."
+      }
+    ]
+  },
+  {
+    "label": "Amplify",
+    "type": "keyword",
+    "expression": "Amplify <number>",
+    "reminderTexts": [
+      {
+        "template": "As this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it for each <subtypes_and_or> card you reveal in your hand."
+      }
+    ]
+  },
+  {
+    "label": "Soulshift",
+    "type": "keyword",
+    "expression": "Soulshift <number>",
+    "reminderTexts": [
+      {
+        "template": "When this creature dies, you may return target Spirit card with mana value <number> or less from your graveyard to your hand."
+      }
+    ]
+  },
+  {
+    "label": "Hideaway",
+    "type": "keyword",
+    "expression": "Hideaway <number>",
+    "reminderTexts": [
+      {
+        "template": "When this <basic_super_type> enters, look at the top <number:number_word_or_a> cards of your library, exile one face down, then put the rest on the bottom in a random order."
+      }
+    ]
+  },
+  {
+    "label": "Rampage",
+    "type": "keyword",
+    "expression": "Rampage <number>",
+    "reminderTexts": [
+      {
+        "template": "Whenever this creature becomes blocked, it gets +<number>/+<number> until end of turn for each creature blocking it beyond the first."
+      }
+    ]
+  },
+  {
+    "label": "Backup",
+    "type": "keyword",
+    "expression": "Backup <number>",
+    "reminderTexts": [
+      {
+        "template": "When this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on target creature. If that's another creature, it gains the following abilities until end of turn."
+      }
+    ]
+  },
+  {
+    "label": "Saddle",
+    "type": "keyword",
+    "expression": "Saddle <number>",
+    "reminderTexts": [
+      {
+        "template": "Tap any number of other creatures you control with total power <number> or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery."
+      }
+    ]
+  },
+  {
+    "label": "Fabricate",
+    "type": "keyword",
+    "expression": "Fabricate <number>",
+    "reminderTexts": [
+      {
+        "template": "When this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it or create <number:number_word_or_a> 1/1 colorless Servo artifact creature tokens."
+      }
+    ]
+  },
+  {
+    "label": "Annihilator",
+    "type": "keyword",
+    "expression": "Annihilator <number>",
+    "reminderTexts": [
+      {
+        "template": "Whenever this creature attacks, defending player sacrifices <number:number_word_or_a> permanents of their choice."
+      }
+    ]
+  },
+  {
+    "label": "Afflict",
+    "type": "keyword",
+    "expression": "Afflict <number>",
+    "reminderTexts": [
+      {
+        "template": "Whenever this creature becomes blocked, defending player loses <number> life."
+      }
+    ]
+  },
+  {
+    "label": "Dredge",
+    "type": "keyword",
+    "expression": "Dredge <number>",
+    "reminderTexts": [
+      {
+        "template": "If you would draw a card, you may mill <number:number_word_or_a> cards instead. If you do, return this card from your graveyard to your hand."
+      }
+    ]
+  },
+  {
+    "label": "Frenzy",
+    "type": "keyword",
+    "expression": "Frenzy <number>",
+    "reminderTexts": [
+      {
+        "template": "Whenever this creature attacks and isn't blocked, it gets +<number>/+0 until end of turn."
+      }
+    ]
+  },
+  {
+    "label": "Spaceship",
+    "type": "keyword",
+    "expression": "Spaceship <number>",
+    "reminderTexts": [
+      {
+        "template": "This creature enters with <number:number_word_or_a> +1/+1 counter<number:plural:s>. If it would be dealt damage, remove that many +1/+1 counters instead. Its abilities are active as long as it has at least that many +1/+1 counters."
+      }
+    ]
+  }
+];

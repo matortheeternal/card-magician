@@ -65,12 +65,12 @@ export const FallbackConverter = {
 
 export const converters = [
     // ...getKeywordConverters(),
-    KeywordConverter,
     ...getPsuedoKeywordConverters(),
     WhitespaceConverter,
     ParenthesisConverter,
     SymbolConverter,
     LegendNameConverter,
     CardNameConverter,
+    KeywordConverter,
     FallbackConverter
 ];
