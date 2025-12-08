@@ -9,7 +9,7 @@ export default class ClearFrame extends NormalFrame {
         return card.frame === 'clear';
     }
 
-    async coloredBlend(folder) {
+    coloredBlend(folder) {
         return `${folder}/x.png`;
     }
 
