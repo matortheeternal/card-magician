@@ -1,5 +1,10 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
 import Alpine from 'alpinejs';
+import SerializerAdapter from '../sets/adapters/SerializerAdapter.js';
+import {
+    registerAdapter,
+    registerBinaryAdapter
+} from '../sets/adapters/adapterRegistry.js';
 
 export default class CardMagicianGame {
     /**
@@ -125,5 +130,21 @@ export default class CardMagicianGame {
     */
     getActiveSet() {
         return Alpine.store('views').activeSet;
+    }
+
+    /**
+     * Registers a SerializerAdapter constructed by a passed factory
+     * function with the adapter registry, allowing it to be used when
+     * loading and saving set files.
+     *
+     * @param {function(SerializerAdapter)} factory
+     * @param {boolean=false} asBinaryAdapter
+     * @returns {object}
+     */
+    addSerializerAdapter(factory, asBinaryAdapter = false) {
+        const register = asBinaryAdapter
+            ? registerBinaryAdapter
+            : registerAdapter;
+        register(factory(SerializerAdapter));
     }
 }
