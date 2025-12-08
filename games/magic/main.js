@@ -31,7 +31,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     get columns () {
-        return buildColumns(this.ManaScribe);
+        return buildColumns();
     }
 
     get defaultTemplateId() {

@@ -1,30 +1,24 @@
+import compareRowPTs from './compareRowPTs.js';
+import compareRowManaCosts from './compareRowManaCosts.js';
+
 function collect(row, key, separator = ' // ') {
-    const values = [];
-    for (const face of Object.values(row))
-        if (face[key]) values.push(face[key]);
-    return values.join(separator);
+    return [row.front[key], row.back && row.back[key]]
+        .filter(Boolean)
+        .join(separator);
 }
 
 function collectMap(row, fn, separator = ' // ') {
-    const values = [];
-    for (const face of Object.values(row)) {
-        const value = fn(face);
-        if (value) values.push(value);
-    }
-    return values.join(separator);
+    return [fn(row.front), row.back && fn(row.back)]
+        .filter(Boolean)
+        .join(separator);
 }
 
 function collectUnique(row, fn, separator = ', ') {
-    const values = new Set();
-    for (const face of Object.values(row)) {
-        const valuesToAdd = fn(face);
-        if (valuesToAdd.length)
-            valuesToAdd.forEach(v => values.add(v));
-    }
+    const values = new Set([...fn(row.front), ...fn(row.back)]);
     return [...values].join(separator);
 }
 
-export function buildColumns({ ManaCost }) {
+export function buildColumns() {
     return [{
         label: 'Name',
         width: '240px',
@@ -32,14 +26,22 @@ export function buildColumns({ ManaCost }) {
     }, {
         label: 'Cost',
         width: '87px',
-        data: row => collect(row, 'manaCost').toUpperCase()
+        data: row => collectMap(row, f => {
+            if (!f.manaCost?.toString) return '';
+            return f.manaCost.toString().toUpperCase();
+        }),
+        compare: compareRowManaCosts
     }, {
         label: 'CMC',
         width: '60px',
         data: row => collectMap(row, f => {
-            if (!f.manaCost) return '';
-            return ManaCost.parse(f.manaCost).cmc.toString();
-        })
+            if (!f.manaCost?.cmc) return '';
+            return f.manaCost.cmc.toString();
+        }),
+        compare: (a, b) => {
+            return (parseInt(b.data.cmc) || 0)
+                 - (parseInt(a.data.cmc) || 0);
+        }
     }, {
         label: 'Type',
         width: '230px',
@@ -55,12 +57,13 @@ export function buildColumns({ ManaCost }) {
         data: row => collectMap(row, f => {
             if (!f.power && !f.toughness) return '';
             return `${f.power || ''} / ${f.toughness || ''}`;
-        })
+        }),
+        compare: compareRowPTs
     }, {
         label: 'Color',
         width: '200px',
         data: row => collectUnique(row, f => {
-            if (!f.colors) return [];
+            if (!f?.colors) return [];
             return f.colors.map(c => c.name);
         })
     }, {
