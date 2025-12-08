@@ -9,8 +9,8 @@ import { loadTemplates, getTemplates } from './domain/template/templateRegistry.
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
 import AppConfig from './domain/game/appConfig.js';
-import cacheManager from './domain/gfx/CacheManager.js';
 import { bindToAlpine } from './ui/systems/statusSystem.js';
+import imageCache from './domain/gfx/ImageCache.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -80,7 +80,7 @@ async function startApp() {
     Alpine.store('appConfig', appConfig);
     await loadTemplates();
     Alpine.store('templates', getTemplates());
-    await cacheManager.preload();
+    await imageCache.preload();
     Alpine.store('views').loaded = true;
 }
 

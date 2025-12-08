@@ -1,4 +1,6 @@
 import { loadImage } from '../../shared/imageUtils.js';
+import imageCache from './ImageCache.js';
+import { fnv1a } from '../../shared/fsUtils.js';
 
 const operations = new Map();
 
@@ -24,6 +26,12 @@ export default class ImageOperation {
         this.args = args;
     }
 
+    makeFilename(imageFormat) {
+        const hash = fnv1a(JSON.stringify(this));
+        const ext = imageFormat.split('/').pop();
+        return `img-${hash}.${ext}`;
+    }
+
     async execute() {
         const op = operations.get(this.name);
         if (!op) throw new Error(`Unknown operation ${this.name}`);
@@ -40,11 +48,13 @@ export default class ImageOperation {
     }
 
     async publish(imageFormat = 'image/png', imageQuality = 0.92) {
+        const filename = this.makeFilename(imageFormat);
+        if (imageCache.has(filename))
+            return imageCache.get(filename);
+
+        console.debug('%cCache miss %s', 'color:grey', filename);
         const canvas = await this.execute();
-        const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, imageFormat, imageQuality);
-        });
-        return URL.createObjectURL(blob);
+        return await imageCache.save(filename, canvas, imageFormat, imageQuality);
     }
 }
 
