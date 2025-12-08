@@ -1,6 +1,8 @@
 import * as ManaScribe from './mana-scribe/src/index.js';
 import { buildColumns } from './src/columns.js';
 import { autoNumberCards } from './src/autoNumber.js';
+import { thisType } from './src/thisType.js';
+import { KeywordConverter, getPsuedoKeywordConverters } from './src/keywords.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -8,6 +10,9 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
+        this.thisType = thisType;
+        this.KeywordConverter = KeywordConverter;
+        this.getPsuedoKeywordConverters = getPsuedoKeywordConverters;
         this.numberFormatField = {
             id: 'collectorNumberFormat',
             label: 'Collector Number Format',
@@ -25,7 +30,6 @@ export default class MagicTheGathering extends CardMagicianGame {
             ]
         };
     }
-
     get columns () {
         return buildColumns(this.ManaScribe);
     }

@@ -1,5 +1,3 @@
-import { KeywordConverter, getPsuedoKeywordConverters } from "./keywords.js";
-
 export const WhitespaceConverter = {
     match(str) {
         return str.match(/^\s+/);
@@ -63,14 +61,15 @@ export const FallbackConverter = {
     }
 }
 
-export const converters = [
-    // ...getKeywordConverters(),
-    ...getPsuedoKeywordConverters(),
-    WhitespaceConverter,
-    ParenthesisConverter,
-    SymbolConverter,
-    LegendNameConverter,
-    CardNameConverter,
-    KeywordConverter,
-    FallbackConverter
-];
+export function getConverters(game) { 
+    return [
+        ...game.getPsuedoKeywordConverters(),
+        WhitespaceConverter,
+        ParenthesisConverter,
+        SymbolConverter,
+        LegendNameConverter,
+        CardNameConverter,
+        game.KeywordConverter,
+        FallbackConverter
+    ];
+}

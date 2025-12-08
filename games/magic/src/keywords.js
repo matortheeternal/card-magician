@@ -92,15 +92,16 @@ const paramRegex = {
 };
 
 const paramHandlers = {
-    number: value => parseInt(value),
+    number: value => { 
+        const nParsed = parseInt(value);
+        if (isNaN(nParsed)) return value;
+        return nParsed;
+    },
     number_word: value => digitalNumber(value)  
 };
 
 const paramFunctions = {
-    plural: (value, args, card) => { 
-        if (value > 1) return args[0] || s; 
-        return "";
-    },
+    plural: (value, args) => value !== 1 ? args[0] || 's' : '',
     number_word_or_a: value => englishNumberA[value] || value,
     number_word: value => englishNumber[value] || value
 };
@@ -122,12 +123,12 @@ function keywordInclude(tokens, str) {
         match += "(";
 
         if (paramExpr) match += paramExpr.source;
-        else match += token.value.toLowerCase(); // literals and invalid types
+        else match += token.value; // literals and invalid types
 
         match += ")";
     }
 
-    return str.match(match);
+    return str.match(new RegExp(match, "i"));
 }
 
 // function keywordExclude(keyword, str) {
@@ -161,6 +162,19 @@ function processReminderText(tokens, params, card) {
         if (token.value.substring(0, 5) === "card.") {
             token.value = card[token.value.substring(5)];
         }
+        if (token.value === "target_type") {
+            token.value = card.getThisType();
+        }
+
+        if (token.value === "subtypes_and_or") {
+            const subtypesCommas = card.subType.replaceAll(" ", ", ");
+            const finalComma = subtypesCommas.lastIndexOf(",");
+            token.value = subtypesCommas.substring(0, finalComma) + " and/or" + subtypesCommas.substring(finalComma + 1);
+        }
+
+        // if (token.value === "dies") {
+        //     token.value = 
+        // }
 
         const paramFn = paramFunctions[token.type] || literalParam;
         const paramValue = params[token.value] || token.value;
@@ -171,19 +185,21 @@ function processReminderText(tokens, params, card) {
 }
 
 const rtMatches = {
-    cardSuperType: (matchParams, params, card) => {
-        for (const param of matchParams.types) {
-            if (card.superType.toLowerCase().includes(param.toLowerCase())) return true;
+    cardProp: (matchParams, params, card) => {
+        const cardProp = card[matchParams.prop];
+        for (const param of matchParams.matches) {
+            if (cardProp.match(new RegExp(param, "i"))) return true;
         }
         return false;
-    }
+    },
+    numberIsX: (matchParams, params) => params["number"]  === "X" 
 };
 
 function handleReminderText(keyword, params, card) {
     for (const reminderText of keyword.reminderTexts) {
         if (reminderText.match) {
             const matchRes = rtMatches[reminderText.match.type](reminderText.match.params, params, card);
-            if (matchRes) processReminderText(parseKeywordExpression(reminderText.template), params, card);
+            if (matchRes) return processReminderText(parseKeywordExpression(reminderText.template), params, card);
         }
         else {
             return processReminderText(parseKeywordExpression(reminderText.template), params, card); // has no condition
@@ -200,7 +216,7 @@ export const KeywordConverter = {
         let reminderText = "";
 
         for (const keyword of keywords) {
-            const [ keywordMatched, params ] = keywordMatch(keyword, match[0].toLowerCase());
+            const [ keywordMatched, params ] = keywordMatch(keyword, match[0]);
             if (keywordMatched) reminderText += handleReminderText(keyword, params, card) + " ";
         }
         

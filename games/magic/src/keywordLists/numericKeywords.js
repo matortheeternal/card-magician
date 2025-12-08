@@ -41,7 +41,7 @@ export default [
     "expression": "Graft <number>",
     "reminderTexts": [
       {
-        "template": "This <basic_super_type> enters with <number:number_word_or_a> +1/+1 counter<number:plural:s> on it. Whenever another creature enters, you may move a +1/+1 counter from this creature onto it."
+        "template": "This <target_type> enters with <number:number_word_or_a> +1/+1 counter<number:plural:s> on it. Whenever another creature enters, you may move a +1/+1 counter from this <target_type> onto it."
       }
     ]
   },
@@ -112,9 +112,10 @@ export default [
     "reminderTexts": [
       {
         "match": {
-          "type": "cardSuperType",
+          "type": "cardProp",
           "params": {
-            "types": ["creature"]
+            "prop": "superType",
+            "matches": ["creature"]
           }
         },
         "template": "Put a +1/+1 counter on each of up to <number:number_word_or_a> other target creatures."
@@ -130,7 +131,7 @@ export default [
     "expression": "Fading <number>",
     "reminderTexts": [
       {
-        "template": "This <basic_super_type> enters with <number:number_word_or_a> fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it."
+        "template": "This <target_type> enters with <number:number_word_or_a> fade counter<number:plural:s> on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it."
       }
     ]
   },
@@ -150,7 +151,7 @@ export default [
     "expression": "Amplify <number>",
     "reminderTexts": [
       {
-        "template": "As this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it for each <subtypes_and_or> card you reveal in your hand."
+        "template": "As this <target_type> enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it for each <subtypes_and_or> card you reveal in your hand."
       }
     ]
   },
@@ -160,7 +161,7 @@ export default [
     "expression": "Soulshift <number>",
     "reminderTexts": [
       {
-        "template": "When this creature dies, you may return target Spirit card with mana value <number> or less from your graveyard to your hand."
+        "template": "When this <target_type> <dies>, you may return target Spirit card with mana value <number> or less from your graveyard to your hand."
       }
     ]
   },
@@ -170,7 +171,7 @@ export default [
     "expression": "Hideaway <number>",
     "reminderTexts": [
       {
-        "template": "When this <basic_super_type> enters, look at the top <number:number_word_or_a> cards of your library, exile one face down, then put the rest on the bottom in a random order."
+        "template": "When this <target_type> enters, look at the top <number:number_word_or_a> cards of your library, exile one face down, then put the rest on the bottom in a random order."
       }
     ]
   },
