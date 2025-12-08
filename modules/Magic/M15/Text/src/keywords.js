@@ -40,15 +40,13 @@ function digitalNumber(englishN) {
     return englishNumber.indexOf(englishN);
 }
 
-const bolster = {
-    match: "[Bb]olster <counters:number>",
-    reminderText: "Choose a creature with the least toughness among creatures you control and put <counters:number-word-or-a> +1/+1 counter<counters:handle-plural> on it.",
-    exclude: []
-}
+import numericKeywords from "./keywordLists/numericKeywords.js";
+import simpleKeywords from  "./keywordLists/simpleKeywords.js";
 
 const keywords = [
-    bolster
-];
+    ...numericKeywords,
+    ...simpleKeywords
+]
 
 const pseudoKeywords = [
     "Channel",
@@ -75,7 +73,8 @@ function parseNextKeywordToken(str) {
     if (!token.includes("<")) return [match, {type: "literal", value: token, args: []}];
 
     const tokenArgs = token.substring(1, token.length - 1).split(":");
-    const [ value, type ] = tokenArgs;
+    let [ value, type ] = tokenArgs;
+    if (!type) type = value; // so we can have things like <number>
     const args = tokenArgs.slice(2);
 
     return [match, {type: type, value: value, args: args}];
@@ -85,37 +84,33 @@ const literalParam = value => value;
 const paramRegex = {
     number: /[XYZ\d]+/,
     name: /[\w ]+?/,
-    ["one-word"]: /[^ ]+/,
-    prefix: /[A-Z][A-Z,a-z’' ]*/, // regex stolen from mse
-    ["number-word"]: /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/, // regex stolen from mse
+    one_word: /[^ ]+/,
+    prefix: /[^,;.]*?/,
+    number_word: /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/, // regex stolen from mse
     a: /an?/,
-    plural: /[a-z]s?/
+    s: /[a-z]s?/
 };
 
 const paramHandlers = {
     number: value => parseInt(value),
-    ["number-word"]: value => digitalNumber(value)
+    number_word: value => digitalNumber(value)  
 };
 
 const paramFunctions = {
-    ["handle-plural"]: value => { 
-        if (value > 1) return "s"; 
+    plural: (value, args, card) => { 
+        if (value > 1) return args[0] || s; 
         return "";
     },
-    ["handle-plural-es"]: value => { 
-        if (value > 1) return "es"; 
-        return "";
-    },
-    ["number-word-or-a"]: value => englishNumberA[value] || value,
-    ["number-word"]: value => englishNumber[value] || value
+    number_word_or_a: value => englishNumberA[value] || value,
+    number_word: value => englishNumber[value] || value
 };
 
-
-function keywordMatch(tokens, keyword, str) {
+function keywordMatch(keyword, str) {
+    const tokens = parseKeywordExpression(keyword.expression);
     const included = keywordInclude(tokens, str);
-    const excluded = keywordExclude(keyword, str);
+    if (included) return [ included, processKeywordParams(tokens, included) ];
+    
 
-    if (included && !excluded) return [ included, processKeywordParams(tokens, included) ];
     return [false, false];
 }
 
@@ -127,7 +122,7 @@ function keywordInclude(tokens, str) {
         match += "(";
 
         if (paramExpr) match += paramExpr.source;
-        else match += token.value; // literals and invalid types
+        else match += token.value.toLowerCase(); // literals and invalid types
 
         match += ")";
     }
@@ -135,15 +130,15 @@ function keywordInclude(tokens, str) {
     return str.match(match);
 }
 
-function keywordExclude(keyword, str) {
-    const exclude = keyword.exclude || [];
+// function keywordExclude(keyword, str) {
+//     const exclude = keyword.exclude || [];
 
-    for (const excludeMatch of exclude) {
-        if (str.match(excludeMatch)) return true;
-    }
+//     for (const excludeMatch of exclude) {
+//         if (str.match(excludeMatch)) return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
 function processKeywordParams(tokens, match) {
     const params = match.slice(1);
@@ -159,29 +154,54 @@ function processKeywordParams(tokens, match) {
     return paramsProcessed;
 }
 
-function processReminderText(tokens, params) {
+function processReminderText(tokens, params, card) {
     let output = "";
 
-    for (const token of tokens) {
+    for (const token of tokens) {        
+        if (token.value.substring(0, 5) === "card.") {
+            token.value = card[token.value.substring(5)];
+        }
+
         const paramFn = paramFunctions[token.type] || literalParam;
         const paramValue = params[token.value] || token.value;
-        console.log(paramValue, paramFn(paramValue));
-        output += paramFn(paramValue, token);
+        output += paramFn(paramValue, token.args, card);
     }
 
     return output;
 }
 
+const rtMatches = {
+    cardSuperType: (matchParams, params, card) => {
+        for (const param of matchParams.types) {
+            if (card.superType.toLowerCase().includes(param.toLowerCase())) return true;
+        }
+        return false;
+    }
+};
+
+function handleReminderText(keyword, params, card) {
+    for (const reminderText of keyword.reminderTexts) {
+        if (reminderText.match) {
+            const matchRes = rtMatches[reminderText.match.type](reminderText.match.params, params, card);
+            if (matchRes) processReminderText(parseKeywordExpression(reminderText.template), params, card);
+        }
+        else {
+            return processReminderText(parseKeywordExpression(reminderText.template), params, card); // has no condition
+        }
+    }
+    
+}
+
 export const KeywordConverter = {
     match(str) {
         return str.match(/.*/);
-    },
+    }, 
     convert(match, state, card, outputSymbols) {
         let reminderText = "";
 
         for (const keyword of keywords) {
-            const [ keywordMatched, params ] = keywordMatch(parseKeywordExpression(keyword.match), keyword, match[0]);
-            if (keywordMatched) reminderText += processReminderText(parseKeywordExpression(keyword.reminderText), params) + " ";
+            const [ keywordMatched, params ] = keywordMatch(keyword, match[0].toLowerCase());
+            if (keywordMatched) reminderText += handleReminderText(keyword, params, card) + " ";
         }
         
         const processedRt = reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "";
