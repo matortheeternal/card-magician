@@ -1,10 +1,14 @@
 import * as ManaScribe from './mana-scribe/src/index.js';
 import { buildColumns } from './src/columns.js';
 import { autoNumberCards } from './src/autoNumber.js';
+import MakeManaCostAdapter from './src/ManaCostAdapter.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.ManaScribe = ManaScribe;
+        this.addSerializerAdapter(SerializerAdapter => {
+            return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
+        });
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
