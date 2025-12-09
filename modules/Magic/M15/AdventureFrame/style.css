@@ -17,6 +17,11 @@
     left: 3%;
 }
 
+.frame-adventure .bg.left-page, .frame-adventure .bg.right-page {
+    top: 3px;
+    height: 96%;
+}
+
 .bg.left-page,
 .frame-reversed .bg.right-page {
     right: 50%;
