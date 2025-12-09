@@ -56,7 +56,9 @@ function onKeyDown(event) {
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
     if (isUserEditing()) return;
-    hotkey.action?.();
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    hotkey.action?.(event);
 }
 
 document.addEventListener('keydown', onKeyDown);
