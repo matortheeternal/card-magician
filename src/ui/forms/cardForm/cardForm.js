@@ -1,6 +1,5 @@
 import Alpine from 'alpinejs';
 import html from './cardForm.html';
-import { buildCardFace } from '../../../domain/card/cardBuilder.js';
 
 class CardForm extends HTMLElement {
     constructor() {

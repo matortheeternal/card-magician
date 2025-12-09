@@ -1,4 +1,5 @@
 import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
+import { sifter } from './search.js';
 
 const games = [];
 
@@ -9,6 +10,7 @@ export async function setGame(gameId) {
     const { default: Module } = await import('/' + mainPath);
     const activeGame = await new Module(game.path);
     await activeGame.init();
+    activeGame.setupSearch(sifter);
     Alpine.store('views').activeSet = activeGame.newSet();
     return activeGame;
 }
