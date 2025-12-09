@@ -147,4 +147,12 @@ export default class CardMagicianGame {
             : registerAdapter;
         register(factory(SerializerAdapter));
     }
+
+    /**
+     * This function gets called after the init function is called.
+     * Use this function to configure SigilSifter to work with your game mode.
+     *
+     * @param {SigilSifter} sifter
+     */
+    setupSearch(sifter) {}
 }
