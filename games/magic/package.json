@@ -1,0 +1,16 @@
+{
+  "name": "@card-magician/magic",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@sigil-sifter/magic": "^1.0.0",
+    "@sigil-sifter/magic-cm": "file:../../../sigil-sifter/packages/sigil-sifter-magic-cm",
+    "mana-scribe": "^2.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.1"
+  },
+  "scripts": {
+    "build": "node esbuild.config.js"
+  }
+}

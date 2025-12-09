@@ -1,7 +1,10 @@
-import * as ManaScribe from './mana-scribe/src/index.js';
-import { buildColumns } from './src/columns.js';
-import { autoNumberCards } from './src/autoNumber.js';
-import MakeManaCostAdapter from './src/ManaCostAdapter.js';
+import * as ManaScribe from 'mana-scribe';
+import Magic from '@sigil-sifter/magic';
+import CardMagicianMagic from '@sigil-sifter/magic-cm';
+import CardMagicianCard from '@sigil-sifter/magic-cm/card';
+import { buildColumns } from './columns.js';
+import { autoNumberCards } from './autoNumber.js';
+import MakeManaCostAdapter from './ManaCostAdapter.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -12,6 +15,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
+
         this.numberFormatField = {
             id: 'collectorNumberFormat',
             label: 'Collector Number Format',
@@ -28,6 +32,11 @@ export default class MagicTheGathering extends CardMagicianGame {
                 { id: 'after', name: 'After Collector Number' },
             ]
         };
+    }
+
+    setupSearch(sifter) {
+        Magic(sifter, CardMagicianCard);
+        CardMagicianMagic(sifter);
     }
 
     get columns () {
