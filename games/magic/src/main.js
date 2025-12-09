@@ -52,12 +52,13 @@ export default class MagicTheGathering extends CardMagicianGame {
         const info = { ...newSet.info, ...(set?.info ?? {}) };
         set.cards.forEach(card => {
             card.notes ||= '';
+            card.tags ||= [];
         });
         return { ...newSet, ...set, info };
     }
 
     newCard() {
-        return { front: {}, notes: '' };
+        return { front: {}, notes: '', tags: [] };
     }
 
     newSet() {

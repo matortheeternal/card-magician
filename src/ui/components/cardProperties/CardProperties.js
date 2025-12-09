@@ -1,10 +1,27 @@
 import { esc } from '../../../shared/htmlUtils.js';
 import Alpine from 'alpinejs';
+import { getTags } from '../../../domain/game/tagManager.js';
 
 function buildHTML(card) {
     if (!card) return '';
+    const tags = getTags();
     return (
-        `<sl-textarea
+        `<sl-select
+          size="small"
+          label="Tags"
+          name="tags"
+          value="${esc(card.tags.join(' '))}"
+          placeholder="Click to add tags"
+          maxOptionsVisible="5"
+          clearable
+          multiple
+          hoist
+        >
+        ${tags.map(tag => (
+            `<sl-option value="${esc(tag.id)}">${tag.name}</sl-option>`
+        )).join('\n')}
+        </sl-select>
+        <sl-textarea
           size="small"
           resize="auto"
           autocomplete="off"
@@ -26,6 +43,7 @@ class CardProperties extends HTMLElement {
 
     bind(){
         this.addEventListener('sl-input', this.onInput);
+        this.addEventListener('sl-change', this.onChange);
     }
 
     set card(card) {
@@ -51,6 +69,18 @@ class CardProperties extends HTMLElement {
 
     onInput(e) {
         return this.updateNotes(e);
+    }
+
+    updateTags(e) {
+        if (e.target.name !== 'tags') return;
+        this.#card.tags = e.target.value;
+        const { selectedCard } = Alpine.store('views');
+        selectedCard.tags = this.#card.tags;
+        return true;
+    }
+
+    onChange(e) {
+        return this.updateTags(e);
     }
 }
 
