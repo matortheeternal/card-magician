@@ -30,8 +30,8 @@ export default function compareRowPTs(a, b) {
     const ptsB = extractRowPTs(b);
 
     for (let i = 0; i < ptsA.length; i++) {
-        if (ptsA[i] < ptsB[i]) return -1;
         if (ptsA[i] > ptsB[i]) return 1;
+        if (ptsA[i] < ptsB[i]) return -1;
     }
     return 0;
 }
