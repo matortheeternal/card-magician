@@ -4,7 +4,7 @@
   "type": "module",
   "dependencies": {
     "@sigil-sifter/magic": "^1.0.0",
-    "@sigil-sifter/magic-cm": "file:../../../sigil-sifter/packages/sigil-sifter-magic-cm",
+    "@sigil-sifter/magic-cm": "^1.0.0",
     "mana-scribe": "^2.1.1"
   },
   "devDependencies": {
