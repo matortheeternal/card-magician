@@ -72,8 +72,9 @@ body.column-resizing * {
 
 .list-view-table th .column-sort {
     display: inline-block;
-    vertical-align: middle;
-    line-height: 1.2em;
+    position: absolute;
+    top: 5px;
+    margin-left: 5px;
 }
 
 th:last-of-type .resize-handle {
