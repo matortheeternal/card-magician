@@ -48,3 +48,25 @@
     font-size: var(--sl-font-size-small);
     padding: var(--sl-spacing-3x-small);
 }
+
+.search-bar {
+    display: flex;
+    position: relative;
+    z-index: 1;
+    gap: 2px;
+    background: var(--sl-input-border-color);
+}
+
+.search-bar sl-input {
+    flex: 1;
+}
+
+.search-bar sl-input::part(base),
+.search-bar sl-button::part(base) {
+    border-radius: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom-width: 1.5px;
+}
