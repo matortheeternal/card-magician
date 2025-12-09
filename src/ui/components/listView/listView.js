@@ -15,6 +15,7 @@ Alpine.data('listView', (config) => ({
     addRowLabel: config.addRowLabel || 'Click to add a row',
     activeColumns: [],
     activeRows: [],
+
     async init() {
         this.$watch('columns', () => this.computeColumns());
         this.$watch('rows', () => this.computeRows());
