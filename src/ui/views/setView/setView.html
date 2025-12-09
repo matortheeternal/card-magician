@@ -4,7 +4,7 @@
         <sl-button @click="openAdvancedSearch">Advanced</sl-button>
     </div>
 </template>
-<div x-data="listView({ rows, columns, addRowLabel })"></div>
+<div x-data="listView({ rows, columns, addRowLabel })" class="list-view-container"></div>
 <template x-if="!rows.length">
     <div class="no-content-prompt">
         <span>This set has no cards in it.</span>
