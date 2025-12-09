@@ -1,0 +1,5 @@
+cm-card-properties {
+    display: block;
+    padding: var(--sl-spacing-medium);
+    font-family: var(--sl-font-sans);
+}

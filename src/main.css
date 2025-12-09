@@ -1,5 +1,6 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "ui/components/card/card.css";
+@import "ui/components/cardProperties/cardProperties.css";
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
