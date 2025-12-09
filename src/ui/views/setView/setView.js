@@ -159,8 +159,13 @@ Alpine.data('setView', () => ({
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => {
             const cards = Alpine.store('views').activeSet.cards
-            const results = this.searchValue ? filter(cards, this.searchValue) : cards;
-            this.rows.splice(0, this.rows.length, ...results);
+            try {
+                console.debug('%cSearching for:', 'color:orange', this.searchValue);
+                const results = this.searchValue ? filter(cards, this.searchValue) : cards;
+                this.rows.splice(0, this.rows.length, ...results);
+            } catch (e) {
+                console.debug('%cSearch error:', 'color:grey', e.message);
+            }
         }, 200);
     },
 
