@@ -3,18 +3,21 @@ import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
 import { loadSetData } from '../../../domain/sets/setManager.js';
+import { filter } from '../../../domain/game/search.js';
 
 Alpine.data('setView', () => ({
     rows: [],
     columns: [],
     recentSets: [],
+    showSearch: false,
+    searchValue: '',
     addRowLabel: 'Click to add a card or press Ctrl+Enter',
 
     async init() {
         this.$root.innerHTML = html;
         this.recentSets = Alpine.store('appConfig').recentFiles || [];
         this.columns = Alpine.store('game').columns;
-        this.rows = Alpine.store('views').activeSet.cards;
+        this.rows = Alpine.store('views').activeSet.cards.slice();
         this.changeTemplate = this.changeTemplate.bind(this);
         this.addFace = this.addFace.bind(this);
 
@@ -64,7 +67,9 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
+        this.$root.addEventListener('sl-input', (e) => this.search(e));
         this.$root.addEventListener('add-row-click', () => this.addCard());
+        registerAction('toggle-search', () => this.toggleSearch())
         registerAction('new-set', () => this.newSet());
         registerAction('add-card', () => this.addCard());
         registerAction('open-set', () => this.openSet());
@@ -133,6 +138,33 @@ Alpine.data('setView', () => ({
         });
 
         navigator.clipboard.writeText(JSON.stringify({ cards }));
+    },
+
+    searchInputKeyDown(e) {
+        if (e.key !== 'Escape') return;
+        e.preventDefault();
+        this.showSearch = false;
+    },
+
+    toggleSearch() {
+        this.showSearch = true;
+        Alpine.nextTick(() => {
+            const input = this.$root.querySelector('sl-input');
+            input.focus();
+        });
+    },
+
+    search(e) {
+        this.searchValue = e.target.value;
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {
+            const cards = Alpine.store('views').activeSet.cards;
+            this.rows = filter(cards, this.searchValue);
+        }, 200);
+    },
+
+    openAdvancedSearch() {
+        console.log('Open advanced search.');
     },
 
     async pasteCard() {
