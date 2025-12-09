@@ -1,6 +1,7 @@
 import compareRowPTs from './compareRowPTs.js';
 import compareRowManaCosts from './compareRowManaCosts.js';
 import compareRowRarity from './compareRarity.js';
+import { compareRowColors } from './compareRowColors.js';
 
 function collect(row, key, separator = ' // ') {
     return [row.front[key], row.back && row.back[key]]
@@ -66,7 +67,8 @@ export function buildColumns() {
         data: row => collectUnique(row, f => {
             if (!f?.colors) return [];
             return f.colors.map(c => c.name);
-        })
+        }),
+        compare: compareRowColors
     }, {
         label: 'Rarity',
         width: '100px',
