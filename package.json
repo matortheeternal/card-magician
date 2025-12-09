@@ -27,9 +27,8 @@
     "games/magic"
   ],
   "scripts": {
-    "postinstall": "npm --prefix games/magic run build",
-    "build": "node esbuild.config.js --minify",
-    "dev": "node esbuild.config.js",
+    "build": "node esbuild.config.js --minify && npm --prefix games/magic run build",
+    "dev": "node esbuild.config.js && npm --prefix games/magic run build",
     "release": "neu build --release",
     "start": "npm run dev && neu run -- --window-enable-inspector",
     "test": "npm run dev && neu run -- --run-tests"
