@@ -2,6 +2,8 @@ import Alpine from 'alpinejs';
 import html from './cardForm.html';
 
 class CardForm extends HTMLElement {
+    #card;
+
     constructor() {
         super();
         this.save = Alpine.debounce(this.save, 300);
@@ -13,14 +15,14 @@ class CardForm extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = this._card ? html : '';
+        this.innerHTML = this.#card ? html : '';
         this.bind();
     }
 
     bind() {
         this.faceForms.forEach(faceForm => {
             const faceId = faceForm.dataset.faceId;
-            faceForm.face = this._card[faceId];
+            faceForm.face = this.#card[faceId];
         });
     }
 
@@ -28,16 +30,17 @@ class CardForm extends HTMLElement {
         return this.querySelectorAll('cm-face-form, cm-options-form');
     }
     set card(value) {
-        this._card = value;
+        this.#card = value;
         this.render();
     }
 
-    get card() { return this._card; }
+    get card() { return this.#card; }
 
     async save() {
         const { activeCard, selectedCard } = Alpine.store('views');
-        for (const face of Object.values(activeCard))
-            selectedCard[face.id] = await face.save();
+        selectedCard.front = await activeCard.front.save();
+        if (activeCard.back)
+            selectedCard.back = await activeCard.back.save();
     }
 }
 

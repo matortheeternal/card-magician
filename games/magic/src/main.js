@@ -50,11 +50,14 @@ export default class MagicTheGathering extends CardMagicianGame {
     loadSet(set) {
         const newSet = this.newSet();
         const info = { ...newSet.info, ...(set?.info ?? {}) };
+        set.cards.forEach(card => {
+            card.notes ||= '';
+        });
         return { ...newSet, ...set, info };
     }
 
     newCard() {
-        return { front: {} };
+        return { front: {}, notes: '' };
     }
 
     newSet() {

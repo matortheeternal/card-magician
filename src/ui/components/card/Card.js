@@ -1,5 +1,7 @@
+import { getFaceKeys } from '../../../domain/card/cardBuilder.js';
+
 class Card extends HTMLElement {
-    _card;
+    #card;
     canFlip = false;
     initializedFaces = new Set();
 
@@ -9,23 +11,23 @@ class Card extends HTMLElement {
     }
 
     connectedCallback() {
-        if (!this._card) return;
+        if (!this.#card) return;
         this.renderFaces();
     }
 
     set card(card) {
-        this._card = card;
+        this.#card = card;
         this.canFlip = Boolean(card?.front && card?.back);
         if (this.isConnected) this.renderFaces();
     }
 
     get card() {
-        return this._card;
+        return this.#card;
     }
 
     startInitializing() {
         this.initializedFaces.clear();
-        this.expectedFaceCount = Object.keys(this._card).length;
+        this.expectedFaceCount = getFaceKeys(this.#card).length;
         this.classList.add('initializing');
         this.addEventListener(
             'card-face:initialized',
@@ -46,17 +48,20 @@ class Card extends HTMLElement {
         );
     }
 
+    renderFace(face) {
+        if (!face) return;
+        const faceElement = document.createElement('cm-card-face');
+        faceElement.face = face;
+        this.appendChild(faceElement);
+    }
+
     renderFaces() {
         this.innerHTML = '';
-        if (!this._card) return;
+        if (!this.#card) return;
 
         this.startInitializing();
-        for (const faceName of Object.keys(this._card)) {
-            const faceData = this._card[faceName];
-            const faceEl = document.createElement('cm-card-face');
-            faceEl.face = faceData;
-            this.appendChild(faceEl);
-        }
+        this.renderFace(this.#card.front);
+        this.renderFace(this.#card.back);
 
         this.classList.toggle('flip-container', this.canFlip);
     }
