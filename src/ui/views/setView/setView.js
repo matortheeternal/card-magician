@@ -144,6 +144,8 @@ Alpine.data('setView', () => ({
         if (e.key !== 'Escape') return;
         e.preventDefault();
         this.showSearch = false;
+        this.searchValue = '';
+        this.updateSearch();
     },
 
     toggleSearch() {
@@ -154,18 +156,22 @@ Alpine.data('setView', () => ({
         });
     },
 
+    updateSearch() {
+        const cards = Alpine.store('views').activeSet.cards
+        try {
+            console.debug('%cSearching for:', 'color:orange', this.searchValue);
+            const results = this.searchValue ? filter(cards, this.searchValue) : cards;
+            this.rows.splice(0, this.rows.length, ...results);
+        } catch (e) {
+            console.debug('%cSearch error:', 'color:grey', e.message);
+        }
+    },
+
     search(e) {
         this.searchValue = e.target.value;
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => {
-            const cards = Alpine.store('views').activeSet.cards
-            try {
-                console.debug('%cSearching for:', 'color:orange', this.searchValue);
-                const results = this.searchValue ? filter(cards, this.searchValue) : cards;
-                this.rows.splice(0, this.rows.length, ...results);
-            } catch (e) {
-                console.debug('%cSearch error:', 'color:grey', e.message);
-            }
+            this.updateSearch();
         }, 200);
     },
 
