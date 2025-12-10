@@ -12,11 +12,21 @@ import AppConfig from './domain/game/appConfig.js';
 import cacheManager from './domain/gfx/CacheManager.js';
 import { bindToAlpine } from './ui/systems/statusSystem.js';
 
+export async function timeBlock(label, fn) {
+    const start = performance.now();
+    try {
+        return fn();
+    } finally {
+        const end = performance.now();
+        console.log(`⏱️ ${label}: ${(end - start).toFixed(2)}ms`);
+    }
+}
+
 // BASE SETUP
-setupNeutralino();
-setupShoelace();
-setupAlpine();
-setupModuleSystem();
+timeBlock('setup neutralino', () => setupNeutralino());
+timeBlock('setup shoelace', () => setupShoelace());
+timeBlock('setup alpine', () => setupAlpine());
+timeBlock('setup module system', () => setupModuleSystem());
 
 async function ensureDirectories() {
     const paths = [
@@ -72,15 +82,15 @@ async function startApp() {
         await runTests();
         return;
     }
-    await loadGames();
-    bindToAlpine();
-    const game = await setGame('magic');
+    await timeBlock('loadGames', () => loadGames());
+    timeBlock('bindToAlpine', () => bindToAlpine());
+    const game = await timeBlock('setGame', () => setGame('magic'));
     Alpine.store('game', game);
-    const appConfig = new AppConfig(game);
+    const appConfig = timeBlock('appconfig', () => new AppConfig(game));
     Alpine.store('appConfig', appConfig);
-    await loadTemplates();
+    await timeBlock('loadTemplates', loadTemplates);
     Alpine.store('templates', getTemplates());
-    await cacheManager.preload();
+    await timeBlock('preload cache', () => cacheManager.preload());
     Alpine.store('views').loaded = true;
 }
 
