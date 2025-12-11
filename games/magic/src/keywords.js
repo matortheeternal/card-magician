@@ -88,7 +88,8 @@ const paramRegex = {
     prefix: /[^,;.]*?/,
     number_word: /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/, // regex stolen from mse
     a: /an?/,
-    s: /[a-z]s?/
+    s: /[a-z]?s?/,
+    cost: /{.+?}+|—.+/
 };
 
 const paramHandlers = {
@@ -97,13 +98,18 @@ const paramHandlers = {
         if (isNaN(nParsed)) return value;
         return nParsed;
     },
-    number_word: value => digitalNumber(value)  
+    number_word: value => digitalNumber(value),
+    s: value => value.match(/[Ss]/) ? value : "" 
 };
 
 const paramFunctions = {
     plural: (value, args) => value !== 1 ? args[0] || 's' : '',
     number_word_or_a: value => englishNumberA[value] || value,
-    number_word: value => englishNumber[value] || value
+    number_word: value => englishNumber[value] || value,
+    capitalize: value => value[0].toUpperCase() + value.substring(1),
+    lowercase: value => value.toLowerCase(),
+    target_singular: (value, args, card, target) => target !== "They" ? value : "",
+    target_plural: (value, args, card, target) => target === "They" ? value : ""
 };
 
 function keywordMatch(keyword, str) {
@@ -131,54 +137,51 @@ function keywordInclude(tokens, str) {
     return str.match(new RegExp(match, "i"));
 }
 
-// function keywordExclude(keyword, str) {
-//     const exclude = keyword.exclude || [];
-
-//     for (const excludeMatch of exclude) {
-//         if (str.match(excludeMatch)) return true;
-//     }
-
-//     return false;
-// }
-
 function processKeywordParams(tokens, match) {
     const params = match.slice(1);
     const paramsProcessed = {};
-    
+        
     for (const [i, param] of params.entries()) {
         const token = tokens[i];
         const handler = paramHandlers[token.type];
         if (handler) paramsProcessed[token.value] = handler(param, token);
-        else paramsProcessed[token.value] = token.value;
+        else paramsProcessed[token.value] = param;
     }
 
     return paramsProcessed;
 }
 
-function processReminderText(tokens, params, card) {
+const specialTokens = {
+    target_type: (token, card) => card.getThisType(),
+    subtypes_and_or: (token, card) => {
+        const subtypesCommas = card.subType.replaceAll(" ", ", ");
+        const finalComma = subtypesCommas.lastIndexOf(",");
+        token.value = subtypesCommas.substring(0, finalComma) + " and/or" + subtypesCommas.substring(finalComma + 1);
+    },
+    dies_or_gy: (token, card) => card.superType.match(/creature/i) ? "dies" : "is put into a graveyard from the battlefield",
+    target: (token, card, target) => target,
+    target_object: (token, card, target) => targetToObject(target, token.type),
+    station_creature_breakpoint: () => "Not implemented"
+};
+
+function processReminderText(tokens, params, card, target) {
     let output = "";
 
     for (const token of tokens) {        
+        for (const [ tkName, tkFn ] of Object.entries(specialTokens)) {
+            if (token.value === tkName) {
+                token.value = tkFn(token, card, target);
+                break;
+            }
+        }
+
         if (token.value.substring(0, 5) === "card.") {
             token.value = card[token.value.substring(5)];
         }
-        if (token.value === "target_type") {
-            token.value = card.getThisType();
-        }
-
-        if (token.value === "subtypes_and_or") {
-            const subtypesCommas = card.subType.replaceAll(" ", ", ");
-            const finalComma = subtypesCommas.lastIndexOf(",");
-            token.value = subtypesCommas.substring(0, finalComma) + " and/or" + subtypesCommas.substring(finalComma + 1);
-        }
-
-        // if (token.value === "dies") {
-        //     token.value = 
-        // }
 
         const paramFn = paramFunctions[token.type] || literalParam;
         const paramValue = params[token.value] || token.value;
-        output += paramFn(paramValue, token.args, card);
+        output += paramFn(paramValue, token.args, card, target);
     }
 
     return output;
@@ -192,37 +195,56 @@ const rtMatches = {
         }
         return false;
     },
-    numberIsX: (matchParams, params) => params["number"]  === "X" 
+    numberIsX: (matchParams, params) => params[matchParams?.param || "number"]  === "X",
+    isPlural: (matchParams, params) => params[matchParams?.param || "s"] === "s",
+    targetsOther: (matchParams, params, card, target) => !target.includes("This"),
+    costHasX: (matchParams, params) => params[matchParams?.param || "cost"].toLowerCase().includes("x"),
+    hasPt: (matchParams, params, card) => card.power || card.toughness,
+    hasPPCounters: (matchParams, params, card) => card.text.match(/modular/i)
 };
 
-function handleReminderText(keyword, params, card) {
+function handleReminderText(keyword, params, card, target) {
     for (const reminderText of keyword.reminderTexts) {
         if (reminderText.match) {
-            const matchRes = rtMatches[reminderText.match.type](reminderText.match.params, params, card);
-            if (matchRes) return processReminderText(parseKeywordExpression(reminderText.template), params, card);
+            const matchRes = rtMatches[reminderText.match.type]?.(reminderText.match.params, params, card, target);
+            if (matchRes) return processReminderText(parseKeywordExpression(reminderText.template), params, card, target);
         }
         else {
-            return processReminderText(parseKeywordExpression(reminderText.template), params, card); // has no condition
+            return processReminderText(parseKeywordExpression(reminderText.template), params, card, target); // has no condition
         }
     }
     
 }
 
-export const KeywordConverter = {
-    match(str) {
-        return str.match(/.*/);
-    }, 
-    convert(match, state, card, outputSymbols) {
-        let reminderText = "";
+const cardTypeRegex = "(creature|artifact|enchantment|planeswalker|battle|permanent|land|legendary|basic|snow|token ?)+";
+const itRegex = new RegExp(`(This ${card.getThisType()} (has|gains) ${kw})|Target ${cardTypeRegex} gains ${kw}|put a ${kw} counter`, "i");
+const theyRegex = /Creatures|All .*? creatures|.*? or .*? you control|.*? you control|Each .*? you control/i;
 
-        for (const keyword of keywords) {
-            const [ keywordMatched, params ] = keywordMatch(keyword, match[0]);
-            if (keywordMatched) reminderText += handleReminderText(keyword, params, card) + " ";
+function matchTarget(str, kw, card) {
+    if (str.match(itRegex)) return "It";
+    if (str.match(theyRegex)) return "They";
+    return `This ${card.getThisType()}`;
+}
+
+function targetToObject(target, type) {
+    if (target === "They") return "them";
+    if (target === "It") return "it";
+    return "that " + (type || "permanent");
+}
+
+export function processKeywords(str, card) {
+    let reminderText = "";
+
+    for (const keyword of keywords) {
+        const [ keywordMatched, params ] = keywordMatch(keyword, str);
+        if (keywordMatched) {
+            const target = matchTarget(str, keyword.label, card); 
+            reminderText += handleReminderText(keyword, params, card, target) + " ";
         }
-        
-        const processedRt = reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "";
-        return match[0] + processedRt;
     }
+    
+    const processedRt = reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "";
+    return str + processedRt;
 }
 
 export function getPsuedoKeywordConverters() {

@@ -69,7 +69,6 @@ export function getConverters(game) {
         SymbolConverter,
         LegendNameConverter,
         CardNameConverter,
-        game.KeywordConverter,
         FallbackConverter
     ];
 }
