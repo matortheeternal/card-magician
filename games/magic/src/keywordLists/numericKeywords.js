@@ -141,7 +141,7 @@ export default [
     "expression": "Afterlife <number>",
     "reminderTexts": [
       {
-        "template": "When this creature dies, create <number:number_word_or_a> 1/1 white and black Spirit creature token<number:plural:s> with flying."
+        "template": "When this <target_type> <dies_or_gy>, create <number:number_word_or_a> 1/1 white and black Spirit creature token<number:plural:s> with flying."
       }
     ]
   },
@@ -161,7 +161,7 @@ export default [
     "expression": "Soulshift <number>",
     "reminderTexts": [
       {
-        "template": "When this <target_type> <dies>, you may return target Spirit card with mana value <number> or less from your graveyard to your hand."
+        "template": "When this <target_type> <dies_or_gy>, you may return target Spirit card with mana value <number> or less from your graveyard to your hand."
       }
     ]
   },
@@ -191,7 +191,7 @@ export default [
     "expression": "Backup <number>",
     "reminderTexts": [
       {
-        "template": "When this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on target creature. If that's another creature, it gains the following abilities until end of turn."
+        "template": "When this <target_type> enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on target creature. If that's another creature, it gains the following abilities until end of turn."
       }
     ]
   },
@@ -211,7 +211,7 @@ export default [
     "expression": "Fabricate <number>",
     "reminderTexts": [
       {
-        "template": "When this creature enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it or create <number:number_word_or_a> 1/1 colorless Servo artifact creature tokens."
+        "template": "When this <target_type> enters, put <number:number_word_or_a> +1/+1 counter<number:plural:s> on it or create <number:number_word_or_a> 1/1 colorless Servo artifact creature tokens."
       }
     ]
   },
@@ -221,7 +221,7 @@ export default [
     "expression": "Annihilator <number>",
     "reminderTexts": [
       {
-        "template": "Whenever this creature attacks, defending player sacrifices <number:number_word_or_a> permanents of their choice."
+        "template": "Whenever this <target_type> attacks, defending player sacrifices <number:number_word_or_a> permanents of their choice."
       }
     ]
   },
@@ -251,7 +251,7 @@ export default [
     "expression": "Frenzy <number>",
     "reminderTexts": [
       {
-        "template": "Whenever this creature attacks and isn't blocked, it gets +<number>/+0 until end of turn."
+        "template": "Whenever this <target_type> attacks and isn't blocked, it gets +<number>/+0 until end of turn."
       }
     ]
   },

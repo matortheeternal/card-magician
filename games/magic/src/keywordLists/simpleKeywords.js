@@ -21,7 +21,7 @@ export default [
     "expression": "Horsemanship",
     "reminderTexts": [
       {
-        "template": "<target_creature> can't be blocked except by creatures with horsemanship."
+        "template": "<target> can't be blocked except by creatures with horsemanship."
       }
     ]
   },
@@ -31,7 +31,7 @@ export default [
     "expression": "Reach",
     "reminderTexts": [
       {
-        "template": "<target_creature> can block creatures with flying."
+        "template": "<target> can block creatures with flying."
       }
     ]
   },
@@ -41,7 +41,7 @@ export default [
     "expression": "Connives",
     "reminderTexts": [
       {
-        "template": "Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature."
+        "template": "Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on <target_object:creature>."
       }
     ]
   },
@@ -61,7 +61,7 @@ export default [
     "expression": "Menace",
     "reminderTexts": [
       {
-        "template": "<target_creature> can't be blocked except by two or more creatures."
+        "template": "<target> can't be blocked except by two or more creatures."
       }
     ]
   },
@@ -71,7 +71,7 @@ export default [
     "expression": "Infect",
     "reminderTexts": [
       {
-        "template": "<target_creature> deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters."
+        "template": "<target> deal<s:target_singular> damage to creatures in the form of -1/-1 counters and to players in the form of poison counters."
       }
     ]
   },
@@ -147,7 +147,7 @@ export default [
     "expression": "Prowess",
     "reminderTexts": [
       {
-        "template": "Whenever you cast a noncreature spell, <target_creature> gets +1/+1 until end of turn."
+        "template": "Whenever you cast a noncreature spell, <target:lowercase> get<s:target_singular> +1/+1 until end of turn."
       }
     ]
   },
@@ -217,7 +217,7 @@ export default [
     "expression": "Compleated",
     "reminderTexts": [
       {
-        "template": "<compleated_options> If life was paid, this planeswalker enters with two fewer loyalty counters."
+        "template": "<phyrexian_mana_reminder> If life was paid, this planeswalker enters with two fewer loyalty counters."
       }
     ]
   },
@@ -253,7 +253,7 @@ export default [
     "expression": "Fear",
     "reminderTexts": [
       {
-        "template": "<target_creature> can't be blocked except by artifact creatures and/or black creatures."
+        "template": "<target> can't be blocked except by artifact creatures and/or black creatures."
       }
     ]
   },
@@ -296,10 +296,10 @@ export default [
         "match": {
           "type": "hasPT"
         },
-         "template": "Tap another creature you control: Put charge counters equal to its power on this <Subtype>. Station only as a sorcery. It's an artifact creature at <station_creature_breakpoint>."
+         "template": "Tap another creature you control: Put charge counters equal to its power on this <target_type>. Station only as a sorcery. It's an artifact creature at <station_creature_breakpoint>."
       },
       {
-        "template": "Tap another creature you control: Put charge counters equal to its power on this <Subtype>. Station only as a sorcery."
+        "template": "Tap another creature you control: Put charge counters equal to its power on this <target_type>. Station only as a sorcery."
       }
     ]
   },
@@ -310,8 +310,11 @@ export default [
     "reminderTexts": [
       {
         "match": {
-          "type": "cardIs",
-          "params": ["token"]
+          "type": "cardProp",
+          "params": {
+            "prop": "superType",
+            "matches": "token"
+          },
         },
         "template": "This token is every creature type."
       },
@@ -332,7 +335,7 @@ export default [
         "template": "This creature enters with your choice of an additional +1/+1 counter or haste."
       },
       {
-        "template": "<target_creature> enters with your choice of a +1/+1 counter or haste."
+        "template": "<target> enters with your choice of a +1/+1 counter or haste."
       }
     ]
   },
@@ -342,7 +345,7 @@ export default [
     "expression": "Intimidate",
     "reminderTexts": [
       {
-        "template": "<target_creature> can't be blocked except by artifact creatures and/or creatures that share a color with it."
+        "template": "<target> can't be blocked except by artifact creatures and/or creatures that share a color with it."
       }
     ]
   },
@@ -352,7 +355,7 @@ export default [
     "expression": "Flanking",
     "reminderTexts": [
       {
-        "template": "Whenever a creature without flanking blocks <target_creature>, the blocking creature gets -1/-1 until end of turn."
+        "template": "Whenever a creature without flanking blocks <target:lowercase>, the blocking creature gets -1/-1 until end of turn."
       }
     ]
   },
@@ -362,7 +365,7 @@ export default [
     "expression": "Undying",
     "reminderTexts": [
       {
-        "template": "When <target_creature> dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it."
+        "template": "When <target:lowercase> dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it."
       }
     ]
   },
@@ -1038,7 +1041,7 @@ export default [
   {
     "label": "Landwalk",
     "type": "keyword",
-    "expression": "<prefix:landtype>walk",
+    "expression": "<landtype:prefix>walk",
     "reminderTexts": [
       {
         "template": "This creature can't be blocked as long as defending player controls a <landtype>."
@@ -1081,7 +1084,7 @@ export default [
     "expression": "Decayed",
     "reminderTexts": [
       {
-        "template": "This creature can't block. When it attacks, sacrifice it at end of combat."
+        "template": "<target> can't block. When it attacks, sacrifice it at end of combat."
       }
     ]
   }

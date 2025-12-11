@@ -1,10 +1,10 @@
 const permanentTypeOrdering = [
-    "Creature",
-    "Planeswalker",
-    "Battle",
-    "Land",
-    "Artifact",
-    "Enchantment"
+    "creature",
+    "planeswalker",
+    "battle",
+    "land",
+    "artifact",
+    "enchantment"
 ];
 
 export function thisType(card) {
@@ -15,7 +15,7 @@ export function thisType(card) {
     if (card.superType.includes("Instant") || card.superType.includes("Sorcery")) return "spell";
 
     for (const type of permanentTypeOrdering) {
-        if (card.superType.includes(type)) return type;
+        if (card.superType.toLowerCase().includes(type)) return type;
     }
 
     return "permanent";
