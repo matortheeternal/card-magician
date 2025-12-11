@@ -34,9 +34,10 @@ const imagePathAdapters = [{
     resolve: (sym, size) => `${size}/half/${getKey(sym)}.png`,
 }, {
     match: sym => {
+        if (sym.type === 'variableMana') return true;
         if (sym.type !== 'genericMana') return false;
         const num = parseInt(sym.raw);
-        return (num >= 10) && (num <= 20);
+        return (num >= 0) && (num <= 20);
     },
     resolve: (sym, size) => `${size}/num/${sym.raw}.png`,
 }, {

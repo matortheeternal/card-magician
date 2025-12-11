@@ -64,25 +64,29 @@ function setupTemplate(face, faceData) {
     return template;
 }
 
-export async function buildCardFace(card, key, faceData) {
+export async function buildCardFace(card, key) {
     const face = initCardFace(key);
-    const template = setupTemplate(face, faceData);
+    const template = setupTemplate(face, card[key]);
     const modules = await loadModules(face, template.card || []);
     await setupRenderPipeline(face, modules);
     await initializeModules(face, modules);
     face.modules = () => modules;
     face.parent = () => card;
-    face.subcards = await buildSubcards(face, template.subcards, faceData);
-    await face.load(faceData);
+    face.subcards = await buildSubcards(face, template.subcards, card[key]);
+    await face.load(card[key]);
     card[key] = face;
     return face;
 }
 
+export function getFaceKeys(baseCard) {
+    return ['front', 'back'].filter(key => baseCard.hasOwnProperty(key));
+}
+
 export async function buildCard(baseCard) {
-    const card = {};
+    const card = Object.assign({}, baseCard);
     const cardFaces = [];
-    for (const key of Object.keys(baseCard)) {
-        const cardFace = await buildCardFace(card, key, baseCard[key]);
+    for (const key of getFaceKeys(baseCard)) {
+        const cardFace = await buildCardFace(card, key);
         cardFaces.push(cardFace);
     }
     for (const cardFace of cardFaces) {

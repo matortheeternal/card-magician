@@ -10,7 +10,7 @@ export default class BaseCardModel {
 
     async saveField(field) {
         if (field.hasOwnProperty('save'))
-            return await field.save();
+            return await field.save(this[field.id]);
         if (field.type === 'image')
             return await this[field.id].save();
         return this[field.id];

@@ -1,11 +1,11 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
 import { loadFont } from './fontService.js';
 import {
-    combineBlendUrl,
-    linearBlendUrl,
-    maskBlendUrl,
-    maskColorUrl,
-    maskImageUrl
+    combineBlendOp,
+    linearBlendOp,
+    maskBlendOp,
+    maskColorOp,
+    maskImageOp
 } from '../gfx/blending.js';
 import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
@@ -212,67 +212,64 @@ export default class CardMagicianModule {
      * Tints an image using a color mask.
      *
      * @async
-     * @param {BlobURL} sourceUrl - Blob URL of the source image.
+     * @param {ImageOperation|string} source - The source image.
      * @param {HexColor} color - Hex color string (e.g. "#ff00aa").
-     * @returns {Promise<BlobURL>} A blob URL for the resulting masked image.
+     * @returns {ImageOperation} A deferred image operation.
      */
-    async maskColor(sourceUrl, color) {
-        return await maskColorUrl(sourceUrl, color);
+    maskColor(source, color) {
+        return maskColorOp(source, color);
     }
 
     /**
      * Applies an alpha mask image to another image.
      *
-     * @async
-     * @param {BlobURL} sourceUrl - Blob URL of the source image.
-     * @param {BlobURL} maskUrl - Blob URL of the mask image.
-     * @returns {Promise<BlobURL>} A blob URL containing the masked result.
+     * @param {ImageOperation|string} source - The source image.
+     * @param {ImageOperation|string} mask - The mask image.
+     * @returns {ImageOperation} A deferred image operation.
      */
-    async maskImage(sourceUrl, maskUrl) {
-        return await maskImageUrl(sourceUrl, maskUrl);
+    maskImage(source, mask) {
+        return maskImageOp(source, mask);
     }
 
     /**
      * Blends two images using a pixel-level blending mode.
      *
-     * @async
-     * @param {BlobURL} imgUrlA - Blob URL of the first image.
-     * @param {BlobURL} imgUrlB - Blob URL of the second image.
+     * @param {ImageOperation|string} imgA - The first image.
+     * @param {ImageOperation|string} imgB - The second image.
      * @param {BlendMode} [mode='symmetricOverlay'] - Name of the blend mode to use.
-     * @returns {Promise<BlobURL>} A blob URL for the blended image.
+     * @returns {ImageOperation} A deferred image operation.
      */
-    async combineBlend(imgUrlA, imgUrlB, mode = 'symmetricOverlay') {
-        return await combineBlendUrl(imgUrlA, imgUrlB, mode);
+    combineBlend(imgA, imgB, mode = 'symmetricOverlay') {
+        return combineBlendOp(imgA, imgB, mode);
     }
 
 
     /**
      * Blends two images using a linear gradient between two points.
      *
-     * @async
-     * @param {BlobURL} imgUrlA - First image URL.
-     * @param {BlobURL} imgUrlB - Second image URL.
+     * @param {ImageOperation|string} imgA - First image.
+     * @param {ImageOperation|string} imgB - Second image.
      * @param {number} x1 - Gradient start X (0–1 relative).
      * @param {number} y1 - Gradient start Y (0–1).
      * @param {number} x2 - Gradient end X (0–1).
      * @param {number} y2 - Gradient end Y (0–1).
-     * @returns {Promise<BlobURL>} Blob URL of the blended result.
+     * @returns {ImageOperation} A deferred image operation.
      */
-    async linearBlend(imgUrlA, imgUrlB, x1, y1, x2, y2) {
-        return await linearBlendUrl(imgUrlA, imgUrlB, x1, y1, x2, y2);
+    linearBlend(imgA, imgB, x1, y1, x2, y2) {
+        return linearBlendOp(imgA, imgB, x1, y1, x2, y2);
     }
 
     /**
      * Blends two images together using a mask image that controls pixel mixing.
      *
      * @async
-     * @param {BlobURL} imgToMaskUrl - URL of the image whose pixels are blended.
-     * @param {BlobURL} baseImgUrl - URL of the base/background image.
-     * @param {BlobURL} maskUrl - URL of the mask image (uses red channel as mask).
-     * @returns {Promise<BlobURL>} Blob URL of the blended result.
+     * @param {ImageOperation|string} imgToMask - The image whose pixels are blended.
+     * @param {ImageOperation|string} baseImg - The base/background image.
+     * @param {ImageOperation|string} mask - The mask image (uses red channel as mask).
+     * @returns {ImageOperation} A deferred image operation.
      */
-    async maskedBlend(imgToMaskUrl, baseImgUrl, maskUrl) {
-        return await maskBlendUrl(imgToMaskUrl, baseImgUrl, maskUrl);
+    maskedBlend(imgToMask, baseImg, mask) {
+        return maskBlendOp(imgToMask, baseImg, mask);
     }
 
     /**

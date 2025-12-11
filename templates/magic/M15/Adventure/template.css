@@ -206,6 +206,11 @@ auto-fit-line {
     justify-content: center;
 }
 
+.frame-adventure .left,
+.frame-adventure .right {
+    margin-top: 2px;
+}
+
 .right {
     padding-right: 4px;
     padding-left: 15px;

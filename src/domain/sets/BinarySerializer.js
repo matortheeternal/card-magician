@@ -1,9 +1,5 @@
 import Serializer from './Serializer.js';
-import ObjectUrlBinaryAdapter from './ObjectUrlBinaryAdapter.js';
-
-const defaultBinaryAdapters = [
-    new ObjectUrlBinaryAdapter()
-];
+import { getBinaryAdapters } from './adapters/adapterRegistry.js';
 
 /**
  * @abstract
@@ -21,7 +17,7 @@ export default class BinarySerializer extends Serializer {
         return await serializer.deserialize(buffer);
     }
 
-    constructor(adapters = defaultBinaryAdapters) {
-        super(adapters);
+    constructor(adapters) {
+        super(adapters || getBinaryAdapters());
     }
 }

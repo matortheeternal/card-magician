@@ -1,12 +1,19 @@
-import * as ManaScribe from './mana-scribe/src/index.js';
-import { buildColumns } from './src/columns.js';
-import { autoNumberCards } from './src/autoNumber.js';
+import * as ManaScribe from 'mana-scribe';
+import Magic from '@sigil-sifter/magic';
+import CardMagicianMagic from '@sigil-sifter/magic-cm';
+import CardMagicianCard from '@sigil-sifter/magic-cm/card';
+import { buildColumns } from './columns.js';
+import { autoNumberCards } from './autoNumber.js';
+import MakeManaCostAdapter from './ManaCostAdapter.js';
 import { thisType } from './src/thisType.js';
 import { KeywordConverter, getPsuedoKeywordConverters } from './src/keywords.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.ManaScribe = ManaScribe;
+        this.addSerializerAdapter(SerializerAdapter => {
+            return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
+        });
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
@@ -30,8 +37,14 @@ export default class MagicTheGathering extends CardMagicianGame {
             ]
         };
     }
+
+    setupSearch(sifter) {
+        Magic(sifter, CardMagicianCard);
+        CardMagicianMagic(sifter);
+    }
+
     get columns () {
-        return buildColumns(this.ManaScribe);
+        return buildColumns();
     }
 
     get defaultTemplateId() {
@@ -41,11 +54,15 @@ export default class MagicTheGathering extends CardMagicianGame {
     loadSet(set) {
         const newSet = this.newSet();
         const info = { ...newSet.info, ...(set?.info ?? {}) };
+        set.cards.forEach(card => {
+            card.notes ||= '';
+            card.tags ||= [];
+        });
         return { ...newSet, ...set, info };
     }
 
     newCard() {
-        return { front: {} };
+        return { front: {}, notes: '', tags: [] };
     }
 
     newSet() {

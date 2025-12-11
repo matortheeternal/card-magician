@@ -23,9 +23,12 @@
   "author": "mator",
   "type": "module",
   "main": "index.js",
+  "workspaces": [
+    "games/magic"
+  ],
   "scripts": {
-    "build": "node esbuild.config.js --minify",
-    "dev": "node esbuild.config.js",
+    "build": "node esbuild.config.js --minify && npm --prefix games/magic run build",
+    "dev": "node esbuild.config.js && npm --prefix games/magic run build",
     "release": "neu build --release",
     "start": "npm run dev && neu run -- --window-enable-inspector",
     "test": "npm run dev && neu run -- --run-tests"
@@ -36,6 +39,7 @@
     "alpinejs": "^3.15.0",
     "notepack.io": "^3.0.1",
     "sanitize-html": "^2.17.0",
+    "sigil-sifter": "^1.0.0",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
