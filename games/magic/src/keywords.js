@@ -1,13 +1,12 @@
-function makePseudoKeywordConverter(keyword) {
-    return {
-        match(str) {
-            return str.match(keyword);
-        },
-        convert(match) {
-            return "<i>" + match + "</i>";
-        }
-    }
-}
+import pseudoKeywords from "./keywordLists/pseudoKeywords.js";
+
+import numericKeywords from "./keywordLists/numericKeywords.js";
+import simpleKeywords from  "./keywordLists/simpleKeywords.js";
+
+const keywords = [
+    ...numericKeywords,
+    ...simpleKeywords
+];
 
 const englishNumber = [
     "zero",
@@ -40,19 +39,6 @@ function digitalNumber(englishN) {
     return englishNumber.indexOf(englishN);
 }
 
-import numericKeywords from "./keywordLists/numericKeywords.js";
-import simpleKeywords from  "./keywordLists/simpleKeywords.js";
-
-const keywords = [
-    ...numericKeywords,
-    ...simpleKeywords
-]
-
-const pseudoKeywords = [
-    "Channel",
-    "Landfall"
-];
-
 function parseKeywordExpression(str) {
     const res = [];
     let remainingStr = str;
@@ -79,6 +65,16 @@ function parseNextKeywordToken(str) {
 
     return [match, {type: type, value: value, args: args}];
 }
+
+function keywordMatch(keyword, str) {
+    const tokens = parseKeywordExpression(keyword.expression);
+    const included = keywordInclude(tokens, str);
+    if (included) return [ included, processKeywordParams(tokens, included) ];
+    
+
+    return [false, false];
+}
+
 const literalParam = value => value;
 
 const paramRegex = {
@@ -91,35 +87,6 @@ const paramRegex = {
     s: /[a-z]?s?/,
     cost: /{.+?}+|—.+/
 };
-
-const paramHandlers = {
-    number: value => { 
-        const nParsed = parseInt(value);
-        if (isNaN(nParsed)) return value;
-        return nParsed;
-    },
-    number_word: value => digitalNumber(value),
-    s: value => value.match(/[Ss]/) ? value : "" 
-};
-
-const paramFunctions = {
-    plural: (value, args) => value !== 1 ? args[0] || 's' : '',
-    number_word_or_a: value => englishNumberA[value] || value,
-    number_word: value => englishNumber[value] || value,
-    capitalize: value => value[0].toUpperCase() + value.substring(1),
-    lowercase: value => value.toLowerCase(),
-    target_singular: (value, args, card, target) => target !== "They" ? value : "",
-    target_plural: (value, args, card, target) => target === "They" ? value : ""
-};
-
-function keywordMatch(keyword, str) {
-    const tokens = parseKeywordExpression(keyword.expression);
-    const included = keywordInclude(tokens, str);
-    if (included) return [ included, processKeywordParams(tokens, included) ];
-    
-
-    return [false, false];
-}
 
 function keywordInclude(tokens, str) {
     let match = "";
@@ -137,6 +104,16 @@ function keywordInclude(tokens, str) {
     return str.match(new RegExp(match, "i"));
 }
 
+const paramHandlers = { // Handler functions for parameters after theyre matched
+    number: value => { 
+        const nParsed = parseInt(value);
+        if (isNaN(nParsed)) return value;
+        return nParsed;
+    },
+    number_word: value => digitalNumber(value),
+    s: value => value.match(/[Ss]/) ? value : "" 
+};
+
 function processKeywordParams(tokens, match) {
     const params = match.slice(1);
     const paramsProcessed = {};
@@ -151,7 +128,7 @@ function processKeywordParams(tokens, match) {
     return paramsProcessed;
 }
 
-const specialTokens = {
+const specialTokens = { // Special <tokens> that can be used in rt templates
     target_type: (token, card) => card.getThisType(),
     subtypes_and_or: (token, card) => {
         const subtypesCommas = card.subType.replaceAll(" ", ", ");
@@ -162,6 +139,16 @@ const specialTokens = {
     target: (token, card, target) => target,
     target_object: (token, card, target) => targetToObject(target, token.type),
     station_creature_breakpoint: () => "Not implemented"
+};
+
+const paramFunctions = { // <token:functions> that can be used in rt templates
+    plural: (value, args) => value !== 1 ? args[0] || 's' : '',
+    number_word_or_a: value => englishNumberA[value] || value,
+    number_word: value => englishNumber[value] || value,
+    capitalize: value => value[0].toUpperCase() + value.substring(1),
+    lowercase: value => value.toLowerCase(),
+    target_singular: (value, args, card, target) => target !== "They" ? value : "",
+    target_plural: (value, args, card, target) => target === "They" ? value : ""
 };
 
 function processReminderText(tokens, params, card, target) {
@@ -187,7 +174,7 @@ function processReminderText(tokens, params, card, target) {
     return output;
 }
 
-const rtMatches = {
+const rtMatches = { // Stuff used in "match"
     cardProp: (matchParams, params, card) => {
         const cardProp = card[matchParams.prop];
         for (const param of matchParams.matches) {
@@ -217,11 +204,11 @@ function handleReminderText(keyword, params, card, target) {
 }
 
 const cardTypeRegex = "(creature|artifact|enchantment|planeswalker|battle|permanent|land|legendary|basic|snow|token ?)+";
-const itRegex = new RegExp(`(This ${card.getThisType()} (has|gains) ${kw})|Target ${cardTypeRegex} gains ${kw}|put a ${kw} counter`, "i");
+const itRegex = (kw) => new RegExp(`(This ${card.getThisType()} (has|gains) ${kw})|Target ${cardTypeRegex} gains ${kw}|put a ${kw} counter`, "i");
 const theyRegex = /Creatures|All .*? creatures|.*? or .*? you control|.*? you control|Each .*? you control/i;
 
 function matchTarget(str, kw, card) {
-    if (str.match(itRegex)) return "It";
+    if (str.match(itRegex(kw))) return "It";
     if (str.match(theyRegex)) return "They";
     return `This ${card.getThisType()}`;
 }
@@ -245,6 +232,17 @@ export function processKeywords(str, card) {
     
     const processedRt = reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "";
     return str + processedRt;
+}
+
+function makePseudoKeywordConverter(keyword) {
+    return {
+        match(str) {
+            return str.match(keyword);
+        },
+        convert(match) {
+            return "<i>" + match + "</i>";
+        }
+    }
 }
 
 export function getPsuedoKeywordConverters() {
