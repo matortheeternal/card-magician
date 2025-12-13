@@ -61,11 +61,14 @@ export const FallbackConverter = {
     }
 }
 
-export const converters = [
-    WhitespaceConverter,
-    ParenthesisConverter,
-    SymbolConverter,
-    LegendNameConverter,
-    CardNameConverter,
-    FallbackConverter
-];
+export function getConverters(game) { 
+    return [
+        ...game.getPsuedoKeywordConverters(),
+        WhitespaceConverter,
+        ParenthesisConverter,
+        SymbolConverter,
+        LegendNameConverter,
+        CardNameConverter,
+        FallbackConverter
+    ];
+}

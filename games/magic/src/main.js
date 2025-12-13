@@ -5,6 +5,8 @@ import CardMagicianCard from '@sigil-sifter/magic-cm/card';
 import { buildColumns } from './columns.js';
 import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
+import { thisType } from './thisType.js';
+import { processKeywords, getPsuedoKeywordConverters } from './keywords.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -15,7 +17,9 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
-
+        this.thisType = thisType;
+        this.processKeywords = processKeywords;
+        this.getPsuedoKeywordConverters = getPsuedoKeywordConverters;
         this.numberFormatField = {
             id: 'collectorNumberFormat',
             label: 'Collector Number Format',
