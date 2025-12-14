@@ -112,3 +112,21 @@ addPrototypeFunction(Array, 'remove', {
         return this;
     }
 });
+
+/**
+ * @method
+ * @name Function#debounce
+ * @param {number} delay - Debounce delay before function execution.
+ * @returns {Function}
+ * @description Creates a debounced wrapper around a function.
+ * Example: const sayHello = (() => console.log('Hello World')).debounce(500);
+ */
+addPrototypeFunction(Function, 'debounce', {
+    value: function debounce(delay) {
+        let timeout = null;
+        return () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(this, delay);
+        }
+    }
+})
