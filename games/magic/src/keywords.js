@@ -1,4 +1,4 @@
-import pseudoKeywords from "./keywordLists/pseudoKeywords.js";
+import abilityWords from "./keywordLists/abilityWords.js";
 
 import numericKeywords from "./keywordLists/numericKeywords.js";
 import simpleKeywords from  "./keywordLists/simpleKeywords.js";
@@ -264,7 +264,7 @@ export function getKeywordOptions(card) {
     return options;
 }
 
-function makePseudoKeywordConverter(keyword) {
+function makeAbilityWordConverter(keyword) {
     return {
         match(str) {
             return str.match(keyword);
@@ -276,5 +276,5 @@ function makePseudoKeywordConverter(keyword) {
 }
 
 export function getPsuedoKeywordConverters() {
-    return pseudoKeywords.map(kw => makePseudoKeywordConverter(kw));
+    return abilityWords.map(kw => makeAbilityWordConverter(kw));
 }
