@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "build": "node esbuild.config.js --minify && npm --prefix games/magic run build",
+    "localize": "npm run dev && neu run -- --localize",
     "dev": "node esbuild.config.js && npm --prefix games/magic run build",
     "release": "neu build --release",
     "start": "npm run dev && neu run -- --window-enable-inspector",
