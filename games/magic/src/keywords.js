@@ -8,7 +8,7 @@ const keywords = [
     ...simpleKeywords
 ];
 
-import { numberWord, numberWordOrA } from "./locales/localeManager.js";
+import { numberWord, numberWordOrA, digitalNumber } from "./locales/localeManager.js";
 
 function parseKeywordExpression(str) {
     const res = [];
@@ -24,7 +24,7 @@ function parseKeywordExpression(str) {
 }
 
 function parseNextKeywordToken(str) {
-    const match = str.match(/<.*?>|[^<]*/);
+    const match = str.match(/^<.*?>|^[^<]*/);
     const token = match[0];
 
     if (!token.includes("<")) return [match, {type: "literal", value: token, args: []}];
@@ -209,7 +209,7 @@ export function addAutoReminderText(str, card) {
 
     for (const { keyword, params, target } of matchAllKeywords(str, card)) {
         
-        if ((card[`${keyword.alias}Rt`] || "yes") == "yes") reminderText += handleReminderText(keyword, params, card, target);
+        if ((card[`${keyword.alias}Rt`] || "yes") === "yes") reminderText += handleReminderText(keyword, params, card, target);
     }
     
     return str + (reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "");
