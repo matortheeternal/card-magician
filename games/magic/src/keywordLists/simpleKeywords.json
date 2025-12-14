@@ -1,4 +1,4 @@
-export default [
+[
   {
     "label": "Treasure",
     "type": "keyword",
@@ -314,7 +314,7 @@ export default [
           "params": {
             "prop": "superType",
             "matches": "token"
-          },
+          }
         },
         "template": "This token is every creature type."
       },
@@ -794,20 +794,6 @@ export default [
       }
     ]
   },
-  // {
-  //   "label": "Life Loss",
-  //   "type": "keyword",
-  //   "expressions": [
-  //     "life <*2> lost",
-  //     "lost <*3> life",
-  //     "lose<s> life"
-  //   ],
-  //   "reminderTexts": [
-  //     {
-  //       "template": "Damage causes loss of life."
-  //     }
-  //   ]
-  // },
   {
     "label": "Surge",
     "type": "keyword",
@@ -1088,4 +1074,4 @@ export default [
       }
     ]
   }
-];
+]

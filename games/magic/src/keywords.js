@@ -1,7 +1,7 @@
-import abilityWords from "./keywordLists/abilityWords.js";
+import abilityWords from "./keywordLists/abilityWords.json";
 
-import numericKeywords from "./keywordLists/numericKeywords.js";
-import simpleKeywords from  "./keywordLists/simpleKeywords.js";
+import numericKeywords from "./keywordLists/numericKeywords.json";
+import simpleKeywords from  "./keywordLists/simpleKeywords.json";
 
 const keywords = [
     ...numericKeywords,
