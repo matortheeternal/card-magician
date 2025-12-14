@@ -2,6 +2,8 @@ import Alpine from 'alpinejs';
 import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 
+const L = localize('title-bar');
+
 function menuItem(label, hotkey, action) {
     if (hotkey !== '') registerHotkey(hotkey, action);
     return { label, value: label.toCamelCase(), hotkey, action };
@@ -30,37 +32,37 @@ const actions = {
 };
 
 export const titleBarMenus = [{
-    title: 'File',
+    title: L`File`,
     items: [
-        menuItem('New', 'Ctrl+N', actions.makeNewSet),
-        menuItem('Open', 'Ctrl+O', actions.openSet),
-        menuItem('Save', 'Ctrl+S', actions.save),
-        menuItem('Save as', 'Ctrl+Shift+S', actions.saveAs),
-        menuItem('Export', 'Ctrl+Shift+E', actions.exportAs),
+        menuItem(L`New`, L`Ctrl+N`, actions.makeNewSet),
+        menuItem(L`Open`, L`Ctrl+O`, actions.openSet),
+        menuItem(L`Save`, L`Ctrl+S`, actions.save),
+        menuItem(L`Save as`, L`Ctrl+Shift+S`, actions.saveAs),
+        menuItem(L`Export`, L`Ctrl+Shift+E`, actions.exportAs),
         DIVIDER,
-        menuItem('Print', 'Ctrl+P', actions.print),
+        menuItem(L`Print`, L`Ctrl+P`, actions.print),
         DIVIDER,
-        menuItem('Exit', '', actions.exit),
+        menuItem(L`Exit`, ``, actions.exit),
     ]
 }, {
-    title: 'Edit',
+    title: L`Edit`,
     items: [
-        menuItem('Undo', 'Ctrl+Z', actions.undo),
-        menuItem('Redo', 'Ctrl+Shift+Z', actions.redo),
+        menuItem(L`Undo`, L`Ctrl+Z`, actions.undo),
+        menuItem(L`Redo`, L`Ctrl+Shift+Z`, actions.redo),
         DIVIDER,
-        menuItem('Find', 'Ctrl+F', actions.find),
-        menuItem('Cut', 'Ctrl+X', actions.cut),
-        menuItem('Copy', 'Ctrl+C', actions.copy),
-        menuItem('Paste', 'Ctrl+V', actions.paste),
+        menuItem(L`Find`, L`Ctrl+F`, actions.find),
+        menuItem(L`Cut`, L`Ctrl+X`, actions.cut),
+        menuItem(L`Copy`, L`Ctrl+C`, actions.copy),
+        menuItem(L`Paste`, L`Ctrl+V`, actions.paste),
         DIVIDER,
-        menuItem('Set Info', '', actions.editSetInfo),
-        menuItem('Preferences', '', actions.editPreferences),
+        menuItem(L`Set Info`, ``, actions.editSetInfo),
+        menuItem(L`Preferences`, ``, actions.editPreferences),
     ]
 }, {
-    title: 'Cards',
+    title: L`Cards`,
     items: [
-        menuItem('Add Card', 'Ctrl+Enter', actions.addCard),
-        menuItem('Delete Cards', 'Delete', actions.deleteCards),
+        menuItem(L`Add Card`, L`Ctrl+Enter`, actions.addCard),
+        menuItem(L`Delete Cards`, L`Delete`, actions.deleteCards),
     ]
 }];
 
