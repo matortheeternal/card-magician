@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/extensions.js';
+import './shared/localize.js';
 import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import CardMagicianModule from './domain/template/CardMagicianModule.js';
