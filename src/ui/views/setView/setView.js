@@ -5,13 +5,21 @@ import { buildCard } from '../../../domain/card/cardBuilder.js';
 import { loadSetData } from '../../../domain/sets/setManager.js';
 import { filter } from '../../../domain/game/search.js';
 
+const L = localize('set-view');
+
 Alpine.data('setView', () => ({
     rows: [],
     columns: [],
     recentSets: [],
     showSearch: false,
     searchValue: '',
-    addRowLabel: 'Click to add a card or press Ctrl+Enter',
+    addCardLabel: L`Add a card`,
+    openSetLabel: L`Open a set`,
+    recentSetsLabel: L`Recent sets`,
+    advancedSearchLabel: L`Advanced`,
+    searchPlaceholder: L`Search for cards`,
+    noCardsLabel: L`This set has no cards in it.`,
+    addRowLabel: L`Click to add a card or press Ctrl+Enter`,
 
     async init() {
         this.$root.innerHTML = html;
@@ -202,10 +210,10 @@ Alpine.data('setView', () => ({
 }));
 
 async function openSingleFileDialog() {
-    const res = await Neutralino.os.showOpenDialog('Open a set', {
+    const res = await Neutralino.os.showOpenDialog(L`Open a set`, {
         filters: [
-            { name: 'JSON Files', extensions: ['json'] },
-            { name: 'All files', extensions: ['*'] }
+            { name: L`JSON Files`, extensions: ['json'] },
+            { name: L`All files`, extensions: ['*'] }
         ]
     });
     if (!res) return;
