@@ -1,9 +1,11 @@
+const L = localize('module-M15-art');
+
 export default class ArtModule extends CardMagicianModule {
     async init(card) {
         this.artImageField = {
             id: 'artImage',
             type: 'image',
-            label: 'Art Image'
+            label: L`Art Image`
         };
 
         card.setAspectRatio = ({ width, height }) => {

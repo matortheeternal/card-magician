@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import html from './cardForm.html';
+import html from './cardFormHTML.js';
 
 class CardForm extends HTMLElement {
     #card;

@@ -5,6 +5,9 @@ import CardMagicianCard from '@sigil-sifter/magic-cm/card';
 import { buildColumns } from './columns.js';
 import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
+import setInfoHTML from './setInfoHTML.js';
+
+const L = localize('game-magic');
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -12,13 +15,12 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.addSerializerAdapter(SerializerAdapter => {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
-        this.setInfoHtml = await this.loadFile('setInfo.html');
         this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
 
         this.numberFormatField = {
             id: 'collectorNumberFormat',
-            label: 'Collector Number Format',
+            label: L`Collector Number Format`,
             options: [
                 { id: 'four', name: '0001' },
                 { id: 'threeOutOf', name: '001/999' },
@@ -26,10 +28,10 @@ export default class MagicTheGathering extends CardMagicianGame {
         };
         this.rarityOrderField = {
             id: 'rarityOrder',
-            label: 'Footer Rarity Order',
+            label: L`Footer Rarity Order`,
             options: [
-                { id: 'before', name: 'Before Collector Number' },
-                { id: 'after', name: 'After Collector Number' },
+                { id: 'before', name: L`Before Collector Number` },
+                { id: 'after', name: L`After Collector Number` },
             ]
         };
     }
@@ -63,7 +65,7 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     newSet() {
         const info = {
-            language: 'EN',
+            language: L`EN`,
             setCode: '',
             symbol: this.defaultSetSymbol,
             collectorNumberFormat: this.numberFormatField.options[0].id,
@@ -73,6 +75,6 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     renderSetInfo() {
-        return this.setInfoHtml;
+        return setInfoHTML;
     }
 }

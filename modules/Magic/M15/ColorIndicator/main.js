@@ -1,3 +1,5 @@
+const L = localize('module-M15-color-indiactor');
+
 export default class ColorIndicatorModule extends CardMagicianModule {
     async getIndicatorImage(card) {
         if (!card.colorIndicator?.length) return '';
@@ -38,14 +40,14 @@ export default class ColorIndicatorModule extends CardMagicianModule {
     get fields() {
         return [{
             id: 'colorIndicator',
-            label: 'Color (Override)',
+            label: L`Color (Override)`,
             type: 'multiselect',
             options: [
-                { id: 'w', name: 'White' },
-                { id: 'u', name: 'Blue' },
-                { id: 'b', name: 'Black' },
-                { id: 'r', name: 'Red' },
-                { id: 'g', name: 'Green' },
+                { id: 'w', name: L`White` },
+                { id: 'u', name: L`Blue` },
+                { id: 'b', name: L`Black` },
+                { id: 'r', name: L`Red` },
+                { id: 'g', name: L`Green` },
             ]
         }];
     }

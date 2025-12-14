@@ -1,3 +1,5 @@
+const L = localize('module-M15-face-symbol');
+
 export default class TypeModule extends CardMagicianModule {
     async init(card) {
         card.isLegendary = () => /\blegendary\b/i.test(card.superType);
@@ -24,8 +26,8 @@ export default class TypeModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'superType', label: 'Super Type' },
-            { id: 'subType', label: 'Sub Type' }
+            { id: 'superType', label: L`Super Type` },
+            { id: 'subType', label: L`Sub Type` }
         ];
     }
 

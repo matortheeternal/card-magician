@@ -5,6 +5,7 @@ import MessagePackSerializer from './MessagePackSerializer.js';
 import { addStatusMessage } from '../../ui/systems/statusSystem.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 
+const L = localize('set-manager');
 const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
 
 export async function saveSetData(filePath, data) {
@@ -21,14 +22,14 @@ export async function saveAs() {
     const views = Alpine.store('views');
     const defaultPath = views.setFilePath
         ?  views.setFilePath.split(/[\\\/]/).pop()
-        : `${views.activeSet.title || 'My Set'}.json`;
-    const filePath = await Neutralino.os.showSaveDialog('Save set to file', {
+        : `${views.activeSet.title || L`My Set`}.json`;
+    const filePath = await Neutralino.os.showSaveDialog(L`Save set to file`, {
         defaultPath,
         filters: [
-            { name: 'JSON Files', extensions: ['json'] },
-            { name: 'Packed Files', extensions: ['msgpack'] },
-            { name: 'YAML Files', extensions: ['yml'] },
-            { name: 'All files', extensions: ['*'] }
+            { name: L`JSON Files`, extensions: ['json'] },
+            { name: L`Packed Files`, extensions: ['msgpack'] },
+            { name: L`YAML Files`, extensions: ['yml'] },
+            { name: L`All files`, extensions: ['*'] }
         ]
     });
     if (!filePath) return;
@@ -40,10 +41,10 @@ export async function saveAs() {
 export async function save() {
     const { activeSet, setFilePath } = Alpine.store('views');
     if (!setFilePath) return await saveAs();
-    const message = addStatusMessage('Saving...', -1);
+    const message = addStatusMessage(L`Saving...`, -1);
     console.info('Saving set to:', setFilePath);
     await saveSetData(setFilePath, activeSet);
-    message.text = 'Saved.';
+    message.text = L`Saved.`;
     setTimeout(() => message.remove(), 1000);
 }
 

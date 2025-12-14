@@ -1,3 +1,5 @@
+const L = localize('module-M15-flag');
+
 export default class FlagModule extends CardMagicianModule {
     updateFlagStyle(card) {
         const key = card.getCardColorKey();
@@ -48,8 +50,8 @@ export default class FlagModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'flagLeft', label: 'Flag Left' },
-            { id: 'flagRight', label: 'Flag Right' }
+            { id: 'flagLeft', label: L`Flag Left` },
+            { id: 'flagRight', label: L`Flag Right` }
         ];
     }
 

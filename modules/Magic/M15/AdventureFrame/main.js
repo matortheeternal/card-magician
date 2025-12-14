@@ -2,14 +2,16 @@ import FrameModule from '../Frame/main.js';
 import AdventureFrame from './src/AdventureFrame.js';
 import AdventureSpotlightFrame from './src/AdventureSpotlightFrame.js';
 
+const L = localize('module-M15-adventure-frame');
+
 export default class AdventureFrameModule extends FrameModule {
     async init(card) {
         await super.init(card, false);
         card.frames = [AdventureSpotlightFrame, AdventureFrame];
         this.frameOptions = [
-            { id: 'normal',     name: 'Adventure' },
-            { id: 'spotlight',  name: 'Spotlight Adventure' },
-            { id: 'reversed',   name: 'Reversed Adventure' },
+            { id: 'normal',     name: L`Adventure` },
+            { id: 'spotlight',  name: L`Spotlight Adventure` },
+            { id: 'reversed',   name: L`Reversed Adventure` },
         ];
     }
 
@@ -51,14 +53,14 @@ export default class AdventureFrameModule extends FrameModule {
     get options() {
         return [...super.options, {
             id: 'pageStyle',
-            label: 'Page Style',
+            label: L`Page Style`,
             type: 'select',
             options: [
-                { id: 'name_and_type', name: 'Name and Type' },
-                { id: 'name_and_type_flat', name: 'Flat Name and Type' },
-                { id: 'name_flat', name: 'Flat Name' },
-                { id: 'name', name: 'Name' },
-                { id: 'blank', name: 'Blank' },
+                { id: 'name_and_type', name: L`Name and Type` },
+                { id: 'name_and_type_flat', name: L`Flat Name and Type` },
+                { id: 'name_flat', name: L`Flat Name` },
+                { id: 'name', name: L`Name` },
+                { id: 'blank', name: L`Blank` },
             ]
         }];
     }

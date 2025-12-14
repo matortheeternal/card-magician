@@ -1,5 +1,7 @@
 import textToHTML from './src/textToHTML.js';
 
+const L = localize('module-M15-text');
+
 const allowedTags = [
     'b', 'ol', 'pre', 'ul', 'li', 'br', 'code',
     'em', 'q', 'strong', 'sub', 'sup', 'u', 'sym'
@@ -111,24 +113,24 @@ export default class TextModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'rulesText', type: 'textarea', label: 'Rules Text' },
-            { id: 'flavorText', type: 'textarea', label: 'Flavor Text' }
+            { id: 'rulesText', type: 'textarea', label: L`Rules Text` },
+            { id: 'flavorText', type: 'textarea', label: L`Flavor Text` }
         ];
     }
 
     get options() {
         return [
-            { id: 'chopTop', label: 'Chop Top' },
-            { id: 'chopBottom', label: 'Chop Bottom' },
-            { id: 'maxFontSize', label: 'Max Font Size' },
+            { id: 'chopTop', label: L`Chop Top` },
+            { id: 'chopBottom', label: L`Chop Bottom` },
+            { id: 'maxFontSize', label: L`Max Font Size` },
             {
                 id: 'centerText',
-                label: 'Center Text',
+                label: L`Center Text`,
                 type: 'select',
                 options: [
-                    { id: 'never', name: 'Never' },
-                    { id: 'always', name: 'Always' },
-                    { id: 'short', name: 'Short Text' },
+                    { id: 'never', name: L`Never` },
+                    { id: 'always', name: L`Always` },
+                    { id: 'short', name: L`Short Text` },
                 ]
             },
         ];

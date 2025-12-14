@@ -1,3 +1,5 @@
+const L = localize('module-M15-pt');
+
 export default class PTModule extends CardMagicianModule {
     async updatePT(card) {
         const activeFrame = card.activeFrame?.();
@@ -47,8 +49,8 @@ export default class PTModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'power', label: 'Power' },
-            { id: 'toughness', label: 'Toughness' }
+            { id: 'power', label: L`Power` },
+            { id: 'toughness', label: L`Toughness` }
         ];
     }
 

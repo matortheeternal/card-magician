@@ -1,135 +1,137 @@
+const L = localize('module-M15-frame');
+
 export default () => ([{
     id: 'frame',
-    label: 'Frame',
+    label: L`Frame`,
     type: 'select',
     options: [
-        { id: 'normal',          name: 'Default' },
-        { id: 'devoid',          name: 'Devoid' },
-        { id: 'clear',           name: 'Clear' },
-        { id: 'fnm',             name: 'FNM Promo' },
-        { id: 'dka',             name: 'DKA Full Art' },
-        { id: 'inverted',        name: 'Inverted' },
-        { id: 'planeshifted',    name: 'Planeshifted' },
+        { id: 'normal',          name: L`Default` },
+        { id: 'devoid',          name: L`Devoid` },
+        { id: 'clear',           name: L`Clear` },
+        { id: 'fnm',             name: L`FNM Promo` },
+        { id: 'dka',             name: L`DKA Full Art` },
+        { id: 'inverted',        name: L`Inverted` },
+        { id: 'planeshifted',    name: L`Planeshifted` },
     ]
 }, {
     id: 'artSize',
     type: 'select',
-    label: 'Art Size',
+    label: L`Art Size`,
     options: [
-        { id: 'normal',           name: 'Default' },
-        { id: 'borderless',       name: 'Borderless' },
-        { id: 'clearBorderless',  name: 'Clear Borderless' },
-        { id: 'frameless',        name: 'Frameless' },
-        { id: 'puma',             name: 'PUMA' },
+        { id: 'normal',           name: L`Default` },
+        { id: 'borderless',       name: L`Borderless` },
+        { id: 'clearBorderless',  name: L`Clear Borderless` },
+        { id: 'frameless',        name: L`Frameless` },
+        { id: 'puma',             name: L`PUMA` },
     ]
 }, {
     id: 'crownStyle',
     type: 'select',
-    label: 'Crown',
+    label: L`Crown`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'nyx',        name: 'Nyx' },
-        { id: 'companion',  name: 'Companion' },
-        { id: 'brawl',      name: 'Brawl' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'nyx',        name: L`Nyx` },
+        { id: 'companion',  name: L`Companion` },
+        { id: 'brawl',      name: L`Brawl` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'nyxStyle',
     type: 'select',
-    label: 'Nyx',
+    label: L`Nyx`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'star',       name: 'Star' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'star',       name: L`Star` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'vehicleStyle',
     type: 'select',
-    label: 'Vehicle',
+    label: L`Vehicle`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'snowStyle',
     type: 'select',
-    label: 'Snow',
+    label: L`Snow`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'scrollsStyle',
     type: 'select',
-    label: 'Scrolls',
+    label: L`Scrolls`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'draftStyle',
     type: 'select',
-    label: 'Draft',
+    label: L`Draft`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'miracleStyle',
     type: 'select',
-    label: 'Miracle',
+    label: L`Miracle`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'mutateStyle',
     type: 'select',
-    label: 'Mutate',
+    label: L`Mutate`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'ubStyle',
     type: 'select',
-    label: 'Universes Beyond',
+    label: L`Universes Beyond`,
     options: [
-        { id: 'auto',       name: 'Auto' },
-        { id: 'normal',     name: 'Normal' },
-        { id: 'disabled',   name: 'Disabled' },
+        { id: 'auto',       name: L`Auto` },
+        { id: 'normal',     name: L`Normal` },
+        { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
     id: 'hybridStyle',
     type: 'multiselect',
-    label: 'Hybrid Style',
+    label: L`Hybrid Style`,
     options: [
-        { id: 'reverse',    name: 'Reverse' },
-        { id: 'vertical',   name: 'Vertical' },
+        { id: 'reverse',    name: L`Reverse` },
+        { id: 'vertical',   name: L`Vertical` },
     ]
 }, {
     id: 'hybridBlendStyle',
     type: 'select',
-    label: 'Hybrid Blend Style',
+    label: L`Hybrid Blend Style`,
     options: [
-        { id: 'grey',   name: 'Grey' },
-        { id: 'gold',   name: 'Gold' },
-        { id: 'hybrid', name: 'Hybrid' },
+        { id: 'grey',   name: L`Grey` },
+        { id: 'gold',   name: L`Gold` },
+        { id: 'hybrid', name: L`Hybrid` },
     ]
 }, {
     id: 'other',
     type: 'checkboxlist',
-    label: 'Extra options',
+    label: L`Extra options`,
     options: [
-        { id: 'avoidCoveringDevoid', label: 'Avoid covering devoid' }
+        { id: 'avoidCoveringDevoid', name: L`Avoid covering devoid` }
     ],
     default: { avoidCoveringDevoid: true }
 }]);

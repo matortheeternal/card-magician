@@ -1,9 +1,11 @@
+const L = localize('module-M15-footer');
+
 export default class FooterModule extends CardMagicianModule {
     async init(card) {
         this.brushSvg = await this.loadFile('assets/art.svg');
         this.collectorNumberField = {
             id: 'collectorNumber',
-            label: 'Collector Number'
+            label: L`Collector Number`
         };
         this.set = this.getActiveSet();
 
@@ -71,12 +73,12 @@ export default class FooterModule extends CardMagicianModule {
     get fields() {
         const { illustrator, setCode, language, legalText } = this.set.info;
         return [
-            { id: 'illustrator', label: 'Illustrator', placeholder: illustrator },
-            { id: 'autoCollectorNumber', label: 'Auto Collector Number' },
+            { id: 'illustrator', label: L`Illustrator`, placeholder: illustrator },
+            { id: 'autoCollectorNumber', label: L`Auto Collector Number` },
             this.collectorNumberField,
-            { id: 'setCode', label: 'Set Code', placeholder: setCode },
-            { id: 'language', label: 'Language', placeholder: language },
-            { id: 'legalText', label: 'Legal Text', placeholder: legalText },
+            { id: 'setCode', label: L`Set Code`, placeholder: setCode },
+            { id: 'language', label: L`Language`, placeholder: language },
+            { id: 'legalText', label: L`Legal Text`, placeholder: legalText },
             { id: 'showFooterOverrides', default: false }
         ];
     }

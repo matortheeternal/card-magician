@@ -1,30 +1,33 @@
-<div class="modal">
+const L = localize('crop-image-modal');
+
+export default
+`<div class="modal">
     <div class="modal-title-bar">
-        <div>Crop Image (<span x-text="value.filename"></span>)</div>
-        <sl-tooltip content="Close Modal">
+        <div>${L`Crop Image`} (<span x-text="value.filename"></span>)</div>
+        <sl-tooltip content="${L`Close Modal`}">
             <sl-icon-button name="x-lg" class="close-modal" @click="cancel()"></sl-icon-button>
         </sl-tooltip>
     </div>
     <sl-tab-group>
-        <sl-tab slot="nav" panel="edit">Edit Crop</sl-tab>
-        <sl-tab slot="nav" panel="preview">Preview</sl-tab>
+        <sl-tab slot="nav" panel="edit">${L`Edit Crop`}</sl-tab>
+        <sl-tab slot="nav" panel="preview">${L`Preview`}</sl-tab>
 
         <sl-tab-panel name="edit">
             <div class="modal-body">
                 <div class="toolbox">
-                    <sl-tooltip :content="aspectRatioLocked ? 'Unlock aspect ratio' : 'Lock aspect ratio'" placement="left">
+                    <sl-tooltip :content="aspectRatioLocked ? '${L`Unlock aspect ratio`}' : '${L`Lock aspect ratio`}'" placement="left">
                         <sl-icon-button :name="aspectRatioLocked ? 'lock' : 'unlock'" @click="toggleAspectRatioLock()"></sl-icon-button>
                     </sl-tooltip>
-                    <sl-tooltip content="Reset crop" placement="left">
+                    <sl-tooltip content="${L`Reset crop`}" placement="left">
                         <sl-icon-button name="arrow-counterclockwise" @click="resetCrop()"></sl-icon-button>
                     </sl-tooltip>
-                    <sl-tooltip content="Crop to image size" placement="left">
+                    <sl-tooltip content="${L`Crop to image size`}" placement="left">
                         <sl-icon-button name="arrows-fullscreen" @click="cropToImageSize()"></sl-icon-button>
                     </sl-tooltip>
-                    <sl-tooltip content="Center crop horizontally" placement="left">
+                    <sl-tooltip content="${L`Center crop horizontally`}" placement="left">
                         <sl-icon-button name="align-center" @click="centerCropHorizontally()"></sl-icon-button>
                     </sl-tooltip>
-                    <sl-tooltip content="Center crop vertically" placement="left">
+                    <sl-tooltip content="${L`Center crop vertically`}" placement="left">
                         <sl-icon-button name="align-middle" @click="centerCropVertically()"></sl-icon-button>
                     </sl-tooltip>
                 </div>
@@ -60,17 +63,17 @@
                     </div>
                     <div class="info-container">
                         <div class="image-info">
-                            <span>Image&nbsp;</span>
+                            <span>${L`Image`}&nbsp;</span>
                             <span x-text="realWidth"></span>
                             <span>x</span>
                             <span x-text="realHeight"></span>
-                            <span>, scaled to&nbsp;</span>
+                            <span>, ${L`scaled to`}&nbsp;</span>
                             <span x-text="value.width"></span>
                             <span>x</span>
                             <span x-text="value.height"></span>
                         </div>
                         <div class="crop-info">
-                            <span>crop&nbsp;</span>
+                            <span>${L`crop`}&nbsp;</span>
                             <cm-inline-input data-crop-key="width" :value="realCrop.width"></cm-inline-input>
                             <span>x</span>
                             <cm-inline-input data-crop-key="height" :value="realCrop.height"></cm-inline-input>
@@ -96,7 +99,7 @@
         </sl-tab-panel>
     </sl-tab-group>
     <div class="modal-actions">
-        <sl-button @click="save()">Save</sl-button>
-        <sl-button @click="cancel()">Cancel</sl-button>
+        <sl-button @click="save()">${L`Save`}</sl-button>
+        <sl-button @click="cancel()">${L`Cancel`}</sl-button>
     </div>
-</div>
+</div>`

@@ -1,3 +1,5 @@
+const L = localize('module-M15-cost');
+
 export default class CostModule extends CardMagicianModule {
     async init() {
         const game = this.getActiveGame();
@@ -18,7 +20,7 @@ export default class CostModule extends CardMagicianModule {
     get fields() {
         return [{
             id: 'manaCost',
-            label: 'Mana Cost',
+            label: L`Mana Cost`,
             save: value => this.ManaCost.parse(value),
             load: data  => data.manaCost.toString()
         }];
