@@ -204,11 +204,11 @@ function handleReminderText(keyword, params, card, target) {
 }
 
 const cardTypeRegex = "(creature|artifact|enchantment|planeswalker|battle|permanent|land|legendary|basic|snow|token ?)+";
-const itRegex = (kw) => new RegExp(`(This ${card.getThisType()} (has|gains) ${kw})|Target ${cardTypeRegex} gains ${kw}|put a ${kw} counter`, "i");
+const itRegex = (kw, card) => new RegExp(`(This ${card.getThisType()} (has|gains) ${kw})|Target ${cardTypeRegex} gains ${kw}|put a ${kw} counter`, "i");
 const theyRegex = /Creatures|All .*? creatures|.*? or .*? you control|.*? you control|Each .*? you control/i;
 
 function matchTarget(str, kw, card) {
-    if (str.match(itRegex(kw))) return "It";
+    if (str.match(itRegex(kw, card))) return "It";
     if (str.match(theyRegex)) return "They";
     return `This ${card.getThisType()}`;
 }
@@ -219,19 +219,49 @@ function targetToObject(target, type) {
     return "that " + (type || "permanent");
 }
 
-export function processKeywords(str, card) {
-    let reminderText = "";
+function matchAllKeywords(str, card) {
+    const matched = [];
 
     for (const keyword of keywords) {
         const [ keywordMatched, params ] = keywordMatch(keyword, str);
         if (keywordMatched) {
             const target = matchTarget(str, keyword.label, card); 
-            reminderText += handleReminderText(keyword, params, card, target) + " ";
+            matched.push({keyword: keyword, params: params, target: target});
         }
     }
     
-    const processedRt = reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "";
-    return str + processedRt;
+    return matched;
+}
+
+export function processKeywords(str, card) {
+    let reminderText = "";
+
+    for (const { keyword, params, target } of matchAllKeywords(str, card)) {
+        
+        if ((card[`${keyword.alias}Rt`] || "yes") == "yes") reminderText += handleReminderText(keyword, params, card, target);
+    }
+    
+    console.log("rt", str, reminderText);
+
+    return str + (reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "");
+}
+
+export function getKeywordOptions(card) {
+    const options = {};
+
+    for (const { keyword } of matchAllKeywords(card.rulesText, card)) {
+        options.push({
+            id: `${keyword.alias}Rt`,
+            label: `Show ${keyword.alias} reminder text`,
+            type: "select",
+            options: [
+                { id: "yes", name: "Yes" },
+                { id: "no", name: "No" }
+            ]
+        });
+    }
+
+    return options;
 }
 
 function makePseudoKeywordConverter(keyword) {

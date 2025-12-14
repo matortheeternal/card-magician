@@ -33,6 +33,8 @@ export default class TextModule extends CardMagicianModule {
                 || /\bDisturb\b/i.test(card.rulesText)
                 || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
         };
+
+        this.card = card;
     }
 
     async renderRulesHTML(card) {
@@ -120,6 +122,8 @@ export default class TextModule extends CardMagicianModule {
     }
 
     get options() {
+        const game = this.getActiveGame();
+
         return [
             { id: 'chopTop', label: L`Chop Top` },
             { id: 'chopBottom', label: L`Chop Bottom` },
@@ -134,6 +138,14 @@ export default class TextModule extends CardMagicianModule {
                     { id: 'short', name: L`Short Text` },
                 ]
             },
+            {
+                id: 'showRt',
+                label: 'Keyword Reminder Text',
+                type: 'select',
+                options: [
+                    { id: 'nonevergreen', name: 'Non-Evergreen Keywords' },
+                ]
+            }
         ];
     }
 

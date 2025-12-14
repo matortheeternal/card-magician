@@ -25,6 +25,7 @@ class ParagraphConverter {
 
     convert(str, game) {
         let remainingStr = game.processKeywords(str, this.card);
+        console.log("assdf", remainingStr);
         let result = '';
         const state = {};
         while (remainingStr.length) {
