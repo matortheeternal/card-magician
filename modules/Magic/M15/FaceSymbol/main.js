@@ -1,6 +1,8 @@
 import makeSymbolOptions from './src/symbolOptions.js';
 import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
 
+const L = localize('module-M15-face-symbol');
+
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
         opt.imageURL = this.resolveAsset(opt.imagePath);
@@ -54,7 +56,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         return [{
             id: 'faceSymbol',
             type: 'select',
-            label: 'Face Symbol',
+            label: L`Face Symbol`,
             options: this.symbolOptions,
             initialValue: 'autodetect',
             default: null

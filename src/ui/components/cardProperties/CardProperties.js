@@ -2,16 +2,18 @@ import { esc } from '../../../shared/htmlUtils.js';
 import Alpine from 'alpinejs';
 import { getTags } from '../../../domain/game/tagManager.js';
 
+const L = localize('card-properties');
+
 function buildHTML(card) {
     if (!card) return '';
     const tags = getTags();
     return (
         `<sl-select
           size="small"
-          label="Tags"
+          label="${L`Tags`}"
           name="tags"
           value="${esc(card.tags.join(' '))}"
-          placeholder="Click to add tags"
+          placeholder="${L`Click to add tags`}"
           maxOptionsVisible="5"
           clearable
           multiple
@@ -25,7 +27,7 @@ function buildHTML(card) {
           size="small"
           resize="auto"
           autocomplete="off"
-          label="Notes"
+          label="${L`Notes`}"
           name="notes"
           value="${esc(card.notes)}"
           rows="3"

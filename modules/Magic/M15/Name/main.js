@@ -1,3 +1,5 @@
+const L = localize('module-M15-name');
+
 export default class NameModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');
@@ -22,7 +24,7 @@ export default class NameModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{ id: 'name', label: 'Name' }];
+        return [{ id: 'name', label: L`Name` }];
     }
 
     async styles() {

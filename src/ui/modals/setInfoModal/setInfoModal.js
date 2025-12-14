@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import html from './setInfoModal.html';
+import html from './setInfoModalHTML.js';
 
 Alpine.data('setInfoModal', () => ({
     async init() {

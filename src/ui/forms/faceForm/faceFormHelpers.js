@@ -1,18 +1,20 @@
 import Alpine from 'alpinejs';
 import { renderField } from '../fieldComponents/fieldComponentRegistry.js';
 
+const L = localize('face-form');
+
 function renderAddButton(label) {
     return (
         `<sl-button class="add-field-btn" size="small" variant="success" outline>
             <sl-icon slot="prefix" name="plus-lg"></sl-icon>
-            Add ${label}
+            ${L`Add ${label}`}
         </sl-button>`
     );
 }
 
 function renderToggle(show, label) {
     return show ? (
-        `<sl-tooltip content="Remove ${label}">
+        `<sl-tooltip content="${L`Remove ${label}`}">
             <sl-icon-button class="remove-btn" name="x-lg"></sl-icon-button>
         </sl-tooltip>`
     ) : renderAddButton(label);
@@ -28,9 +30,11 @@ function createToggle(formGroup, className) {
 export function missingFaceMessage(faceId) {
     return (
         `<div class="no-content-prompt">
-            <span>This card does not have a ${faceId} face.</span>
+            <span>${L`This card does not have a ${faceId} face.`}</span>
             <div class="buttons-container">
-                <sl-button class="add-face-btn" size="large">Add ${faceId} face</sl-button>
+                <sl-button class="add-face-btn" size="large">
+                    ${L`Add ${faceId} face`}
+                </sl-button>
             </div>
         </div>`
     );
@@ -83,7 +87,7 @@ export function renderFormField(face, field, faceForm) {
 export function missingFormMessage() {
     return (
         `<div class="no-content-prompt">
-            <span>This face does not have any fields to display.</span>
+            <span>${L`This face does not have any fields to display.`}</span>
         </div>`
     );
 }

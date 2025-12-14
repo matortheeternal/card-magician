@@ -3,9 +3,11 @@ import html from './displayCard.html';
 import { saveHTMLAsImage } from '../../../domain/card/cardImageExporter.js';
 import { registerAction } from '../../systems/actionSystem.js';
 
+const L = localize('display-card');
+
 Alpine.data('displayCard', () => ({
     useFlip: false,
-    flipLabel: 'Turn over',
+    flipLabel: L`Turn over`,
 
     async init() {
         this.$root.innerHTML = html;

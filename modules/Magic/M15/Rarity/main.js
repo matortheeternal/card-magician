@@ -1,3 +1,5 @@
+const L = localize('module-M15-rarity');
+
 export default class RarityModule extends CardMagicianModule {
     updateRarity(card) {
         card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
@@ -21,13 +23,13 @@ export default class RarityModule extends CardMagicianModule {
         return [{
             id: 'rarity',
             type: 'select',
-            label: 'Rarity',
+            label: L`Rarity`,
             group: 'footer',
             options: [
-                { id: 'common', name: 'Common' },
-                { id: 'uncommon', name: 'Uncommon' },
-                { id: 'rare', name: 'Rare' },
-                { id: 'mythic', name: 'Mythic Rare' }
+                { id: 'common',     name: L`Common` },
+                { id: 'uncommon',   name: L`Uncommon` },
+                { id: 'rare',       name: L`Rare` },
+                { id: 'mythic',     name: L`Mythic Rare` }
             ]
         }];
     }

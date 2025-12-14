@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import html from './cropImageModal.html';
+import html from './cropImageModalHTML.js';
 
 const cropHandlers = {
     'move': (crop, cropStart, dx, dy) => {

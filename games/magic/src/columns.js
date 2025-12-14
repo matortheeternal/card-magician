@@ -3,6 +3,8 @@ import compareRowManaCosts from './compareRowManaCosts.js';
 import compareRowRarity from './compareRarity.js';
 import { compareRowColors } from './compareRowColors.js';
 
+const L = localize('game-magic-columns');
+
 function collect(row, key, separator = ' // ') {
     return [row.front[key], row.back && row.back[key]]
         .filter(Boolean)
@@ -22,11 +24,11 @@ function collectUnique(row, fn, separator = ', ') {
 
 export function buildColumns() {
     return [{
-        label: 'Name',
+        label: L`Name`,
         width: '240px',
         data: row => collect(row, 'name')
     }, {
-        label: 'Cost',
+        label: L`Cost`,
         width: '87px',
         data: row => collectMap(row, f => {
             if (!f.manaCost?.toString) return '';
@@ -34,7 +36,7 @@ export function buildColumns() {
         }),
         compare: compareRowManaCosts
     }, {
-        label: 'CMC',
+        label: L`CMC`,
         width: '60px',
         data: row => collectMap(row, f => {
             if (!f.manaCost?.cmc) return '';
@@ -45,7 +47,7 @@ export function buildColumns() {
                  - (parseInt(b.data.cmc) || 0);
         }
     }, {
-        label: 'Type',
+        label: L`Type`,
         width: '230px',
         data: row => collectMap(row, f => {
             if (!f.superType && !f.subType) return '';
@@ -53,7 +55,7 @@ export function buildColumns() {
             return `${f.superType || ''} — ${f.subType}`;
         })
     }, {
-        label: 'P/T',
+        label: L`P/T`,
         id: 'pt',
         width: '60px',
         data: row => collectMap(row, f => {
@@ -62,7 +64,7 @@ export function buildColumns() {
         }),
         compare: compareRowPTs
     }, {
-        label: 'Color',
+        label: L`Color`,
         width: '200px',
         data: row => collectUnique(row, f => {
             if (!f?.colors) return [];
@@ -70,7 +72,7 @@ export function buildColumns() {
         }),
         compare: compareRowColors
     }, {
-        label: 'Rarity',
+        label: L`Rarity`,
         width: '100px',
         data: row => {
             if (!row.front.rarity) return '';
@@ -79,7 +81,7 @@ export function buildColumns() {
         },
         compare: compareRowRarity
     }, {
-        label: '#',
+        label: L`#`,
         width: '50px',
         data: row => {
             const number = row.front.collectorNumber || row.front.autoCollectorNumber;

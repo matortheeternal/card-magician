@@ -5,6 +5,8 @@ import { registerAction } from '../../systems/actionSystem.js';
 import html from './listView.html';
 import { getColumnSelectMode } from './columnSortService.js';
 
+const L = localize('list-view');
+
 function makeDefaultDisplayFunction(column) {
     return (row) => `<span>${row.data[column.id]}</span>`;
 }
@@ -12,7 +14,7 @@ function makeDefaultDisplayFunction(column) {
 Alpine.data('listView', (config) => ({
     columns: config.columns || [],
     rows: config.rows || [],
-    addRowLabel: config.addRowLabel || 'Click to add a row',
+    addRowLabel: config.addRowLabel || L`Click to add a row`,
     activeColumns: [],
     activeRows: [],
 
