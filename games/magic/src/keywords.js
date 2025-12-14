@@ -8,36 +8,7 @@ const keywords = [
     ...simpleKeywords
 ];
 
-const englishNumber = [
-    "zero",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-    "fourteen",
-    "fifteen",
-    "sixteen",
-    "seventeen",
-    "eighteen",
-    "nineteen",
-    "twenty"
-];
-
-const englishNumberA = ["no", "a"].concat(englishNumber.slice(2));
-
-function digitalNumber(englishN) {
-    if (englishN == "a" || englishN == "an") return 1;
-    return englishNumber.indexOf(englishN);
-}
+import { numberWord, numberWordOrA } from "./locales/localeManager.js";
 
 function parseKeywordExpression(str) {
     const res = [];
@@ -143,8 +114,8 @@ const specialTokens = { // Special <tokens> that can be used in rt templates
 
 const paramFunctions = { // <token:functions> that can be used in rt templates
     plural: (value, args) => value !== 1 ? args[0] || 's' : '',
-    number_word_or_a: value => englishNumberA[value] || value,
-    number_word: value => englishNumber[value] || value,
+    number_word_or_a: value => numberWordOrA[value] || value,
+    number_word: value => numberWord[value] || value,
     capitalize: value => value[0].toUpperCase() + value.substring(1),
     lowercase: value => value.toLowerCase(),
     target_singular: (value, args, card, target) => target !== "They" ? value : "",
