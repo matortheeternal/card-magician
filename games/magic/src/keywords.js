@@ -219,21 +219,21 @@ function targetToObject(target, type) {
     return "that " + (type || "permanent");
 }
 
-function matchAllKeywords(str, card) {
+export function matchAllKeywords(str, card) {
     const matched = [];
 
     for (const keyword of keywords) {
         const [ keywordMatched, params ] = keywordMatch(keyword, str);
         if (keywordMatched) {
             const target = matchTarget(str, keyword.label, card); 
-            matched.push({keyword: keyword, params: params, target: target});
+            matched.push({keyword, params, target});
         }
     }
     
     return matched;
 }
 
-export function processKeywords(str, card) {
+export function addAutoReminderText(str, card) {
     let reminderText = "";
 
     for (const { keyword, params, target } of matchAllKeywords(str, card)) {
@@ -241,27 +241,7 @@ export function processKeywords(str, card) {
         if ((card[`${keyword.alias}Rt`] || "yes") == "yes") reminderText += handleReminderText(keyword, params, card, target);
     }
     
-    console.log("rt", str, reminderText);
-
     return str + (reminderText ? " (<i>" + reminderText.trim() + "</i>)" : "");
-}
-
-export function getKeywordOptions(card) {
-    const options = {};
-
-    for (const { keyword } of matchAllKeywords(card.rulesText, card)) {
-        options.push({
-            id: `${keyword.alias}Rt`,
-            label: `Show ${keyword.alias} reminder text`,
-            type: "select",
-            options: [
-                { id: "yes", name: "Yes" },
-                { id: "no", name: "No" }
-            ]
-        });
-    }
-
-    return options;
 }
 
 function makeAbilityWordConverter(keyword) {
@@ -275,6 +255,6 @@ function makeAbilityWordConverter(keyword) {
     }
 }
 
-export function getPsuedoKeywordConverters() {
+export function getAbilityWordConverters() {
     return abilityWords.map(kw => makeAbilityWordConverter(kw));
 }

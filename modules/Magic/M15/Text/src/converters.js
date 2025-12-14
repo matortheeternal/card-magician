@@ -63,7 +63,7 @@ export const FallbackConverter = {
 
 export function getConverters(game) { 
     return [
-        ...game.getPsuedoKeywordConverters(),
+        ...game.getAbilityWordConverters(),
         WhitespaceConverter,
         ParenthesisConverter,
         SymbolConverter,
