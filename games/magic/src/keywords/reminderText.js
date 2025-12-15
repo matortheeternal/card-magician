@@ -1,9 +1,9 @@
-import { AbilityWordConverter } from "./lists/main.js";
+import { AbilityWordConverters } from "./lists/main.js";
 import { targetToObject } from "./target.js";
 import { parseKeywordExpression } from "./parse.js";
 import { matchAllKeywords } from "./match.js";
 
-export { AbilityWordConverter };
+export { AbilityWordConverters, matchAllKeywords };
 
 const specialVariables = { // Special <variables> that can be used in rt templates. Accepts (token, card, target)
     target_type: (token, card) => card.getThisType(),
@@ -25,18 +25,21 @@ function processReminderText(tokens, params, card, target) {
         for (const [ variableName, variableFn ] of Object.entries(specialVariables)) {
             if (token.variable === variableName) {
                 token.variable = variableFn(token, card, target);
+                token.format = "literal";
                 break;
             }
         }
 
         if (token.variable.substring(0, 5) === "card.") {
             token.variable = card[token.variable.substring(5)];
+            token.format = "literal";
         }
 
         const param = params[token.variable];
 
         if (!param) {
-            output += "<INVALID_PARAM_REFERENCE>";
+            console.log("noparan", token);
+            output += token.format === "literal" ? token.variable : "&lt;INVALID_PARAM_REFERENCE&gt;";
             continue;
         }
 
@@ -71,8 +74,7 @@ function generateReminderText(keyword, params, card, target) {
             matchRes = rtMatches[reminderText.match.type]?.(reminderText.match.params, params, card, target);
         }
         
-        if (!reminderText.match || matchRes) processReminderText(parseKeywordExpression(reminderText.template), params, card, target);
-        
+        if (!reminderText.match || matchRes) return processReminderText(parseKeywordExpression(reminderText.template), params, card, target);
     }
     
 }

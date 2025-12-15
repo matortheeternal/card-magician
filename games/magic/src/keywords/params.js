@@ -1,103 +1,107 @@
 import { numberWordToDigit, numberWord, numberWordOrA } from "../localeManager.js";
 
 class DirectiveParam {
-    expr = null;
-    name = null;
+    static expr = null;
+    static alias = null;
 
-    handler(value, token) {
+    static handler(value, token) {
         return value;
     }
 
-    number_word_or_a(value) {
+    static number_word_or_a(value) {
         return numberWordOrA[value] || value;
     }
 
-    number_word(value) {
+    static number_word(value) {
         return numberWord[value] || value;
     }
 
-    capitalize(value) {
+    static capitalize(value) {
         const valueStr = value.toString();
         return valueStr[0].toUpperCase() + valueStr.substring(1);
     }
 
-    lowercase(value) {
+    static lowercase(value) {
         return value.toString.toLowerCase();
     }
 
-    uppercase(value) {
+    static uppercase(value) {
         return value.toString.toLowerCase();
     }
 
-    target_singular(value, args, card, target) {
+    static target_singular(value, args, card, target) {
         return target !== "They" ? value : "";
     }
 
-    target_plural(value, args, card, target) {
+    static target_plural(value, args, card, target) {
         return target === "They" ? value : "";
     }
 
-    invalid_format(value) {
+    static invalid_format(value) {
         return value;
     }
 }
 
 class NumberParam extends DirectiveParam {
-    expr = /[XYZ\d]+/;
-    name = 'number';
+    static expr = /[XYZ\d]+/;
+    static alias = 'number';
 
-    handler(value) {
+    static handler(value) {
         const nParsed = parseInt(value);
         if (isNaN(nParsed)) return value;
         return nParsed;
     }
 
-    plural(value, args) {
+    static plural(value, args) {
         return value !== 1 ? args[0] || 's' : '';
     }
 }
 
 class NameParam extends DirectiveParam {
-    expr = /[\w ]+?/;
-    name = 'name';
+    static expr = /[\w ]+?/;
+    static alias = 'name';
 }
 
 class OneWordParam extends DirectiveParam {
-    expr = /[^\b]+/;
-    name = 'one_word';
+    static expr = /[^\b]+/;
+    static alias = 'one_word';
 }
 
 class PrefixParam extends DirectiveParam {
-    expr = /[^,;.]*?/;
-    name = 'prefix';
+    static expr = /[^,;.]*?/;
+    static alias = 'prefix';
 }
 
 class NumberWordParam extends DirectiveParam {
-    expr = /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/;
-    name = 'number_word';
+    static expr = /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/;
+    static alias = 'number_word';
 
-    handler(value) {
+    static handler(value) {
         return numberWordToDigit(value);
     }
 }
 
 class AParam extends DirectiveParam {
-    expr = /an?/;
-    name = 'a';
+    static expr = /an?/;
+    static alias = 'a';
 }
 
 class SParam extends DirectiveParam {
-    expr = /[a-z]?s?/;
-    name = 's';
+    static expr = /[a-z]?s?/;
+    static alias = 's';
 
-    handler(value) {
+    static handler(value) {
         return value.match(/[Ss]/) ? value : "";
     }
 }
 
 class CostParam extends DirectiveParam {
-    expr = /{.+?}+|—.+/;
-    name = 'cost';
+    static expr = /{.+?}+|—.+/;
+    static alias = 'cost';
+}
+
+class LiteralParam extends DirectiveParam {
+    static alias = 'literal';
 }
 
 const paramTypes = [
@@ -113,8 +117,8 @@ const paramTypes = [
 
 export function getParamType(name) {
     for (const paramType of paramTypes) {
-        if (paramType.name === name) return paramType;
+        if (paramType.alias === name) return paramType;
     }
 
-    return null;
+    return LiteralParam;
 }

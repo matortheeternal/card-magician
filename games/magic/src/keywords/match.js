@@ -1,7 +1,7 @@
 import { keywords } from "./lists/main.js";
 import { matchTarget } from "./target.js";
 import { parseKeywordExpression } from "./parse.js";
-import { getParamType } from "./keywordParams.js";
+import { getParamType } from "./params.js";
 
 function parseAndMatchKeyword(keyword, str) {
     const tokens = parseKeywordExpression(keyword.expression);
@@ -15,11 +15,10 @@ function matchKeyword(tokens, str) {
 
     for (const token of tokens) {
         const paramType = getParamType(token.format);
+        const paramExpr = paramType.expr?.source;
+
         match += "(";
-
-        if (paramExpr) match += paramType.expr.source;
-        else match += token.variable; // literals and invalid types
-
+        match += paramExpr ? paramExpr : token.variable; // literals and invalid types
         match += ")";
     }
 

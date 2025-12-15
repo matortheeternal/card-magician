@@ -19,4 +19,4 @@ function makeAbilityWordConverter(keyword) {
 
 import abilityWords from "./abilityWords.json";
 
-export const AbilityWordConverter = abilityWords.map(kw => makeAbilityWordConverter(kw));
+export const AbilityWordConverters = abilityWords.map(kw => makeAbilityWordConverter(kw));

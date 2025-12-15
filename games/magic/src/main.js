@@ -7,6 +7,8 @@ import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
+import { getThisType } from './thisType.js';
+import { addAutoReminderText, AbilityWordConverters, matchAllKeywords } from './keywords/reminderText.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -16,6 +18,10 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
+        this.getThisType = getThisType;
+        this.addAutoReminderText = addAutoReminderText;
+        this.AbilityWordConverters = AbilityWordConverters;
+        this.matchAllKeywords = matchAllKeywords;
     }
 
     setupSearch(sifter) {

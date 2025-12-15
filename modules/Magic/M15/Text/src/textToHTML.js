@@ -25,7 +25,6 @@ class ParagraphConverter {
 
     convert(str, game) {
         let remainingStr = game.addAutoReminderText(str, this.card);
-        console.log("assdf", remainingStr);
         let result = '';
         const state = {};
         while (remainingStr.length) {
