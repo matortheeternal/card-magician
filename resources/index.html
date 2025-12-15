@@ -32,6 +32,10 @@
     <div x-data="cropImageModal()" class="modal-container crop-image-modal"></div>
 </template>
 
+<template x-if="$store.views.activeModal === 'edit-locales'">
+    <div x-data="editLocalesModal()" class="modal-container edit-locales-modal"></div>
+</template>
+
 <div class="status-container">
     <template x-for="message of $store.statusMessages">
         <div class="status-message"

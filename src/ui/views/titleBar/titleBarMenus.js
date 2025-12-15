@@ -26,6 +26,7 @@ const actions = {
     copy: () => executeAction('copy'),
     paste: () => executeAction('paste'),
     editPreferences: () => console.log('Edit preferences'),
+    editLocales: () => (Alpine.store('views').activeModal = 'edit-locales'),
     editSetInfo: () => (Alpine.store('views').activeModal = 'set-info'),
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
@@ -57,6 +58,7 @@ export const titleBarMenus = [{
         DIVIDER,
         menuItem(L`Set Info`, ``, actions.editSetInfo),
         menuItem(L`Preferences`, ``, actions.editPreferences),
+        menuItem(L`Localization`, ``, actions.editLocales),
     ]
 }, {
     title: L`Cards`,
