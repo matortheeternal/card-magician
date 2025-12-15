@@ -1,50 +1,41 @@
-import yaml from 'yaml';
+import Localization from './Localization.js';
 
-const GENERATE_SCHEMA = NL_ARGS.includes("--localize");
 const LOCALE_DIR = 'locales';
+const generateSchema = NL_ARGS.includes("--localize");
 
 let activeLocalization = null;
-let schema = GENERATE_SCHEMA ? new Map() : null;
+const schemaPromise = loadSchema();
 
-class Localization {
-    static async load(localeId) {
-        const filePath = `${LOCALE_DIR}/${localeId}.yml`;
-        const yamlStr = await Neutralino.filesystem.readFile(filePath);
-        const data = yaml.parse(yamlStr);
-
-        return new Localization(localeId, data);
-    }
-
-    constructor(localeId, data) {
-        this.localeId = localeId;
-        this.data = data;
-    }
-
-    resolve(namespaceKey, key, values) {
-        const namespace = this.data[namespaceKey];
-        const template = namespace?.[key];
-        if (!template) return null;
-        return template.replace(/%\{(\d+)}/g, (_, index) => {
-            return values[index];
-        });
-    }
+const yamlQuoteExpr = /^(?![?:\-!&*#%@])[\w .\/-]*[A-Za-z0-9_.\-\/]$/;
+export async function generateLocaleTemplate() {
+    const schema = await schemaPromise;
+    return Object.entries(schema).map(([namespaceKey, entries]) => {
+        const contents = Object.keys(entries).map(key => {
+            return yamlQuoteExpr.test(key)
+                ? `    ${key}: `
+                : `    ${JSON.stringify(key)}: `;
+        }).join('\n');
+        return `${namespaceKey}:\n` + contents;
+    }).join('\n');
 }
 
-async function getAvailableLocales() {
-    const manifestPath = `${LOCALE_DIR}/locales.json`;
+export async function getAvailableLocales() {
+    const manifestPath = `locales/locales.json`;
     const manifestStr = await Neutralino.filesystem.readFile(manifestPath);
     const manifest = JSON.parse(manifestStr);
 
-    return await Neutralino.filesystem.readDirectory(LOCALE_DIR)
+    const dirEntries = await Neutralino.filesystem.readDirectory('locales');
+    const availableFiles = dirEntries
         .filter(e => e.type === 'FILE' && e.entry.endsWith('.yml'))
-        .map(e => {
-            const id = e.entry.slice(0, -4);
-            const meta = manifest[localeId] || {};
-            const label = meta.label ?? localeId;
-            const updated = meta.updated ?? null;
-            const percentComplete = meta.percentComplete ?? null;
-            return { id, label, updated, percentComplete };
-        });
+        .map(e => e.entry.slice(0, -4));
+
+    return await Promise.all(
+        Object.entries(manifest).filter(([key]) => {
+            return availableFiles.includes(key);
+        }).map(([key, value]) => {
+            return Localization.load(key, value)
+        })
+    );
 }
 
 async function setLocalization(localeId) {
@@ -69,35 +60,38 @@ function buildLocalizationKey(strings, values) {
     }).join('');
 }
 
-const writeSchemaFile = (function writeSchemaFile() {
-    const out = {};
-
-    for (const [namespace, map] of schema.entries()) {
-        out[namespace] = {};
-        for (const [key, meta] of map.entries())
-            out[namespace][key] = meta;
-    }
-
-    const json = JSON.stringify(out, null, 2);
+const writeSchemaFile = (async function writeSchemaFile() {
+    const json = JSON.stringify(schema, null, 2);
     const outputPath = `${LOCALE_DIR}/schema.json`;
     console.log(`Writing localization schema to `, outputPath);
-    Neutralino.filesystem.writeFile(outputPath, json);
+    await Neutralino.filesystem.createDirectory(LOCALE_DIR).catch(() => {});
+    await Neutralino.filesystem.writeFile(outputPath, json);
 }).debounce(1000);
 
-function updateSchema(namespaceKey, entryKey, strings, values) {
-    if (!schema.has(namespaceKey))
-        schema.set(namespaceKey, new Map());
-
-    const namespace = schema.get(namespaceKey);
-    namespace.set(entryKey, (namespace.get(entryKey) || 0) + 1);
+async function updateSchema(namespaceKey, entryKey) {
+    const schema = await schemaPromise;
+    const namespace = schema[namespaceKey] ||= {};
+    namespace[entryKey] ||= 0;
+    namespace[entryKey] += 1;
     writeSchemaFile();
+}
+
+export async function loadSchema() {
+    try {
+        const inputPath = `locales/schema.json`;
+        const text = await Neutralino.filesystem.readFile(inputPath);
+        return JSON.parse(text);
+    } catch (e) {
+        console.error(e);
+        return {};
+    }
 }
 
 window.localize = function(namespaceKey) {
     return function(strings, ...values) {
         const key = buildLocalizationKey(strings, values);
-        if (GENERATE_SCHEMA) updateSchema(namespaceKey, key, strings, values);
+        if (generateSchema) updateSchema(namespaceKey, key);
         return activeLocalization?.resolve(namespaceKey, key, values)
             ?? resolveFallbackStr(strings, values);
     };
-}
+};
