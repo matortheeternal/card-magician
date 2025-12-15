@@ -38,7 +38,6 @@ function processReminderText(tokens, params, card, target) {
         const param = params[token.variable];
 
         if (!param) {
-            console.log("noparan", token);
             output += token.format === "literal" ? token.variable : "&lt;INVALID_PARAM_REFERENCE&gt;";
             continue;
         }
