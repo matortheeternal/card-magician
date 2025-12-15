@@ -1,4 +1,4 @@
-import { numberWordToDigit, numberWord, numberWordOrA } from "../localeManager.js";
+import { numberWordToDigit, numberWord, numberWordOrA } from "./numberWords.js";
 
 class DirectiveParam {
     static expr = null;
