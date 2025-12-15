@@ -33,6 +33,17 @@ export default
             ></cm-input>
         </div>
         <cm-code-editor syntax="yaml"></cm-code-editor>
+        <div class="editor-status-bar">
+            <div class="status-message" x-text="statusMessage"></div>
+            <div class="stats">
+                <span>Progress:&nbsp;</span>
+                <span x-text="stats.completed"></span>
+                <span>/</span>
+                <span x-text="stats.total"></span>
+                <span>&nbsp;—&nbsp;</span>
+                <span x-text="stats.percent"></span>
+            </div>
+        </div>
     </div>
     <div class="modal-actions">
         <sl-button @click="activate">${L`Activate`}</sl-button>
