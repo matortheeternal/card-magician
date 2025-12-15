@@ -53,6 +53,15 @@ export const rarityOrderField = {
     ]
 };
 
+export const userKwField = {
+    id: 'userKeyword',
+    label: L`User Keyword`,
+    options: [
+        { id: 'four', name: '111' },
+        { id: 'threeOutOf', name: '222' },
+    ]
+};
+
 export const symbolField = {
     id: 'symbol',
     label: L`Set Symbol`,
@@ -70,5 +79,6 @@ export default [
     languageField,
     collectorNumberFormatField,
     rarityOrderField,
+    userKwField,
     symbolField
 ];

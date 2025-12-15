@@ -1,4 +1,4 @@
-import { keywords } from "./lists/main.js";
+import { getKeywords } from "./lists/main.js";
 import { getTarget } from "./target.js";
 import { parseKeywordTokens } from "./parse.js";
 import { getParamType } from "./params.js";
@@ -32,8 +32,9 @@ function getParamVariables(expressionTokens, match) {
     return paramVariables;
 }
 
-export function matchAllKeywords(str, card) {
+export function matchAllKeywords(str, card, game) {
     const matched = [];
+    const keywords = getKeywords(game);
 
     for (const keyword of keywords) {
         const expressionTokens = parseKeywordTokens(keyword.expression);

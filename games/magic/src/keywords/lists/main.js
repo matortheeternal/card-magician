@@ -1,10 +1,13 @@
 import numericKeywords from "./numericKeywords.json";
 import simpleKeywords from  "./simpleKeywords.json";
 
-export const keywords = [
-    ...numericKeywords,
-    ...simpleKeywords
-];
+export function getKeywords(game) {
+    return [
+        ...numericKeywords,
+        ...simpleKeywords,
+        ...game.userKeywords
+    ]
+}
 
 function makeAbilityWordConverter(keyword) {
     return {
