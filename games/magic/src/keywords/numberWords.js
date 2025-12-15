@@ -1,4 +1,4 @@
-const L = localize('games-magic');
+const L = localize('game-magic');
 
 const localeNumberWords = [
     [L`zero`, L`no`],
