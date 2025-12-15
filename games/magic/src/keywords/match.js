@@ -3,7 +3,7 @@ import { getTarget } from "./target.js";
 import { parseKeywordTokens } from "./parse.js";
 import { getParamType } from "./params.js";
 
-function matchKeyword(expressionTokens, str) {
+function genExpressionRegex(expressionTokens) {
     let match = "";
 
     for (const token of expressionTokens) {
@@ -15,7 +15,7 @@ function matchKeyword(expressionTokens, str) {
         match += ")";
     }
 
-    return str.match(new RegExp(match, "i"));
+    return new RegExp(match, "i");
 }
 
 function getParamVariables(expressionTokens, match) {
@@ -37,7 +37,8 @@ export function matchAllKeywords(str, card) {
 
     for (const keyword of keywords) {
         const expressionTokens = parseKeywordTokens(keyword.expression);
-        const keywordMatched = matchKeyword(expressionTokens, str);
+        if (!keyword.expressionRegex) keyword.expressionRegex = genExpressionRegex(expressionTokens);
+        const keywordMatched = str.match(keyword.expressionRegex);
         
         if (keywordMatched) {
             const params = getParamVariables(expressionTokens, keywordMatched)
