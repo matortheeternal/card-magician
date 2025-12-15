@@ -23,7 +23,7 @@ export default class Localization {
         this.label = metadata?.label || 'New Locale';
         this.created = metadata?.created || new Date();
         this.updated = metadata?.updated || undefined;
-        this.name = `${this.label} (${this.id}.yml)`;
+        this.schemaVersion = metadata.schemaVersion || 1;
         this.contributors = metadata?.contributors || '';
     }
 
@@ -34,6 +34,17 @@ export default class Localization {
         return escapeHTML(template.replace(/%\{(\d+)}/g, (_, index) => {
             return values[index];
         }));
+    }
+
+    get metadata() {
+        return {
+            label: this.label,
+            created: this.created,
+            updated: this.updated,
+            percentComplete: this.percentCompleted,
+            schemaVersion: this.schemaVersion,
+            contributors: this.contributors
+        };
     }
 
     get raw() {
@@ -51,6 +62,21 @@ export default class Localization {
             if (Object.keys(namespace).length === 0)
                 delete this.data[namespaceKey];
         });
+    }
+
+    get percentComplete() {
+        const ratio = this.completedCount / this.constructor.totalKeys;
+        return `${Math.floor(ratio * 100)}%`;
+    }
+
+    get completedCount() {
+        return Object.values(this.data).flatMap(entries => {
+            return Object.values(entries);
+        }).length;
+    }
+
+    get name() {
+        return `${this.label} (${this.id}.yml)`;
     }
 
     get edit() {
@@ -73,6 +99,5 @@ export default class Localization {
     async save() {
         const filePath = `locales/${this.id}.yml`;
         await Neutralino.filesystem.writeFile(filePath, this.raw);
-        // TODO: update metadata in locales registry
     }
 }
