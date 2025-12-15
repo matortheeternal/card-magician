@@ -67,7 +67,9 @@ function resolveOption(selectedValue, options) {
 
 function buildTriggerHTML(option, parent, rawValue) {
     if (!option)
-        return `<span class="error">ERROR: ${rawValue ?? ''}</span>`;
+        return rawValue
+            ? `<span class="unknown-value">ERROR: ${rawValue}</span>`
+            : `<span class="no-selection">No Selection</span>`;
     let html = menuPrefixIcon(option);
     if (parent) html += parent.name + ' / ';
     return html + option.name;
@@ -82,7 +84,7 @@ export default class SelectField extends FieldComponent {
     }
 
     render() {
-        if (!this.field) return;
+        if (!this.field || !this.model) return;
         this.innerHTML = buildSelectHTML(this.field.label, this.field.options);
     }
 

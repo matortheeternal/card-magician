@@ -79,7 +79,7 @@ export default class ImageField extends FieldComponent {
     }
 
     render() {
-        if (!this.field) return;
+        if (!this.field || !this.model) return;
         this.innerHTML = getBaseHTML(this.field.label);
     }
 
