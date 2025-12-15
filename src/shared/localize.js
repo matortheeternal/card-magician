@@ -1,17 +1,17 @@
 import Localization from './Localization.js';
 
-const LOCALE_DIR = 'locales';
 const generateSchema = NL_ARGS.includes("--localize");
+const schemaPromise = loadSchema();
+const localesPromise = loadLocales();
 
 let activeLocalization = null;
-const schemaPromise = loadSchema();
 
 export async function prepareSchema() {
     Localization.schema = await schemaPromise;
     return Localization.schema;
 }
 
-export async function getAvailableLocales() {
+export async function loadLocales() {
     const manifestPath = `locales/locales.json`;
     const manifestStr = await Neutralino.filesystem.readFile(manifestPath);
     const manifest = JSON.parse(manifestStr);
@@ -28,6 +28,33 @@ export async function getAvailableLocales() {
             return Localization.load(key, value)
         })
     );
+}
+
+async function saveLocaleRegistry() {
+    const locales = (await localesPromise).reduce((acc, locale) => {
+        acc[locale.id] = {
+            label: locale.label,
+            created: locale.created,
+            updated: locale.update,
+            percentComplete: locale.percentComplete,
+            schemaVersion: locale.schemaVersion,
+            contributors: locale.contributors
+        };
+        return acc;
+    }, {});
+    const text = JSON.stringify(locales, null, 2);
+    await Neutralino.filesystem.writeFile('locales/locales.json', text);
+}
+
+export async function getAvailableLocales() {
+    return await localesPromise;
+}
+
+export async function saveLocale(locale) {
+    const locales = await localesPromise;
+    locales[locale.id] = locale.metadata;
+    saveLocaleRegistry();
+    locale.save();
 }
 
 async function setLocalization(localeId) {
@@ -54,9 +81,9 @@ function buildLocalizationKey(strings, values) {
 
 const writeSchemaFile = (async function writeSchemaFile() {
     const json = JSON.stringify(schema, null, 2);
-    const outputPath = `${LOCALE_DIR}/schema.json`;
+    const outputPath = `locales/schema.json`;
     console.log(`Writing localization schema to `, outputPath);
-    await Neutralino.filesystem.createDirectory(LOCALE_DIR).catch(() => {});
+    await Neutralino.filesystem.createDirectory('locales').catch(() => {});
     await Neutralino.filesystem.writeFile(outputPath, json);
 }).debounce(1000);
 

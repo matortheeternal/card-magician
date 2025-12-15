@@ -1,6 +1,10 @@
 import Alpine from 'alpinejs';
 import html from './editLocalesModalHTML.js';
-import { getAvailableLocales, prepareSchema } from '../../../shared/localize.js';
+import {
+    getAvailableLocales,
+    prepareSchema,
+    saveLocale
+} from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 const { getAbsolutePath } = Neutralino.filesystem;
 
@@ -31,10 +35,11 @@ Alpine.data('editLocalesModal', () => ({
 
     async init() {
         this.$root.innerHTML = html;
-        this.localeField.options = await getAvailableLocales();
         await prepareSchema();
+        this.localeField.options = await getAvailableLocales();
         this.stats.total = Localization.totalKeys;
-        this.selectLocale(this.localeField.options[0] || await this.createNewLocale());
+        const locale = this.localeField.options[0] || await this.createNewLocale();
+        this.selectLocale(locale);
         this.updateStats();
         this.onChange = this.onChange.bind(this);
         this.save = this.save.debounce(1000);
@@ -76,19 +81,15 @@ Alpine.data('editLocalesModal', () => ({
     },
 
     updateStats() {
-        const ymlData = this.selectedLocale.data;
-        this.stats.completed = Object.values(ymlData).flatMap(entries => {
-            return Object.values(entries);
-        }).length;
-        const ratio = this.stats.completed / this.stats.total;
-        this.stats.percent = `${Math.floor(ratio * 100)}%`;
+        this.stats.completed = this.selectedLocale.completedCount;
+        this.stats.percent = this.selectedLocale.percentComplete;
     },
 
     async createNewLocale() {
         const id = this.getNextAvailableId();
-        this.selectedLocale = new Localization(id);
-        this.localeField.options.push(this.selectedLocale);
-        this.selectedLocaleId = id;
+        const newLocale = new Localization(id);
+        this.localeField.options.push(newLocale);
+        return newLocale;
     },
 
     async openLocalesFolder() {
@@ -110,7 +111,8 @@ Alpine.data('editLocalesModal', () => ({
 
     async save() {
         this.statusMessage = 'Saving...';
-        await this.selectedLocale.save();
+        this.selectedLocale.updated = new Date();
+        await saveLocale(this.selectedLocale);
         setTimeout(() => (this.statusMessage = 'Saved.'), 350);
     },
 
