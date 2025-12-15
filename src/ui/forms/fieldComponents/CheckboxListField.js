@@ -10,7 +10,7 @@ export default class CheckboxListField extends FieldComponent {
     }
 
     render() {
-        if (!this.field) return;
+        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<div class="label">${this.field.label}</div>
             <div class="checkbox-list">

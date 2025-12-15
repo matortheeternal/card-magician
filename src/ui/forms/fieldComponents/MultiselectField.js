@@ -11,7 +11,7 @@ export default class MultiselectField extends FieldComponent {
     }
 
     render() {
-        if (!this.field) return;
+        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<sl-select
               size="small"

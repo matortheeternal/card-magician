@@ -10,7 +10,7 @@ export default class InputField extends FieldComponent {
     }
 
     render() {
-        if (!this.field) return;
+        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<sl-input
               size="small"
