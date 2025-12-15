@@ -1,0 +1,25 @@
+.edit-locales-modal .modal {
+    width: 800px;
+    font-family: var(--sl-font-sans);
+    font-size: var(--sl-font-size-large);
+}
+
+.edit-locales-modal .select-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+}
+
+.edit-locales-modal .select-bar cm-select {
+    flex: 1;
+}
+
+.edit-locales-modal .input-fields {
+    display: flex;
+    flex-direction: row;
+    gap: var(--sl-spacing-small);
+}
+
+.edit-locales-modal .contributors-input {
+    flex: 1;
+}
