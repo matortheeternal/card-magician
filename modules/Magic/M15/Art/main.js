@@ -1,9 +1,23 @@
+const L = localize('module-M15-art');
+
 export default class ArtModule extends CardMagicianModule {
+    async init(card) {
+        this.artImageField = {
+            id: 'artImage',
+            type: 'image',
+            label: L`Art Image`
+        };
+
+        card.setAspectRatio = ({ width, height }) => {
+            this.artImageField.aspectRatio = width / height;
+        };
+    }
+
     defaultImage(name) {
         return this.resolveAsset(name + '.jpg');
     }
 
-    async getDefaultColorImage(card, colorCount) {
+    getDefaultColorImage(card, colorCount) {
         const colors = card.colorIdentity.colors;
         if (colorCount === 0)
             return this.defaultImage(card.isLand() ? 'l' : 'c');
@@ -12,7 +26,7 @@ export default class ArtModule extends CardMagicianModule {
         if (colorCount === 2) {
             const imgUrl1 = this.defaultImage(colors[0].char);
             const imgUrl2 = this.defaultImage(colors[1].char);
-            return await this.combineBlend(imgUrl1, imgUrl2);
+            return this.combineBlend(imgUrl1, imgUrl2);
         }
         return this.defaultImage('m');
     }
@@ -29,11 +43,11 @@ export default class ArtModule extends CardMagicianModule {
 
     async updateDefaultImage(card) {
         const colorCount = card.colorIdentity.colors.length;
-        const colorImage = await this.getDefaultColorImage(card, colorCount);
+        const colorImage = this.getDefaultColorImage(card, colorCount);
         const typeImage = this.getDefaultTypeImage(card);
         card.defaultImageUrl = typeImage
-            ? await this.combineBlend(colorImage, typeImage)
-            : colorImage;
+            ? await this.combineBlend(colorImage, typeImage).publish()
+            : (await colorImage.publish?.()) || colorImage;
         this.requestRender();
     }
 
@@ -51,21 +65,17 @@ export default class ArtModule extends CardMagicianModule {
     render(card) {
         if (!card.defaultImageUrl && !card.artImage.imageUrl) return '';
         return card.artImage.imageUrl ? (
-            `<crop-image crop-width="${card.artImage.width}" 
-                         crop-height="${card.artImage.height}"
-                         offset-x="${card.artImage.xOffset}"
-                         offset-y="${card.artImage.yOffset}"
+            `<crop-image crop-width="${card.artImage.crop.width}" 
+                         crop-height="${card.artImage.crop.height}"
+                         offset-x="${card.artImage.crop.xOffset}"
+                         offset-y="${card.artImage.crop.yOffset}"
                          src="${card.artImage.imageUrl}">
             </crop-image>`
         ) : `<img src="${card.defaultImageUrl}" />`;
     }
 
     get fields() {
-        return [{
-            id: 'artImage',
-            type: 'image',
-            displayName: 'Art Image'
-        }];
+        return [this.artImageField];
     }
 
     async styles() {

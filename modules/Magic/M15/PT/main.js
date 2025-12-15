@@ -1,36 +1,27 @@
+const L = localize('module-M15-pt');
+
 export default class PTModule extends CardMagicianModule {
-    updateShowPT(card) {
+    async updatePT(card) {
+        const activeFrame = card.activeFrame?.();
+        if (!activeFrame) return;
         card.showPT = Boolean(card.toughness || card.power);
+        const ptBackgrounds = await activeFrame.buildBackgrounds('pt', card);
+        this.ptStyle = this.objectToStyle(ptBackgrounds[0].style);
+        await this.updateFrontNotchPt(card);
         this.requestRender({ render: 'renderPT' });
     }
 
     updateFrontNotchPt(card) {
-        if (!card.parent || card.id !== 'back') return;
+        if (card.id !== 'back') return;
         const frontCard = card.parent().front;
-        frontCard.showNotchPT = card.showPT && frontCard.frameFolder === 'notched';
+        frontCard.showNotchPT = card.showPT && frontCard?.isTransform();
         frontCard.notchPtText = `${card.power}/${card.toughness}`;
-        this.requestRender({ render: 'renderNotchPT' });
-    }
-
-    async updatePtStyle(card) {
-        const key = card.isVehicle() ? 'v' : card.getCardColorKey();
-        const url = this.resolveAsset(key + '.png');
-        this.ptStyle = `background-image: url('${url}')`;
-        this.requestRender({ render: 'renderPT' });
     }
 
     bind(card, watch) {
         watch(
-            () => [card.subType, card.colorIdentity],
-            () => this.updatePtStyle(card)
-        );
-        watch(
-            () => [card.toughness, card.power],
-            () => this.updateShowPT(card)
-        );
-        watch(
-            () => card.parent,
-            () => this.updateFrontNotchPt(card)
+            () => [card.toughness, card.power, card.activeFrame],
+            () => this.updatePT(card)
         );
         watch(
             () => card.showNotchPT,
@@ -42,7 +33,9 @@ export default class PTModule extends CardMagicianModule {
         if (!card.showPT) return;
         return (
             `<div class="pt-text" style="${this.ptStyle}">
-                ${this.escapeHTML(card.power)}/${this.escapeHTML(card.toughness)}
+                <span>${this.escapeHTML(card.power)}</span>
+                <span class="d">/</span>
+                <span>${this.escapeHTML(card.toughness)}</span>
             </div>`
         );
     }
@@ -56,8 +49,8 @@ export default class PTModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'power', displayName: 'Power' },
-            { id: 'toughness', displayName: 'Toughness' }
+            { id: 'power', label: L`Power` },
+            { id: 'toughness', label: L`Toughness` }
         ];
     }
 

@@ -1,28 +1,14 @@
+const L = localize('module-M15-face-symbol');
+
 export default class TypeModule extends CardMagicianModule {
     async init(card) {
-        card.isLegendary = function() {
-            return /legendary/i.test(card.superType);
-        };
-
-        card.isLand = function() {
-            return /land/i.test(card.superType);
-        };
-
-        card.isArtifact = function() {
-            return /artifact/i.test(card.superType);
-        };
-
-        card.isEnchantment = function() {
-            return /enchantment/i.test(card.superType);
-        };
-
-        card.isVehicle = function() {
-            return /vehicle/i.test(card.subType);
-        };
-
-        card.isSnow = function() {
-            return /snow/i.test(card.superType);
-        };
+        card.isLegendary = () => /\blegendary\b/i.test(card.superType);
+        card.isLand = () => /\bland\b/i.test(card.superType);
+        card.isArtifact = () => /\bartifact\b/i.test(card.superType);
+        card.isEnchantment = () => /\benchantment\b/i.test(card.superType);
+        card.isVehicle = () => /\bvehicle\b/i.test(card.subType);
+        card.isSnow = () => /\bsnow\b/i.test(card.superType);
+        card.isConspiracy = () => /\bconspiracy\b/i.test(card.superType);
     }
 
     bind(card, watch) {
@@ -40,8 +26,8 @@ export default class TypeModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'superType', displayName: 'Super Type' },
-            { id: 'subType', displayName: 'Sub Type' }
+            { id: 'superType', label: L`Super Type` },
+            { id: 'subType', label: L`Sub Type` }
         ];
     }
 

@@ -73,10 +73,18 @@ module-container[module="Art"] {
 
 .frame-devoid module-container[module="Art"] crop-image {
     display: block;
-    height: 205%;
+    height: 185%;
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.frame-conspiracy-scrolls module-container[module="Cost"] {
+    margin-right: 14px;
+}
+
+.frame-conspiracy-scrolls module-container[module="Rarity"] {
+    margin-right: 10px
 }
 
 .type-line {
@@ -102,7 +110,7 @@ module-container[module="ColorIndicator"] img {
     margin-top: 2px;
 }
 
-module-container[render="renderExpansionSymbol"] {
+module-container[module="Rarity"] {
     min-width: 18px;
     min-height: 18px;
     padding-left: 4px;

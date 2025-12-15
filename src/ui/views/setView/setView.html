@@ -1,0 +1,27 @@
+<template x-if="showSearch">
+    <div class="search-bar">
+        <sl-input autocomplete="off" :placeholder="searchPlaceholder" @keydown="searchInputKeyDown"></sl-input>
+        <sl-button @click="openAdvancedSearch" x-text="advancedSearchLabel"></sl-button>
+    </div>
+</template>
+<div x-data="listView({ rows, columns, addRowLabel })" class="list-view-container"></div>
+<template x-if="!rows.length">
+    <div class="no-content-prompt">
+        <span x-text="noCardsLabel"></span>
+        <div class="buttons-container">
+            <sl-button size="large" @click="addCard" x-text="addCardLabel"></sl-button>
+            <sl-button size="large" @click="openSet" x-text="openSetLabel"></sl-button>
+        </div>
+        <div class="recent-sets-container" x-show="recentSets.length">
+            <span x-text="recentSetsLabel"></span>
+            <div class="buttons-container">
+                <template x-for="set in recentSets">
+                    <sl-button variant="text" size="small" class="recent-set"
+                               @click="openSet(set)">
+                        <span x-text="set"></span>
+                    </sl-button>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

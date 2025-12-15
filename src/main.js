@@ -1,18 +1,17 @@
 import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
-import './webComponents/**/*.js';
+import './shared/extensions.js';
+import './shared/localize.js';
+import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import './extensions.js';
-import './shoelaceFixes.js';
-import CardMagicianModule from './CardMagicianModule.js';
-import CardMagicianGame from './CardMagicianGame.js';
-import { loadTemplates, getTemplates } from './services/templateService.js';
-import { loadGames, setGame } from './services/gameService.js';
+import CardMagicianModule from './domain/template/CardMagicianModule.js';
+import CardMagicianGame from './domain/game/CardMagicianGame.js';
+import { loadTemplates, getTemplates } from './domain/template/templateRegistry.js';
+import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
-import appConfig from './appConfig';
-import './components/**/*.js';
-import './directives/*.js';
-import cacheManager from './gfx/CacheManager.js';
+import AppConfig from './domain/game/appConfig.js';
+import { bindToAlpine } from './ui/systems/statusSystem.js';
+import imageCache from './domain/gfx/ImageCache.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -74,14 +73,23 @@ async function startApp() {
         await runTests();
         return;
     }
-    Alpine.store('appConfig', appConfig);
     await loadGames();
+    bindToAlpine();
     const game = await setGame('magic');
     Alpine.store('game', game);
+    const appConfig = new AppConfig(game);
+    Alpine.store('appConfig', appConfig);
     await loadTemplates();
     Alpine.store('templates', getTemplates());
-    await cacheManager.preload();
+    await imageCache.preload();
     Alpine.store('views').loaded = true;
 }
+
+document.addEventListener('open-modal', event => {
+    const views = Alpine.store('views');
+    views.activeModal = event.detail.modalKey;
+    views.modalData = event.detail.data;
+    views.modalCallback = event.detail.callback;
+});
 
 startApp();
