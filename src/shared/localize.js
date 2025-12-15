@@ -6,17 +6,9 @@ const generateSchema = NL_ARGS.includes("--localize");
 let activeLocalization = null;
 const schemaPromise = loadSchema();
 
-const yamlQuoteExpr = /^(?![?:\-!&*#%@])[\w .\/-]*[A-Za-z0-9_.\-\/]$/;
-export async function generateLocaleTemplate() {
-    const schema = await schemaPromise;
-    return Object.entries(schema).map(([namespaceKey, entries]) => {
-        const contents = Object.keys(entries).map(key => {
-            return yamlQuoteExpr.test(key)
-                ? `    ${key}: `
-                : `    ${JSON.stringify(key)}: `;
-        }).join('\n');
-        return `${namespaceKey}:\n` + contents;
-    }).join('\n');
+export async function prepareSchema() {
+    Localization.schema = await schemaPromise;
+    return Localization.schema;
 }
 
 export async function getAvailableLocales() {

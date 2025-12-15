@@ -124,9 +124,16 @@ addPrototypeFunction(Array, 'remove', {
 addPrototypeFunction(Function, 'debounce', {
     value: function debounce(delay) {
         let timeout = null;
-        return () => {
+        const func = this;
+        return function() {
+            const context = this;
+            const args = arguments;
+            const later = function() {
+                timeout = null;
+                func.apply(context, args);
+            };
             clearTimeout(timeout);
-            timeout = setTimeout(this, delay);
+            timeout = setTimeout(later, delay);
         }
     }
 })
