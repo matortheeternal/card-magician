@@ -23,9 +23,7 @@ export default class Localization {
         this.created = metadata?.created || new Date();
         this.updated = metadata?.updated || undefined;
         this.name = `${this.label} (${this.id}.yml)`;
-        this.contributors = metadata?.contributors
-            ? metadata.contributors.join(', ')
-            : '';
+        this.contributors = metadata?.contributors || '';
     }
 
     resolve(namespaceKey, key, values) {
