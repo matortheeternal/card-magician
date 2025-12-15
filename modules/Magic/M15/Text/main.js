@@ -122,8 +122,6 @@ export default class TextModule extends CardMagicianModule {
     }
 
     get options() {
-        const game = this.getActiveGame();
-
         return [
             { id: 'chopTop', label: L`Chop Top` },
             { id: 'chopBottom', label: L`Chop Bottom` },
@@ -140,10 +138,12 @@ export default class TextModule extends CardMagicianModule {
             },
             {
                 id: 'showRt',
-                label: 'Keyword Reminder Text',
+                label: L`Show Reminder Text`,
                 type: 'select',
                 options: [
-                    { id: 'nonevergreen', name: 'Non-Evergreen Keywords' },
+                    { id: 'default', name: L`Default` },
+                    { id: 'all', name: L`All Keywords` },
+                    { id: 'none', name: L`No Keywords` }
                 ]
             }
         ];

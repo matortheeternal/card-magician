@@ -9,7 +9,7 @@ export const keywords = [
 function makeAbilityWordConverter(keyword) {
     return {
         match(str) {
-            return str.match(keyword);
+            return str.match('^' + keyword);
         },
         convert(match) {
             return "<i>" + match + "</i>";
