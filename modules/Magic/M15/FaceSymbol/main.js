@@ -1,6 +1,8 @@
 import makeSymbolOptions from './src/symbolOptions.js';
 import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
 
+const L = localize('module-M15-face-symbol');
+
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
         opt.imageURL = this.resolveAsset(opt.imagePath);
@@ -18,7 +20,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         this.loadFaceSymbolImages();
     }
 
-    renderFaceSymbol(card) {
+    updateFaceSymbol(card) {
         this.selectedFaceSymbol = resolveOption(this.symbolOptions, card.faceSymbol);
         this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
         this.requestRender();
@@ -38,7 +40,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         watch(() => [card.colorIdentity, card.superType, card.parent],
               () => this.updateAutoSymbols(card));
         watch(() => [card.faceSymbol, card.parent],
-              () => this.renderFaceSymbol(card));
+              () => this.updateFaceSymbol(card));
     }
 
     render(card) {
@@ -54,7 +56,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
         return [{
             id: 'faceSymbol',
             type: 'select',
-            displayName: 'Face Symbol',
+            label: L`Face Symbol`,
             options: this.symbolOptions,
             initialValue: 'autodetect',
             default: null

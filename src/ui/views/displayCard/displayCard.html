@@ -1,0 +1,8 @@
+<cm-card x-prop:card="$store.views.activeCard"></cm-card>
+<div class="buttons-container" x-show="useFlip">
+    <sl-button @click="flipCard()">
+        <sl-icon name="arrow-repeat"></sl-icon>
+        <span x-text="flipLabel"></span>
+    </sl-button>
+</div>
+<cm-card-properties x-prop:card="$store.views.activeCard"></cm-card-properties>

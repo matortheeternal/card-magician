@@ -1,0 +1,39 @@
+<table class="list-view-table">
+    <colgroup></colgroup>
+    <thead>
+    <tr>
+    <template x-for="(column, index) in activeColumns">
+        <th @click="onHeaderClick($event, column)">
+            <span x-text="column.label"></span>
+            <template x-if="column.sort">
+                <div class="column-sort">
+                    <sl-tooltip hoist placement="bottom" :content="'Sort priority ' + column.sort.priority" x-show="column.sort.priority">
+                        <sl-icon :name="(column.sort.priority || '0') + '-circle-fill'"
+                        ></sl-icon>
+                    </sl-tooltip>
+                    <sl-tooltip hoist placement="bottom" :content="'Sorted in ' + (column.sort.direction === 'asc' ? 'ascending order' : 'descending order')">
+                        <sl-icon :name="column.sort.direction === 'asc' ? 'arrow-up' : 'arrow-down'"></sl-icon>
+                    </sl-tooltip>
+                </div>
+            </template>
+            <div class="resize-handle" @mousedown="onResizeMouseDown($event, index)"></div>
+        </th>
+    </template>
+    </tr>
+    </thead>
+    <tbody>
+    <template x-for="row in activeRows">
+        <tr @click="onRowClick($event, row)" :class="{ 'selected': row.selected, 'last-selected': row.lastSelected }">
+            <template x-for="column in activeColumns">
+                <td x-html="column.display(row)"></td>
+            </template>
+        </tr>
+    </template>
+    </tbody>
+</table>
+
+<template x-if="activeRows.length > 0">
+    <div class="add-row" @click="addRowClick">
+        <span x-text="addRowLabel"></span>
+    </div>
+</template>

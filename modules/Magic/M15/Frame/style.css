@@ -8,3 +8,7 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+.bg.frame-node {
+    height: 63px;
+}

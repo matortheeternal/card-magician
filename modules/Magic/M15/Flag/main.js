@@ -1,3 +1,5 @@
+const L = localize('module-M15-flag');
+
 export default class FlagModule extends CardMagicianModule {
     updateFlagStyle(card) {
         const key = card.getCardColorKey();
@@ -8,11 +10,8 @@ export default class FlagModule extends CardMagicianModule {
     }
 
     updateShowFlag(card) {
-        if (!card.parent || card.id !== 'front') return;
-        const backCard = card.parent().back;
-        const showFlag = Boolean(backCard && card.frameFolder !== 'notched');
-        card.showFlag = showFlag;
-        if (backCard) backCard.showFlag = showFlag;
+        card.showFlag = (card.isFrontDFC?.() && !card.isTransform?.())
+            || (card.isBackDFC?.() && !card.parent().front.isTransform?.());
     }
 
     async updateFlagRightHTML(card) {
@@ -30,7 +29,7 @@ export default class FlagModule extends CardMagicianModule {
             () => this.updateFlagStyle(card)
         )
         watch(
-            () => [card.frameFolder, card.parent],
+            () => [card.rulesText, card.parent],
             () => this.updateShowFlag(card)
         );
         watch(
@@ -51,8 +50,8 @@ export default class FlagModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'flagLeft', displayName: 'Flag Left' },
-            { id: 'flagRight', displayName: 'Flag Right' }
+            { id: 'flagLeft', label: L`Flag Left` },
+            { id: 'flagRight', label: L`Flag Right` }
         ];
     }
 

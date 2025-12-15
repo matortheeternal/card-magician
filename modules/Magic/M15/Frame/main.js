@@ -1,10 +1,7 @@
-import { runPipeline } from './src/pipeline.js';
-import FrameFolderRegistry from './src/frameFolders.js';
-import makeFrameOptions from './src/frameOptions.js';
-import makeTrimOptions from './src/trimOptions.js';
-import Transformers from './src/transformers/index.js';
-import Providers from './src/providers/index.js';
-import Resolvers from './src/resolvers/index.js';
+import makeOptions from './src/options.js';
+import DevoidFrame from './src/DevoidFrame.js';
+import NormalFrame from './src/NormalFrame.js';
+import ClearFrame from './src/ClearFrame.js';
 
 function createFrameHelpers(card) {
     card.isDKA = () => false;
@@ -13,7 +10,6 @@ function createFrameHelpers(card) {
     card.isBeyond = () => card.frame.ub;
     card.isFNM = () => card.frame.fnm;
     card.isEnergyLand = () => false;
-    card.isMiracle = () => card.trims.miracle;
     card.isFrameless = () => card.frame.frameless;
     card.isBorderless = () => card.frame.borderless;
     card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
@@ -21,66 +17,61 @@ function createFrameHelpers(card) {
     card.isDevoid = () => card.frame.devoid;
     card.isClearTop = () => false;
     card.isPuma = () => card.frame.puma;
-    card.isMutate = () => card.frame.mutate;
     card.isBrawl = () => false;
-    card.isCompanion = () => false;
 }
 
 export default class FrameModule extends CardMagicianModule {
     async init(card, createHelpers = true) {
-        card.framePipeline ||= [
-            Providers.slice(),
-            Resolvers.slice(),
-            Transformers.slice()
+        card.frames = [
+            DevoidFrame,
+            ClearFrame,
+            NormalFrame
         ];
-        this.folderRegistry = new FrameFolderRegistry();
-        this.frameOptions ||= this.makeReactive(makeFrameOptions());
-        this.trimOptions ||= this.makeReactive(makeTrimOptions());
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
         card.isDFC = () => {
-            return card.id === 'front' || card.id === 'back'
-                && Object.hasOwn(card.parent?.(), 'back');
+            if (card.id === 'back') return true;
+            return card.id === 'front' && Object.hasOwn(card.parent(), 'back');
         };
         card.isFrontDFC = () => card.isDFC() && card.id === 'front';
-        card.isBackDFC = () => card.isDFC() && card.id === 'back';
+        card.isBackDFC = () => card.id === 'back';
         if (createHelpers) createFrameHelpers(card);
-    }
-
-    async updateBackgrounds(card) {
-        if (!card.parent || card.rulesHTML === undefined) return;
-        card.frameFolder = this.folderRegistry.resolveFolder(card);
-        this.backgrounds = await runPipeline(card, this, ...card.framePipeline);
-        this.requestRender();
     }
 
     updateTopClasses(card) {
         const classes = [];
-        for (const [key, value] of Object.entries(card.frame))
-            if (value) classes.push(`frame-${key}`);
+        for (const bg of this.backgrounds)
+            classes.push(`frame-${bg.id}`);
         card.dom.root.className = classes.join(' ');
+    }
+
+    async updateFrame(card) {
+        if (!card.parent || card.rulesHTML === undefined) return;
+        const Frame = card.frames.find(frame => {
+            return frame.matches(card);
+        });
+        this.activeFrame = new Frame(card, this);
+        card.setAspectRatio(this.activeFrame.artDimensions);
+        card.activeFrame = () => this.activeFrame;
+        this.backgrounds = await this.activeFrame.buildBackgrounds('frame', card);
+        this.updateTopClasses(card);
+        this.requestRender();
     }
 
     bind(card, watch) {
         watch(() => [
-            card.colorIdentity,
-            card.superType,
-            card.subType,
-            card.rulesHTML,
-            card.parent,
-            card.frame,
-            card.trims
-        ], () => this.updateBackgrounds(card));
-        watch(() => card.frame, () => this.updateTopClasses(card))
+            card.colorIdentity, card.superType, card.subType, card.rulesHTML,
+            card.parent, card.frame, card.hybridStyle, card.hybridBlendStyle,
+            card.crownStyle, card.nyxStyle, card.vehicleStyle, card.snowStyle,
+            card.scrollsStyle, card.draftStyle, card.miracleStyle, card.mutateStyle,
+            card.ubStyle
+        ], () => this.updateFrame(card));
     }
 
-    renderBackgrounds() {
+    render() {
         if (!this.backgrounds) return;
-        this.backgrounds.forEach(bg => {
-            bg.style = `background-image: url('${bg.url}'); z-index: ${bg.zIndex};`;
-        });
         return this.backgrounds.map(bg => (
-            `<div class="bg ${bg.className}" style="${bg.style}"></div>`
+            `<div class="bg frame-${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`
         )).join('\n');
     }
 
@@ -89,25 +80,9 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     get options() {
-        return [{
-            id: 'frame',
-            displayName: 'Frame',
-            type: 'checkboxlist',
-            options: this.frameOptions
-        }, {
-            id: 'trims',
-            type: 'checkboxlist',
-            displayName: 'Trims',
-            options: this.trimOptions
-        }, {
-            id: 'hybridStyle',
-            type: 'select',
-            displayName: 'Hybrid Style',
-            options: [
-                { id: 'grey', name: 'Grey' },
-                { id: 'gold', name: 'Gold' },
-                { id: 'hybrid', name: 'Hybrid' },
-            ]
-        }];
+        const options = makeOptions();
+        const f = options.find(opt => opt.id === 'frame');
+        f.options = this.makeReactive(this.frameOptions || f.options);
+        return options;
     }
 }

@@ -1,5 +1,7 @@
 import textToHTML from './src/textToHTML.js';
 
+const L = localize('module-M15-text');
+
 const allowedTags = [
     'b', 'ol', 'pre', 'ul', 'li', 'br', 'code',
     'em', 'q', 'strong', 'sub', 'sup', 'u', 'sym'
@@ -9,6 +11,10 @@ export default class TextModule extends CardMagicianModule {
     async init(card) {
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
+
+        card.isCompanion = () => /^companion\b/i.test(card.rulesText);
+        card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
+        card.isMutate = () => /^mutate\b/i.test(card.rulesText);
 
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
@@ -107,24 +113,24 @@ export default class TextModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'rulesText', type: 'textarea', displayName: 'Rules Text' },
-            { id: 'flavorText', type: 'textarea', displayName: 'Flavor Text' }
+            { id: 'rulesText', type: 'textarea', label: L`Rules Text` },
+            { id: 'flavorText', type: 'textarea', label: L`Flavor Text` }
         ];
     }
 
     get options() {
         return [
-            { id: 'chopTop', displayName: 'Chop Top' },
-            { id: 'chopBottom', displayName: 'Chop Bottom' },
-            { id: 'maxFontSize', displayName: 'Max Font Size' },
+            { id: 'chopTop', label: L`Chop Top` },
+            { id: 'chopBottom', label: L`Chop Bottom` },
+            { id: 'maxFontSize', label: L`Max Font Size` },
             {
                 id: 'centerText',
-                displayName: 'Center Text',
+                label: L`Center Text`,
                 type: 'select',
                 options: [
-                    { id: 'never', name: 'Never' },
-                    { id: 'always', name: 'Always' },
-                    { id: 'short', name: 'Short Text' },
+                    { id: 'never', name: L`Never` },
+                    { id: 'always', name: L`Always` },
+                    { id: 'short', name: L`Short Text` },
                 ]
             },
         ];

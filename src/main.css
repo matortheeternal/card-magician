@@ -1,14 +1,21 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
-@import "components/titleBar/titleBar.css";
-@import "components/setView/setView.css";
-@import "components/displayCard/displayCard.css";
-@import "components/listView/listView.css";
-@import "components/setInfoModal/setInfoModal.css";
-@import "webComponents/cardForm/cardForm.css";
-@import "webComponents/dropdownSelect/dropdownSelect.css";
-@import "webComponents/checkboxList/checkboxList.css";
-@import "webComponents/card/card.css";
-@import "webComponents/faceForm/faceForm.css";
+@import "highlight.js/styles/monokai-sublime.min.css";
+@import "ui/components/card/card.css";
+@import "ui/components/cardProperties/cardProperties.css";
+@import "ui/components/codeEditor/codeEditor.css";
+@import "ui/components/inlineInput/inlineInput.css";
+@import "ui/components/listView/listView.css";
+@import "ui/modals/cropImageModal/cropImageModal.css";
+@import "ui/modals/setInfoModal/setInfoModal.css";
+@import "ui/modals/editLocalesModal/editLocalesModal.css";
+@import "ui/forms/cardForm/cardForm.css";
+@import "ui/forms/faceForm/faceForm.css";
+@import "ui/forms/fieldComponents/checkboxListField.css";
+@import "ui/forms/fieldComponents/imageField.css";
+@import "ui/forms/fieldComponents/selectField.css";
+@import "ui/views/displayCard/displayCard.css";
+@import "ui/views/setView/setView.css";
+@import "ui/views/titleBar/titleBar.css";
 
 * {
     box-sizing: border-box;
@@ -71,6 +78,11 @@ main.spinner-container > div {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
+.modal {
+    background-color: #111;
+    border: 1px solid var(--sl-input-border-color);
+}
+
 .modal-body {
     padding: 2em;
     display: flex;
@@ -80,11 +92,26 @@ main.spinner-container > div {
 
 .modal-title-bar {
     text-align: left;
-    padding: 0.5em;
-    border-bottom: 1px solid;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: var(--sl-font-sans);
+    padding: 0.5em 1em;
+    border-bottom: 1px solid var(--sl-input-border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: var(--sl-input-background-color);
+    position: relative;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    border-top: 1px solid var(--sl-input-border-color);
+    padding: var(--sl-spacing-large);
+    gap: var(--sl-spacing-small);
+    background: #080808;
 }
 
 .close-modal {
@@ -92,4 +119,40 @@ main.spinner-container > div {
     margin-right: 2px;
     cursor: pointer;
     display: flex;
+    transition: 0.2s;
+    position: absolute;
+    top: 0;
+    right: 2px;
+    height: 100%;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
+}
+
+.crop-image-modal .modal {
+    min-width: 700px;
+    min-height: 400px;
+}
+
+.status-container {
+    position: fixed;
+    bottom: 0;
+    left: 2em;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+}
+
+.status-container .status-message {
+    display: block;
+    background: inherit;
+    padding: var(--sl-spacing-x-small);
+    transition: opacity 0.5s ease,
+                font-size 0.3s ease 0.2s;
+}
+
+.status-message.removing {
+    opacity: 0;
+    font-size: 0;
 }

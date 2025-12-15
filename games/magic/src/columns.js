@@ -1,49 +1,53 @@
+import compareRowPTs from './compareRowPTs.js';
+import compareRowManaCosts from './compareRowManaCosts.js';
+import compareRowRarity from './compareRarity.js';
+import { compareRowColors } from './compareRowColors.js';
 
+const L = localize('game-magic-columns');
 
 function collect(row, key, separator = ' // ') {
-    const values = [];
-    for (const face of Object.values(row))
-        if (face[key]) values.push(face[key]);
-    return values.join(separator);
+    return [row.front[key], row.back && row.back[key]]
+        .filter(Boolean)
+        .join(separator);
 }
 
 function collectMap(row, fn, separator = ' // ') {
-    const values = [];
-    for (const face of Object.values(row)) {
-        const value = fn(face);
-        if (value) values.push(value);
-    }
-    return values.join(separator);
+    return [fn(row.front), row.back && fn(row.back)]
+        .filter(Boolean)
+        .join(separator);
 }
 
 function collectUnique(row, fn, separator = ', ') {
-    const values = new Set();
-    for (const face of Object.values(row)) {
-        const valuesToAdd = fn(face);
-        if (valuesToAdd.length)
-            valuesToAdd.forEach(v => values.add(v));
-    }
+    const values = new Set([...fn(row.front), ...fn(row.back)]);
     return [...values].join(separator);
 }
 
-export function buildColumns({ ManaCost }) {
+export function buildColumns() {
     return [{
-        label: 'Name',
-        width: '250px',
+        label: L`Name`,
+        width: '240px',
         data: row => collect(row, 'name')
     }, {
-        label: 'Cost',
+        label: L`Cost`,
         width: '87px',
-        data: row => collect(row, 'manaCost').toUpperCase()
+        data: row => collectMap(row, f => {
+            if (!f.manaCost?.toString) return '';
+            return f.manaCost.toString().toUpperCase();
+        }),
+        compare: compareRowManaCosts
     }, {
-        label: 'CMC',
+        label: L`CMC`,
         width: '60px',
         data: row => collectMap(row, f => {
-            if (!f.manaCost) return '';
-            return ManaCost.parse(f.manaCost).cmc.toString();
-        })
+            if (!f.manaCost?.cmc) return '';
+            return f.manaCost.cmc.toString();
+        }),
+        compare: (a, b) => {
+            return (parseInt(a.data.cmc) || 0)
+                 - (parseInt(b.data.cmc) || 0);
+        }
     }, {
-        label: 'Type',
+        label: L`Type`,
         width: '230px',
         data: row => collectMap(row, f => {
             if (!f.superType && !f.subType) return '';
@@ -51,27 +55,37 @@ export function buildColumns({ ManaCost }) {
             return `${f.superType || ''} — ${f.subType}`;
         })
     }, {
-        label: 'P/T',
+        label: L`P/T`,
         id: 'pt',
         width: '60px',
         data: row => collectMap(row, f => {
             if (!f.power && !f.toughness) return '';
             return `${f.power || ''} / ${f.toughness || ''}`;
-        })
+        }),
+        compare: compareRowPTs
     }, {
-        label: 'Color',
+        label: L`Color`,
         width: '200px',
         data: row => collectUnique(row, f => {
-            if (!f.colors) return [];
+            if (!f?.colors) return [];
             return f.colors.map(c => c.name);
-        })
+        }),
+        compare: compareRowColors
     }, {
-        label: 'Rarity',
+        label: L`Rarity`,
         width: '100px',
-        data: row => row.front.rarity || ''
+        data: row => {
+            if (!row.front.rarity) return '';
+            return row.front.rarity.slice(0, 1).toUpperCase() +
+                   row.front.rarity.slice(1);
+        },
+        compare: compareRowRarity
     }, {
-        label: '#',
+        label: L`#`,
         width: '50px',
-        data: row => row.front.collectorNumber || '0000' 
+        data: row => {
+            const number = row.front.collectorNumber || row.front.autoCollectorNumber;
+            return (parseInt(number) || 0).toString().padStart(4, '0');
+        }
     }];
 }

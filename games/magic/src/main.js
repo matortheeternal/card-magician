@@ -1,0 +1,80 @@
+import * as ManaScribe from 'mana-scribe';
+import Magic from '@sigil-sifter/magic';
+import CardMagicianMagic from '@sigil-sifter/magic-cm';
+import CardMagicianCard from '@sigil-sifter/magic-cm/card';
+import { buildColumns } from './columns.js';
+import { autoNumberCards } from './autoNumber.js';
+import MakeManaCostAdapter from './ManaCostAdapter.js';
+import setInfoHTML from './setInfoHTML.js';
+
+const L = localize('game-magic');
+
+export default class MagicTheGathering extends CardMagicianGame {
+    async init() {
+        this.ManaScribe = ManaScribe;
+        this.addSerializerAdapter(SerializerAdapter => {
+            return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
+        });
+        this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
+        this.autoNumberCards = autoNumberCards;
+
+        this.numberFormatField = {
+            id: 'collectorNumberFormat',
+            label: L`Collector Number Format`,
+            options: [
+                { id: 'four', name: '0001' },
+                { id: 'threeOutOf', name: '001/999' },
+            ]
+        };
+        this.rarityOrderField = {
+            id: 'rarityOrder',
+            label: L`Footer Rarity Order`,
+            options: [
+                { id: 'before', name: L`Before Collector Number` },
+                { id: 'after', name: L`After Collector Number` },
+            ]
+        };
+    }
+
+    setupSearch(sifter) {
+        Magic(sifter, CardMagicianCard);
+        CardMagicianMagic(sifter);
+    }
+
+    get columns () {
+        return buildColumns();
+    }
+
+    get defaultTemplateId() {
+        return 'M15Main';
+    }
+
+    loadSet(set) {
+        const newSet = this.newSet();
+        const info = { ...newSet.info, ...(set?.info ?? {}) };
+        set.cards.forEach(card => {
+            card.notes ||= '';
+            card.tags ||= [];
+        });
+        return { ...newSet, ...set, info };
+    }
+
+    newCard() {
+        return { front: {}, notes: '', tags: [] };
+    }
+
+    newSet() {
+        const info = {
+            language: L`EN`,
+            setCode: '',
+            symbol: this.defaultSetSymbol,
+            collectorNumberFormat: this.numberFormatField.options[0].id,
+            rarityOrder: this.rarityOrderField.options[0].id,
+        };
+        return { cards: [], info };
+    }
+
+    renderSetInfo() {
+        return setInfoHTML;
+    }
+}
