@@ -1,19 +1,12 @@
 import { keywords } from "./lists/main.js";
-import { matchTarget } from "./target.js";
-import { parseKeywordExpression } from "./parse.js";
+import { getTarget } from "./target.js";
+import { parseKeywordTokens } from "./parse.js";
 import { getParamType } from "./params.js";
 
-function parseAndMatchKeyword(keyword, str) {
-    const tokens = parseKeywordExpression(keyword.expression);
-    const match = matchKeyword(tokens, str);
-    
-    return match ? [match, getParamVariables(tokens, match)] : [false, false];
-}
-
-function matchKeyword(tokens, str) {
+function matchKeyword(expressionTokens, str) {
     let match = "";
 
-    for (const token of tokens) {
+    for (const token of expressionTokens) {
         const paramType = getParamType(token.format);
         const paramExpr = paramType.expr?.source;
 
@@ -25,12 +18,12 @@ function matchKeyword(tokens, str) {
     return str.match(new RegExp(match, "i"));
 }
 
-function getParamVariables(tokens, match) {
+function getParamVariables(expressionTokens, match) {
     const params = match.slice(1);
     const paramVariables = {};
         
     for (const [i, paramValue] of params.entries()) {
-        const token = tokens[i];
+        const token = expressionTokens[i];
         const type = getParamType(token.format);
         const value = type?.handler(paramValue) || paramValue;
         paramVariables[token.variable] = {value, type};
@@ -43,9 +36,12 @@ export function matchAllKeywords(str, card) {
     const matched = [];
 
     for (const keyword of keywords) {
-        const [ keywordMatched, params ] = parseAndMatchKeyword(keyword, str);
+        const expressionTokens = parseKeywordTokens(keyword.expression);
+        const keywordMatched = matchKeyword(expressionTokens, str);
+        
         if (keywordMatched) {
-            const target = matchTarget(str, keyword.label, card); 
+            const params = getParamVariables(expressionTokens, keywordMatched)
+            const target = getTarget(str, keyword.label, card); 
             matched.push({keyword, params, target});
         }
     }

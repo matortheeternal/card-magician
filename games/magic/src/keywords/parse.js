@@ -1,16 +1,3 @@
-export function parseKeywordExpression(str) {
-    const res = [];
-    let remainingStr = str;
-
-    while (remainingStr.length) {
-        const [match, token] = parseNextKeywordToken(remainingStr);
-        res.push(token);
-        remainingStr = remainingStr.slice(match[0].length);
-    }
-
-    return res;
-}
-
 function parseNextKeywordToken(str) {
     const match = str.match(/<.*?>|[^<]*/);
     const token = match[0];
@@ -21,4 +8,17 @@ function parseNextKeywordToken(str) {
     if (!format) format = variable; // so we can have things like <number>
 
     return [match, {variable, format, formatArgs}];
+}
+
+export function parseKeywordTokens(str) {
+    const res = [];
+    let remainingStr = str;
+
+    while (remainingStr.length) {
+        const [match, token] = parseNextKeywordToken(remainingStr);
+        res.push(token);
+        remainingStr = remainingStr.slice(match[0].length);
+    }
+
+    return res;
 }

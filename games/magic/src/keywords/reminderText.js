@@ -1,6 +1,6 @@
 import { AbilityWordConverters } from "./lists/main.js";
 import { targetToObject } from "./target.js";
-import { parseKeywordExpression } from "./parse.js";
+import { parseKeywordTokens } from "./parse.js";
 import { matchAllKeywords } from "./match.js";
 
 export { AbilityWordConverters, matchAllKeywords };
@@ -18,10 +18,10 @@ const specialVariables = { // Special <variables> that can be used in rt templat
     station_creature_breakpoint: () => "Not implemented"
 };
 
-function processReminderText(tokens, params, card, target) {
+function processReminderText(templateTokens, params, card, target) {
     let output = "";
 
-    for (const token of tokens) {        
+    for (const token of templateTokens) {        
         for (const [ variableName, variableFn ] of Object.entries(specialVariables)) {
             if (token.variable === variableName) {
                 token.variable = variableFn(token, card, target);
@@ -73,9 +73,8 @@ function generateReminderText(keyword, params, card, target) {
             matchRes = rtMatches[reminderText.match.type]?.(reminderText.match.params, params, card, target);
         }
         
-        if (!reminderText.match || matchRes) return processReminderText(parseKeywordExpression(reminderText.template), params, card, target);
+        if (!reminderText.match || matchRes) return processReminderText(parseKeywordTokens(reminderText.template), params, card, target);
     }
-    
 }
 
 export function addAutoReminderText(str, card) {
