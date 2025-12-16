@@ -72,14 +72,13 @@ export function renderFormField(face, field, faceForm) {
     const container = faceForm.form.root.querySelector(selector);
     if (!container) return;
     const optional = container.hasAttribute('optional');
-    renderField(container, field);
+    const fieldElement = renderField(container, field);
     if (!optional) return;
-    const childField = container.firstElementChild;
     const toggleField = createToggle(container, 'toggle-field');
     Alpine.effect(() => {
         const show = face[field.id] !== null
             && face[field.id] !== undefined;
-        childField.style.display = show ? 'block' : 'none';
+        fieldElement.style.display = show ? 'block' : 'none';
         toggleField.innerHTML = renderToggle(show, field.label);
     });
 }
