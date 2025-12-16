@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import { renderField } from '../fieldComponents/fieldComponentRegistry.js';
+import { renderField } from '../fieldComponents/fieldComponentManager.js';
 
 const L = localize('face-form');
 
