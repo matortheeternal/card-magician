@@ -15,7 +15,9 @@ export function renderField(container, field) {
         console.error('Skipped rendering unknown field type', field.type);
         return;
     }
-    container.innerHTML = `<${Component.tagName}></${Component.tagName}>`;
+    const fieldElement = document.createElement(Component.tagName);
+    container.appendChild(fieldElement);
+    return fieldElement;
 }
 
 export function hydrateFields(root) {
