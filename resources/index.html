@@ -36,6 +36,8 @@
     <div x-data="editLocalesModal()" class="modal-container edit-locales-modal"></div>
 </template>
 
+<div class="modal-container" id="modal-container"></div>
+
 <div class="status-container">
     <template x-for="message of $store.statusMessages">
         <div class="status-message"
