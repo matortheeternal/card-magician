@@ -1,7 +1,14 @@
 .set-info-modal .modal {
-    min-width: 35em;
-    background: black;
-    border: 1px solid;
+    width: 35em;
+}
+
+.set-info-modal .field-group {
     position: relative;
-    font-family: var(--sl-font-sans);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--sl-spacing-small);
+}
+
+.set-info-modal cm-code-editor {
+    font-size: var(--sl-font-size-small);
 }

@@ -1,6 +1,6 @@
 import FieldComponent from './FieldComponent.js';
 import { emit, esc } from '../../../shared/htmlUtils.js';
-import { registerField } from './fieldComponentRegistry.js';
+import { registerField } from './fieldComponentManager.js';
 
 export default class CheckboxListField extends FieldComponent {
     static tagName = 'cm-checkbox-list';

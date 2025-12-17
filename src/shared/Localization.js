@@ -1,6 +1,8 @@
 import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
 
+const CURRENT_SCHEMA_VERSION = 1;
+
 export default class Localization {
     static async load(localeId, metadata = {}) {
         const filePath = `locales/${localeId}.yml`;
@@ -23,7 +25,7 @@ export default class Localization {
         this.label = metadata?.label || 'New Locale';
         this.created = metadata?.created || new Date();
         this.updated = metadata?.updated || undefined;
-        this.schemaVersion = metadata.schemaVersion || 1;
+        this.schemaVersion = metadata?.schemaVersion || CURRENT_SCHEMA_VERSION;
         this.contributors = metadata?.contributors || '';
     }
 

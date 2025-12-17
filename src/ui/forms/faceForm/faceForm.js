@@ -3,7 +3,7 @@ import {
     missingFaceMessage, missingFormMessage,
     handleFormGroup, renderFormField
 } from './faceFormHelpers.js'
-import { hydrateFields } from '../fieldComponents/fieldComponentRegistry.js';
+import { hydrateFields } from '../fieldComponents/fieldComponentManager.js';
 import { executeAction } from '../../systems/actionSystem.js';
 
 export default class FaceForm extends HTMLElement {
