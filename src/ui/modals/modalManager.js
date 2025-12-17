@@ -1,5 +1,6 @@
 const Modals = [];
-const modalContainer = document.querySelector("#modal-container");
+const modalContainer = document.querySelector('.modal-container');
+
 let activeModal = null;
 
 export function registerModal(modal) {
