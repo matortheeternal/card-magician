@@ -1,12 +1,16 @@
 import { emit } from '../../../shared/htmlUtils.js';
-import {
-    missingFaceMessage, missingFormMessage,
-    handleFormGroup, renderFormField
-} from './faceFormHelpers.js'
-import { hydrateFields } from '../fieldComponents/fieldComponentManager.js';
 import { executeAction } from '../../systems/actionSystem.js';
+import {
+    handleFormGroup,
+    hydrateFields,
+    renderFields
+} from '../../systems/fieldSystem.js';
+
+const L = localize('face-form');
 
 export default class FaceForm extends HTMLElement {
+    #face = null;
+
     constructor() {
         super();
         this.onButtonClick = this.onButtonClick.bind(this);
@@ -20,53 +24,78 @@ export default class FaceForm extends HTMLElement {
         this.removeEventListener('click', this.onButtonClick);
     }
 
+    getMissingFaceHTML() {
+        const faceId = this.dataset.faceId;
+        return (
+            `<div class="no-content-prompt">
+                <span>${L`This card does not have a ${faceId} face.`}</span>
+                <div class="buttons-container">
+                    <sl-button class="add-face-btn" size="large">
+                        ${L`Add ${faceId} face`}
+                    </sl-button>
+                </div>
+            </div>`
+        );
+    }
+
+    getMissingFormHTML() {
+        return (
+            `<div class="no-content-prompt">
+                <span>${L`This face does not have any fields to display.`}</span>
+            </div>`
+        );
+    }
+
     getBaseHTML() {
-        const faceId = this.dataset.faceId
-        if (!this._face) return missingFaceMessage(faceId);
+        if (!this.face) return this.getMissingFaceHTML();
         if (!this.form || !this.fields)
-            return missingFormMessage();
+            return this.getMissingFormHTML();
         return '';
     }
 
     handleGroups() {
         if (!this.form) return;
         const formGroups = this.form.root.querySelectorAll('form-group');
-        formGroups.forEach(formGroup => handleFormGroup(formGroup, this));
+        formGroups.forEach(formGroup => handleFormGroup(formGroup, this.face));
     }
 
-    renderFields() {
-        if (!this.fields) return;
-        this.fields.forEach(field => renderFormField(this.face, field, this));
-        this.subcards.forEach(subcard => {
-            subcard.fields.forEach(
-                field => renderFormField(subcard, field, this)
-            );
-        });
+    resolveFields(obj) {
+        return obj.fields;
     }
 
     render() {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
-        this.renderFields();
+        renderFields(this.form.root, this.face, this.fields);
+        this.subcards.forEach(subcard => {
+            const subcardFields = this.resolveFields(subcard);
+            renderFields(this.form.root, subcard, subcardFields);
+        });
         this.handleGroups();
         this.appendChild(this.form.root);
     }
 
     set face(value) {
-        this._face = value;
+        this.#face = value;
         this.render();
         hydrateFields(this);
     }
 
-    get face() { return this._face }
-    get form() { return this._face.form }
-    get fields() { return this._face.fields }
-    get subcards() { return this._face.subcards }
+    get face() { return this.#face }
+    get form() { return this.#face.form }
+    get fields() { return this.#face.fields }
+    get subcards() { return this.#face.subcards }
+
+    getModel(subcardId) {
+        return subcardId
+            ? this.subcards.find(s => s.id === subcardId)
+            : this.face;
+    }
 
     getField(subcardId, fieldId) {
         const target = subcardId
             ? this.subcards.find(s => s.id === subcardId)
-            : this._face;
+            : this.face;
         return target.fields.find(field => field.id === fieldId);
     }
 
@@ -90,21 +119,21 @@ export default class FaceForm extends HTMLElement {
         // TODO: handle subcards
         return this.withFieldId(btn, fieldId => {
             const field = this.getField(null, fieldId);
-            this._face[fieldId] = field?.initialValue || '';
+            this.face[fieldId] = field?.initialValue || '';
         })
     }
 
     addGroup(btn) {
         // TODO: handle subcards
-        return this.withGroupShowKey(btn, key => (this._face[key] = true));
+        return this.withGroupShowKey(btn, key => (this.face[key] = true));
     }
 
     removeField(btn) {
-        return this.withFieldId(btn, fieldId => (this._face[fieldId] = null));
+        return this.withFieldId(btn, fieldId => (this.face[fieldId] = null));
     }
 
     removeGroup(btn) {
-        return this.withGroupShowKey(btn, key => (this._face[key] = false));
+        return this.withGroupShowKey(btn, key => (this.face[key] = false));
     }
 
     addFace(event) {
