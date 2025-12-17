@@ -2,9 +2,11 @@ import { CodeJar } from 'codejar';
 import { emit } from '../../../shared/htmlUtils.js';
 import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
+import xml from 'highlight.js/lib/languages/xml';
 import javascript from 'highlight.js/lib/languages/javascript';
 
 hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('xml', xml);
 hljs.registerLanguage('javascript', javascript);
 
 function fixYAML(editor) {
@@ -55,7 +57,17 @@ class CodeEditor extends HTMLElement {
         });
     }
 
+    renderLabel() {
+        const labelText = this.getAttribute('label');
+        if (!labelText) return;
+        const labelElement = document.createElement('div');
+        labelElement.className = 'field-label';
+        labelElement.textContent = labelText;
+        this.appendChild(labelElement);
+    }
+
     render() {
+        this.renderLabel();
         const editor = document.createElement('pre');
         editor.classList.add('codejar-editor');
         this.appendChild(editor);

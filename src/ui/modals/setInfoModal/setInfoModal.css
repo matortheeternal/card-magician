@@ -1,0 +1,14 @@
+.set-info-modal .modal {
+    width: 35em;
+}
+
+.set-info-modal .field-group {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--sl-spacing-small);
+}
+
+.set-info-modal cm-code-editor {
+    font-size: var(--sl-font-size-small);
+}
