@@ -5,26 +5,26 @@ export default
     autocomplete="off"
     size="small" 
     label="${L`Title`}" 
-    x-model="set.info.title"
+    x-model="$store.views.activeSet.info.title"
 ></sl-input>
 <sl-input 
     autocomplete="off"
     size="small" 
     label="${L`Description`}" 
-    x-model="set.info.description"
+    x-model="$store.views.activeSet.info.description"
 ></sl-input>
 <div class="field-group">
     <sl-input 
         autocomplete="off"
         size="small" 
         label="${L`Default Artist`}" 
-        x-model="set.info.illustrator"
+        x-model="$store.views.activeSet.info.illustrator"
     ></sl-input>
     <sl-input 
         autocomplete="off"
         size="small" 
         label="${L`Copyright`}" 
-        x-model="set.info.legalText"
+        x-model="$store.views.activeSet.info.legalText"
     ></sl-input>
 </div>
 <div class="field-group">
@@ -32,17 +32,17 @@ export default
         autocomplete="off"
         size="small" 
         label="${L`Set code`}" 
-        x-model="set.info.setCode"
+        x-model="$store.views.activeSet.info.setCode"
     ></sl-input>
     <sl-input 
         autocomplete="off"
         size="small" 
         label="${L`Language`}" 
-        x-model="set.info.language"
+        x-model="$store.views.activeSet.info.language"
     ></sl-input>
 </div>
 <div class="field-group">
-    <cm-select x-once:field="$store.game.rarityOrderField" x-once:model="set.info"></cm-select>
-    <cm-select x-once:field="$store.game.numberFormatField" x-once:model="set.info"></cm-select>
+    <cm-select x-once:field="$store.game.rarityOrderField" x-once:model="$store.views.activeSet.info"></cm-select>
+    <cm-select x-once:field="$store.game.numberFormatField" x-once:model="$store.views.activeSet.info"></cm-select>
 </div>
-<cm-code-editor label="Set Symbol" x-once:value="set.info.symbol" syntax="xml"></cm-code-editor>`
+<cm-code-editor label="Set Symbol" x-once:value="$store.views.activeSet.info.symbol" syntax="xml"></cm-code-editor>`
