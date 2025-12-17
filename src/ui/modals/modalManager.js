@@ -21,14 +21,14 @@ export function openModal(modalId, data = {}) {
 
     const modalElement = document.createElement(Component.id);
     modalElement.data = data;
-    modalContainer.innerHTML = "";
+    modalContainer.innerHTML = '';
     modalContainer.appendChild(modalElement);
-    modalContainer.style.display = "flex";
+    modalContainer.style.display = 'flex';
     activeModal = modalElement;
 }
 
 export function closeModal() {
-    modalContainer.style.display = "none";
+    modalContainer.style.display = 'none';
     activeModal = null;
 }
 
