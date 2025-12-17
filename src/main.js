@@ -12,6 +12,7 @@ import { setupTestHarness, runTests } from './tests';
 import AppConfig from './domain/game/appConfig.js';
 import { bindToAlpine } from './ui/systems/statusSystem.js';
 import imageCache from './domain/gfx/ImageCache.js';
+import Modal from './ui/modals/Modal.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -65,6 +66,7 @@ function setupAlpine() {
 function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
     window.CardMagicianGame = CardMagicianGame;
+    window.Modal = Modal;
 }
 
 async function startApp() {
