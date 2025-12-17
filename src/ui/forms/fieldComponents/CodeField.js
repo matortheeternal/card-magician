@@ -1,9 +1,10 @@
+import FieldComponent from './FieldComponent.js';
 import { CodeJar } from 'codejar';
-import { emit } from '../../../shared/htmlUtils.js';
 import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
 import xml from 'highlight.js/lib/languages/xml';
 import javascript from 'highlight.js/lib/languages/javascript';
+import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('xml', xml);
@@ -22,26 +23,16 @@ function fixYAML(editor) {
     });
 }
 
-class CodeEditor extends HTMLElement {
+export default class CodeField extends FieldComponent {
+    static tagName = 'cm-code';
     #jar = null;
-    #value = '';
 
-    connectedCallback() {
-        this.render();
-        this.bind();
-    }
-
-    set value(newValue) {
-        this.#value = newValue;
-        if (this.#jar) this.#jar.updateCode(newValue);
-    }
-
-    get value() {
-        return this.#value;
+    static matches(field) {
+        return field.type === 'code';
     }
 
     get syntax() {
-        const syntaxKey = this.getAttribute('syntax') || 'text';
+        const syntaxKey = this.field.syntax || 'plaintext';
         return function(editor) {
             if (!hljs.listLanguages().includes(syntaxKey)) return;
             const code = editor.textContent;
@@ -51,22 +42,24 @@ class CodeEditor extends HTMLElement {
     }
 
     bind() {
-        this.#jar.onUpdate(code => {
-            this.#value = code;
-            emit(this, 'code-change', { value: this.#value });
-        });
+        this.#jar.onUpdate(this.onChange);
+    }
+
+    loadValue() {
+        this.#jar.updateCode(this.value);
     }
 
     renderLabel() {
-        const labelText = this.getAttribute('label');
-        if (!labelText) return;
+        if (!this.field.label) return;
         const labelElement = document.createElement('div');
         labelElement.className = 'field-label';
-        labelElement.textContent = labelText;
+        labelElement.textContent = this.field.label;
         this.appendChild(labelElement);
     }
 
     render() {
+        if (!this.model || !this.field) return;
+        this.innerHTML = '';
         this.renderLabel();
         const editor = document.createElement('pre');
         editor.classList.add('codejar-editor');
@@ -76,6 +69,10 @@ class CodeEditor extends HTMLElement {
             spellcheck: false
         });
     }
+
+    async getChangedValue(code) {
+        return code;
+    }
 }
 
-customElements.define('cm-code-editor', CodeEditor);
+registerField(CodeField);
