@@ -1,7 +1,6 @@
 import Alpine from 'alpinejs';
 import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
-import SetInfoModal from '../../modals/setInfoModal/setInfoModal.js';
 import { openModal } from '../../modals/modalManager.js';
 
 const L = localize('title-bar');
@@ -29,7 +28,10 @@ const actions = {
     paste: () => executeAction('paste'),
     editPreferences: () => console.log('Edit preferences'),
     editLocales: () => (Alpine.store('views').activeModal = 'edit-locales'),
-    editSetInfo: () => ( openModal('cm-set-info-modal') ),
+    editSetInfo: () => {
+        const activeSet = Alpine.store('views').activeSet;
+        openModal('cm-set-info-modal', activeSet.info);
+    },
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };
