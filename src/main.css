@@ -6,8 +6,8 @@
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
-@import "ui/modals/setInfoModal/setInfoModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
+@import "ui/modals/setInfoModal/setInfoModal.css";
 @import "ui/forms/cardForm/cardForm.css";
 @import "ui/forms/faceForm/faceForm.css";
 @import "ui/forms/fieldComponents/checkboxListField.css";
@@ -69,25 +69,29 @@ main.spinner-container > div {
     display: flex;
     position: absolute;
     z-index: 100;
-    top: 0;
-    left: 0;
-    align-items: center;
+    inset: 0;
     justify-content: center;
-    width: 100%;
-    min-height: 100%;
+    overflow: auto;
+    padding: 3em;
     background-color: rgba(0, 0, 0, 0.8);
 }
 
 .modal {
-    background-color: #111;
+    min-width: 35em;
+    background: #111;
     border: 1px solid var(--sl-input-border-color);
+    position: relative;
+    height: fit-content;
+    margin-bottom: auto;
+    margin-top: auto;
+    font-family: var(--sl-font-sans);
 }
 
 .modal-body {
-    padding: 2em;
     display: flex;
+    padding: var(--sl-spacing-small) var(--sl-spacing-x-large) var(--sl-spacing-x-large);
     flex-direction: column;
-    gap: 0.5em;
+    gap: var(--sl-spacing-x-small)
 }
 
 .modal-title-bar {
@@ -115,15 +119,16 @@ main.spinner-container > div {
 }
 
 .close-modal {
-    color: var(--sl-color-danger-300);
-    margin-right: 2px;
-    cursor: pointer;
     display: flex;
-    transition: 0.2s;
+    align-items: center;
+    margin-right: 2px;
     position: absolute;
-    top: 0;
-    right: 2px;
+    right: 6px;
     height: 100%;
+    transition: 0.2s;
+    font-size: var(--sl-font-size-large);
+    color: var(--sl-color-danger-300);
+    cursor: pointer;
 }
 
 .close-modal:hover {

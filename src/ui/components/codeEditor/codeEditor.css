@@ -1,17 +1,22 @@
-cm-code-editor {
-    display: block;
-    position: relative;
-    height: 400px;
-    overflow: auto;
-    border: 1px solid var(--sl-input-border-color);
-    background: var(--sl-input-background-color);
-    border-radius: var(--sl-input-border-radius-small);
+cm-code-editor .field-label {
+    display: inline-block;
+    margin-bottom: var(--sl-spacing-3x-small);
+    font-size: var(--sl-font-size-small);
+    font-weight: var(--sl-font-weight-medium);
+    color: var(--sl-input-label-color);
+    cursor: default;
 }
 
 cm-code-editor .codejar-editor {
-    height: 100%;
+    position: relative;
+    height: fit-content;
+    max-height: 400px;
+    background: var(--sl-input-background-color);
+    border: 1px solid var(--sl-input-border-color);
+    border-radius: var(--sl-input-border-radius-small);
+    padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
+    overflow: auto;
     font-family: var(--sl-font-mono);
     font-size: var(--sl-font-size-medium);
-    padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
     margin: 0;
 }
