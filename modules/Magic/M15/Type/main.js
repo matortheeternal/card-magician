@@ -16,11 +16,29 @@ export default class TypeModule extends CardMagicianModule {
               () => this.requestRender());
     }
 
-    render(card) {
-        return card.subType ? (
-            `<auto-fit-line>${card.superType} — ${card.subType}</auto-fit-line>`
-        ) : (
-            `<auto-fit-line>${card.superType}</auto-fit-line>`
+    render(card, editable) {
+        const style = card.subType.length > 0 ? '': 'style="visibility: hidden"';
+        return (
+            `<auto-fit-line>
+                ${editable 
+                    ? `<cm-editable-text 
+                        data-title="Supertype" 
+                        field="superType" 
+                        contenteditable="true" 
+                        part="editable-text"
+                    >${this.escapeHTML(card.superType)}</cm-editable-text>`
+                    : this.escapeHTML(card.superType)
+                }
+                <span ${style}>&nbsp;—&nbsp;</span>
+                ${editable 
+                    ? `<cm-editable-text 
+                        data-title="Subtype"
+                        field="subType"
+                        contenteditable="true"
+                        part="editable-text"
+                    >${this.escapeHTML(card.subType)}</cm-editable-text>` 
+                    : this.escapeHTML(card.subType)
+            }</auto-fit-line>`
         );
     }
 

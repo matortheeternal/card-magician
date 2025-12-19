@@ -9,6 +9,10 @@ module-container[module="Type"] {
     font-kerning: none;
 }
 
+module-container[module="Type"] auto-fit-line {
+    display: flex;
+}
+
 :host(.back) module-container[module="Type"] {
     color: white;
 }
