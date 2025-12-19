@@ -29,7 +29,23 @@ Alpine.data('displayCard', () => ({
     },
 
     bindEvents() {
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Alt') return;
+            this.toggleShowEditable(true);
+        });
+        document.addEventListener('keyup', e => {
+            if (e.key !== 'Alt') return;
+            this.toggleShowEditable(false);
+        });
+        window.addEventListener('focus', () => this.toggleShowEditable(false));
         registerAction('export-card-image', () => this.exportCardImage());
+    },
+
+    toggleShowEditable(state) {
+        if (this.showEditable === state) return;
+        console.log(state ? 'on' : 'off');
+        this.showEditable = state;
+        document.body.classList.toggle('show-all-editable', this.showEditable);
     },
 
     exportCardImage() {

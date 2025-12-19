@@ -3,10 +3,12 @@ import { emit } from '../../../shared/htmlUtils.js';
 export default class DisplayCardFace extends HTMLElement {
     #face;
     initialized = false;
+    tooltips = [];
 
     constructor() {
         super();
         this.onInit = this.onInit.bind(this);
+        this.renderTooltips = this.renderTooltips.bind(this);
         this.onFieldChanged = this.onFieldChanged.bind(this);
         this.attachShadow({ mode: 'open' });
     }
@@ -17,10 +19,17 @@ export default class DisplayCardFace extends HTMLElement {
         this.shadowRoot.addEventListener('cm-field-changed', this.onFieldChanged);
     }
 
+    disconnectedCallback() {
+        this.tooltips.forEach(tooltip => {
+            tooltip.remove();
+        });
+    }
+
     onInit() {
         this.initialized = true;
         this.shadowRoot.removeEventListener('RenderScheduler:flushed', this.onInit);
         console.debug(`%ccard-face:initialized(%s)`, 'color:gold', this.#face.id);
+        document.fonts.ready.then(this.renderTooltips);
         emit(this, 'card-face:initialized');
     }
 
@@ -31,6 +40,31 @@ export default class DisplayCardFace extends HTMLElement {
 
     get face() {
         return this.#face;
+    }
+
+    renderTooltips() {
+        const editables = this.shadowRoot.querySelectorAll('cm-editable-text');
+        editables.forEach(editable => {
+            if (!editable.dataset.title) return;
+            const tooltip = document.createElement('div');
+            this.tooltips.push(tooltip);
+            tooltip.textContent = editable.dataset.title;
+            tooltip.className = 'editable-tooltip';
+            const rect = editable.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = rect.bottom + 'px';
+            document.body.appendChild(tooltip);
+            editable.addEventListener('mouseenter', () => {
+                if (editable.matches(':focus-visible')) return;
+                tooltip.classList.add('show');
+            });
+            editable.addEventListener('focus', () => {
+                tooltip.classList.remove('show');
+            })
+            editable.addEventListener('mouseout', () => {
+                tooltip.classList.remove('show');
+            });
+        });
     }
 
     render() {
