@@ -75,42 +75,51 @@ export function getSelector(model, field) {
         : ':not([subcard-id])');
 }
 
+function handleOptionalField(fieldElement, container, model, field) {
+    const optional = container.hasAttribute('optional');
+    if (!optional) return;
+
+    const toggleField = createToggle(container, 'toggle-field');
+    Alpine.effect(() => {
+        const show = model[field.id] !== null
+            && model[field.id] !== undefined;
+        fieldElement.style.display = show ? 'block' : 'none';
+        toggleField.innerHTML = renderToggle(show, field.label);
+    });
+}
+
 export function renderFields(root, model, fields) {
     if (!fields) return;
     fields.forEach(field => {
         const selector = getSelector(model, field);
         const container = root.querySelector(selector);
         if (!container) return;
-        const optional = container.hasAttribute('optional');
         const fieldElement = createFieldComponent(container, field);
-        if (!optional) return;
-        const toggleField = createToggle(container, 'toggle-field');
-        Alpine.effect(() => {
-            const show = model[field.id] !== null
-                && model[field.id] !== undefined;
-            fieldElement.style.display = show ? 'block' : 'none';
-            toggleField.innerHTML = renderToggle(show, field.label);
-        });
-    })
+        handleOptionalField(fieldElement, container, model, field);
+    });
+}
+
+function toggleGroupChildren(formGroup, model, toggleGroup) {
+    const showKey = formGroup.getAttribute('show');
+    const show = model[showKey];
+    for (const child of formGroup.children)
+        child.style.display = show ? 'block' : 'none';
+
+    formGroup.toggleAttribute('active', show);
+    const label = formGroup.getAttribute('label');
+    toggleGroup.innerHTML = renderToggle(show, label);
+}
+
+function toggleGroupVisibility(formGroup, model) {
+    const showKey = formGroup.getAttribute('show');
+    formGroup.style.display = model[showKey] ? '' : 'none';
 }
 
 export function handleFormGroup(formGroup, model) {
-    const showKey = formGroup.getAttribute('show');
+    if (!formGroup.hasAttribute('show')) return;
     const optional = formGroup.hasAttribute('optional');
-    if (!showKey) return;
-    const childFields = Array.from(formGroup.children);
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
-    Alpine.effect(() => {
-        const show = model[showKey];
-        if (!toggleGroup) {
-            if (!show) formGroup.style.display = 'none';
-            if (show) formGroup.style.removeProperty('display');
-            return;
-        }
-        for (const child of childFields)
-            child.style.display = show ? 'block' : 'none';
-        formGroup.toggleAttribute('active', show);
-        const label = formGroup.getAttribute('label');
-        toggleGroup.innerHTML = renderToggle(show, label);
-    });
+    Alpine.effect(optional
+        ? () => toggleGroupVisibility(formGroup, model)
+        : () => toggleGroupChildren(formGroup, model, toggleGroup));
 }
