@@ -1,5 +1,5 @@
 import FieldComponent from './FieldComponent.js';
-import { registerField } from './fieldComponentManager.js';
+import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
 
