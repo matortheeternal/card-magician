@@ -17,10 +17,12 @@ export default class NameModule extends CardMagicianModule {
         );
     }
 
-    render(card) {
-        return (
-            `<auto-fit-line>${this.escapeHTML(card.name)}</auto-fit-line>`
-        );
+    render(card, editable) {
+        const nameHtml = this.escapeHTML(card.name);
+        return `<auto-fit-line>${editable 
+            ? `<cm-editable-text field="name" contenteditable="true" part="editable">${nameHtml}</cm-editable-text>`
+            : nameHtml
+        }</auto-fit-line>`;
     }
 
     get fields() {

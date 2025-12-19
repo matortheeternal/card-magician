@@ -7,12 +7,14 @@ export default class DisplayCardFace extends HTMLElement {
     constructor() {
         super();
         this.onInit = this.onInit.bind(this);
+        this.onFieldChanged = this.onFieldChanged.bind(this);
         this.attachShadow({ mode: 'open' });
     }
 
     connectedCallback() {
         if (this.#face) this.render();
         this.shadowRoot.addEventListener('RenderScheduler:flushed', this.onInit);
+        this.shadowRoot.addEventListener('cm-field-changed', this.onFieldChanged);
     }
 
     onInit() {
@@ -36,6 +38,14 @@ export default class DisplayCardFace extends HTMLElement {
         this.shadowRoot.innerHTML = '';
         this.classList.add(this.#face.id);
         this.shadowRoot.appendChild(this.#face.dom.root);
+    }
+
+    onFieldChanged(event) {
+        const moduleContainer = event.target.closest('module-container');
+        const { fieldId, value } = event.detail;
+        const subcardId = moduleContainer.getAttribute('subcard');
+        const model = subcardId ? this.face[subcardId] : this.face;
+        model[fieldId] = value;
     }
 }
 

@@ -26,6 +26,7 @@ Alpine.data('setView', () => ({
         this.recentSets = Alpine.store('appConfig').recentFiles || [];
         this.columns = Alpine.store('game').columns;
         this.rows = Alpine.store('views').activeSet.cards.slice();
+        this.saveActiveCard = this.saveActiveCard.debounce(300);
         this.changeTemplate = this.changeTemplate.bind(this);
         this.addFace = this.addFace.bind(this);
 
@@ -67,6 +68,13 @@ Alpine.data('setView', () => ({
         await this.setActiveCard(selectedCard);
     },
 
+    async saveActiveCard() {
+        const { activeCard, selectedCard } = Alpine.store('views');
+        selectedCard.front = await activeCard.front.save();
+        if (activeCard.back)
+            selectedCard.back = await activeCard.back.save();
+    },
+
     bindEvents() {
         this.$root.addEventListener('row-selected', (event) => {
             event.stopPropagation();
@@ -75,6 +83,7 @@ Alpine.data('setView', () => ({
             this.selectCard(row.original);
         });
 
+        document.addEventListener('cm-field-changed', this.saveActiveCard);
         this.$root.addEventListener('sl-input', (e) => this.search(e));
         this.$root.addEventListener('add-row-click', () => this.addCard());
         registerAction('toggle-search', () => this.toggleSearch());

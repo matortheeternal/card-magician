@@ -1,6 +1,7 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "highlight.js/styles/monokai-sublime.min.css";
 @import "ui/components/card/card.css";
+@import "ui/components/cardFace/cardFace.css";
 @import "ui/components/cardProperties/cardProperties.css";
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";

@@ -20,7 +20,7 @@ function renderModule(card, module, renderKey, subcardKey) {
     if (!containers.length) return;
     for (const { renderKey, element } of containers) {
         const render = module[renderKey].bind(module);
-        const content = render(card);
+        const content = render(card, true);
         element.style.display = content === undefined ? 'none' : '';
         morphHTML(element, content || '');
     }

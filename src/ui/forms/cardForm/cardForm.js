@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import html from './cardFormHTML.js';
 
 class CardForm extends HTMLElement {
@@ -6,12 +5,10 @@ class CardForm extends HTMLElement {
 
     constructor() {
         super();
-        this.save = Alpine.debounce(this.save, 300);
     }
 
     connectedCallback() {
         this.render();
-        this.addEventListener('cm-field-changed', this.save);
     }
 
     render() {
@@ -35,13 +32,6 @@ class CardForm extends HTMLElement {
     }
 
     get card() { return this.#card; }
-
-    async save() {
-        const { activeCard, selectedCard } = Alpine.store('views');
-        selectedCard.front = await activeCard.front.save();
-        if (activeCard.back)
-            selectedCard.back = await activeCard.back.save();
-    }
 }
 
 customElements.define('cm-card-form', CardForm);

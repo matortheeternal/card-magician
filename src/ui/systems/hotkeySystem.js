@@ -49,6 +49,7 @@ function isUserEditing() {
 
     return el.tagName === 'SL-INPUT'
         || el.tagName === 'SL-TEXTAREA'
+        || el.contentEditable
         || userHasTextSelected();
 }
 
