@@ -1,4 +1,4 @@
-cm-code-editor .field-label {
+cm-code .field-label {
     display: inline-block;
     margin-bottom: var(--sl-spacing-3x-small);
     font-size: var(--sl-font-size-small);
@@ -7,7 +7,7 @@ cm-code-editor .field-label {
     cursor: default;
 }
 
-cm-code-editor .codejar-editor {
+cm-code .codejar-editor {
     position: relative;
     height: fit-content;
     max-height: 400px;

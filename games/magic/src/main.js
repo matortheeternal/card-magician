@@ -5,9 +5,8 @@ import CardMagicianCard from '@sigil-sifter/magic-cm/card';
 import { buildColumns } from './columns.js';
 import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
-import setInfoHTML from './setInfoHTML.js';
-
-const L = localize('game-magic');
+import setInfoFields from './setInfoFields.js';
+import SetInfoModal from './SetInfoModal.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -15,25 +14,8 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.addSerializerAdapter(SerializerAdapter => {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
-        this.defaultSetSymbol = await this.loadFile('defaultSymbol.svg');
         this.autoNumberCards = autoNumberCards;
-
-        this.numberFormatField = {
-            id: 'collectorNumberFormat',
-            label: L`Collector Number Format`,
-            options: [
-                { id: 'four', name: '0001' },
-                { id: 'threeOutOf', name: '001/999' },
-            ]
-        };
-        this.rarityOrderField = {
-            id: 'rarityOrder',
-            label: L`Footer Rarity Order`,
-            options: [
-                { id: 'before', name: L`Before Collector Number` },
-                { id: 'after', name: L`After Collector Number` },
-            ]
-        };
+        this.registerModal(SetInfoModal);
     }
 
     setupSearch(sifter) {
@@ -64,13 +46,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     newSet() {
-        const info = {
-            language: L`EN`,
-            setCode: '',
-            symbol: this.defaultSetSymbol,
-            collectorNumberFormat: this.numberFormatField.options[0].id,
-            rarityOrder: this.rarityOrderField.options[0].id,
-        };
+        const info = this.initializeFields(setInfoFields);
         return { cards: [], info };
     }
 
