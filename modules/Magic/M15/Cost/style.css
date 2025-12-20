@@ -19,10 +19,15 @@ span.sym {
     overflow: visible;
 }
 
+span.sym.selected {
+    filter: invert(1);
+}
+
 span.sym.selected::after {
     content: '';
     position: absolute;
     inset: 0;
+    filter: invert(1);
     background: rgba(80, 140, 255, 0.35);
     pointer-events: none;
 }
