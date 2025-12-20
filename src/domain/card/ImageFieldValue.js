@@ -1,40 +1,5 @@
 import { getImageSize } from '../../shared/imageUtils.js';
-
-export class CropValue {
-    constructor(width = 0, height = 0, xOffset = 0, yOffset = 0) {
-        this.width = width;
-        this.height = height;
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-    }
-
-    static load(data) {
-        return new CropValue(
-            data.cropWidth || data.width || 1,
-            data.cropHeight || data.height || 1,
-            data.xOffset || 0,
-            data.yOffset || 0
-        );
-    }
-
-    save() {
-        return {
-            cropWidth: this.width,
-            cropHeight: this.height,
-            xOffset: this.xOffset,
-            yOffset: this.yOffset
-        };
-    }
-
-    clone() {
-        return new this.constructor(
-            this.width,
-            this.height,
-            this.xOffset,
-            this.yOffset
-        );
-    }
-}
+import { CropValue } from './CropValue.js';
 
 export default class ImageFieldValue {
     constructor(imageUrl = null, filename = '', width = 0, height = 0, crop) {
@@ -42,14 +7,13 @@ export default class ImageFieldValue {
         this.filename = filename;
         this.width = width;
         this.height = height;
-        this.crop = crop || new CropValue();
+        this.crop = crop || new CropValue(width, height);
     }
 
     static async fromFile(file) {
         const imageUrl = URL.createObjectURL(file);
         const { width, height } = await getImageSize(imageUrl);
-        const crop = new CropValue(width, height);
-        return new this(imageUrl, file.name, width, height, crop);
+        return new this(imageUrl, file.name, width, height);
     }
 
     static async load(data) {
@@ -59,6 +23,16 @@ export default class ImageFieldValue {
             data.width || 0,
             data.height || 0,
             CropValue.load(data)
+        );
+    }
+
+    static fromElement(element) {
+        return new this(
+            element.getAttribute('src'),
+            element.getAttribute('filename'),
+            parseInt(element.getAttribute('image-width')) || 1,
+            parseInt(element.getAttribute('image-height')) || 1,
+            CropValue.fromElement(element)
         );
     }
 
