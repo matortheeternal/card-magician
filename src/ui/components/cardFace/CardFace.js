@@ -1,4 +1,5 @@
 import { emit } from '../../../shared/htmlUtils.js';
+import EditableTooltip from '../editableTooltip/EditableTooltip.js';
 
 export default class DisplayCardFace extends HTMLElement {
     #face;
@@ -20,9 +21,7 @@ export default class DisplayCardFace extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.tooltips.forEach(tooltip => {
-            tooltip.remove();
-        });
+        this.tooltips.forEach(tooltip => tooltip.remove());
     }
 
     onInit() {
@@ -42,28 +41,25 @@ export default class DisplayCardFace extends HTMLElement {
         return this.#face;
     }
 
+    resolveAssociatedModel(element) {
+        const moduleContainer = element.closest('module-container');
+        const subcardId = moduleContainer.getAttribute('subcard');
+        return subcardId ? this.face[subcardId] : this.face;
+    }
+
+    getAssociatedField(editable) {
+        const fieldId = editable.getAttribute('field');
+        const model = this.resolveAssociatedModel(editable);
+        return model.fields.find(field => field.id === fieldId);
+    }
+
     renderTooltips() {
         const editables = this.shadowRoot.querySelectorAll('cm-editable-text');
         editables.forEach(editable => {
-            if (!editable.dataset.title) return;
-            const tooltip = document.createElement('div');
+            const field = this.getAssociatedField(editable);
+            if (!field) return;
+            const tooltip = new EditableTooltip(field, editable);
             this.tooltips.push(tooltip);
-            tooltip.textContent = editable.dataset.title;
-            tooltip.className = 'editable-tooltip';
-            const rect = editable.getBoundingClientRect();
-            tooltip.style.left = rect.left + 'px';
-            tooltip.style.top = rect.bottom + 'px';
-            document.body.appendChild(tooltip);
-            editable.addEventListener('mouseenter', () => {
-                if (editable.matches(':focus-visible')) return;
-                tooltip.classList.add('show');
-            });
-            editable.addEventListener('focus', () => {
-                tooltip.classList.remove('show');
-            })
-            editable.addEventListener('mouseout', () => {
-                tooltip.classList.remove('show');
-            });
         });
     }
 
@@ -75,10 +71,8 @@ export default class DisplayCardFace extends HTMLElement {
     }
 
     onFieldChanged(event) {
-        const moduleContainer = event.target.closest('module-container');
+        const model = this.resolveAssociatedModel(event.target);
         const { fieldId, value } = event.detail;
-        const subcardId = moduleContainer.getAttribute('subcard');
-        const model = subcardId ? this.face[subcardId] : this.face;
         model[fieldId] = value;
     }
 }
