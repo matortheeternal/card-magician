@@ -1,0 +1,21 @@
+.editable-image-controls {
+    position: absolute;
+    z-index: 900;
+    opacity: 0;
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    flex-direction: column;
+    gap: var(--sl-spacing-2x-small);
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.25s ease;
+}
+
+.editable-image-controls:hover,
+.editable-image-controls:focus-visible {
+    opacity: 0.9;
+}
+
+.editable-image-controls input[type="file"] {
+    display: none;
+}

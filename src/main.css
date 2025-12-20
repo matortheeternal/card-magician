@@ -4,6 +4,7 @@
 @import "ui/components/cardFace/cardFace.css";
 @import "ui/components/cardProperties/cardProperties.css";
 @import "ui/components/codeEditor/codeEditor.css";
+@import "ui/components/editableImage/editableImage.css";
 @import "ui/components/editableTooltip/editableTooltip.css";
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
