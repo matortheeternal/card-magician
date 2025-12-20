@@ -9,7 +9,7 @@ import {
 } from '../gfx/blending.js';
 import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
-import { escapeHTML } from '../../shared/htmlUtils.js';
+import { escapeHTML, esc } from '../../shared/htmlUtils.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -411,4 +411,24 @@ export default class CardMagicianModule {
      * @returns {string|undefined}
      */
     renderNamed(card) {}
+
+    /**
+     * Renders an inline text input for the field when editable is true, else it
+     * renders the passed value. You can omit value to use the field's current value.
+     *
+     * @param {boolean} editable
+     * @param {string} fieldId
+     * @param {string=null} value
+     * @returns {string}
+     */
+    editableText(editable, fieldId, value = null) {
+        const html = this.escapeHTML(value ?? this.card[fieldId]);
+        return editable ? (
+            `<cm-editable-text 
+                field="${esc(fieldId)}"
+                contenteditable="true" 
+                part="editable-text"
+            >${html}</cm-editable-text>`
+        ) : html;
+    }
 }

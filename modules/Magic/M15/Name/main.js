@@ -18,11 +18,7 @@ export default class NameModule extends CardMagicianModule {
     }
 
     render(card, editable) {
-        const nameHtml = this.escapeHTML(card.name);
-        return `<auto-fit-line>${editable 
-            ? `<cm-editable-text data-title="Name" field="name" contenteditable="true" part="editable-text">${nameHtml}</cm-editable-text>`
-            : nameHtml
-        }</auto-fit-line>`;
+        return `<auto-fit-line>${this.editableText(editable, 'name')}</auto-fit-line>`;
     }
 
     get fields() {

@@ -20,25 +20,10 @@ export default class TypeModule extends CardMagicianModule {
         const style = card.subType.length > 0 ? '': 'style="visibility: hidden"';
         return (
             `<auto-fit-line>
-                ${editable 
-                    ? `<cm-editable-text 
-                        data-title="Supertype" 
-                        field="superType" 
-                        contenteditable="true" 
-                        part="editable-text"
-                    >${this.escapeHTML(card.superType)}</cm-editable-text>`
-                    : this.escapeHTML(card.superType)
-                }
+                ${this.editableText(editable, 'superType')}
                 <span ${style}>&nbsp;—&nbsp;</span>
-                ${editable 
-                    ? `<cm-editable-text 
-                        data-title="Subtype"
-                        field="subType"
-                        contenteditable="true"
-                        part="editable-text"
-                    >${this.escapeHTML(card.subType)}</cm-editable-text>` 
-                    : this.escapeHTML(card.subType)
-            }</auto-fit-line>`
+                ${this.editableText(editable, 'subType')}
+            </auto-fit-line>`
         );
     }
 
