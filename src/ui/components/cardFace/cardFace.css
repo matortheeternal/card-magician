@@ -12,17 +12,7 @@ cm-card-face::part(editable-text):focus-visible,
 cm-card-face::part(editable-html):focus-visible {
     background-color: rgba(0, 0, 0, 0.12);
     outline: none;
-    text-decoration-color: var(--sl-color-primary-600);
-    transition: background-color 0.25s ease,
-                text-decoration-color 0.5s ease;
-}
-
-cm-card-face::part(editable-text) {
-    text-decoration: underline;
-    text-decoration-thickness: 0.15em;
-    text-underline-offset: 0.05em;
-    text-decoration-skip-ink: none;
-    text-decoration-color: rgba(0, 0, 0, 0);
+    transition: background-color 0.25s ease;
 }
 
 cm-card-face::part(editable-text),
