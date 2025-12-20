@@ -13,9 +13,14 @@ export default class SymbolsModule extends CardMagicianModule {
         return cost.symbols;
     }
 
-    symbolsToHTML(symbols, useTall = false) {
+    symbolsToHTML(symbols, useTall = false, initialOffset = 0) {
         const size = useTall ? 'tall' : 'flat';
-        return symbols.map(sym => symbolToHTML(this, sym, size)).join('');
+        let offset = initialOffset;
+        return symbols.map(sym => {
+            const html = symbolToHTML(this, sym, size, offset);
+            offset += sym.raw.length;
+            return html;
+        }).join('');
     }
 
     generateSymbols(str, useTall) {

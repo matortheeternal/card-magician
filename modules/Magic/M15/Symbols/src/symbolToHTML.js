@@ -52,8 +52,14 @@ const imagePathAdapters = [{
     resolve: (sym, size) => `${size}/tap/${getKey(sym)}.png`,
 }];
 
-const symbolDiv = (imageUrl, text = '') => (
-    `<div class="sym" style="background-image: url('${imageUrl}')">${text}</div>`
+const symbolHtml = (imageUrl, raw, offset, text = '') => (
+    `<span 
+        data-src="${raw.replace(/"/g, '&quot;')}" 
+        data-src-end="${offset + raw.length}" 
+        contenteditable="false" 
+        class="sym" 
+        style="background-image: url('${imageUrl}')"
+    >${text}</span>`
 );
 
 const warned = {};
@@ -68,10 +74,10 @@ function noSymbol(sym) {
 
 function circleWithText(ctx, sym, size) {
     const circleUrl = ctx.resolveAsset(`${size}/circle.png`);
-    return symbolDiv(circleUrl, sym.raw.toUpperCase());
+    return symbolHtml(circleUrl, sym.raw.toUpperCase());
 }
 
-export function symbolToHTML(ctx, sym, size) {
+export function symbolToHTML(ctx, sym, size, offset) {
     const adapter = imagePathAdapters.find(adapter => adapter.match(sym));
     if (!adapter && sym.raw.length > 1)
         return noSymbol(sym);
@@ -79,5 +85,5 @@ export function symbolToHTML(ctx, sym, size) {
         return circleWithText(ctx, sym, size);
 
     const imagePath = adapter.resolve(sym, size);
-    return symbolDiv(ctx.resolveAsset(imagePath));
+    return symbolHtml(ctx.resolveAsset(imagePath), sym.raw, offset);
 }

@@ -4,7 +4,7 @@ module-container[module="Cost"] {
     padding: 4px 2px;
 }
 
-div.sym {
+span.sym {
     height: 19px;
     width: 19px;
     background-size: 100% 100%;

@@ -32,7 +32,7 @@ module-container[module="Flag"] {
     margin-bottom: 1px;
 }
 
-.flag div.sym {
+.flag span.sym {
     font-size: 100%;
     width: 11px;
     height: 11px;

@@ -226,7 +226,7 @@ auto-fit-line {
     height: 22px;
 }
 
-.left .header div.sym {
+.left .header span.sym {
     height: 16px;
     width: 16px;
     font-size: 15.5px;
