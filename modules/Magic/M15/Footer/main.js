@@ -33,19 +33,19 @@ export default class FooterModule extends CardMagicianModule {
         );
     }
 
-    renderSetCodeAndLanguage(card) {
-        const setCode = this.escapeHTML(
-            card.setCode || this.set.info.setCode || ''
+    renderSetCodeAndLanguage(card, editable) {
+        const setCode = this.editableText(
+            editable, 'setCode',  card.setCode || this.set.info.setCode || ''
         );
-        const language = this.escapeHTML(
-            card.language || this.set.info.language || ''
+        const language = this.editableText(
+            editable, 'language', card.language || this.set.info.language || ''
         );
         return `<div>${setCode} &bullet; ${language}</div>`;
     }
 
-    renderIllustrator(card) {
-        const illustrator = this.escapeHTML(
-            card.illustrator || this.set.info.illustrator || ''
+    renderIllustrator(card, editable) {
+        const illustrator = this.editableText(
+            editable, 'illustrator', card.illustrator || this.set.info.illustrator || ''
         );
 
         return (
@@ -56,32 +56,33 @@ export default class FooterModule extends CardMagicianModule {
         );
     }
 
-    renderInfo(card) {
+    renderInfo(card, editable) {
         const number = card.collectorNumber || card.autoCollectorNumber || '';
 
         return this.set.info.rarityOrder === 'after' ? (
             `<div class="column">
-                <div>${this.escapeHTML(number)}</div>
-                ${this.renderSetCodeAndLanguage(card)}
+                <div>${this.editableText(editable, 'collectorNumber', number)}</div>
+                ${this.renderSetCodeAndLanguage(card, editable)}
             </div>
             <div class="column">
                 <div>${card.rarityCharacter}</div>
-                ${this.renderIllustrator(card)}
+                ${this.renderIllustrator(card, editable)}
             </div>`
         ) : (
             `<div class="row">
                 <div>${card.rarityCharacter}</div>
-                <div>${this.escapeHTML(number)}</div>
+                <div>${this.editableText(editable, 'collectorNumber', number)}</div>
             </div>
             <div class="row">
-                ${this.renderSetCodeAndLanguage(card)}
-                ${this.renderIllustrator(card)}
+                ${this.renderSetCodeAndLanguage(card, editable)}
+                ${this.renderIllustrator(card, editable)}
             </div>`
         );
     }
 
-    renderLegal(card) {
-        return card.legalText || this.set.info.legalText;
+    renderLegal(card, editable) {
+        const legal = card.legalText || this.set.info.legalText;
+        return this.editableText(editable, 'legalText', legal);
     }
 
     get fields() {
