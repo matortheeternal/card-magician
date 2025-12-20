@@ -76,7 +76,7 @@ class EditableHtml extends HTMLElement {
 
     getAnchorOffset() {
         const sel = this.root.getSelection();
-        return sel.anchorOffset;
+        return Math.min(sel.anchorOffset, sel.focusOffset);
     }
 
     updateSelection(offset) {
@@ -147,7 +147,7 @@ class EditableHtml extends HTMLElement {
     onMouseDown(event) {
         if (event.target.contentEditable !== 'false') return;
         const rect = event.target.getBoundingClientRect();
-        const midX = rect.left + rect.width / 2;
+        const midX = (rect.left + rect.width) / 2;
         if (event.clientX < midX) return;
         setTimeout(() => {
             const offset = this.getAnchorOffset();
