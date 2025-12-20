@@ -450,4 +450,25 @@ export default class CardMagicianModule {
             >${html}</cm-editable-html>`
         ) : html;
     }
+
+    /**
+     * Renders an inline editable image for the field when editable is true, else it
+     * renders the passed HTML string.
+     *
+     * @param {boolean} editable
+     * @param {string} fieldId
+     * @param {number} aspectRatio
+     * @param {string} html
+     * @returns {string}
+     */
+    editableImage(editable, fieldId, aspectRatio, html) {
+        return editable ? (
+            `<cm-editable-image
+                field="${esc(fieldId)}"
+                aspect-ratio="${esc(aspectRatio.toFixed(3))}"
+                contenteditable="true"
+                part="editable-image"
+            >${html}</cm-editable-image>`
+        ) : html;
+    }
 }
