@@ -24,7 +24,7 @@ export default class EditableTooltip {
         this.editable.addEventListener('focus', () => {
             this.element.classList.remove('show');
         })
-        this.editable.addEventListener('mouseout', () => {
+        this.editable.addEventListener('mouseleave', () => {
             this.element.classList.remove('show');
         });
     }
