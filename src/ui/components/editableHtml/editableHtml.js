@@ -14,7 +14,10 @@ class EditableHtml extends HTMLElement {
     constructor() {
         super();
         this.onBeforeInput = this.onBeforeInput.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onPointerDown = this.onPointerDown.bind(this);
+        this.onPointerMove = this.onPointerMove.bind(this);
+        this.onPointerUp   = this.onPointerUp.bind(this);
+        this.onDoubleClick = this.onDoubleClick.bind(this);
         this.onSelectionChange = this.onSelectionChange.bind(this);
     }
 
@@ -22,7 +25,10 @@ class EditableHtml extends HTMLElement {
         this.root = this.getRootNode();
         document.addEventListener('selectionchange', this.onSelectionChange);
         this.addEventListener('beforeinput', this.onBeforeInput);
-        this.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('pointerdown', this.onPointerDown);
+        this.addEventListener('pointermove', this.onPointerMove);
+        this.addEventListener('pointerup', this.onPointerUp);
+        this.addEventListener('dblclick', this.onDoubleClick);
     }
 
     disconnectedCallback() {
@@ -85,7 +91,7 @@ class EditableHtml extends HTMLElement {
         return Math.min(sel.anchorOffset, sel.focusOffset);
     }
 
-    updateSelection(offset) {
+    setCursorPosition(offset) {
         const sel = this.root.getSelection();
         const range = document.createRange();
         const maxOffset = this.childNodes.length;
@@ -105,7 +111,7 @@ class EditableHtml extends HTMLElement {
         if (!text) return true;
         this.onChange(this.edit(text));
         const newOffset = this.getAnchorOffset() + text.length;
-        this.afterNextDomMutation(() => this.updateSelection(newOffset));
+        this.afterNextDomMutation(() => this.setCursorPosition(newOffset));
         return true;
     }
 
@@ -115,7 +121,7 @@ class EditableHtml extends HTMLElement {
         const diff = this.selectionCollapsed ? 1 : 0;
         this.onChange(this.edit('', 1));
         const newOffset = this.getAnchorOffset() - diff;
-        this.afterNextDomMutation(() => this.updateSelection(newOffset));
+        this.afterNextDomMutation(() => this.setCursorPosition(newOffset));
         return true;
     }
 
@@ -138,7 +144,7 @@ class EditableHtml extends HTMLElement {
         event.preventDefault();
         this.onChange(this.edit(event.data));
         const newOffset = this.getAnchorOffset() + event.data.length;
-        this.afterNextDomMutation(() => this.updateSelection(newOffset));
+        this.afterNextDomMutation(() => this.setCursorPosition(newOffset));
         return true;
     }
 
@@ -151,24 +157,85 @@ class EditableHtml extends HTMLElement {
             || this.handleInsertText(event);
     }
 
-    onMouseDown(event) {
-        if (event.target.contentEditable !== 'false') return;
-        const rect = event.target.getBoundingClientRect();
-        const midX = (rect.left + rect.width) / 2;
-        if (event.clientX < midX) return;
-        setTimeout(() => {
-            const offset = this.getAnchorOffset();
-            this.updateSelection(offset + 1);
-        });
+    getRelativeCursorOffset(event) {
+        const rect = this.getBoundingClientRect();
+        if (event.clientX <= rect.left) return 0;
+        if (event.clientX >= rect.right) return this.childNodes.length;
+        // NOTE: selecting to the start is preferred here, and the null case
+        // should effectively never occur.
+        if (event.clientY <= rect.bottom) return 0;
+        if (event.clientY >= rect.top) return this.childNodes.length;
+        return null;
     }
 
-    onSelectionChange() {
-        if (this.root.getSelection().anchorNode !== this) return;
+    getCursorSelectionOffset(event, target = event.target) {
+        const index = Array.from(this.childNodes).indexOf(target);
+        if (index === -1) return this.getRelativeCursorOffset(event);
+        const rect = target.getBoundingClientRect();
+        const midX = rect.left + rect.width / 2;
+        const offset = event.clientX < midX ? 0 : 1;
+        return index + offset;
+    }
+
+    onPointerDown(event) {
+        if (event.target.contentEditable !== 'false') return;
+        event.preventDefault();
+        this.setPointerCapture(event.pointerId);
+        const pos = this.getCursorSelectionOffset(event);
+        if (pos === null) return;
+        this.isDragging = true;
+        this.dragAnchor = pos;
+        this.setCursorPosition(pos);
+    }
+
+    selectRange(anchor, focus) {
+        const sel = this.root.getSelection();
+        const range = document.createRange();
+        range.setStart(this, Math.min(anchor, focus));
+        range.setEnd(this, Math.max(anchor, focus));
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    onPointerMove(event) {
+        if (!this.isDragging) return;
+        const target = this.root.elementFromPoint(event.clientX, event.clientY);
+        const focus = this.getCursorSelectionOffset(event, target);
+        if (focus === null) return;
+        this.selectRange(this.dragAnchor, focus);
+    }
+
+    onPointerUp(event) {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.releasePointerCapture(event.pointerId);
+    }
+
+    applySelectionClasses() {
         const [start, end] = this.selectionRange;
         this.childNodes.forEach((node, i) => {
             const isSelected = i >= start && i < end;
             node.classList.toggle('selected', isSelected);
         });
+    }
+
+    onSelectionChange() {
+        if (this.root.getSelection().anchorNode !== this) return;
+        this.applySelectionClasses();
+    }
+
+    selectAll() {
+        const sel = this.root.getSelection();
+        const range = document.createRange();
+        range.setStart(this, 0);
+        range.setEnd(this, this.childNodes.length);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    onDoubleClick(event) {
+        event.preventDefault();
+        this.selectAll();
     }
 
     onChange(value) {
