@@ -5,8 +5,10 @@ module-container[module="Cost"] {
 }
 
 span.sym {
+    display: inline-block;
     height: 19px;
     width: 19px;
+    position: relative;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center center;
@@ -15,4 +17,12 @@ span.sym {
     text-align: center;
     line-height: 1;
     overflow: visible;
+}
+
+span.sym.selected::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(80, 140, 255, 0.35);
+    pointer-events: none;
 }

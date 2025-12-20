@@ -26,8 +26,8 @@ export default class CostModule extends CardMagicianModule {
         }];
     }
 
-    render() {
-        return this.manaCostHTML;
+    render(card, editable) {
+        return this.editableHTML(editable, 'manaCost', this.manaCostHTML);
     }
 
     async styles() {
