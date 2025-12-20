@@ -54,7 +54,9 @@ export default class DisplayCardFace extends HTMLElement {
     }
 
     renderTooltips() {
-        const editables = this.shadowRoot.querySelectorAll('cm-editable-text');
+        const editables = this.shadowRoot.querySelectorAll(
+            'cm-editable-text, cm-editable-html'
+        );
         editables.forEach(editable => {
             const field = this.getAssociatedField(editable);
             if (!field) return;
