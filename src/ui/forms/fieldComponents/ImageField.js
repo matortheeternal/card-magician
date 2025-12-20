@@ -161,7 +161,7 @@ export default class ImageField extends FieldComponent {
             modalKey: 'crop-image',
             data: {
                 value: this.value.clone(),
-                field: this.field
+                aspectRatio: this.field.aspectRatio
             },
             callback: (newValue) => {
                 this.value.crop = newValue;
