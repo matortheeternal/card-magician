@@ -41,6 +41,12 @@ class EditableHtml extends HTMLElement {
         return [focus, anchor].sort();
     }
 
+    get selectionCollapsed() {
+        const s = this.root.getSelection();
+        return s.focusNode === s.anchorNode
+            && s.focusOffset === s.anchorOffset;
+    }
+
     get value() {
         return Array.from(this.childNodes).map(node => {
             return node.hasAttribute('data-src')
@@ -106,8 +112,9 @@ class EditableHtml extends HTMLElement {
     handleDeleteContentBackward(event) {
         if (event.inputType !== 'deleteContentBackward') return;
         event.preventDefault();
+        const diff = this.selectionCollapsed ? 1 : 0;
         this.onChange(this.edit('', 1));
-        const newOffset = this.getAnchorOffset() - 1;
+        const newOffset = this.getAnchorOffset() - diff;
         this.afterNextDomMutation(() => this.updateSelection(newOffset));
         return true;
     }
