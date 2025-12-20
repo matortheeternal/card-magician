@@ -1,15 +1,23 @@
 import { emit } from '../../../shared/htmlUtils.js';
 
-class EditableText extends HTMLElement {
+export default class EditableText extends HTMLElement {
     composing = false;
 
     constructor() {
         super();
         this.onInput = this.onInput.bind(this);
+        this.pastePlainText = this.pastePlainText.bind(this);
     }
 
     connectedCallback() {
-        this.bind();
+        this.addEventListener('input', this.onInput);
+        this.addEventListener('paste', this.pastePlainText);
+        this.addEventListener('compositionstart', () => {
+            this.composing = true;
+        });
+        this.addEventListener('compositionend', () => {
+            this.composing = false;
+        });
     }
 
     get value() {
@@ -20,18 +28,7 @@ class EditableText extends HTMLElement {
         return this.getAttribute('field');
     }
 
-    bind() {
-        this.addEventListener('input', this.onInput);
-        this.addEventListener('paste', this.onPaste);
-        this.addEventListener('compositionstart', () => {
-            this.composing = true;
-        });
-        this.addEventListener('compositionend', () => {
-            this.composing = false;
-        });
-    }
-
-    onPaste(event) {
+    pastePlainText(event) {
         event.preventDefault();
         event.stopPropagation();
         const text = event.clipboardData.getData('text/plain');

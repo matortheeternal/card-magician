@@ -413,8 +413,8 @@ export default class CardMagicianModule {
     renderNamed(card) {}
 
     /**
-     * Renders an inline text input for the field when editable is true, else it
-     * renders the passed value. You can omit value to use the field's current value.
+     * Renders an inline editable text for the field when editable is true, else it
+     * renders the value. You can omit value to use the field's current value.
      *
      * @param {boolean} editable
      * @param {string} fieldId
@@ -429,6 +429,25 @@ export default class CardMagicianModule {
                 contenteditable="true" 
                 part="editable-text"
             >${html}</cm-editable-text>`
+        ) : html;
+    }
+
+    /**
+     * Renders an inline editable HTML for the field when editable is true, else it
+     * renders the passed HTML string.
+     *
+     * @param {boolean} editable
+     * @param {string} fieldId
+     * @param {string} html
+     * @returns {string}
+     */
+    editableHTML(editable, fieldId, html) {
+        return editable ? (
+            `<cm-editable-html
+                field="${esc(fieldId)}"
+                contenteditable="true"
+                part="editable-html"
+            >${html}</cm-editable-html>`
         ) : html;
     }
 }
