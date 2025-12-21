@@ -25,6 +25,10 @@ export default class EditableTooltip {
         this.#rect = this.element.getBoundingClientRect();
     }
 
+    get height() {
+        return this.#rect.height;
+    }
+
     get width() {
         return this.#rect.width;
     }

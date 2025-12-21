@@ -1,71 +1,148 @@
-function rectsIntersect(rect1, rect2) {
-    return !(
-        rect1.right < rect2.left ||
-        rect1.left > rect2.right ||
-        rect1.bottom < rect2.top ||
-        rect1.top > rect2.bottom
-    );
-}
+import { forceSimulation } from 'd3-force';
 
-function intersectsWithSome(rect, avoidRects) {
-    return avoidRects.filter(Boolean).some(a => rectsIntersect(a, rect));
-}
-
-function test(tooltip, avoidRects) {
-    if (tooltip.element.style.left < 0) return false;
-    return !intersectsWithSome(tooltip.currentRect, avoidRects);
-}
-
-function resetStyle(tooltip) {
-    tooltip.element.style.cssText = '';
-}
-
-function tryBottomMiddle(tooltip, editableRect, avoidRects) {
-    tooltip.element.style.left = editableRect.left
-        + (editableRect.width / 2)
-        - (tooltip.width / 2) + 'px';
-    return test(tooltip, avoidRects);
-}
-
-function tryBottomLeft(tooltip, editableRect, avoidRects) {
-    resetStyle(tooltip);
-    tooltip.element.style.left = editableRect.right - tooltip.width + 'px';
-    tooltip.element.style.top = editableRect.bottom + 2 + 'px';
-    return test(tooltip, avoidRects);
-}
-
-function tryTopLeft(tooltip, editableRect, avoidRects) {
-    resetStyle(tooltip);
-    tooltip.element.style.left = editableRect.right - tooltip.width + 'px';
-    tooltip.element.style.top = editableRect.top - 19 + 'px';
-    return test(tooltip, avoidRects);
-}
-
-function tryTopRight(tooltip, editableRect, avoidRects) {
-    resetStyle(tooltip);
-    tooltip.element.style.left = editableRect.left + 'px';
-    tooltip.element.style.top = editableRect.top - 19 + 'px';
-    return test(tooltip, avoidRects);
-}
-
-function positionTooltip(tooltip, editableRect, avoidRects) {
-    if (!editableRect) return;
-    return tryBottomMiddle(tooltip, editableRect, avoidRects)
-        || tryBottomLeft(tooltip, editableRect, avoidRects)
-        || tryTopRight(tooltip, editableRect, avoidRects)
-        || tryTopLeft(tooltip, editableRect, avoidRects);
-}
-
-export function positionTooltips(tooltips) {
-    const avoid = tooltips.map(tooltip => {
+export function createTooltipSimulation(tooltips) {
+    const nodes = tooltips.map((tooltip, id) => {
         tooltip.cacheRect();
-        return tooltip.positionInsideEditable
-            ? null
-            : tooltip.editable.getBoundingClientRect();
+        const rect = tooltip.element.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        return { id, tooltip, w: rect.width, h: rect.height, x, y };
     });
-    tooltips.forEach((tooltip, i) => {
-        const editableRect = tooltip.editable.getBoundingClientRect();
-        positionTooltip(tooltip, editableRect, avoid.toSpliced(i, 1));
-        avoid.push(tooltip.currentRect);
-    });
+
+    const fixedNodes = tooltips
+        .filter(tooltip => !tooltip.positionInsideEditable)
+        .map(tooltip => {
+            const rect = tooltip.editable.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            return { tooltip, w: rect.width, h: rect.height, x, y };
+        });
+
+    function forceTooltipCollide(padding = 2, strength = 2) {
+        let nodes;
+
+        function force() {
+            for (let i = 0; i < nodes.length; i++) {
+                const a = nodes[i];
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const b = nodes[j];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const ox = (a.w / 2 + b.w / 2 + padding) - Math.abs(dx);
+                    const oy = (a.h / 2 + b.h / 2 + padding) - Math.abs(dy);
+
+                    if (ox <= 0 || oy <= 0) continue;
+
+                    if (ox < oy) {
+                        const sx = dx < 0 ? -1 : 1;
+                        const push = ox / 2;
+                        a.x -= sx * push * strength;
+                        b.x += sx * push * strength;
+                    } else {
+                        const sy = dy < 0 ? -1 : 1;
+                        const push = oy / 2;
+                        a.y -= sy * push * strength;
+                        b.y += sy * push * strength;
+                    }
+                }
+            }
+        }
+
+        force.initialize = _ => (nodes = _);
+        return force;
+    }
+
+    function forceFixedCollide(padding = 2) {
+        let nodes;
+
+        const ownAnchorStrength   = 0.5;
+        const otherAnchorStrength = 4;
+        function force() {
+            for (let i = 0; i < nodes.length; i++) {
+                const a = nodes[i];
+                for (let j = 0; j < fixedNodes.length; j++) {
+                    const b = fixedNodes[j];
+                    const isOwnAnchor = b.tooltip === a.tooltip;
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const ox = (a.w / 2 + b.w / 2 + padding) - Math.abs(dx);
+                    const oy = (a.h / 2 + b.h / 2 + padding) - Math.abs(dy);
+
+                    if (ox <= 0 || oy <= 0) continue;
+
+                    const strength = isOwnAnchor
+                        ? ownAnchorStrength
+                        : otherAnchorStrength;
+                    if (ox < oy) {
+                        const sx = dx < 0 ? -1 : 1;
+                        const push = ox * strength / 2;
+                        a.x -= sx * push;
+                    } else {
+                        const sy = dy < 0 ? -1 : 1;
+                        const push = oy * strength / 2;
+                        a.y -= sy * push;
+                    }
+                }
+            }
+        }
+
+        force.initialize = _ => (nodes = _);
+        return force;
+    }
+
+    function forceAnchor(strength = 0.04) {
+        let nodes;
+        function force() {
+            for (const n of nodes) {
+                const target = n.tooltip.editable.getBoundingClientRect();
+                const tx = target.left + target.width / 2;
+                const ty = target.bottom + 6;
+
+                n.x += (tx - n.x) * strength;
+                n.y += (ty - n.y) * strength;
+            }
+        }
+        force.initialize = _ => (nodes = _);
+        return force;
+    }
+
+    const sim = forceSimulation(nodes)
+        .alpha(1)
+        .alphaDecay(0.05)
+        .velocityDecay(0.1)
+        .force('collide', forceTooltipCollide(2))
+        .force('fixedCollide', forceFixedCollide(2))
+        .force('anchorForce', forceAnchor())
+        .stop();
+
+    let running = false;
+    let rafId = null;
+
+    function frame() {
+        for (const n of nodes) {
+            const el = n.tooltip.element;
+            el.style.left = `${n.x - n.w / 2}px`;
+            el.style.top = `${n.y - n.h / 2}px`;
+        }
+
+        sim.tick();
+        sim.tick();
+
+        if (running) rafId = requestAnimationFrame(frame);
+    }
+
+    return {
+        start() {
+            if (running) return;
+            running = true;
+            sim.alpha(1);
+            frame();
+        },
+        stop() {
+            running = false;
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    };
 }

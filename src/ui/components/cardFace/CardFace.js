@@ -1,6 +1,6 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import EditableTooltip from '../editableTooltip/EditableTooltip.js';
-import { positionTooltips } from '../../systems/tooltipPositioningSystem.js';
+import { createTooltipSimulation } from '../../systems/tooltipPositioningSystem.js';
 
 export default class DisplayCardFace extends HTMLElement {
     #face;
@@ -64,7 +64,8 @@ export default class DisplayCardFace extends HTMLElement {
             const tooltip = new EditableTooltip(field, editable);
             this.tooltips.push(tooltip);
         });
-        positionTooltips(this.tooltips);
+        this.sim = createTooltipSimulation(this.tooltips);
+        this.sim.start();
     }
 
     render() {
