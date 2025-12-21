@@ -1,5 +1,7 @@
-module-container[module="Art"] img {
+module-container[module="Art"] cm-editable-image {
+    display: block;
     width: 100%;
+    height: 100%;
 }
 
 module-container[module="Art"] crop-image {

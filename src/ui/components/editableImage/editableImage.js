@@ -21,6 +21,10 @@ export default class EditableImage extends HTMLElement {
         });
     }
 
+    disconnectedCallback() {
+        this.controls.remove();
+    }
+
     get aspectRatio() {
         return parseFloat(this.getAttribute('aspect-ratio'));
     }
