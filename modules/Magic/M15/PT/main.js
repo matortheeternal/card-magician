@@ -6,7 +6,10 @@ export default class PTModule extends CardMagicianModule {
         if (!activeFrame) return;
         card.showPT = Boolean(card.toughness || card.power);
         const ptBackgrounds = await activeFrame.buildBackgrounds('pt', card);
-        this.ptStyle = this.objectToStyle(ptBackgrounds[0].style);
+        this.ptStyle = this.objectToStyle({
+            ...ptBackgrounds[0].style,
+            opacity: card.showPT ? '1' : '0'
+        });
         await this.updateFrontNotchPt(card);
         this.requestRender({ render: 'renderPT' });
     }
@@ -29,13 +32,12 @@ export default class PTModule extends CardMagicianModule {
         );
     }
 
-    renderPT(card) {
-        if (!card.showPT) return;
+    renderPT(card, editable) {
         return (
             `<div class="pt-text" style="${this.ptStyle}">
-                <span>${this.escapeHTML(card.power)}</span>
-                <span class="d">/</span>
-                <span>${this.escapeHTML(card.toughness)}</span>
+                ${this.editableText(editable, 'power')}
+                <span class="divider">/</span>
+                ${this.editableText(editable, 'toughness')}
             </div>`
         );
     }

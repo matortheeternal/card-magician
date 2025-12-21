@@ -9,7 +9,15 @@
     justify-content: center;
 }
 
-.pt-text > span:not(.d) {
+.pt-text .divider {
+    cursor: default;
+}
+
+.pt-text:focus-within {
+    opacity: 1 !important;
+}
+
+.pt-text > span:not(.divider) {
     flex-grow: 1;
     flex-shrink: 1;
 }
