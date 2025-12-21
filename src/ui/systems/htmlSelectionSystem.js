@@ -25,7 +25,7 @@ export function getAnchorOffset(element) {
     return Math.min(sel.anchorOffset, sel.focusOffset);
 }
 
-export function setCursorPosition(element, offset) {
+export function setCaretPosition(element, offset) {
     const sel = element.getRootNode().getSelection();
     const range = document.createRange();
     const maxOffset = element.childNodes.length;

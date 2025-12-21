@@ -1,6 +1,6 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import {
-    getCursorSelectionOffset, setCursorPosition,
+    getCursorSelectionOffset, setCaretPosition,
     applySelectionClasses, removeSelectionClasses,
     selectAll, selectRange,
 } from '../../systems/htmlSelectionSystem.js';
@@ -75,7 +75,7 @@ class EditableHtml extends HTMLElement {
         if (pos === null) return;
         this.isDragging = true;
         this.dragAnchor = pos;
-        setCursorPosition(this, pos);
+        setCaretPosition(this, pos);
     }
 
     onPointerMove(event) {

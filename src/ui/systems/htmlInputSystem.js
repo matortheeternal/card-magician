@@ -1,5 +1,5 @@
 import {
-    getSelectionCollapsed, setCursorPosition,
+    getSelectionCollapsed, setCaretPosition,
     getSelectionRange, getAnchorOffset
 } from './htmlSelectionSystem.js';
 
@@ -37,7 +37,7 @@ function handlePaste(event, element) {
     if (!text) return true;
     element.value = edit(element, text);
     const newOffset = getAnchorOffset(element) + text.length;
-    afterNextDomMutation(element, () => setCursorPosition(element, newOffset));
+    afterNextDomMutation(element, () => setCaretPosition(element, newOffset));
     return true;
 }
 
@@ -47,7 +47,7 @@ function handleDeleteContentBackward(event, element) {
     const diff = getSelectionCollapsed(element) ? 1 : 0;
     element.value = edit(element, '', 1);
     const newOffset = getAnchorOffset(element) - diff;
-    afterNextDomMutation(element, () => setCursorPosition(element, newOffset));
+    afterNextDomMutation(element, () => setCaretPosition(element, newOffset));
     return true;
 }
 
@@ -70,7 +70,7 @@ function handleInsertText(event, element) {
     event.preventDefault();
     element.value = edit(element, event.data);
     const newOffset = getAnchorOffset(element) + event.data.length;
-    afterNextDomMutation(element, () => setCursorPosition(element, newOffset));
+    afterNextDomMutation(element, () => setCaretPosition(element, newOffset));
     return true;
 }
 
