@@ -76,8 +76,8 @@ export default class ArtModule extends CardMagicianModule {
 
     render(card, editable) {
         const img = card.artImage.imageUrl ? card.artImage : card.defaultImage;
-        if (!img.imageUrl) return '';
         const { aspectRatio } = this.artImageField;
+        if (!img.imageUrl || !aspectRatio) return '';
         return this.editableImage(editable, 'artImage', aspectRatio, (
             `<crop-image
                 crop-width="${img.crop.width}"
