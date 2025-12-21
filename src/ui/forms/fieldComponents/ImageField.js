@@ -70,7 +70,6 @@ export default class ImageField extends FieldComponent {
         if (oldImageUrl)
             setTimeout(() => URL.revokeObjectURL(oldImageUrl), 500);
         this.model[this.field.id] = newValue;
-        this.loadValue?.();
     }
 
     connectedCallback() {
@@ -79,7 +78,6 @@ export default class ImageField extends FieldComponent {
     }
 
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = getBaseHTML(this.field.label);
     }
 
