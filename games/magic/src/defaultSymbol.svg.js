@@ -1,4 +1,5 @@
-<svg class="set-icon" viewBox="0 0 100 100" width="24" height="24" role="img">
+export default
+`<svg class="set-icon" viewBox="0 0 100 100" width="24" height="24" role="img">
     <defs>
         <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%"/>
@@ -9,4 +10,4 @@
     </defs>
 
     <rect class="outer" x="0" y="0" width="100" height="100" rx="4" ry="4" fill="url(#grad)"/>
-</svg>
+</svg>`;

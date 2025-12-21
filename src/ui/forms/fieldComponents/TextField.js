@@ -1,6 +1,6 @@
 import FieldComponent from './FieldComponent.js';
 import { esc } from '../../../shared/htmlUtils.js';
-import { registerField } from './fieldComponentManager.js';
+import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 export default class TextField extends FieldComponent {
     static tagName = 'cm-text';

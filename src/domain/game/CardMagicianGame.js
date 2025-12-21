@@ -5,6 +5,8 @@ import {
     registerAdapter,
     registerBinaryAdapter
 } from '../sets/adapters/adapterRegistry.js';
+import { initializeFields } from '../../ui/systems/fieldSystem.js';
+import { registerModal } from '../../ui/modals/modalManager.js';
 
 export default class CardMagicianGame {
     /**
@@ -91,7 +93,7 @@ export default class CardMagicianGame {
      * @returns {Object}
      */
     newCard() {
-        return { model: { front: {} } };
+        return { front: {}, notes: '', tags: [] };
     }
 
     /**
@@ -155,4 +157,26 @@ export default class CardMagicianGame {
      * @param {SigilSifter} sifter
      */
     setupSearch(sifter) {}
+
+    /**
+     * Initializes a set of fields on a passed object, and returns a reference to the
+     * object. When no object is passed, it creates a new object.
+     *
+     * @param fields
+     * @param {object=} obj
+     * @returns {object}
+     */
+    initializeFields(fields, obj = {}) {
+        return initializeFields(fields, obj);
+    }
+
+    /**
+     * Registers a modal with the modal manager. Every game should register a
+     * set info modal.
+     *
+     * @param {Modal} ModalClass
+     */
+    registerModal(ModalClass) {
+        registerModal(ModalClass);
+    }
 }
