@@ -8,7 +8,7 @@ export default class EditableTooltip {
         this.publish();
     }
 
-    get eventTarget() {
+    get bindingTarget() {
         return this.editable.tagName === 'CM-EDITABLE-IMAGE'
             ? this.editable.controls
             : this.editable;
@@ -43,12 +43,12 @@ export default class EditableTooltip {
     }
 
     bind() {
-        this.eventTarget.addEventListener('mouseenter', () => {
-            if (this.eventTarget.matches(':focus-within')) return;
+        this.bindingTarget.addEventListener('mouseenter', () => {
+            if (this.bindingTarget.matches(':focus-within')) return;
             this.show();
         });
-        this.eventTarget.addEventListener('focus', this.hide)
-        this.eventTarget.addEventListener('mouseleave', this.hide);
+        this.bindingTarget.addEventListener('focus', this.hide)
+        this.bindingTarget.addEventListener('mouseleave', this.hide);
     }
 
     publish() {
