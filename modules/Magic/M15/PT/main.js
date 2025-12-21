@@ -36,11 +36,11 @@ export default class PTModule extends CardMagicianModule {
         return (
             `<div class="pt-text" style="${this.ptStyle}">
                 ${this.editableText(editable, 'power', null, { 
-                    nextKeys: '/' 
+                    nextKeys: '/,ArrowRight' 
                 })}
                 <span class="divider">/</span>
                 ${this.editableText(editable, 'toughness', null, { 
-                    prevKeys: 'Backspace' 
+                    prevKeys: 'Backspace,ArrowLeft' 
                 })}
             </div>`
         );
