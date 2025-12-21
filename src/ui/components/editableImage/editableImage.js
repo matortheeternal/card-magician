@@ -6,11 +6,19 @@ export default class EditableImage extends HTMLElement {
         super();
         this.onControlsClick = this.onControlsClick.bind(this);
         this.onFileSelected = this.onFileSelected.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
     }
 
     connectedCallback() {
         this.createControls();
         this.createFileInput();
+        this.addEventListener('focus', () => {
+            if (this.doNotMoveFocus) {
+                this.doNotMoveFocus = false;
+                return;
+            }
+            this.controls.firstElementChild.focus();
+        });
     }
 
     get aspectRatio() {
@@ -51,8 +59,10 @@ export default class EditableImage extends HTMLElement {
     createControls() {
         this.controls = document.createElement('div');
         this.controls.className = 'editable-image-controls';
+        this.controls.tabIndex = -1;
         this.controls.innerHTML = this.renderControls();
         this.controls.addEventListener('click', this.onControlsClick);
+        this.controls.addEventListener('keydown', this.onKeyDown);
         this.updateControlsPosition();
         document.body.appendChild(this.controls);
     }
@@ -112,6 +122,19 @@ export default class EditableImage extends HTMLElement {
         const file = event.target.files?.[0];
         if (!file || !file.type.startsWith('image/')) return;
         this.value = await ImageFieldValue.fromFile(file);
+    }
+
+    onKeyDown(event) {
+        if (event.key !== 'Tab') return;
+        const buttons = this.controls.querySelectorAll('sl-button');
+        const firstButton = buttons[0];
+        const lastButton = buttons[buttons.length - 1];
+        const active = document.activeElement;
+        if ((!event.shiftKey && lastButton === active) ||
+            (event.shiftKey && firstButton === active)) {
+            this.doNotMoveFocus = true;
+            this.focus();
+        }
     }
 }
 
