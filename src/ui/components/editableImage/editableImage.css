@@ -12,7 +12,7 @@
 }
 
 .editable-image-controls:hover,
-.editable-image-controls:focus-visible {
+.editable-image-controls:focus-within {
     opacity: 0.9;
 }
 

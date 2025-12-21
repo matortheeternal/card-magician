@@ -3,9 +3,22 @@ cm-card-face::part(editable-html):hover {
     background-color: rgba(0, 0, 0, 0.12);
 }
 
-.show-all-editable cm-card-face::part(editable-text),
-.show-all-editable cm-card-face::part(editable-html) {
+.show-all-editable cm-card-face::part(editable-text) {
     background-color: rgba(80, 140, 255, 0.4);
+}
+
+.show-all-editable cm-card-face::part(editable-html) {
+    position: relative;
+}
+
+.show-all-editable cm-card-face::part(editable-image)::after,
+.show-all-editable cm-card-face::part(editable-html)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    filter: invert(1);
+    background: rgba(175, 115, 0, 0.35);
+    pointer-events: none;
 }
 
 cm-card-face::part(editable-text):focus-visible,
