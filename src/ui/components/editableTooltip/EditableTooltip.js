@@ -7,13 +7,24 @@ export default class EditableTooltip {
         this.publish();
     }
 
+    get positionInsideEditable() {
+        return this.editable.tagName === 'CM-EDITABLE-IMAGE'
+            || this.editable.hasAttribute('multiline');
+    }
+
+    getTopOffset(rect) {
+        return this.positionInsideEditable
+            ? rect.bottom - 17 + 'px'
+            : rect.bottom + 2 + 'px';
+    }
+
     createElement() {
         const rect = this.editable.getBoundingClientRect();
         this.element = document.createElement('div');
         this.element.textContent = this.field.label;
         this.element.className = 'editable-tooltip';
         this.element.style.left = rect.left + 'px';
-        this.element.style.top = rect.bottom + 2 + 'px';
+        this.element.style.top = this.getTopOffset(rect);
     }
 
     bind() {
