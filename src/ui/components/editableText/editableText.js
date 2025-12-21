@@ -1,4 +1,5 @@
 import { emit } from '../../../shared/htmlUtils.js';
+import { makeNavigationHandler } from '../../systems/editableNavigationSystem.js';
 
 export default class EditableText extends HTMLElement {
     composing = false;
@@ -7,17 +8,33 @@ export default class EditableText extends HTMLElement {
         super();
         this.onInput = this.onInput.bind(this);
         this.pastePlainText = this.pastePlainText.bind(this);
+        this.onKeyDown = makeNavigationHandler(this);
     }
 
     connectedCallback() {
         this.addEventListener('input', this.onInput);
         this.addEventListener('paste', this.pastePlainText);
+        this.addEventListener('keydown', this.onKeyDown);
         this.addEventListener('compositionstart', () => {
             this.composing = true;
         });
         this.addEventListener('compositionend', () => {
             this.composing = false;
         });
+    }
+
+    get cursorAtStart() {
+        const sel = this.getRootNode().getSelection();
+        return sel.isCollapsed
+            && sel.anchorNode === (this.childNodes[0] || this)
+            && sel.anchorOffset === 0;
+    }
+
+    get cursorAtEnd() {
+        const sel = this.getRootNode().getSelection();
+        return sel.isCollapsed
+            && sel.anchorNode === (this.childNodes[0] || this)
+            && sel.anchorOffset === this.textContent.length;
     }
 
     get value() {
