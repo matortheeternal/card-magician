@@ -419,15 +419,18 @@ export default class CardMagicianModule {
      * @param {boolean} editable
      * @param {string} fieldId
      * @param {string=null} value
+     * @param {object=} options
      * @returns {string}
      */
-    editableText(editable, fieldId, value = null) {
+    editableText(editable, fieldId, value = null, options = {}) {
         const html = this.escapeHTML(value ?? this.card[fieldId]);
         return editable ? (
             `<cm-editable-text 
                 field="${esc(fieldId)}"
                 contenteditable="true" 
                 part="editable-text"
+                ${options.nextKeys ? `next-keys="${esc(options.nextKeys)}"` : ''}
+                ${options.prevKeys ? `prev-keys="${esc(options.prevKeys)}"` : ''}
             >${html}</cm-editable-text>`
         ) : html;
     }
