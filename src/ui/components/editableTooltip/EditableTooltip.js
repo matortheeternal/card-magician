@@ -1,4 +1,6 @@
 export default class EditableTooltip {
+    #rect = null;
+
     constructor(field, editable) {
         this.field = field;
         this.editable = editable;
@@ -17,6 +19,25 @@ export default class EditableTooltip {
     get positionInsideEditable() {
         return this.editable.tagName === 'CM-EDITABLE-IMAGE'
             || this.editable.hasAttribute('multiline');
+    }
+
+    cacheRect() {
+        this.#rect = this.element.getBoundingClientRect();
+    }
+
+    get width() {
+        return this.#rect.width;
+    }
+
+    get currentRect() {
+        const left = parseFloat(this.element.style.left);
+        const top = parseFloat(this.element.style.top);
+        const { width, height } = this.#rect;
+        return {
+            left, top, width, height,
+            right: left + width,
+            bottom: top + height,
+        };
     }
 
     getTopOffset(rect) {
