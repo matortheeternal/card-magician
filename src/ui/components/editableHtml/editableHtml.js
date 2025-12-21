@@ -33,14 +33,14 @@ class EditableHtml extends HTMLElement {
         document.removeEventListener('selectionchange', this.onSelectionChange);
     }
 
-    get cursorAtStart() {
+    get caretAtStart() {
         const sel = this.getRootNode().getSelection();
         return sel.isCollapsed
             && sel.anchorNode === this
             && sel.anchorOffset === 0;
     }
 
-    get cursorAtEnd() {
+    get caretAtEnd() {
         const sel = this.getRootNode().getSelection();
         return sel.isCollapsed
             && sel.anchorNode === this

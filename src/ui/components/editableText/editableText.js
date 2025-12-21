@@ -23,14 +23,14 @@ export default class EditableText extends HTMLElement {
         });
     }
 
-    get cursorAtStart() {
+    get caretAtStart() {
         const sel = this.getRootNode().getSelection();
         return sel.isCollapsed
             && sel.anchorNode === (this.childNodes[0] || this)
             && sel.anchorOffset === 0;
     }
 
-    get cursorAtEnd() {
+    get caretAtEnd() {
         const sel = this.getRootNode().getSelection();
         return sel.isCollapsed
             && sel.anchorNode === (this.childNodes[0] || this)

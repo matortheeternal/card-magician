@@ -65,13 +65,13 @@ export function makeNavigationHandler(element) {
         const customNextKeys = getKeys('next-keys');
         return event.key === 'Enter'
             || (event.key === 'Tab' && !event.shiftKey)
-            || (customNextKeys.includes(event.key) && element.cursorAtEnd);
+            || (customNextKeys.includes(event.key) && element.caretAtEnd);
     }
 
     function eventMatchesPrevious(event) {
         const customPrevKeys = getKeys('prev-keys');
         return (event.key === 'Tab' && event.shiftKey)
-            || (customPrevKeys.includes(event.key) && element.cursorAtStart)
+            || (customPrevKeys.includes(event.key) && element.caretAtStart)
     }
 
     function goNext(event) {
