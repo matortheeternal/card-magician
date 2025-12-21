@@ -9,8 +9,11 @@ export default class CheckboxListField extends FieldComponent {
         return field.type === 'checkboxlist';
     }
 
+    get checkboxes() {
+        return this.querySelectorAll('sl-checkbox');
+    }
+
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<div class="label">${this.field.label}</div>
             <div class="checkbox-list">
@@ -18,13 +21,20 @@ export default class CheckboxListField extends FieldComponent {
                     <sl-checkbox
                         data-id="${esc(opt.id)}"
                         size="small"
-                        ${this.value[opt.id] ? 'checked' : ''}
                         ${opt.disabled ? 'disabled' : ''}>
                         ${opt.label}
                     </sl-checkbox>
                 `).join('')}
             </div>`
         );
+    }
+
+    loadValue() {
+        if (!this.checkboxes.length) return;
+        this.checkboxes.forEach(checkbox => {
+            const optionId = checkbox.dataset.id;
+            checkbox.value = this.value[optionId];
+        });
     }
 
     async onChange(e) {

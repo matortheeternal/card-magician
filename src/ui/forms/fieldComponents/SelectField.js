@@ -85,7 +85,6 @@ export default class SelectField extends FieldComponent {
     }
 
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = buildSelectHTML(this.field.label, this.field.options);
     }
 

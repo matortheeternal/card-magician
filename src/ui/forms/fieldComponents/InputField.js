@@ -9,8 +9,11 @@ export default class InputField extends FieldComponent {
         return field.type === 'input' || !field.type;
     }
 
+    get input() {
+        return this.querySelector('sl-input');
+    }
+
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<sl-input
               size="small"
@@ -19,9 +22,13 @@ export default class InputField extends FieldComponent {
               placeholder="${esc(this.field.placeholder || '')}"
               autocomplete="off"
               type="${this.field.inputType || 'text'}"
-              value="${esc(this.value)}"
             ></sl-input>`
         );
+    }
+
+    loadValue() {
+        if (!this.input) return;
+        this.input.value = this.value;
     }
 }
 

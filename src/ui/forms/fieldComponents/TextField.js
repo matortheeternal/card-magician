@@ -9,8 +9,11 @@ export default class TextField extends FieldComponent {
         return field.type === 'textarea';
     }
 
+    get textarea() {
+        return this.querySelector('sl-textarea');
+    }
+
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<sl-textarea
               size="small"
@@ -18,10 +21,14 @@ export default class TextField extends FieldComponent {
               autocomplete="off"
               name="${esc(this.field.id)}"
               label="${esc(this.field.label)}"
-              value="${esc(this.value)}"
               rows="2"
             ></sl-textarea>`
         );
+    }
+
+    loadValue() {
+        if (!this.textarea) return;
+        this.textarea.value = this.value;
     }
 }
 
