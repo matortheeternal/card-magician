@@ -24,10 +24,6 @@
     </main>
 </template>
 
-<template x-if="$store.views.activeModal === 'set-info'">
-    <div x-data="setInfoModal()" class="modal-container set-info-modal"></div>
-</template>
-
 <template x-if="$store.views.activeModal === 'crop-image'">
     <div x-data="cropImageModal()" class="modal-container crop-image-modal"></div>
 </template>
@@ -35,6 +31,8 @@
 <template x-if="$store.views.activeModal === 'edit-locales'">
     <div x-data="editLocalesModal()" class="modal-container edit-locales-modal"></div>
 </template>
+
+<div class="modal-container" style="display: none;"></div>
 
 <div class="status-container">
     <template x-for="message of $store.statusMessages">

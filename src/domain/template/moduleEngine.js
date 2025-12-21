@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import RenderScheduler from './renderScheduler.js';
-import ImageFieldValue from '../card/ImageFieldValue.js';
+import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 export async function loadModule(card, modulePath) {
     try {
@@ -26,29 +26,12 @@ export function setupRenderPipeline(card, modules) {
     });
 }
 
-function getDefaultValue(field) {
-    if (field.hasOwnProperty('default')) return field.default;
-    if (field.type === 'checkboxlist') return {};
-    if (field.type === 'select') return field.options?.[0]?.id || null;
-    if (field.type === 'multiselect') return [];
-    if (field.type === 'image') return new ImageFieldValue();
-    return '';
-}
-
-function loadFields(card, modules) {
-    for (const module of modules)
-        module.fields.forEach(field => {
-            card.fields.push(field);
-            card[field.id] = getDefaultValue(field);
-        });
-}
-
-function loadOptions(card, modules) {
-    for (const module of modules)
-        module.options.forEach(field => {
-            card.options.push(field);
-            card[field.id] = getDefaultValue(field);
-        });
+function loadFields(card, modules, key = 'fields') {
+    for (const module of modules) {
+        const fields = module[key];
+        initializeFields(fields, card);
+        card[key].push(...fields);
+    }
 }
 
 function hasLoadedModule(parent, module) {
@@ -73,7 +56,7 @@ export async function initializeModules(card, modules, parent) {
         return module.init(card);
     }));
     loadFields(card, modules);
-    loadOptions(card, modules);
+    loadFields(card, modules, 'options');
     await loadStyles(card, modules, parent);
 }
 

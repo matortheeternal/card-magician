@@ -1,5 +1,5 @@
 import FieldComponent from './FieldComponent.js';
-import { registerField } from './fieldComponentManager.js';
+import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 const selectDividerSpacing = '--spacing: var(--sl-spacing-3x-small)';
 
