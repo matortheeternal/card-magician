@@ -2,6 +2,7 @@ export default class EditableTooltip {
     constructor(field, editable) {
         this.field = field;
         this.editable = editable;
+        this.hide = this.hide.bind(this);
         this.createElement();
         this.bind();
         this.publish();
@@ -33,17 +34,21 @@ export default class EditableTooltip {
         this.element.style.top = this.getTopOffset(rect);
     }
 
+    hide() {
+        this.element.classList.remove('show');
+    }
+
+    show() {
+        this.element.classList.add('show');
+    }
+
     bind() {
         this.eventTarget.addEventListener('mouseenter', () => {
             if (this.eventTarget.matches(':focus-within')) return;
-            this.element.classList.add('show');
+            this.show();
         });
-        this.eventTarget.addEventListener('focus', () => {
-            this.element.classList.remove('show');
-        })
-        this.eventTarget.addEventListener('mouseleave', () => {
-            this.element.classList.remove('show');
-        });
+        this.eventTarget.addEventListener('focus', this.hide)
+        this.eventTarget.addEventListener('mouseleave', this.hide);
     }
 
     publish() {
