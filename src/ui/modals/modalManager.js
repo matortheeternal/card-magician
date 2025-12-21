@@ -23,7 +23,7 @@ export function openModal(modalId, data = {}) {
     modalElement.data = data;
     modalContainer.innerHTML = '';
     modalContainer.appendChild(modalElement);
-    modalContainer.style.display = 'flex';
+    modalContainer.style.removeProperty('display');
     activeModal = modalElement;
 }
 
