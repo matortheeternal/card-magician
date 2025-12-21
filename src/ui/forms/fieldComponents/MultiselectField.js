@@ -10,13 +10,15 @@ export default class MultiselectField extends FieldComponent {
         return field.type === 'multiselect';
     }
 
+    get select() {
+        return this.querySelector('sl-select');
+    }
+
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = (
             `<sl-select
               size="small"
               label="${esc(this.field.label)}"
-              value="${esc(this.value.join?.(' '))}"
               placeholder="No selection"
               maxOptionsVisible="5"
               clearable
@@ -28,6 +30,11 @@ export default class MultiselectField extends FieldComponent {
             )).join('\n')}
             </sl-select>`
         );
+    }
+
+    loadValue() {
+        if (!this.select) return;
+        this.select.value = this.value?.join?.(' ') || '';
     }
 }
 
