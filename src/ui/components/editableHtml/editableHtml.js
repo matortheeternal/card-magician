@@ -1,7 +1,8 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import {
     getCursorSelectionOffset, setCursorPosition,
-    applySelectionClasses, selectAll, selectRange
+    applySelectionClasses, removeSelectionClasses,
+    selectAll, selectRange,
 } from '../../systems/htmlSelectionSystem.js';
 import { onBeforeInput } from '../../systems/htmlInputSystem.js';
 
@@ -78,7 +79,10 @@ class EditableHtml extends HTMLElement {
     }
 
     onSelectionChange() {
-        if (this.root.getSelection().anchorNode !== this) return;
+        if (this.root.getSelection().anchorNode !== this) {
+            removeSelectionClasses(this);
+            return;
+        }
         applySelectionClasses(this);
     }
 

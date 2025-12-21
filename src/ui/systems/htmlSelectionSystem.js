@@ -81,3 +81,9 @@ export function applySelectionClasses(element) {
         node.classList.toggle('selected', isSelected);
     });
 }
+
+export function removeSelectionClasses(element) {
+    element.childNodes.forEach(node => {
+        node.classList.remove('selected');
+    });
+}
