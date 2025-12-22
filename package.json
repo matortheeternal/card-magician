@@ -32,7 +32,8 @@
     "dev": "node esbuild.config.js && npm --prefix games/magic run build",
     "release": "neu build --release",
     "start": "npm run dev && neu run -- --window-enable-inspector",
-    "test": "npm run dev && neu run -- --run-tests"
+    "test": "npm run dev && neu run -- --run-tests",
+    "lint": "npx eslint src"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
