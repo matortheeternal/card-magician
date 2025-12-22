@@ -1,7 +1,9 @@
 import { combineBlend, linearBlend, maskBlend } from '../domain/gfx/blending.js';
 
 async function saveCanvasToFile(canvas, filePath) {
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, 'image/png');
+    });
     const arrayBuffer = await blob.arrayBuffer();
     await Neutralino.filesystem.writeBinaryFile(filePath, arrayBuffer);
 }

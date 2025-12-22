@@ -34,11 +34,57 @@ export default [
         rules: {
             // Correctness & safety
             'no-undef': 'error',
-            'no-unused-vars': ['warn', { args: 'none' }],
             'no-redeclare': 'error',
-            'no-unreachable': 'error',
             'no-dupe-class-members': 'error',
             'no-constant-condition': 'warn',
+            'array-callback-return': 'error',
+            'for-direction': 'error',
+            'getter-return': 'error',
+            'no-async-promise-executor': 'error',
+            'no-class-assign': 'error',
+            'no-compare-neg-zero': 'error',
+            'no-cond-assign': 'error',
+            'no-const-assign': 'error',
+            'no-debugger': 'warn',
+            'no-dupe-args': 'error',
+            'no-dupe-keys': 'error',
+            'no-duplicate-case': 'error',
+            'no-empty-character-class': 'error',
+            'no-empty-pattern': 'error',
+            'no-ex-assign': 'error',
+            'no-fallthrough': 'warn',
+            'no-func-assign': 'error',
+            'no-import-assign': 'error',
+            'no-inner-declarations': 'warn',
+            'no-invalid-regexp': 'warn',
+            'no-irregular-whitespace': 'error',
+            'no-loss-of-precision': 'warn',
+            'no-misleading-character-class': 'error',
+            'no-new-native-nonconstructor': 'error',
+            'no-obj-calls': 'error',
+            'no-promise-executor-return': 'error',
+            'no-prototype-builtins': 'warn',
+            'no-self-assign': 'warn',
+            'no-self-compare': 'error',
+            'no-setter-return': 'error',
+            'no-sparse-arrays': 'warn',
+            'no-template-curly-in-string': 'warn',
+            'no-this-before-super': 'error',
+            'no-unassigned-vars': 'error',
+            'no-unexpected-multiline': 'warn',
+            'no-unmodified-loop-condition': 'warn',
+            'no-unreachable': 'error',
+            'no-unreachable-loop': 'warn',
+            'no-unsafe-finally': 'warn',
+            'no-unsafe-negation': 'error',
+            'no-unsafe-optional-chaining': 'warn',
+            'no-unused-private-class-members': 'warn',
+            'no-unused-vars': ['warn', { args: 'none' }],
+            'no-useless-assignment': 'warn',
+            'no-useless-backreference': 'warn',
+            'require-atomic-updates': 'warn',
+            'use-isnan': 'error',
+            'valid-typeof': 'warn',
 
             // Explicitness & clarity
             'curly': ['error', 'multi-or-nest'],
@@ -63,12 +109,13 @@ export default [
 
             'max-len': ['warn', {
                 code: 90,
-                ignoreComments: true,
+                ignoreComments: false,
                 ignoreStrings: false,
                 ignoreTemplateLiterals: false
             }],
 
             // Classes
+            'constructor-super': 'error',
             'no-useless-constructor': 'warn',
             'class-methods-use-this': 'off'
         }
@@ -81,11 +128,14 @@ export default [
         },
         rules: {
             '@stylistic/semi': ['error', 'always'],
-            '@stylistic/quotes': ['error', 'single', { allowTemplateLiterals: 'always' }],
-            '@stylistic/indent': ['error', 4, { SwitchCase: 1 }],
-            '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+            '@stylistic/quotes': ['error', 'single', {
+                allowTemplateLiterals: 'always'
+            }],
+            '@stylistic/indent': ['error', 4],
+            '@stylistic/brace-style': ['error', '1tbs', {
+                allowSingleLine: true
+            }],
             '@stylistic/operator-linebreak': ['warn', 'before'],
-
             // Trailing commas intentionally unconstrained
             '@stylistic/comma-dangle': 'off'
         }

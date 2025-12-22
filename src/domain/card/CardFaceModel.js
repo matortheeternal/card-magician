@@ -17,7 +17,7 @@ export default class CardFaceModel extends BaseCardModel {
     async load(cardData) {
         await super.load(cardData);
         for (const subcard of this.subcards) {
-            if (!cardData.hasOwnProperty(subcard.id)) continue;
+            if (!Object.hasOwn(cardData, subcard.id)) continue;
             await subcard.load(cardData[subcard.id]);
         }
     }

@@ -13,7 +13,7 @@ export default class Localization {
     }
 
     static get totalKeys() {
-        if (!this.schema) return;
+        if (!this.schema) return null;
         return Object.values(this.schema).flatMap(entries => {
             return Object.values(entries);
         }).length;
