@@ -36,26 +36,26 @@ class CropImage extends HTMLElement {
     attributeChangedCallback(name, oldVal, newVal) {
         if (oldVal === newVal) return;
         switch (name) {
-            case 'src':
-                this._src = newVal;
-                getImageSize(this._src).then(({width, height}) => {
-                    this._srcWidth = width;
-                    this._srcHeight = height;
-                    this.requestUpdate();
-                });
-                break;
-            case 'crop-width':
-                this._cropWidth = parseFloat(newVal) || 1;
-                break;
-            case 'crop-height':
-                this._cropHeight = parseFloat(newVal) || 1;
-                break;
-            case 'offset-x':
-                this._offsetX = parseFloat(newVal) || 0;
-                break;
-            case 'offset-y':
-                this._offsetY = parseFloat(newVal) || 0;
-                break;
+        case 'src':
+            this._src = newVal;
+            getImageSize(this._src).then(({width, height}) => {
+                this._srcWidth = width;
+                this._srcHeight = height;
+                this.requestUpdate();
+            });
+            break;
+        case 'crop-width':
+            this._cropWidth = parseFloat(newVal) || 1;
+            break;
+        case 'crop-height':
+            this._cropHeight = parseFloat(newVal) || 1;
+            break;
+        case 'offset-x':
+            this._offsetX = parseFloat(newVal) || 0;
+            break;
+        case 'offset-y':
+            this._offsetY = parseFloat(newVal) || 0;
+            break;
         }
 
         this.requestUpdate();

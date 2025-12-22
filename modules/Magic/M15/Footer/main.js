@@ -33,23 +33,40 @@ export default class FooterModule extends CardMagicianModule {
         );
     }
 
+    renderSetCodeAndLanguage(card) {
+        const setCode = this.escapeHTML(
+            card.setCode || this.set.info.setCode || ''
+        );
+        const language = this.escapeHTML(
+            card.language || this.set.info.language || ''
+        );
+        return `<div>${setCode} &bullet; ${language}</div>`;
+    }
+
+    renderIllustrator(card) {
+        const illustrator = this.escapeHTML(
+            card.illustrator || this.set.info.illustrator || ''
+        );
+
+        return (
+            `<div class="illustrator-container">
+                <div class="illustrator-brush">${this.brushSvg}</div>
+                <div class="illustrator-name">${illustrator}</div>
+            </div>`
+        );
+    }
+
     renderInfo(card) {
-        const setCode = card.setCode || this.set.info.setCode || '';
-        const language = card.language || this.set.info.language || '';
-        const illustrator = card.illustrator || this.set.info.illustrator || '';
         const number = card.collectorNumber || card.autoCollectorNumber || '';
 
         return this.set.info.rarityOrder === 'after' ? (
             `<div class="column">
                 <div>${this.escapeHTML(number)}</div>
-                <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
+                ${this.renderSetCodeAndLanguage()}
             </div>
             <div class="column">
                 <div>${card.rarityCharacter}</div>
-                <div class="illustrator-container">
-                    <div class="illustrator-brush">${this.brushSvg}</div>
-                    <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
-                </div>
+                ${this.renderIllustrator(card)}
             </div>`
         ) : (
             `<div class="row">
@@ -57,11 +74,8 @@ export default class FooterModule extends CardMagicianModule {
                 <div>${this.escapeHTML(number)}</div>
             </div>
             <div class="row">
-                <div>${this.escapeHTML(setCode)} &bullet; ${this.escapeHTML(language)}</div>
-                <div class="illustrator-container">
-                    <div class="illustrator-brush">${this.brushSvg}</div>
-                    <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
-                </div>
+                ${this.renderSetCodeAndLanguage()}
+                ${this.renderIllustrator(card)}
             </div>`
         );
     }

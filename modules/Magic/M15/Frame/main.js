@@ -71,7 +71,10 @@ export default class FrameModule extends CardMagicianModule {
     render() {
         if (!this.backgrounds) return;
         return this.backgrounds.map(bg => (
-            `<div class="bg frame-${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`
+            `<div
+                class="bg frame-${bg.id}"
+                style="${this.objectToStyle(bg.style)}"
+            ></div>`
         )).join('\n');
     }
 

@@ -90,7 +90,9 @@ export default [
             'no-unused-vars': ['warn', { args: 'none' }],
             'no-useless-assignment': 'warn',
             'no-useless-backreference': 'warn',
-            'require-atomic-updates': 'warn',
+            'require-atomic-updates': ['warn', {
+                allowProperties: true
+            }],
             'use-isnan': 'error',
             'valid-typeof': 'warn',
 
@@ -139,7 +141,12 @@ export default [
             '@stylistic/quotes': ['error', 'single', {
                 allowTemplateLiterals: 'always'
             }],
-            '@stylistic/indent': ['error', 4],
+            '@stylistic/indent': ['error', 4, {
+                CallExpression: {
+                    arguments: 'first'
+                },
+                ArrayExpression: 'first'
+            }],
             '@stylistic/brace-style': ['error', '1tbs', {
                 allowSingleLine: true
             }],
