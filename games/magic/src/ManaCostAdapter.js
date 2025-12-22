@@ -20,5 +20,5 @@ export default function MakeManaCostAdapter(SerializerAdapter, ManaCost) {
         async decode(node) {
             return ManaCost.parse(node.data);
         }
-    }
+    };
 }

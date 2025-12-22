@@ -76,8 +76,8 @@ export function buildColumns() {
         width: '100px',
         data: row => {
             if (!row.front.rarity) return '';
-            return row.front.rarity.slice(0, 1).toUpperCase() +
-                   row.front.rarity.slice(1);
+            return row.front.rarity.slice(0, 1).toUpperCase()
+                   + row.front.rarity.slice(1);
         },
         compare: compareRowRarity
     }, {

@@ -26,5 +26,5 @@ export function isBasicLand(card) {
 
 export function isMulticolor(card) {
     return card.front.colors?.length
-        && card.front.colors.length > 1
+        && card.front.colors.length > 1;
 }
