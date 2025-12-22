@@ -8,12 +8,13 @@ const colorNames = {
 
 function addColor(colors, colorCharacter, sourceKey = 'normal') {
     const char = colorCharacter.toLowerCase();
-    if (!Object.hasOwn(colors, char))
+    if (!Object.hasOwn(colors, char)) {
         colors[char] = {
             char,
             name: colorNames[char],
             sources: {}
         };
+    }
 
     colors[char].sources[sourceKey] = true;
 }
@@ -72,13 +73,13 @@ export default class ColorIdentity {
 
     isMulticolor() {
         return (this.colors.length > 2) || (
-            (this.colors.length === 2) &&
-            !this.isHybrid()
+            (this.colors.length === 2)
+            && !this.isHybrid()
         );
     }
 
     isHybrid() {
-        return (this.colors.length === 2) &&
-            this.colors.every(c => c.sources.hybrid && !c.sources.normal);
+        return (this.colors.length === 2)
+            && this.colors.every(c => c.sources.hybrid && !c.sources.normal);
     }
 }

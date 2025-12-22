@@ -63,7 +63,7 @@ export default class FooterModule extends CardMagicianModule {
                     <div class="illustrator-name">${this.escapeHTML(illustrator)}</div>
                 </div>
             </div>`
-        )
+        );
     }
 
     renderLegal(card) {

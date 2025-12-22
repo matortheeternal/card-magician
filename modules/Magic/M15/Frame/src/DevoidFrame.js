@@ -47,7 +47,7 @@ export default class DevoidFrame extends NormalFrame {
 
     /* --- TRIM MASKS --- */
     get devoidTrimMaskUrl() {
-        return resolveAssetPath('mask/trim/devoid.png')
+        return resolveAssetPath('mask/trim/devoid.png');
     }
 
     maskTrim(imageUrl) {
