@@ -29,7 +29,7 @@ export default class NormalFrame extends CardFrame {
         return await super.buildBackgrounds(key, card);
     }
 
-/*
+    /*
     get isExpanded() {
         return this.card.usesExpandedArt?.() || this.card.isPuma?.();
     }
@@ -87,7 +87,7 @@ export default class NormalFrame extends CardFrame {
     }
 
     maskFrame(image) {
-        const maskUrl = `${this.frameMaskFolder}/${this.frameMaskFilename}`
+        const maskUrl = `${this.frameMaskFolder}/${this.frameMaskFilename}`;
         return this.ctx.maskImage(image, maskUrl);
     }
 
@@ -353,8 +353,8 @@ export default class NormalFrame extends CardFrame {
 
     // --- MIRACLE TRIM ---
     get showMiracleTrim() {
-        return (this.card.miracleStyle !== 'disabled') &&
-            (this.card.miracleStyle !== 'auto' || this.card.isMiracle?.());
+        return (this.card.miracleStyle !== 'disabled')
+            && (this.card.miracleStyle !== 'auto' || this.card.isMiracle?.());
     }
 
     get miracleSubfolder() {

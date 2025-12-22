@@ -33,7 +33,7 @@
     "release": "neu build --release",
     "start": "npm run dev && neu run -- --window-enable-inspector",
     "test": "npm run dev && neu run -- --run-tests",
-    "lint": "npx eslint src"
+    "lint": "npx eslint src modules"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",

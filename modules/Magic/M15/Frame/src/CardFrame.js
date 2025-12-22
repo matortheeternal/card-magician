@@ -41,7 +41,7 @@ export default class CardFrame {
     }
 
     getHybridOrder(card, c1, c2) {
-        let order = [c1, c2];
+        const order = [c1, c2];
         const reverseOverride = Boolean(card.hybridStyle?.includes('reverse'));
         if (xor(reverseByDefault.includes(c1 + c2), reverseOverride))
             return order.reverse();

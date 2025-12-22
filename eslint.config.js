@@ -10,7 +10,7 @@ import globals from 'globals';
 // - Maintain a zero-noise baseline: lint should be quiet on intentional code
 export default [
     {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -25,6 +25,7 @@ export default [
                 Alpine: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
+                CardMagicianModule: 'readonly'
             }
         }
     },
@@ -37,7 +38,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js'],
         rules: {
             // Correctness & safety
             'no-undef': 'error',
@@ -129,7 +130,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js'],
         plugins: {
             '@stylistic': stylistic
         },

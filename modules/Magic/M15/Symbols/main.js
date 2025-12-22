@@ -1,4 +1,4 @@
-import { symbolToHTML } from './src/symbolToHTML.js'
+import { symbolToHTML } from './src/symbolToHTML.js';
 
 export default class SymbolsModule extends CardMagicianModule {
     async init(card) {

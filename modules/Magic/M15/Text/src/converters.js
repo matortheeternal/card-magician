@@ -5,7 +5,7 @@ export const WhitespaceConverter = {
     convert(match) {
         return match[0];
     }
-}
+};
 
 export const ParenthesisConverter = {
     match(str, res, state) {
@@ -19,7 +19,7 @@ export const ParenthesisConverter = {
             ? '<i>' + match[0]
             : match[0] + '</i>';
     }
-}
+};
 
 export const SymbolConverter = {
     match(str) {
@@ -31,25 +31,25 @@ export const SymbolConverter = {
         outputSymbols.push(...symbols);
         return card.symbolsToHTML(symbols);
     }
-}
+};
 
 export const LegendNameConverter = {
     match(str) {
-        return str.match(/^(LEGENDNAME|@)/)
+        return str.match(/^(LEGENDNAME|@)/);
     },
     convert(match, state, card) {
         return card.getLegendName();
     }
-}
+};
 
 export const CardNameConverter = {
     match(str) {
-        return str.match(/^(CARDNAME|~)/)
+        return str.match(/^(CARDNAME|~)/);
     },
     convert(match, state, card) {
         return card.name;
     }
-}
+};
 
 export const FallbackConverter = {
     match(str) {
@@ -59,7 +59,7 @@ export const FallbackConverter = {
     convert(match) {
         return match[0];
     }
-}
+};
 
 export const converters = [
     WhitespaceConverter,
