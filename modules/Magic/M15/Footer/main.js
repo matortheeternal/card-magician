@@ -62,7 +62,7 @@ export default class FooterModule extends CardMagicianModule {
         return this.set.info.rarityOrder === 'after' ? (
             `<div class="column">
                 <div>${this.escapeHTML(number)}</div>
-                ${this.renderSetCodeAndLanguage()}
+                ${this.renderSetCodeAndLanguage(card)}
             </div>
             <div class="column">
                 <div>${card.rarityCharacter}</div>
@@ -74,7 +74,7 @@ export default class FooterModule extends CardMagicianModule {
                 <div>${this.escapeHTML(number)}</div>
             </div>
             <div class="row">
-                ${this.renderSetCodeAndLanguage()}
+                ${this.renderSetCodeAndLanguage(card)}
                 ${this.renderIllustrator(card)}
             </div>`
         );
