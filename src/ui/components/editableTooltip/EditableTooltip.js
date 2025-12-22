@@ -25,6 +25,10 @@ export default class EditableTooltip {
         this.#rect = this.element.getBoundingClientRect();
     }
 
+    get rect() {
+        return this.#rect;
+    }
+
     get height() {
         return this.#rect.height;
     }
@@ -33,30 +37,10 @@ export default class EditableTooltip {
         return this.#rect.width;
     }
 
-    get currentRect() {
-        const left = parseFloat(this.element.style.left);
-        const top = parseFloat(this.element.style.top);
-        const { width, height } = this.#rect;
-        return {
-            left, top, width, height,
-            right: left + width,
-            bottom: top + height,
-        };
-    }
-
-    getTopOffset(rect) {
-        return this.positionInsideEditable
-            ? rect.bottom - 17 + 'px'
-            : rect.bottom + 2 + 'px';
-    }
-
     createElement() {
-        const rect = this.editable.getBoundingClientRect();
         this.element = document.createElement('div');
         this.element.textContent = this.field.label;
         this.element.className = 'editable-tooltip';
-        this.element.style.left = rect.left + 'px';
-        this.element.style.top = this.getTopOffset(rect);
     }
 
     hide() {

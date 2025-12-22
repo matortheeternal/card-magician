@@ -146,3 +146,38 @@ export function createTooltipSimulation(tooltips) {
         }
     };
 }
+
+function rectsIntersect(a, b) {
+    return !(a.right  <= b.left
+        || a.left   >= b.right
+        || a.bottom <= b.top
+        || a.top    >= b.bottom);
+}
+
+export function initializeTooltipPositions(tooltips) {
+    function getTopOffset(tooltip, rect) {
+        return tooltip.positionInsideEditable
+            ? rect.bottom - tooltip.height + 'px'
+            : rect.bottom + 3 + 'px';
+    }
+
+    const editableRects = [];
+    tooltips.forEach(tooltip => {
+        tooltip.editableRect = tooltip.editable.getBoundingClientRect();
+        tooltip.element.style.left = tooltip.editableRect.left +
+            (tooltip.editableRect.width / 2) -
+            (tooltip.rect.width / 2) + 'px';
+        tooltip.element.style.top = getTopOffset(tooltip, tooltip.editableRect);
+        if (!tooltip.positionInsideEditable)
+            editableRects.push(tooltip.editableRect);
+        tooltip.cacheRect();
+    });
+
+    tooltips.forEach(tooltip => {
+        const intersects = editableRects.some(editableRect => {
+            return rectsIntersect(tooltip.rect, editableRect)
+        });
+        if (!intersects) return;
+        tooltip.element.style.top = tooltip.editableRect.top - tooltip.height + 'px';
+    });
+}
