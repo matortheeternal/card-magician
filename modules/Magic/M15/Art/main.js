@@ -41,13 +41,21 @@ export default class ArtModule extends CardMagicianModule {
         return null;
     }
 
-    async updateDefaultImage(card) {
+    async getDefaultImage(card) {
         const colorCount = card.colorIdentity.colors.length;
         const colorImage = this.getDefaultColorImage(card, colorCount);
         const typeImage = this.getDefaultTypeImage(card);
-        card.defaultImageUrl = typeImage
-            ? await this.combineBlend(colorImage, typeImage).publish()
-            : (await colorImage.publish?.()) || colorImage;
+        if (typeImage) {
+            const blendImage = this.combineBlend(colorImage, typeImage);
+            return await blendImage.publish();
+        }
+        return colorImage.publish
+            ? await colorImage.publish()
+            : colorImage;
+    }
+
+    async updateDefaultImage(card) {
+        card.defaultImageUrl = await this.getDefaultImage(card);
         this.requestRender();
     }
 
@@ -65,7 +73,7 @@ export default class ArtModule extends CardMagicianModule {
     render(card) {
         if (!card.defaultImageUrl && !card.artImage.imageUrl) return '';
         return card.artImage.imageUrl ? (
-            `<crop-image crop-width="${card.artImage.crop.width}" 
+            `<crop-image crop-width="${card.artImage.crop.width}"
                          crop-height="${card.artImage.crop.height}"
                          offset-x="${card.artImage.crop.xOffset}"
                          offset-y="${card.artImage.crop.yOffset}"

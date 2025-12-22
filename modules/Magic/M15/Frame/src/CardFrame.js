@@ -130,7 +130,8 @@ export default class CardFrame {
         options = {...defaultColoredOptions, ...options};
         const base = this.resolveColored(folder, card, options);
         this.blendMaskFolder = options.blendMaskFolder;
-        return this.applyMaskedBlends(base,
+        return this.applyMaskedBlends(
+            base,
             this.useLandBlend && [
                 `${folder}/${this.hybridBlendKey}${options.ext}`,
                 this.landBlendMaskUrl
