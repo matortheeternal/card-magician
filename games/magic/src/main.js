@@ -8,7 +8,11 @@ import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
 import { getThisType } from './thisType.js';
-import { addAutoReminderText, AbilityWordConverters, matchAllKeywords } from './keywords/reminderText.js';
+import { 
+    addAutoReminderText, 
+    AbilityWordConverters, 
+    matchAllKeywords 
+} from './keywords/reminderText.js';
 import { newUserKeyword, generateUserKeywordsForm } from './keywords/userKeywords.js';
 
 export default class MagicTheGathering extends CardMagicianGame {

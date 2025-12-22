@@ -1,21 +1,21 @@
-import { getKeywords } from "./lists/main.js";
-import { getTarget } from "./target.js";
-import { parseKeywordTokens } from "./parse.js";
-import { getParamType } from "./params.js";
+import { getKeywords } from './lists/main.js';
+import { getTarget } from './target.js';
+import { parseKeywordTokens } from './parse.js';
+import { getParamType } from './params.js';
 
 function genExpressionRegex(expressionTokens) {
-    let match = "";
+    let match = '';
 
     for (const token of expressionTokens) {
         const paramType = getParamType(token.format);
         const paramExpr = paramType.expr?.source;
 
-        match += "(";
+        match += '(';
         match += paramExpr ? paramExpr : token.variable; // literals and invalid types
-        match += ")";
+        match += ')';
     }
 
-    return new RegExp(match, "i");
+    return new RegExp(match, 'i');
 }
 
 function getParamVariables(expressionTokens, match) {
@@ -38,11 +38,13 @@ export function matchAllKeywords(str, card, game) {
 
     for (const keyword of keywords) {
         const expressionTokens = parseKeywordTokens(keyword.expression);
-        if (!keyword.expressionRegex) keyword.expressionRegex = genExpressionRegex(expressionTokens);
+        if (!keyword.expressionRegex)
+            keyword.expressionRegex = genExpressionRegex(expressionTokens);
+        
         const keywordMatched = str.match(keyword.expressionRegex);
         
         if (keywordMatched) {
-            const params = getParamVariables(expressionTokens, keywordMatched)
+            const params = getParamVariables(expressionTokens, keywordMatched);
             const target = getTarget(str, keyword.label, card); 
             matched.push({keyword, params, target});
         }

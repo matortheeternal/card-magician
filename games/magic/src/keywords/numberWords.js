@@ -28,5 +28,7 @@ export const numberWord = localeNumberWords.map(n => Array.isArray(n) ? n[0] : n
 export const numberWordOrA = localeNumberWords.map(n => Array.isArray(n) ? n[1] : n);
 
 export function numberWordToDigit(numberWord) {
-    return localeNumberWords.findIndex((word, number) => Array.isArray(word) ? word.includes(numberWord) : word === numberWord);
+    return localeNumberWords.findIndex( (word, number) =>  
+        Array.isArray(word) ? word.includes(numberWord) : word === numberWord
+    );
 }

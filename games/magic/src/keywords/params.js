@@ -1,4 +1,4 @@
-import { numberWordToDigit, numberWord, numberWordOrA } from "./numberWords.js";
+import { numberWordToDigit, numberWord, numberWordOrA } from './numberWords.js';
 
 class DirectiveParam {
     static expr = null;
@@ -30,11 +30,11 @@ class DirectiveParam {
     }
 
     static target_singular(value, args, card, target) {
-        return target !== "They" ? value : "";
+        return target !== 'They' ? value : '';
     }
 
     static target_plural(value, args, card, target) {
-        return target === "They" ? value : "";
+        return target === 'They' ? value : '';
     }
 
     static invalid_format(value) {
@@ -91,7 +91,7 @@ class SParam extends DirectiveParam {
     static alias = 's';
 
     static handler(value) {
-        return value.match(/[Ss]/) ? value : "";
+        return value.match(/[Ss]/) ? value : '';
     }
 }
 
@@ -116,9 +116,9 @@ const paramTypes = [
 ];
 
 export function getParamType(name) {
-    for (const paramType of paramTypes) {
+    for (const paramType of paramTypes)  
         if (paramType.alias === name) return paramType;
-    }
-
+    
+    
     return LiteralParam;
 }

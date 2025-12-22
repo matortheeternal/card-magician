@@ -2,9 +2,14 @@ function parseNextKeywordToken(str) {
     const match = str.match(/<.*?>|[^<]*/);
     const token = match[0];
 
-    if (!token.includes("<")) return [match, {format: "literal", variable: token, args: []}];
+    if (!token.includes('<')) {
+        return [
+            match, 
+            {format: 'literal', variable: token, args: []}
+        ];
+    }
 
-    let [variable, format, ...formatArgs] = token.substring(1, token.length - 1).split(":");
+    let [variable, format, ...formatArgs] = token.substring(1, token.length - 1).split(':');
     if (!format) format = variable; // so we can have things like <number>
 
     return [match, {variable, format, formatArgs}];
