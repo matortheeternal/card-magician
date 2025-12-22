@@ -55,9 +55,9 @@ Alpine.data('titleBar', () => ({
     },
 
     menuShown({ target: menu }) {
-        if (this.openMenu && this.openMenu !== menu) {
+        if (this.openMenu && this.openMenu !== menu) 
             this.openMenu.hide();
-        }
+        
         this.openMenu = menu;
         menu.classList.add('menu-active');
     },

@@ -134,6 +134,6 @@ addPrototypeFunction(Function, 'debounce', {
             };
             clearTimeout(timeout);
             timeout = setTimeout(later, delay);
-        }
+        };
     }
-})
+});

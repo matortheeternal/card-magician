@@ -19,9 +19,8 @@ function blobToBase64_Chunked(blob) {
         for (let i = 0; i < bytes.length; i += chunkSize) {
             const chunk = bytes.subarray(i, i + chunkSize);
             let chunkStr = '';
-            for (let j = 0; j < chunk.length; j++) {
+            for (let j = 0; j < chunk.length; j++)
                 chunkStr += String.fromCharCode(chunk[j]);
-            }
             binary += chunkStr;
         }
 
@@ -40,10 +39,9 @@ function fillRandom(uint8array) {
 }
 
 function measureMemory() {
-    if (performance.memory) {
-        return performance.memory.usedJSHeapSize;
-    }
-    return null;
+    return performance.memory
+        ? performance.memory.usedJSHeapSize
+        : null;
 }
 
 async function runTrial(name, fn, blob) {

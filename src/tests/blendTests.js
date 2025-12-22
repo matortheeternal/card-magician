@@ -31,11 +31,11 @@ async function benchmarkAsync(fn, iterations = 10) {
 
 const iterations = 10;
 const modes = [
-    "add", "subtract", "stamp", "difference", "negation",
-    "multiply", "darken", "lighten", "colorDodge", "colorBurn",
-    "screen", "overlay", "hardLight", "softLight", "reflect",
-    "glow", "freeze", "heat", "and", "or", "xor", "shadow",
-    "symmetricOverlay"
+    'add', 'subtract', 'stamp', 'difference', 'negation',
+    'multiply', 'darken', 'lighten', 'colorDodge', 'colorBurn',
+    'screen', 'overlay', 'hardLight', 'softLight', 'reflect',
+    'glow', 'freeze', 'heat', 'and', 'or', 'xor', 'shadow',
+    'symmetricOverlay'
 ];
 
 export function buildCombineBlendTests() {
@@ -62,7 +62,7 @@ export function buildCombineBlendTests() {
                 await saveCanvasToFile(canvas, `tests/output/${mode}.png`);
                 expect(canvas).toBeInstanceOf(HTMLCanvasElement);
             }
-            console.log("Blend benchmark results:", results);
+            console.log('Blend benchmark results:', results);
         });
 
         afterAll(async () => {
@@ -70,7 +70,7 @@ export function buildCombineBlendTests() {
                 'tests/output/combineBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );
-        })
+        });
     });
 }
 
@@ -106,7 +106,7 @@ export function buildLinearBlendTests() {
                 await saveCanvasToFile(canvas, `tests/output/linearBlend_${name}.png`);
                 expect(canvas).toBeInstanceOf(HTMLCanvasElement);
             }
-            console.log("Linear blend benchmark results:", results);
+            console.log('Linear blend benchmark results:', results);
         });
 
         afterAll(async () => {
@@ -114,7 +114,7 @@ export function buildLinearBlendTests() {
                 'tests/output/linearBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );
-        })
+        });
     });
 }
 
@@ -142,7 +142,7 @@ export function buildMaskBlendTests() {
             await saveCanvasToFile(canvas, 'tests/output/maskBlend.png');
 
             results['maskBlend'] = `${avg.toFixed(2)} ms (avg over ${iterations} runs)`;
-            console.log("Mask blend benchmark results:", results);
+            console.log('Mask blend benchmark results:', results);
         });
 
         afterAll(async () => {

@@ -77,7 +77,7 @@ Alpine.data('setView', () => ({
 
         this.$root.addEventListener('sl-input', (e) => this.search(e));
         this.$root.addEventListener('add-row-click', () => this.addCard());
-        registerAction('toggle-search', () => this.toggleSearch())
+        registerAction('toggle-search', () => this.toggleSearch());
         registerAction('new-set', () => this.newSet());
         registerAction('add-card', () => this.addCard());
         registerAction('open-set', () => this.openSet());
@@ -165,7 +165,7 @@ Alpine.data('setView', () => ({
     },
 
     updateSearch() {
-        const cards = Alpine.store('views').activeSet.cards
+        const cards = Alpine.store('views').activeSet.cards;
         try {
             console.debug('%cSearching for:', 'color:orange', this.searchValue);
             const results = this.searchValue ? filter(cards, this.searchValue) : cards;

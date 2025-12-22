@@ -38,7 +38,7 @@ export default class CodeField extends FieldComponent {
             const code = editor.textContent;
             editor.innerHTML = hljs.highlight(code, { language: syntaxKey }).value;
             if (syntaxKey === 'yaml') fixYAML(editor);
-        }
+        };
     }
 
     bind() {

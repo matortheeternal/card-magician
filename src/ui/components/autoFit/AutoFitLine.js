@@ -1,10 +1,6 @@
 import AutoFit from './AutoFit.js';
 
 class AutoFitLine extends AutoFit {
-    constructor() {
-        super();
-    }
-
     connectedCallback() {
         super.connectedCallback();
     }

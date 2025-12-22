@@ -24,7 +24,7 @@ export default class InlineInput extends HTMLElement {
     }
 
     set value(val) {
-        if (val == null) val = '';
+        if (val === null || val === undefined) val = '';
         this.setAttribute('value', val);
         this.inputElement.value = val;
         this.updateWidth();

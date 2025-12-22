@@ -12,14 +12,14 @@ export default
         <div class="select-bar">
             <cm-select x-once:field="localeField"></cm-select>
             <sl-tooltip hoist content="${L`Create new locale`}">
-                <sl-icon-button 
-                    name="plus-lg" 
+                <sl-icon-button
+                    name="plus-lg"
                     @click="createNewLocale"
                 ></sl-icon-button>
             </sl-tooltip>
             <sl-tooltip hoist content="${L`Open locales folder`}">
-                <sl-icon-button 
-                    name="folder2-open" 
+                <sl-icon-button
+                    name="folder2-open"
                     @click="openLocalesFolder()"
                 ></sl-icon-button>
             </sl-tooltip>
@@ -27,8 +27,8 @@ export default
         <div class="input-fields">
             <cm-input x-once:field="idField"></cm-input>
             <cm-input x-once:field="labelField"></cm-input>
-            <cm-input 
-                class="contributors-input" 
+            <cm-input
+                class="contributors-input"
                 x-once:field="contributorsField"
             ></cm-input>
         </div>
@@ -50,4 +50,4 @@ export default
         <sl-button @click="share">${L`Share`}</sl-button>
         <sl-button @click="closeModal">${L`Close`}</sl-button>
     </div>
-</div>`
+</div>`;

@@ -25,7 +25,7 @@ export class ImageCache {
         const entries = await Neutralino.filesystem.readDirectory(this.cachePath);
         for (const { type, entry } of entries) {
             if (type !== 'FILE') continue;
-            const localPath = `${this.localPath}/${entry}`
+            const localPath = `${this.localPath}/${entry}`;
             const fullPath = `${this.cachePath}/${entry}`;
             await loadImage(localPath);
             this.cache.set(fullPath, localPath);

@@ -7,7 +7,7 @@ import { getAdapters } from './adapters/adapterRegistry.js';
  */
 export default class Serializer {
     static matches(filePath) {
-        return false
+        return false;
     }
 
     static async save(filePath, data, options = {}) {
@@ -101,9 +101,10 @@ export default class Serializer {
      * @returns {Promise<any>}
      */
     async encodeNode(value) {
-        for (const adapter of this.adapters)
+        for (const adapter of this.adapters) {
             if (adapter.canEncode(value))
                 return adapter.encode(value, this);
+        }
 
         if (Array.isArray(value))
             return Promise.all(value.map(v => this.encodeNode(v)));

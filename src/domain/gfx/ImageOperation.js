@@ -14,7 +14,7 @@ function handleImageArg(arg) {
 export default class ImageOperation {
     static register(fn, numImageArgs = 0) {
         if (operations.has(fn.name))
-            throw new Error(`Already registered operation ${fn.name}`)
+            throw new Error(`Already registered operation ${fn.name}`);
         operations.set(fn.name, { fn, numImageArgs });
         return function() {
             return new ImageOperation(fn.name, arguments);

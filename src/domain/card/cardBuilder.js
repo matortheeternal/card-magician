@@ -48,7 +48,7 @@ const templateField = () => ({
     onChange: (model, newValue) => {
         executeAction('change-template', model.id, newValue);
     }
-})
+});
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());

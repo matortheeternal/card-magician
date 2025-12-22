@@ -17,29 +17,27 @@ async function inlineImages(root) {
         const regex = /url\((['"]?)(.*?)\1\)/g;
         let match;
         while ((match = regex.exec(str)) !== null) {
-            // skip data URLs
-            if (!match[2].startsWith("data:")) {
+            if (!match[2].startsWith('data:'))
                 urls.push(match[2]);
-            }
         }
         return urls;
     }
 
     // Inline IMG tags
-    const imgElements = root.querySelectorAll("img[src]");
+    const imgElements = root.querySelectorAll('img[src]');
     for (const img of imgElements) {
-        const src = img.getAttribute("src");
-        if (!src || src.startsWith("data:")) continue;
+        const src = img.getAttribute('src');
+        if (!src || src.startsWith('data:')) continue;
         try {
             const dataURL = await urlToDataURL(src);
-            img.setAttribute("src", dataURL);
+            img.setAttribute('src', dataURL);
         } catch (e) {
-            console.warn("Failed to inline <img>", src, e);
+            console.warn('Failed to inline <img>', src, e);
         }
     }
 
     // Inline background-image URLs
-    const tree = root.querySelectorAll("*");
+    const tree = root.querySelectorAll('*');
     for (const el of tree) {
         const style = getComputedStyle(el);
         const bg = style.backgroundImage;
@@ -52,15 +50,14 @@ async function inlineImages(root) {
             try {
                 replacedParts[url] = await urlToDataURL(url);
             } catch (e) {
-                console.warn("Failed to inline BG image", url, e);
+                console.warn('Failed to inline BG image', url, e);
             }
         }
 
         if (Object.keys(replacedParts).length > 0) {
             let newBg = bg;
-            for (const [url, dataURL] of Object.entries(replacedParts)) {
+            for (const [url, dataURL] of Object.entries(replacedParts))
                 newBg = newBg.replace(url, dataURL);
-            }
             el.style.backgroundImage = newBg;
         }
     }

@@ -13,9 +13,9 @@ function softLight(a, b) {
     b /= 255;
     let result;
 
-    if (b < 0.5) {
+    if (b < 0.5) 
         result = a - (1 - 2 * b) * a * (1 - a);
-    } else {
+    else {
         const d = (a <= 0.25)
             ? ((16 * a - 12) * a + 4) * a
             : Math.sqrt(a);

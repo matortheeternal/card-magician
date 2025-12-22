@@ -1,8 +1,7 @@
 function closeSubmenu(menuItem) {
     const submenuPopup = menuItem.renderRoot?.querySelector('sl-popup');
-    if (submenuPopup && submenuPopup.active) {
+    if (submenuPopup && submenuPopup.active)
         submenuPopup.active = false;
-    }
 
     menuItem.blur();
     menuItem.requestUpdate();

@@ -17,13 +17,12 @@ export default class AppConfig {
         try {
             const raw = await Neutralino.storage.getData(this.key);
             this._data = JSON.parse(raw) || {};
-        } catch (err) {
+        } finally {
             this._data = {};
         }
 
-        if (!Array.isArray(this._data.recentFiles)) {
+        if (!Array.isArray(this._data.recentFiles))
             this._data.recentFiles = [];
-        }
     }
 
     async set(key, value) {
