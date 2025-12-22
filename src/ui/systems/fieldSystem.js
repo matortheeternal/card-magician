@@ -120,6 +120,6 @@ export function handleFormGroup(formGroup, model) {
     const optional = formGroup.hasAttribute('optional');
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
     Alpine.effect(optional
-        ? () => toggleGroupVisibility(formGroup, model)
-        : () => toggleGroupChildren(formGroup, model, toggleGroup));
+        ? () => toggleGroupChildren(formGroup, model, toggleGroup)
+        : () => toggleGroupVisibility(formGroup, model));
 }
