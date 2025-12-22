@@ -41,7 +41,7 @@ export default class CardFrame {
     }
 
     getHybridOrder(card, c1, c2) {
-        let order = [c1, c2];
+        const order = [c1, c2];
         const reverseOverride = Boolean(card.hybridStyle?.includes('reverse'));
         if (xor(reverseByDefault.includes(c1 + c2), reverseOverride))
             return order.reverse();
@@ -130,7 +130,8 @@ export default class CardFrame {
         options = {...defaultColoredOptions, ...options};
         const base = this.resolveColored(folder, card, options);
         this.blendMaskFolder = options.blendMaskFolder;
-        return this.applyMaskedBlends(base,
+        return this.applyMaskedBlends(
+            base,
             this.useLandBlend && [
                 `${folder}/${this.hybridBlendKey}${options.ext}`,
                 this.landBlendMaskUrl

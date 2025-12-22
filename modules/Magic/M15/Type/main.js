@@ -24,7 +24,7 @@ export default class TypeModule extends CardMagicianModule {
             `<auto-fit-line>${card.superType} — ${card.subType}</auto-fit-line>`
         ) : (
             `<auto-fit-line>${card.superType}</auto-fit-line>`
-        )
+        );
     }
 
     get fields() {

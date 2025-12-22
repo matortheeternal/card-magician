@@ -30,7 +30,7 @@ const colorOptions = [
     { id: 'multicolor', c: 'm' },
     { id: 'colorless', c: 'c' },
     { id: 'artifact', c: 'a' },
-]
+];
 
 const faceSymbolGroup = (groupId, items) => ({
     id: groupId,

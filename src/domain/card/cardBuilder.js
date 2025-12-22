@@ -20,13 +20,13 @@ export function initSubCardFace(key) {
 
 async function buildSubcard(parent, key, modulesToLoad, subcardData) {
     const subcard = initSubCardFace(key);
+    parent[key] = subcard;
     const modules = await loadModules(subcard, modulesToLoad || []);
     await setupRenderPipeline(subcard, modules);
     await initializeModules(subcard, modules, parent);
     subcard.modules = () => modules;
     subcard.parent = () => parent;
     await subcard.load(subcardData);
-    parent[key] = subcard;
     return subcard;
 }
 
@@ -48,7 +48,7 @@ const templateField = () => ({
     onChange: (model, newValue) => {
         executeAction('change-template', model.id, newValue);
     }
-})
+});
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
@@ -65,21 +65,22 @@ function setupTemplate(face, faceData) {
 }
 
 export async function buildCardFace(card, key) {
+    const faceDataToLoad = card[key];
     const face = initCardFace(key);
-    const template = setupTemplate(face, card[key]);
+    card[key] = face;
+    const template = setupTemplate(face, faceDataToLoad);
     const modules = await loadModules(face, template.card || []);
     await setupRenderPipeline(face, modules);
     await initializeModules(face, modules);
     face.modules = () => modules;
     face.parent = () => card;
-    face.subcards = await buildSubcards(face, template.subcards, card[key]);
-    await face.load(card[key]);
-    card[key] = face;
+    face.subcards = await buildSubcards(face, template.subcards, faceDataToLoad);
+    await face.load(faceDataToLoad);
     return face;
 }
 
 export function getFaceKeys(baseCard) {
-    return ['front', 'back'].filter(key => baseCard.hasOwnProperty(key));
+    return ['front', 'back'].filter(key => Object.hasOwn(baseCard, key));
 }
 
 export async function buildCard(baseCard) {

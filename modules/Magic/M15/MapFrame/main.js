@@ -11,5 +11,5 @@ export default class MapFrameModule extends FrameModule {
               () => this.updateFrame(card));
     }
 
-    get options() { return [] }
+    get options() { return []; }
 }

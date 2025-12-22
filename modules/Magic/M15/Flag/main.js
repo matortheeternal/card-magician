@@ -27,7 +27,7 @@ export default class FlagModule extends CardMagicianModule {
         watch(
             () => [card.colorIdentity, card.superType],
             () => this.updateFlagStyle(card)
-        )
+        );
         watch(
             () => [card.rulesText, card.parent],
             () => this.updateShowFlag(card)

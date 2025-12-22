@@ -27,12 +27,12 @@ function menuItem(option) {
 
 function buildSelectHTML(label, options) {
     const optionsHTML = (options || []).map(option => {
-        if (option.separator) {
+        if (option.separator) 
             return `<sl-divider style="${selectDividerSpacing}"></sl-divider>`;
-        }
-        if (option.items) {
+        
+        if (option.items) 
             return submenu(option);
-        }
+        
         return menuItem(option);
     }).join('');
 
@@ -43,7 +43,7 @@ function buildSelectHTML(label, options) {
     ].flat().join(' ');
     return(
         `<div class="${className}">
-             <div class="sl-field__label">${label ?? ""}</div>
+             <div class="sl-field__label">${label ?? ''}</div>
              <sl-dropdown class="select-like" hoist sync="width">
                  <sl-button slot="trigger" size="small" caret></sl-button>
                  <sl-menu>${optionsHTML}</sl-menu>
@@ -58,18 +58,19 @@ function resolveOption(selectedValue, options) {
     for (const option of options) {
         if (option.id === selectedValue) return [option, null];
         if (!option.items) continue;
-        for (const item of option.items) {
+        for (const item of option.items) 
             if (item.id === selectedValue) return [item, option];
-        }
+        
     }
     return [null, null];
 }
 
 function buildTriggerHTML(option, parent, rawValue) {
-    if (!option)
+    if (!option) {
         return rawValue
             ? `<span class="unknown-value">ERROR: ${rawValue}</span>`
             : `<span class="no-selection">No Selection</span>`;
+    }
     let html = menuPrefixIcon(option);
     if (parent) html += parent.name + ' / ';
     return html + option.name;

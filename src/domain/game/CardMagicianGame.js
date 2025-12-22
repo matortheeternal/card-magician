@@ -7,6 +7,7 @@ import {
 } from '../sets/adapters/adapterRegistry.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
+import { loadFont } from '../template/fontService.js';
 
 export default class CardMagicianGame {
     /**
@@ -71,12 +72,14 @@ export default class CardMagicianGame {
     }
 
     /**
-     * Returns the id of the default template to use with this game..
+     * Returns the id of the default template to use with this game.
      *
      * @abstract
      * @returns {string|undefined}
      */
-    get defaultTemplateId() {};
+    get defaultTemplateId() {
+        return undefined;
+    };
 
     /**
      * Returns all column definitions this game.
@@ -115,15 +118,6 @@ export default class CardMagicianGame {
      * @returns {Object}
      */
     loadSet(set) { return set; }
-
-    /**
-     * Returns an HTML string containing the form inputs to render
-     * on the set info modal for this game.
-     *
-     * @abstract
-     * @returns {string}
-     */
-    async renderSetInfo() { return ''; }
 
     /**
     * Returns the current active set

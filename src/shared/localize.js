@@ -1,6 +1,6 @@
 import Localization from './Localization.js';
 
-const generateSchema = NL_ARGS.includes("--localize");
+const generateSchema = NL_ARGS.includes('--localize');
 const schemaPromise = loadSchema();
 const localesPromise = loadLocales();
 
@@ -25,7 +25,7 @@ export async function loadLocales() {
         Object.entries(manifest).filter(([key]) => {
             return availableFiles.includes(key);
         }).map(([key, value]) => {
-            return Localization.load(key, value)
+            return Localization.load(key, value);
         })
     );
 }
@@ -57,7 +57,7 @@ export async function saveLocale(locale) {
     locale.save();
 }
 
-async function setLocalization(localeId) {
+export async function setLocalization(localeId) {
     try {
         activeLocalization = await Localization.load(localeId);
         return true;
@@ -80,6 +80,7 @@ function buildLocalizationKey(strings, values) {
 }
 
 const writeSchemaFile = (async function writeSchemaFile() {
+    const schema = await schemaPromise;
     const json = JSON.stringify(schema, null, 2);
     const outputPath = `locales/schema.json`;
     console.log(`Writing localization schema to `, outputPath);

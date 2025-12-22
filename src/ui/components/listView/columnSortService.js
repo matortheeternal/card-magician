@@ -5,9 +5,9 @@ const toggleSelection = {
             return;
         }
         const otherSortedCols = columns.filter(c => c !== col && Boolean(c.sort));
-        if (otherSortedCols.length === 1) {
+        if (otherSortedCols.length === 1) 
             otherSortedCols.forEach(c => (delete c.sort.priority));
-        } else if (otherSortedCols.length > 1) {
+        else if (otherSortedCols.length > 1) {
             otherSortedCols
                 .filter(c => c.sort.priority > col.sort.priority)
                 .forEach(c => (c.sort.priority -= 1));

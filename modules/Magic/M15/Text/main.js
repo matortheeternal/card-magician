@@ -74,7 +74,7 @@ export default class TextModule extends CardMagicianModule {
         return [
             `background-image: url('${this.flavorBarUrl}')`,
             this.showFlavorBar ? '' : 'display: none'
-        ].join('; ')
+        ].join('; ');
     }
 
     shouldCenter(card) {

@@ -32,7 +32,7 @@ function buildHTML(card) {
           value="${esc(card.notes)}"
           rows="3"
         ></sl-textarea>`
-    )
+    );
 }
 
 class CardProperties extends HTMLElement {

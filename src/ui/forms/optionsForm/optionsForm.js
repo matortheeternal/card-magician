@@ -3,8 +3,8 @@ import FaceForm from '../faceForm/faceForm.js';
 const L = localize('options-form');
 
 class OptionsForm extends FaceForm {
-    get fields() { return this.face.options }
-    get form() { return this.face.optionsForm }
+    get fields() { return this.face.options; }
+    get form() { return this.face.optionsForm; }
 
     missingFormHTML() {
         return (
