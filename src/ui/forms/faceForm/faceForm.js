@@ -81,10 +81,10 @@ export default class FaceForm extends HTMLElement {
         hydrateFields(this);
     }
 
-    get face() { return this.#face }
-    get form() { return this.#face.form }
-    get fields() { return this.#face.fields }
-    get subcards() { return this.#face.subcards }
+    get face() { return this.#face; }
+    get form() { return this.#face.form; }
+    get fields() { return this.#face.fields; }
+    get subcards() { return this.#face.subcards; }
 
     getModel(subcardId) {
         return subcardId
@@ -120,7 +120,7 @@ export default class FaceForm extends HTMLElement {
         return this.withFieldId(btn, fieldId => {
             const field = this.getField(null, fieldId);
             this.face[fieldId] = field?.initialValue || '';
-        })
+        });
     }
 
     addGroup(btn) {

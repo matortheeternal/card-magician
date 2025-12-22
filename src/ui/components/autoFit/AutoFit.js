@@ -13,9 +13,9 @@ export function binarySearch(min, max, check, maxIt) {
         if (fits) {
             best = mid;
             low = mid;
-        } else {
+        } else 
             high = mid;
-        }
+        
     }
 
     return best;
@@ -32,7 +32,7 @@ export default class AutoFit extends HTMLElement {
         this.resizeObserver = new ResizeObserver(this.queueFit);
     }
 
-    get defaultMinFont() { return 8 };
+    get defaultMinFont() { return 8; };
     get defaultMaxFont() {
         delete this.style.fontSize;
         const style = getComputedStyle(this);

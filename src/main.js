@@ -70,7 +70,7 @@ function setupModuleSystem() {
 }
 
 async function startApp() {
-    if (NL_ARGS.includes("--run-tests")) {
+    if (NL_ARGS.includes('--run-tests')) {
         await setupTestHarness();
         await runTests();
         return;

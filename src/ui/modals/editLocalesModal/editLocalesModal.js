@@ -98,7 +98,7 @@ Alpine.data('editLocalesModal', () => ({
     },
 
     validate() {
-         // TODO
+        // TODO
     },
 
     activate() {

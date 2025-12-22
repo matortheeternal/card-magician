@@ -122,11 +122,13 @@ export default class ImageField extends FieldComponent {
         container.outerHTML = this.value.imageUrl
             ? this.renderPreview()
             : this.renderUploadPrompt();
-        if (this.value.imageUrl) updateCropRegion(
-            this.value,
-            this.querySelector('img.preview-image'),
-            this.querySelector('div.crop-region')
-        );
+        if (this.value.imageUrl) {
+            updateCropRegion(
+                this.value,
+                this.querySelector('img.preview-image'),
+                this.querySelector('div.crop-region')
+            );
+        }
     }
 
     async getChangedValue(event) {

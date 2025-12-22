@@ -35,8 +35,8 @@ function morphNode(parent, oldNode, newNode) {
         markMutated(parent);
         return;
     }
-    if (oldNode.nodeType !== newNode.nodeType ||
-        (isElem(oldNode) && oldNode.tagName !== newNode.tagName)) {
+    if (oldNode.nodeType !== newNode.nodeType
+        || (isElem(oldNode) && oldNode.tagName !== newNode.tagName)) {
         parent.replaceChild(newNode.cloneNode(true), oldNode);
         markMutated(parent);
         return;

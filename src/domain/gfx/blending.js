@@ -25,10 +25,10 @@ function blendImageData(baseData, topData, mode) {
 export function combineBlend(imgA, imgB, mode) {
     const { width, height } = imgA;
     if (imgB.width !== width || imgB.height !== height)
-        throw new Error("Images must have the same size");
+        throw new Error('Images must have the same size');
 
     const { canvas, ctx } = newCanvas(width, height);
-    ctx.globalCompositeOperation = "source-over";
+    ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(imgA, 0, 0);
 
     const base = ctx.getImageData(0, 0, width, height);
@@ -41,7 +41,7 @@ export function combineBlend(imgA, imgB, mode) {
 
 export function linearBlend(img1, img2, x1, y1, x2, y2) {
     if (img1.width !== img2.width || img1.height !== img2.height)
-        throw new Error("Images must have the same size");
+        throw new Error('Images must have the same size');
 
     const { width, height } = img1;
     const { canvas, ctx } = newCanvas(width, height);
@@ -67,8 +67,11 @@ export function linearBlend(img1, img2, x1, y1, x2, y2) {
 
 export function maskBlend(img1, img2, mask) {
     const { width, height } = img1;
-    if (img2.width !== width || img2.height !== height || mask.width !== width || mask.height !== height)
-        throw new Error("Images must have the same size");
+    if (img2.width !== width
+        || img2.height !== height
+        || mask.width !== width
+        || mask.height !== height)
+        throw new Error('Images must have the same size');
 
     const { imageData: data1 } = imageToCanvas(img1);
     const { imageData: data2 } = imageToCanvas(img2);
@@ -94,7 +97,7 @@ export function maskBlend(img1, img2, mask) {
 export function maskImage(sourceImg, maskImg) {
     const { width, height } = sourceImg;
     if (maskImg.width !== width || maskImg.height !== height)
-        throw new Error("Images must have the same size");
+        throw new Error('Images must have the same size');
 
     const { canvas, ctx, imageData: srcImageData } = imageToCanvas(sourceImg);
     const { imageData: maskImageData } = imageToCanvas(maskImg);
