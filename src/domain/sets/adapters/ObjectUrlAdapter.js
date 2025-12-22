@@ -5,7 +5,8 @@ import SerializerAdapter from './SerializerAdapter.js';
  * Uses FileReader under the hood.
  *
  * @param {Blob} blob - The Blob to convert.
- * @returns {Promise<string>} A promise resolving to the base64 data (no MIME/type header).
+ * @returns {Promise<string>} A promise resolving to the base64 data
+ * (no MIME/type header).
  */
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {

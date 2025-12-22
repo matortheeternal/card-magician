@@ -8,7 +8,7 @@ const colorNames = {
 
 function addColor(colors, colorCharacter, sourceKey = 'normal') {
     const char = colorCharacter.toLowerCase();
-    if (!colors.hasOwnProperty(char))
+    if (!Object.hasOwn(colors, char))
         colors[char] = {
             char,
             name: colorNames[char],

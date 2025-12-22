@@ -5,7 +5,7 @@ import Alpine from 'alpinejs';
 const L = localize('field-system');
 
 export function getDefaultValue(field) {
-    if (field.hasOwnProperty('default')) return field.default;
+    if (Object.hasOwn(field, 'default')) return field.default;
     if (field.type === 'checkboxlist') return {};
     if (field.type === 'select') return field.options?.[0]?.id || null;
     if (field.type === 'multiselect') return [];

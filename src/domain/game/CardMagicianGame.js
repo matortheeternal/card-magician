@@ -72,12 +72,14 @@ export default class CardMagicianGame {
     }
 
     /**
-     * Returns the id of the default template to use with this game..
+     * Returns the id of the default template to use with this game.
      *
      * @abstract
      * @returns {string|undefined}
      */
-    get defaultTemplateId() {};
+    get defaultTemplateId() {
+        return undefined;
+    };
 
     /**
      * Returns all column definitions this game.

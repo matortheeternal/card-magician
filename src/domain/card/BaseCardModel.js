@@ -9,7 +9,7 @@ export default class BaseCardModel {
     }
 
     async saveField(field) {
-        if (field.hasOwnProperty('save'))
+        if (Object.hasOwn(field, 'save'))
             return await field.save(this[field.id]);
         if (field.type === 'image')
             return await this[field.id].save();
@@ -17,7 +17,7 @@ export default class BaseCardModel {
     }
 
     async loadField(dataToLoad, field) {
-        if (field.hasOwnProperty('load'))
+        if (Object.hasOwn(field, 'load'))
             return await field.load(dataToLoad);
         if (field.type === 'image')
             return await ImageFieldValue.load(dataToLoad[field.id]);
@@ -34,7 +34,7 @@ export default class BaseCardModel {
     async load(cardData) {
         if (!cardData) return;
         for (const field of this.fields.concat(this.options)) {
-            if (!cardData.hasOwnProperty(field.id)) continue;
+            if (!Object.hasOwn(cardData, field.id)) continue;
             this[field.id] = await this.loadField(cardData, field);
         }
     }
