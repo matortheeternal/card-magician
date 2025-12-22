@@ -1,6 +1,13 @@
 import stylistic from '@stylistic/eslint-plugin'
 import globals from 'globals';
 
+// ESLint philosophy:
+// - Prioritize correctness and real bugs
+// - Enforce a small, explicit set of structural style rules
+//   (semicolons, quotes, indentation, brace shape)
+// - Avoid formatter-style micromanagement and implicit rewrites
+// - Use warnings where human judgment is expected
+// - Maintain a zero-noise baseline: lint should be quiet on intentional code
 export default [
     {
         files: ['src/**/*.js'],
@@ -92,12 +99,12 @@ export default [
             'no-implied-eval': 'error',
             'no-with': 'error',
 
-            // Modern JS (conservative)
+            // Modern JS
             'no-var': 'error',
             'prefer-const': 'warn',
             'object-shorthand': ['warn', 'always'],
 
-            // Ternaries (intentional use only)
+            // Ternaries (disciplined usage)
             'no-nested-ternary': 'error',
 
             // Size & structure warnings
