@@ -49,8 +49,4 @@ export default class MagicTheGathering extends CardMagicianGame {
         const info = this.initializeFields(setInfoFields);
         return { cards: [], info };
     }
-
-    renderSetInfo() {
-        return setInfoHTML;
-    }
 }

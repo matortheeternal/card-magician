@@ -9,5 +9,14 @@ export default
         </linearGradient>
     </defs>
 
-    <rect class="outer" x="0" y="0" width="100" height="100" rx="4" ry="4" fill="url(#grad)"/>
+    <rect
+        class="outer"
+        x="0"
+        y="0"
+        width="100"
+        height="100"
+        rx="4"
+        ry="4"
+        fill="url(#grad)"
+    />
 </svg>`;

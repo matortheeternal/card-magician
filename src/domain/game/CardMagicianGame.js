@@ -120,15 +120,6 @@ export default class CardMagicianGame {
     loadSet(set) { return set; }
 
     /**
-     * Returns an HTML string containing the form inputs to render
-     * on the set info modal for this game.
-     *
-     * @abstract
-     * @returns {string}
-     */
-    async renderSetInfo() { return ''; }
-
-    /**
     * Returns the current active set
     *
     * @returns {object}

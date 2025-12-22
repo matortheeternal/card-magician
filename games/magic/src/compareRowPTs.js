@@ -1,6 +1,6 @@
 function parsePT(value) {
-    if (value === "*" ) return 0;
-    if (value === "" || value == null) return -1;
+    if (value === '*' ) return 0;
+    if (!value) return -1;
 
     const n = Number(value);
     return Number.isFinite(n) ? n : -1;
