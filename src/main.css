@@ -2,6 +2,8 @@
 @import "highlight.js/styles/monokai-sublime.min.css";
 @import "ui/components/card/card.css";
 @import "ui/components/cardProperties/cardProperties.css";
+@import "ui/components/editableImage/editableImage.css";
+@import "ui/components/editableTooltip/editableTooltip.css";
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
@@ -35,8 +37,9 @@ body {
 
 main {
     position: relative;
-    height: 100%;
-    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
     display: flex;
     flex-direction: row;
 }
