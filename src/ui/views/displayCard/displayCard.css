@@ -26,6 +26,7 @@
 .card-canvas {
     width: 375px;
     height: 523px;
+    margin: auto;
     transform-origin: top left;
     will-change: transform;
 }
