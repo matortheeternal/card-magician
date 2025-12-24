@@ -10,6 +10,7 @@
 
 .list-view-container {
     overflow: auto;
+    height: 100%;
 }
 
 .no-content-prompt {
