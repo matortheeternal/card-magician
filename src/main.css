@@ -3,7 +3,6 @@
 @import "ui/components/card/card.css";
 @import "ui/components/cardFace/cardFace.css";
 @import "ui/components/cardProperties/cardProperties.css";
-@import "ui/components/codeEditor/codeEditor.css";
 @import "ui/components/editableImage/editableImage.css";
 @import "ui/components/editableTooltip/editableTooltip.css";
 @import "ui/components/inlineInput/inlineInput.css";
@@ -39,8 +38,9 @@ body {
 
 main {
     position: relative;
-    height: 100%;
-    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
     display: flex;
     flex-direction: row;
 }
