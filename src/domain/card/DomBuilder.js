@@ -4,6 +4,7 @@ export default class DOMBuilder {
     styles = [];
 
     setHTML(html) {
+        this.root.setAttribute('spellcheck', 'false');
         this.root.innerHTML = html;
         this.root.prepend(this.style);
     }
