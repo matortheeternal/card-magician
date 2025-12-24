@@ -1,4 +1,8 @@
-<cm-card x-prop:card="$store.views.activeCard"></cm-card>
+<div class="card-viewport">
+    <div class="card-canvas">
+        <cm-card x-prop:card="$store.views.activeCard"></cm-card>
+    </div>
+</div>
 <div class="buttons-container" x-show="useFlip">
     <sl-button @click="flipCard()">
         <sl-icon name="arrow-repeat"></sl-icon>
