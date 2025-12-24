@@ -1,5 +1,6 @@
 cm-card-properties {
     display: block;
     margin: var(--sl-spacing-medium);
+    margin-top: 0;
     font-family: var(--sl-font-sans);
 }
