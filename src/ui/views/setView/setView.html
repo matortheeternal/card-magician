@@ -9,8 +9,8 @@
     <div class="no-content-prompt">
         <span x-text="noCardsLabel"></span>
         <div class="buttons-container">
-            <sl-button size="large" @click="addCard" x-text="addCardLabel"></sl-button>
-            <sl-button size="large" @click="openSet" x-text="openSetLabel"></sl-button>
+            <sl-button size="large" @click="addCard()" x-text="addCardLabel"></sl-button>
+            <sl-button size="large" @click="openSet()" x-text="openSetLabel"></sl-button>
         </div>
         <div class="recent-sets-container" x-show="recentSets.length">
             <span x-text="recentSetsLabel"></span>
