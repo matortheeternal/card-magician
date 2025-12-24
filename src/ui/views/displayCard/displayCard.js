@@ -11,9 +11,22 @@ Alpine.data('displayCard', () => ({
 
     async init() {
         this.$root.innerHTML = html;
+        this.applyTransform();
         this.setupFlip();
         this.bindEvents();
         Alpine.initTree(this.$root);
+    },
+
+    destroy() {
+        this.resizeObserver.disconnect();
+    },
+
+    applyTransform() {
+        const canvas = this.$root.querySelector('.card-canvas');
+        const viewport = this.$root.querySelector('.card-viewport');
+        if (!canvas || !viewport) return;
+        const scaleFactor = Math.min(1, viewport.offsetWidth / 375);
+        canvas.style.transform = `scale(${scaleFactor})`;
     },
 
     setupFlip() {
@@ -29,6 +42,11 @@ Alpine.data('displayCard', () => ({
     },
 
     bindEvents() {
+        this.resizeObserver = new ResizeObserver(() => {
+            cancelAnimationFrame(this.raf);
+            this.raf = requestAnimationFrame(() => this.applyTransform());
+        });
+        this.resizeObserver.observe(this.$root.querySelector('.card-viewport'));
         registerAction('export-card-image', () => this.exportCardImage());
     },
 

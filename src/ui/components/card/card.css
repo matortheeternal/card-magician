@@ -4,7 +4,6 @@ cm-card {
 }
 
 cm-card.flip-container {
-    min-height: 523px;
     display: block;
     position: relative;
 }
