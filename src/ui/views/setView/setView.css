@@ -1,14 +1,16 @@
 .set-view {
-    flex-grow: 1;
-    border-left: 1px solid var(--sl-color-neutral-400);
-    border-right: 1px solid var(--sl-color-neutral-400);
-    position: relative;
     display: flex;
     flex-direction: column;
+    position: relative;
+    min-width: 0;
+    flex: 1;
+    border-left: 1px solid var(--sl-color-neutral-400);
+    border-right: 1px solid var(--sl-color-neutral-400);
 }
 
 .list-view-container {
     overflow: auto;
+    height: 100%;
 }
 
 .no-content-prompt {

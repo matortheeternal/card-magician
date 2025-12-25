@@ -1,8 +1,12 @@
 .display-card-view {
     background-color: #0D0D0D;
-    min-width: 391px;
     padding: var(--sl-spacing-x-small);
     overflow-y: auto;
+    min-width: 406px;
+    flex: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sl-spacing-small);
 }
 
 .display-card-view .buttons-container {
@@ -12,4 +16,34 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
+}
+
+.card-viewport {
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 375 / 523;
+    display: inline-block;
+    align-self: center;
+}
+
+.card-canvas {
+    width: 375px;
+    height: 523px;
+    margin: auto;
+    transform-origin: top left;
+    will-change: transform;
+}
+
+@media (max-width: 1680px) {
+    .display-card-view {
+        min-width: 361px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .display-card-view {
+        min-width: 316px;
+    }
 }
