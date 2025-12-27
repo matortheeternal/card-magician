@@ -69,12 +69,6 @@ function createToggle(formGroup, className) {
     return toggleGroup;
 }
 
-export function getSelector(model, field) {
-    return `form-field[field-id="${field.id}"]` + (model.isSubcard
-        ? `[subcard-id="${model.id}"]`
-        : ':not([subcard-id])');
-}
-
 function handleOptionalField(fieldElement, container, model, field) {
     const optional = container.hasAttribute('optional');
     if (!optional) return;
@@ -91,7 +85,7 @@ function handleOptionalField(fieldElement, container, model, field) {
 export function renderFields(root, model, fields) {
     if (!fields) return;
     fields.forEach(field => {
-        const selector = getSelector(model, field);
+        const selector = root.getSelector(model, field);
         const container = root.querySelector(selector);
         if (!container) return;
         const fieldElement = createFieldComponent(container, field);
