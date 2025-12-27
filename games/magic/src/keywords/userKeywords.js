@@ -14,6 +14,5 @@ export function generateUserKeywordsForm(userKeywords) {
     for (const userKw of userKeywords) 
         form.options.push({id: 'test', name: 'test'});
     
-    console.log('f', form);
     return form;
 }

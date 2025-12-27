@@ -40,6 +40,7 @@ export function hydrateFields(root) {
             const subcardId = parentFormField?.getAttribute('subcard-id');
             if (!fieldId) continue;
             element.field = root.getField(subcardId, fieldId);
+            console.log(root, subcardId, parentFormField);
             element.model = root.getModel(subcardId);
         }
     }

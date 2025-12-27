@@ -74,6 +74,10 @@ export default class Modal extends HTMLElement {
                 </div>
             </div>`
         );
+        this.afterRender();
+    }
+
+    afterRender() {
         renderFields(this, this.data, this.fields);
         hydrateFields(this);
     }

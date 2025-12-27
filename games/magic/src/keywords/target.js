@@ -12,13 +12,21 @@ const cardTypes = [
     'token'
 ];
 
-const thisGainsRegex = (card, kw) => `(This ${card.getThisType()} (has|gains) ${kw})`;
 const cardTypeRegex = `((${cardTypes.join('|')}) ?)+`;
-const thatGainsRegex = kw => `Target ${cardTypeRegex} gains ${kw}`;
-const counterRegex = kw => `put a ${kw} counter`;
-const itRegex = (kw, card) => new RegExp(`${thisGainsRegex(card, kw)}|${thatGainsRegex(kw)}|${counterRegex(kw)}`, 'i');
+const itPatterns = [
+    (kw, card) => `(This ${card.getThisType()} (has|gains) ${kw})`,
+    kw => `Target ${cardTypeRegex} gains ${kw}`,
+    kw => `put a ${kw} counter`
+];
+const itRegexSource = (kw, card) => itPatterns.map(fn => fn(kw, card)).join('|');
+const itRegex = (kw, card) => new RegExp(itRegexSource(kw, card), 'i');
 
-const theyRegex = /Creatures|All .*? creatures|.*? or .*? you control|.*? you control|Each .*? you control/i;
+const theyPatterns = [
+    'Creatures',
+    'All .*? creatures',
+    '(Each )?.*?( or .*?)? you control'
+];
+const theyRegex = new RegExp(theyPatterns.join('|'), 'i');
 
 export function getTarget(str, kw, card) {
     if (str.match(itRegex(kw, card))) return 'It';

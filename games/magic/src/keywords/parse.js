@@ -9,8 +9,9 @@ function parseNextKeywordToken(str) {
         ];
     }
 
-    let [variable, format, ...formatArgs] = token.substring(1, token.length - 1).split(':');
-    if (!format) format = variable; // so we can have things like <number>
+    const tokenSplit = token.substring(1, token.length - 1).split(':');
+    const [variable, _format, ...formatArgs] = tokenSplit;
+    const format = _format ? _format : variable; // so we can have things like <number>
 
     return [match, {variable, format, formatArgs}];
 }

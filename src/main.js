@@ -13,6 +13,7 @@ import AppConfig from './domain/game/appConfig.js';
 import { bindToAlpine } from './ui/systems/statusSystem.js';
 import imageCache from './domain/gfx/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
+import ComponentWithFields from './ui/systems/componentWithFields.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -67,6 +68,7 @@ function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
     window.CardMagicianGame = CardMagicianGame;
     window.Modal = Modal;
+    window.ComponentWithFields = ComponentWithFields;
 }
 
 async function startApp() {

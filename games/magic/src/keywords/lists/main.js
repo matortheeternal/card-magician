@@ -1,11 +1,15 @@
 import numericKeywords from './numericKeywords.json';
 import simpleKeywords from  './simpleKeywords.json';
 
-export function getKeywords(game) {
+export const baseKeywords = [
+    ...numericKeywords,
+    ...simpleKeywords
+];
+
+export function getKeywords(set) {
     return [
-        ...numericKeywords,
-        ...simpleKeywords,
-        ...game.userKeywords
+        ...baseKeywords,
+        // set.currentUserKeyword
     ];
 }
 

@@ -5,7 +5,7 @@ import { matchAllKeywords } from './match.js';
 
 export { AbilityWordConverters, matchAllKeywords };
 
-const specialVariables = { // Special <variables> that can be used in rt templates. Accepts (token, card, target)
+const specialVariables = {
     target_type: (token, card) => card.getThisType(),
     subtypes_and_or: (token, card) => {
         const subtypesCommas = card.subType.replaceAll(' ', ', ');
@@ -76,7 +76,7 @@ const rtMatches = { // Stuff used in 'match'
     numberIsX: (matchParams, params) => params[matchParams?.param || 'number']  === 'X',
     isPlural: (matchParams, params) => params[matchParams?.param || 's'] === 's',
     targetsOther: (matchParams, params, card, target) => !target.includes('This'),
-    costHasX: (matchParams, params) => params[matchParams?.param || 'cost'].toLowerCase().includes('x'),
+    costHasX: (matchParams, params) => params[matchParams?.param || 'cost'].match(/x/i),
     hasPt: (matchParams, params, card) => card.power || card.toughness,
     hasPPCounters: (matchParams, params, card) => card.rulesText.match(/modular/i),
     hasTarget: (matchParams, params, card) => card.rulesText.match(/target/i),
@@ -93,7 +93,8 @@ function checkMatch(match, params, card, target) {
 
     if (Array.isArray(match)) {
         for (const subMatch of match) {
-            const subMatchRes = rtMatches[subMatch.type]?.(subMatch.params, params, card, target);
+            const matchFn = rtMatches[subMatch.type];
+            const subMatchRes = matchFn?.(subMatch.params, params, card, target);
             if (!subMatchRes) {
                 matchRes = false;
                 break;
@@ -102,7 +103,6 @@ function checkMatch(match, params, card, target) {
         }
     } else 
         matchRes = rtMatches[match.type]?.(match.params, params, card, target);
-    
     
     return matchRes;
 }
@@ -122,7 +122,9 @@ export function addAutoReminderText(str, card, game) {
 
     for (const { keyword, params, target } of matchAllKeywords(str, card, game)) {
         const generatedRt = generateReminderText(keyword, params, card, target);
-        const showRt = (!keyword.hideByDefault || card.showRt === 'all') && card.showRt !== 'none';
+        const showRt
+            = (!keyword.hideByDefault || card.showRt === 'all') 
+            && card.showRt !== 'none';
         if (showRt) reminderText += generatedRt;
     }
     

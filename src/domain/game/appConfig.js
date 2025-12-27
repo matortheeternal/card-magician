@@ -17,7 +17,7 @@ export default class AppConfig {
         try {
             const raw = await Neutralino.storage.getData(this.key);
             this._data = JSON.parse(raw) || {};
-        } finally {
+        } catch {
             this._data = {};
         }
 

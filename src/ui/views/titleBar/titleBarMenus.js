@@ -32,6 +32,11 @@ const actions = {
         const activeSet = Alpine.store('views').activeSet;
         openModal('cm-set-info-modal', activeSet.info);
     },
+    editKeywords: () => {
+        const game = Alpine.store('game');
+        const set = Alpine.store('views').activeSet;
+        openModal('cm-keywords-modal', { game, set });
+    },
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };
@@ -63,6 +68,7 @@ export const titleBarMenus = [{
         menuItem(L`Set Info`, ``, actions.editSetInfo),
         menuItem(L`Preferences`, ``, actions.editPreferences),
         menuItem(L`Localization`, ``, actions.editLocales),
+        menuItem(L`Keywords`, ``, actions.editKeywords)
     ]
 }, {
     title: L`Cards`,
