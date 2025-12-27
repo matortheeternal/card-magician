@@ -86,6 +86,12 @@ export default class FaceForm extends HTMLElement {
     get fields() { return this.#face.fields; }
     get subcards() { return this.#face.subcards; }
 
+    getSelector(model, field) {
+        return `form-field[field-id="${field.id}"]` + (model.isSubcard
+            ? `[subcard-id="${model.id}"]`
+            : ':not([subcard-id])');
+    }
+
     getModel(subcardId) {
         return subcardId
             ? this.subcards.find(s => s.id === subcardId)
