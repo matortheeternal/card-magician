@@ -69,7 +69,9 @@ export default class FaceForm extends HTMLElement {
         renderFields(this.form.root, this.face, this.fields);
         this.subcards.forEach(subcard => {
             const subcardFields = this.resolveFields(subcard);
-            renderFields(this.form.root, subcard, subcardFields);
+            renderFields(this.form.root, subcard, subcardFields, field =>
+                `form-field[field-id="${field.id}"][subcard-id="${subcard.id}"]`
+            );
         });
         this.handleGroups();
         this.appendChild(this.form.root);
