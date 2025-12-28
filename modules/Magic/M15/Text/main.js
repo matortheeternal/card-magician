@@ -18,7 +18,8 @@ export default class TextModule extends CardMagicianModule {
 
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
-            return textToHTML(html, card).map(p => {
+            const game = this.getActiveGame();
+            return textToHTML(html, card, game).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;
@@ -32,6 +33,8 @@ export default class TextModule extends CardMagicianModule {
                 || /\bDisturb\b/i.test(card.rulesText)
                 || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
         };
+
+        this.card = card;
     }
 
     async renderRulesHTML(card) {
@@ -133,6 +136,16 @@ export default class TextModule extends CardMagicianModule {
                     { id: 'short', name: L`Short Text` },
                 ]
             },
+            {
+                id: 'showRt',
+                label: L`Show Reminder Text`,
+                type: 'select',
+                options: [
+                    { id: 'default', name: L`Default` },
+                    { id: 'all', name: L`All Keywords` },
+                    { id: 'none', name: L`No Keywords` }
+                ]
+            }
         ];
     }
 

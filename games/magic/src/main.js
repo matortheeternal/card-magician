@@ -7,6 +7,13 @@ import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
+import { getThisType } from './thisType.js';
+import { 
+    addAutoReminderText, 
+    AbilityWordConverters, 
+    matchAllKeywords 
+} from './keywords/reminderText.js';
+import { newUserKeyword, generateUserKeywordsForm } from './keywords/userKeywords.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -16,6 +23,13 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
+        this.getThisType = getThisType;
+        this.addAutoReminderText = (str, card) => addAutoReminderText(str, card, this);
+        this.AbilityWordConverters = AbilityWordConverters;
+        this.matchAllKeywords = (str, card) => matchAllKeywords(str, card, this);
+        this.generateUserKeywordsForm = generateUserKeywordsForm;
+        this.currentUserKeyword = this.userKeywords[0];
+        this.userKeywords = [newUserKeyword()];
     }
 
     setupSearch(sifter) {
