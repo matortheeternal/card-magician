@@ -68,10 +68,7 @@ const permanentTypes = [
 const rtMatches = { // Stuff used in 'match'
     cardProp: (matchParams, params, card) => {
         const cardProp = card[matchParams.prop];
-        for (const param of matchParams.matches) 
-            if (cardProp.match(new RegExp(param, 'i'))) return true;
-        
-        return false;
+        return cardProp?.match(new RegExp(matchParams.match), 'i');
     },
     numberIsX: (matchParams, params) => params[matchParams?.param || 'number']  === 'X',
     isPlural: (matchParams, params) => params[matchParams?.param || 's'] === 's',

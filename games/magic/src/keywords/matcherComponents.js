@@ -1,4 +1,5 @@
 class Matcher extends ComponentWithFields {
+    static tagName = 'cm-matcher';
     #model = {};
 
     get model() {
@@ -7,6 +8,15 @@ class Matcher extends ComponentWithFields {
 
     set model(data) {
         this.#model = data;
+    }
+
+    renderMatcher() {
+        const matcher = matchers[this.dataset.param];
+        if (!matcher) return;
+
+        const matcherElement = document.createElement(matcher.tagName);
+        this.appendChild(matcherElement);
+        matcherElement.render();
     }
 
     render() {
@@ -18,7 +28,7 @@ class Matcher extends ComponentWithFields {
     }
 
     getModel() {
-        return this.model;
+        return this.model.params;
     }
 }
 
@@ -30,10 +40,6 @@ class CardPropMatcher extends Matcher {
         this.innerHtml = '<form-field field-id="prop"></form-field><form-field field-id="match"></form-field>';
         this.renderFields(this.model);
         this.hydrateFields();
-    }
-
-    getModel() {
-        return this.model.params;
     }
 
     get fields() {
@@ -50,15 +56,46 @@ class CardPropMatcher extends Matcher {
 }
 
 class NumberIsXMatcher extends Matcher {
+    static tagName = 'cm-number-is-x-matcher';
 
+    get fields() {
+        return [{
+            id: 'param',
+            name: L`Keyword Param`,
+            placeholder: 'number'
+        }];
+    }
+
+    render() {
+        this.innerHtml = '<form-field field-id="param"></form-field>';
+    }
 }
 
-export const matchers = {
-    cardProp: CardPropMatcher
+class CostHasX extends Matcher {
+    static tagName = 'cm-cost-has-x-matcher';
+
+    get fields() {
+        return [{
+            id: 'param',
+            name: L`Keyword Param`,
+            placeholder: 'cost'
+        }];
+    }
+
+    render() {
+        this.innerHtml = '<form-field field-id="param"></form-field>';
+    }
+} 
+
+const matchers = {
+    cardProp: CardPropMatcher,
+    numberIsX: NumberIsXMatcher,
+    costHasX: CostHasX,
+    baseMatcher: Matcher
 };
 
-customElements.define('cm-matcher', Matcher);
-
-for (const matcher of matchers) {
+for (const matcher of Object.values(matchers)) {
     customElements.define(matcher.tagName, matcher);
 }
+
+export default matchers;

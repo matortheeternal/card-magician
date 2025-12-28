@@ -1,3 +1,5 @@
+import matchers from "./matcherComponents.js"; // To register custom elements
+
 const L = localize('game-magic');
 
 const matchTypeOptions = [
@@ -8,9 +10,8 @@ const matchTypeOptions = [
     { id: 'costHasX', name: L`Cost has X`},
     { id: 'hasPt', name: L`Has PT`},
     { id: 'hasTarget', name: L`Has a Target`},
-    { id: 'hasSuperType', name: L`Has Card Type`},
     { id: 'hasPPCounters', name: L`Has Modular`}
-]
+];
 
 export default class ReminderTextItem extends ComponentWithFields {
     #model;
@@ -27,12 +28,13 @@ export default class ReminderTextItem extends ComponentWithFields {
         const model = subcardId
             ? this.model[subcardId]
             : this.model;
+        console.log('model', model, this.model, subcardId);
         return model;
     }
 
     render(index) {
         let paramHtml = '';
-        for (const paramName of Object.keys(this.model.match.params)) {
+        for (const paramName of Object.keys(this.model.match?.params || {})) {
             paramHtml += `<cm-matcher data-param="${paramName}"></cm-matcher>`;
         }
 
@@ -43,14 +45,15 @@ export default class ReminderTextItem extends ComponentWithFields {
                 <div class="match-params">${paramHtml}</div>
                 <form-field field-id="template" class="large-input"></form-field>
             </form-group>`;
-
+        
+        console.log('RENDERING', this.getModel());
         this.renderFields(this.getModel());
         this.hydrateFields();
 
-        const params = this.querySelectorAll('cm-match-param-item');
-        params.forEach((param) => {
-            param.model = this.data.model.match.param[param.dataset.paramName];
-            param.render();
+        const matchers = this.querySelectorAll('cm-matcher');
+        matchers.forEach((matcher) => {
+            matcher.model = this.data.model.match;
+            matcher.renderMatcher();
         });
     }
 
