@@ -91,7 +91,8 @@ function getDefaultSelector(field) {
 export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
     if (!fields) return;
     fields.forEach(field => {
-        const selector = getSelector(field);
+        console.log(fields, field);
+        const selector = getSelector(field, model);
         const container = root.querySelector(selector);
         if (!container) return;
         const fieldElement = createFieldComponent(container, field);

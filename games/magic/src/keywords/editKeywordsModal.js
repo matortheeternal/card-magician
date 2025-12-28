@@ -13,6 +13,17 @@ export default class EditKeywordsModal extends Modal {
         }
     `;
 
+    close() {
+        this.saveKeyword();
+        super.close();
+    }
+
+    saveKeyword() {
+        if (!this.data.keyword.user) {
+            this.data.set.keywordOverrides[this.data.keyword.label] = this.data.keyword;
+        }
+    }
+
     get fields() {
         return editKeywordFields;
     }

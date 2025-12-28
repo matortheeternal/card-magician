@@ -29,7 +29,7 @@ export function openModal(modalId, data = {}) {
     modalContainer.appendChild(modalElement);
     modalContainer.style.removeProperty('display');
     withLastModal(lastModal => {
-        lastModal.style.visibility = 'hidden';
+        lastModal.style.display = 'none';
     })
     activeModals.push(modalElement);
 }
@@ -41,7 +41,7 @@ export function closeModal() {
         modalContainer.style.display = 'none';
     } else {
         withLastModal(lastModal => {
-            lastModal.style.visibility = 'visible';
+            lastModal.style.removeProperty('display');
         });
     }
 }

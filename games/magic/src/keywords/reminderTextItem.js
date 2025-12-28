@@ -71,7 +71,7 @@ export default class ReminderTextItem extends ComponentWithFields {
         }];
     }
 
-    getSelector(model, field) {
+    getSelector(field, model) {
         const s = `form-field[field-id="${field.id}"]` + (field.subcardId
             ? `[subcard-id="${field.subcardId}"]`
             : ':not([subcard-id])');

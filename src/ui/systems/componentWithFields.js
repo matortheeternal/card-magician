@@ -24,7 +24,7 @@ export default class ComponentWithFields extends HTMLElement {
         return {};
     }
 
-    getSelector(model, field) {
+    getSelector(field, model) {
         return `form-field[field-id="${field.id}"]` + (model.isSubcard
             ? `[subcard-id="${model.id}"]`
             : ':not([subcard-id])');
