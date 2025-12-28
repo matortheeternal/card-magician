@@ -82,10 +82,14 @@ function handleOptionalField(fieldElement, container, model, field) {
     });
 }
 
-export function renderFields(root, model, fields) {
+function getDefaultSelector(field) {
+    return `form-field[field-id="${field.id}"]:not([subcard-id])`;
+}
+
+export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
     if (!fields) return;
     fields.forEach(field => {
-        const selector = root.getSelector(model, field);
+        const selector = getSelector(field);
         const container = root.querySelector(selector);
         if (!container) return;
         const fieldElement = createFieldComponent(container, field);
