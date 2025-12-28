@@ -27,8 +27,20 @@ class Matcher extends ComponentWithFields {
         return [];
     }
 
-    getModel() {
-        return this.model.params;
+    getModel(subcardId) {
+        const model = subcardId
+            ? this.model[subcardId]
+            : this.model;
+            
+        return model;
+    }
+
+    getSelector(model, field) {
+        const s = `form-field[field-id="${field.id}"]` + (field.subcardId
+            ? `[subcard-id="${field.subcardId}"]`
+            : ':not([subcard-id])');
+
+        return s;
     }
 }
 
@@ -47,7 +59,7 @@ class CardPropMatcher extends Matcher {
             id: 'prop',
             name: L`Property`,
             type: 'select',
-            options: cardPropOptions
+            options: cardPropOptions,
         }, {
             id: 'match',
             label: L`Match`

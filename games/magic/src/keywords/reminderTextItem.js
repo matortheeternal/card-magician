@@ -38,16 +38,16 @@ export default class ReminderTextItem extends ComponentWithFields {
             paramHtml += `<cm-matcher data-param="${paramName}"></cm-matcher>`;
         }
 
-        this.innerHTML = 
+        this.innerHTML =
             `<form-group group-id="rt-${index}" class="with-border">
                 <label>Reminder Text ${index}</label>
                 <form-field field-id="type" subcard-id="match"></form-field>
                 <div class="match-params">${paramHtml}</div>
-                <form-field field-id="template" class="large-input"></form-field>
+                <form-field field-id="template"></form-field>
             </form-group>`;
-        
-        console.log('RENDERING', this.getModel());
-        this.renderFields(this.getModel());
+
+
+        this.renderFields(this.model);
         this.hydrateFields();
 
         const matchers = this.querySelectorAll('cm-matcher');
@@ -58,16 +58,16 @@ export default class ReminderTextItem extends ComponentWithFields {
     }
 
     get fields() {
-        return [{
-            id: 'template',
-            label: L`Template`,
-            type: 'textarea'
-        }, {
+        return [(this.model.match ? {
             id: 'type',
             label: L`Match Type`,
             subcardId: 'match',
             type: 'select',
             options: matchTypeOptions
+        } : {}), {
+            id: 'template',
+            label: L`Template`,
+            type: 'textarea'
         }];
     }
 

@@ -40,8 +40,9 @@ export function hydrateFields(root) {
             const subcardId = parentFormField?.getAttribute('subcard-id');
             if (!fieldId) continue;
             element.field = root.getField(subcardId, fieldId);
-            console.log(root, subcardId, parentFormField, root.getModel(subcardId), element.field);
-            element.model = root.getModel(subcardId);
+            const model = root.getModel(subcardId);
+            console.log(root, subcardId, parentFormField, model, element.field);
+            element.model = model;
         }
     }
 }
@@ -90,6 +91,7 @@ function getDefaultSelector(field) {
 export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
     if (!fields) return;
     fields.forEach(field => {
+        console.log(root);
         const selector = root.getSelector(model, field);
         const container = root.querySelector(selector);
         if (!container) return;
