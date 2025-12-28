@@ -90,11 +90,7 @@ function getDefaultSelector(field) {
 export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
     if (!fields) return;
     fields.forEach(field => {
-<<<<<<< HEAD
         const selector = root.getSelector(model, field);
-=======
-        const selector = getSelector(field);
->>>>>>> upstream/master
         const container = root.querySelector(selector);
         if (!container) return;
         const fieldElement = createFieldComponent(container, field);
