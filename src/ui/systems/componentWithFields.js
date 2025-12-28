@@ -6,7 +6,7 @@ export default class ComponentWithFields extends HTMLElement {
     }
 
     renderFields(model) {
-        renderFields(this, model, this.fields);
+        renderFields(this, model, this.fields, this.getSelector);
     }
 
     hydrateFields() {
