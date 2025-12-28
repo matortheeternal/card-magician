@@ -47,6 +47,7 @@ Alpine.data('displayCard', () => ({
             this.raf = requestAnimationFrame(() => this.applyTransform());
         });
         this.resizeObserver.observe(this.$root.querySelector('.card-viewport'));
+<<<<<<< HEAD
         document.addEventListener('keydown', e => {
             if (e.key !== 'Alt') return;
             this.toggleShowEditable(true);
@@ -56,6 +57,8 @@ Alpine.data('displayCard', () => ({
             this.toggleShowEditable(false);
         });
         window.addEventListener('focus', () => this.toggleShowEditable(false));
+=======
+>>>>>>> upstream/master
         registerAction('export-card-image', () => this.exportCardImage());
     },
 

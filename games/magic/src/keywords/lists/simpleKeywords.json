@@ -317,7 +317,7 @@
           "type": "cardProp",
           "params": {
             "prop": "superType",
-            "matches": "token"
+            "match": "token"
           }
         },
         "template": "This token is every creature type."
@@ -917,13 +917,12 @@
     "reminderTexts": [
       {
         "match": {
-          "type": "hasSuperType",
-          "values": ["creature"]
+          "type": "hasPt"
         },
-        "template": "This enters the battlefield with two +1/+1 counters on it for each color of mana spent to cast it"
+        "template": "This <target_type> enters the battlefield with two +1/+1 counters on it for each color of mana spent to cast it"
       },
       {
-        "template": "This enters with two charge counters on it for each color of mana spent to cast it."
+        "template": "This <target_type> enters with two charge counters on it for each color of mana spent to cast it."
       }
     ]
   },
@@ -934,10 +933,9 @@
     "reminderTexts": [
       {
         "match": {
-          "type": "hasSuperType",
-          "values": ["creature"]
+          "type": "isPermanent"
         },
-        "template": "When this creature dies, exile it haunting target creature."
+        "template": "When this <target_type> <dies_or_gy>, exile it haunting target creature."
       },
       {
         "template": "When this spell card is put into a graveyard after resolving, exile it haunting target creature."

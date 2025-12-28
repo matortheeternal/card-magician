@@ -1,7 +1,7 @@
+import ComponentWithFields from '../systems/componentWithFields.js';
 import { closeModal } from './modalManager.js';
-import { hydrateFields, renderFields } from '../systems/fieldSystem.js';
 
-export default class Modal extends HTMLElement {
+export default class Modal extends ComponentWithFields {
     static id = 'base-modal';
     title = '';
     #data = {};
@@ -78,7 +78,7 @@ export default class Modal extends HTMLElement {
     }
 
     afterRender() {
-        renderFields(this, this.data, this.fields);
-        hydrateFields(this);
+        this.renderFields(this.data)
+        this.hydrateFields();
     }
 }
