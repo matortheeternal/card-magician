@@ -14,11 +14,11 @@ export default class CropImageToolbox extends HTMLElement {
     }
 
     get aspectRatioLocked() {
-        return this.modal.aspectRatioLocked;
+        return this.editor.aspectRatioLocked;
     }
 
     set aspectRatioLocked(value) {
-        this.modal.aspectRatioLocked = value;
+        this.editor.aspectRatioLocked = value;
         this.updateAspectRatioButton();
     }
 
@@ -45,10 +45,10 @@ export default class CropImageToolbox extends HTMLElement {
     resetCrop() {
         const crop = this.value.crop;
         crop.width = this.value.width;
-        crop.height = crop.width / this.aspectRatio;
+        crop.height = crop.width / this.modal.aspectRatio;
         if (crop.height > this.value.height) {
             crop.height = this.value.height;
-            crop.width = crop.height * this.aspectRatio;
+            crop.width = crop.height * this.modal.aspectRatio;
         }
         this.centerCropVertically();
         this.centerCropHorizontally();

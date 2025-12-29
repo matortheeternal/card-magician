@@ -160,7 +160,7 @@ export default class ImageField extends FieldComponent {
         event.stopPropagation();
         openModal('cm-crop-image-modal', {
             value: this.value.clone(),
-            field: this.field,
+            aspectRatio: this.field.aspectRatio,
             callback: (newValue) => {
                 this.value.crop = newValue;
                 this.loadValue();

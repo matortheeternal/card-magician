@@ -10,6 +10,7 @@ cm-crop-image-modal .modal-body {
     align-items: flex-start;
     justify-content: center;
     padding: 0 1em;
+    gap: var(--sl-spacing-small);
 }
 
 cm-crop-image-toolbox sl-icon-button {
