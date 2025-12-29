@@ -5,6 +5,9 @@ import { cropHandlers } from './cropHandlers.js';
 const L = localize('crop-image-modal');
 
 export default class CropImageEditor extends HTMLElement {
+    dragging = null;
+    aspectRatioLocked = false;
+
     constructor() {
         super();
         this.onInput = this.onInput.bind(this);

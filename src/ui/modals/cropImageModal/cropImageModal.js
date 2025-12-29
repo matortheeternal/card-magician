@@ -7,8 +7,6 @@ const L = localize('crop-image-modal');
 
 export default class CropImageModal extends Modal {
     static id = 'cm-crop-image-modal';
-    aspectRatioLocked = false;
-    dragging = null;
     maxWidth = 600;
     maxHeight = 600;
 
