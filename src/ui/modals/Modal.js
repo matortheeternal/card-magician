@@ -16,7 +16,7 @@ export default class Modal extends HTMLElement {
 
     set data(newData) {
         this.#data = newData;
-        this.render();
+        // this.render();
     }
 
     get fields() {
@@ -60,18 +60,24 @@ export default class Modal extends HTMLElement {
         return '';
     }
 
+    renderActions() {
+        return null;
+    }
+
     render() {
+        const actionsHTML = this.renderActions();
         this.innerHTML = (
-            `<div class='modal'>
-                <div class='modal-title-bar'>
+            `<div class="modal">
+                <div class="modal-title-bar">
                     <div>${this.title}</div>
-                    <div class='close-modal'>
-                        <sl-icon name='x-lg' data-click-action='close'></sl-icon>
+                    <div class="close-modal">
+                        <sl-icon name="x-lg" data-click-action="close"></sl-icon>
                     </div>
                 </div>
-                <div class='modal-body'>
-                    ${this.renderBody()}
-                </div>
+                <div class="modal-body">${this.renderBody()}</div>
+                ${actionsHTML && (
+                    `<div class="modal-actions">${actionsHTML}</div>`
+                )}
             </div>`
         );
         renderFields(this, this.data, this.fields);
