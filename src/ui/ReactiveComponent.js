@@ -1,4 +1,7 @@
+import { watch } from '../shared/reactivity.js';
+
 export default class ReactiveComponent extends HTMLElement {
+    #watchers = [];
     #cleanup = [];
     #eventHandlers = [];
 
@@ -9,6 +12,7 @@ export default class ReactiveComponent extends HTMLElement {
 
     disconnectedCallback() {
         for (const cleanup of this.#cleanup) cleanup();
+        for (const unwatch of this.#watchers) unwatch();
         for (const { eventName, callback } of this.#eventHandlers)
             this.removeEventListener(eventName, callback);
     }
@@ -29,5 +33,17 @@ export default class ReactiveComponent extends HTMLElement {
 
     effect(callback) {
         this.#cleanup.push(Alpine.effect(callback));
+    }
+
+    watch(obj, keysArg, callback) {
+        const unwatch = watch(obj, keysArg, callback);
+        this.#watchers.push(unwatch);
+        return {
+            remove() {
+                const index = this.#watchers.indexOf(unwatch);
+                if (index > -1) this.#watchers.splice(index, 1);
+                unwatch();
+            }
+        }
     }
 }
