@@ -1,14 +1,11 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
-import {
-    handleFormGroup,
-    hydrateFields,
-    renderFields
-} from '../../systems/fieldSystem.js';
+import { handleFormGroup, renderFields } from '../../systems/fieldSystem.js';
+import ReactiveComponent from '../../ReactiveComponent.js';
 
 const L = localize('face-form');
 
-export default class FaceForm extends HTMLElement {
+export default class FaceForm extends ReactiveComponent {
     #face = null;
 
     constructor() {
@@ -56,7 +53,9 @@ export default class FaceForm extends HTMLElement {
     handleGroups() {
         if (!this.form) return;
         const formGroups = this.form.root.querySelectorAll('form-group');
-        formGroups.forEach(formGroup => handleFormGroup(formGroup, this.face));
+        formGroups.forEach(formGroup => {
+            handleFormGroup(formGroup, this.face, this.effect);
+        });
     }
 
     resolveFields(obj) {
@@ -66,12 +65,17 @@ export default class FaceForm extends HTMLElement {
     render() {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
-        renderFields(this.form.root, this.face, this.fields);
+        renderFields(this.form.root, this.face, this.fields, {
+            effect: this.effect
+        });
         this.subcards.forEach(subcard => {
             const subcardFields = this.resolveFields(subcard);
-            renderFields(this.form.root, subcard, subcardFields, field =>
-                `form-field[field-id="${field.id}"][subcard-id="${subcard.id}"]`
-            );
+            const getSelector = field =>
+                `form-field[field-id="${field.id}"][subcard-id="${subcard.id}"]`;
+            renderFields(this.form.root, subcard, subcardFields, {
+                getSelector,
+                effect: this.effect
+            });
         });
         this.handleGroups();
         this.appendChild(this.form.root);
@@ -80,25 +84,12 @@ export default class FaceForm extends HTMLElement {
     set face(value) {
         this.#face = value;
         this.render();
-        hydrateFields(this);
     }
 
     get face() { return this.#face; }
     get form() { return this.#face.form; }
     get fields() { return this.#face.fields; }
     get subcards() { return this.#face.subcards; }
-
-    getSelector(model, field) {
-        return `form-field[field-id="${field.id}"]` + (model.isSubcard
-            ? `[subcard-id="${model.id}"]`
-            : ':not([subcard-id])');
-    }
-
-    getModel(subcardId) {
-        return subcardId
-            ? this.subcards.find(s => s.id === subcardId)
-            : this.face;
-    }
 
     getField(subcardId, fieldId) {
         const target = subcardId
@@ -109,39 +100,48 @@ export default class FaceForm extends HTMLElement {
 
     withFieldId(btn, callback) {
         const fieldElement = btn.closest('form-field');
+        const subcardId = fieldElement?.getAttribute('subcard-id');
         const fieldId = fieldElement?.getAttribute('field-id');
         if (!fieldId) return false;
-        callback(fieldId);
+        callback(subcardId, fieldId);
         return true;
     }
 
     withGroupShowKey(btn, callback) {
         const groupElement = btn.closest('form-group');
+        const subcardId = groupElement?.getAttribute('subcard-id');
         const showKey = groupElement?.getAttribute('show');
         if (!showKey) return false;
-        callback(showKey);
+        callback(subcardId, showKey);
         return true;
     }
 
     addField(btn) {
-        // TODO: handle subcards
-        return this.withFieldId(btn, fieldId => {
-            const field = this.getField(null, fieldId);
+        return this.withFieldId(btn, (subcardId, fieldId) => {
+            const field = this.getField(subcardId, fieldId);
             this.face[fieldId] = field?.initialValue || '';
         });
     }
 
     addGroup(btn) {
-        // TODO: handle subcards
-        return this.withGroupShowKey(btn, key => (this.face[key] = true));
+        return this.withGroupShowKey(btn, (subcardId, key) => {
+            const model = subcardId ? this.face[subcardId] : this.face;
+            model[key] = true;
+        });
     }
 
     removeField(btn) {
-        return this.withFieldId(btn, fieldId => (this.face[fieldId] = null));
+        return this.withFieldId(btn, (subcardId, fieldId) => {
+            const model = subcardId ? this.face[subcardId] : this.face;
+            model[fieldId] = null;
+        });
     }
 
     removeGroup(btn) {
-        return this.withGroupShowKey(btn, key => (this.face[key] = false));
+        return this.withGroupShowKey(btn, (subcardId, key) => {
+            const model = subcardId ? this.face[subcardId] : this.face;
+            model[key] = false;
+        });
     }
 
     addFace(event) {

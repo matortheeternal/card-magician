@@ -1,12 +1,13 @@
 import { closeModal } from './modalManager.js';
-import { hydrateFields, renderFields } from '../systems/fieldSystem.js';
+import { renderFields } from '../systems/fieldSystem.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 
-export default class Modal extends HTMLElement {
+export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
     title = '';
     #data = {};
 
-    get onClick() {
+    get onClickHandlers() {
         return { close: this.close };
     }
 
@@ -16,7 +17,6 @@ export default class Modal extends HTMLElement {
 
     set data(newData) {
         this.#data = newData;
-        // this.render();
     }
 
     get fields() {
@@ -29,31 +29,11 @@ export default class Modal extends HTMLElement {
     }
 
     bind() {
-        this.handleEvents('click', this.onClick);
-    }
-
-    getField(subcardId, fieldId) {
-        const field = this.fields.find(field => field.id === fieldId);
-        if (!field)
-            throw new Error('Failed to resolve field: ' + fieldId);
-        return field;
-    }
-
-    getModel() {
-        return this.data;
+        this.handleEvents('click', this.onClickHandlers);
     }
 
     close() {
         closeModal();
-    }
-
-    handleEvents(eventName, handlers) {
-        this.addEventListener(eventName, event => {
-            const dataKey = `${eventName}Action`;
-            const actionKey = event.target.dataset?.[dataKey];
-            const action = handlers[actionKey];
-            if (action) action.call(this, event);
-        });
     }
 
     renderBody() {
@@ -81,6 +61,5 @@ export default class Modal extends HTMLElement {
             </div>`
         );
         renderFields(this, this.data, this.fields);
-        hydrateFields(this);
     }
 }
