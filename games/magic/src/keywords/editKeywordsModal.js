@@ -64,7 +64,7 @@ export default class EditKeywordsModal extends Modal {
     }
 
     afterRender() {
-        super.afterRender();
+        this.renderFields(this.data.keyword);
         const rts = this.querySelectorAll('cm-reminder-text-item');
         rts.forEach((rt, index) => {
             rt.model = this.data.keyword.reminderTexts[index];

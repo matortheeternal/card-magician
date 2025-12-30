@@ -34,7 +34,6 @@ export default class ReminderTextItem extends ComponentWithFields {
 
 
         this.renderFields(this.model);
-        this.hydrateFields();
 
         this.querySelectorAll('cm-matcher').forEach((matcher) => {
             console.log('matcher', this.model);

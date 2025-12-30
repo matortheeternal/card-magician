@@ -35,7 +35,7 @@ class Matcher extends ComponentWithFields {
     render() {
         this.innerHTML = '<form-field field-id="type"></form-field><div class="params"></div>';
         this.renderFields(this.model);
-        this.hydrateFields();
+
         this.renderMatcher();
         this.querySelector('form-field[field-id="type"]').addEventListener('cm-field-changed', () => {
             this.renderMatcher();
@@ -52,7 +52,7 @@ class Matcher extends ComponentWithFields {
     }
 
     selectMatcher() {
-        return matchers[this.#model.type];
+        return matchers[this.model.type];
     }
 
     renderMatcher() {
@@ -115,7 +115,6 @@ class CardPropMatcher extends ParamMatcher {
     render() {
         this.innerHTML = '<form-field field-id="prop"></form-field><form-field field-id="match"></form-field>';
         this.renderFields(this.model);
-        this.hydrateFields();
     }
 
     get fields() {
@@ -146,7 +145,6 @@ class NumberIsXMatcher extends ParamMatcher {
     render() {
         this.innerHTML = '<form-field field-id="param"></form-field>';
         this.renderFields(this.model);
-        this.hydrateFields();
     }
 }
 
@@ -165,7 +163,6 @@ class CostHasX extends ParamMatcher {
     render() {
         this.innerHTML = '<form-field field-id="param"></form-field>';
         this.renderFields(this.model);
-        this.hydrateFields();
     }
 } 
 

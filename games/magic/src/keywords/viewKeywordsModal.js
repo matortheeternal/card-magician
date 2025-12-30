@@ -6,9 +6,9 @@ export default class ViewKeywordsModal extends Modal {
     title = L`Keywords`;
 
     onKeyup = { search: this.onSearch };
-    get onClick() {
+    get onClickHandlers() {
         return {   
-            ...super.onClick,
+            ...super.onClickHandlers,
             edit: (event) => {
                 const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
                 const data = { game: this.data.game, set: this.data.set, keyword };

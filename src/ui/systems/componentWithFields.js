@@ -1,16 +1,13 @@
-import { hydrateFields, renderFields } from "./fieldSystem.js";
+import ReactiveComponent from "../ReactiveComponent.js";
+import { renderFields } from "./fieldSystem.js";
 
-export default class ComponentWithFields extends HTMLElement {
+export default class ComponentWithFields extends ReactiveComponent {
     get fields() {
         return [];
     }
 
     renderFields(model) {
-        renderFields(this, model, this.fields, this.getSelector);
-    }
-
-    hydrateFields() {
-        hydrateFields(this);
+        renderFields(this, model, this.fields, this);
     }
 
     getField(subcardId, fieldId) {
