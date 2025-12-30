@@ -2,6 +2,7 @@ import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
+import { openModal } from '../../modals/modalManager.js';
 
 function getBaseHTML(label) {
     return (
@@ -70,7 +71,6 @@ export default class ImageField extends FieldComponent {
         if (oldImageUrl)
             setTimeout(() => URL.revokeObjectURL(oldImageUrl), 500);
         this.model[this.field.id] = newValue;
-        this.loadValue?.();
     }
 
     connectedCallback() {
@@ -79,7 +79,6 @@ export default class ImageField extends FieldComponent {
     }
 
     render() {
-        if (!this.field || !this.model) return;
         this.innerHTML = getBaseHTML(this.field.label);
     }
 
@@ -105,8 +104,8 @@ export default class ImageField extends FieldComponent {
                 </div>
                 <sl-tooltip content="Click to change image">
                     <div class="preview-container">
-                        <img class="preview-image" 
-                             alt="Preview" 
+                        <img class="preview-image"
+                             alt="Preview"
                              src="${esc(this.value.imageUrl)}" />
                         <div class="crop-region"></div>
                     </div>
@@ -157,14 +156,12 @@ export default class ImageField extends FieldComponent {
     cropImage(event) {
         if (!event.target.classList.contains('crop-btn')) return;
         event.stopPropagation();
-        emit(this, 'open-modal', {
-            modalKey: 'crop-image',
-            data: {
-                value: this.value.clone(),
-                field: this.field
-            },
+        openModal('cm-crop-image-modal', {
+            value: this.value.clone(),
+            aspectRatio: this.field.aspectRatio,
             callback: (newValue) => {
                 this.value.crop = newValue;
+                this.loadValue();
                 emit(this, 'cm-field-changed');
             }
         });

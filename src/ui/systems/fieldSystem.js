@@ -1,6 +1,5 @@
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
-import { getFieldComponents, resolveFieldComponent } from './fieldComponentRegistry.js';
-import Alpine from 'alpinejs';
+import { resolveFieldComponent } from './fieldComponentRegistry.js';
 
 const L = localize('field-system');
 
@@ -14,13 +13,12 @@ export function getDefaultValue(field) {
 }
 
 export function initializeFields(fields, obj = {}) {
-    fields.forEach(field => {
+    for (const field of fields)
         obj[field.id] = getDefaultValue(field);
-    });
     return obj;
 }
 
-export function createFieldComponent(container, field) {
+export function createFieldComponent(container, field, model) {
     const Component = resolveFieldComponent(field);
     if (!Component) {
         console.error('Skipped rendering unknown field type', field.type);
@@ -28,22 +26,9 @@ export function createFieldComponent(container, field) {
     }
     const fieldElement = document.createElement(Component.tagName);
     container.appendChild(fieldElement);
+    fieldElement.field = field;
+    fieldElement.model = model;
     return fieldElement;
-}
-
-export function hydrateFields(root) {
-    for (const Component of getFieldComponents()) {
-        const elements = root.querySelectorAll(Component.tagName);
-        for (const element of elements) {
-            const parentFormField = element.closest('form-field');
-            const fieldId = parentFormField?.getAttribute('field-id');
-            const subcardId = parentFormField?.getAttribute('subcard-id');
-            if (!fieldId) continue;
-            element.field = root.getField(subcardId, fieldId);
-            const model = root.getModel(subcardId);
-            element.model = model;
-        }
-    }
 }
 
 function renderAddButton(label) {
@@ -70,12 +55,12 @@ function createToggle(formGroup, className) {
     return toggleGroup;
 }
 
-function handleOptionalField(fieldElement, container, model, field) {
+function handleOptionalField(fieldElement, container, model, field, { effect }) {
     const optional = container.hasAttribute('optional');
     if (!optional) return;
 
     const toggleField = createToggle(container, 'toggle-field');
-    Alpine.effect(() => {
+    effect(() => {
         const show = model[field.id] !== null
             && model[field.id] !== undefined;
         fieldElement.style.display = show ? 'block' : 'none';
@@ -87,14 +72,19 @@ function getDefaultSelector(field) {
     return `form-field[field-id="${field.id}"]:not([subcard-id])`;
 }
 
-export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
+export function renderFields(root, model, fields, ctx = {}) {
     if (!fields) return;
+    ctx = {
+        getSelector: getDefaultSelector,
+        effect: root.effect,
+        ...ctx
+    };
     fields.forEach(field => {
-        const selector = getSelector(field, model);
+        const selector = ctx.getSelector(field);
         const container = root.querySelector(selector);
         if (!container) return;
-        const fieldElement = createFieldComponent(container, field);
-        handleOptionalField(fieldElement, container, model, field);
+        const fieldElement = createFieldComponent(container, field, model);
+        handleOptionalField(fieldElement, container, model, field, ctx);
     });
 }
 
@@ -114,11 +104,11 @@ function toggleGroupVisibility(formGroup, model) {
     formGroup.style.display = model[showKey] ? '' : 'none';
 }
 
-export function handleFormGroup(formGroup, model) {
+export function handleFormGroup(formGroup, model, effect) {
     if (!formGroup.hasAttribute('show')) return;
     const optional = formGroup.hasAttribute('optional');
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
-    Alpine.effect(optional
+    return effect(optional
         ? () => toggleGroupChildren(formGroup, model, toggleGroup)
         : () => toggleGroupVisibility(formGroup, model));
 }

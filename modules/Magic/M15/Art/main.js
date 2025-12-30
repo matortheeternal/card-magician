@@ -65,7 +65,7 @@ export default class ArtModule extends CardMagicianModule {
             () => this.updateDefaultImage(card)
         );
         watch(
-            () => card.artImage,
+            () => [card.artImage, card.artImage?.crop],
             () => this.requestRender()
         );
     }

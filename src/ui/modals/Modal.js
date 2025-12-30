@@ -1,12 +1,14 @@
 import ComponentWithFields from '../systems/componentWithFields.js';
 import { closeModal } from './modalManager.js';
+import { renderFields } from '../systems/fieldSystem.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 
-export default class Modal extends ComponentWithFields {
+export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
     title = '';
     #data = {};
 
-    get onClick() {
+    get onClickHandlers() {
         return { close: this.close };
     }
 
@@ -16,7 +18,6 @@ export default class Modal extends ComponentWithFields {
 
     set data(newData) {
         this.#data = newData;
-        this.render();
     }
 
     get fields() {
@@ -29,56 +30,45 @@ export default class Modal extends ComponentWithFields {
     }
 
     bind() {
-        this.handleEvents('click', this.onClick);
-    }
-
-    getField(subcardId, fieldId) {
-        const field = this.fields.find(field => field.id === fieldId);
-        if (!field)
-            throw new Error('Failed to resolve field: ' + fieldId);
-        return field;
-    }
-
-    getModel() {
-        return this.data;
+        this.handleEvents('click', this.onClickHandlers);
     }
 
     close() {
         closeModal();
     }
 
-    handleEvents(eventName, handlers) {
-        this.addEventListener(eventName, event => {
-            const dataKey = `${eventName}Action`;
-            const actionKey = event.target.dataset?.[dataKey];
-            const action = handlers[actionKey];
-            if (action) action.call(this, event);
-        });
-    }
-
     renderBody() {
         return '';
     }
 
+    renderActions() {
+        return null;
+    }
+
     render() {
+        const actionsHTML = this.renderActions();
         this.innerHTML = (
-            `<div class='modal'>
-                <div class='modal-title-bar'>
+            `<div class="modal">
+                <div class="modal-title-bar">
                     <div>${this.title}</div>
-                    <div class='close-modal'>
-                        <sl-icon name='x-lg' data-click-action='close'></sl-icon>
+                    <div class="close-modal">
+                        <sl-icon name="x-lg" data-click-action="close"></sl-icon>
                     </div>
                 </div>
-                <div class='modal-body'>
-                    ${this.renderBody()}
-                </div>
+                <div class="modal-body">${this.renderBody()}</div>
+                ${actionsHTML && (
+                    `<div class="modal-actions">${actionsHTML}</div>`
+                )}
             </div>`
         );
         this.afterRender();
     }
 
     afterRender() {
-        this.renderFields(this.data)
-        this.hydrateFields();
+        this.renderFields();
+    }
+
+    renderFields() {
+        renderFields(this, this.data, this.fields);
     }
 }

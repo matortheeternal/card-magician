@@ -1,40 +1,41 @@
-.crop-image-modal .toolbox {
+cm-crop-image-toolbox {
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid var(--sl-input-border-color);
     font-size: 1.3em;
 }
 
-.crop-image-modal .modal-body {
+cm-crop-image-modal .modal-body {
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
     padding: 0 1em;
+    gap: var(--sl-spacing-small);
 }
 
-.crop-image-modal .toolbox sl-icon-button {
+cm-crop-image-toolbox sl-icon-button {
     border: 1px solid var(--sl-input-border-color);
     border-bottom: none;
 }
 
-.crop-image-modal .editor-container {
+cm-crop-image-editor {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.crop-image-modal img {
+cm-crop-image-modal img {
     display: block;
 }
 
-.crop-image-modal .crop-container {
+cm-crop-image-modal .crop-container {
     padding: 6px;
     background: #888;
     position: relative;
     overflow: hidden;
 }
 
-.crop-image-modal .crop-box {
+cm-crop-image-modal .crop-box {
     position: absolute;
     box-shadow: 0 0 0 2000px rgba(255, 255, 255, 0.45);
     background: transparent;
@@ -44,7 +45,7 @@
     left: 6px;
 }
 
-.crop-image-modal .corner {
+cm-crop-image-modal .corner {
     position: absolute;
     background: #000;
     width: 7px;
@@ -52,31 +53,31 @@
     border: 1px solid #fff;
 }
 
-.crop-image-modal .edge {
+cm-crop-image-modal .edge {
     position: absolute;
 }
 
-.crop-image-modal .edge.vertical {
+cm-crop-image-modal .edge.vertical {
     width: 100%;
     height: 1px;
     cursor: ns-resize;
     padding: 3px 0;
 }
 
-.crop-image-modal .edge.horizontal {
+cm-crop-image-modal .edge.horizontal {
     height: 100%;
     width: 1px;
     cursor: ew-resize;
     padding: 0 3px;
 }
 
-.crop-image-modal .edge > div {
+cm-crop-image-modal .edge > div {
     width: inherit;
     height: inherit;
     background: #000;
 }
 
-.crop-image-modal .info-container {
+cm-crop-image-modal .info-container {
     font-size: 0.825rem;
     font-family: var(--sl-font-mono);
     display: flex;
@@ -87,20 +88,20 @@
     align-self: stretch;
 }
 
-.crop-image-modal .info-container > div {
+cm-crop-image-modal .info-container > div {
     display: flex;
     gap: 2px;
 }
 
-.crop-image-modal inline-input input {
+cm-crop-image-modal inline-input input {
     max-width: 10ch;
 }
 
-.crop-image-modal .preview-container {
+cm-crop-image-modal .preview-container {
     border: 1em solid var(--sl-input-border-color);
 }
 
-.crop-image-modal crop-image {
+cm-crop-image-modal crop-image {
     display: block;
     width: 100%;
     height: 100%;
