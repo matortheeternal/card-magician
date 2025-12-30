@@ -45,6 +45,10 @@ export default class Modal extends ReactiveComponent {
         return null;
     }
 
+    renderFields() {
+        renderFields(this, this.data, this.fields);
+    }
+
     render() {
         const actionsHTML = this.renderActions();
         this.innerHTML = (
