@@ -42,6 +42,7 @@ export function closeModal() {
     } else {
         withLastModal(lastModal => {
             lastModal.style.removeProperty('display');
+            lastModal.render();
         });
     }
 }

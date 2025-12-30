@@ -1,17 +1,21 @@
-import { baseKeywords } from "./lists/main.js";
+import { getKeywords } from "./lists/main.js";
 const L = localize('game-magic');
 
 export default class ViewKeywordsModal extends Modal {
-    static id = 'cm-keywords-modal';
+    static id = 'cm-view-keywords-modal';
     title = L`Keywords`;
 
     onKeyup = { search: this.onSearch };
-    onClick = { edit: (event) => {
-            const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
-            const data = { game: this.data.game, set: this.data.set, keyword };
-            this.data.game.openModal('cm-edit-keywords-modal', data);
-        } 
-    };
+    get onClick() {
+        return {   
+            ...super.onClick,
+            edit: (event) => {
+                const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
+                const data = { game: this.data.game, set: this.data.set, keyword };
+                this.data.game.openModal('cm-edit-keywords-modal', data);
+            } 
+        };
+    }
 
     baseRowHtml = `
         <div class="keyword-row label-row" id="label-row">
@@ -77,7 +81,9 @@ export default class ViewKeywordsModal extends Modal {
 
     renderTable() {
         let html = '';
-        for (const keyword of baseKeywords) {
+        console.log(this.data);
+        for (const keyword of getKeywords(this.data.set)) {
+            // console.log('kw', keyword, JSON.stringify(keyword));
             html += this.keywordHtml(keyword);
         }
 

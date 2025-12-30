@@ -41,7 +41,6 @@ export function hydrateFields(root) {
             if (!fieldId) continue;
             element.field = root.getField(subcardId, fieldId);
             const model = root.getModel(subcardId);
-            console.log(root, subcardId, parentFormField, model, element.field);
             element.model = model;
         }
     }
@@ -91,7 +90,6 @@ function getDefaultSelector(field) {
 export function renderFields(root, model, fields, getSelector = getDefaultSelector) {
     if (!fields) return;
     fields.forEach(field => {
-        console.log(fields, field);
         const selector = getSelector(field, model);
         const container = root.querySelector(selector);
         if (!container) return;

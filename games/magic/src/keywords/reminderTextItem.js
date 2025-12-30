@@ -2,17 +2,6 @@ import matchers from "./matcherComponents.js"; // To register custom elements
 
 const L = localize('game-magic');
 
-const matchTypeOptions = [
-    { id: 'cardProp', name: L`Card Property` },
-    { id: 'numberIsX', name: L`Number is X`},
-    { id: 'isPlural', name: L`Is Plural`},
-    { id: 'targetsOther', name: L`Targets Other`},
-    { id: 'costHasX', name: L`Cost has X`},
-    { id: 'hasPt', name: L`Has PT`},
-    { id: 'hasTarget', name: L`Has a Target`},
-    { id: 'hasPPCounters', name: L`Has Modular`}
-];
-
 export default class ReminderTextItem extends ComponentWithFields {
     #model;
 
@@ -28,21 +17,18 @@ export default class ReminderTextItem extends ComponentWithFields {
         const model = subcardId
             ? this.model[subcardId]
             : this.model;
-        console.log('model', model, this.model, subcardId);
+
         return model;
     }
 
     render(index) {
-        let paramHtml = '';
-        for (const paramName of Object.keys(this.model.match?.params || {})) {
-            paramHtml += `<cm-matcher data-param="${paramName}"></cm-matcher>`;
-        }
+        const matchHtml = this.model.match ? '<cm-matcher></cm-matcher>': '';
 
         this.innerHTML =
             `<form-group group-id="rt-${index}" class="with-border">
                 <label>Reminder Text ${index}</label>
                 <form-field field-id="type" subcard-id="match"></form-field>
-                <div class="match-params">${paramHtml}</div>
+                ${matchHtml}
                 <form-field field-id="template"></form-field>
             </form-group>`;
 
@@ -50,21 +36,16 @@ export default class ReminderTextItem extends ComponentWithFields {
         this.renderFields(this.model);
         this.hydrateFields();
 
-        const matchers = this.querySelectorAll('cm-matcher');
-        matchers.forEach((matcher) => {
-            matcher.model = this.data.model.match;
-            matcher.renderMatcher();
+        this.querySelectorAll('cm-matcher').forEach((matcher) => {
+            console.log('matcher', this.model);
+            matcher.model = this.model.match;
+            matcher.render();
+            // matcher.renderMatcher();
         });
     }
 
     get fields() {
-        return [(this.model.match ? {
-            id: 'type',
-            label: L`Match Type`,
-            subcardId: 'match',
-            type: 'select',
-            options: matchTypeOptions
-        } : {}), {
+        return [{
             id: 'template',
             label: L`Template`,
             type: 'textarea'
@@ -76,8 +57,18 @@ export default class ReminderTextItem extends ComponentWithFields {
             ? `[subcard-id="${field.subcardId}"]`
             : ':not([subcard-id])');
 
-        console.log(model, field, s);
         return s;
+    }
+
+    fullModel() {
+        const matches = [];
+        this.querySelectorAll('cm-matcher').forEach((matcher) => {
+            matches.push(matcher.fullModel());
+        });
+
+        this.model.match = matches.length === 1 ? matches[0] : matches;
+
+        return this.model;
     }
 }
 

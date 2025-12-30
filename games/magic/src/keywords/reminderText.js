@@ -114,10 +114,10 @@ function generateReminderText(keyword, params, card, target) {
     }
 }
 
-export function addAutoReminderText(str, card, game) {
+export function addAutoReminderText(str, card, set) {
     let reminderText = '';
 
-    for (const { keyword, params, target } of matchAllKeywords(str, card, game)) {
+    for (const { keyword, params, target } of matchAllKeywords(str, card, set)) {
         const generatedRt = generateReminderText(keyword, params, card, target);
         const showRt
             = (!keyword.hideByDefault || card.showRt === 'all') 

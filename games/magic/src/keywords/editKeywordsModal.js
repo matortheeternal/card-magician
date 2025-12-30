@@ -6,22 +6,39 @@ const L = localize('game-magic');
 export default class EditKeywordsModal extends Modal {
     static id = 'cm-edit-keywords-modal';
     title = L`Edit Keywords`;
+    edited = false;
 
     css = `
-        form-group {
+        cm-edit-keywords-modal form-group {
             grid-template-columns: auto;
         }
+
+        cm-edit-keywords-modal .save-btn {
+            margin-top: 10px;
+        }
+
+        .warning-unsaved {
+            color: #ed7e38;
+        }
     `;
+
+    saveKeyword() {
+        console.log('saving', this.edited);
+        if (!this.edited) return;
+        if (!this.data.keyword.user) {
+            const data = this.data.keyword;
+            
+            this.querySelectorAll('cm-reminder-text-item').forEach((rt, index) => {
+                this.data.keyword.reminderTexts[index] = rt.fullModel();
+            });
+
+            this.data.set.keywordOverrides[this.data.keyword.label] = data;
+        }
+    }
 
     close() {
         this.saveKeyword();
         super.close();
-    }
-
-    saveKeyword() {
-        if (!this.data.keyword.user) {
-            this.data.set.keywordOverrides[this.data.keyword.label] = this.data.keyword;
-        }
     }
 
     get fields() {
@@ -53,5 +70,7 @@ export default class EditKeywordsModal extends Modal {
             rt.model = this.data.keyword.reminderTexts[index];
             rt.render(index + 1);
         });
+
+        this.addEventListener('sl-change', () => { this.edited = true });
     }
 }

@@ -35,7 +35,7 @@ const actions = {
     editKeywords: () => {
         const game = Alpine.store('game');
         const set = Alpine.store('views').activeSet;
-        openModal('cm-keywords-modal', { game, set });
+        openModal('cm-view-keywords-modal', { game, set });
     },
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),

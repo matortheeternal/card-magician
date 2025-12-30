@@ -32,9 +32,9 @@ function getParamVariables(expressionTokens, match) {
     return paramVariables;
 }
 
-export function matchAllKeywords(str, card, game) {
+export function matchAllKeywords(str, card, set) {
     const matched = [];
-    const keywords = getKeywords(game);
+    const keywords = getKeywords(set);
 
     for (const keyword of keywords) {
         const expressionTokens = parseKeywordTokens(keyword.expression);

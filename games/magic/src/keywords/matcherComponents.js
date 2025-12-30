@@ -1,3 +1,25 @@
+const L = localize('game-magic');
+
+const matchTypeOptions = [
+    { id: 'cardProp', name: L`Card Property` },
+    { id: 'numberIsX', name: L`Number is X`},
+    { id: 'isPlural', name: L`Is Plural`},
+    { id: 'targetsOther', name: L`Targets Other`},
+    { id: 'costHasX', name: L`Cost has X`},
+    { id: 'hasPt', name: L`Has PT`},
+    { id: 'hasTarget', name: L`Has a Target`},
+    { id: 'hasPPCounters', name: L`Has Modular`}
+];
+
+const cardPropOptions = [
+    { id: 'superType', name: L`Card Type` },
+    { id: 'subType', name: L`Sub Type` },
+    { id: 'name', name: L`Name` },
+    { id: 'text', name: L`Rules Text` },
+    { id: 'color', name: L`Color` },
+    { id: 'manaCost', name: L`Mana Cost` }
+];
+
 class Matcher extends ComponentWithFields {
     static tagName = 'cm-matcher';
     #model = {};
@@ -10,46 +32,88 @@ class Matcher extends ComponentWithFields {
         this.#model = data;
     }
 
-    renderMatcher() {
-        const matcher = matchers[this.dataset.param];
-        if (!matcher) return;
+    render() {
+        this.innerHTML = '<form-field field-id="type"></form-field><div class="params"></div>';
+        this.renderFields(this.model);
+        this.hydrateFields();
+        this.renderMatcher();
+        this.querySelector('form-field[field-id="type"]').addEventListener('cm-field-changed', () => {
+            this.renderMatcher();
+        });
+    }
 
-        const matcherElement = document.createElement(matcher.tagName);
-        this.appendChild(matcherElement);
-        matcherElement.render();
+    get fields() {
+        return [{
+            id: 'type',
+            label: L`Match Type`,
+            type: 'select',
+            options: matchTypeOptions
+        }];
+    }
+
+    selectMatcher() {
+        return matchers[this.#model.type];
+    }
+
+    renderMatcher() {
+        const paramMatcher = this.selectMatcher();
+        const params = this.querySelector('.params');
+        params.innerHTML = '';
+        if (!paramMatcher) return;
+
+        this.paramMatcherElement = document.createElement(paramMatcher.tagName);
+        params.appendChild(this.paramMatcherElement);
+        console.log('adsf', this.model);
+        this.paramMatcherElement.model = { ...paramMatcher.initialModel, ...this.model.params };
+        this.paramMatcherElement.render();
+    }
+
+    getModel() {
+        return this.model;
+    }
+
+    fullModel() {
+        return { ...this.model, params: (this.paramMatcherElement?.model || {}) };
+    }
+}
+
+class ParamMatcher extends ComponentWithFields {
+    static tagName = 'cm-param-matcher';
+    #model = {};
+
+    get model() {
+        return this.#model;
+    }
+
+    set model(data) {
+        this.#model = data;
     }
 
     render() {
-        this.innerHtml = '';
+        this.innerHTML = '';
     }
 
     get fields() {
         return [];
     }
 
-    getModel(subcardId) {
-        const model = subcardId
-            ? this.model[subcardId]
-            : this.model;
-            
-        return model;
+    getModel() {
+        return this.model;
     }
 
     getSelector(field, model) {
-        const s = `form-field[field-id="${field.id}"]` + (field.subcardId
+        return `form-field[field-id="${field.id}"]` + (field.subcardId
             ? `[subcard-id="${field.subcardId}"]`
             : ':not([subcard-id])');
-
-        return s;
     }
 }
 
-class CardPropMatcher extends Matcher {
-    // this.model = keyword.match.param
+class CardPropMatcher extends ParamMatcher {
     static tagName = 'cm-card-prop-matcher';
+    static initialModel = {prop: 'superType', match: ''};
 
     render() {
-        this.innerHtml = '<form-field field-id="prop"></form-field><form-field field-id="match"></form-field>';
+        this.innerHTML = '<form-field field-id="prop"></form-field><form-field field-id="match"></form-field>';
         this.renderFields(this.model);
         this.hydrateFields();
     }
@@ -57,7 +121,7 @@ class CardPropMatcher extends Matcher {
     get fields() {
         return [{
             id: 'prop',
-            name: L`Property`,
+            label: L`Property`,
             type: 'select',
             options: cardPropOptions,
         }, {
@@ -67,35 +131,41 @@ class CardPropMatcher extends Matcher {
     }
 }
 
-class NumberIsXMatcher extends Matcher {
+class NumberIsXMatcher extends ParamMatcher {
     static tagName = 'cm-number-is-x-matcher';
+    static initialModel = {param: ''};
 
     get fields() {
         return [{
             id: 'param',
-            name: L`Keyword Param`,
+            label: L`Keyword Parameter`,
             placeholder: 'number'
         }];
     }
 
     render() {
-        this.innerHtml = '<form-field field-id="param"></form-field>';
+        this.innerHTML = '<form-field field-id="param"></form-field>';
+        this.renderFields(this.model);
+        this.hydrateFields();
     }
 }
 
-class CostHasX extends Matcher {
+class CostHasX extends ParamMatcher {
     static tagName = 'cm-cost-has-x-matcher';
+    static initialModel = {param: ''};
 
     get fields() {
         return [{
             id: 'param',
-            name: L`Keyword Param`,
+            label: L`Keyword Param`,
             placeholder: 'cost'
         }];
     }
 
     render() {
-        this.innerHtml = '<form-field field-id="param"></form-field>';
+        this.innerHTML = '<form-field field-id="param"></form-field>';
+        this.renderFields(this.model);
+        this.hydrateFields();
     }
 } 
 

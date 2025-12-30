@@ -28,9 +28,9 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.registerModal(EditKeywordsModal);
         this.registerModal(ViewKeywordsModal);
         this.getThisType = getThisType;
-        this.addAutoReminderText = (str, card) => addAutoReminderText(str, card, this);
+        this.addAutoReminderText = (str, card) => addAutoReminderText(str, card, this.getActiveSet());
         this.AbilityWordConverters = AbilityWordConverters;
-        this.matchAllKeywords = (str, card) => matchAllKeywords(str, card, this);
+        this.matchAllKeywords = (str, card) => matchAllKeywords(str, card, this.getActiveSet());
         // this.generateUserKeywordsForm = generateUserKeywordsForm;
         // this.currentUserKeyword = this.userKeywords[0];
         // this.userKeywords = [newUserKeyword()];

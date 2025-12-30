@@ -7,10 +7,15 @@ export const baseKeywords = [
 ];
 
 export function getKeywords(set) {
-    return [
-        ...baseKeywords,
-        // set.currentUserKeyword
-    ];
+    console.log(set);
+    const keywords = [];
+
+    for (const keyword of baseKeywords) {
+        const override = set.keywordOverrides?.[keyword.label];
+        keywords.push(override ? override : keyword);
+    }
+
+    return keywords;
 }
 
 function makeAbilityWordConverter(keyword) {
