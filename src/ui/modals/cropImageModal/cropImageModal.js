@@ -2,6 +2,7 @@ import html from './cropImageModal.html.js';
 import { registerModal } from '../modalManager.js';
 import Modal from '../Modal.js';
 import { morphHTML } from '../../../domain/template/morphHTML.js';
+import { esc } from '../../../shared/htmlUtils.js';
 
 const L = localize('crop-image-modal');
 
@@ -11,7 +12,7 @@ export default class CropImageModal extends Modal {
     maxHeight = 600;
 
     connectedCallback() {
-        this.title = `${L`Crop Image`} (<span>${this.value.filename}</span>)`;
+        this.title = `${L`Crop Image`} (<span>${esc(this.value.filename)}</span>)`;
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;
@@ -29,7 +30,7 @@ export default class CropImageModal extends Modal {
         this.previewContainer = this.querySelector('.preview-container');
     }
 
-    get onClick() {
+    get onClickHandlers() {
         return {
             close: this.close,
             save: this.save
@@ -45,27 +46,20 @@ export default class CropImageModal extends Modal {
     }
 
     updatePreview() {
+        if (!this.previewContainer) return;
         morphHTML(this.previewContainer, (
-            `<crop-image crop-width="${this.realCrop.width}"
-                        crop-height="${this.realCrop.height}"
-                        offset-x="${this.realCrop.xOffset}"
-                        offset-y="${this.realCrop.yOffset}"
-                        src="${this.value.imageUrl}"></crop-image>`
+            `<crop-image crop-width="${esc(this.realCrop.width)}"
+                        crop-height="${esc(this.realCrop.height)}"
+                        offset-x="${esc(this.realCrop.xOffset)}"
+                        offset-y="${esc(this.realCrop.yOffset)}"
+                        src="${esc(this.value.imageUrl)}"></crop-image>`
         ));
     }
 
     clampCrop(isMove = false) {
-        const crop = this.value.crop;
         const imgWidth = Math.min(this.value.width, this.maxWidth);
         const imgHeight = Math.min(this.value.height, this.maxHeight);
-        const maxOffsetX = imgWidth - (isMove ? crop.width : 1);
-        const maxOffsetY = imgHeight - (isMove ? crop.height : 1);
-        crop.xOffset = Math.max(0, Math.min(crop.xOffset, maxOffsetX));
-        crop.yOffset = Math.max(0, Math.min(crop.yOffset, maxOffsetY));
-        const maxWidth = imgWidth - crop.xOffset;
-        const maxHeight = imgHeight - crop.yOffset;
-        crop.width = Math.min(Math.max(crop.width, 1), maxWidth);
-        crop.height = Math.min(Math.max(crop.height, 1), maxHeight);
+        this.value.crop.clamp(imgWidth, imgHeight, isMove);
     }
 
     updatePreviewStyle() {

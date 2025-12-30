@@ -17,6 +17,17 @@ export class CropValue {
         );
     }
 
+    clamp(sourceWidth, sourceHeight, isMove) {
+        const maxOffsetX = sourceWidth - (isMove ? this.width : 1);
+        const maxOffsetY = sourceHeight - (isMove ? this.height : 1);
+        this.xOffset = Math.max(0, Math.min(this.xOffset, maxOffsetX));
+        this.yOffset = Math.max(0, Math.min(this.yOffset, maxOffsetY));
+        const maxWidth = sourceWidth - this.xOffset;
+        const maxHeight = sourceHeight - this.yOffset;
+        this.width = Math.min(Math.max(this.width, 1), maxWidth);
+        this.height = Math.min(Math.max(this.height, 1), maxHeight);
+    }
+
     save() {
         return {
             cropWidth: this.width,

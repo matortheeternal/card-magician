@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import html from './editor.html.js';
 import { cropHandlers } from './cropHandlers.js';
 
@@ -52,6 +51,7 @@ export default class CropImageEditor extends HTMLElement {
         this.realCrop.height = Math.round(crop.height * scale);
         this.realCrop.xOffset = Math.round(crop.xOffset * scale);
         this.realCrop.yOffset = Math.round(crop.yOffset * scale);
+        this.modal.updatePreview();
     }
 
     updateCropBox() {
@@ -60,6 +60,10 @@ export default class CropImageEditor extends HTMLElement {
         this.cropBox.style.left = `${crop.xOffset + 6}px`;
         this.cropBox.style.width = `${crop.width}px`;
         this.cropBox.style.height = `${crop.height}px`;
+    }
+
+    publishCrop() {
+        this.updateCropBox();
         this.updateRealCrop();
         this.updateCropInfo();
     }
@@ -139,7 +143,7 @@ export default class CropImageEditor extends HTMLElement {
             cropHandler?.(this.value.crop, cropStart, dx, dy, options);
         });
         this.modal.clampCrop(mode === 'move');
-        this.updateCropBox();
+        this.publishCrop();
     }
 
     onPointerUp(event) {
@@ -159,7 +163,7 @@ export default class CropImageEditor extends HTMLElement {
         this.value.crop[cropKey] = parsedValue / this.value.scale;
         this.modal.clampCrop();
         input.value = Math.round(this.value.crop[cropKey] * this.value.scale);
-        this.updateCropBox();
+        this.publishCrop();
     }
 }
 
