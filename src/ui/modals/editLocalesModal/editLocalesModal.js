@@ -10,11 +10,11 @@ const L = localize('edit-locales-modal');
 export default class EditLocalesModal extends Modal {
     static id = 'cm-edit-locales-modal';
     title = L`Edit Locales`;
-    localeField = {
+    localeField = Alpine.reactive({
         id: 'selectedLocaleId',
         label: L`Selected Locale`,
         type: 'select'
-    };
+    });
     stats = {};
     statusMessage = '';
 
