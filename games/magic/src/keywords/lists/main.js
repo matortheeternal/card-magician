@@ -7,7 +7,6 @@ export const baseKeywords = [
 ];
 
 export function getKeywords(set) {
-    console.log(set);
     const keywords = [];
 
     for (const keyword of baseKeywords) {

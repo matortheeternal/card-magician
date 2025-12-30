@@ -1,4 +1,4 @@
-import matchers from "./matcherComponents.js"; // To register custom elements
+import matchers from './matcherComponents.js'; // To register custom elements
 
 const L = localize('game-magic');
 
@@ -24,8 +24,8 @@ export default class ReminderTextItem extends ComponentWithFields {
     render(index) {
         const matchHtml = this.model.match ? '<cm-matcher></cm-matcher>': '';
 
-        this.innerHTML =
-            `<form-group group-id="rt-${index}" class="with-border">
+        this.innerHTML
+            = `<form-group group-id="rt-${index}" class="with-border">
                 <label>Reminder Text ${index}</label>
                 <form-field field-id="type" subcard-id="match"></form-field>
                 ${matchHtml}
@@ -36,10 +36,8 @@ export default class ReminderTextItem extends ComponentWithFields {
         this.renderFields(this.model);
 
         this.querySelectorAll('cm-matcher').forEach((matcher) => {
-            console.log('matcher', this.model);
             matcher.model = this.model.match;
             matcher.render();
-            // matcher.renderMatcher();
         });
     }
 
@@ -66,7 +64,6 @@ export default class ReminderTextItem extends ComponentWithFields {
         });
 
         this.model.match = matches.length === 1 ? matches[0] : matches;
-
         return this.model;
     }
 }

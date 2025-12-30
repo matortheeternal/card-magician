@@ -33,13 +33,13 @@ class Matcher extends ComponentWithFields {
     }
 
     render() {
-        this.innerHTML = '<form-field field-id="type"></form-field><div class="params"></div>';
+        this.innerHTML = `<form-field field-id="type"></form-field>
+            <div class="params"></div>`;
         this.renderFields(this.model);
 
         this.renderMatcher();
-        this.querySelector('form-field[field-id="type"]').addEventListener('cm-field-changed', () => {
-            this.renderMatcher();
-        });
+        this.querySelector('form-field[field-id="type"]')
+            .addEventListener('cm-field-changed', this.renderMatcher);
     }
 
     get fields() {
@@ -63,7 +63,6 @@ class Matcher extends ComponentWithFields {
 
         this.paramMatcherElement = document.createElement(paramMatcher.tagName);
         params.appendChild(this.paramMatcherElement);
-        console.log('adsf', this.model);
         this.paramMatcherElement.model = { ...paramMatcher.initialModel, ...this.model.params };
         this.paramMatcherElement.render();
     }
@@ -113,7 +112,8 @@ class CardPropMatcher extends ParamMatcher {
     static initialModel = {prop: 'superType', match: ''};
 
     render() {
-        this.innerHTML = '<form-field field-id="prop"></form-field><form-field field-id="match"></form-field>';
+        this.innerHTML = `<form-field field-id="prop"></form-field>
+            <form-field field-id="match"></form-field>`;
         this.renderFields(this.model);
     }
 
@@ -173,8 +173,8 @@ const matchers = {
     baseMatcher: Matcher
 };
 
-for (const matcher of Object.values(matchers)) {
+for (const matcher of Object.values(matchers))
     customElements.define(matcher.tagName, matcher);
-}
+
 
 export default matchers;

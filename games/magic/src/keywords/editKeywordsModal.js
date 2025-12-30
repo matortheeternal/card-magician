@@ -23,7 +23,6 @@ export default class EditKeywordsModal extends Modal {
     `;
 
     saveKeyword() {
-        console.log('saving', this.edited);
         if (!this.edited) return;
         if (!this.data.keyword.user) {
             const data = this.data.keyword;
@@ -50,10 +49,8 @@ export default class EditKeywordsModal extends Modal {
     }
 
     renderBody() {
-        let rtHtml = '';
-        for (const rt of this.data.keyword.reminderTexts) {
-            rtHtml += '<cm-reminder-text-item></cm-reminder-text-item>';
-        }
+        const numRts = this.data.keyword.reminderTexts.length;
+        const rtHtml = '<cm-reminder-text-item></cm-reminder-text-item>'.repeat(numRts);
         
         return (
             `<form-field field-id="label"></form-field>
@@ -71,6 +68,6 @@ export default class EditKeywordsModal extends Modal {
             rt.render(index + 1);
         });
 
-        this.addEventListener('sl-change', () => { this.edited = true });
+        this.addEventListener('sl-change', () => { this.edited = true; });
     }
 }
