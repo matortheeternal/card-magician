@@ -1,39 +1,39 @@
-.edit-locales-modal .modal {
+cm-edit-locales-modal .modal {
     width: 800px;
     font-family: var(--sl-font-sans);
     font-size: var(--sl-font-size-large);
 }
 
-.edit-locales-modal .modal-body {
+cm-edit-locales-modal .modal-body {
     padding: 1em 2em 2em;
     gap: 0;
 }
 
-.edit-locales-modal .select-bar {
+cm-edit-locales-modal .select-bar {
     display: flex;
     flex-direction: row;
     align-items: end;
 }
 
-.edit-locales-modal .select-bar cm-select {
+cm-edit-locales-modal form-field[field-id="selectedLocaleId"] {
     flex: 1;
 }
 
-.edit-locales-modal .input-fields {
+cm-edit-locales-modal .input-fields {
     display: flex;
     flex-direction: row;
     gap: var(--sl-spacing-small);
 }
 
-.edit-locales-modal .contributors-input {
+cm-edit-locales-modal form-field[field-id="contributors"] {
     flex: 1;
 }
 
-.edit-locales-modal cm-code-editor {
+cm-edit-locales-modal form-field[field-id="text"] {
     margin-top: var(--sl-spacing-medium);
 }
 
-.edit-locales-modal .editor-status-bar {
+cm-edit-locales-modal .editor-status-bar {
     display: flex;
     justify-content: space-between;
     font-size: var(--sl-font-size-medium);
