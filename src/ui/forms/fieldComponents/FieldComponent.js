@@ -2,15 +2,13 @@ import { emit } from '../../../shared/htmlUtils.js';
 import ReactiveComponent from '../../ReactiveComponent.js';
 
 export default class FieldComponent extends ReactiveComponent {
-    #field = null;
-    #model = '';
-    #state = Alpine.reactive({ ready: false });
+    #state = Alpine.reactive({ ready: false, field: null, model: null });
     eventKey = 'sl-input';
 
     connectedCallback() {
         this.on(this.eventKey, event => this.onChange(event));
         this.effect(() => { if (this.ready) this.render(); });
-        this.effect(() => { if (this.ready) this.loadValue?.(); });
+        this.effect(() => { if (this.ready) this.loadValue(); });
     }
 
     get ready() {
@@ -18,32 +16,32 @@ export default class FieldComponent extends ReactiveComponent {
     }
 
     get field() {
-        return this.#field;
+        return this.#state.field;
     }
 
     set field(newValue) {
-        this.#field = newValue;
-        this.#state.ready = Boolean(this.#field && this.#model);
+        this.#state.field = newValue;
+        this.#state.ready = Boolean(this.#state.field && this.#state.model);
     }
 
     set model(newValue) {
-        this.#model = newValue;
-        this.#state.ready = Boolean(this.#field && this.#model);
+        this.#state.model = newValue;
+        this.#state.ready = Boolean(this.#state.field && this.#state.model);
     }
 
     get model() {
-        return this.#model;
+        return this.#state.model;
     }
 
     /**
      * @returns {any}
      */
     get value() {
-        return this.#model[this.#field.id];
+        return this.model[this.field.id];
     }
 
     set value(newValue) {
-        this.#model[this.#field.id] = newValue;
+        this.model[this.field.id] = newValue;
     }
 
     render() {
@@ -60,7 +58,7 @@ export default class FieldComponent extends ReactiveComponent {
         const newValue = await this.getChangedValue(event);
         if (newValue === this.value) return;
         this.value = newValue;
-        this.field.onChange?.(this.#model, newValue);
+        this.field.onChange?.(this.model, newValue);
         emit(this, 'cm-field-changed');
     }
 }

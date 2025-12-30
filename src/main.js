@@ -87,11 +87,4 @@ async function startApp() {
     Alpine.store('views').loaded = true;
 }
 
-document.addEventListener('open-modal', event => {
-    const views = Alpine.store('views');
-    views.activeModal = event.detail.modalKey;
-    views.modalData = event.detail.data;
-    views.modalCallback = event.detail.callback;
-});
-
 startApp();

@@ -83,6 +83,7 @@ export function renderFields(root, model, fields, ctx = {}) {
         const selector = ctx.getSelector(field);
         const container = root.querySelector(selector);
         if (!container) return;
+        container.innerHTML = '';
         const fieldElement = createFieldComponent(container, field, model);
         handleOptionalField(fieldElement, container, model, field, ctx);
     });

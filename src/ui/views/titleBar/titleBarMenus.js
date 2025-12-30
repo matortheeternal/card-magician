@@ -2,6 +2,7 @@ import Alpine from 'alpinejs';
 import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 import { openModal } from '../../modals/modalManager.js';
+import { getAvailableLocales, prepareSchema } from '../../../shared/localize.js';
 
 const L = localize('title-bar');
 
@@ -27,7 +28,14 @@ const actions = {
     copy: () => executeAction('copy'),
     paste: () => executeAction('paste'),
     editPreferences: () => console.log('Edit preferences'),
-    editLocales: () => (Alpine.store('views').activeModal = 'edit-locales'),
+    editLocales: async () => {
+        await prepareSchema();
+        const locales = await getAvailableLocales();
+        openModal('cm-edit-locales-modal', {
+            locales,
+            selectedLocale: locales[0]
+        });
+    },
     editSetInfo: () => {
         const activeSet = Alpine.store('views').activeSet;
         openModal('cm-set-info-modal', activeSet.info);

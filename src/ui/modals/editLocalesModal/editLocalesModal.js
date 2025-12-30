@@ -1,52 +1,80 @@
-import Alpine from 'alpinejs';
-import html from './editLocalesModalHTML.js';
-import {
-    getAvailableLocales,
-    prepareSchema,
-    saveLocale
-} from '../../../shared/localize.js';
+import { registerModal } from '../modalManager.js';
+import Modal from '../Modal.js';
+import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
-const { getAbsolutePath } = Neutralino.filesystem;
+import html from './editLocalesModal.html.js';
+import { renderFields } from '../../systems/fieldSystem.js';
 
 const L = localize('edit-locales-modal');
 
-Alpine.data('editLocalesModal', () => ({
-    localeField: {
+export default class EditLocalesModal extends Modal {
+    static id = 'cm-edit-locales-modal';
+    title = L`Edit Locales`;
+    localeField = {
         id: 'selectedLocaleId',
         label: L`Selected Locale`,
         type: 'select'
-    },
-    idField: {
-        id: 'id',
-        label: L`Locale ID`
-    },
-    labelField: {
-        id: 'label',
-        label: L`Label`
-    },
-    contributorsField: {
-        id: 'contributors',
-        placeholder: L`Your name here`,
-        label: L`Contributors`
-    },
-    stats: {},
-    statusMessage: '',
-    selectedLocale: null,
+    };
+    stats = {};
+    statusMessage = '';
+
+    get onClickHandlers() {
+        return {
+            ...super.onClickHandlers,
+            save: this.save,
+            openLocalesFolder: this.openLocalesFolder,
+            createNewLocale: this.createNewLocale,
+            activate: this.activate,
+            share: this.share
+        };
+    }
 
     async init() {
-        this.$root.innerHTML = html;
-        await prepareSchema();
-        this.localeField.options = await getAvailableLocales();
-        this.stats.total = Localization.totalKeys;
-        const locale = this.localeField.options[0] || await this.createNewLocale();
-        this.selectLocale(locale);
-        this.updateStats();
-        this.onChange = this.onChange.bind(this);
         this.save = this.save.debounce(1000);
-        Alpine.initTree(this.$root);
-        this.hydrate();
-        this.bind();
-    },
+        this.localeField.options = this.data.locales;
+        this.stats.total = Localization.totalKeys;
+    }
+
+    connectedCallback() {
+        this.init().then(() => {
+            super.connectedCallback();
+            this.statsContainer = this.querySelector('.stats');
+            if (Boolean(this.data.selectedLocale)) {
+                this.selectLocale(this.data.selectedLocale);
+            } else {
+                this.createNewLocale();
+            }
+        });
+    }
+
+    bind() {
+        super.bind();
+        this.on('code-change', event => this.onCodeChange(event));
+        this.on('cm-field-changed', event => this.onFieldChanged(event))
+    }
+
+    get fields() {
+        return [this.localeField];
+    }
+
+    get localeFields() {
+        return [
+            { id: 'id', label: L`Locale ID` },
+            { id: 'label', label: L`Label` },
+            { id: 'contributors',
+                placeholder: L`Your name here`,
+                label: L`Contributors` },
+            { id: 'text', label: L`Text`, type: 'code' }
+        ];
+    }
+
+    selectLocale(locale) {
+        this.data.selectedLocale = locale;
+        this.data.selectedLocaleId = locale.id;
+        renderFields(this, this.data.selectedLocale, this.localeFields, {
+            getSelector: field => `form-field[field-id="${field.id}"]`
+        });
+    }
 
     getNextAvailableId() {
         const usedIds = this.localeField.options.map(opt => opt.id);
@@ -57,76 +85,83 @@ Alpine.data('editLocalesModal', () => ({
             id = `${baseId}${n++}`;
 
         return id;
-    },
+    }
 
-    selectLocale(locale) {
-        this.selectedLocale = locale;
-        this.selectedLocaleId = locale.id;
-    },
-
-    updateForm() {
-        this.$root.querySelectorAll('cm-input').forEach(input => {
-            input.model = this.selectedLocale;
-        });
-    },
-
-    hydrate() {
-        this.$root.querySelector('cm-select').model = this;
-        this.$root.querySelector('cm-code-editor').value = this.selectedLocale.edit;
-        this.updateForm();
-    },
-
-    bind() {
-        this.$root.addEventListener('code-change', this.onChange);
-    },
-
-    updateStats() {
-        this.stats.completed = this.selectedLocale.completedCount;
-        this.stats.percent = this.selectedLocale.percentComplete;
-    },
-
-    async createNewLocale() {
+    createNewLocale() {
         const id = this.getNextAvailableId();
         const newLocale = new Localization(id);
-        this.localeField.options.push(newLocale);
-        return newLocale;
-    },
+        this.localeField.options = [...this.localeField.options, newLocale];
+        this.selectLocale(newLocale);
+    }
+
+    updateStats() {
+        this.stats.completed = this.data.selectedLocale.completedCount;
+        this.stats.percent = this.data.selectedLocale.percentComplete;
+        this.statsContainer.innerHTML = (
+            `<span>Progress:&nbsp;</span>
+             <span>${this.stats.completed}</span>
+             <span>/</span>
+             <span>${this.stats.total}</span>
+             <span>&nbsp;—&nbsp;</span>
+             <span>${this.stats.percent}</span>`
+        );
+    }
+
+    renderBody() {
+        return html;
+    }
+
+    renderActions() {
+        return (
+            `<sl-button data-click-action="activate">${L`Activate`}</sl-button>
+             <sl-button data-click-action="share">${L`Share`}</sl-button>
+             <sl-button data-click-action="close">${L`Close`}</sl-button>`
+        );
+    }
 
     async openLocalesFolder() {
-        const localesPath = await getAbsolutePath(NL_PATH + '/locales');
+        const localesPath = await Neutralino.filesystem.getAbsolutePath(
+            NL_PATH + '/locales'
+        );
         Neutralino.os.open(localesPath);
-    },
+    }
 
     validate() {
         // TODO
-    },
+    }
 
     activate() {
         // TODO
-    },
+    }
 
     share() {
         // TODO
-    },
+    }
 
     async save() {
         this.statusMessage = 'Saving...';
-        this.selectedLocale.updated = new Date();
-        await saveLocale(this.selectedLocale);
+        this.data.selectedLocale.updated = new Date();
+        await saveLocale(this.data.selectedLocale);
         setTimeout(() => (this.statusMessage = 'Saved.'), 350);
-    },
+    }
 
-    onChange(event) {
+    onCodeChange() {
         try {
-            this.selectedLocale.raw = event.detail.value;
             this.updateStats();
             this.save();
         } catch (e) {
             console.error(e);
         }
-    },
-
-    closeModal() {
-        Alpine.store('views').activeModal = null;
     }
-}));
+
+    onFieldChanged(event) {
+        const formField = event.target.closest('form-field');
+        if (formField.fieldId !== 'selectedLocaleId') return;
+        const locale = this.localeField.options.find(option => {
+            return option.id === event.value;
+        });
+        if (locale) this.selectLocale(locale);
+    }
+}
+
+registerModal(EditLocalesModal);
