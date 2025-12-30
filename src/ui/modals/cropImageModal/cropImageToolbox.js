@@ -52,7 +52,7 @@ export default class CropImageToolbox extends HTMLElement {
         }
         this.centerCropVertically();
         this.centerCropHorizontally();
-        this.editor.updateCropBox();
+        this.editor.publishCrop();
     }
 
     cropToImageSize() {
@@ -60,19 +60,19 @@ export default class CropImageToolbox extends HTMLElement {
         this.value.crop.height = this.value.height;
         this.value.crop.xOffset = 0;
         this.value.crop.yOffset = 0;
-        this.editor.updateCropBox();
+        this.editor.publishCrop();
     }
 
     centerCropVertically() {
         const { height, crop } = this.value;
         crop.yOffset = (height - crop.height) / 2;
-        this.editor.updateCropBox();
+        this.editor.publishCrop();
     }
 
     centerCropHorizontally() {
         const { width, crop } = this.value;
         crop.xOffset = (width - crop.width) / 2;
-        this.editor.updateCropBox();
+        this.editor.publishCrop();
     }
 
     updateAspectRatioButton() {
