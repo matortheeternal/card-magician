@@ -63,3 +63,5 @@ export function changed(obj, pathsArg) {
         watcher.callback(diff);
     });
 }
+
+window.changed = changed;
