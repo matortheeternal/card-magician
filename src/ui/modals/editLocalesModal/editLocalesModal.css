@@ -20,13 +20,9 @@ cm-edit-locales-modal form-field[field-id="selectedLocaleId"] {
 }
 
 cm-edit-locales-modal .input-fields {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
     gap: var(--sl-spacing-small);
-}
-
-cm-edit-locales-modal form-field[field-id="contributors"] {
-    flex: 1;
 }
 
 cm-edit-locales-modal form-field[field-id="text"] {
