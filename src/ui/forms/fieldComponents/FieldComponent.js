@@ -1,28 +1,16 @@
 import { emit } from '../../../shared/htmlUtils.js';
+import ReactiveComponent from '../../ReactiveComponent.js';
 
-export default class FieldComponent extends HTMLElement {
+export default class FieldComponent extends ReactiveComponent {
     #field = null;
     #model = '';
     #state = Alpine.reactive({ ready: false });
     eventKey = 'sl-input';
 
-
-    constructor() {
-        super();
-        this.onChange = this.onChange.bind(this);
-    }
-
     connectedCallback() {
-        this.addEventListener(this.eventKey, this.onChange);
-        this.cleanupEffects = [
-            Alpine.effect(() => { if (this.ready) this.render() }),
-            Alpine.effect(() => { if (this.ready) this.loadValue() })
-        ];
-    }
-
-    disconnectedCallback() {
-        this.removeEventListener(this.eventKey, this.onChange);
-        this.cleanupEffects.forEach(cleanup => cleanup());
+        this.on(this.eventKey, event => this.onChange(event));
+        this.effect(() => { if (this.ready) this.render(); });
+        this.effect(() => { if (this.ready) this.loadValue?.(); });
     }
 
     get ready() {
