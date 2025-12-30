@@ -1,63 +1,65 @@
 const watchers = [];
 
-function resolveWatchTargets(arg) {
-    const res = arg instanceof Function ? arg() : arg;
-    return new Set(Array.isArray(res) ? res : [res]);
-}
-
-function collect(value, results) {
-    if (value === null || value === undefined) return;
-    if (typeof value !== 'object') return;
-    if (results.has(value)) return;
-
-    results.add(value);
-    for (const entry of Object.values(value))
-        collect(entry, results);
-}
-
-/**
- * Recursively resolves object and array entries, returning a set of every unique
- * reference found to object, array, map, set, and other similar data structures.
- * Skips circular references.
- *
- * @param {Set|Array} targets
- * @returns {Set}
- */
-function resolveDeepWatchTargets(targets) {
-    const results = new Set();
-    for (const target of Object.values(targets))
-        collect(target, results);
-    return results;
+function resolvePathsArg(pathsArg) {
+    if (!pathsArg) return null;
+    const pathStrings = Array.isArray(pathsArg) ? pathsArg : [pathsArg];
+    return pathStrings.map(pathString => pathString.split('.'));
 }
 
 function makeUnwatch(watcher) {
     return function unwatch() {
         const index = watchers.indexOf(watcher);
-        watchers.splice(index, 1);
+        if (index > -1) watchers.splice(index, 1);
     }
 }
 
-export function watch(arg, callback) {
-    const targets = resolveWatchTargets(arg);
-    const watcher = { targets, callback };
+export function watch(obj, pathsArg, callback) {
+    const paths = resolvePathsArg(pathsArg);
+    const watcher = { obj, paths, callback };
     watchers.push(watcher);
     return makeUnwatch(watcher);
 }
 
-export function deepWatch(arg, callback) {
-    const targets = resolveWatchTargets(arg);
-    const deepTargets = resolveDeepWatchTargets(targets);
-    const watcher = { targets: deepTargets, deep: true, callback };
+export function deepWatch(obj, pathsArg, callback) {
+    const paths = resolvePathsArg(pathsArg);
+    const watcher = { obj, paths, deep: true, callback };
     watchers.push(watcher);
     return makeUnwatch(watcher);
 }
 
-export function runWatchers(...args) {
+function arrayEqual(a, b) {
+    if (a.length !== b.length) return false;
+    return a.every((seg, i) => seg === b[i]);
+}
+
+function arrayStartsWith(full, prefix) {
+    if (full.length < prefix.length) return false;
+    return prefix.every((seg, i) => seg === full[i]);
+}
+
+function joinPaths(paths) {
+    return paths.map(path => path.join('.'));
+}
+
+function getDiff(watcherPaths, changedPaths, deep) {
+    if (!watcherPaths) return { paths: joinPaths(changedPaths) };
+    if (!changedPaths) return { paths: null };
+    const matchedPaths = changedPaths.filter(changedPath => {
+        return watcherPaths.some(watcherPath => {
+            return arrayEqual(watcherPath, changedPath)
+                || (deep && arrayStartsWith(watcherPath, changedPath));
+        });
+    });
+    if (!matchedPaths.length) return null;
+    return { paths: joinPaths(matchedPaths) };
+}
+
+export function changed(obj, pathsArg) {
+    const paths = resolvePathsArg(pathsArg);
     watchers.forEach(watcher => {
-        const intersection = watcher.targets.intersection(args);
-        if (!intersection.length) return;
-        watcher.callback(intersection);
-        if (watcher.deep)
-            watcher.targets = resolveDeepWatchTargets(watcher.targets);
+        if (watcher.obj !== obj) return;
+        const diff = getDiff(watcher.paths, paths, watcher.deep);
+        if (!diff) return;
+        watcher.callback(diff);
     });
 }
