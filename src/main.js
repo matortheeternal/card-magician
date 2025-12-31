@@ -6,7 +6,7 @@ import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import CardMagicianModule from './domain/template/CardMagicianModule.js';
 import CardMagicianGame from './domain/game/CardMagicianGame.js';
-import { loadTemplates, getTemplates } from './domain/template/templateRegistry.js';
+import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
 import imageCache from './domain/gfx/ImageCache.js';
@@ -39,7 +39,7 @@ async function ensureDirectories() {
 async function setupNeutralino() {
     initApp();
     await setWindowSize({ resizable: true });
-    await setDraggableRegion('title-bar')
+    await setDraggableRegion('title-bar');
     await ensureDirectories();
     await mount('/modules', NL_PATH + '/modules');
     await mount('/templates', NL_PATH + '/templates');

@@ -59,9 +59,7 @@ export default class Modal extends ReactiveComponent {
                     </div>
                 </div>
                 <div class="modal-body">${this.renderBody()}</div>
-                ${actionsHTML && (
-                    `<div class="modal-actions">${actionsHTML}</div>`
-                )}
+                ${actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`}
             </div>`
         );
         this.renderFields();

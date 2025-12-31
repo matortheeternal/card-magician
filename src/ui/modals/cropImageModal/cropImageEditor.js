@@ -78,7 +78,7 @@ export default class CropImageEditor extends HTMLElement {
         const inputs = this.cropInfo.querySelectorAll('cm-inline-input');
         inputs.forEach(input => {
             input.value = this.realCrop[input.dataset.cropKey];
-        })
+        });
     }
 
     updateImageInfo() {

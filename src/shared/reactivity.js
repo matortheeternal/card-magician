@@ -10,7 +10,7 @@ function makeUnwatch(watcher) {
     return function unwatch() {
         const index = watchers.indexOf(watcher);
         if (index > -1) watchers.splice(index, 1);
-    }
+    };
 }
 
 export function watch(obj, pathsArg, callback) {

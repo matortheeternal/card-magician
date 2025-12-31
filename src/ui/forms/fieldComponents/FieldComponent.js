@@ -16,7 +16,7 @@ export default class FieldComponent extends ReactiveComponent {
         if (!this.model || !this.field) return;
         if (this.#valueWatch) this.#valueWatch.remove();
         this.#valueWatch = this.watch(this.model, this.field.id,
-            () => this.loadValue()
+                                      () => this.loadValue()
         );
     }
 
@@ -46,7 +46,7 @@ export default class FieldComponent extends ReactiveComponent {
      * @returns {any}
      */
     get value() {
-        if (!this.model || !this.field) return;
+        if (!this.model || !this.field) return null;
         return this.model[this.field.id];
     }
 

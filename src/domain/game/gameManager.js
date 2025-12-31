@@ -2,6 +2,7 @@ import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
 import { sifter } from './search.js';
 import AppConfig from './appConfig.js';
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
+import { newSet } from '../sets/setManager.js';
 
 const games = [];
 let activeGame = null;
@@ -15,7 +16,7 @@ export async function setGame(gameId) {
     activeGame = new Module(game.path);
     await activeGame.init();
     activeGame.setupSearch(sifter);
-    setActiveSet(activeGame.newSet());
+    newSet();
     appConfig = new AppConfig(activeGame);
     return activeGame;
 }

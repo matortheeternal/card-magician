@@ -25,6 +25,7 @@ export default [
                 Alpine: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
+                changed: 'readonly',
                 CardMagicianModule: 'readonly'
             }
         }
