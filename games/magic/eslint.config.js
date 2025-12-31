@@ -21,8 +21,6 @@ export default [
                 NL_PATH: 'readonly',
                 NL_DATAPATH: 'readonly',
                 NL_ARGS: 'readonly',
-                // DEPENDENCY GLOBALS
-                Alpine: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
                 CardMagicianModule: 'readonly',

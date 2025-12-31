@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import html from './cardFormHTML.js';
 import { onActiveCardChanged, saveActiveCard } from '../../../domain/sets/setManager.js';
 
@@ -7,7 +6,7 @@ class CardForm extends HTMLElement {
 
     constructor() {
         super();
-        this.save = Alpine.debounce(this.save, 300);
+        this.save = this.save.debounce(300);
     }
 
     connectedCallback() {
