@@ -1,6 +1,7 @@
 import { esc } from '../../../shared/htmlUtils.js';
 import Alpine from 'alpinejs';
 import { getTags } from '../../../domain/game/tagManager.js';
+import { getSelectedCard } from '../../../domain/sets/setManager.js';
 
 const L = localize('card-properties');
 
@@ -64,7 +65,7 @@ class CardProperties extends HTMLElement {
     updateNotes(e) {
         if (e.target.name !== 'notes') return;
         this.#card.notes = e.target.value;
-        const { selectedCard } = Alpine.store('views');
+        const selectedCard = getSelectedCard();
         selectedCard.notes = this.#card.notes;
         return true;
     }
@@ -76,7 +77,7 @@ class CardProperties extends HTMLElement {
     updateTags(e) {
         if (e.target.name !== 'tags') return;
         this.#card.tags = e.target.value;
-        const { selectedCard } = Alpine.store('views');
+        const selectedCard = getSelectedCard();
         selectedCard.tags = this.#card.tags;
         return true;
     }

@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import html from './cardFormHTML.js';
+import { onActiveCardChanged, saveActiveCard } from '../../../domain/sets/setManager.js';
 
 class CardForm extends HTMLElement {
     #card;
@@ -12,17 +13,20 @@ class CardForm extends HTMLElement {
     connectedCallback() {
         this.render();
         this.addEventListener('cm-field-changed', this.save);
+        onActiveCardChanged(card => {
+            this.card = card;
+        });
     }
 
     render() {
-        this.innerHTML = this.#card ? html : '';
+        this.innerHTML = this.card ? html : '';
         this.bind();
     }
 
     bind() {
         this.faceForms.forEach(faceForm => {
             const faceId = faceForm.dataset.faceId;
-            faceForm.face = this.#card[faceId];
+            faceForm.face = this.card[faceId];
         });
     }
 
@@ -34,13 +38,12 @@ class CardForm extends HTMLElement {
         this.render();
     }
 
-    get card() { return this.#card; }
+    get card() {
+        return this.#card;
+    }
 
     async save() {
-        const { activeCard, selectedCard } = Alpine.store('views');
-        selectedCard.front = await activeCard.front.save();
-        if (activeCard.back)
-            selectedCard.back = await activeCard.back.save();
+        await saveActiveCard();
     }
 }
 

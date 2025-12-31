@@ -3,10 +3,10 @@ import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
 import {
-    getActiveSet,
-    getSetCards,
+    getActiveSet, getSelectedCard,
+    getSetCards, mutateCard,
     newSet,
-    openSet
+    openSet, selectCard, setActiveCard
 } from '../../../domain/sets/setManager.js';
 import { filter } from '../../../domain/game/search.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
@@ -50,28 +50,19 @@ Alpine.data('setView', () => ({
     },
 
     async addFace(faceId) {
-        const views = Alpine.store('views');
-        views.selectedCard[faceId] = {};
-        const card = await buildCard(views.selectedCard);
-        views.activeCard = Alpine.reactive(card);
+        await mutateCard(card => {
+            card[faceId] = {};
+        });
     },
 
     async changeTemplate(faceId, newTemplateId) {
-        const views = Alpine.store('views');
-        views.selectedCard[faceId].template = newTemplateId;
-        const card = await buildCard(views.selectedCard);
-        views.activeCard = Alpine.reactive(card);
+        await mutateCard(card => {
+            card[faceId].template = newTemplateId;
+        });
     },
 
-    async setActiveCard(selectedCard) {
-        const views = Alpine.store('views');
-        const card = selectedCard ? await buildCard(selectedCard) : null;
-        views.activeCard = card && Alpine.reactive(card);
-        views.selectedCard = selectedCard || {};
-    },
-
-    async selectCard(selectedCard) {
-        await this.setActiveCard(selectedCard);
+    async selectCard(card) {
+        await selectCard(card);
     },
 
     bindEvents() {
@@ -101,7 +92,7 @@ Alpine.data('setView', () => ({
 
     newSet() {
         newSet();
-        Alpine.store('views').activeCard = null;
+        setActiveCard(null);
     },
 
     deleteSelectedCards() {
@@ -188,7 +179,7 @@ Alpine.data('setView', () => ({
             const clipboardText = await navigator.clipboard.readText();
             const clipboard = JSON.parse(clipboardText) || [];
             if (!clipboard?.cards?.length) return;
-            const { activeSet } = Alpine.store('views');
+            const activeSet = getActiveSet();
 
             let indexToSelect = -1;
             clipboard.cards.forEach(card => {

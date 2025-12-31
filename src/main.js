@@ -53,10 +53,7 @@ function setupShoelace() {
 
 function setupAlpine() {
     window.Alpine = Alpine;
-    Alpine.store('views', {
-        loaded: false,
-        activeCard: null
-    });
+    Alpine.store('loaded', false);
     Alpine.start();
 }
 
@@ -76,7 +73,7 @@ async function startApp() {
     await setGame('magic');
     await loadTemplates();
     await imageCache.preload();
-    Alpine.store('views').loaded = true;
+    Alpine.store('loaded', true);
 }
 
 startApp();
