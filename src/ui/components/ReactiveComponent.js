@@ -1,4 +1,4 @@
-import { watch } from '../shared/reactivity.js';
+import { watch } from '../../shared/reactivity.js';
 
 export default class ReactiveComponent extends HTMLElement {
     #watchers = [];

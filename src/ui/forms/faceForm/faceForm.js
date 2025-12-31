@@ -1,7 +1,7 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
 import { handleFormGroup, renderFields } from '../../systems/fieldSystem.js';
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../../components/ReactiveComponent.js';
 
 const L = localize('face-form');
 

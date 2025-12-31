@@ -1,4 +1,4 @@
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 import html from './setView.html.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
 import {

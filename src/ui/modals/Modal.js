@@ -1,6 +1,6 @@
 import { closeModal } from './modalManager.js';
 import { renderFields } from '../systems/fieldSystem.js';
-import ReactiveComponent from '../ReactiveComponent.js';
+import ReactiveComponent from '../components/ReactiveComponent.js';
 
 export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
