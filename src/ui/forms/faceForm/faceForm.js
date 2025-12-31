@@ -54,7 +54,7 @@ export default class FaceForm extends ReactiveComponent {
         if (!this.form) return;
         const formGroups = this.form.root.querySelectorAll('form-group');
         formGroups.forEach(formGroup => {
-            handleFormGroup(formGroup, this.face, this.effect);
+            handleFormGroup(formGroup, this.face, this.watch);
         });
     }
 
@@ -66,16 +66,13 @@ export default class FaceForm extends ReactiveComponent {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
         renderFields(this.form.root, this.face, this.fields, {
-            effect: this.effect
+            watch: this.watch
         });
         this.subcards.forEach(subcard => {
             const subcardFields = this.resolveFields(subcard);
             const getSelector = field =>
                 `form-field[field-id="${field.id}"][subcard-id="${subcard.id}"]`;
-            renderFields(this.form.root, subcard, subcardFields, {
-                getSelector,
-                effect: this.effect
-            });
+            renderFields(this.form.root, subcard, subcardFields, { getSelector });
         });
         this.handleGroups();
         this.appendChild(this.form.root);

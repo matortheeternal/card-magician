@@ -55,12 +55,12 @@ function createToggle(formGroup, className) {
     return toggleGroup;
 }
 
-function handleOptionalField(fieldElement, container, model, field, { effect }) {
+function handleOptionalField(fieldElement, container, model, field, { watch }) {
     const optional = container.hasAttribute('optional');
     if (!optional) return;
 
     const toggleField = createToggle(container, 'toggle-field');
-    effect(() => {
+    watch(model, field.id, () => {
         const show = model[field.id] !== null
             && model[field.id] !== undefined;
         fieldElement.style.display = show ? 'block' : 'none';
@@ -76,7 +76,7 @@ export function renderFields(root, model, fields, ctx = {}) {
     if (!fields) return;
     ctx = {
         getSelector: getDefaultSelector,
-        effect: root.effect,
+        watch: root.watch,
         ...ctx
     };
     fields.forEach(field => {
@@ -89,9 +89,7 @@ export function renderFields(root, model, fields, ctx = {}) {
     });
 }
 
-function toggleGroupChildren(formGroup, model, toggleGroup) {
-    const showKey = formGroup.getAttribute('show');
-    const show = model[showKey];
+function toggleGroupChildren(formGroup, show, toggleGroup) {
     for (const child of formGroup.children)
         child.style.display = show ? 'block' : 'none';
 
@@ -100,16 +98,17 @@ function toggleGroupChildren(formGroup, model, toggleGroup) {
     toggleGroup.innerHTML = renderToggle(show, label);
 }
 
-function toggleGroupVisibility(formGroup, model) {
-    const showKey = formGroup.getAttribute('show');
-    formGroup.style.display = model[showKey] ? '' : 'none';
+function toggleGroupVisibility(formGroup, show) {
+    formGroup.style.display = show ? '' : 'none';
 }
 
-export function handleFormGroup(formGroup, model, effect) {
+export function handleFormGroup(formGroup, model, watch) {
     if (!formGroup.hasAttribute('show')) return;
     const optional = formGroup.hasAttribute('optional');
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
-    return effect(optional
-        ? () => toggleGroupChildren(formGroup, model, toggleGroup)
-        : () => toggleGroupVisibility(formGroup, model));
+    const showKey = formGroup.getAttribute('show');
+    watch(model, showKey, optional
+        ? () => toggleGroupChildren(formGroup, model[showKey], toggleGroup)
+        : () => toggleGroupVisibility(formGroup, model[showKey])
+    );
 }
