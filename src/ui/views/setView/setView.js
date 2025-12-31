@@ -1,16 +1,12 @@
 import Alpine from 'alpinejs';
 import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
-import { buildCard } from '../../../domain/card/cardBuilder.js';
 import {
-    getActiveSet, getSelectedCard,
-    getSetCards, mutateCard,
-    newSet,
+    getActiveSet, getSetCards, mutateCard, newSet,
     openSet, selectCard, setActiveCard
 } from '../../../domain/sets/setManager.js';
 import { filter } from '../../../domain/game/search.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
-import { openSingleFileDialog } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('set-view');
 

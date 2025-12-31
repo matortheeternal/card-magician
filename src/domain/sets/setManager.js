@@ -97,6 +97,7 @@ export function onActiveCardChanged(callback) {
 }
 
 export async function setActiveCard(card) {
+    if (activeCard) activeCard.dispose();
     activeCard = card ? await buildCard(card) : null;
     cardChangedCallbacks.forEach(cb => cb(activeCard));
 }
