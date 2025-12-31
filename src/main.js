@@ -9,8 +9,6 @@ import CardMagicianGame from './domain/game/CardMagicianGame.js';
 import { loadTemplates, getTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
-import AppConfig from './domain/game/appConfig.js';
-import { bindToAlpine } from './ui/systems/statusSystem.js';
 import imageCache from './domain/gfx/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
 import {
@@ -57,11 +55,7 @@ function setupAlpine() {
     window.Alpine = Alpine;
     Alpine.store('views', {
         loaded: false,
-        activeSet: { cards: [] },
-        activeCard: null,
-        hide(key) {
-            this[key] = null;
-        }
+        activeCard: null
     });
     Alpine.start();
 }
@@ -79,13 +73,8 @@ async function startApp() {
         return;
     }
     await loadGames();
-    bindToAlpine();
-    const game = await setGame('magic');
-    Alpine.store('game', game);
-    const appConfig = new AppConfig(game);
-    Alpine.store('appConfig', appConfig);
+    await setGame('magic');
     await loadTemplates();
-    Alpine.store('templates', getTemplates());
     await imageCache.preload();
     Alpine.store('views').loaded = true;
 }

@@ -1,8 +1,8 @@
-import Alpine from 'alpinejs';
-import { getTemplate } from '../template/templateRegistry.js';
+import { getTemplate, getTemplates } from '../template/templateRegistry.js';
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
+import { getActiveGame } from '../game/gameManager.js';
 
 async function buildSubcard(parent, key, modulesToLoad, subcardData) {
     const subcard = new SubcardModel(key, parent);
@@ -27,7 +27,7 @@ const templateField = () => ({
     id: 'template',
     type: 'select',
     label: 'Template',
-    options: Alpine.store('templates').map(template => ({
+    options: getTemplates().map(template => ({
         id: template.id,
         name: template.label
     })),
@@ -38,7 +38,7 @@ const templateField = () => ({
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
-    face.template = Alpine.store('game').defaultTemplateId;
+    face.template = getActiveGame().defaultTemplateId;
     const templateId = faceData.template || face.template;
     const template = getTemplate(templateId);
     face.dom.setHTML(template.html);

@@ -10,16 +10,14 @@ class StatusMessage {
 
     remove() {
         this.removing = true;
-        setTimeout(() => Alpine.store('statusMessages').remove(this), REMOVE_DELAY);
+        setTimeout(() => statusMessages.remove(this), REMOVE_DELAY);
     }
 }
 
-export function addStatusMessage(text, lifetime = 5) {
-    const message = Alpine.reactive(new StatusMessage(text, lifetime));
-    Alpine.store('statusMessages').push(message);
-    return message;
-}
+const statusMessages = [];
 
-export function bindToAlpine() {
-    Alpine.store('statusMessages', Alpine.reactive([]));
+export function addStatusMessage(text, lifetime = 5) {
+    const message = new StatusMessage(text, lifetime);
+    statusMessages.push(message);
+    return message;
 }
