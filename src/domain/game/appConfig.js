@@ -4,11 +4,13 @@ const RECENT_FILE_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
 
 export default class AppConfig {
+    #data = {};
+    #writeQueued = false;
+    #loadPromise;
+
     constructor(game) {
         this.game = game;
-        this._data = {};
-        this._writeQueued = false;
-        this._loadPromise = this.load();
+        this.#loadPromise = this.load();
     }
 
     get key() {
@@ -18,52 +20,52 @@ export default class AppConfig {
     async load() {
         try {
             const raw = await getStoredData(this.key);
-            this._data = JSON.parse(raw) || {};
+            this.#data = JSON.parse(raw) || {};
         } finally {
-            this._data = {};
+            this.#data = {};
         }
 
-        if (!Array.isArray(this._data.recentFiles))
-            this._data.recentFiles = [];
+        if (!Array.isArray(this.#data.recentFiles))
+            this.#data.recentFiles = [];
     }
 
     async set(key, value) {
-        await this._loadPromise;
-        this._data[key] = value;
+        await this.#loadPromise;
+        this.#data[key] = value;
         this.queueSave();
     }
 
     get(key, fallback = null) {
-        return key in this._data ? this._data[key] : fallback;
+        return key in this.#data ? this.#data[key] : fallback;
     }
 
     get recentFiles() {
-        return this._data.recentFiles.slice();
+        return this.#data.recentFiles.slice();
     }
 
     async addRecentFile(filePath) {
-        await this._loadPromise;
+        await this.#loadPromise;
 
-        this._data.recentFiles = [
+        this.#data.recentFiles = [
             filePath,
-            ...this._data.recentFiles.filter(f => f !== filePath),
+            ...this.#data.recentFiles.filter(f => f !== filePath),
         ].slice(0, RECENT_FILE_MAX_COUNT);
 
         this.queueSave();
     }
 
     queueSave() {
-        if (this._writeQueued) return;
+        if (this.#writeQueued) return;
 
-        this._writeQueued = true;
+        this.#writeQueued = true;
         setTimeout(async () => {
-            this._writeQueued = false;
+            this.#writeQueued = false;
             await this.save();
         }, SAVE_DELAY);
     }
 
     async save() {
-        const value = JSON.stringify(this._data);
+        const value = JSON.stringify(this.#data);
         await storeData(this.key, value);
     }
 }
