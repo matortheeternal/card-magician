@@ -2,8 +2,14 @@ import Alpine from 'alpinejs';
 import html from './setView.html';
 import { registerAction, executeAction } from '../../systems/actionSystem.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
-import { loadSetData } from '../../../domain/sets/setManager.js';
+import {
+    getActiveSet,
+    getSetCards,
+    newSet,
+    openSet
+} from '../../../domain/sets/setManager.js';
 import { filter } from '../../../domain/game/search.js';
+import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
 import { openSingleFileDialog } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('set-view');
@@ -24,9 +30,9 @@ Alpine.data('setView', () => ({
 
     async init() {
         this.$root.innerHTML = html;
-        this.recentSets = Alpine.store('appConfig').recentFiles || [];
-        this.columns = Alpine.store('game').columns;
-        this.rows = Alpine.store('views').activeSet.cards.slice();
+        this.recentSets = getConfig().recentFiles || [];
+        this.columns = getActiveGame().columns;
+        this.rows = getSetCards();
         this.changeTemplate = this.changeTemplate.bind(this);
         this.addFace = this.addFace.bind(this);
 
@@ -94,14 +100,12 @@ Alpine.data('setView', () => ({
     },
 
     newSet() {
-        const views = Alpine.store('views');
-        views.setFilePath = null;
-        views.activeSet = Alpine.store('game').newSet();
-        views.activeCard = {};
+        newSet();
+        Alpine.store('views').activeCard = null;
     },
 
     deleteSelectedCards() {
-        const { activeSet } = Alpine.store('views');
+        const activeSet = getActiveSet();
         executeAction('get-listview-selection').forEach(r => {
             const index = activeSet.cards.indexOf(r.original);
             if (index === -1) {
@@ -117,8 +121,8 @@ Alpine.data('setView', () => ({
     },
 
     addCard() {
-        const game = Alpine.store('game');
-        const { activeSet } = Alpine.store('views');
+        const game = getActiveGame();
+        const activeSet = getActiveSet();
         const card = game.newCard();
         const indexToSelect = activeSet.cards.push(card) - 1;
         Alpine.nextTick(() => {
@@ -128,16 +132,7 @@ Alpine.data('setView', () => ({
     },
 
     async openSet(filePath = null) {
-        filePath = filePath || await openSingleFileDialog();
-        if (!filePath) return;
-        console.info('%cOpening set:', 'color:gold', filePath);
-        const game = Alpine.store('game');
-        const views = Alpine.store('views');
-        views.setFilePath = filePath;
-        const set = await loadSetData(filePath);
-        views.activeSet = game.loadSet(set);
-        game.autoNumberCards(views.activeSet);
-        Alpine.store('appConfig').addRecentFile(filePath);
+        openSet(filePath);
     },
 
     copyCard() {
@@ -166,7 +161,7 @@ Alpine.data('setView', () => ({
     },
 
     updateSearch() {
-        const cards = Alpine.store('views').activeSet.cards;
+        const cards = getActiveSet().cards;
         try {
             console.debug('%cSearching for:', 'color:orange', this.searchValue);
             const results = this.searchValue ? filter(cards, this.searchValue) : cards;

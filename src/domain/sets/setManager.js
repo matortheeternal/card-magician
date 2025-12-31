@@ -1,12 +1,18 @@
-import Alpine from 'alpinejs';
 import JSONSerializer from './JSONSerializer.js';
 import YAMLSerializer from './YAMLSerializer.js';
 import MessagePackSerializer from './MessagePackSerializer.js';
 import { addStatusMessage } from '../../ui/systems/statusSystem.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
+import { getActiveGame, getConfig } from '../game/gameManager.js';
+import {
+    openSingleFileDialog,
+    saveSingleFileDialog
+} from '../../shared/neutralinoAdapter.js';
 
 const L = localize('set-manager');
 const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
+let activeSet = { cards: [] };
+let setFilePath = null;
 
 export async function saveSetData(filePath, data) {
     const serializer = serializers.find(s => s.matches(filePath));
@@ -19,33 +25,56 @@ export async function loadSetData(filePath) {
 }
 
 export async function saveAs() {
-    const views = Alpine.store('views');
-    const defaultPath = views.setFilePath
-        ?  views.setFilePath.split(/[\\\/]/).pop()
-        : `${views.activeSet.title || L`My Set`}.json`;
-    const filePath = await Neutralino.os.showSaveDialog(L`Save set to file`, {
-        defaultPath,
-        filters: [
-            { name: L`JSON Files`, extensions: ['json'] },
-            { name: L`Packed Files`, extensions: ['msgpack'] },
-            { name: L`YAML Files`, extensions: ['yml'] },
-            { name: L`All files`, extensions: ['*'] }
-        ]
-    });
+    const defaultPath = setFilePath
+        ?  setFilePath.split(/[\\\/]/).pop()
+        : `${activeSet.title || L`My Set`}.json`;
+    const filePath = saveSingleFileDialog(L`Save set to file`, defaultPath, [
+        { name: L`JSON Files`, extensions: ['json'] },
+        { name: L`Packed Files`, extensions: ['msgpack'] },
+        { name: L`YAML Files`, extensions: ['yml'] },
+        { name: L`All files`, extensions: ['*'] }
+    ]);
     if (!filePath) return;
     console.info('Saving set to:', filePath);
-    views.setFilePath = filePath;
-    await saveSetData(filePath, views.activeSet);
+    setFilePath = filePath;
+    await saveSetData(filePath, activeSet);
 }
 
 export async function save() {
-    const { activeSet, setFilePath } = Alpine.store('views');
     if (!setFilePath) return await saveAs();
     const message = addStatusMessage(L`Saving...`, -1);
     console.info('Saving set to:', setFilePath);
     await saveSetData(setFilePath, activeSet);
     message.text = L`Saved.`;
     setTimeout(() => message.remove(), 1000);
+}
+
+export function newSet() {
+    setFilePath = null;
+    activeSet = getActiveGame().newSet();
+}
+
+export async function openSet(filePath) {
+    filePath = filePath || await openSingleFileDialog(L`Open a set`, [
+        { name: L`JSON Files`, extensions: ['json'] },
+        { name: L`All files`, extensions: ['*'] }
+    ]);
+    if (!filePath) return;
+    console.info('%cOpening set:', 'color:gold', filePath);
+    const game = getActiveGame();
+    const setData = await loadSetData(filePath);
+    setFilePath = filePath;
+    activeSet = game.loadSet(setData);
+    game.autoNumberCards(activeSet);
+    await getConfig().addRecentFile(filePath);
+}
+
+export function getActiveSet() {
+    return activeSet;
+}
+
+export function getSetCards() {
+    return activeSet.cards.slice();
 }
 
 registerAction('save-set', save);

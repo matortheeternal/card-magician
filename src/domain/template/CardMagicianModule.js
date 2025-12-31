@@ -10,6 +10,8 @@ import {
 import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
+import { getActiveGame } from '../game/gameManager.js';
+import { getActiveSet } from '../sets/setManager.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -302,7 +304,7 @@ export default class CardMagicianModule {
      * @returns {object}
      */
     getActiveSet() {
-        return Alpine.store('views').activeSet;
+        return getActiveSet();
     }
 
     /**
@@ -311,7 +313,7 @@ export default class CardMagicianModule {
      * @returns {object}
      */
     getActiveGame() {
-        return Alpine.store('game');
+        return getActiveGame();
     }
 
     /**
