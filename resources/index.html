@@ -7,32 +7,16 @@
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="sl-theme-dark" x-data>
-    <nav id="title-bar" x-show="$store.views.loaded" x-data="titleBar()"></nav>
-
-    <template x-if="!$store.loaded">
-        <main class="spinner-container">
+    <main>
+        <div class="spinner-container">
             <div class="square-spinner"></div>
             <div class="loading-message">Loading...</div>
-        </main>
-    </template>
-
-    <template x-if="$store.loaded">
-        <main>
-            <cm-display-card></cm-display-card>
-            <div x-data="setView()" class="set-view"></div>
-            <cm-card-form></cm-card-form>
-        </main>
-    </template>
+        </div>
+    </main>
 
     <div class="modal-container" style="display: none;"></div>
 
-    <div class="status-container">
-        <template x-for="message of $store.statusMessages">
-            <div class="status-message"
-                 x-text="message.text"
-                 :class="message.removing && 'removing'"></div>
-        </template>
-    </div>
+    <div class="status-container"></div>
 
     <script src="/js/neutralino.js"></script>
     <script type="module" src="/js/main.js"></script>

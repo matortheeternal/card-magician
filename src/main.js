@@ -53,7 +53,6 @@ function setupShoelace() {
 
 function setupAlpine() {
     window.Alpine = Alpine;
-    Alpine.store('loaded', false);
     Alpine.start();
 }
 
@@ -61,6 +60,16 @@ function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
     window.CardMagicianGame = CardMagicianGame;
     window.Modal = Modal;
+}
+
+function loaded() {
+    const titleBar = document.createElement('cm-title-bar');
+    document.body.prepend(titleBar);
+    document.querySelector('main').innerHTML = (
+        `<cm-display-card></cm-display-card>
+         <cm-set-view></cm-set-view>
+         <cm-card-form></cm-card-form>`
+    );
 }
 
 async function startApp() {
@@ -73,7 +82,7 @@ async function startApp() {
     await setGame('magic');
     await loadTemplates();
     await imageCache.preload();
-    Alpine.store('loaded', true);
+    loaded();
 }
 
 startApp();
