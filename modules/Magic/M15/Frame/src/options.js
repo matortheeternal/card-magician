@@ -1,10 +1,10 @@
 const L = localize('module-M15-frame');
 
-export default () => ([{
+export default (frameOptions) => ([{
     id: 'frame',
     label: L`Frame`,
     type: 'select',
-    options: [
+    options: frameOptions || [
         { id: 'normal',          name: L`Default` },
         { id: 'devoid',          name: L`Devoid` },
         { id: 'clear',           name: L`Clear` },

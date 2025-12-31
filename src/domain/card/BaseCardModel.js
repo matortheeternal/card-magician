@@ -1,8 +1,12 @@
+import RenderScheduler from '../template/renderScheduler.js';
 import ImageFieldValue from './ImageFieldValue.js';
+import { initializeFields } from '../../ui/systems/fieldSystem.js';
+import { watch } from '../../shared/reactivity.js';
 
 export default class BaseCardModel {
     fields = [];
     options = [];
+    modules = [];
 
     constructor(key) {
         this.id = key;
@@ -37,5 +41,71 @@ export default class BaseCardModel {
             if (!Object.hasOwn(cardData, field.id)) continue;
             this[field.id] = await this.loadField(cardData, field);
         }
+    }
+
+    async loadModule(modulePath) {
+        try {
+            const mainPath = `/modules/${modulePath}/main.js`;
+            const { default: Module } = await import(mainPath);
+            return new Module(this, modulePath);
+        } catch (error) {
+            console.error('Failed to load module:', error);
+        }
+    }
+
+    loadModules(components) {
+        return Promise.all(
+            components.map(component => this.loadModule(component))
+        );
+    }
+
+    setupRenderPipeline() {
+        this.modules.forEach(module => {
+            module.requestRender = function(options) {
+                RenderScheduler.requestRender(card, module, options);
+            };
+        });
+    }
+
+    loadFields(key = 'fields') {
+        for (const module of this.modules) {
+            const fields = module[key];
+            initializeFields(fields, this);
+            this[key].push(...fields);
+        }
+    }
+
+    hasLoadedModule(module) {
+        const modules = this.modules.concat(this.parent?.modules || []);
+        return modules.some(m => m.constructor === module.constructor);
+    }
+
+    loadStyles() {
+        return Promise.all(
+            this.modules.map(async module => {
+                if (!module.styles || this.hasLoadedModule(module)) return;
+                const styles = await module.styles();
+                styles.forEach(style => this.dom.addCSS(style));
+            })
+        );
+    }
+
+    async initializeModules() {
+        await Promise.all(this.modules.map(module => {
+            return module.init(this);
+        }));
+        this.loadFields();
+        this.loadFields('options');
+        this.loadStyles();
+    }
+
+    bindWatchers() {
+        this.modules.forEach(module => {
+            module.watchers = [];
+            module.bind(this, function(obj, keysArg, callback) {
+                const unwatch = watch(obj, keysArg, callback);
+                module.watchers.push(unwatch);
+            });
+        });
     }
 }

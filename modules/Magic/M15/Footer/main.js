@@ -14,32 +14,28 @@ export default class FooterModule extends CardMagicianModule {
         await this.loadFont('MPlantin', 'mplantin.ttf');
     }
 
+    updateCollectorNumberPlaceholder(card) {
+        this.collectorNumberField.placeholder = card.autoCollectorNumber;
+        changed(this.collectorNumberField, 'placeholder');
+    }
+
     bind(card, watch) {
-        watch(
-            () => [
-                card.rarityCharacter, card.autoCollectorNumber, card.collectorNumber,
-                card.setCode, card.language, card.illustrator, this.set.info.rarityOrder,
-                this.set.info.language, this.set.info.illustrator, this.set.info.setCode
-            ],
+        watch(card, [
+            'rarityCharacter', 'autoCollectorNumber', 'collectorNumber',
+            'setCode', 'language', 'illustrator'
+        ], () => this.requestRender({ render: 'renderInfo' }));
+        watch(this.set.info, ['rarityOrder', 'language', 'illustrator', 'setCode'],
             () => this.requestRender({ render: 'renderInfo' })
         );
-        watch(
-            () => card.legalText,
-            () => this.requestRender({ render: 'renderLegal' })
-        );
-        watch(
-            () => card.autoCollectorNumber,
-            () => (this.collectorNumberField.placeholder = card.autoCollectorNumber)
+        watch(card, 'legalText', () => this.requestRender({ render: 'renderLegal' }));
+        watch(card, 'autoCollectorNumber',
+            () => this.updateCollectorNumberPlaceholder(card)
         );
     }
 
     renderSetCodeAndLanguage(card) {
-        const setCode = this.escapeHTML(
-            card.setCode || this.set.info.setCode || ''
-        );
-        const language = this.escapeHTML(
-            card.language || this.set.info.language || ''
-        );
+        const setCode = this.escapeHTML(card.setCode || this.set.info.setCode || '');
+        const language = this.escapeHTML(card.language || this.set.info.language || '');
         return `<div>${setCode} &bullet; ${language}</div>`;
     }
 

@@ -1,4 +1,4 @@
-const L = localize('module-M15-color-indiactor');
+const L = localize('module-M15-color-indicator');
 
 export default class ColorIndicatorModule extends CardMagicianModule {
     async getIndicatorImage(card) {
@@ -20,15 +20,13 @@ export default class ColorIndicatorModule extends CardMagicianModule {
     async updateColorIdentity(card) {
         const overrideColors = (card.colorIndicator || []);
         card.colorIdentity.setOverride(overrideColors.join(''));
+        changed(card, 'colorIdentity');
         this.colorIdentityImage = await this.getIndicatorImage(card);
         this.requestRender();
     }
 
     bind(card, watch) {
-        watch(
-            () => card.colorIndicator,
-            () => this.updateColorIdentity(card)
-        );
+        watch(card, 'colorIndicator', () => this.updateColorIdentity(card));
     }
 
     render(card) {
