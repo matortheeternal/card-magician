@@ -12,6 +12,7 @@ export default class FlagModule extends CardMagicianModule {
     updateShowFlag(card) {
         card.showFlag = (card.isFrontDFC?.() && !card.isTransform?.())
             || (card.isBackDFC?.() && !card.parent().front.isTransform?.());
+        changed(card, 'showFlag');
     }
 
     async updateFlagRightHTML(card) {
@@ -20,22 +21,10 @@ export default class FlagModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(
-            () => card.flagRight,
-            () => this.updateFlagRightHTML(card)
-        );
-        watch(
-            () => [card.colorIdentity, card.superType],
-            () => this.updateFlagStyle(card)
-        );
-        watch(
-            () => [card.rulesText, card.parent],
-            () => this.updateShowFlag(card)
-        );
-        watch(
-            () => [card.showFlag, card.flagLeft],
-            () => this.requestRender()
-        );
+        watch(card, 'flagRight', () => this.updateFlagRightHTML(card));
+        watch(card, ['colorIdentity', 'superType'], () => this.updateFlagStyle(card));
+        watch(card, ['rulesText', 'parent'], () => this.updateShowFlag(card));
+        watch(card, ['showFlag', 'flagLeft'], () => this.requestRender());
     }
 
     render(card) {

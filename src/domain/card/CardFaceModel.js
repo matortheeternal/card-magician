@@ -1,5 +1,6 @@
 import BaseCardModel from './BaseCardModel.js';
 import DOMBuilder from './DomBuilder.js';
+import RenderScheduler from '../template/renderScheduler.js';
 
 export default class CardFaceModel extends BaseCardModel {
     dom = new DOMBuilder();

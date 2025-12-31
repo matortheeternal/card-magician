@@ -3,14 +3,12 @@ const L = localize('module-M15-rarity');
 export default class RarityModule extends CardMagicianModule {
     updateRarity(card) {
         card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
+        changed(card, 'rarityCharacter');
         this.requestRender();
     }
 
     bind(card, watch) {
-        watch(
-            () => card.rarity,
-            () => this.updateRarity(card)
-        );
+        watch(card, 'rarity', () => this.updateRarity(card));
     }
 
     render(card) {

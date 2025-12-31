@@ -9,6 +9,7 @@ export default class CostModule extends CardMagicianModule {
     async updateManaCost(card) {
         const manaCost = this.ManaCost.parse(card.manaCost);
         card.colorIdentity.addColorSource('card', manaCost.symbols);
+        changed(card, 'colorIdentity');
         this.manaCostHTML = await card.symbolsToHTML(manaCost.symbols, true);
         this.requestRender();
     }

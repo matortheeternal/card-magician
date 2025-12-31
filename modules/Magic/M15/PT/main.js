@@ -5,6 +5,7 @@ export default class PTModule extends CardMagicianModule {
         const activeFrame = card.activeFrame?.();
         if (!activeFrame) return;
         card.showPT = Boolean(card.toughness || card.power);
+        changed(card, 'showPT');
         const ptBackgrounds = await activeFrame.buildBackgrounds('pt', card);
         this.ptStyle = this.objectToStyle(ptBackgrounds[0].style);
         await this.updateFrontNotchPt(card);
@@ -16,15 +17,13 @@ export default class PTModule extends CardMagicianModule {
         const frontCard = card.parent().front;
         frontCard.showNotchPT = card.showPT && frontCard?.isTransform();
         frontCard.notchPtText = `${card.power}/${card.toughness}`;
+        changed(frontCard, 'showNotchPT');
+        changed(frontCard, 'notchPtText');
     }
 
     bind(card, watch) {
-        watch(
-            () => [card.toughness, card.power, card.activeFrame],
-            () => this.updatePT(card)
-        );
-        watch(
-            () => card.showNotchPT,
+        watch(card, ['toughness', 'power', 'activeFrame'], () => this.updatePT(card));
+        watch(card, ['showNotchPT'],
             () => this.requestRender({ render: 'renderNotchPT' })
         );
     }
