@@ -1,23 +1,108 @@
-import Alpine from 'alpinejs';
+import ReactiveComponent from '../../ReactiveComponent.js';
 import { titleBarMenus } from './titleBarMenus.js';
-import html from './titleBar.html';
+import html from './titleBar.html.js';
 import {
     centerWindow, exitApp, getWindowPosition,
     getWindowSize, maximizeWindow, minimizeWindow,
-    setWindowSize
+    setWindowSize,
+    unmaximizeWindow
 } from '../../../shared/neutralinoAdapter.js';
+import { toggleDisplay } from '../../../shared/htmlUtils.js';
 
-Alpine.data('titleBar', () => ({
-    openMenu: null,
-    isMaximized: false,
-    menus: titleBarMenus,
+const L = localize('title-bar');
 
-    async init() {
-        this.$root.innerHTML = html;
-        await this.detectMaximizeState();
-        Alpine.initTree(this.$root);
-        window.addEventListener('resize', () => this.detectMaximizeState());
-    },
+export default class TitleBar extends ReactiveComponent {
+    openMenu = null;
+    isMaximized = false;
+
+    connectedCallback() {
+        this.render();
+        this.getIsMaximized().then(res => {
+            this.setIsMaximized(res);
+        });
+        this.bind();
+    }
+
+    bind() {
+        this.handleEvents('click', {
+            exit: exitApp,
+            minimize: minimizeWindow,
+            maximize: this.toggleMaximize
+        });
+    }
+
+    createDropdown() {
+        const dropdown = document.createElement('sl-dropdown');
+        dropdown.addEventListener('sl-hide', this.onMenuHide);
+        dropdown.addEventListener('sl-show', this.onMenuShow);
+        return dropdown;
+    }
+
+    createTrigger(dropdown, title) {
+        const trigger = document.createElement('sl-button');
+        trigger.addEventListener('mouseenter', this.onMenuEnter);
+        trigger.slot = 'trigger';
+        trigger.textContent = title;
+        dropdown.appendChild(trigger);
+    }
+
+    createDivider() {
+        const divider = document.createElement('sl-divider');
+        divider.style.setProperty('--spacing', '0.5rem');
+        return divider;
+    }
+
+    createMenuItem(item) {
+        const menuItem = document.createElement('sl-menu-item');
+        menuItem.value = item.value;
+        menuItem.addEventListener('click', item.action);
+        menuItem.innerHTML = (
+            `<div>${item.label}</div>
+             <div>${item.hotkey}</div>`
+        );
+        return menuItem;
+    }
+
+    createMenu(dropdown, items) {
+        const menu = document.createElement('sl-menu');
+        items.forEach(item => {
+            const itemElement = item.isDivider
+                ? this.createDivider()
+                : this.createMenuItem(item);
+            menu.appendChild(itemElement);
+        });
+        dropdown.appendChild(menu);
+    }
+
+    get menusContainer() {
+        return this.querySelector('.menus-container');
+    }
+
+    get toggleMaximizeButton() {
+        return this.querySelector('#maximize-app');
+    }
+
+    renderMenus() {
+        titleBarMenus.forEach(menu => {
+            const dropdown = this.createDropdown();
+            this.createTrigger(dropdown, menu.title);
+            this.createMenu(dropdown, menu.items);
+            this.menusContainer.appendChild(dropdown);
+        });
+    }
+
+    render() {
+        this.innerHTML = html;
+        this.renderMenus();
+    }
+
+    setIsMaximized(value) {
+        this.isMaximized = value;
+        this.toggleMaximizeButton.title = value ? L`Restore` : L`Maximize`;
+        const restoreIcon = this.toggleMaximizeButton.querySelector('svg');
+        const maximizeIcon = this.toggleMaximizeButton.querySelector('sl-icon');
+        toggleDisplay(value, restoreIcon, maximizeIcon);
+    }
 
     async restore() {
         const size = getWindowSize();
@@ -27,27 +112,19 @@ Alpine.data('titleBar', () => ({
             height: size.minHeight,
         });
         await centerWindow();
-        this.isMaximized = false;
-    },
-
-    exit() {
-        exitApp();
-    },
-
-    minimize() {
-        minimizeWindow();
-    },
+        this.setIsMaximized(false);
+    }
 
     async maximize() {
-        maximizeWindow();
-        this.isMaximized = true;
-    },
+        await maximizeWindow();
+        this.setIsMaximized(true);
+    }
 
     async toggleMaximize() {
         return this.isMaximized
             ? await this.restore()
             : await this.maximize();
-    },
+    }
 
     async getIsMaximized() {
         const pos = await getWindowPosition();
@@ -56,24 +133,20 @@ Alpine.data('titleBar', () => ({
             && pos.y < 0
             && size.height > window.screen.availHeight
             && size.width > window.screen.availWidth;
-    },
+    }
 
-    async detectMaximizeState() {
-        this.isMaximized = await this.getIsMaximized();
-    },
-
-    menuHidden({ target: menu }) {
+    onMenuHide({ target: menu }) {
         menu.classList.remove('menu-active');
         if (this.openMenu === menu) this.openMenu = null;
-    },
+    }
 
-    menuShown({ target: menu }) {
+    onMenuShow({ target: menu }) {
         if (this.openMenu && this.openMenu !== menu)
             this.openMenu.hide();
 
         this.openMenu = menu;
         menu.classList.add('menu-active');
-    },
+    }
 
     onMenuEnter({ target: button }) {
         const menu = button.parentNode;
@@ -81,4 +154,6 @@ Alpine.data('titleBar', () => ({
         this.openMenu.hide();
         menu.show();
     }
-}));
+}
+
+customElements.define('cm-title-bar', TitleBar);
