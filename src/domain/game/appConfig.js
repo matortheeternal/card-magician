@@ -6,6 +6,7 @@ const SAVE_DELAY = 200;
 export default class AppConfig {
     #data = {};
     #writeQueued = false;
+    #recentFilesChangedCallbacks = [];
     #loadPromise;
 
     constructor(game) {
@@ -51,7 +52,14 @@ export default class AppConfig {
             ...this.#data.recentFiles.filter(f => f !== filePath),
         ].slice(0, RECENT_FILE_MAX_COUNT);
 
+        for (const callback of this.#recentFilesChangedCallbacks)
+            callback(this.#data.recentFiles);
+
         this.queueSave();
+    }
+
+    onRecentFilesChanged(callback) {
+        this.#recentFilesChangedCallbacks.push(callback);
     }
 
     queueSave() {

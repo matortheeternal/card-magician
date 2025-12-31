@@ -14,6 +14,7 @@ const L = localize('set-manager');
 const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
 
 const cardChangedCallbacks = [];
+const setChangedCallbacks = [];
 let activeSet = { cards: [] };
 let setFilePath = null;
 let activeCard = null;
@@ -54,9 +55,17 @@ export async function save() {
     setTimeout(() => message.remove(), 1000);
 }
 
+function setActiveSet(set) {
+    const game = getActiveGame();
+    activeSet = set || game.newSet();
+    game.autoNumberCards(activeSet);
+    for (const callback of setChangedCallbacks)
+        callback(activeSet);
+}
+
 export function newSet() {
     setFilePath = null;
-    activeSet = getActiveGame().newSet();
+    setActiveSet();
 }
 
 export async function openSet(filePath) {
@@ -69,8 +78,7 @@ export async function openSet(filePath) {
     const game = getActiveGame();
     const setData = await loadSetData(filePath);
     setFilePath = filePath;
-    activeSet = game.loadSet(setData);
-    game.autoNumberCards(activeSet);
+    setActiveSet(game.loadSet(setData));
     await getConfig().addRecentFile(filePath);
 }
 
@@ -96,6 +104,10 @@ export function onActiveCardChanged(callback) {
     cardChangedCallbacks.push(callback);
 }
 
+export function onActiveSetChanged(callback) {
+    setChangedCallbacks.push(callback);
+}
+
 export async function setActiveCard(card) {
     if (activeCard) activeCard.dispose();
     activeCard = card ? await buildCard(card) : null;
@@ -107,10 +119,18 @@ export async function selectCard(card) {
     await setActiveCard(card);
 }
 
-export async function mutateCard(callback) {
-    callback(selectedCard);
-    await setActiveCard(selectedCard);
-}
-
+registerAction('add-face', faceId => {
+    selectedCard[faceId] = {};
+    setActiveCard(selectedCard);
+});
+registerAction('change-template', (faceId, newTemplateId) => {
+    selectedCard[faceId].template = newTemplateId;
+    setActiveCard(selectedCard);
+});
+registerAction('open-set', openSet);
+registerAction('new-set', () => {
+    newSet();
+    setActiveCard(null);
+});
 registerAction('save-set', save);
 registerAction('save-set-as', saveAs);
