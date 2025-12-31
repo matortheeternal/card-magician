@@ -38,6 +38,6 @@ export default class ReactiveComponent extends HTMLElement {
                 if (index > -1) this.#watchers.splice(index, 1);
                 unwatch();
             }
-        }
+        };
     }
 }

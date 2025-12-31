@@ -126,7 +126,7 @@ export default class CardMagicianGame {
     * @returns {object}
     */
     getActiveSet() {
-        return getActiveSet()
+        return getActiveSet();
     }
 
     /**

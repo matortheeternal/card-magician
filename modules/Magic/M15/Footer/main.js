@@ -25,11 +25,11 @@ export default class FooterModule extends CardMagicianModule {
             'setCode', 'language', 'illustrator'
         ], () => this.requestRender({ render: 'renderInfo' }));
         watch(this.set.info, ['rarityOrder', 'language', 'illustrator', 'setCode'],
-            () => this.requestRender({ render: 'renderInfo' })
+              () => this.requestRender({ render: 'renderInfo' })
         );
         watch(card, 'legalText', () => this.requestRender({ render: 'renderLegal' }));
         watch(card, 'autoCollectorNumber',
-            () => this.updateCollectorNumberPlaceholder(card)
+              () => this.updateCollectorNumberPlaceholder(card)
         );
     }
 

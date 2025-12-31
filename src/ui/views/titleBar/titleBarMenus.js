@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 import { openModal } from '../../modals/modalManager.js';

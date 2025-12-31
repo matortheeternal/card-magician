@@ -1,5 +1,4 @@
 import { esc } from '../../../shared/htmlUtils.js';
-import Alpine from 'alpinejs';
 import { getTags } from '../../../domain/game/tagManager.js';
 import { getSelectedCard } from '../../../domain/sets/setManager.js';
 

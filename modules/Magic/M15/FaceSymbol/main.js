@@ -48,7 +48,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, ['colorIdentity', 'superType', 'parent'],
-            () => this.updateAutoSymbols(card)
+              () => this.updateAutoSymbols(card)
         );
         watch(card, ['faceSymbol', 'parent'], () => this.updateFaceSymbol(card));
     }

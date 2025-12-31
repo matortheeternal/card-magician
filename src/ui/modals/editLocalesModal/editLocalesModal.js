@@ -40,18 +40,17 @@ export default class EditLocalesModal extends Modal {
         this.init().then(() => {
             super.connectedCallback();
             this.statsContainer = this.querySelector('.stats');
-            if (Boolean(this.data.selectedLocale)) {
-                this.selectLocale(this.data.selectedLocale);
-            } else {
-                this.createNewLocale();
-            }
+            Boolean(this.data.selectedLocale)
+                ? this.selectLocale(this.data.selectedLocale)
+                : this.createNewLocale();
+
         });
     }
 
     bind() {
         super.bind();
         this.on('code-change', event => this.onCodeChange(event));
-        this.on('cm-field-changed', event => this.onFieldChanged(event))
+        this.on('cm-field-changed', event => this.onFieldChanged(event));
     }
 
     get fields() {
