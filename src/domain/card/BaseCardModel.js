@@ -65,7 +65,7 @@ export default class BaseCardModel {
     setupRenderPipeline() {
         this.modules.forEach(module => {
             module.requestRender = function(options) {
-                RenderScheduler.requestRender(card, module, options);
+                RenderScheduler.requestRender(this, module, options);
             };
         });
     }
