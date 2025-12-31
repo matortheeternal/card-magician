@@ -1,4 +1,10 @@
 import Localization from './Localization.js';
+import {
+    createDirectory,
+    readDirectory,
+    readFile,
+    writeFile
+} from './neutralinoAdapter.js';
 
 const generateSchema = NL_ARGS.includes('--localize');
 const schemaPromise = loadSchema();
@@ -13,10 +19,10 @@ export async function prepareSchema() {
 
 export async function loadLocales() {
     const manifestPath = `locales/locales.json`;
-    const manifestStr = await Neutralino.filesystem.readFile(manifestPath);
+    const manifestStr = await readFile(manifestPath);
     const manifest = JSON.parse(manifestStr);
 
-    const dirEntries = await Neutralino.filesystem.readDirectory('locales');
+    const dirEntries = await readDirectory('locales');
     const availableFiles = dirEntries
         .filter(e => e.type === 'FILE' && e.entry.endsWith('.yml'))
         .map(e => e.entry.slice(0, -4));
@@ -43,7 +49,7 @@ async function saveLocaleRegistry() {
         return acc;
     }, {});
     const text = JSON.stringify(locales, null, 2);
-    await Neutralino.filesystem.writeFile('locales/locales.json', text);
+    await writeFile('locales/locales.json', text);
 }
 
 export async function getAvailableLocales() {
@@ -84,8 +90,8 @@ const writeSchemaFile = (async function writeSchemaFile() {
     const json = JSON.stringify(schema, null, 2);
     const outputPath = `locales/schema.json`;
     console.log(`Writing localization schema to `, outputPath);
-    await Neutralino.filesystem.createDirectory('locales').catch(() => {});
-    await Neutralino.filesystem.writeFile(outputPath, json);
+    await createDirectory('locales').catch(() => {});
+    await writeFile(outputPath, json);
 }).debounce(1000);
 
 async function updateSchema(namespaceKey, entryKey) {
@@ -99,7 +105,7 @@ async function updateSchema(namespaceKey, entryKey) {
 export async function loadSchema() {
     try {
         const inputPath = `locales/schema.json`;
-        const text = await Neutralino.filesystem.readFile(inputPath);
+        const text = await readFile(inputPath);
         return JSON.parse(text);
     } catch (e) {
         console.error(e);

@@ -1,4 +1,5 @@
 import { getAdapters } from './adapters/adapterRegistry.js';
+import { readFile, writeFile } from '../../shared/neutralinoAdapter.js';
 
 /**
  * Abstract base class for serializers that use type adapters to transform
@@ -13,12 +14,12 @@ export default class Serializer {
     static async save(filePath, data, options = {}) {
         const serializer = new this();
         const text = await serializer.serialize(data, options);
-        await Neutralino.filesystem.writeFile(filePath, text);
+        await writeFile(filePath, text);
     }
 
     static async load(filePath) {
         const serializer = new this();
-        const text = await Neutralino.filesystem.readFile(filePath);
+        const text = await readFile(filePath);
         return await serializer.deserialize(text);
     }
 

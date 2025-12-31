@@ -13,6 +13,12 @@ import AppConfig from './domain/game/appConfig.js';
 import { bindToAlpine } from './ui/systems/statusSystem.js';
 import imageCache from './domain/gfx/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
+import {
+    createDirectory, initApp,
+    mount,
+    setDraggableRegion,
+    setWindowSize
+} from './shared/neutralinoAdapter.js';
 
 // BASE SETUP
 setupNeutralino();
@@ -28,22 +34,19 @@ async function ensureDirectories() {
         NL_DATAPATH + '/cache/images'
     ];
     return paths.map(dirPath => {
-        return Neutralino.filesystem.createDirectory(dirPath).catch(() => {});
+        return createDirectory(dirPath).catch(() => {});
     });
 }
 
 async function setupNeutralino() {
-    Neutralino.init();
-    Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
-    Neutralino.window.setSize({ resizable: true });
-    Neutralino.window.setDraggableRegion('title-bar').then(result => {
-        console.debug('%cDraggable region initialized:', 'color:salmon', result);
-    });
+    initApp();
+    await setWindowSize({ resizable: true });
+    await setDraggableRegion('title-bar')
     await ensureDirectories();
-    Neutralino.server.mount('/modules', NL_PATH + '/modules');
-    Neutralino.server.mount('/templates', NL_PATH + '/templates');
-    Neutralino.server.mount('/games', NL_PATH + '/games');
-    Neutralino.server.mount('/cache', NL_DATAPATH + '/cache');
+    await mount('/modules', NL_PATH + '/modules');
+    await mount('/templates', NL_PATH + '/templates');
+    await mount('/games', NL_PATH + '/games');
+    await mount('/cache', NL_DATAPATH + '/cache');
 }
 
 function setupShoelace() {

@@ -1,4 +1,5 @@
 import { loadImage } from '../../shared/imageUtils.js';
+import { readDirectory, writeBinaryFile } from '../../shared/neutralinoAdapter.js';
 
 const REVOKE_DELAY = 500;
 
@@ -22,7 +23,7 @@ export class ImageCache {
     }
 
     async preload() {
-        const entries = await Neutralino.filesystem.readDirectory(this.cachePath);
+        const entries = await readDirectory(this.cachePath);
         for (const { type, entry } of entries) {
             if (type !== 'FILE') continue;
             const localPath = `${this.localPath}/${entry}`;
@@ -41,7 +42,7 @@ export class ImageCache {
     async saveBlobToDisk(blob, localPath, fullPath) {
         const arrayBuffer = await blob.arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        await Neutralino.filesystem.writeBinaryFile(fullPath, uint8);
+        await writeBinaryFile(fullPath, uint8);
         this.cache.set(fullPath, localPath);
     }
 

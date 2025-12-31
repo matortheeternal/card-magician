@@ -24,7 +24,7 @@
     </template>
 </div>
 <div class="window-actions">
-    <sl-button id="minimize-app" onclick="Neutralino.window.minimize()" title="Minimize">
+    <sl-button id="minimize-app" @click="minimize" title="Minimize">
         <sl-icon name="dash-lg"></sl-icon>
     </sl-button>
     <sl-button id="maximize-app" @click="toggleMaximize()" :title="isMaximized ? 'Restore' : 'Maximize'">
@@ -38,7 +38,7 @@
             <sl-icon name="square"></sl-icon>
         </template>
     </sl-button>
-    <sl-button id="close-window" onclick="Neutralino.app.exit()" title="Close">
+    <sl-button id="close-window" @click="exit" title="Close">
         <sl-icon name="x-lg"></sl-icon>
     </sl-button>
 </div>

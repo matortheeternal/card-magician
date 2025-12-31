@@ -1,5 +1,6 @@
 import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
 import { sifter } from './search.js';
+import { readDirectory } from '../../shared/neutralinoAdapter.js';
 
 const games = [];
 
@@ -16,7 +17,7 @@ export async function setGame(gameId) {
 }
 
 export async function loadGames() {
-    const gameFolders = await Neutralino.filesystem.readDirectory('games');
+    const gameFolders = await readDirectory('games');
     for (const gameFolder of gameFolders) {
         console.debug('%cReading game:', 'color:gold', gameFolder.path);
         const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');

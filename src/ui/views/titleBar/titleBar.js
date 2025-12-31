@@ -1,6 +1,11 @@
 import Alpine from 'alpinejs';
 import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html';
+import {
+    centerWindow, exitApp, getWindowPosition,
+    getWindowSize, maximizeWindow, minimizeWindow,
+    setWindowSize
+} from '../../../shared/neutralinoAdapter.js';
 
 Alpine.data('titleBar', () => ({
     openMenu: null,
@@ -15,18 +20,26 @@ Alpine.data('titleBar', () => ({
     },
 
     async restore() {
-        const size = await Neutralino.window.getSize();
-        await Neutralino.window.unmaximize();
-        await Neutralino.window.setSize({
+        const size = getWindowSize();
+        await unmaximizeWindow();
+        await setWindowSize({
             width: size.minWidth,
             height: size.minHeight,
         });
-        await Neutralino.window.center();
+        await centerWindow();
         this.isMaximized = false;
     },
 
+    exit() {
+        exitApp();
+    },
+
+    minimize() {
+        minimizeWindow();
+    },
+
     async maximize() {
-        await Neutralino.window.maximize();
+        maximizeWindow();
         this.isMaximized = true;
     },
 
@@ -37,8 +50,8 @@ Alpine.data('titleBar', () => ({
     },
 
     async getIsMaximized() {
-        const pos = await Neutralino.window.getPosition();
-        const size = await Neutralino.window.getSize();
+        const pos = await getWindowPosition();
+        const size = await getWindowSize();
         return pos.x < 0
             && pos.y < 0
             && size.height > window.screen.availHeight
@@ -55,9 +68,9 @@ Alpine.data('titleBar', () => ({
     },
 
     menuShown({ target: menu }) {
-        if (this.openMenu && this.openMenu !== menu) 
+        if (this.openMenu && this.openMenu !== menu)
             this.openMenu.hide();
-        
+
         this.openMenu = menu;
         menu.classList.add('menu-active');
     },

@@ -3,6 +3,8 @@ import { executeAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 import { openModal } from '../../modals/modalManager.js';
 import { getAvailableLocales, prepareSchema } from '../../../shared/localize.js';
+import { getActiveSet } from '../../../domain/sets/setManager.js';
+import { exitApp } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('title-bar');
 
@@ -20,7 +22,7 @@ const actions = {
     saveAs: () => executeAction('save-set-as'),
     exportAs: () => executeAction('export-card-image'),
     print: () => console.log('Print'),
-    exit: () => Neutralino.app.exit(0),
+    exit: () => exitApp(),
     undo: () => console.log('Undo'),
     redo: () => console.log('Redo'),
     find: () => executeAction('toggle-search'),
@@ -36,10 +38,7 @@ const actions = {
             selectedLocale: locales[0]
         });
     },
-    editSetInfo: () => {
-        const activeSet = Alpine.store('views').activeSet;
-        openModal('cm-set-info-modal', activeSet.info);
-    },
+    editSetInfo: () => openModal('cm-set-info-modal', getActiveSet().info),
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };
