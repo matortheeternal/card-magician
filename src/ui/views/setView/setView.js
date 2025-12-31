@@ -1,174 +1,132 @@
-import Alpine from 'alpinejs';
-import html from './setView.html';
-import { registerAction, executeAction } from '../../systems/actionSystem.js';
-import {
-    getActiveSet, getSetCards, mutateCard, newSet,
-    openSet, selectCard, setActiveCard
-} from '../../../domain/sets/setManager.js';
-import { filter } from '../../../domain/game/search.js';
+import ReactiveComponent from '../../ReactiveComponent.js';
+import html from './setView.html.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
+import {
+    getActiveSet,
+    onActiveSetChanged,
+    selectCard,
+} from '../../../domain/sets/setManager.js';
+import { registerAction } from '../../systems/actionSystem.js';
+import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { filter } from '../../../domain/game/search.js';
 
-const L = localize('set-view');
+export default class SetView extends ReactiveComponent {
+    #cardsWatch = null;
 
-Alpine.data('setView', () => ({
-    rows: [],
-    columns: [],
-    recentSets: [],
-    showSearch: false,
-    searchValue: '',
-    addCardLabel: L`Add a card`,
-    openSetLabel: L`Open a set`,
-    recentSetsLabel: L`Recent sets`,
-    advancedSearchLabel: L`Advanced`,
-    searchPlaceholder: L`Search for cards`,
-    noCardsLabel: L`This set has no cards in it.`,
-    addRowLabel: L`Click to add a card or press Ctrl+Enter`,
+    connectedCallback() {
+        this.render();
+        this.bind();
+    }
 
-    async init() {
-        this.$root.innerHTML = html;
-        this.recentSets = getConfig().recentFiles || [];
-        this.columns = getActiveGame().columns;
-        this.rows = getSetCards();
-        this.changeTemplate = this.changeTemplate.bind(this);
-        this.addFace = this.addFace.bind(this);
-
-        this.$watch('$store.views.activeSet', (set) => {
-            const cards = set.cards || [];
-            this.rows.splice(0, this.rows.length, ...cards);
+    bind() {
+        onActiveSetChanged(set => {
+            this.updateCards(set);
+            if (this.#cardsWatch) this.#cardsWatch.remove();
+            this.#cardsWatch = this.watch(set, 'cards', () => {
+                this.updateCards(set);
+            });
         });
 
-        this.$watch('$store.appConfig.recentFiles', (recentFiles) => {
-            this.recentSets = (recentFiles || []).slice(0, 4);
+        getConfig().onRecentFilesChanged(() => this.renderRecentSets());
+
+        this.handleEvents('click', {
+            openAdvancedSearch: () => console.log('Open advanced search.')
         });
-
-        this.bindEvents();
-        Alpine.initTree(this.$root);
-    },
-
-    async addFace(faceId) {
-        await mutateCard(card => {
-            card[faceId] = {};
+        this.handleEvents('keydown', {
+            searchInputKeyDown: this.searchInputKeyDown
         });
-    },
+        this.addEventListener('row-selected', event => this.onRowSelected(event));
+        this.addEventListener('sl-input', this.updateSearch.debounce(200));
+        this.addEventListener('add-row-click', event => this.addCard(event));
 
-    async changeTemplate(faceId, newTemplateId) {
-        await mutateCard(card => {
-            card[faceId].template = newTemplateId;
-        });
-    },
-
-    async selectCard(card) {
-        await selectCard(card);
-    },
-
-    bindEvents() {
-        this.$root.addEventListener('row-selected', (event) => {
-            event.stopPropagation();
-            const { row } = event.detail;
-            console.log('%cSelected card:', 'color:orange', row.data.name);
-            this.selectCard(row.original);
-        });
-
-        this.$root.addEventListener('sl-input', (e) => this.search(e));
-        this.$root.addEventListener('add-row-click', () => this.addCard());
         registerAction('toggle-search', () => this.toggleSearch());
-        registerAction('new-set', () => this.newSet());
         registerAction('add-card', () => this.addCard());
-        registerAction('open-set', () => this.openSet());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
-        registerAction('add-face', this.addFace);
         registerAction('paste', () => this.pasteCard());
-        registerAction('change-template', this.changeTemplate);
         registerAction('cut', () => {
             this.copyCard();
             this.deleteSelectedCards();
         });
-    },
+    }
 
-    newSet() {
-        newSet();
-        setActiveCard(null);
-    },
+    get searchBar() {
+        return this.querySelector('.search-bar');
+    }
+
+    get listView() {
+        return this.querySelector('cm-list-view');
+    }
+
+    get noContentPrompt() {
+        return this.querySelector('.no-content-prompt');
+    }
+
+    get recentSetsContainer() {
+        return this.querySelector('.recent-sets-container');
+    }
+
+    renderRecentSets() {
+        const recentSets = getConfig().recentFiles;
+        const container = this.recentSetsContainer
+            .querySelector('.buttons-container');
+        container.innerHTML = '';
+        recentSets.forEach(set => {
+            const button = document.createElement('sl-button');
+            button.variant = 'text';
+            button.size = 'small';
+            button.classList.add('recent-set');
+            button.addEventListener('click', () => this.openSet(set));
+            button.textContent = String(set);
+            container.appendChild(button);
+        });
+    }
+
+    render() {
+        this.innerHTML = html;
+        this.renderRecentSets();
+    }
+
+    updateCards(set) {
+        this.listView.rows = set.cards || [];
+        const hasCards = Boolean(set.cards?.length);
+        toggleDisplay(hasCards, this.listView, this.noContentPrompt);
+        this.updateSearch();
+    }
 
     deleteSelectedCards() {
         const activeSet = getActiveSet();
-        executeAction('get-listview-selection').forEach(r => {
+        this.listView.selection.forEach(r => {
             const index = activeSet.cards.indexOf(r.original);
             if (index === -1) {
                 console.warn(`Couldn't find card:`, r.original);
                 return;
             }
             activeSet.cards.splice(index, 1);
-            Alpine.nextTick(() => {
-                executeAction('set-listview-selection', [index - 1]);
-                this.selectCard(activeSet.cards[index - 1]);
-            });
+            changed(activeSet, 'cards');
+            this.listView.changeSelection(index - 1);
+            selectCard(activeSet.cards[index - 1]);
         });
-    },
+    }
 
     addCard() {
         const game = getActiveGame();
         const activeSet = getActiveSet();
         const card = game.newCard();
         const indexToSelect = activeSet.cards.push(card) - 1;
-        Alpine.nextTick(() => {
-            executeAction('set-listview-selection', [indexToSelect]);
-            this.selectCard(card);
-        });
-    },
-
-    async openSet(filePath = null) {
-        openSet(filePath);
-    },
+        changed(activeSet, 'cards');
+        this.listView.changeSelection(indexToSelect);
+        selectCard(card);
+    }
 
     copyCard() {
         const cards = [];
-        executeAction('get-listview-selection').forEach(r => {
+        this.listView.selection.forEach(r => {
             cards.push(r.original);
         });
 
         navigator.clipboard.writeText(JSON.stringify({ cards }));
-    },
-
-    searchInputKeyDown(e) {
-        if (e.key !== 'Escape') return;
-        e.preventDefault();
-        this.showSearch = false;
-        this.searchValue = '';
-        this.updateSearch();
-    },
-
-    toggleSearch() {
-        this.showSearch = true;
-        Alpine.nextTick(() => {
-            const input = this.$root.querySelector('sl-input');
-            input.focus();
-        });
-    },
-
-    updateSearch() {
-        const cards = getActiveSet().cards;
-        try {
-            console.debug('%cSearching for:', 'color:orange', this.searchValue);
-            const results = this.searchValue ? filter(cards, this.searchValue) : cards;
-            this.rows.splice(0, this.rows.length, ...results);
-        } catch (e) {
-            console.debug('%cSearch error:', 'color:grey', e.message);
-        }
-    },
-
-    search(e) {
-        this.searchValue = e.target.value;
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => {
-            this.updateSearch();
-        }, 200);
-    },
-
-    openAdvancedSearch() {
-        console.log('Open advanced search.');
-    },
+    }
 
     async pasteCard() {
         try {
@@ -182,13 +140,47 @@ Alpine.data('setView', () => ({
                 indexToSelect = activeSet.cards.push(card) - 1;
             });
             if (indexToSelect === -1) return;
-            Alpine.nextTick(() => {
-                executeAction('set-listview-selection', [indexToSelect]);
-                this.selectCard(activeSet.cards[indexToSelect]);
-            });
+            changed(activeSet, 'cards');
+            this.listView.changeSelection(indexToSelect);
+            await selectCard(activeSet.cards[indexToSelect]);
         } catch (e) {
             console.debug('%cPaste failed', 'color:red', e.message);
         }
     }
-}));
 
+    toggleSearch() {
+        show(this.searchBar)
+        const input = this.searchBar.querySelector('sl-input');
+        input.focus();
+    }
+
+    updateSearch(event) {
+        if (event) this.searchValue = event.target.value;
+        const cards = getActiveSet().cards;
+        try {
+            console.debug('%cSearching for:', 'color:orange', this.searchValue);
+            this.listView.rows = this.searchValue
+                ? filter(cards, this.searchValue)
+                : cards;
+        } catch (e) {
+            console.debug('%cSearch error:', 'color:grey', e.message);
+        }
+    }
+
+    searchInputKeyDown(event) {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        this.searchValue = '';
+        hide(this.searchBar);
+        this.updateSearch();
+    }
+
+    onRowSelected(event) {
+        event.stopPropagation();
+        const { row } = event.detail;
+        console.log('%cSelected card:', 'color:orange', row.data.name);
+        selectCard(row.original);
+    }
+}
+
+customElements.define('cm-set-view', SetView);
