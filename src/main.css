@@ -13,9 +13,9 @@
 @import "ui/forms/fieldComponents/codeEditorField.css";
 @import "ui/forms/fieldComponents/imageField.css";
 @import "ui/forms/fieldComponents/selectField.css";
-@import "ui/views/displayCard/displayCard.css";
-@import "ui/views/setView/setView.css";
-@import "ui/views/titleBar/titleBar.css";
+@import "ui/components/displayCard/displayCard.css";
+@import "ui/components/setView/setView.css";
+@import "ui/components/titleBar/titleBar.css";
 
 * {
     box-sizing: border-box;

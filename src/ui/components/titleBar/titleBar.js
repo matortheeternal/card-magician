@@ -1,4 +1,4 @@
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html.js';
 import {

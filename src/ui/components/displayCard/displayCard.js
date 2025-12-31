@@ -1,4 +1,4 @@
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 import html from './displayCard.html.js';
 import { onActiveCardChanged } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
