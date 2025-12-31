@@ -1,4 +1,4 @@
-.display-card-view {
+cm-display-card {
     background-color: #0D0D0D;
     padding: var(--sl-spacing-x-small);
     overflow-y: auto;
@@ -9,7 +9,7 @@
     gap: var(--sl-spacing-small);
 }
 
-.display-card-view .buttons-container {
+cm-display-card .buttons-container {
     margin: 1em;
     display: flex;
     flex-direction: row;
@@ -18,7 +18,7 @@
     gap: 5px;
 }
 
-.card-viewport {
+cm-display-card .card-viewport {
     position: relative;
     overflow: hidden;
     max-width: 100%;
@@ -28,7 +28,7 @@
     align-self: center;
 }
 
-.card-canvas {
+cm-display-card .card-canvas {
     width: 375px;
     height: 523px;
     margin: auto;
@@ -37,13 +37,13 @@
 }
 
 @media (max-width: 1680px) {
-    .display-card-view {
+    cm-display-card {
         min-width: 361px;
     }
 }
 
 @media (max-width: 1440px) {
-    .display-card-view {
+    cm-display-card {
         min-width: 316px;
     }
 }
