@@ -1,3 +1,5 @@
+import { getStoredData, storeData } from '../../shared/neutralinoAdapter.js';
+
 const RECENT_FILE_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
 
@@ -15,7 +17,7 @@ export default class AppConfig {
 
     async load() {
         try {
-            const raw = await Neutralino.storage.getData(this.key);
+            const raw = await getStoredData(this.key);
             this._data = JSON.parse(raw) || {};
         } finally {
             this._data = {};
@@ -62,6 +64,6 @@ export default class AppConfig {
 
     async save() {
         const value = JSON.stringify(this._data);
-        await Neutralino.storage.setData(this.key, value);
+        await storeData(this.key, value);
     }
 }

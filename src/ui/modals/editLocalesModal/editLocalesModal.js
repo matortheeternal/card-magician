@@ -4,6 +4,7 @@ import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 import html from './editLocalesModal.html.js';
 import { renderFields } from '../../systems/fieldSystem.js';
+import { getAbsolutePath, open } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('edit-locales-modal');
 
@@ -120,10 +121,8 @@ export default class EditLocalesModal extends Modal {
     }
 
     async openLocalesFolder() {
-        const localesPath = await Neutralino.filesystem.getAbsolutePath(
-            NL_PATH + '/locales'
-        );
-        Neutralino.os.open(localesPath);
+        const localesPath = await getAbsolutePath(NL_PATH + '/locales');
+        open(localesPath);
     }
 
     validate() {

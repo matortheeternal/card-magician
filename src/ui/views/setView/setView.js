@@ -4,6 +4,7 @@ import { registerAction, executeAction } from '../../systems/actionSystem.js';
 import { buildCard } from '../../../domain/card/cardBuilder.js';
 import { loadSetData } from '../../../domain/sets/setManager.js';
 import { filter } from '../../../domain/game/search.js';
+import { openSingleFileDialog } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('set-view');
 
@@ -208,15 +209,4 @@ Alpine.data('setView', () => ({
         }
     }
 }));
-
-async function openSingleFileDialog() {
-    const res = await Neutralino.os.showOpenDialog(L`Open a set`, {
-        filters: [
-            { name: L`JSON Files`, extensions: ['json'] },
-            { name: L`All files`, extensions: ['*'] }
-        ]
-    });
-    if (!res) return;
-    return res[0];
-}
 

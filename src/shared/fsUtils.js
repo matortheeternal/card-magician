@@ -1,11 +1,13 @@
+import { getStats, readFile } from './neutralinoAdapter.js';
+
 export async function loadJson(filePath) {
-    const text = await Neutralino.filesystem.readFile(filePath);
+    const text = await readFile(filePath);
     return JSON.parse(text);
 }
 
 export async function checkFileExists(filePath) {
     try {
-        const stats = await Neutralino.filesystem.getStats(filePath);
+        const stats = await getStats(filePath);
         return stats.isFile;
     } catch (error) {
         if (error.code === 'NE_FS_NOPATHE') return false;
