@@ -8,6 +8,11 @@ export default class CardFaceModel extends BaseCardModel {
     optionsForm = new DOMBuilder();
     subcards = [];
 
+    dispose() {
+        super.dispose();
+        this.subcards.forEach(subcard => subcard.dispose());
+    }
+
     async save() {
         const cardData = await super.save();
         for (const subCard of this.subcards)

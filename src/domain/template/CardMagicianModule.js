@@ -12,6 +12,7 @@ import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
 import { getActiveGame } from '../game/gameManager.js';
 import { getActiveSet } from '../sets/setManager.js';
+import { watch } from '../../shared/reactivity.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -169,6 +170,8 @@ import { getActiveSet } from '../sets/setManager.js';
  * graphical operations.
  */
 export default class CardMagicianModule {
+    #watchers = [];
+
     /**
      * @param {CardFace} card - The card face this module is associated with.
      * @param {string} modulePath - Filesystem path of the module.
@@ -177,6 +180,37 @@ export default class CardMagicianModule {
         this.card = card;
         this.modulePath = modulePath;
         this.name = modulePath.split('/').pop();
+    }
+
+    /**
+     * Invoked when the card this module is associated with is unloaded. Removes
+     * watchers by default. Override it to handle other resources if necessary.
+     */
+    dispose() {
+        this.#watchers.forEach(unwatch => unwatch());
+    }
+
+    /**
+     * Invokes callback whenever the specified object properties are reported to
+     * have changed via changed().
+     *
+     * @param {object} obj - The object to watch for changes.
+     * @param {string|array|null} keysArg - The key or keys to watch. Passing null
+     * or empty string indicates to watch all properties.
+     * @param {function} callback - The callback function to execute when a change
+     * is reported.
+     * @returns {{remove(): void}}
+     */
+    watch(obj, keysArg, callback) {
+        const unwatch = watch(obj, keysArg, callback);
+        this.#watchers.push(unwatch);
+        return {
+            remove() {
+                const index = this.#watchers.indexOf(unwatch);
+                this.#watchers.splice(index, 1);
+                unwatch();
+            }
+        };
     }
 
     /**

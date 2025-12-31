@@ -1,7 +1,6 @@
 import RenderScheduler from '../template/renderScheduler.js';
 import ImageFieldValue from './ImageFieldValue.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
-import { watch } from '../../shared/reactivity.js';
 
 export default class BaseCardModel {
     fields = [];
@@ -10,6 +9,10 @@ export default class BaseCardModel {
 
     constructor(key) {
         this.id = key;
+    }
+
+    dispose() {
+        this.modules.forEach(module => module.dispose());
     }
 
     async saveField(field) {
@@ -101,11 +104,8 @@ export default class BaseCardModel {
 
     bindWatchers() {
         this.modules.forEach(module => {
-            module.watchers = [];
-            module.bind(this, function(obj, keysArg, callback) {
-                const unwatch = watch(obj, keysArg, callback);
-                module.watchers.push(unwatch);
-            });
+            const watch = module.watch.bind(module);
+            module.bind(this, watch);
         });
     }
 }
