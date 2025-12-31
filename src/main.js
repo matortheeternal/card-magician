@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/extensions.js';
 import './shared/localize.js';
@@ -21,7 +20,6 @@ import {
 // BASE SETUP
 setupNeutralino();
 setupShoelace();
-setupAlpine();
 setupModuleSystem();
 
 async function ensureDirectories() {
@@ -49,11 +47,6 @@ async function setupNeutralino() {
 
 function setupShoelace() {
     setBasePath('/shoelace');
-}
-
-function setupAlpine() {
-    window.Alpine = Alpine;
-    Alpine.start();
 }
 
 function setupModuleSystem() {

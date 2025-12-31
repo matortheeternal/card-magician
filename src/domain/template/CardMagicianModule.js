@@ -7,7 +7,6 @@ import {
     maskColorOp,
     maskImageOp
 } from '../gfx/blending.js';
-import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
 import { getActiveGame } from '../game/gameManager.js';
@@ -320,16 +319,6 @@ export default class CardMagicianModule {
      */
     async loadFont(fontName, localPath) {
         await loadFont(fontName, this.resolveAsset(localPath));
-    }
-
-    /**
-     * Wraps an object in Alpine.js reactivity (deep reactive proxy).
-     *
-     * @param {object} obj - Object to make reactive.
-     * @returns {object} The reactive proxy.
-     */
-    makeReactive(obj) {
-        return Alpine.reactive(obj);
     }
 
     /**
