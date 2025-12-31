@@ -149,7 +149,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     toggleSearch() {
-        show(this.searchBar)
+        show(this.searchBar);
         const input = this.searchBar.querySelector('sl-input');
         input.focus();
     }
