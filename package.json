@@ -47,6 +47,7 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
+    "@neutralinojs/lib": "^6.4.0",
     "@stylistic/eslint-plugin": "^5.6.1",
     "esbuild": "^0.25.10",
     "esbuild-plugin-copy": "^2.1.1",
