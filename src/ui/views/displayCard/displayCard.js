@@ -3,6 +3,7 @@ import html from './displayCard.html';
 import { saveHTMLAsImage } from '../../../domain/card/cardImageExporter.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { watch } from '../../../shared/reactivity.js';
+import { onActiveCardChanged } from '../../../domain/sets/setManager.js';
 
 const L = localize('display-card');
 
@@ -31,8 +32,7 @@ Alpine.data('displayCard', () => ({
     },
 
     setupFlip() {
-        watch(Alpine.store('views'), 'activeCard', () => {
-            const card = Alpine.store('views').activeCard;
+        onActiveCardChanged((card) => {
             this.useFlip = Boolean(card?.front && card?.back);
         });
     },

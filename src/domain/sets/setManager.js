@@ -8,11 +8,16 @@ import {
     openSingleFileDialog,
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
+import { buildCard } from '../card/cardBuilder.js';
 
 const L = localize('set-manager');
 const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
+
+const cardChangedCallbacks = [];
 let activeSet = { cards: [] };
 let setFilePath = null;
+let activeCard = null;
+let selectedCard = null;
 
 export async function saveSetData(filePath, data) {
     const serializer = serializers.find(s => s.matches(filePath));
@@ -75,6 +80,35 @@ export function getActiveSet() {
 
 export function getSetCards() {
     return activeSet.cards.slice();
+}
+
+export function getSelectedCard() {
+    return selectedCard;
+}
+
+export async function saveActiveCard() {
+    selectedCard.front = await activeCard.front.save();
+    if (activeCard.back)
+        selectedCard.back = await activeCard.back.save();
+}
+
+export function onActiveCardChanged(callback) {
+    cardChangedCallbacks.push(callback);
+}
+
+export async function setActiveCard(card) {
+    activeCard = card ? await buildCard(card) : null;
+    cardChangedCallbacks.forEach(cb => cb(activeCard));
+}
+
+export async function selectCard(card) {
+    selectedCard = card;
+    await setActiveCard(card);
+}
+
+export async function mutateCard(callback) {
+    callback(selectedCard);
+    await setActiveCard(selectedCard);
 }
 
 registerAction('save-set', save);
