@@ -1,4 +1,4 @@
-.set-view {
+cm-set-view {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -8,7 +8,7 @@
     border-right: 1px solid var(--sl-color-neutral-400);
 }
 
-.list-view-container {
+cm-list-view {
     overflow: auto;
     height: 100%;
 }

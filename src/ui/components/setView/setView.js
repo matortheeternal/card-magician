@@ -104,7 +104,7 @@ export default class SetView extends ReactiveComponent {
             }
             activeSet.cards.splice(index, 1);
             changed(activeSet, 'cards');
-            this.listView.changeSelection(index - 1);
+            this.listView.selection = [index - 1];
             selectCard(activeSet.cards[index - 1]);
         });
     }
@@ -115,7 +115,7 @@ export default class SetView extends ReactiveComponent {
         const card = game.newCard();
         const indexToSelect = activeSet.cards.push(card) - 1;
         changed(activeSet, 'cards');
-        this.listView.changeSelection(indexToSelect);
+        this.listView.selection = [indexToSelect];
         selectCard(card);
     }
 
@@ -141,7 +141,7 @@ export default class SetView extends ReactiveComponent {
             });
             if (indexToSelect === -1) return;
             changed(activeSet, 'cards');
-            this.listView.changeSelection(indexToSelect);
+            this.listView.selection = [indexToSelect];
             await selectCard(activeSet.cards[indexToSelect]);
         } catch (e) {
             console.debug('%cPaste failed', 'color:red', e.message);

@@ -1,9 +1,7 @@
-import Alpine from 'alpinejs';
-import { emit } from '../../../shared/htmlUtils.js';
-import { selectRow } from './rowSelectionService.js';
-import { registerAction } from '../../systems/actionSystem.js';
-import html from './listView.html';
+import ReactiveComponent from '../ReactiveComponent.js';
 import { getColumnSelectMode } from './columnSortService.js';
+import { selectRow } from './rowSelectionService.js';
+import { emit } from '../../../shared/htmlUtils.js';
 
 const L = localize('list-view');
 
@@ -11,28 +9,48 @@ function makeDefaultDisplayFunction(column) {
     return (row) => `<span>${row.data[column.id]}</span>`;
 }
 
-Alpine.data('listView', (config) => ({
-    columns: config.columns || [],
-    rows: config.rows || [],
-    addRowLabel: config.addRowLabel || L`Click to add a row`,
-    activeColumns: [],
-    activeRows: [],
+export default class ListView extends ReactiveComponent {
+    #columns = [];
+    #rows = [];
+    activeRows = [];
+    activeColumns = [];
 
-    async init() {
-        this.$watch('columns', () => this.computeColumns());
-        this.$watch('rows', () => this.computeRows());
-        this.$watch('activeColumns', () => this.computeRows());
-        this.$watch('columns', () => this.updateColumnSizes());
+    connectedCallback() {
+        this.watch(this, 'activeRows', () => this.renderRows());
+        this.watch(this, 'activeColumns', () => this.render());
+        this.handleEvents('click', { addRowClick: this.addRowClick });
+        this.render();
+    }
 
-        this.computeColumns();
+    get rows() {
+        return this.#rows;
+    }
+
+    set rows(newValue) {
+        this.#rows = newValue;
         this.computeRows();
-        this.bindEvents();
+    }
 
-        this.$root.innerHTML = html;
-        Alpine.initTree(this.$root);
+    get columns() {
+        return this.#columns;
+    }
 
-        this.updateColumnSizes();
-    },
+    set columns(newValue) {
+        this.#columns = newValue;
+        this.computeColumns();
+    }
+
+    get selection() {
+        return this.activeRows.filter(r => r.selected);
+    }
+
+    set selection(indexesToSelect) {
+        const maxIndex = Math.max.apply(null, indexesToSelect);
+        for (let i = 0; i < this.activeRows.length; i++) {
+            this.activeRows[i].lastSelected = i === maxIndex;
+            this.activeRows[i].selected = indexesToSelect.includes(i);
+        }
+    }
 
     computeColumns() {
         this.activeColumns = this.columns.map(col => {
@@ -41,7 +59,7 @@ Alpine.data('listView', (config) => ({
             if (!active.display) active.display = makeDefaultDisplayFunction(active);
             return active;
         });
-    },
+    }
 
     computeRows() {
         const oldRowMap = new Map((this.activeRows || []).map(r => [r.original, r]));
@@ -60,13 +78,13 @@ Alpine.data('listView', (config) => ({
             };
         });
         this.sortRows();
-    },
+    }
 
     defaultCompare(col, a, b) {
         const aData = a.data[col.id];
         const bData = b.data[col.id];
         return aData.localeCompare(bData);
-    },
+    }
 
     sortRows() {
         const sortCols = this.activeColumns
@@ -83,44 +101,131 @@ Alpine.data('listView', (config) => ({
             }
             return 0;
         });
-    },
+    }
 
-    bindEvents() {
-        registerAction('get-listview-selection', () => {
-            return this.activeRows.filter(r => r.selected);
+    get addRowLabel() {
+        return this.getAttribute('add-row-label')
+            || L`Click to add a row`;
+    }
+
+    get addRow() {
+        return this.querySelector('.add-row');
+    }
+
+    get colGroup() {
+        return this.querySelector('colgroup');
+    }
+
+    get thead() {
+        return this.querySelector('thead');
+    }
+
+    get tbody() {
+        return this.querySelector('tbody');
+    }
+
+    generateIconWithTooltip(content, iconName) {
+        const tooltip = document.createElement('sl-tooltip');
+        tooltip.hoist = true;
+        tooltip.placement = 'bottom';
+        tooltip.content = content;
+
+        const icon = document.createElement('sl-icon');
+        icon.name = iconName;
+        tooltip.appendChild(icon);
+
+        return tooltip;
+    }
+
+    renderSort(th, sort) {
+        const sortContainer = document.createElement('div');
+        sortContainer.classList.add('column-sort');
+        if (sort.priority) {
+            this.generateIconWithTooltip(
+                sortContainer,
+                `Sort Priority ${sort.priority}`,
+                `${sort.priority || '0'}-circle-fill`
+            );
+        }
+        const isAscending = sort.direction === 'asc';
+        const sortOrderLabel = isAscending ? 'ascending' : 'descending';
+        this.generateIconWithTooltip(
+            sortContainer,
+            `Sorted in ${sortOrderLabel} order`,
+            isAscending ? 'arrow-up' : 'arrow-down'
+        );
+        th.appendChild(sortContainer);
+    }
+
+    generateResizeHandle(index) {
+        const resizeHandle = document.createElement('div');
+        resizeHandle.classList.add('resize-handle');
+        resizeHandle.addEventListener('mousedown', event => {
+            this.onResizeMouseDown(event, index);
         });
-        registerAction('set-listview-selection', (indexesToSelect) => {
-            const maxIndex = Math.max.apply(null, indexesToSelect);
-            for (let i = 0; i < this.activeRows.length; i++) {
-                this.activeRows[i].lastSelected = i === maxIndex;
-                this.activeRows[i].selected = indexesToSelect.includes(i);
-            }
-        });
-    },
+        return resizeHandle;
+    }
 
-    updateColumnSizes() {
-        this.colGroup = this.$root.querySelector('colgroup');
-        if (!this.colGroup) return;
+    generateHeaderCell(col, index) {
+        const th = document.createElement('th');
+        th.addEventListener('click', event => this.onHeaderClick(event, col));
+        th.appendChild(document.createTextNode(col.label));
+        if (col.sort) this.renderSort(th, col.sort);
+        th.appendChild(this.generateResizeHandle(index));
+        return th;
+    }
 
+    renderColumns() {
         this.colGroup.innerHTML = this.activeColumns
             .map(col => `<col style="width:${col.width || 'auto'}">`)
             .join('');
-    },
+        const headerRow = document.createElement('tr');
+        this.activeColumns.forEach((col, index) => {
+            headerRow.appendChild(this.generateHeaderCell(col, index));
+        });
+        this.thead.appendChild(headerRow);
+    }
 
-    onHeaderClick(e, column) {
-        e.stopImmediatePropagation();
-        const mode = getColumnSelectMode(column, e);
+    renderRows() {
+        this.tbody.innerHTML = '';
+        this.activeRows.forEach(row => {
+            const rowElement = document.createElement('tr');
+            if (row.selected) rowElement.classList.add('selected');
+            if (row.lastSelected) rowElement.classList.add('last-selected');
+            rowElement.addEventListener('click', event => this.onRowClick(event, row));
+            this.activeColumns.forEach(col => {
+                const cell = document.createElement('td');
+                cell.innerHTML = col.display(row);
+                rowElement.appendChild(cell);
+            });
+            this.tbody.appendChild(rowElement);
+        });
+    }
+
+    renderAddRowLabel() {
+        this.addRow.textContent = this.addRowLabel;
+    }
+
+    render() {
+        this.renderColumns();
+        this.renderRows();
+        this.renderAddRowLabel();
+    }
+
+    onHeaderClick(event, column) {
+        event.stopImmediatePropagation();
+        const mode = getColumnSelectMode(column, event);
         mode.select(column, this.activeColumns);
         this.sortRows();
-    },
+    }
 
-    onResizeMouseDown(e, colIndex) {
-        e.stopImmediatePropagation();
+    onResizeMouseDown(event, colIndex) {
+        event.stopImmediatePropagation();
 
         document.body.classList.add('column-resizing');
         const column = this.colGroup.children[colIndex];
-        const startX = e.clientX;
-        const startWidth = e.target.parentNode.offsetWidth;
+        const startX = event.clientX;
+        const startWidth = event.target.parentNode.offsetWidth;
 
         function onMouseMove(moveEvent) {
             const delta = moveEvent.clientX - startX;
@@ -136,16 +241,18 @@ Alpine.data('listView', (config) => ({
 
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
-    },
+    }
 
     onRowClick(event, row) {
         const multiSelect = event.ctrlKey;
         const rangeSelect = event.shiftKey;
         selectRow(this.activeRows, row, multiSelect, rangeSelect);
-        emit(this.$root, 'row-selected', { row });
-    },
+        emit(this, 'row-selected', { row });
+    }
 
     addRowClick() {
-        emit(this.$root, 'add-row-click');
+        emit(this, 'add-row-click');
     }
-}));
+}
+
+customElements.define('cm-list-view', ListView);
