@@ -3,7 +3,6 @@ import Modal from '../Modal.js';
 import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 import html from './editLocalesModal.html.js';
-import { renderFields } from '../../systems/fieldSystem.js';
 import { getAbsolutePath, open } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('edit-locales-modal');
@@ -69,9 +68,6 @@ export default class EditLocalesModal extends Modal {
     selectLocale(locale) {
         this.data.selectedLocale = locale;
         this.data.selectedLocaleId = locale.id;
-        renderFields(this, this.data.selectedLocale, this.localeFields, {
-            getSelector: field => `form-field[field-id="${field.id}"]`
-        });
     }
 
     getNextAvailableId() {
