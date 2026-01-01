@@ -60,12 +60,15 @@ function handleOptionalField(fieldElement, container, model, field, { watch }) {
     if (!optional) return;
 
     const toggleField = createToggle(container, 'toggle-field');
-    watch(model, field.id, () => {
+    function updateToggle() {
         const show = model[field.id] !== null
             && model[field.id] !== undefined;
         fieldElement.style.display = show ? 'block' : 'none';
         toggleField.innerHTML = renderToggle(show, field.label);
-    });
+    }
+
+    watch(model, field.id, updateToggle);
+    updateToggle();
 }
 
 function getDefaultSelector(field) {
@@ -90,8 +93,10 @@ export function renderFields(root, model, fields, ctx = {}) {
 }
 
 function toggleGroupChildren(formGroup, show, toggleGroup) {
-    for (const child of formGroup.children)
+    for (const child of formGroup.children) {
+        if (child === toggleGroup) continue;
         child.style.display = show ? 'block' : 'none';
+    }
 
     formGroup.toggleAttribute('active', show);
     const label = formGroup.getAttribute('label');
@@ -107,8 +112,9 @@ export function handleFormGroup(formGroup, model, watch) {
     const optional = formGroup.hasAttribute('optional');
     const toggleGroup = optional ? createToggle(formGroup, 'toggle-group') : null;
     const showKey = formGroup.getAttribute('show');
-    watch(model, showKey, optional
+    const updateToggle = optional
         ? () => toggleGroupChildren(formGroup, model[showKey], toggleGroup)
-        : () => toggleGroupVisibility(formGroup, model[showKey])
-    );
+        : () => toggleGroupVisibility(formGroup, model[showKey]);
+    watch(model, showKey, updateToggle);
+    updateToggle();
 }

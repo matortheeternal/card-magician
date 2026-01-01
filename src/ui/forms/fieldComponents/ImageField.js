@@ -81,6 +81,7 @@ export default class ImageField extends FieldComponent {
 
     render() {
         this.innerHTML = getBaseHTML(this.field.label);
+        this.loadValue();
     }
 
     renderUploadPrompt() {

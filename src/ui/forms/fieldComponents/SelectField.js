@@ -27,12 +27,12 @@ function menuItem(option) {
 
 function buildSelectHTML(label, options) {
     const optionsHTML = (options || []).map(option => {
-        if (option.separator) 
+        if (option.separator)
             return `<sl-divider style="${selectDividerSpacing}"></sl-divider>`;
-        
-        if (option.items) 
+
+        if (option.items)
             return submenu(option);
-        
+
         return menuItem(option);
     }).join('');
 
@@ -58,9 +58,9 @@ function resolveOption(selectedValue, options) {
     for (const option of options) {
         if (option.id === selectedValue) return [option, null];
         if (!option.items) continue;
-        for (const item of option.items) 
+        for (const item of option.items)
             if (item.id === selectedValue) return [item, option];
-        
+
     }
     return [null, null];
 }
@@ -86,6 +86,7 @@ export default class SelectField extends FieldComponent {
 
     render() {
         this.innerHTML = buildSelectHTML(this.field.label, this.field.options);
+        this.loadValue();
     }
 
     isSelected(el, groupId) {
