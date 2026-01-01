@@ -44,7 +44,7 @@ export default class FormUnit extends ReactiveComponent {
                 <sl-icon-button
                     class="remove-btn"
                     name="x-lg"
-                    data-click-action="remove"></sl-icon-button>
+                    data-click-action="removeUnit"></sl-icon-button>
             </sl-tooltip>`
         );
     }
@@ -53,21 +53,20 @@ export default class FormUnit extends ReactiveComponent {
         return (
             `<sl-button
                 class="add-btn"
-                data-click-action="add"
+                data-click-action="addUnit"
                 size="small"
                 variant="success"
                 outline>
                 <sl-icon slot="prefix" name="plus-lg"></sl-icon>
                 ${L`Add ${escapeHTML(this.label)}`}
             </sl-button>`
-        )
+        );
     }
 
     update() {
-        const show = this.show;
-        this.updateDisplay(show);
+        this.updateDisplay(this.show);
         if (!this.optional) return;
-        this.toggle.innerHTML = show
+        this.toggle.innerHTML = this.show
             ? this.removeButtonHTML()
             : this.addButtonHTML();
     }

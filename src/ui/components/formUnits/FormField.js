@@ -13,6 +13,10 @@ export default class FormField extends FormUnit {
         );
     }
 
+    get label() {
+        return this.field.label;
+    }
+
     get showKey() {
         return this.fieldId;
     }
@@ -36,7 +40,7 @@ export default class FormField extends FormUnit {
     }
 
     get error() {
-        return (super.error()
+        return (super.error
             || (!this.field && 'Could not resolve field from form provider.')
         );
     }
