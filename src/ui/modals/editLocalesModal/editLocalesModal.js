@@ -4,19 +4,26 @@ import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 import html from './editLocalesModal.html.js';
 import { renderFields } from '../../systems/fieldSystem.js';
+import { getAbsolutePath, open } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('edit-locales-modal');
 
 export default class EditLocalesModal extends Modal {
     static id = 'cm-edit-locales-modal';
     title = L`Edit Locales`;
-    localeField = Alpine.reactive({
+    localeField = {
         id: 'selectedLocaleId',
         label: L`Selected Locale`,
         type: 'select'
-    });
+    };
     stats = {};
     statusMessage = '';
+
+    constructor() {
+        super();
+        this.debouncedSave = this.save.debounce(1000);
+        this.stats.total = Localization.totalKeys;
+    }
 
     get onClickHandlers() {
         return {
@@ -29,28 +36,19 @@ export default class EditLocalesModal extends Modal {
         };
     }
 
-    async init() {
-        this.save = this.save.debounce(1000);
-        this.localeField.options = this.data.locales;
-        this.stats.total = Localization.totalKeys;
-    }
-
     connectedCallback() {
-        this.init().then(() => {
-            super.connectedCallback();
-            this.statsContainer = this.querySelector('.stats');
-            if (Boolean(this.data.selectedLocale)) {
-                this.selectLocale(this.data.selectedLocale);
-            } else {
-                this.createNewLocale();
-            }
-        });
+        this.localeField.options = this.data.locales;
+        super.connectedCallback();
+        this.statsContainer = this.querySelector('.stats');
+        Boolean(this.data.selectedLocale)
+            ? this.selectLocale(this.data.selectedLocale)
+            : this.createNewLocale();
     }
 
     bind() {
         super.bind();
         this.on('code-change', event => this.onCodeChange(event));
-        this.on('cm-field-changed', event => this.onFieldChanged(event))
+        this.on('cm-field-changed', event => this.onFieldChanged(event));
     }
 
     get fields() {
@@ -120,10 +118,8 @@ export default class EditLocalesModal extends Modal {
     }
 
     async openLocalesFolder() {
-        const localesPath = await Neutralino.filesystem.getAbsolutePath(
-            NL_PATH + '/locales'
-        );
-        Neutralino.os.open(localesPath);
+        const localesPath = await getAbsolutePath(NL_PATH + '/locales');
+        open(localesPath);
     }
 
     validate() {
@@ -148,7 +144,7 @@ export default class EditLocalesModal extends Modal {
     onCodeChange() {
         try {
             this.updateStats();
-            this.save();
+            this.debouncedSave();
         } catch (e) {
             console.error(e);
         }

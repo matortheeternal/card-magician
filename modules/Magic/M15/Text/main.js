@@ -38,6 +38,7 @@ export default class TextModule extends CardMagicianModule {
         const textSymbols = [];
         card.rulesHTML = card.textToHTML(card.rulesText, textSymbols);
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
+        changed(card, ['colorIdentity', 'rulesHTML']);
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
     }
@@ -49,13 +50,12 @@ export default class TextModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(() => card.rulesText, () => this.renderRulesHTML(card));
-        watch(() => card.flavorText, () => this.renderFlavorHTML(card));
-        watch(
-            () => [card.showPT, card.showFlag, card.maxFontSize,
-                   card.chopTop, card.chopBottom, card.centerText],
-            () => this.requestRender()
-        );
+        watch(card, 'rulesText', () => this.renderRulesHTML(card));
+        watch(card, 'flavorText', () => this.renderFlavorHTML(card));
+        watch(card, [
+            'showPT', 'showFlag', 'maxFontSize',
+            'chopTop', 'chopBottom', 'centerText'
+        ], () => this.requestRender());
     }
 
     getAvoidSelectors(card) {
@@ -98,9 +98,9 @@ export default class TextModule extends CardMagicianModule {
 
     render(card) {
         return (
-            `<auto-fit-text 
-               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''} 
-               class="${this.getTextClassName(card)}" 
+            `<auto-fit-text
+               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
+               class="${this.getTextClassName(card)}"
                avoid="${this.getAvoidSelectors(card).join('; ')}"
                style="${this.getTextStyle(card)}"
               >

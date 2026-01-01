@@ -19,7 +19,7 @@ export default class ColorModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(() => card.colorIdentity, () => this.updateCardColors(card));
+        watch(card, 'colorIdentity', () => this.updateCardColors(card));
     }
 
     get fields() {

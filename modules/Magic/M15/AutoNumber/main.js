@@ -9,10 +9,9 @@ export default class AutoNumberModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(
-            () => [card.name, card.color, card.colorIdentity, card.superType,
-                   this.set.info.collectorNumberFormat],
-            () => this.updateNumbering()
+        watch(card, ['name', 'color', 'colorIdentity', 'superType'],
+              () => this.updateNumbering()
         );
+        watch(this.set.info, 'collectorNumberFormat', () => this.updateNumbering());
     }
 }

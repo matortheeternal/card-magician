@@ -71,6 +71,7 @@ export default class ImageField extends FieldComponent {
         if (oldImageUrl)
             setTimeout(() => URL.revokeObjectURL(oldImageUrl), 500);
         this.model[this.field.id] = newValue;
+        changed(this.model, this.field.id);
     }
 
     connectedCallback() {
@@ -80,6 +81,7 @@ export default class ImageField extends FieldComponent {
 
     render() {
         this.innerHTML = getBaseHTML(this.field.label);
+        this.loadValue();
     }
 
     renderUploadPrompt() {
@@ -161,7 +163,7 @@ export default class ImageField extends FieldComponent {
             aspectRatio: this.field.aspectRatio,
             callback: (newValue) => {
                 this.value.crop = newValue;
-                this.loadValue();
+                changed(this.model, this.field.id);
                 emit(this, 'cm-field-changed');
             }
         });

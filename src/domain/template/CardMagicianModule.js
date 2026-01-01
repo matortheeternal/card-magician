@@ -7,9 +7,11 @@ import {
     maskColorOp,
     maskImageOp
 } from '../gfx/blending.js';
-import Alpine from 'alpinejs';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
+import { getActiveGame } from '../game/gameManager.js';
+import { getActiveSet } from '../sets/setManager.js';
+import { watch } from '../../shared/reactivity.js';
 
 /**
  * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
@@ -167,6 +169,8 @@ import { escapeHTML } from '../../shared/htmlUtils.js';
  * graphical operations.
  */
 export default class CardMagicianModule {
+    #watchers = [];
+
     /**
      * @param {CardFace} card - The card face this module is associated with.
      * @param {string} modulePath - Filesystem path of the module.
@@ -175,6 +179,37 @@ export default class CardMagicianModule {
         this.card = card;
         this.modulePath = modulePath;
         this.name = modulePath.split('/').pop();
+    }
+
+    /**
+     * Invoked when the card this module is associated with is unloaded. Removes
+     * watchers by default. Override it to handle other resources if necessary.
+     */
+    dispose() {
+        this.#watchers.forEach(unwatch => unwatch());
+    }
+
+    /**
+     * Invokes callback whenever the specified object properties are reported to
+     * have changed via changed().
+     *
+     * @param {object} obj - The object to watch for changes.
+     * @param {string|array|null} keysArg - The key or keys to watch. Passing null
+     * or empty string indicates to watch all properties.
+     * @param {function} callback - The callback function to execute when a change
+     * is reported.
+     * @returns {{remove(): void}}
+     */
+    watch(obj, keysArg, callback) {
+        const unwatch = watch(obj, keysArg, callback);
+        this.#watchers.push(unwatch);
+        return {
+            remove() {
+                const index = this.#watchers.indexOf(unwatch);
+                this.#watchers.splice(index, 1);
+                unwatch();
+            }
+        };
     }
 
     /**
@@ -287,22 +322,12 @@ export default class CardMagicianModule {
     }
 
     /**
-     * Wraps an object in Alpine.js reactivity (deep reactive proxy).
-     *
-     * @param {object} obj - Object to make reactive.
-     * @returns {object} The reactive proxy.
-     */
-    makeReactive(obj) {
-        return Alpine.reactive(obj);
-    }
-
-    /**
      * Returns the current active set
      *
      * @returns {object}
      */
     getActiveSet() {
-        return Alpine.store('views').activeSet;
+        return getActiveSet();
     }
 
     /**
@@ -311,14 +336,14 @@ export default class CardMagicianModule {
      * @returns {object}
      */
     getActiveGame() {
-        return Alpine.store('game');
+        return getActiveGame();
     }
 
     /**
      * Sanitizes an input string using sanitize-html.
      *
      * @param {string} str - the string to sanitize
-     * @param {object} options - sanitze HTML options
+     * @param {object} options - sanitize HTML options
      * @returns {string}
      */
     sanitize(str, options) {
@@ -331,7 +356,7 @@ export default class CardMagicianModule {
 
     objectToStyle(obj) {
         return Object.entries(obj)
-            .map(([key, value]) => `${key.separate('-')}: ${value}`)
+            .map(([key, value]) => `${key.separate('-').toLowerCase()}: ${value}`)
             .join('; ');
     }
 

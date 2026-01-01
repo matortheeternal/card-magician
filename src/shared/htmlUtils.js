@@ -1,6 +1,12 @@
 export const show = el => (el.style.display = '');
 export const hide = el => (el.style.display = 'none');
 
+export function toggleDisplay(show, element, otherElement) {
+    element.style.display = show ? '' : 'none';
+    if (!otherElement) return;
+    otherElement.style.display = show ? 'none' : '';
+}
+
 export function emit(element, name, detail = {}) {
     const event = new CustomEvent(name, {
         detail,

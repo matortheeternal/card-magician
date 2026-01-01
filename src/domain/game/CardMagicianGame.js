@@ -1,5 +1,4 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
-import Alpine from 'alpinejs';
 import SerializerAdapter from '../sets/adapters/SerializerAdapter.js';
 import {
     registerAdapter,
@@ -8,6 +7,7 @@ import {
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
 import { loadFont } from '../template/fontService.js';
+import { getActiveSet } from '../sets/setManager.js';
 
 export default class CardMagicianGame {
     /**
@@ -59,16 +59,6 @@ export default class CardMagicianGame {
      */
     async loadFont(fontName, localPath) {
         await loadFont(fontName, this.resolveAsset(localPath));
-    }
-
-    /**
-     * Wraps an object in Alpine.js reactivity (deep reactive proxy).
-     *
-     * @param {object} obj - Object to make reactive.
-     * @returns {object} The reactive proxy.
-     */
-    makeReactive(obj) {
-        return Alpine.reactive(obj);
     }
 
     /**
@@ -125,7 +115,7 @@ export default class CardMagicianGame {
     * @returns {object}
     */
     getActiveSet() {
-        return Alpine.store('views').activeSet;
+        return getActiveSet();
     }
 
     /**

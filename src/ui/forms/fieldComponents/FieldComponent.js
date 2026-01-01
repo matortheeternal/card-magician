@@ -1,51 +1,65 @@
 import { emit } from '../../../shared/htmlUtils.js';
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../../components/ReactiveComponent.js';
 
 export default class FieldComponent extends ReactiveComponent {
-    #state = Alpine.reactive({ ready: false, field: null, model: null });
+    #field = null;
+    #model = null;
+    #fieldWatch = null;
+    #valueWatch = null;
     eventKey = 'sl-input';
 
     connectedCallback() {
         this.on(this.eventKey, event => this.onChange(event));
-        this.effect(() => { if (this.ready) this.render(); });
-        this.effect(() => { if (this.ready) this.loadValue(); });
     }
 
-    get ready() {
-        return this.#state.ready;
+    watchValue() {
+        if (!this.model || !this.field) return;
+        if (this.#valueWatch) this.#valueWatch.remove();
+        this.#valueWatch = this.watch(this.model, this.field.id,
+                                      () => this.loadValue()
+        );
     }
 
     get field() {
-        return this.#state.field;
+        return this.#field;
     }
 
     set field(newValue) {
-        this.#state.field = newValue;
-        this.#state.ready = Boolean(this.#state.field && this.#state.model);
-    }
-
-    set model(newValue) {
-        this.#state.model = newValue;
-        this.#state.ready = Boolean(this.#state.field && this.#state.model);
+        this.#field = newValue;
+        this.render();
+        if (this.#fieldWatch) this.#fieldWatch.remove();
+        this.#fieldWatch = this.watch(newValue, '', () => this.render());
+        this.watchValue();
     }
 
     get model() {
-        return this.#state.model;
+        return this.#model;
+    }
+
+    set model(newValue) {
+        this.#model = newValue;
+        this.render();
+        this.watchValue();
     }
 
     /**
      * @returns {any}
      */
     get value() {
+        if (!this.model || !this.field) return null;
         return this.model[this.field.id];
     }
 
     set value(newValue) {
+        if (!this.model || !this.field) return;
         this.model[this.field.id] = newValue;
+        changed(this.model, this.field.id);
     }
 
     render() {
+        if (!this.model || !this.field) return;
         this.innerHTML = '<div>Not implemented</div>';
+        this.loadValue();
     }
 
     loadValue() {}

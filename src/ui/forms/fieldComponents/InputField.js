@@ -24,6 +24,7 @@ export default class InputField extends FieldComponent {
               type="${this.field.inputType || 'text'}"
             ></sl-input>`
         );
+        this.loadValue();
     }
 
     loadValue() {

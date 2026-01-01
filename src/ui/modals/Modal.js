@@ -1,6 +1,6 @@
 import { closeModal } from './modalManager.js';
 import { renderFields } from '../systems/fieldSystem.js';
-import ReactiveComponent from '../ReactiveComponent.js';
+import ReactiveComponent from '../components/ReactiveComponent.js';
 
 export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
@@ -59,9 +59,7 @@ export default class Modal extends ReactiveComponent {
                     </div>
                 </div>
                 <div class="modal-body">${this.renderBody()}</div>
-                ${actionsHTML && (
-                    `<div class="modal-actions">${actionsHTML}</div>`
-                )}
+                ${actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`}
             </div>`
         );
         this.renderFields();
