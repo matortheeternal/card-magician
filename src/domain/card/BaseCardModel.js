@@ -50,7 +50,7 @@ export default class BaseCardModel {
         try {
             const mainPath = `/modules/${modulePath}/main.js`;
             const { default: Module } = await import(mainPath);
-            return new Module(this, modulePath);
+            this.modules.push(new Module(this, modulePath));
         } catch (error) {
             console.error('Failed to load module:', error);
         }
@@ -64,7 +64,7 @@ export default class BaseCardModel {
 
     setupRenderPipeline() {
         this.modules.forEach(module => {
-            module.requestRender = function(options) {
+            module.requestRender = options => {
                 RenderScheduler.requestRender(this, module, options);
             };
         });
@@ -80,7 +80,10 @@ export default class BaseCardModel {
 
     hasLoadedModule(module) {
         const modules = this.modules.concat(this.parent?.modules || []);
-        return modules.some(m => m.constructor === module.constructor);
+        return modules.some(m => {
+            return m.constructor === module.constructor
+                && m !== module;
+        });
     }
 
     loadStyles() {

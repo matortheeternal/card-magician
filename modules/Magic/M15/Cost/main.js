@@ -15,7 +15,7 @@ export default class CostModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(() => card.manaCost, () => this.updateManaCost(card));
+        watch(card, 'manaCost', () => this.updateManaCost(card));
     }
 
     get fields() {
