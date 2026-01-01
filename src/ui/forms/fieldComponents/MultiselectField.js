@@ -30,6 +30,7 @@ export default class MultiselectField extends FieldComponent {
             )).join('\n')}
             </sl-select>`
         );
+        this.loadValue();
     }
 
     loadValue() {

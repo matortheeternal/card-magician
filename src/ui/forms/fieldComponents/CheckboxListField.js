@@ -27,6 +27,7 @@ export default class CheckboxListField extends FieldComponent {
                 `).join('')}
             </div>`
         );
+        this.loadValue();
     }
 
     loadValue() {

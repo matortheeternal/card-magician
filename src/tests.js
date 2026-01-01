@@ -4,6 +4,7 @@ import {
     buildMaskBlendTests
 } from './tests/blendTests';
 import { buildBlobEncodingTests } from './tests/blobEncodingTests.js';
+import { mount } from './shared/neutralinoAdapter.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
@@ -36,7 +37,7 @@ function loadStyle(href) {
 }
 
 export async function setupTestHarness() {
-    Neutralino.server.mount('/tests', NL_PATH + '/tests');
+    await mount('/tests', NL_PATH + '/tests');
     await loadStyle(jasmineStyle);
     for (const src of scripts)
         await loadScript(src);

@@ -24,6 +24,7 @@ export default class TextField extends FieldComponent {
               rows="2"
             ></sl-textarea>`
         );
+        this.loadValue();
     }
 
     loadValue() {

@@ -1,7 +1,7 @@
 import { emit } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
 import { handleFormGroup, renderFields } from '../../systems/fieldSystem.js';
-import ReactiveComponent from '../../ReactiveComponent.js';
+import ReactiveComponent from '../../components/ReactiveComponent.js';
 
 const L = localize('face-form');
 
@@ -54,7 +54,7 @@ export default class FaceForm extends ReactiveComponent {
         if (!this.form) return;
         const formGroups = this.form.root.querySelectorAll('form-group');
         formGroups.forEach(formGroup => {
-            handleFormGroup(formGroup, this.face, this.effect);
+            handleFormGroup(formGroup, this.face, this.watch);
         });
     }
 
@@ -66,7 +66,7 @@ export default class FaceForm extends ReactiveComponent {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
         renderFields(this.form.root, this.face, this.fields, {
-            effect: this.effect
+            watch: this.watch
         });
         this.subcards.forEach(subcard => {
             const subcardFields = this.resolveFields(subcard);
@@ -74,7 +74,7 @@ export default class FaceForm extends ReactiveComponent {
                 `form-field[field-id="${field.id}"][subcard-id="${subcard.id}"]`;
             renderFields(this.form.root, subcard, subcardFields, {
                 getSelector,
-                effect: this.effect
+                watch: this.watch
             });
         });
         this.handleGroups();
@@ -120,6 +120,7 @@ export default class FaceForm extends ReactiveComponent {
         return this.withFieldId(btn, (subcardId, fieldId) => {
             const field = this.getField(subcardId, fieldId);
             this.face[fieldId] = field?.initialValue || '';
+            changed(this.face, fieldId);
         });
     }
 
@@ -127,6 +128,7 @@ export default class FaceForm extends ReactiveComponent {
         return this.withGroupShowKey(btn, (subcardId, key) => {
             const model = subcardId ? this.face[subcardId] : this.face;
             model[key] = true;
+            changed(model, key);
         });
     }
 
@@ -134,6 +136,7 @@ export default class FaceForm extends ReactiveComponent {
         return this.withFieldId(btn, (subcardId, fieldId) => {
             const model = subcardId ? this.face[subcardId] : this.face;
             model[fieldId] = null;
+            changed(model, fieldId);
         });
     }
 
@@ -141,6 +144,7 @@ export default class FaceForm extends ReactiveComponent {
         return this.withGroupShowKey(btn, (subcardId, key) => {
             const model = subcardId ? this.face[subcardId] : this.face;
             model[key] = false;
+            changed(model, key);
         });
     }
 

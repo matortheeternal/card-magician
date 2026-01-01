@@ -1,4 +1,9 @@
+import { watch } from '../../shared/reactivity.js';
+import { morphHTML } from '../../domain/template/morphHTML.js';
+
 const REMOVE_DELAY = 500;
+const statusContainer = document.querySelector('.status-container');
+const statusMessages = [];
 
 class StatusMessage {
     constructor(text, lifetime) {
@@ -10,16 +15,22 @@ class StatusMessage {
 
     remove() {
         this.removing = true;
-        setTimeout(() => Alpine.store('statusMessages').remove(this), REMOVE_DELAY);
+        changed(statusMessages);
+        setTimeout(() => statusMessages.remove(this), REMOVE_DELAY);
     }
 }
 
 export function addStatusMessage(text, lifetime = 5) {
-    const message = Alpine.reactive(new StatusMessage(text, lifetime));
-    Alpine.store('statusMessages').push(message);
+    const message = new StatusMessage(text, lifetime);
+    statusMessages.push(message);
+    changed(statusMessages);
     return message;
 }
 
-export function bindToAlpine() {
-    Alpine.store('statusMessages', Alpine.reactive([]));
-}
+watch(statusMessages, '', () => {
+    morphHTML(statusContainer, statusMessages.map(msg =>
+        `<div class="status-message ${msg.removing ? 'removing' : ''}">
+            ${msg.text}
+        </div>`
+    ));
+});

@@ -1,4 +1,5 @@
 import { checkFileExists, loadTextFile } from '../../shared/fsUtils.js';
+import { readDirectory } from '../../shared/neutralinoAdapter.js';
 
 const templates = [];
 
@@ -17,7 +18,7 @@ async function loadTemplateView(templateFolder, baseName) {
 }
 
 export async function loadTemplates() {
-    const templateFolders = await Neutralino.filesystem.readDirectory(
+    const templateFolders = await readDirectory(
         'templates',
         { recursive: true }
     );

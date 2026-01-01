@@ -68,6 +68,7 @@ export default class CodeField extends FieldComponent {
             tab: '    ',
             spellcheck: false
         });
+        this.loadValue();
     }
 
     async getChangedValue(code) {
