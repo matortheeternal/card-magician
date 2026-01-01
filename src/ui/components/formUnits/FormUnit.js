@@ -86,10 +86,10 @@ export default class FormUnit extends ReactiveComponent {
     }
 
     renderError() {
-        const path = [this.modelKey, this.fieldId].filter(Boolean).join('/');
+        const path = [this.modelKey, this.label].filter(Boolean).join('/');
         this.innerHTML = (
-            `<sl-tooltip content="${esc(this.error)}">
-                Error rendering ${escapeHTML(path)}
+            `<sl-tooltip content="${esc(this.error)}" placement="bottom">
+                <div class="error">Error rendering ${escapeHTML(path)}</div>
             </sl-tooltip>`
         );
     }
