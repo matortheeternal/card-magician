@@ -52,6 +52,18 @@ export default class Localization {
         }));
     }
 
+    get fields() {
+        const L = localize('edit-locales-modal');
+        return [
+            { id: 'id', label: L`Locale ID` },
+            { id: 'label', label: L`Label` },
+            { id: 'contributors',
+                placeholder: L`Your name here`,
+                label: L`Contributors` },
+            { id: 'text', label: L`Text`, type: 'code', syntax: 'yaml' }
+        ];
+    }
+
     get metadata() {
         return {
             label: this.label,

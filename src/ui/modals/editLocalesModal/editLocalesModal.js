@@ -3,7 +3,6 @@ import Modal from '../Modal.js';
 import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 import html from './editLocalesModal.html.js';
-import { renderFields } from '../../systems/fieldSystem.js';
 import { getAbsolutePath, open } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('edit-locales-modal');
@@ -55,23 +54,15 @@ export default class EditLocalesModal extends Modal {
         return [this.localeField];
     }
 
-    get localeFields() {
-        return [
-            { id: 'id', label: L`Locale ID` },
-            { id: 'label', label: L`Label` },
-            { id: 'contributors',
-                placeholder: L`Your name here`,
-                label: L`Contributors` },
-            { id: 'text', label: L`Text`, type: 'code' }
-        ];
+    get localeFieldsContainer() {
+        return this.querySelector('.locale-fields-container');
     }
 
     selectLocale(locale) {
         this.data.selectedLocale = locale;
         this.data.selectedLocaleId = locale.id;
-        renderFields(this, this.data.selectedLocale, this.localeFields, {
-            getSelector: field => `form-field[field-id="${field.id}"]`
-        });
+        changed(this.data, 'selectedLocaleId');
+        this.renderLocaleFields();
     }
 
     getNextAvailableId() {
@@ -88,7 +79,8 @@ export default class EditLocalesModal extends Modal {
     createNewLocale() {
         const id = this.getNextAvailableId();
         const newLocale = new Localization(id);
-        this.localeField.options = [...this.localeField.options, newLocale];
+        this.localeField.options.push(newLocale);
+        changed(this.localeField);
         this.selectLocale(newLocale);
     }
 
@@ -102,6 +94,20 @@ export default class EditLocalesModal extends Modal {
              <span>${this.stats.total}</span>
              <span>&nbsp;—&nbsp;</span>
              <span>${this.stats.percent}</span>`
+        );
+    }
+
+    renderLocaleFields() {
+        this.localeFieldsContainer.innerHTML = (
+            `<div class="input-fields">
+                <form-field model-key="selectedLocale" field-id="id"></form-field>
+                <form-field model-key="selectedLocale" field-id="label"></form-field>
+                <form-field
+                    model-key="selectedLocale"
+                    field-id="contributors"
+                ></form-field>
+            </div>
+            <form-field model-key="selectedLocale" field-id="text"></form-field>`
         );
     }
 

@@ -27,11 +27,11 @@ form-field {
     margin-top: var(--sl-spacing-3x-small);
 }
 
-sl-button.add-field-btn {
+sl-button.add-btn {
     margin-top: var(--sl-spacing-x-small);
 }
 
-sl-button.add-field-btn sl-icon {
+sl-button.add-btn sl-icon {
     width: 1.6em;
     height: 1.6em;
 }
