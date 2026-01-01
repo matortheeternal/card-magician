@@ -33,14 +33,14 @@ export default class TitleBar extends ReactiveComponent {
 
     createDropdown() {
         const dropdown = document.createElement('sl-dropdown');
-        dropdown.addEventListener('sl-hide', this.onMenuHide);
-        dropdown.addEventListener('sl-show', this.onMenuShow);
+        dropdown.addEventListener('sl-hide', event => this.onMenuHide(event));
+        dropdown.addEventListener('sl-show', event => this.onMenuShow(event));
         return dropdown;
     }
 
     createTrigger(dropdown, title) {
         const trigger = document.createElement('sl-button');
-        trigger.addEventListener('mouseenter', this.onMenuEnter);
+        trigger.addEventListener('mouseenter', event => this.onMenuEnter(event));
         trigger.slot = 'trigger';
         trigger.textContent = title;
         dropdown.appendChild(trigger);
@@ -57,8 +57,10 @@ export default class TitleBar extends ReactiveComponent {
         menuItem.value = item.value;
         menuItem.addEventListener('click', item.action);
         menuItem.innerHTML = (
-            `<div>${item.label}</div>
-             <div>${item.hotkey}</div>`
+            `<div class="menu-item">
+                <div>${item.label}</div>
+                <div>${item.hotkey}</div>
+            </div>`
         );
         return menuItem;
     }
@@ -135,12 +137,14 @@ export default class TitleBar extends ReactiveComponent {
             && size.width > window.screen.availWidth;
     }
 
-    onMenuHide({ target: menu }) {
+    onMenuHide(event) {
+        const menu = event.target;
         menu.classList.remove('menu-active');
         if (this.openMenu === menu) this.openMenu = null;
     }
 
-    onMenuShow({ target: menu }) {
+    onMenuShow(event) {
+        const menu = event.target;
         if (this.openMenu && this.openMenu !== menu)
             this.openMenu.hide();
 
@@ -148,8 +152,8 @@ export default class TitleBar extends ReactiveComponent {
         menu.classList.add('menu-active');
     }
 
-    onMenuEnter({ target: button }) {
-        const menu = button.parentNode;
+    onMenuEnter(event) {
+        const menu = event.target.parentNode;
         if (!this.openMenu || this.openMenu === menu) return;
         this.openMenu.hide();
         menu.show();

@@ -52,8 +52,8 @@ export async function createDirectory(path) {
     return await Neutralino.filesystem.createDirectory(path);
 }
 
-export async function mount(path) {
-    return await Neutralino.filesystem.mount(path);
+export async function mount(path, target) {
+    return await Neutralino.server.mount(path, target);
 }
 
 export async function minimizeWindow() {
@@ -80,12 +80,12 @@ export async function getWindowPosition() {
     return await Neutralino.window.getPosition();
 }
 
-export async function setWindowSize() {
-    return await Neutralino.window.setSize(...arguments);
+export async function setWindowSize(options) {
+    return await Neutralino.window.setSize(options);
 }
 
-export async function setDraggableRegion() {
-    return await Neutralino.window.setDraggableRegion(...arguments);
+export async function setDraggableRegion(domElementOrID, options = {}) {
+    return await Neutralino.window.setDraggableRegion(domElementOrID, options);
 }
 
 export function initApp() {

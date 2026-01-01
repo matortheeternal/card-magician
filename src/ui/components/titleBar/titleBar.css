@@ -1,4 +1,4 @@
-nav {
+cm-title-bar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -8,7 +8,7 @@ nav {
     user-select: none;
 }
 
-nav img {
+cm-title-bar img {
     width: 32px;
     height: 32px;
     margin: 0 4px;
@@ -16,32 +16,32 @@ nav img {
     box-sizing: content-box;
 }
 
-nav sl-button::part(base) {
+cm-title-bar sl-button::part(base) {
     border: none;
     border-radius: 0;
 }
 
-nav .menu-items {
+cm-title-bar .menus-container {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-nav .menu-item {
+cm-title-bar .menu-item {
     display: flex;
     justify-content: space-between;
 }
 
-nav .menu-item > div:first-of-type {
+cm-title-bar .menu-item > div:first-of-type {
     margin-right: 5em;
 }
 
-nav .menu-active > sl-button::part(base) {
+cm-title-bar .menu-active > sl-button::part(base) {
     background-color: var(--sl-color-primary-50);
     color: var(--sl-color-primary-700);
 }
 
-nav sl-button::part(label) {
+cm-title-bar sl-button::part(label) {
     display: flex;
     align-items: center;
     justify-content: center;

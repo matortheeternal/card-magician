@@ -32,10 +32,11 @@ export default class ReactiveComponent extends HTMLElement {
     watch(obj, keysArg, callback) {
         const unwatch = watch(obj, keysArg, callback);
         this.#watchers.push(unwatch);
+        const watchers = this.#watchers;
         return {
             remove() {
-                const index = this.#watchers.indexOf(unwatch);
-                if (index > -1) this.#watchers.splice(index, 1);
+                const index = watchers.indexOf(unwatch);
+                if (index > -1) watchers.splice(index, 1);
                 unwatch();
             }
         };

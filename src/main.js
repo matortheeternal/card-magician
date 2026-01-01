@@ -37,7 +37,6 @@ async function ensureDirectories() {
 async function setupNeutralino() {
     initApp();
     await setWindowSize({ resizable: true });
-    await setDraggableRegion('title-bar');
     await ensureDirectories();
     await mount('/modules', NL_PATH + '/modules');
     await mount('/templates', NL_PATH + '/templates');
@@ -58,6 +57,7 @@ function setupModuleSystem() {
 function loaded() {
     const titleBar = document.createElement('cm-title-bar');
     document.body.prepend(titleBar);
+    setDraggableRegion(titleBar);
     document.querySelector('main').innerHTML = (
         `<cm-display-card></cm-display-card>
          <cm-set-view></cm-set-view>
