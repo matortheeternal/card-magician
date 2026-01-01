@@ -16,12 +16,7 @@ export default
         ></sl-icon-button>
     </sl-tooltip>
 </div>
-<div class="input-fields">
-    <form-field model-key="selectedLocale" field-id="id"></form-field>
-    <form-field model-key="selectedLocale" field-id="label"></form-field>
-    <form-field model-key="selectedLocale" field-id="contributors"></form-field>
-</div>
-<form-field model-key="selectedLocale" field-id="text"></form-field>
+<div class="locale-fields-container"></div>
 <div class="editor-status-bar">
     <div class="status-message"></div>
     <div class="stats"></div>
