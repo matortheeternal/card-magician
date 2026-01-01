@@ -3,7 +3,7 @@ import html from './setView.html.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
 import {
     getActiveSet,
-    onActiveSetChanged,
+    onActiveSetChanged, openSet,
     selectCard,
 } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
@@ -30,7 +30,9 @@ export default class SetView extends ReactiveComponent {
         getConfig().onRecentFilesChanged(() => this.renderRecentSets());
 
         this.handleEvents('click', {
-            openAdvancedSearch: () => console.log('Open advanced search.')
+            openAdvancedSearch: () => console.log('Open advanced search.'),
+            addCard: () => this.addCard(),
+            openSet: () => openSet()
         });
         this.handleEvents('keydown', {
             searchInputKeyDown: this.searchInputKeyDown
@@ -68,8 +70,10 @@ export default class SetView extends ReactiveComponent {
 
     renderRecentSets() {
         const recentSets = getConfig().recentFiles;
-        const container = this.recentSetsContainer
-            .querySelector('.buttons-container');
+        toggleDisplay(recentSets.length > 0, this.recentSetsContainer);
+        if (!recentSets.length) return;
+
+        const container = this.recentSetsContainer.querySelector('.buttons-container');
         container.innerHTML = '';
         recentSets.forEach(set => {
             const button = document.createElement('sl-button');
@@ -84,6 +88,7 @@ export default class SetView extends ReactiveComponent {
 
     render() {
         this.innerHTML = html;
+        this.listView.columns = getActiveGame().columns;
         this.renderRecentSets();
     }
 
@@ -91,7 +96,7 @@ export default class SetView extends ReactiveComponent {
         this.listView.rows = set.cards || [];
         const hasCards = Boolean(set.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
-        this.updateSearch();
+        if (this.searchValue) this.updateSearch();
     }
 
     deleteSelectedCards() {

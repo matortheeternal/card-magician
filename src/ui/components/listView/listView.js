@@ -6,7 +6,7 @@ import { emit } from '../../../shared/htmlUtils.js';
 const L = localize('list-view');
 
 function makeDefaultDisplayFunction(column) {
-    return (row) => `<span>${row.data[column.id]}</span>`;
+    return (row) => `${row.data[column.id]}`;
 }
 
 export default class ListView extends ReactiveComponent {
@@ -16,10 +16,8 @@ export default class ListView extends ReactiveComponent {
     activeColumns = [];
 
     connectedCallback() {
-        this.watch(this, 'activeRows', () => this.renderRows());
-        this.watch(this, 'activeColumns', () => this.render());
         this.handleEvents('click', { addRowClick: this.addRowClick });
-        this.render();
+        if (this.#rows && this.#columns) this.render();
     }
 
     get rows() {
@@ -29,6 +27,7 @@ export default class ListView extends ReactiveComponent {
     set rows(newValue) {
         this.#rows = newValue;
         this.computeRows();
+        if (this.#rows && this.#columns) this.render();
     }
 
     get columns() {
@@ -38,6 +37,7 @@ export default class ListView extends ReactiveComponent {
     set columns(newValue) {
         this.#columns = newValue;
         this.computeColumns();
+        if (this.#rows && this.#columns) this.render();
     }
 
     get selection() {
@@ -207,9 +207,22 @@ export default class ListView extends ReactiveComponent {
     }
 
     render() {
+        this.innerHTML = (
+            `<table class="list-view-table">
+                <colgroup></colgroup>
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+            <div class="add-row" data-click-action="addRowClick"></div>`
+        );
+        if (this.activeRows.length === 0) return;
         this.renderColumns();
         this.renderRows();
         this.renderAddRowLabel();
+    }
+
+    updateSelectedClasses() {
+        this.renderRows();
     }
 
     onHeaderClick(event, column) {
@@ -217,6 +230,7 @@ export default class ListView extends ReactiveComponent {
         const mode = getColumnSelectMode(column, event);
         mode.select(column, this.activeColumns);
         this.sortRows();
+        this.render();
     }
 
     onResizeMouseDown(event, colIndex) {
@@ -247,6 +261,7 @@ export default class ListView extends ReactiveComponent {
         const multiSelect = event.ctrlKey;
         const rangeSelect = event.shiftKey;
         selectRow(this.activeRows, row, multiSelect, rangeSelect);
+        this.updateSelectedClasses();
         emit(this, 'row-selected', { row });
     }
 
