@@ -3,6 +3,7 @@ import FaceForm from '../faceForm/faceForm.js';
 const L = localize('options-form');
 
 class OptionsForm extends FaceForm {
+    get fieldsKey() { return 'options'; }
     get fields() { return this.face.options; }
     get form() { return this.face.optionsForm; }
 
