@@ -18,7 +18,7 @@ export default class FormField extends FormUnit {
     }
 
     get label() {
-        return this.field.label;
+        return this.field?.label || this.fieldId;
     }
 
     get showKey() {
