@@ -102,7 +102,7 @@ export default class BaseCardModel {
         }));
         this.loadFields();
         this.loadFields('options');
-        this.loadStyles();
+        await this.loadStyles();
     }
 
     bindWatchers() {
