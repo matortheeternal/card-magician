@@ -124,7 +124,7 @@ export default class ListView extends ReactiveComponent {
         return this.querySelector('tbody');
     }
 
-    generateIconWithTooltip(content, iconName) {
+    generateIconWithTooltip(container, content, iconName) {
         const tooltip = document.createElement('sl-tooltip');
         tooltip.hoist = true;
         tooltip.placement = 'bottom';
@@ -134,7 +134,7 @@ export default class ListView extends ReactiveComponent {
         icon.name = iconName;
         tooltip.appendChild(icon);
 
-        return tooltip;
+        container.append(tooltip);
     }
 
     renderSort(th, sort) {
@@ -233,6 +233,7 @@ export default class ListView extends ReactiveComponent {
         event.stopImmediatePropagation();
         const mode = getColumnSelectMode(column, event);
         mode.select(column, this.activeColumns);
+        if (!column.sort) this.computeRows();
         this.sortRows();
         this.render();
     }

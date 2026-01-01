@@ -79,30 +79,31 @@ export default class BaseCardModel {
     }
 
     hasLoadedModule(module) {
-        const modules = this.modules.concat(this.parent?.modules || []);
+        const modules = this.modules.concat(this.parent?.()?.modules || []);
         return modules.some(m => {
             return m.constructor === module.constructor
                 && m !== module;
         });
     }
 
-    loadStyles() {
+    loadStyles(parent) {
         return Promise.all(
             this.modules.map(async module => {
-                if (!module.styles || this.hasLoadedModule(module)) return;
+                if (!module.styles || parent && parent.hasLoadedModule(module)) return;
                 const styles = await module.styles();
-                styles.forEach(style => this.dom.addCSS(style));
+                const target = parent?.dom || this.dom;
+                styles.forEach(style => target.addCSS(style));
             })
         );
     }
 
-    async initializeModules() {
+    async initializeModules(parent) {
         await Promise.all(this.modules.map(module => {
             return module.init(this);
         }));
         this.loadFields();
         this.loadFields('options');
-        await this.loadStyles();
+        await this.loadStyles(parent);
     }
 
     bindWatchers() {
