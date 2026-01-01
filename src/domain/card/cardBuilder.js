@@ -9,7 +9,7 @@ async function buildSubcard(parent, key, modulesToLoad, subcardData) {
     parent[key] = subcard;
     await subcard.loadModules(modulesToLoad || []);
     subcard.setupRenderPipeline();
-    await subcard.initializeModules();
+    await subcard.initializeModules(parent);
     await subcard.load(subcardData);
     return subcard;
 }
