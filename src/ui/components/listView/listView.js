@@ -190,8 +190,6 @@ export default class ListView extends ReactiveComponent {
         this.tbody.innerHTML = '';
         this.activeRows.forEach(row => {
             const rowElement = document.createElement('tr');
-            if (row.selected) rowElement.classList.add('selected');
-            if (row.lastSelected) rowElement.classList.add('last-selected');
             rowElement.addEventListener('click', event => this.onRowClick(event, row));
             this.activeColumns.forEach(col => {
                 const cell = document.createElement('td');
@@ -200,6 +198,7 @@ export default class ListView extends ReactiveComponent {
             });
             this.tbody.appendChild(rowElement);
         });
+        this.updateSelectedClasses();
     }
 
     renderAddRowLabel() {
@@ -222,7 +221,12 @@ export default class ListView extends ReactiveComponent {
     }
 
     updateSelectedClasses() {
-        this.renderRows();
+        this.tbody.querySelectorAll('tr').forEach((rowElement, index) => {
+            const row = this.activeRows[index];
+            rowElement.className = '';
+            if (row.selected) rowElement.classList.add('selected');
+            if (row.lastSelected) rowElement.classList.add('last-selected');
+        });
     }
 
     onHeaderClick(event, column) {

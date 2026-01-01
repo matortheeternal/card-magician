@@ -343,7 +343,7 @@ export default class CardMagicianModule {
      * Sanitizes an input string using sanitize-html.
      *
      * @param {string} str - the string to sanitize
-     * @param {object} options - sanitze HTML options
+     * @param {object} options - sanitize HTML options
      * @returns {string}
      */
     sanitize(str, options) {
@@ -356,7 +356,7 @@ export default class CardMagicianModule {
 
     objectToStyle(obj) {
         return Object.entries(obj)
-            .map(([key, value]) => `${key.separate('-')}: ${value}`)
+            .map(([key, value]) => `${key.separate('-').toLowerCase()}: ${value}`)
             .join('; ');
     }
 
