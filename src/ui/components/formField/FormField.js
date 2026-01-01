@@ -1,6 +1,6 @@
 import { resolveFieldComponent } from '../../systems/fieldComponentRegistry.js';
 import { esc, escapeHTML, toggleDisplay } from '../../../shared/htmlUtils.js';
-import ReactiveComponent from '../../components/ReactiveComponent.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 
 const L = localize('form-field');
 
