@@ -7,9 +7,13 @@ export default class FormField extends FormUnit {
         return this._fieldId ??= this.getAttribute('field-id');
     }
 
+    get fields() {
+        return this.model?.fields || this.provider?.fields;
+    }
+
     get field() {
         return this._field ??= (
-            this.provider?.fields?.find(field => field.id === this.fieldId)
+            this.fields?.find(field => field.id === this.fieldId)
         );
     }
 
