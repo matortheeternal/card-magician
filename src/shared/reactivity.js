@@ -42,8 +42,8 @@ function joinPaths(paths) {
 }
 
 function getDiff(watcherPaths, changedPaths, deep) {
-    if (!watcherPaths) return { paths: joinPaths(changedPaths) };
     if (!changedPaths) return { paths: null };
+    if (!watcherPaths) return { paths: joinPaths(changedPaths) };
     const matchedPaths = changedPaths.filter(changedPath => {
         return watcherPaths.some(watcherPath => {
             return arrayEqual(watcherPath, changedPath)

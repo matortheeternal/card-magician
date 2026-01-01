@@ -1,5 +1,4 @@
 import { closeModal } from './modalManager.js';
-import { renderFields } from '../systems/fieldSystem.js';
 import ReactiveComponent from '../components/ReactiveComponent.js';
 
 export default class Modal extends ReactiveComponent {
@@ -7,8 +6,22 @@ export default class Modal extends ReactiveComponent {
     title = '';
     #data = {};
 
+    connectedCallback() {
+        this.setAttribute('data-form-provider', '');
+        this.render();
+        this.bind();
+    }
+
+    bind() {
+        this.handleEvents('click', this.onClickHandlers);
+    }
+
     get onClickHandlers() {
         return { close: this.close };
+    }
+
+    get model() {
+        return this.#data;
     }
 
     get data() {
@@ -23,15 +36,6 @@ export default class Modal extends ReactiveComponent {
         return [];
     }
 
-    connectedCallback() {
-        this.bind();
-        this.render();
-    }
-
-    bind() {
-        this.handleEvents('click', this.onClickHandlers);
-    }
-
     close() {
         closeModal();
     }
@@ -42,10 +46,6 @@ export default class Modal extends ReactiveComponent {
 
     renderActions() {
         return null;
-    }
-
-    renderFields() {
-        renderFields(this, this.data, this.fields);
     }
 
     render() {
@@ -62,6 +62,5 @@ export default class Modal extends ReactiveComponent {
                 ${actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`}
             </div>`
         );
-        this.renderFields();
     }
 }

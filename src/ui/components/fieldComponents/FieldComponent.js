@@ -1,5 +1,5 @@
 import { emit } from '../../../shared/htmlUtils.js';
-import ReactiveComponent from '../../components/ReactiveComponent.js';
+import ReactiveComponent from '../ReactiveComponent.js';
 
 export default class FieldComponent extends ReactiveComponent {
     #field = null;
