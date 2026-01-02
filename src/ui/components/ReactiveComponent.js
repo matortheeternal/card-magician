@@ -10,7 +10,7 @@ export default class ReactiveComponent extends HTMLElement {
     }
 
     disconnectedCallback() {
-        for (const unwatch of this.#watchers) unwatch();
+        for (const watcherId in this.#watchers) this.#watchers[watcherId]?.();
         for (const { eventName, callback } of this.#eventHandlers)
             this.removeEventListener(eventName, callback);
     }
