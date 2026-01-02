@@ -18,10 +18,8 @@ export default class CropImageEditor extends HTMLElement {
     connectedCallback() {
         this.render();
         this.bind();
-        this.updateRealCrop();
         this.updateImage();
-        this.updateImageInfo();
-        this.updateCropBox();
+        this.publishCrop();
     }
 
     bind() {
@@ -72,6 +70,7 @@ export default class CropImageEditor extends HTMLElement {
         this.image.src = this.value.imageUrl;
         this.image.width = this.value.width;
         this.image.height = this.value.height;
+        this.updateImageInfo();
     }
 
     updateCropInfo() {
