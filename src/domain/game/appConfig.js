@@ -22,7 +22,8 @@ export default class AppConfig {
         try {
             const raw = await getStoredData(this.key);
             this.#data = JSON.parse(raw) || {};
-        } finally {
+        } catch(e) {
+            console.error('Error loading app config', e);
             this.#data = {};
         }
 
@@ -41,7 +42,7 @@ export default class AppConfig {
     }
 
     get recentFiles() {
-        return this.#data.recentFiles.slice();
+        return this.#data?.recentFiles?.slice() || [];
     }
 
     async addRecentFile(filePath) {
