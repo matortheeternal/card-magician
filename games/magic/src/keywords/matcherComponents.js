@@ -2,6 +2,7 @@ const L = localize('game-magic');
 
 const matchTypeOptions = [
     { id: 'cardProp', name: L`Card Property` },
+    { id: 'isPermanent', name: L`Is a Permanent` },
     { id: 'numberIsX', name: L`Number is X`},
     { id: 'isPlural', name: L`Is Plural`},
     { id: 'targetsOther', name: L`Targets Other`},
@@ -33,13 +34,13 @@ class Matcher extends ComponentWithFields {
     }
 
     render() {
-        this.innerHTML = `<form-field field-id="type"></form-field>
-            <div class="params"></div>`;
+        this.innerHTML = `<form-group class="with-border"><label class="x-label">Match ${this.dataset.index} <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon></label><form-field field-id="type"></form-field>
+            <div class="params"></div></form-group>`;
         this.renderFields(this.model);
 
         this.renderMatcher();
         this.querySelector('form-field[field-id="type"]')
-            .addEventListener('cm-field-changed', this.renderMatcher);
+            .addEventListener('cm-field-changed', this.renderMatcher.bind(this));
     }
 
     get fields() {
@@ -51,28 +52,27 @@ class Matcher extends ComponentWithFields {
         }];
     }
 
-    selectMatcher() {
+    asdfadsfdfas() {
         return matchers[this.model.type];
     }
 
     renderMatcher() {
-        const paramMatcher = this.selectMatcher();
+        // console.log(this, this.selectMatcher, this.selectMatcher());
+        const paramMatcher = this.asdfadsfdfas();
+        console.log(paramMatcher);
         const params = this.querySelector('.params');
         params.innerHTML = '';
         if (!paramMatcher) return;
 
         this.paramMatcherElement = document.createElement(paramMatcher.tagName);
         params.appendChild(this.paramMatcherElement);
-        this.paramMatcherElement.model = { ...paramMatcher.initialModel, ...this.model.params };
+        this.model.params = { ...paramMatcher.initialModel, ...this.model.params };
+        this.paramMatcherElement.model = this.model.params;
         this.paramMatcherElement.render();
     }
 
     getModel() {
         return this.model;
-    }
-
-    fullModel() {
-        return { ...this.model, params: (this.paramMatcherElement?.model || {}) };
     }
 }
 
@@ -147,7 +147,7 @@ class NumberIsXMatcher extends ParamMatcher {
         this.renderFields(this.model);
     }
 }
-
+    
 class CostHasX extends ParamMatcher {
     static tagName = 'cm-cost-has-x-matcher';
     static initialModel = {param: ''};

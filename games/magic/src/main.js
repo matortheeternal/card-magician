@@ -66,6 +66,6 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     newSet() {
         const info = this.initializeFields(setInfoFields);
-        return { cards: [], info, keywordOverrides: {} };
+        return { cards: [], info, keywordOverrides: {}, userKeywords: [] };
     }
 }

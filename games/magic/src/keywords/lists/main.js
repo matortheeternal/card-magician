@@ -14,7 +14,7 @@ export function getKeywords(set) {
         keywords.push(override ? override : keyword);
     }
 
-    return keywords;
+    return [...set.userKeywords, ...keywords];
 }
 
 function makeAbilityWordConverter(keyword) {

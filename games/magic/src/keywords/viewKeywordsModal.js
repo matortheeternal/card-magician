@@ -9,22 +9,40 @@ export default class ViewKeywordsModal extends Modal {
     get onClickHandlers() {
         return {   
             ...super.onClickHandlers,
-            edit: (event) => {
+            edit(event) {
                 const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
+                if (keyword.user) keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
                 const data = { game: this.data.game, set: this.data.set, keyword };
                 this.data.game.openModal('cm-edit-keywords-modal', data);
-            } 
+            },
+            newKeyword() {
+                const keyword = {
+                    label: L`New Keyword`,
+                    expression: '',
+                    user: true,
+                    saveIndex: this.data.set.userKeywords.length,
+                    reminderTexts: [
+                        {
+                            template: ''
+                        }
+                    ]
+                };
+                this.data.set.userKeywords.push(keyword);
+
+                const data = { game: this.data.game, set: this.data.set, keyword };
+                this.data.game.openModal('cm-edit-keywords-modal', data);
+            }
         };
     }
 
     baseRowHtml = `
         <div class="keyword-row label-row" id="label-row">
+            <sl-button class="new-keyword" data-click-action="newKeyword"><sl-icon slot="prefix" name="plus-lg"></sl-icon>New</sl-button>
             <div class="keyword-row-label keyword-label">Label</div>
             <div class="keyword-row-label keyword-expression">Expression</div>
             <div class="keyword-row-label keyword-reminder-text">Reminder Text</div>
             <sl-input class="keyword-search" name="search" 
                 placeholder="Search keywords..." data-keyup-action="search"></sl-input>
-            <sl-button class="new-keyword">+ New</sl-button>
         </div>
     `;
 
@@ -38,7 +56,6 @@ export default class ViewKeywordsModal extends Modal {
 
         .keyword-row {
             display: grid;
-            /*grid-template-columns: 1fr 1.2fr 6fr 0.6fr;*/
             grid-template-columns: 0.6fr 1fr 1.2fr 6fr;
             border-bottom: 1px solid white;
             padding: 8px 0 8px 0;
@@ -47,7 +64,7 @@ export default class ViewKeywordsModal extends Modal {
         }
 
         .label-row {
-            grid-template-columns: 1fr 1.2fr 1fr 5fr 0.6fr;
+            grid-template-columns: 0.6fr 1fr 1.2fr 1fr 5fr;
         }
 
         .keyword-label {
@@ -60,7 +77,7 @@ export default class ViewKeywordsModal extends Modal {
 
         .label-row {
             position: sticky;
-            top: -7%;
+            top: -55px;
             background: #111;
             padding-top: 12px;
             z-index: 2;
@@ -135,7 +152,7 @@ export default class ViewKeywordsModal extends Modal {
             <div class="keyword-row" id="${keyword.label}-row" 
                 data-keyword="${JSON.stringify(keyword).replaceAll('"', '&quot;')}">
                 <sl-button class="edit-keyword" 
-                    data-click-action="edit">Edit</sl-button>
+                    data-click-action="edit"><sl-icon slot="prefix" name="pencil"></sl-icon>Edit</sl-button>
                 <div class="keyword-label">${keyword.label}</div>
                 <div class="keyword-expression">${rtExpressionHtml}</div>
                 <div class="keyword-reminder-text">${rtTemplateHtml}</div>
