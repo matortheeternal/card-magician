@@ -10,6 +10,7 @@ export default class ArtModule extends CardMagicianModule {
 
         card.setAspectRatio = ({ width, height }) => {
             this.artImageField.aspectRatio = width / height;
+            changed(this.artImageField, 'aspectRatio');
         };
     }
 
@@ -60,14 +61,8 @@ export default class ArtModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(
-            () => [card.colorIdentity, card.superType],
-            () => this.updateDefaultImage(card)
-        );
-        watch(
-            () => [card.artImage, card.artImage?.crop],
-            () => this.requestRender()
-        );
+        watch(card, ['colorIdentity', 'superType'], () => this.updateDefaultImage(card));
+        watch(card, ['artImage'], () => this.requestRender());
     }
 
     render(card) {

@@ -1,12 +1,13 @@
 import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
+import { readFile, writeFile } from './neutralinoAdapter.js';
 
 const CURRENT_SCHEMA_VERSION = 1;
 
 export default class Localization {
     static async load(localeId, metadata = {}) {
         const filePath = `locales/${localeId}.yml`;
-        const text = await Neutralino.filesystem.readFile(filePath);
+        const text = await readFile(filePath);
         return new Localization(localeId, text, metadata);
     }
 
@@ -51,6 +52,18 @@ export default class Localization {
         }));
     }
 
+    get fields() {
+        const L = localize('edit-locales-modal');
+        return [
+            { id: 'id', label: L`Locale ID` },
+            { id: 'label', label: L`Label` },
+            { id: 'contributors',
+                placeholder: L`Your name here`,
+                label: L`Contributors` },
+            { id: 'text', label: L`Text`, type: 'code', syntax: 'yaml' }
+        ];
+    }
+
     get metadata() {
         return {
             label: this.label,
@@ -79,6 +92,6 @@ export default class Localization {
 
     async save() {
         const filePath = `locales/${this.id}.yml`;
-        await Neutralino.filesystem.writeFile(filePath, this.raw);
+        await writeFile(filePath, this.raw);
     }
 }

@@ -15,8 +15,7 @@ export default class TypeModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(() => [card.superType, card.subType],
-              () => this.requestRender());
+        watch(card, ['superType', 'subType'], () => this.requestRender());
     }
 
     render(card) {

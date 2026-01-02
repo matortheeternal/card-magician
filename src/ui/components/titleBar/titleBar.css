@@ -1,0 +1,50 @@
+cm-title-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--sl-input-border-color);
+    color: var(--sl-input-label-color);
+    background: var(--sl-color-neutral-0);
+    user-select: none;
+}
+
+cm-title-bar img {
+    width: 32px;
+    height: 32px;
+    margin: 0 4px;
+    border: 1px solid grey;
+    box-sizing: content-box;
+}
+
+cm-title-bar sl-button::part(base) {
+    border: none;
+    border-radius: 0;
+}
+
+cm-title-bar .menus-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+cm-title-bar .menu-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+cm-title-bar .menu-item > div:first-of-type {
+    margin-right: 5em;
+}
+
+cm-title-bar .menu-active > sl-button::part(base) {
+    background-color: var(--sl-color-primary-50);
+    color: var(--sl-color-primary-700);
+}
+
+cm-title-bar sl-button::part(label) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    padding: 0;
+}

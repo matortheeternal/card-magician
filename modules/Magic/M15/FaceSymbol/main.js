@@ -8,39 +8,49 @@ export default class FaceSymbolModule extends CardMagicianModule {
         opt.imageURL = this.resolveAsset(opt.imagePath);
     }
 
-    loadFaceSymbolImages() {
-        this.symbolOptions
-            .concat(this.symbolOptions.flatMap(opt => opt.items || []))
+    loadFaceSymbolImages(options) {
+        options.concat(options.flatMap(opt => opt.items || []))
             .filter(opt => Boolean(opt.imagePath))
             .map(opt => this.loadImage(opt));
     }
 
     async init(card) {
-        this.symbolOptions = this.makeReactive(makeSymbolOptions());
-        this.loadFaceSymbolImages();
+        this.faceSymbolField = {
+            id: 'faceSymbol',
+            type: 'select',
+            label: L`Face Symbol`,
+            options: makeSymbolOptions(),
+            initialValue: 'autodetect',
+            default: null
+        };
+        this.loadFaceSymbolImages(this.faceSymbolField.options);
     }
 
     updateFaceSymbol(card) {
-        this.selectedFaceSymbol = resolveOption(this.symbolOptions, card.faceSymbol);
+        this.selectedFaceSymbol = resolveOption(
+            this.faceSymbolField.options,
+            card.faceSymbol
+        );
         this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
         this.requestRender();
     }
 
     updateAutoSymbols(card) {
         if (!card.parent) return;
-        for (const option of this.symbolOptions) {
-            computeOption(card, option, this.symbolOptions);
+        for (const option of this.faceSymbolField.options) {
+            computeOption(card, option, this.faceSymbolField.options);
             if (!option.items) continue;
             for (const item of option.items)
                 computeOption(card, item, option.items);
         }
+        changed(this.faceSymbolField, 'options');
     }
 
     bind(card, watch) {
-        watch(() => [card.colorIdentity, card.superType, card.parent],
-              () => this.updateAutoSymbols(card));
-        watch(() => [card.faceSymbol, card.parent],
-              () => this.updateFaceSymbol(card));
+        watch(card, ['colorIdentity', 'superType', 'parent'],
+              () => this.updateAutoSymbols(card)
+        );
+        watch(card, ['faceSymbol', 'parent'], () => this.updateFaceSymbol(card));
     }
 
     render(card) {
@@ -53,14 +63,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     get fields() {
-        return [{
-            id: 'faceSymbol',
-            type: 'select',
-            label: L`Face Symbol`,
-            options: this.symbolOptions,
-            initialValue: 'autodetect',
-            default: null
-        }];
+        return [this.faceSymbolField];
     }
 
     async styles() {

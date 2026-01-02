@@ -1,15 +1,28 @@
 import ComponentWithFields from '../systems/componentWithFields.js';
 import { closeModal } from './modalManager.js';
-import { renderFields } from '../systems/fieldSystem.js';
-import ReactiveComponent from '../ReactiveComponent.js';
+import ReactiveComponent from '../components/ReactiveComponent.js';
 
 export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
     title = '';
     #data = {};
 
+    connectedCallback() {
+        this.setAttribute('data-form-provider', '');
+        this.render();
+        this.bind();
+    }
+
+    bind() {
+        this.handleEvents('click', this.onClickHandlers);
+    }
+
     get onClickHandlers() {
         return { close: this.close };
+    }
+
+    get model() {
+        return this.#data;
     }
 
     get data() {
@@ -22,15 +35,6 @@ export default class Modal extends ReactiveComponent {
 
     get fields() {
         return [];
-    }
-
-    connectedCallback() {
-        this.bind();
-        this.render();
-    }
-
-    bind() {
-        this.handleEvents('click', this.onClickHandlers);
     }
 
     close() {
@@ -56,9 +60,7 @@ export default class Modal extends ReactiveComponent {
                     </div>
                 </div>
                 <div class="modal-body">${this.renderBody()}</div>
-                ${(actionsHTML && (
-                    `<div class="modal-actions">${actionsHTML}</div>`
-                )) || ''}
+                ${(actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`) || ''}
             </div>`
         );
         this.afterRender();
@@ -66,6 +68,8 @@ export default class Modal extends ReactiveComponent {
 
     afterRender() {
         this.renderFields();
+                
+        );
     }
 
     renderFields(model = this.data) {

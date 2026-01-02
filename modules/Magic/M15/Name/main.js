@@ -11,10 +11,7 @@ export default class NameModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(
-            () => card.name,
-            () => this.requestRender()
-        );
+        watch(card, 'name', () => this.requestRender());
     }
 
     render(card) {

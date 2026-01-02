@@ -53,18 +53,18 @@ export default class FrameModule extends CardMagicianModule {
         this.activeFrame = new Frame(card, this);
         card.setAspectRatio(this.activeFrame.artDimensions);
         card.activeFrame = () => this.activeFrame;
+        changed(card, 'activeFrame');
         this.backgrounds = await this.activeFrame.buildBackgrounds('frame', card);
         this.updateTopClasses(card);
         this.requestRender();
     }
 
     bind(card, watch) {
-        watch(() => [
-            card.colorIdentity, card.superType, card.subType, card.rulesHTML,
-            card.parent, card.frame, card.hybridStyle, card.hybridBlendStyle,
-            card.crownStyle, card.nyxStyle, card.vehicleStyle, card.snowStyle,
-            card.scrollsStyle, card.draftStyle, card.miracleStyle, card.mutateStyle,
-            card.ubStyle
+        watch(card, [
+            'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
+            'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle', 'vehicleStyle',
+            'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle', 'mutateStyle',
+            'ubStyle'
         ], () => this.updateFrame(card));
     }
 
@@ -83,9 +83,6 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     get options() {
-        const options = makeOptions();
-        const f = options.find(opt => opt.id === 'frame');
-        f.options = this.makeReactive(this.frameOptions || f.options);
-        return options;
+        return makeOptions(this.frameOptions);
     }
 }

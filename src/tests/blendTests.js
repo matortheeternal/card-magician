@@ -1,11 +1,12 @@
 import { combineBlend, linearBlend, maskBlend } from '../domain/gfx/blending.js';
+import { writeBinaryFile, writeFile } from '../shared/neutralinoAdapter.js';
 
 async function saveCanvasToFile(canvas, filePath) {
     const blob = await new Promise(resolve => {
         canvas.toBlob(resolve, 'image/png');
     });
     const arrayBuffer = await blob.arrayBuffer();
-    await Neutralino.filesystem.writeBinaryFile(filePath, arrayBuffer);
+    await writeBinaryFile(filePath, arrayBuffer);
 }
 
 function loadImage(url) {
@@ -68,7 +69,7 @@ export function buildCombineBlendTests() {
         });
 
         afterAll(async () => {
-            await Neutralino.filesystem.writeFile(
+            await writeFile(
                 'tests/output/combineBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );
@@ -112,7 +113,7 @@ export function buildLinearBlendTests() {
         });
 
         afterAll(async () => {
-            await Neutralino.filesystem.writeFile(
+            await writeFile(
                 'tests/output/linearBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );
@@ -148,7 +149,7 @@ export function buildMaskBlendTests() {
         });
 
         afterAll(async () => {
-            await Neutralino.filesystem.writeFile(
+            await writeFile(
                 'tests/output/maskBlend_benchmark.json',
                 JSON.stringify(results, null, 2)
             );

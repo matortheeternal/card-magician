@@ -1,47 +1,33 @@
-import Alpine from 'alpinejs';
-import { getTemplate } from '../template/templateRegistry.js';
-import {
-    bindEffects,
-    initializeModules,
-    loadModules,
-    setupRenderPipeline
-} from '../template/moduleEngine.js';
+import { getTemplate, getTemplates } from '../template/templateRegistry.js';
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
-
-export function initCardFace(key) {
-    return Alpine.reactive(new CardFaceModel(key));
-}
-
-export function initSubCardFace(key) {
-    return Alpine.reactive(new SubcardModel(key));
-}
+import { getActiveGame } from '../game/gameManager.js';
 
 async function buildSubcard(parent, key, modulesToLoad, subcardData) {
-    const subcard = initSubCardFace(key);
+    const subcard = new SubcardModel(key, parent);
     parent[key] = subcard;
-    const modules = await loadModules(subcard, modulesToLoad || []);
-    await setupRenderPipeline(subcard, modules);
-    await initializeModules(subcard, modules, parent);
-    subcard.modules = () => modules;
-    subcard.parent = () => parent;
+    await subcard.loadModules(modulesToLoad || []);
+    subcard.setupRenderPipeline();
+    await subcard.initializeModules(parent);
     await subcard.load(subcardData);
     return subcard;
 }
 
 function buildSubcards(card, subcards, faceData) {
     if (!subcards) return [];
-    return Promise.all(Object.entries(subcards).map(([key, modules]) => {
-        return buildSubcard(card, key, modules, faceData[key] || {});
-    }));
+    return Promise.all(
+        Object.entries(subcards).map(([key, modules]) => {
+            return buildSubcard(card, key, modules, faceData[key] || {});
+        })
+    );
 }
 
 const templateField = () => ({
     id: 'template',
     type: 'select',
     label: 'Template',
-    options: Alpine.store('templates').map(template => ({
+    options: getTemplates().map(template => ({
         id: template.id,
         name: template.label
     })),
@@ -52,7 +38,7 @@ const templateField = () => ({
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
-    face.template = Alpine.store('game').defaultTemplateId;
+    face.template = getActiveGame().defaultTemplateId;
     const templateId = faceData.template || face.template;
     const template = getTemplate(templateId);
     face.dom.setHTML(template.html);
@@ -66,21 +52,31 @@ function setupTemplate(face, faceData) {
 
 export async function buildCardFace(card, key) {
     const faceDataToLoad = card[key];
-    const face = initCardFace(key);
-    card[key] = face;
-    const template = setupTemplate(face, faceDataToLoad);
-    const modules = await loadModules(face, template.card || []);
-    await setupRenderPipeline(face, modules);
-    await initializeModules(face, modules);
-    face.modules = () => modules;
-    face.parent = () => card;
-    face.subcards = await buildSubcards(face, template.subcards, faceDataToLoad);
-    await face.load(faceDataToLoad);
-    return face;
+    const cardFace = new CardFaceModel(key);
+    card[key] = cardFace;
+    const template = setupTemplate(cardFace, faceDataToLoad);
+    await cardFace.loadModules(template.card || []);
+    cardFace.setupRenderPipeline();
+    await cardFace.initializeModules();
+    cardFace.parent = () => card;
+    cardFace.subcards = await buildSubcards(cardFace, template.subcards, faceDataToLoad);
+    await cardFace.load(faceDataToLoad);
+    return cardFace;
 }
 
 export function getFaceKeys(baseCard) {
     return ['front', 'back'].filter(key => Object.hasOwn(baseCard, key));
+}
+
+function bindWatchers(cardFaces) {
+    for (const cardFace of cardFaces) {
+        cardFace.bindWatchers();
+        for (const subcard of cardFace.subcards) {
+            subcard.bindWatchers();
+            changed(subcard);
+        }
+        changed(cardFace);
+    }
 }
 
 export async function buildCard(baseCard) {
@@ -90,10 +86,6 @@ export async function buildCard(baseCard) {
         const cardFace = await buildCardFace(card, key);
         cardFaces.push(cardFace);
     }
-    for (const cardFace of cardFaces) {
-        await bindEffects(cardFace);
-        for (const subcard of cardFace.subcards)
-            await bindEffects(subcard);
-    }
+    bindWatchers(cardFaces);
     return card;
 }

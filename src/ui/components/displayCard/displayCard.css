@@ -1,0 +1,49 @@
+cm-display-card {
+    background-color: #0D0D0D;
+    padding: var(--sl-spacing-x-small);
+    overflow-y: auto;
+    min-width: 406px;
+    flex: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sl-spacing-small);
+}
+
+cm-display-card .buttons-container {
+    margin: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+cm-display-card .card-viewport {
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 375 / 523;
+    display: inline-block;
+    align-self: center;
+}
+
+cm-display-card .card-canvas {
+    width: 375px;
+    height: 523px;
+    margin: auto;
+    transform-origin: top left;
+    will-change: transform;
+}
+
+@media (max-width: 1680px) {
+    cm-display-card {
+        min-width: 361px;
+    }
+}
+
+@media (max-width: 1440px) {
+    cm-display-card {
+        min-width: 316px;
+    }
+}

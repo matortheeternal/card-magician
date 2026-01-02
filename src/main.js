@@ -1,4 +1,3 @@
-import Alpine from 'alpinejs';
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/extensions.js';
 import './shared/localize.js';
@@ -6,19 +5,22 @@ import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import CardMagicianModule from './domain/template/CardMagicianModule.js';
 import CardMagicianGame from './domain/game/CardMagicianGame.js';
-import { loadTemplates, getTemplates } from './domain/template/templateRegistry.js';
+import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
-import AppConfig from './domain/game/appConfig.js';
-import { bindToAlpine } from './ui/systems/statusSystem.js';
 import imageCache from './domain/gfx/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
 import ComponentWithFields from './ui/systems/componentWithFields.js';
+import {
+    createDirectory, initApp,
+    mount,
+    setDraggableRegion,
+    setWindowSize
+} from './shared/neutralinoAdapter.js';
 
 // BASE SETUP
 setupNeutralino();
 setupShoelace();
-setupAlpine();
 setupModuleSystem();
 
 async function ensureDirectories() {
@@ -29,39 +31,22 @@ async function ensureDirectories() {
         NL_DATAPATH + '/cache/images'
     ];
     return paths.map(dirPath => {
-        return Neutralino.filesystem.createDirectory(dirPath).catch(() => {});
+        return createDirectory(dirPath).catch(() => {});
     });
 }
 
 async function setupNeutralino() {
-    Neutralino.init();
-    Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
-    Neutralino.window.setSize({ resizable: true });
-    Neutralino.window.setDraggableRegion('title-bar').then(result => {
-        console.debug('%cDraggable region initialized:', 'color:salmon', result);
-    });
+    initApp();
+    await setWindowSize({ resizable: true });
     await ensureDirectories();
-    Neutralino.server.mount('/modules', NL_PATH + '/modules');
-    Neutralino.server.mount('/templates', NL_PATH + '/templates');
-    Neutralino.server.mount('/games', NL_PATH + '/games');
-    Neutralino.server.mount('/cache', NL_DATAPATH + '/cache');
+    await mount('/modules', NL_PATH + '/modules');
+    await mount('/templates', NL_PATH + '/templates');
+    await mount('/games', NL_PATH + '/games');
+    await mount('/cache', NL_DATAPATH + '/cache');
 }
 
 function setupShoelace() {
     setBasePath('/shoelace');
-}
-
-function setupAlpine() {
-    window.Alpine = Alpine;
-    Alpine.store('views', {
-        loaded: false,
-        activeSet: { cards: [] },
-        activeCard: null,
-        hide(key) {
-            this[key] = null;
-        }
-    });
-    Alpine.start();
 }
 
 function setupModuleSystem() {
@@ -71,6 +56,17 @@ function setupModuleSystem() {
     window.ComponentWithFields = ComponentWithFields;
 }
 
+function loaded() {
+    const titleBar = document.createElement('cm-title-bar');
+    document.body.prepend(titleBar);
+    setDraggableRegion(titleBar);
+    document.querySelector('main').innerHTML = (
+        `<cm-display-card></cm-display-card>
+         <cm-set-view></cm-set-view>
+         <cm-card-form></cm-card-form>`
+    );
+}
+
 async function startApp() {
     if (NL_ARGS.includes('--run-tests')) {
         await setupTestHarness();
@@ -78,15 +74,10 @@ async function startApp() {
         return;
     }
     await loadGames();
-    bindToAlpine();
-    const game = await setGame('magic');
-    Alpine.store('game', game);
-    const appConfig = new AppConfig(game);
-    Alpine.store('appConfig', appConfig);
+    await setGame('magic');
     await loadTemplates();
-    Alpine.store('templates', getTemplates());
     await imageCache.preload();
-    Alpine.store('views').loaded = true;
+    loaded();
 }
 
 startApp();

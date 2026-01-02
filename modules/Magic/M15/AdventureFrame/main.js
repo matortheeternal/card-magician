@@ -36,11 +36,11 @@ export default class AdventureFrameModule extends FrameModule {
 
     bind(card, watch) {
         super.bind(card, watch);
-        watch(() => card.frame, () => this.updateShowFrameExtras(card));
-        watch(() => [
-            card.colorIdentity, card.adventure.colorIdentity,
-            card.pageStyle, card.activeFrame
-        ], () => this.updatePages(card));
+        watch(card, 'frame', () => this.updateShowFrameExtras(card));
+        watch(card, ['colorIdentity', 'pageStyle', 'activeFrame'],
+              () => this.updatePages(card)
+        );
+        watch(card.adventure, 'colorIdentity', () => this.updatePages(card));
     }
 
     renderPages() {
