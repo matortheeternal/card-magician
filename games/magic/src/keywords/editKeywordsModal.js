@@ -1,4 +1,3 @@
-import editKeywordFields from './editKeywordsFields.js';
 import { defineRtComponents } from './reminderTextItem.js';
 
 const L = localize('game-magic');
@@ -69,7 +68,13 @@ export default class EditKeywordsModal extends Modal {
     }
 
     get fields() {
-        return editKeywordFields;
+        return [{
+            id: 'label',
+            label: L`Label`
+        }, {
+            id: 'expression',
+            label: L`Expression`
+        }];
     }
 
     get model() {

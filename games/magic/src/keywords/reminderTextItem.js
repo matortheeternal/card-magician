@@ -6,7 +6,6 @@ class ReminderTextItem extends ReactiveComponent {
     #model;
     onClickHandlers = {
         addMatch() {
-            console.log('add', this.model.match);
             if (!this.model.match) 
                 this.model.match = {type: '', params: {}};
             else if (Array.isArray(this.model.match)) 
@@ -14,7 +13,6 @@ class ReminderTextItem extends ReactiveComponent {
             else
                 this.model.match = [this.model.match, {type: '', params: {}}];
             
-            console.log('add2', this.model.match);
             this.render();
         },
         removeMatch(event) {

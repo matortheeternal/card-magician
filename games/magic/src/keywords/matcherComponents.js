@@ -67,9 +67,7 @@ class Matcher extends ReactiveComponent {
     }
 
     renderMatcher() {
-        // console.log(this, this.selectMatcher, this.selectMatcher());
         const paramMatcher = this.asdfadsfdfas();
-        console.log(paramMatcher);
         const params = this.querySelector('.params');
         params.innerHTML = '';
         if (!paramMatcher) return;
