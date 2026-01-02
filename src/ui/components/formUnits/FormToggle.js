@@ -9,7 +9,7 @@ export function removeButtonHTML(label) {
             <sl-icon-button
                 class="remove-btn"
                 name="x-lg"
-                data-click-action="removeUnit"></sl-icon-button>
+                data-click-action="onRemoveClick"></sl-icon-button>
         </sl-tooltip>`
     );
 }
@@ -18,7 +18,7 @@ export function addButtonHTML(label) {
     return (
         `<sl-button
             class="add-btn"
-            data-click-action="addUnit"
+            data-click-action="onAddClick"
             size="small"
             variant="success"
             outline>
@@ -47,8 +47,8 @@ export default class FormToggle extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            addUnit: () => this.target.toggleShow(true),
-            removeUnit: () => this.target.toggleShow(false)
+            onAddClick: () => this.target.toggleShow(true),
+            onRemoveClick: () => this.target.toggleShow(false)
         });
     }
 
