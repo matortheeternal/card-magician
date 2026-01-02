@@ -44,7 +44,7 @@ export default class EditKeywordsModal extends Modal {
             },
             removeRt(event) {
                 this.querySelectorAll('cm-reminder-text-item').forEach((rt, index) => {
-                    if (rt === event.target.parentElement.parentElement.parentElement) {
+                    if (rt === event.target.closest('cm-reminder-text-item')) {
                         this.edited = true;
                         this.data.keyword.reminderTexts.splice(index, 1);
                         this.render();
@@ -72,7 +72,7 @@ export default class EditKeywordsModal extends Modal {
         return editKeywordFields;
     }
 
-    getModel() {
+    get model() {
         return this.data.keyword;
     }
 
@@ -89,8 +89,9 @@ export default class EditKeywordsModal extends Modal {
         );
     }
 
-    afterRender() {
-        this.renderFields(this.data.keyword);
+    render() {
+        super.render();
+
         const rts = this.querySelectorAll('cm-reminder-text-item');
         rts.forEach((rt, index) => {
             rt.model = this.data.keyword.reminderTexts[index];

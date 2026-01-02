@@ -1,4 +1,3 @@
-import ComponentWithFields from '../systems/componentWithFields.js';
 import { closeModal } from './modalManager.js';
 import ReactiveComponent from '../components/ReactiveComponent.js';
 
@@ -63,16 +62,5 @@ export default class Modal extends ReactiveComponent {
                 ${(actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`) || ''}
             </div>`
         );
-        this.afterRender();
-    }
-
-    afterRender() {
-        this.renderFields();
-                
-        );
-    }
-
-    renderFields(model = this.data) {
-        renderFields(this, model, this.fields, this);
     }
 }

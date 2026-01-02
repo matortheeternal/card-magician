@@ -21,7 +21,7 @@ const cardPropOptions = [
     { id: 'manaCost', name: L`Mana Cost` }
 ];
 
-class Matcher extends ComponentWithFields {
+class Matcher extends ReactiveComponent {
     static tagName = 'cm-matcher';
     #model = {};
 
@@ -33,10 +33,13 @@ class Matcher extends ComponentWithFields {
         this.#model = data;
     }
 
+    connectedCallback() {
+        this.setAttribute('data-form-provider', '');
+    }
+
     render() {
         this.innerHTML = `<form-group class="with-border"><label class="x-label">Match ${this.dataset.index} <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon></label><form-field field-id="type"></form-field>
             <div class="params"></div></form-group>`;
-        this.renderFields(this.model);
 
         this.renderMatcher();
         this.querySelector('form-field[field-id="type"]')
@@ -70,13 +73,9 @@ class Matcher extends ComponentWithFields {
         this.paramMatcherElement.model = this.model.params;
         this.paramMatcherElement.render();
     }
-
-    getModel() {
-        return this.model;
-    }
 }
 
-class ParamMatcher extends ComponentWithFields {
+class ParamMatcher extends ReactiveComponent {
     static tagName = 'cm-param-matcher';
     #model = {};
 
@@ -88,16 +87,16 @@ class ParamMatcher extends ComponentWithFields {
         this.#model = data;
     }
 
+    connectedCallback() {
+        this.setAttribute('data-form-provider', '');
+    }
+
     render() {
         this.innerHTML = '';
     }
 
     get fields() {
         return [];
-    }
-
-    getModel() {
-        return this.model;
     }
 
     getSelector(field, model) {
@@ -114,7 +113,6 @@ class CardPropMatcher extends ParamMatcher {
     render() {
         this.innerHTML = `<form-field field-id="prop"></form-field>
             <form-field field-id="match"></form-field>`;
-        this.renderFields(this.model);
     }
 
     get fields() {
@@ -144,7 +142,6 @@ class NumberIsXMatcher extends ParamMatcher {
 
     render() {
         this.innerHTML = '<form-field field-id="param"></form-field>';
-        this.renderFields(this.model);
     }
 }
     
@@ -162,7 +159,6 @@ class CostHasX extends ParamMatcher {
 
     render() {
         this.innerHTML = '<form-field field-id="param"></form-field>';
-        this.renderFields(this.model);
     }
 } 
 

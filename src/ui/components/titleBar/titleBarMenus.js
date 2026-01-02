@@ -3,6 +3,7 @@ import { registerHotkey } from '../../systems/hotkeySystem.js';
 import { openModal } from '../../modals/modalManager.js';
 import { getAvailableLocales, prepareSchema } from '../../../shared/localize.js';
 import { getActiveSet } from '../../../domain/sets/setManager.js';
+import { getActiveGame } from '../../../domain/game/gameManager.js';
 import { exitApp } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('title-bar');
@@ -38,7 +39,7 @@ const actions = {
         });
     },
     editKeywords: () => {
-        const game = Alpine.store('game');
+        const game = getActiveGame();
         const set = getActiveSet();
         openModal('cm-view-keywords-modal', { game, set });
     },

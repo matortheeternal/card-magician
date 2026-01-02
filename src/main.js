@@ -10,7 +10,7 @@ import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
 import imageCache from './domain/gfx/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
-import ComponentWithFields from './ui/systems/componentWithFields.js';
+import ReactiveComponent from './ui/components/ReactiveComponent.js';
 import {
     createDirectory, initApp,
     mount,
@@ -53,7 +53,7 @@ function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
     window.CardMagicianGame = CardMagicianGame;
     window.Modal = Modal;
-    window.ComponentWithFields = ComponentWithFields;
+    window.ReactiveComponent = ReactiveComponent;
 }
 
 function loaded() {
