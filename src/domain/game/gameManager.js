@@ -17,7 +17,7 @@ export async function setGame(gameId) {
     await activeGame.init();
     activeGame.setupSearch(sifter);
     newSet();
-    appConfig = new AppConfig(activeGame);
+    appConfig = new AppConfig(gameId);
     return activeGame;
 }
 
