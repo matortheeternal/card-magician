@@ -8,8 +8,9 @@ export default class FormField extends FormUnit {
     }
 
     get fields() {
-        const fieldsKey = this.provider.fieldsKey || 'fields';
-        return this.model?.[fieldsKey] || this.provider?.[fieldsKey];
+        return this.provider?.getFields?.(this.modelKey)
+            || this.model?.fields
+            || this.provider?.fields;
     }
 
     get field() {
