@@ -80,7 +80,7 @@ export default class SetView extends ReactiveComponent {
             button.variant = 'text';
             button.size = 'small';
             button.classList.add('recent-set');
-            button.addEventListener('click', () => this.openSet(set));
+            button.addEventListener('click', () => openSet(set));
             button.textContent = String(set);
             container.appendChild(button);
         });
