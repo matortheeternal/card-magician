@@ -11,7 +11,9 @@ export default class ViewKeywordsModal extends Modal {
             ...super.onClickHandlers,
             edit(event) {
                 const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
-                if (keyword.user) keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
+                if (keyword.user) 
+                    keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
+
                 const data = { game: this.data.game, set: this.data.set, keyword };
                 this.data.game.openModal('cm-edit-keywords-modal', data);
             },
@@ -37,7 +39,10 @@ export default class ViewKeywordsModal extends Modal {
 
     baseRowHtml = `
         <div class="keyword-row label-row" id="label-row">
-            <sl-button class="new-keyword" data-click-action="newKeyword"><sl-icon slot="prefix" name="plus-lg"></sl-icon>New</sl-button>
+            <sl-button class="new-keyword" data-click-action="newKeyword">
+                <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+                New
+            </sl-button>
             <div class="keyword-row-label keyword-label">Label</div>
             <div class="keyword-row-label keyword-expression">Expression</div>
             <div class="keyword-row-label keyword-reminder-text">Reminder Text</div>
@@ -141,18 +146,24 @@ export default class ViewKeywordsModal extends Modal {
     }
 
     escapeAndHighlight(str) {
-        return str.replaceAll(/<(.*?)>/g, '<span class="keyword-param">&lt;$1&gt;</span>');
+        return str.replaceAll(
+            /<(.*?)>/g, 
+            '<span class="keyword-param">&lt;$1&gt;</span>'
+        );
     }
 
     keywordHtml(keyword) {
-        const rtTemplateHtml = this.escapeAndHighlight(keyword.reminderTexts[0].template);
+        const rt = keyword.reminderTexts[0].template;
+        const rtTemplateHtml = this.escapeAndHighlight(rt);
         const rtExpressionHtml = this.escapeAndHighlight(keyword.expression);
 
         return (`
             <div class="keyword-row" id="${keyword.label}-row" 
                 data-keyword="${JSON.stringify(keyword).replaceAll('"', '&quot;')}">
-                <sl-button class="edit-keyword" 
-                    data-click-action="edit"><sl-icon slot="prefix" name="pencil"></sl-icon>Edit</sl-button>
+                <sl-button class="edit-keyword" data-click-action="edit">
+                    <sl-icon slot="prefix" name="pencil"></sl-icon>
+                    Edit
+                </sl-button>
                 <div class="keyword-label">${keyword.label}</div>
                 <div class="keyword-expression">${rtExpressionHtml}</div>
                 <div class="keyword-reminder-text">${rtTemplateHtml}</div>

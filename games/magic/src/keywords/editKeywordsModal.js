@@ -1,5 +1,5 @@
 import editKeywordFields from './editKeywordsFields.js';
-import ReminderTextItem from './reminderTextItem.js'; // Import to register custom element
+import { defineRtComponents } from './reminderTextItem.js';
 
 const L = localize('game-magic');
 
@@ -58,9 +58,9 @@ export default class EditKeywordsModal extends Modal {
         if (!this.edited) return;
         if (!this.data.keyword.user) 
             this.data.set.keywordOverrides[this.data.keyword.label] = this.data.keyword;
-        else {
+        else
             this.data.set.userKeywords[this.data.keyword.saveIndex] = this.data.keyword;
-        }
+        
     }
 
     close() {
@@ -84,7 +84,11 @@ export default class EditKeywordsModal extends Modal {
             `<form-field field-id="label"></form-field>
             <form-field field-id="expression"></form-field>
             <div class="rts-container">${rtHtml}</div>
-            <sl-button class="add-rt" variant="success" outline data-click-action="addRt"><sl-icon name="plus" slot="prefix"></sl-icon>Add Reminder Text</sl-button>
+            <sl-button class="add-rt" variant="success" 
+                outline data-click-action="addRt">
+                <sl-icon name="plus" slot="prefix"></sl-icon>
+                Add Reminder Text
+            </sl-button>
             <style>${this.css}</style>`
         );
     }
@@ -102,3 +106,5 @@ export default class EditKeywordsModal extends Modal {
         this.addEventListener('cm-field-changed', () => { this.edited = true; });
     }
 }
+
+defineRtComponents();

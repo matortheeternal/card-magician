@@ -30,16 +30,16 @@ export function openModal(modalId, data = {}) {
     modalContainer.style.removeProperty('display');
     withLastModal(lastModal => {
         lastModal.style.display = 'none';
-    })
+    });
     activeModals.push(modalElement);
 }
 
 export function closeModal() {
     const activeModal = activeModals.pop();
     activeModal.remove();
-    if (activeModals.length === 0) {
+    if (activeModals.length === 0)
         modalContainer.style.display = 'none';
-    } else {
+    else {
         withLastModal(lastModal => {
             lastModal.style.removeProperty('display');
             lastModal.render();

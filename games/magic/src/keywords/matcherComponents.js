@@ -38,8 +38,15 @@ class Matcher extends ReactiveComponent {
     }
 
     render() {
-        this.innerHTML = `<form-group class="with-border"><label class="x-label">Match ${this.dataset.index} <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon></label><form-field field-id="type"></form-field>
-            <div class="params"></div></form-group>`;
+        this.innerHTML = `
+            <form-group class="with-border">
+                <label class="x-label">
+                    Match ${this.dataset.index} 
+                    <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon>
+                </label>
+                <form-field field-id="type"></form-field>
+                <div class="params"></div>
+            </form-group>`;
 
         this.renderMatcher();
         this.querySelector('form-field[field-id="type"]')
@@ -169,8 +176,7 @@ const matchers = {
     baseMatcher: Matcher
 };
 
-for (const matcher of Object.values(matchers))
-    customElements.define(matcher.tagName, matcher);
-
-
-export default matchers;
+export function defineMatcherComponents() {
+    for (const matcher of Object.values(matchers))
+        customElements.define(matcher.tagName, matcher);
+}

@@ -1,8 +1,8 @@
-import matchers from './matcherComponents.js'; // To register custom elements
+import { defineMatcherComponents } from './matcherComponents.js';
 
 const L = localize('game-magic');
 
-export default class ReminderTextItem extends ReactiveComponent {
+class ReminderTextItem extends ReactiveComponent {
     #model;
     onClickHandlers = {
         addMatch() {
@@ -18,13 +18,16 @@ export default class ReminderTextItem extends ReactiveComponent {
             this.render();
         },
         removeMatch(event) {
-            console.log(this.model.match, event.target.model, this.model.match.indexOf(event.target.closest('cm-matcher').model));
             if (Array.isArray(this.model.match)) {
-                this.model.match.splice(this.model.match.indexOf(event.target.closest('cm-matcher').model), 1);
-                this.model.match = this.model.match.length === 1 ? this.model.match[0] : this.model.match;
-            }
-            else
-                delete this.model.match
+                const matcher = event.target.closest('cm-matcher');
+                const matchIndex = this.model.match.indexOf(matcher.model);
+                this.model.match.splice(matchIndex, 1);
+
+                this.model.match = this.model.match.length === 1 
+                    ? this.model.match[0] 
+                    : this.model.match;
+            } else
+                delete this.model.match;
 
             this.render();
         }
@@ -51,15 +54,25 @@ export default class ReminderTextItem extends ReactiveComponent {
 
         this.innerHTML
             = `<form-group group-id="rt-${this.dataset.index}" class="with-border">
-                <label class="x-label">Reminder Text ${this.dataset.index} <sl-icon name="x-lg" data-click-action="removeRt"></sl-icon></label>
+                <label class="x-label">
+                    Reminder Text ${this.dataset.index} 
+                    <sl-icon name="x-lg" data-click-action="removeRt"></sl-icon>
+                </label>
                 ${matchHtml}
-                <sl-button class="add-match" size="small" variant="success" outline data-click-action="addMatch"><sl-icon slot="prefix" name="plus-lg"></sl-icon>Add Match</sl-button>
+                <sl-button class="add-match" size="small" variant="success" 
+                    outline data-click-action="addMatch">
+                    <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+                    Add Match
+                    </sl-button>
                 <form-field field-id="template"></form-field>
             </form-group>`;
 
 
         this.querySelectorAll('cm-matcher').forEach((matcher, i) => {
-            matcher.model = Array.isArray(this.model.match) ? this.model.match[i] : this.model.match;
+            matcher.model = Array.isArray(this.model.match) 
+                ? this.model.match[i] 
+                : this.model.match;
+
             matcher.dataset.index =  i + 1;
             matcher.render();
         });
@@ -82,4 +95,7 @@ export default class ReminderTextItem extends ReactiveComponent {
     }
 }
 
-customElements.define('cm-reminder-text-item', ReminderTextItem);
+export function defineRtComponents() {
+    customElements.define('cm-reminder-text-item', ReminderTextItem);
+    defineMatcherComponents();
+}
