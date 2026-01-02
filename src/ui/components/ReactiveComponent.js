@@ -1,7 +1,7 @@
 import { watch } from '../../shared/reactivity.js';
 
 export default class ReactiveComponent extends HTMLElement {
-    #watchers = [];
+    #watchers = {};
     #eventHandlers = [];
 
     constructor() {
@@ -29,14 +29,13 @@ export default class ReactiveComponent extends HTMLElement {
         });
     }
 
-    watch(obj, keysArg, callback) {
+    watch(watchId, obj, keysArg, callback) {
+        this.#watchers[watchId]?.();
         const unwatch = watch(obj, keysArg, callback);
-        this.#watchers.push(unwatch);
-        const watchers = this.#watchers;
+        this.#watchers[watchId] = unwatch;
         return {
-            remove() {
-                const index = watchers.indexOf(unwatch);
-                if (index > -1) watchers.splice(index, 1);
+            remove: () => {
+                delete this.#watchers[watchId];
                 unwatch();
             }
         };

@@ -22,7 +22,7 @@ export default class SetView extends ReactiveComponent {
         onActiveSetChanged(set => {
             this.updateCards(set);
             if (this.#cardsWatch) this.#cardsWatch.remove();
-            this.#cardsWatch = this.watch(set, 'cards', () => {
+            this.#cardsWatch = this.watch('cards', set, 'cards', () => {
                 this.updateCards(set);
             });
         });

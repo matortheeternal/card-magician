@@ -4,8 +4,6 @@ import ReactiveComponent from '../ReactiveComponent.js';
 export default class FieldComponent extends ReactiveComponent {
     #field = null;
     #model = null;
-    #fieldWatch = null;
-    #valueWatch = null;
     eventKey = 'sl-input';
 
     connectedCallback() {
@@ -14,10 +12,7 @@ export default class FieldComponent extends ReactiveComponent {
 
     watchValue() {
         if (!this.model || !this.field) return;
-        if (this.#valueWatch) this.#valueWatch.remove();
-        this.#valueWatch = this.watch(this.model, this.field.id,
-                                      () => this.loadValue()
-        );
+        this.watch('value', this.model, this.field.id, () => this.loadValue());
     }
 
     get field() {
@@ -27,8 +22,7 @@ export default class FieldComponent extends ReactiveComponent {
     set field(newValue) {
         this.#field = newValue;
         this.render();
-        if (this.#fieldWatch) this.#fieldWatch.remove();
-        this.#fieldWatch = this.watch(newValue, '', () => this.render());
+        this.watch('field', newValue, '', () => this.render());
         this.watchValue();
     }
 
