@@ -9,13 +9,13 @@ export default class AppConfig {
     #recentFilesChangedCallbacks = [];
     #loadPromise;
 
-    constructor(game) {
-        this.game = game;
+    constructor(gameId) {
+        this.gameId = gameId;
         this.#loadPromise = this.load();
     }
 
     get key() {
-        return `appConfig-${this.game.id}`;
+        return `appConfig-${this.gameId}`;
     }
 
     async load() {
@@ -23,12 +23,13 @@ export default class AppConfig {
             const raw = await getStoredData(this.key);
             this.#data = JSON.parse(raw) || {};
         } catch(e) {
-            console.error('Error loading app config', e);
+            console.warn('App config not found', e);
             this.#data = {};
         }
 
         if (!Array.isArray(this.#data.recentFiles))
             this.#data.recentFiles = [];
+        this.queueSave();
     }
 
     async set(key, value) {
