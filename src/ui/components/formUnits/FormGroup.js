@@ -68,7 +68,7 @@ export default class FormGroup extends ReactiveComponent {
         if (!this.optional) return this.updateDisplay(this.show);
         this.toggle = FormToggle.create(this, this.label);
         this.appendChild(this.toggle);
-        this.watch(this.model, this.showKey, () => this.toggle.render());
+        this.watch('show', this.model, this.showKey, () => this.toggle.render());
     }
 
     toggleShow(show) {

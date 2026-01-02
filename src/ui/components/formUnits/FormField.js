@@ -90,7 +90,7 @@ export default class FormField extends ReactiveComponent {
         if (!this.optional) return;
         this.toggle = FormToggle.create(this, this.label);
         this.appendChild(this.toggle);
-        this.watch(this.model, this.fieldId, () => this.toggle.render());
+        this.watch('value', this.model, this.fieldId, () => this.toggle.render());
     }
 
     toggleShow(show) {
