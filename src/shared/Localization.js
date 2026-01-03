@@ -4,6 +4,18 @@ import { readFile, writeFile } from './neutralinoAdapter.js';
 
 const CURRENT_SCHEMA_VERSION = 1;
 
+/**
+ * Represents a loaded localization for a specific locale.
+ *
+ * This class is responsible for:
+ * - Loading and parsing locale YAML files
+ * - Creating base localization templates using the localization schema file
+ * - Resolving localized strings with parameter substitution
+ * - Persisting locale data back to disk
+ *
+ * Interacting with this class should only be necessary in the context of operating
+ * on localizations directly. If you need to localize a string, use `localize`.
+ */
 export default class Localization {
     static async load(localeId, metadata = {}) {
         const filePath = `locales/${localeId}.yml`;
