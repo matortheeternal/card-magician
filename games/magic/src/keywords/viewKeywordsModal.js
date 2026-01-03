@@ -1,0 +1,178 @@
+import { getKeywords } from './lists/main.js';
+const L = localize('game-magic');
+
+export default class ViewKeywordsModal extends Modal {
+    static id = 'cm-view-keywords-modal';
+    title = L`Keywords`;
+
+    onKeyup = { search: this.onSearch };
+    get onClickHandlers() {
+        return {   
+            ...super.onClickHandlers,
+            edit(event) {
+                const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
+                if (keyword.user) 
+                    keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
+
+                const data = { game: this.data.game, set: this.data.set, keyword };
+                this.data.game.openModal('cm-edit-keywords-modal', data);
+            },
+            newKeyword() {
+                const keyword = {
+                    label: L`New Keyword`,
+                    expression: '',
+                    user: true,
+                    saveIndex: this.data.set.userKeywords.length,
+                    reminderTexts: [
+                        {
+                            template: ''
+                        }
+                    ]
+                };
+                this.data.set.userKeywords.push(keyword);
+
+                const data = { game: this.data.game, set: this.data.set, keyword };
+                this.data.game.openModal('cm-edit-keywords-modal', data);
+            }
+        };
+    }
+
+    baseRowHtml = `
+        <div class="keyword-row label-row" id="label-row">
+            <sl-button class="new-keyword" data-click-action="newKeyword">
+                <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+                New
+            </sl-button>
+            <div class="keyword-row-label keyword-label">Label</div>
+            <div class="keyword-row-label keyword-expression">Expression</div>
+            <div class="keyword-row-label keyword-reminder-text">Reminder Text</div>
+            <sl-input class="keyword-search" name="search" 
+                placeholder="Search keywords..." data-keyup-action="search"></sl-input>
+        </div>
+    `;
+
+    css = `
+        .keywords-table {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            margin: auto;
+        }
+
+        .keyword-row {
+            display: grid;
+            grid-template-columns: 0.6fr 1fr 1.2fr 6fr;
+            border-bottom: 1px solid white;
+            padding: 8px 0 8px 0;
+            width: 100%;
+            align-items: center;
+        }
+
+        .label-row {
+            grid-template-columns: 0.6fr 1fr 1.2fr 1fr 5fr;
+        }
+
+        .keyword-label {
+            font-weight: bold;
+        }
+
+        .keyword-label {
+            justify-self: center;
+        }
+
+        .label-row {
+            position: sticky;
+            top: -55px;
+            background: #111;
+            padding-top: 12px;
+            z-index: 2;
+        }
+
+        .keyword-param {
+            color: #bd0052;
+        }
+
+        .new-keyword {
+            margin-left: 8px;
+        }
+
+        cm-view-keywords-modal {
+            width: 100%;
+        }
+    `;
+
+    bind() {
+        super.bind();
+        this.handleEvents('keyup', this.onKeyup);
+    }
+
+    renderTable() {
+        let html = '';
+        for (const keyword of getKeywords(this.data.set))
+            html += this.keywordHtml(keyword);
+        
+
+        return html;
+    }
+
+    onSearch() {
+        const tableRows = document.querySelectorAll('.keyword-row:not(.label-row)');
+        tableRows.forEach((row) => {
+            row.style.display = this.isSearched(row) ? 'grid' : 'none';
+        });
+    }
+
+    isSearched(row) {
+        const label = row.querySelector('.keyword-label').innerText;
+        const expression = row.querySelector('.keyword-expression').innerText;
+        const rt = row.querySelector('.keyword-label').innerText;
+        const searchTerms = document.querySelector('.keyword-search').value.split(' ');
+
+        if (searchTerms.length === 0) return true;
+
+        for (const term of searchTerms) {
+            const match = new RegExp(term, 'i');
+            if (label.match(match) || expression.match(match) || rt.match(match)) 
+                return true;
+        }
+
+        return false;
+    }
+
+    renderBody() {
+        return (`
+            <div class="keywords-table">
+                ${this.baseRowHtml}
+                ${this.renderTable()}
+            </div>
+            <style>${this.css}</style>
+        `);
+    }
+
+    escapeAndHighlight(str) {
+        return str.replaceAll(
+            /<(.*?)>/g, 
+            '<span class="keyword-param">&lt;$1&gt;</span>'
+        );
+    }
+
+    keywordHtml(keyword) {
+        console.log(keyword);
+        const rt = keyword.reminderTexts[0].template;
+        const rtTemplateHtml = this.escapeAndHighlight(rt);
+        const rtExpressionHtml = this.escapeAndHighlight(keyword.expression);
+
+        return (`
+            <div class="keyword-row" id="${keyword.label}-row" 
+                data-keyword="${JSON.stringify(keyword).replaceAll('"', '&quot;')}">
+                <sl-button class="edit-keyword" data-click-action="edit">
+                    <sl-icon slot="prefix" name="pencil"></sl-icon>
+                    Edit
+                </sl-button>
+                <div class="keyword-label">${keyword.label}</div>
+                <div class="keyword-expression">${rtExpressionHtml}</div>
+                <div class="keyword-reminder-text">${rtTemplateHtml}</div>
+            </div>
+        `);
+    }
+}

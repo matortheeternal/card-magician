@@ -61,11 +61,14 @@ export const FallbackConverter = {
     }
 };
 
-export const converters = [
-    WhitespaceConverter,
-    ParenthesisConverter,
-    SymbolConverter,
-    LegendNameConverter,
-    CardNameConverter,
-    FallbackConverter
-];
+export function getConverters(game) { 
+    return [
+        ...game.AbilityWordConverters,
+        WhitespaceConverter,
+        ParenthesisConverter,
+        SymbolConverter,
+        LegendNameConverter,
+        CardNameConverter,
+        FallbackConverter
+    ];
+}
