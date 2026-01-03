@@ -2,13 +2,16 @@ const L = localize('game-magic');
 
 const matchTypeOptions = [
     { id: 'cardProp', name: L`Card Property` },
+    { id: 'keywordParam', name: L`Keyword Parameter` },
     { id: 'isPermanent', name: L`Is a Permanent` },
     { id: 'numberIsX', name: L`Number is X`},
     { id: 'isPlural', name: L`Is Plural`},
     { id: 'targetsOther', name: L`Targets Other`},
     { id: 'costHasX', name: L`Cost has X`},
+    { id: 'nonManaCost', name: L`Non-mana Cost`},
     { id: 'hasPt', name: L`Has PT`},
     { id: 'hasTarget', name: L`Has a Target`},
+    { id: 'multipleModes', name: L`Has more than 2 modes`},
     { id: 'hasPPCounters', name: L`Has Modular`}
 ];
 
@@ -165,12 +168,48 @@ class CostHasX extends ParamMatcher {
     render() {
         this.innerHTML = '<form-field field-id="param"></form-field>';
     }
-} 
+}
+
+class IsPlural extends ParamMatcher {
+    static tagName = 'cm-is-plural-matcher';
+    static initialModel = {param: ''};
+
+    get fields() {
+        return [{
+            id: 'param',
+            label: L`Keyword Param`,
+            placeholder: 's'
+        }];
+    }
+
+    render() {
+        this.innerHTML = '<form-field field-id="param"></form-field>';
+    }
+}
+
+class NonManaCost extends ParamMatcher {
+    static tagName = 'cm-non-mana-cost-matcher';
+    static initialModel = {param: ''};
+
+    get fields() {
+        return [{
+            id: 'param',
+            label: L`Keyword Param`,
+            placeholder: 'cost'
+        }];
+    }
+
+    render() {
+        this.innerHTML = '<form-field field-id="param"></form-field>';
+    }
+}
 
 const matchers = {
     cardProp: CardPropMatcher,
     numberIsX: NumberIsXMatcher,
     costHasX: CostHasX,
+    isPlural: IsPlural,
+    nonManaCost: NonManaCost,
     baseMatcher: Matcher
 };
 

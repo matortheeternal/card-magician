@@ -95,6 +95,10 @@ export default class ViewKeywordsModal extends Modal {
         .new-keyword {
             margin-left: 8px;
         }
+
+        cm-view-keywords-modal {
+            width: 100%;
+        }
     `;
 
     bind() {
@@ -153,6 +157,7 @@ export default class ViewKeywordsModal extends Modal {
     }
 
     keywordHtml(keyword) {
+        console.log(keyword);
         const rt = keyword.reminderTexts[0].template;
         const rtTemplateHtml = this.escapeAndHighlight(rt);
         const rtExpressionHtml = this.escapeAndHighlight(keyword.expression);

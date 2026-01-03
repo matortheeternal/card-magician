@@ -461,9 +461,11 @@
   {
     "label": "Flashback",
     "expression": "Flashback <cost>",
-    "reminderTexts": {
-      "template": "You may cast <target_card> from your graveyard for its flashback cost. Then exile it."
-    }
+    "reminderTexts": [
+      {
+        "template": "You may cast <target_card> from your graveyard for its flashback cost. Then exile it."
+      }
+    ]
   },
   {
     "label": "Flying",
