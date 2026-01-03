@@ -113,6 +113,27 @@ export async function loadSchema() {
     }
 }
 
+/**
+ * Creates a tagged template function for resolving localized strings within a
+ * specific namespace.
+ *
+ * The returned function generates a stable localization key from the template
+ * strings and values, resolves the localized string if available, and falls back
+ * to the original template output when no localization exists.
+ *
+ * Example usage:
+ * ```js
+ * const L = localize('edit-locales-modal');
+ * const title = L`Edit locales`;
+ * // yields "Edit locales" by default, but can be localized
+ * ```
+ *
+ * @param {string} namespaceKey
+ *   Namespace used to group and resolve localization keys.
+ *
+ * @returns {(strings: TemplateStringsArray, ...values: any[]) => string}
+ *   A tagged template function that returns a localized string.
+ */
 window.localize = function(namespaceKey) {
     return function(strings, ...values) {
         const key = buildLocalizationKey(strings, values);
