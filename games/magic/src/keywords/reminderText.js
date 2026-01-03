@@ -1,5 +1,5 @@
 import { AbilityWordConverters } from './lists/main.js';
-import { targetToObject } from './target.js';
+import { targetCard, targetSpell, targetToObject, targetWith } from './target.js';
 import { parseKeywordTokens } from './parse.js';
 import { matchAllKeywords } from './match.js';
 
@@ -14,21 +14,37 @@ const specialVariables = {
             + ' and/or' 
             + subtypesCommas.substring(finalComma + 1);
     },
+    subtypes_or: (token, card) => {
+        const subtypesCommas = card.subType.replaceAll(' ', ', ');
+        const finalComma = subtypesCommas.lastIndexOf(',');
+        token.variable = subtypesCommas.substring(0, finalComma) 
+            + ' or' 
+            + subtypesCommas.substring(finalComma + 1);
+    },
     dies_or_gy: (token, card) => card.superType.match(/creature/i) 
         ? 'dies' 
         : 'is put into a graveyard from the battlefield',
     target: (token, card, target) => target,
     target_object: (token, card, target) => targetToObject(target, token.format),
+    target_it: (token, card, target) => target.includes('This') ? target : 'It',
+    target_spell: (token, card, target) => targetSpell(target),
+    target_card: (token, card, target) => targetCard(target),
+    target_with: (token, card, target) => targetWith(target, token.format),
+    to_do_this: (token, card, target, keyword) =>  
+        card.rulesText.match(
+            new RegExp(keyword.expressionRegex.source + '.?$', 'i'))
+            ? token.format
+            : `To ${card.rulesText.match(keyword.expressionRegex)[0]}${token.args ? ' ' + token.args[0] : ''}, ${token.format.toLowerCase()}`,
     station_creature_breakpoint: () => 'Not implemented'
 };
 
-function processReminderText(templateTokens, params, card, target) {
+function processReminderText(templateTokens, params, card, target, keyword) {
     let output = '';
 
     for (const token of templateTokens) {        
         for (const [ variableName, variableFn ] of Object.entries(specialVariables)) {
             if (token.variable === variableName) {
-                token.variable = variableFn(token, card, target);
+                token.variable = variableFn(token, card, target, keyword);
                 token.format = 'literal';
                 break;
             }
@@ -70,6 +86,10 @@ const rtMatches = { // Stuff used in 'match'
         const cardProp = card[matchParams.prop];
         return cardProp?.match(new RegExp(matchParams.match), 'i');
     },
+    keywordParam: (matchParams, params) => {
+        const kwParam = params?.[matchParams.param].toString();
+        return kwParam.match(new RegExp(matchParams.match), 'i');
+    },
     numberIsX: (matchParams, params) => params[matchParams?.param || 'number']  === 'X',
     isPlural: (matchParams, params) => params[matchParams?.param || 's'] === 's',
     targetsOther: (matchParams, params, card, target) => !target.includes('This'),
@@ -82,7 +102,12 @@ const rtMatches = { // Stuff used in 'match'
             if (card.superType?.match(new RegExp(type, 'i'))) return true;
         
         return false;
-    }
+    },
+    multipleModes: (matchParams, params, card) => {
+        return (card.rulesText.match(/::|•/g) || []).length > 2;
+    },
+    nonManaCost: (matchParams, params) => 
+        !params[matchParams?.param || 'cost'].match(/{/)
 };
 
 function checkMatch(match, params, card, target) {
@@ -109,7 +134,7 @@ function generateReminderText(keyword, params, card, target) {
         const matchRes = match ? checkMatch(match, params, card, target) : false;
         if (!match || matchRes) {
             const templateTokens = parseKeywordTokens(template);
-            return processReminderText(templateTokens, params, card, target);
+            return processReminderText(templateTokens, params, card, target, keyword);
         }
     }
 }

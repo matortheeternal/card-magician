@@ -1,9 +1,11 @@
 import numericKeywords from './numericKeywords.json';
 import simpleKeywords from  './simpleKeywords.json';
+import otherKeywords from  './otherKeywords.json';
 
 export const baseKeywords = [
     ...numericKeywords,
-    ...simpleKeywords
+    ...simpleKeywords,
+    ...otherKeywords
 ];
 
 export function getKeywords(set) {

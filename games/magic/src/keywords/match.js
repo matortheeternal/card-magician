@@ -9,6 +9,7 @@ function genExpressionRegex(expressionTokens) {
     for (const token of expressionTokens) {
         const paramType = getParamType(token.format);
         const paramExpr = paramType.expr?.source;
+        match = paramType.editMatch(match);
 
         match += '(';
         match += paramExpr ? paramExpr : token.variable; // literals and invalid types

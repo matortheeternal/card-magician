@@ -39,3 +39,20 @@ export function targetToObject(target, type) {
     if (target === 'It') return 'it';
     return 'that ' + (type || 'permanent');
 }
+
+export function targetSpell(target) {
+    if (target === 'It') return 'That spell';
+    if (target === 'They') return 'Those spells';
+    return 'This spell';
+}
+
+export function targetCard(target) {
+    if (target === 'It') return 'That card';
+    if (target === 'They') return 'Those cards';
+    return 'This card';
+}
+
+export function targetWith(target, name) {
+    if (target === 'They') return `A creature with ${name}`;
+    return target;
+}

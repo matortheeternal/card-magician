@@ -83,7 +83,7 @@
     "expression": "Persist",
     "reminderTexts": [
       {
-        "template": "When <target_it> dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it."
+        "template": "When <target_it:lowercase> dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it."
       }
     ]
   },
@@ -93,7 +93,7 @@
     "expression": "Indestructible",
     "reminderTexts": [
       {
-        "template": "Damage and effects that say \"destroy\" don't destroy <target_it>."
+        "template": "Damage and effects that say \"destroy\" don't destroy <target_object>."
       }
     ],
     "hideByDefault": true
@@ -465,6 +465,12 @@
     "type": "keyword",
     "expression": "Blitz <cost>",
     "reminderTexts": [
+      {
+        "match": {
+          "type": "targetsOther"
+        },
+        "template": "You may choose to cast <target_spell> for its blitz cost. If you do, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step."
+      },
       {
         "template": "If you cast this spell for its blitz cost, it gains haste and \"When this creature dies, draw a card.\" Sacrifice it at the beginning of the next end step."
       }
@@ -861,22 +867,22 @@
         }, {
           "type": "hasTarget"
         }],
-        "template": "When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies. Copies become tokens."
+        "template": "When you cast <target_spell>, copy it for each spell cast before it this turn. You may choose new targets for the copies. Copies become tokens."
       },
       {
         "match": {
           "type": "isPermanent"
         },
-        "template": "When you cast this spell, copy it for each spell cast before it this turn. Copies become tokens."
+        "template": "When you cast <target_spell>, copy it for each spell cast before it this turn. Copies become tokens."
       },
       {
         "match": {
           "type": "hasTarget"
         },
-        "template": "When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies."
+        "template": "When you cast <target_spell>, copy it for each spell cast before it this turn. You may choose new targets for the copies."
       },
       {
-        "template": "When you cast this spell, copy it for each spell cast before it this turn."
+        "template": "When you cast <target_spell>, copy it for each spell cast before it this turn."
       }
     ]
   },
@@ -974,7 +980,7 @@
     "expression": "Jump-start",
     "reminderTexts": [
       {
-        "template": "You may cast this card from your graveyard by discarding a card in addition to paying its other costs. Then exile this card."
+        "template": "You may cast <target_card> from your graveyard by discarding a card in addition to paying its other costs. Then exile this card."
       }
     ]
   },
