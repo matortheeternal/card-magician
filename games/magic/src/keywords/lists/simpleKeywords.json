@@ -1,7 +1,6 @@
 [
   {
     "label": "Treasure",
-    "type": "keyword",
     "expression": "Treasure token<s>",
     "reminderTexts": [
       {
@@ -17,7 +16,6 @@
   },
   {
     "label": "Horsemanship",
-    "type": "keyword",
     "expression": "Horsemanship",
     "reminderTexts": [
       {
@@ -27,7 +25,6 @@
   },
   {
     "label": "Reach",
-    "type": "keyword",
     "expression": "Reach",
     "reminderTexts": [
       {
@@ -38,7 +35,6 @@
   },
   {
     "label": "Connives",
-    "type": "keyword",
     "expression": "Connives",
     "reminderTexts": [
       {
@@ -48,7 +44,6 @@
   },
   {
     "label": "Modified",
-    "type": "keyword",
     "expression": "Modified",
     "reminderTexts": [
       {
@@ -58,7 +53,6 @@
   },
   {
     "label": "Menace",
-    "type": "keyword",
     "expression": "Menace",
     "reminderTexts": [
       {
@@ -69,7 +63,6 @@
   },
   {
     "label": "Infect",
-    "type": "keyword",
     "expression": "Infect",
     "reminderTexts": [
       {
@@ -79,7 +72,6 @@
   },
   {
     "label": "Persist",
-    "type": "keyword",
     "expression": "Persist",
     "reminderTexts": [
       {
@@ -89,7 +81,6 @@
   },
   {
     "label": "Indestructible",
-    "type": "keyword",
     "expression": "Indestructible",
     "reminderTexts": [
       {
@@ -100,7 +91,6 @@
   },
   {
     "label": "Spree",
-    "type": "keyword",
     "expression": "Spree",
     "reminderTexts": [
       {
@@ -110,7 +100,6 @@
   },
   {
     "label": "{q}",
-    "type": "keyword",
     "expression": "{q}",
     "reminderTexts": [
       {
@@ -120,7 +109,6 @@
   },
   {
     "label": "Exalted",
-    "type": "keyword",
     "expression": "Exalted",
     "reminderTexts": [
       {
@@ -136,7 +124,6 @@
   },
   {
     "label": "Miracle",
-    "type": "keyword",
     "expression": "Miracle",
     "reminderTexts": [
       {
@@ -146,7 +133,6 @@
   },
   {
     "label": "Prowess",
-    "type": "keyword",
     "expression": "Prowess",
     "reminderTexts": [
       {
@@ -156,7 +142,6 @@
   },
   {
     "label": "Cascade",
-    "type": "keyword",
     "expression": "Cascade",
     "reminderTexts": [
       {
@@ -166,7 +151,6 @@
   },
   {
     "label": "Extort",
-    "type": "keyword",
     "expression": "Extort",
     "reminderTexts": [
       {
@@ -176,7 +160,6 @@
   },
   {
     "label": "Devoid",
-    "type": "keyword",
     "expression": "Devoid",
     "reminderTexts": [
       {
@@ -186,7 +169,6 @@
   },
   {
     "label": "Flash",
-    "type": "keyword",
     "expression": "Flash",
     "reminderTexts": [
       {
@@ -197,7 +179,6 @@
   },
   {
     "label": "Echo",
-    "type": "keyword",
     "expression": "Echo",
     "reminderTexts": [
       {
@@ -207,7 +188,6 @@
   },
   {
     "label": "Megamorph",
-    "type": "keyword",
     "expression": "Megamorph",
     "reminderTexts": [
       {
@@ -217,7 +197,6 @@
   },
   {
     "label": "Compleated",
-    "type": "keyword",
     "expression": "Compleated",
     "reminderTexts": [
       {
@@ -227,7 +206,6 @@
   },
   {
     "label": "Prototype",
-    "type": "keyword",
     "expression": "Prototype",
     "reminderTexts": [
       {
@@ -237,7 +215,6 @@
   },
   {
     "label": "Harmonize",
-    "type": "keyword",
     "expression": "Harmonize <cost>",
     "reminderTexts": [
       {
@@ -253,7 +230,6 @@
   },
   {
     "label": "Fear",
-    "type": "keyword",
     "expression": "Fear",
     "reminderTexts": [
       {
@@ -263,7 +239,6 @@
   },
   {
     "label": "Foretell",
-    "type": "keyword",
     "expression": "Foretell <cost>",
     "reminderTexts": [
       {
@@ -273,7 +248,6 @@
   },
   {
     "label": "Rebound",
-    "type": "keyword",
     "expression": "Rebound",
     "reminderTexts": [
       {
@@ -283,7 +257,6 @@
   },
   {
     "label": "Evoke",
-    "type": "keyword",
     "expression": "Evoke <cost>",
     "reminderTexts": [
       {
@@ -293,7 +266,6 @@
   },
   {
     "label": "Station",
-    "type": "keyword",
     "expression": "Station",
     "reminderTexts": [
       {
@@ -309,7 +281,6 @@
   },
   {
     "label": "Changeling",
-    "type": "keyword",
     "expression": "Changeling",
     "reminderTexts": [
       {
@@ -329,7 +300,6 @@
   },
   {
     "label": "Riot",
-    "type": "keyword",
     "expression": "Riot",
     "reminderTexts": [
       {
@@ -345,7 +315,6 @@
   },
   {
     "label": "Intimidate",
-    "type": "keyword",
     "expression": "Intimidate",
     "reminderTexts": [
       {
@@ -355,7 +324,6 @@
   },
   {
     "label": "Flanking",
-    "type": "keyword",
     "expression": "Flanking",
     "reminderTexts": [
       {
@@ -365,7 +333,6 @@
   },
   {
     "label": "Undying",
-    "type": "keyword",
     "expression": "Undying",
     "reminderTexts": [
       {
@@ -375,7 +342,6 @@
   },
   {
     "label": "Exert",
-    "type": "keyword",
     "expression": "Exert",
     "reminderTexts": [
       {
@@ -385,7 +351,6 @@
   },
   {
     "label": "Conspire",
-    "type": "keyword",
     "expression": "Conspire",
     "reminderTexts": [
       {
@@ -401,7 +366,6 @@
   },
   {
     "label": "Disguise",
-    "type": "keyword",
     "expression": "Disguise <cost>",
     "reminderTexts": [
       {
@@ -411,7 +375,6 @@
   },
   {
     "label": "Lifelink",
-    "type": "keyword",
     "expression": "Lifelink",
     "reminderTexts": [
       {
@@ -422,7 +385,6 @@
   },
   {
     "label": "Shroud",
-    "type": "keyword",
     "expression": "Shroud",
     "reminderTexts": [
       {
@@ -432,7 +394,6 @@
   },
   {
     "label": "Retrace",
-    "type": "keyword",
     "expression": "Retrace",
     "reminderTexts": [
       {
@@ -442,7 +403,6 @@
   },
   {
     "label": "Dash",
-    "type": "keyword",
     "expression": "Dash <cost>",
     "reminderTexts": [
       {
@@ -452,7 +412,6 @@
   },
   {
     "label": "Dethrone",
-    "type": "keyword",
     "expression": "Dethrone",
     "reminderTexts": [
       {
@@ -462,7 +421,6 @@
   },
   {
     "label": "Blitz",
-    "type": "keyword",
     "expression": "Blitz <cost>",
     "reminderTexts": [
       {
@@ -478,7 +436,6 @@
   },
   {
     "label": "Cleave",
-    "type": "keyword",
     "expression": "Cleave <cost>",
     "reminderTexts": [
       {
@@ -488,7 +445,6 @@
   },
   {
     "label": "Boast",
-    "type": "keyword",
     "expression": "Boast — <cost>:",
     "reminderTexts": [
       {
@@ -498,7 +454,6 @@
   },
   {
     "label": "Unleash",
-    "type": "keyword",
     "expression": "Unleash",
     "reminderTexts": [
       {
@@ -508,7 +463,6 @@
   },
   {
     "label": "Ingest",
-    "type": "keyword",
     "expression": "Ingest",
     "reminderTexts": [
       {
@@ -518,7 +472,6 @@
   },
   {
     "label": "Bargain",
-    "type": "keyword",
     "expression": "Bargain",
     "reminderTexts": [
       {
@@ -528,7 +481,6 @@
   },
   {
     "label": "Even",
-    "type": "keyword",
     "expression": "Even",
     "reminderTexts": [
       {
@@ -538,7 +490,6 @@
   },
   {
     "label": "Melee",
-    "type": "keyword",
     "expression": "Melee",
     "reminderTexts": [
       {
@@ -548,7 +499,6 @@
   },
   {
     "label": "Historic",
-    "type": "keyword",
     "expression": "Historic",
     "reminderTexts": [
       {
@@ -558,7 +508,6 @@
   },
   {
     "label": "Banding",
-    "type": "keyword",
     "expression": "Banding",
     "reminderTexts": [
       {
@@ -568,7 +517,6 @@
   },
   {
     "label": "Mentor",
-    "type": "keyword",
     "expression": "Mentor",
     "reminderTexts": [
       {
@@ -578,7 +526,6 @@
   },
   {
     "label": "Delve",
-    "type": "keyword",
     "expression": "Delve",
     "reminderTexts": [
       {
@@ -588,7 +535,6 @@
   },
   {
     "label": "Training",
-    "type": "keyword",
     "expression": "Training",
     "reminderTexts": [
       {
@@ -598,7 +544,6 @@
   },
   {
     "label": "Mutate",
-    "type": "keyword",
     "expression": "Mutate {cost}",
     "reminderTexts": [
       {
@@ -608,7 +553,6 @@
   },
   {
     "label": "Myriad",
-    "type": "keyword",
     "expression": "Myriad",
     "reminderTexts": [
       {
@@ -618,7 +562,6 @@
   },
   {
     "label": "Deathtouch",
-    "type": "keyword",
     "expression": "Deathtouch",
     "reminderTexts": [
       {
@@ -629,7 +572,6 @@
   },
   {
     "label": "Evolve",
-    "type": "keyword",
     "expression": "Evolve",
     "reminderTexts": [
       {
@@ -639,7 +581,6 @@
   },
   {
     "label": "Morph",
-    "type": "keyword",
     "expression": "Morph",
     "reminderTexts": [
       {
@@ -649,7 +590,6 @@
   },
   {
     "label": "Demonstrate",
-    "type": "keyword",
     "expression": "Demonstrate",
     "reminderTexts": [
       {
@@ -665,7 +605,6 @@
   },
   {
     "label": "Skulk",
-    "type": "keyword",
     "expression": "Skulk",
     "reminderTexts": [
       {
@@ -675,7 +614,6 @@
   },
   {
     "label": "Soulbond",
-    "type": "keyword",
     "expression": "Soulbond",
     "reminderTexts": [
       {
@@ -685,7 +623,6 @@
   },
   {
     "label": "Spectacle",
-    "type": "keyword",
     "expression": "Spectacle <cost>",
     "reminderTexts": [
       {
@@ -695,7 +632,6 @@
   },
   {
     "label": "Epic",
-    "type": "keyword",
     "expression": "Epic",
     "reminderTexts": [
       {
@@ -711,7 +647,6 @@
   },
   {
     "label": "Upgrade",
-    "type": "keyword",
     "expression": "Upgrade",
     "reminderTexts": [
       {
@@ -721,7 +656,6 @@
   },
   {
     "label": "Improvise",
-    "type": "keyword",
     "expression": "Improvise",
     "reminderTexts": [
       {
@@ -731,7 +665,6 @@
   },
   {
     "label": "Haste",
-    "type": "keyword",
     "expression": "Haste",
     "reminderTexts": [
       {
@@ -742,7 +675,6 @@
   },
   {
     "label": "Freerunning",
-    "type": "keyword",
     "expression": "Freerunning <cost>",
     "reminderTexts": [
       {
@@ -752,7 +684,6 @@
   },
   {
     "label": "Cipher",
-    "type": "keyword",
     "expression": "Cipher",
     "reminderTexts": [
       {
@@ -762,7 +693,6 @@
   },
   {
     "label": "Phasing",
-    "type": "keyword",
     "expression": "Phasing",
     "reminderTexts": [
       {
@@ -772,7 +702,6 @@
   },
   {
     "label": "Coststorm",
-    "type": "keyword",
     "expression": "Coststorm",
     "reminderTexts": [
       {
@@ -782,7 +711,6 @@
   },
   {
     "label": "Positioning",
-    "type": "keyword",
     "expression": "Positioning",
     "reminderTexts": [
       {
@@ -792,7 +720,6 @@
   },
   {
     "label": "Sunburst",
-    "type": "keyword",
     "expression": "Sunburst",
     "reminderTexts": [
       {
@@ -808,7 +735,6 @@
   },
   {
     "label": "Surge",
-    "type": "keyword",
     "expression": "Surge <cost>",
     "reminderTexts": [
       {
@@ -818,7 +744,6 @@
   },
   {
     "label": "Exploit",
-    "type": "keyword",
     "expression": "Exploit",
     "reminderTexts": [
       {
@@ -828,7 +753,6 @@
   },
   {
     "label": "Rangeling",
-    "type": "keyword",
     "expression": "Rangeling",
     "reminderTexts": [
       {
@@ -838,7 +762,6 @@
   },
   {
     "label": "Learn",
-    "type": "keyword",
     "expression": "Learn",
     "reminderTexts": [
       {
@@ -848,7 +771,6 @@
   },
   {
     "label": "Waterbend",
-    "type": "keyword",
     "expression": "Waterbend <cost>",
     "reminderTexts": [
       {
@@ -858,7 +780,6 @@
   },
   {
     "label": "Storm",
-    "type": "keyword",
     "expression": "Storm",
     "reminderTexts": [
       {
@@ -888,7 +809,6 @@
   },
   {
     "label": "Escalate",
-    "type": "keyword",
     "expression": "Escalate <cost>",
     "reminderTexts": [
       {
@@ -898,7 +818,6 @@
   },
   {
     "label": "Wither",
-    "type": "keyword",
     "expression": "Wither",
     "reminderTexts": [
       {
@@ -908,7 +827,6 @@
   },
   {
     "label": "Enlist",
-    "type": "keyword",
     "expression": "Enlist",
     "reminderTexts": [
       {
@@ -918,7 +836,6 @@
   },
   {
     "label": "Megasunburst",
-    "type": "keyword",
     "expression": "Megasunburst",
     "reminderTexts": [
       {
@@ -934,7 +851,6 @@
   },
   {
     "label": "Haunt",
-    "type": "keyword",
     "expression": "Haunt",
     "reminderTexts": [
       {
@@ -950,7 +866,6 @@
   },
   {
     "label": "Gravestorm",
-    "type": "keyword",
     "expression": "Gravestorm",
     "reminderTexts": [
       {
@@ -966,7 +881,6 @@
   },
   {
     "label": "Forage",
-    "type": "keyword",
     "expression": "Forage",
     "reminderTexts": [
       {
@@ -976,7 +890,6 @@
   },
   {
     "label": "Jump-start",
-    "type": "keyword",
     "expression": "Jump-start",
     "reminderTexts": [
       {
@@ -986,7 +899,6 @@
   },
   {
     "label": "Oildying",
-    "type": "keyword",
     "expression": "Oildying",
     "reminderTexts": [
       {
@@ -996,7 +908,6 @@
   },
   {
     "label": "Ravenous",
-    "type": "keyword",
     "expression": "Ravenous <cost>",
     "reminderTexts": [
       {
@@ -1006,7 +917,6 @@
   },
   {
     "label": "Provoke",
-    "type": "keyword",
     "expression": "Provoke",
     "reminderTexts": [
       {
@@ -1016,7 +926,6 @@
   },
   {
     "label": "Undaunted",
-    "type": "keyword",
     "expression": "Undaunted",
     "reminderTexts": [
       {
@@ -1026,7 +935,6 @@
   },
   {
     "label": "Duress",
-    "type": "keyword",
     "expression": "Duress",
     "reminderTexts": [
       {
@@ -1036,7 +944,6 @@
   },
   {
     "label": "Landwalk",
-    "type": "keyword",
     "expression": "<landtype:prefix>walk",
     "reminderTexts": [
       {
@@ -1046,7 +953,6 @@
   },
   {
     "label": "Tiered",
-    "type": "keyword",
     "expression": "Tiered",
     "reminderTexts": [
       {
@@ -1056,7 +962,6 @@
   },
   {
     "label": "Pledge",
-    "type": "keyword",
     "expression": "Pledge",
     "reminderTexts": [
       {
@@ -1066,7 +971,6 @@
   },
   {
     "label": "Megalegendary",
-    "type": "keyword",
     "expression": "Megalegendary",
     "reminderTexts": [
       {
@@ -1076,7 +980,6 @@
   },
   {
     "label": "Decayed",
-    "type": "keyword",
     "expression": "Decayed",
     "reminderTexts": [
       {

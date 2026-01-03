@@ -1,7 +1,6 @@
 [
   {
     "label": "Adapt",
-    "type": "keyword",
     "expression": "Adapt <number>",
     "reminderTexts": [
       {
@@ -11,7 +10,6 @@
   },
   {
     "label": "Bloodthirst",
-    "type": "keyword",
     "expression": "Bloodthirst <number>",
     "reminderTexts": [
       {
@@ -27,7 +25,6 @@
   },
   {
     "label": "Renown",
-    "type": "keyword",
     "expression": "Renown <number>",
     "reminderTexts": [
       {
@@ -37,7 +34,6 @@
   },
   {
     "label": "Graft",
-    "type": "keyword",
     "expression": "Graft <number>",
     "reminderTexts": [
       {
@@ -47,7 +43,6 @@
   },
   {
     "label": "Bushido",
-    "type": "keyword",
     "expression": "Bushido <number>",
     "reminderTexts": [
       {
@@ -57,7 +52,6 @@
   },
   {
     "label": "Crew",
-    "type": "keyword",
     "expression": "Crew <number>",
     "reminderTexts": [
       {
@@ -67,7 +61,6 @@
   },
   {
     "label": "Ripple",
-    "type": "keyword",
     "expression": "Ripple <number>",
     "reminderTexts": [
       {
@@ -77,7 +70,6 @@
   },
   {
     "label": "Tribute",
-    "type": "keyword",
     "expression": "Tribute <number>",
     "reminderTexts": [
       {
@@ -87,7 +79,6 @@
   },
   {
     "label": "Monstrosity",
-    "type": "keyword",
     "expression": "Monstrosity <number>",
     "reminderTexts": [
       {
@@ -97,7 +88,6 @@
   },
   {
     "label": "Toxic",
-    "type": "keyword",
     "expression": "Toxic <number>",
     "reminderTexts": [
       {
@@ -107,7 +97,6 @@
   },
   {
     "label": "Support",
-    "type": "keyword",
     "expression": "Support <number>",
     "reminderTexts": [
       {
@@ -127,7 +116,6 @@
   },
   {
     "label": "Fading",
-    "type": "keyword",
     "expression": "Fading <number>",
     "reminderTexts": [
       {
@@ -137,7 +125,6 @@
   },
   {
     "label": "Afterlife",
-    "type": "keyword",
     "expression": "Afterlife <number>",
     "reminderTexts": [
       {
@@ -147,7 +134,6 @@
   },
   {
     "label": "Amplify",
-    "type": "keyword",
     "expression": "Amplify <number>",
     "reminderTexts": [
       {
@@ -157,7 +143,6 @@
   },
   {
     "label": "Soulshift",
-    "type": "keyword",
     "expression": "Soulshift <number>",
     "reminderTexts": [
       {
@@ -167,7 +152,6 @@
   },
   {
     "label": "Hideaway",
-    "type": "keyword",
     "expression": "Hideaway <number>",
     "reminderTexts": [
       {
@@ -177,7 +161,6 @@
   },
   {
     "label": "Rampage",
-    "type": "keyword",
     "expression": "Rampage <number>",
     "reminderTexts": [
       {
@@ -187,7 +170,6 @@
   },
   {
     "label": "Backup",
-    "type": "keyword",
     "expression": "Backup <number>",
     "reminderTexts": [
       {
@@ -197,7 +179,6 @@
   },
   {
     "label": "Saddle",
-    "type": "keyword",
     "expression": "Saddle <number>",
     "reminderTexts": [
       {
@@ -207,7 +188,6 @@
   },
   {
     "label": "Fabricate",
-    "type": "keyword",
     "expression": "Fabricate <number>",
     "reminderTexts": [
       {
@@ -217,7 +197,6 @@
   },
   {
     "label": "Annihilator",
-    "type": "keyword",
     "expression": "Annihilator <number>",
     "reminderTexts": [
       {
@@ -227,7 +206,6 @@
   },
   {
     "label": "Afflict",
-    "type": "keyword",
     "expression": "Afflict <number>",
     "reminderTexts": [
       {
@@ -237,7 +215,6 @@
   },
   {
     "label": "Dredge",
-    "type": "keyword",
     "expression": "Dredge <number>",
     "reminderTexts": [
       {
@@ -247,7 +224,6 @@
   },
   {
     "label": "Frenzy",
-    "type": "keyword",
     "expression": "Frenzy <number>",
     "reminderTexts": [
       {
@@ -257,7 +233,6 @@
   },
   {
     "label": "Spaceship",
-    "type": "keyword",
     "expression": "Spaceship <number>",
     "reminderTexts": [
       {

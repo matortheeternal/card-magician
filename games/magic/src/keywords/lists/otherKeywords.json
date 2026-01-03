@@ -999,7 +999,8 @@
       {
         "template": "<target_with:trample> can deal excess combat damage to the player or planeswalker it's attacking."
       }
-    ]
+    ],
+    "hideByDefault": true
   },
   {
     "label": "Transfigure",
@@ -1062,7 +1063,8 @@
       {
         "template": "Attacking doesn't cause <target:lowercase> to tap."
       }
-    ]
+    ],
+    "hideByDefault": true
   },
   {
     "label": "Ward",
