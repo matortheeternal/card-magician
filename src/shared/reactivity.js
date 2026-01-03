@@ -8,11 +8,30 @@ function resolvePathsArg(pathsArg) {
 
 function makeUnwatch(watcher) {
     return function unwatch() {
-        const index = watchers.indexOf(watcher);
-        if (index > -1) watchers.splice(index, 1);
+        watchers.remove(watcher);
     };
 }
 
+/**
+ * Registers a watcher that is notified when specific paths on an object are reported
+ * as changed via `changed()`. Returns an unwatch() function to remove the watcher from
+ * the global registry.
+ *
+ * Example usage:
+ * ```js
+ * const person = { name: 'bob', age: 100 }
+ * watch(person, 'name', () => console.log(`Bob's name was changed`));
+ * person.name = 'Alice';
+ * changed(person, 'name');
+ * ```
+ *
+ * @param {object} obj - The object to watch.
+ * @param {string|string[]|null} pathsArg - Object paths to observe. Pass null or an
+ *        empty string to react to all reported changes.
+ * @param {function({paths: string[]|null}): void} callback - Invoked synchronously
+ *        when a matching change is reported.
+ * @returns {function} A function that removes this watcher.
+ */
 export function watch(obj, pathsArg, callback) {
     const paths = resolvePathsArg(pathsArg);
     const watcher = { obj, paths, callback };
@@ -54,7 +73,24 @@ function getDiff(watcherPaths, changedPaths, deep) {
     return { paths: joinPaths(matchedPaths) };
 }
 
-export function changed(obj, pathsArg) {
+/**
+ * Reports that one or more paths on an object have changed, notifying any registered
+ * watchers synchronously in registration order. If no paths are provided, all watchers
+ * on the object will be triggered.
+ *
+ * Example usage:
+ * ```js
+ * const person = { name: 'bob', age: 100 }
+ * watch(person, 'name', () => console.log(`Bob's name was changed`));
+ * person.name = 'Alice';
+ * changed(person, 'name');
+ * ```
+ *
+ * @param {object} obj - The object that has changed.
+ * @param {string|string[]|null} pathsArg - Dot-separated paths that changed. Pass null
+ *      or an empty string to indicate the entire object has changed.
+ */
+window.changed = function changed(obj, pathsArg) {
     const paths = resolvePathsArg(pathsArg);
     watchers.forEach(watcher => {
         if (watcher.obj !== obj) return;
@@ -62,6 +98,4 @@ export function changed(obj, pathsArg) {
         if (!diff) return;
         watcher.callback(diff);
     });
-}
-
-window.changed = changed;
+};
