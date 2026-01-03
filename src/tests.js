@@ -2,8 +2,8 @@ import {
     buildCombineBlendTests,
     buildLinearBlendTests,
     buildMaskBlendTests
-} from './tests/blendTests';
-import { buildBlobEncodingTests } from './tests/blobEncodingTests.js';
+} from './domain/graphics/blend.tests.js';
+import { buildBlobEncodingTests } from './domain/sets/adapters/blobEncoding.tests.js';
 import { mount } from './shared/neutralinoAdapter.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
