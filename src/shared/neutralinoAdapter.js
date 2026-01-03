@@ -1,7 +1,6 @@
 export async function openSingleFileDialog(label, filters) {
     const res = await Neutralino.os.showOpenDialog(label, { filters });
-    if (!res) return;
-    return res[0];
+    return res?.[0];
 }
 
 export async function saveSingleFileDialog(label, defaultPath, filters) {
