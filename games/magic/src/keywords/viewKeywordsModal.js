@@ -39,15 +39,16 @@ export default class ViewKeywordsModal extends Modal {
 
     baseRowHtml = `
         <div class="keyword-row label-row" id="label-row">
-            <sl-button class="new-keyword" data-click-action="newKeyword">
-                <sl-icon slot="prefix" name="plus-lg"></sl-icon>
-                New
-            </sl-button>
             <div class="keyword-row-label keyword-label">Label</div>
             <div class="keyword-row-label keyword-expression">Expression</div>
             <div class="keyword-row-label keyword-reminder-text">Reminder Text</div>
             <sl-input class="keyword-search" name="search" 
                 placeholder="Search keywords..." data-keyup-action="search"></sl-input>
+            <div class="keyword-row-label keyword-actions">Actions</div>
+            <!--sl-button class="new-keyword" data-click-action="newKeyword">
+                <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+                New
+            </sl-button-->
         </div>
     `;
 
@@ -61,7 +62,7 @@ export default class ViewKeywordsModal extends Modal {
 
         .keyword-row {
             display: grid;
-            grid-template-columns: 0.6fr 1fr 1.2fr 6fr;
+            grid-template-columns: 1fr 1.2fr 6fr 0.6fr;
             border-bottom: 1px solid white;
             padding: 8px 0 8px 0;
             width: 100%;
@@ -69,14 +70,19 @@ export default class ViewKeywordsModal extends Modal {
         }
 
         .label-row {
-            grid-template-columns: 0.6fr 1fr 1.2fr 1fr 5fr;
+            grid-template-columns: 1fr 1.2fr 1fr 5fr 0.6fr;
         }
 
         .keyword-label {
             font-weight: bold;
+            padding: 3px;
         }
 
-        .keyword-label {
+        .keyword-reminder-text {
+            padding: 3px;
+        }
+
+        .keyword-label, .keyword-actions {
             justify-self: center;
         }
 
@@ -125,7 +131,7 @@ export default class ViewKeywordsModal extends Modal {
     isSearched(row) {
         const label = row.querySelector('.keyword-label').innerText;
         const expression = row.querySelector('.keyword-expression').innerText;
-        const rt = row.querySelector('.keyword-label').innerText;
+        const rt = row.querySelector('.keyword-reminder-text').innerText;
         const searchTerms = document.querySelector('.keyword-search').value.split(' ');
 
         if (searchTerms.length === 0) return true;
@@ -165,13 +171,13 @@ export default class ViewKeywordsModal extends Modal {
         return (`
             <div class="keyword-row" id="${keyword.label}-row" 
                 data-keyword="${JSON.stringify(keyword).replaceAll('"', '&quot;')}">
+                <div class="keyword-label">${keyword.label}</div>
+                <div class="keyword-expression">${rtExpressionHtml}</div>
+                <div class="keyword-reminder-text">${rtTemplateHtml}</div>
                 <sl-button class="edit-keyword" data-click-action="edit">
                     <sl-icon slot="prefix" name="pencil"></sl-icon>
                     Edit
                 </sl-button>
-                <div class="keyword-label">${keyword.label}</div>
-                <div class="keyword-expression">${rtExpressionHtml}</div>
-                <div class="keyword-reminder-text">${rtTemplateHtml}</div>
             </div>
         `);
     }

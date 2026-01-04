@@ -445,7 +445,7 @@
     "expression": "Fateseal <number>",
     "reminderTexts": [
       {
-        "template": "To fateseal <number>, look at the top <number:number_word_or_a> card<number:plural:s> of an opponent's library, then put any number of them on the bottom of that player's library and the rest on top in any order."
+        "template": "<to_do_this:Look> at the top <number:number_word_or_a> card<number:plural:s> of an opponent's library, then put any number of them on the bottom of that player's library and the rest on top in any order."
       }
     ]
   },

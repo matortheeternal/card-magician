@@ -87,13 +87,14 @@ const rtMatches = { // Stuff used in 'match'
         return cardProp?.match(new RegExp(matchParams.match), 'i');
     },
     keywordParam: (matchParams, params) => {
-        const kwParam = params?.[matchParams.param].toString();
+        const kwParam = params?.[matchParams.param]?.value?.toString();
+        if (!kwParam) return false;
         return kwParam.match(new RegExp(matchParams.match), 'i');
     },
-    numberIsX: (matchParams, params) => params[matchParams?.param || 'number']  === 'X',
-    isPlural: (matchParams, params) => params[matchParams?.param || 's'] === 's',
+    numberIsX: (matchParams, params) => params[matchParams?.param || 'number'].value  === 'X',
+    isPlural: (matchParams, params) => params[matchParams?.param || 's'].value === 's',
     targetsOther: (matchParams, params, card, target) => !target.includes('This'),
-    costHasX: (matchParams, params) => params[matchParams?.param || 'cost'].match(/x/i),
+    costHasX: (matchParams, params) => params[matchParams?.param || 'cost'].value.match(/x/i),
     hasPt: (matchParams, params, card) => card.power || card.toughness,
     hasPPCounters: (matchParams, params, card) => card.rulesText.match(/modular/i),
     hasTarget: (matchParams, params, card) => card.rulesText.match(/target/i),
@@ -107,27 +108,21 @@ const rtMatches = { // Stuff used in 'match'
         return (card.rulesText.match(/::|•/g) || []).length > 2;
     },
     nonManaCost: (matchParams, params) => 
-        !params[matchParams?.param || 'cost'].match(/{/)
+        !params[matchParams?.param || 'cost'].value.match(/{/)
 };
 
-function checkMatch(match, params, card, target) {
-    let matchRes;
+function checkMatch(match, params, card, target) {  
+    if (!Array.isArray(match))  
+        return rtMatches[match.type]?.(match.params, params, card, target);  
 
-    if (Array.isArray(match)) {
-        for (const subMatch of match) {
-            const matchFn = rtMatches[subMatch.type];
-            const subMatchRes = matchFn?.(subMatch.params, params, card, target);
-            if (!subMatchRes) {
-                matchRes = false;
-                break;
-            }
-            matchRes = true;
-        }
-    } else 
-        matchRes = rtMatches[match.type]?.(match.params, params, card, target);
+    for (const subMatch of match) {  
+        const matchFn = rtMatches[subMatch.type];  
+        const subMatchRes = matchFn?.(subMatch.params, params, card, target);  
+        if (!subMatchRes) return false;  
+    }  
     
-    return matchRes;
-}
+    return true;  
+} 
 
 function generateReminderText(keyword, params, card, target) {
     for (const { match, template } of keyword.reminderTexts) {
