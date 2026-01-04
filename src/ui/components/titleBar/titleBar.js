@@ -25,9 +25,9 @@ export default class TitleBar extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            exit: exitApp,
-            minimize: minimizeWindow,
-            maximize: this.toggleMaximize
+            exit: () => exitApp(),
+            minimize: () => minimizeWindow(),
+            toggleMaximize: () => this.toggleMaximize()
         });
     }
 
@@ -107,7 +107,8 @@ export default class TitleBar extends ReactiveComponent {
     }
 
     async restore() {
-        const size = getWindowSize();
+        console.log('restore');
+        const size = await getWindowSize();
         await unmaximizeWindow();
         await setWindowSize({
             width: size.minWidth,
@@ -118,11 +119,13 @@ export default class TitleBar extends ReactiveComponent {
     }
 
     async maximize() {
+        console.log('maximize');
         await maximizeWindow();
         this.setIsMaximized(true);
     }
 
     async toggleMaximize() {
+        console.log('toggleMaximize', this.isMaxmized);
         return this.isMaximized
             ? await this.restore()
             : await this.maximize();

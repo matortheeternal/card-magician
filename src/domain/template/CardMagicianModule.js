@@ -6,7 +6,7 @@ import {
     maskBlendOp,
     maskColorOp,
     maskImageOp
-} from '../gfx/blending.js';
+} from '../graphics/blending.js';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
 import { getActiveGame } from '../game/gameManager.js';

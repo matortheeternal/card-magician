@@ -8,7 +8,7 @@ import CardMagicianGame from './domain/game/CardMagicianGame.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
-import imageCache from './domain/gfx/ImageCache.js';
+import imageCache from './domain/graphics/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
 import ReactiveComponent from './ui/components/ReactiveComponent.js';
 import {

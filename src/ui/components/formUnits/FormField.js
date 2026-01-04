@@ -1,8 +1,33 @@
 import { resolveFieldComponent } from '../../systems/fieldComponentRegistry.js';
-import { emit, toggleDisplay } from '../../../shared/htmlUtils.js';
-import FormUnit from './FormUnit.js';
+import { emit, esc, escapeHTML, toggleDisplay } from '../../../shared/htmlUtils.js';
+import ReactiveComponent from '../ReactiveComponent.js';
+import FormToggle from './FormToggle.js';
 
-export default class FormField extends FormUnit {
+export default class FormField extends ReactiveComponent {
+    connectedCallback() {
+        this.render();
+    }
+
+    get provider() {
+        return this._provider ??= this.closest('[data-form-provider]');
+    }
+
+    get modelKey() {
+        return this._modelKey ??= this.getAttribute('model-key');
+    }
+
+    get model() {
+        return this._model ??= (
+            this.modelKey
+                ? this.provider.model[this.modelKey]
+                : this.provider.model
+        );
+    }
+
+    get optional() {
+        return this._optional ??= this.hasAttribute('optional');
+    }
+
     get fieldId() {
         return this._fieldId ??= this.getAttribute('field-id');
     }
@@ -23,14 +48,27 @@ export default class FormField extends FormUnit {
         return this.field?.label || this.fieldId;
     }
 
-    get showKey() {
-        return this.fieldId;
-    }
-
     get show() {
         const value = this.model[this.fieldId];
         return value !== undefined
             && value !== null;
+    }
+
+    get error() {
+        return (
+            (!this.provider && 'Could not find form provider in HTML ancestors.')
+            || (!this.model && 'Could not resolve data model from form provider.')
+            || (!this.field && 'Could not resolve field from form provider.')
+        );
+    }
+
+    renderError() {
+        const path = [this.modelKey, this.label].filter(Boolean).join('/');
+        this.innerHTML = (
+            `<sl-tooltip content="${esc(this.error)}" placement="bottom">
+                <div class="error">Error rendering ${escapeHTML(path)}</div>
+            </sl-tooltip>`
+        );
     }
 
     generateFieldElement() {
@@ -45,28 +83,20 @@ export default class FormField extends FormUnit {
         toggleDisplay(show, this.fieldElement);
     }
 
-    get error() {
-        return (super.error
-            || (!this.field && 'Could not resolve field from form provider.')
-        );
-    }
-
     render() {
         if (this.error) return this.renderError();
         this.innerHTML = '';
         this.appendChild(this.generateFieldElement());
         if (!this.optional) return;
-        this.appendChild(this.generateToggleElement());
+        this.toggle = FormToggle.create(this, this.label);
+        this.appendChild(this.toggle);
+        this.watch('value', this.model, this.fieldId, () => this.toggle.render());
     }
 
-    addUnit() {
-        this.model[this.fieldId] = this.field.initialValue || '';
-        changed(this.model, this.fieldId);
-        emit(this, 'cm-field-changed');
-    }
-
-    removeUnit() {
-        this.model[this.fieldId] = null;
+    toggleShow(show) {
+        this.model[this.fieldId] = show
+            ? this.field.initialValue || ''
+            : null;
         changed(this.model, this.fieldId);
         emit(this, 'cm-field-changed');
     }
