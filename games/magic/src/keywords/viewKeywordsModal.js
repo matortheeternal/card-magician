@@ -44,11 +44,11 @@ export default class ViewKeywordsModal extends Modal {
             <div class="keyword-row-label keyword-reminder-text">Reminder Text</div>
             <sl-input class="keyword-search" name="search" 
                 placeholder="Search keywords..." data-keyup-action="search"></sl-input>
-            <div class="keyword-row-label keyword-actions">Actions</div>
-            <!--sl-button class="new-keyword" data-click-action="newKeyword">
+            <sl-button class="new-keyword" data-click-action="newKeyword">
                 <sl-icon slot="prefix" name="plus-lg"></sl-icon>
-                New
-            </sl-button-->
+                New Keyword
+            </sl-button>
+            <div class="keyword-row-label keyword-actions">Actions</div>
         </div>
     `;
 
@@ -70,7 +70,7 @@ export default class ViewKeywordsModal extends Modal {
         }
 
         .label-row {
-            grid-template-columns: 1fr 1.2fr 1fr 5fr 0.6fr;
+            grid-template-columns: 1fr 1.2fr 1fr 4fr 1fr 0.6fr;
         }
 
         .keyword-label {

@@ -30,11 +30,17 @@ const specialVariables = {
     target_spell: (token, card, target) => targetSpell(target),
     target_card: (token, card, target) => targetCard(target),
     target_with: (token, card, target) => targetWith(target, token.format),
-    to_do_this: (token, card, target, keyword) =>  
-        card.rulesText.match(
-            new RegExp(keyword.expressionRegex.source + '.?$', 'i'))
-            ? token.format
-            : `To ${card.rulesText.match(keyword.expressionRegex)[0]}${token.args ? ' ' + token.args[0] : ''}, ${token.format.toLowerCase()}`,
+    to_do_this: (token, card, target, keyword) =>  {
+        const kwRegex = new RegExp(keyword.expressionRegex.source + '.?$', 'i');
+        const match = card.rulesText.match(kwRegex);
+
+        if (!match) return token.format;
+
+        const matchedKw = card.rulesText.match(keyword.expressionRegex)[0];
+        const optAction = token.args ? ' ' + token.args[0] : '';
+        const firstWord = token.format.toLowerCase();
+        return `To ${matchedKw}${optAction}, ${firstWord}`;
+    },
     station_creature_breakpoint: () => 'Not implemented'
 };
 
@@ -91,10 +97,12 @@ const rtMatches = { // Stuff used in 'match'
         if (!kwParam) return false;
         return kwParam.match(new RegExp(matchParams.match), 'i');
     },
-    numberIsX: (matchParams, params) => params[matchParams?.param || 'number'].value  === 'X',
+    numberIsX: (matchParams, params) => 
+        params[matchParams?.param || 'number'].value  === 'X',
     isPlural: (matchParams, params) => params[matchParams?.param || 's'].value === 's',
     targetsOther: (matchParams, params, card, target) => !target.includes('This'),
-    costHasX: (matchParams, params) => params[matchParams?.param || 'cost'].value.match(/x/i),
+    costHasX: (matchParams, params) => 
+        params[matchParams?.param || 'cost'].value.match(/x/i),
     hasPt: (matchParams, params, card) => card.power || card.toughness,
     hasPPCounters: (matchParams, params, card) => card.rulesText.match(/modular/i),
     hasTarget: (matchParams, params, card) => card.rulesText.match(/target/i),

@@ -71,12 +71,12 @@ class NumberParam extends DirectiveParam {
     static multiply(value, args) {
         if (value === 2) return 'twice ' + (args[0] || '');
         if (value === 1) return args[0] || '';
-        return numberWord[value] + ' times' + (args[0] || '')
+        return numberWord[value] + ' times' + (args[0] || '');
     }
 
     static mana(value, args) {
         if (value < 6)
-            return `{${args[0]}}`.repeat(value)
+            return `{${args[0]}}`.repeat(value);
         
         return numberWord[args[0]] + ` {${args[0]}}`;
     }
