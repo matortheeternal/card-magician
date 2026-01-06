@@ -1,0 +1,30 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "card-magician",
+  "outputfilename": "card-magician",
+  "reloaddirs": "modules,templates,games",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "http://localhost:5173",
+  "author": {
+    "name": "Mator",
+    "email": "matortheeternal@users.noreply.github.com"
+  },
+  "info": {
+    "companyName": "Card Magician Community",
+    "productName": "Card Magician",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright 2025-2026, Card Magician contributors",
+    "comments": "Open source software (https://github.com/matortheeternal/card-magician)",
+    "fileAssociations": [
+      {
+        "ext": "cmproj",
+        "name": "CM Project",
+        "description": "Card Magician project file",
+        "iconName": "projectIcon",
+        "role": "Editor"
+      }
+    ]
+  }
+}

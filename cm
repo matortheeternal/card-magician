@@ -19,6 +19,5 @@ if ! command -v wails >/dev/null 2>&1; then
 fi
 
 (
-  cd "$APP_DIR" || exit 1
   exec wails "$@" -appargs="--app-dir=\"$ROOT\""
 )

@@ -22,6 +22,4 @@ if errorlevel 1 (
   exit /b 1
 )
 
-pushd "%APPDIR%" || exit /b 1
 wails %* -appargs="--app-dir=\"%ROOT_ESC%\""
-popd
