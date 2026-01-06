@@ -1,0 +1,165 @@
+@import "@shoelace-style/shoelace/dist/themes/dark.css";
+@import "highlight.js/styles/monokai-sublime.min.css";
+@import "ui/components/card/card.css";
+@import "ui/components/cardProperties/cardProperties.css";
+@import "ui/components/inlineInput/inlineInput.css";
+@import "ui/components/listView/listView.css";
+@import "ui/modals/cropImageModal/cropImageModal.css";
+@import "ui/modals/editLocalesModal/editLocalesModal.css";
+@import "ui/modals/setInfoModal/setInfoModal.css";
+@import "ui/components/cardForm/cardForm.css";
+@import "ui/components/faceForm/faceForm.css";
+@import "ui/components/fieldComponents/checkboxListField.css";
+@import "ui/components/fieldComponents/codeEditorField.css";
+@import "ui/components/fieldComponents/imageField.css";
+@import "ui/components/fieldComponents/selectField.css";
+@import "ui/components/formUnits/formUnit.css";
+@import "ui/components/displayCard/displayCard.css";
+@import "ui/components/setView/setView.css";
+@import "ui/components/titleBar/titleBar.css";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: #111;
+    color: var(--sl-color-gray-900);
+    display: flex;
+    user-select: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+main {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.square-spinner {
+    width: 4em;
+    height: 4em;
+    background: var(--sl-color-primary-500);
+    animation: rotate-square 1.66s ease-in-out infinite;
+}
+
+@keyframes rotate-square {
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.spinner-container > div {
+    padding: 1em;
+}
+
+.modal-container {
+    display: flex;
+    position: absolute;
+    z-index: 100;
+    inset: 0;
+    justify-content: center;
+    overflow: auto;
+    padding: 3em;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal {
+    min-width: 35em;
+    background: #111;
+    border: 1px solid var(--sl-input-border-color);
+    position: relative;
+    height: fit-content;
+    margin-bottom: auto;
+    margin-top: auto;
+    font-family: var(--sl-font-sans);
+}
+
+.modal-body {
+    display: flex;
+    padding: var(--sl-spacing-small) var(--sl-spacing-x-large) var(--sl-spacing-x-large);
+    flex-direction: column;
+}
+
+.modal-title-bar {
+    text-align: left;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: var(--sl-font-sans);
+    padding: 0.5em 1em;
+    border-bottom: 1px solid var(--sl-input-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--sl-input-background-color);
+    position: relative;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    border-top: 1px solid var(--sl-input-border-color);
+    padding: var(--sl-spacing-large);
+    gap: var(--sl-spacing-small);
+    background: #080808;
+}
+
+.close-modal {
+    display: flex;
+    align-items: center;
+    margin-right: 2px;
+    position: absolute;
+    right: 6px;
+    height: 100%;
+    transition: 0.2s;
+    font-size: var(--sl-font-size-large);
+    color: var(--sl-color-danger-300);
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
+}
+
+.crop-image-modal .modal {
+    min-width: 700px;
+    min-height: 400px;
+}
+
+.status-container {
+    position: fixed;
+    bottom: 0;
+    left: 2em;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+}
+
+.status-container .status-message {
+    display: block;
+    background: inherit;
+    padding: var(--sl-spacing-x-small);
+    transition: opacity 0.5s ease,
+                font-size 0.3s ease 0.2s;
+}
+
+.status-message.removing {
+    opacity: 0;
+    font-size: 0;
+}
