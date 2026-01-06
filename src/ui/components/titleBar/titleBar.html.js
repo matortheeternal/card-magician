@@ -17,6 +17,7 @@ export default
 `<div class="menus-container">
     <img src="icons/appIcon.png" />
 </div>
+<div class="draggable"></div>
 <div class="window-actions">
     <sl-button id="minimize-app" data-click-action="minimize" title="${L`Minimize`}">
         <sl-icon name="dash-lg"></sl-icon>
