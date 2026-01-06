@@ -1,8 +1,7 @@
-import './main.css';
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/extensions.js';
 import './shared/localize.js';
-import.meta.glob('./ui/**/*.js');
+import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import CardMagicianModule from './domain/template/CardMagicianModule.js';
 import CardMagicianGame from './domain/game/CardMagicianGame.js';

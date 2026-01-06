@@ -4,6 +4,7 @@ import (
     "io"
     "fmt"
 	"os"
+    "strings"
 	"path/filepath"
 )
 
@@ -88,4 +89,26 @@ func InitDirectories(appName string, appDir string) error {
     }
 
     return nil
+}
+
+func resolveAppPath(p string) (string, error) {
+	if filepath.IsAbs(p) {
+		return p, nil
+	}
+
+	full := filepath.Clean(filepath.Join(installDir, p))
+	rel, err := filepath.Rel(installDir, full)
+	if err != nil {
+		return "", fmt.Errorf("failed to compute relative path: %w", err)
+	}
+
+    if rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+        return "", fmt.Errorf(
+            "resolved path %q escapes application directory %q",
+            full,
+            installDir,
+        )
+    }
+
+	return full, nil
 }

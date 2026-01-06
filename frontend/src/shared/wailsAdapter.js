@@ -1,34 +1,23 @@
 import {
-    // OpenFileDialog,
-    // SaveFileDialog,
-    // Open,
-    WindowMinimise,
-    WindowMaximise,
-    WindowUnmaximise,
-    WindowCenter,
-    WindowGetSize,
-    WindowGetPosition,
-    WindowSetSize,
-    Quit
+    WindowMinimise, WindowMaximise, WindowUnmaximise,
+    WindowCenter, WindowGetSize, WindowGetPosition,
+    WindowSetSize, BrowserOpenURL, Quit
 } from '../../wailsjs/runtime';
+import {
+    CreateDirectory, GetStats, GetConfig,
+    ReadDirectory, ReadBinaryFile, WriteBinaryFile,
+    ReadFile, WriteFile, GetAbsolutePath,
+    OpenFileDialog, SaveFileDialog,
+    GetAppDir, GetDataDir
+} from '../../wailsjs/go/main/App';
 
 export async function openSingleFileDialog(title, filters) {
-    // const res = await OpenFileDialog({
-    //     title,
-    //     filters,
-    //     canChooseFiles: true,
-    //     canChooseDirectories: false,
-    //     allowsMultipleSelection: false,
-    // });
-    // return res || null;
+    const res = await OpenFileDialog(title, filters);
+    return res || null;
 }
 
 export async function saveSingleFileDialog(title, defaultPath, filters) {
-    // return await SaveFileDialog({
-    //     title,
-    //     defaultFilename: defaultPath,
-    //     filters,
-    // });
+    return await SaveFileDialog(title, defaultPath, filters);
 }
 
 export async function getStoredData(key) {
@@ -41,39 +30,39 @@ export async function storeData(key, value) {
 }
 
 export async function readFile(path) {
-    return await window.backend.App.ReadFile(path);
+    return await ReadFile(path);
 }
 
 export async function writeFile(path, data) {
-    return await window.backend.App.WriteFile(path, data);
+    return await WriteFile(path, data);
 }
 
 export async function readBinaryFile(path) {
-    return await window.backend.App.ReadBinaryFile(path);
+    return await ReadBinaryFile(path);
 }
 
 export async function writeBinaryFile(path, data) {
-    return await window.backend.App.WriteBinaryFile(path, data);
+    return await WriteBinaryFile(path, data);
 }
 
 export async function readDirectory(path) {
-    return await window.backend.App.ReadDirectory(path);
+    return await ReadDirectory(path);
 }
 
 export async function getStats(path) {
-    return await window.backend.App.GetStats(path);
+    return await GetStats(path);
 }
 
 export async function createDirectory(path) {
-    return await window.backend.App.CreateDirectory(path);
+    return await CreateDirectory(path);
 }
 
 export async function getAbsolutePath(path) {
-    return await window.backend.App.GetAbsolutePath(path);
+    return await GetAbsolutePath(path);
 }
 
 export async function open(path) {
-    // return await Open(path);
+    BrowserOpenURL(path);
 }
 
 export async function minimizeWindow() {
@@ -105,21 +94,21 @@ export async function setWindowSize(options) {
 }
 
 export async function shouldRunTests() {
-    const config = await window.backend.App.GetConfig();
+    const config = await GetConfig();
     return config.RunTests;
 }
 
 export async function shouldLocalize() {
-    const config = await window.backend.App.GetConfig();
+    const config = await GetConfig();
     return config.Localize;
 }
 
 export async function getAppDir() {
-    return '.';
+    return GetAppDir();
 }
 
 export async function getDataDir() {
-    return '';
+    return GetDataDir();
 }
 
 export function exitApp() {

@@ -1,6 +1,6 @@
 import Localization from './Localization.js';
 import {
-    createDirectory,
+    createDirectory, getAppDir,
     readDirectory,
     readFile,
     shouldLocalize,

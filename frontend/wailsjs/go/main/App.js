@@ -10,12 +10,24 @@ export function GetAbsolutePath(arg1) {
   return window['go']['main']['App']['GetAbsolutePath'](arg1);
 }
 
+export function GetAppDir() {
+  return window['go']['main']['App']['GetAppDir']();
+}
+
 export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
+export function GetDataDir() {
+  return window['go']['main']['App']['GetDataDir']();
+}
+
 export function GetStats(arg1) {
   return window['go']['main']['App']['GetStats'](arg1);
+}
+
+export function OpenFileDialog(arg1, arg2) {
+  return window['go']['main']['App']['OpenFileDialog'](arg1, arg2);
 }
 
 export function ReadBinaryFile(arg1) {
@@ -28,6 +40,10 @@ export function ReadDirectory(arg1) {
 
 export function ReadFile(arg1) {
   return window['go']['main']['App']['ReadFile'](arg1);
+}
+
+export function SaveFileDialog(arg1, arg2, arg3) {
+  return window['go']['main']['App']['SaveFileDialog'](arg1, arg2, arg3);
 }
 
 export function WriteBinaryFile(arg1, arg2) {

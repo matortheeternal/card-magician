@@ -7,6 +7,12 @@ const args = process.argv.slice(2);
 const shouldMinify = args.includes('--minify');
 const shouldServe = args.includes('--dev');
 
+const shoelaceIcons = [
+    'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square', 'lock',
+    'unlock', 'arrow-counterclockwise', 'arrows-fullscreen', 'align-center',
+    'align-middle', 'folder2-open',
+].map(name => `./node_modules/@shoelace-style/shoelace/dist/assets/icons/${name}.svg`);
+
 const jsOptions = {
     entryPoints: ['src/main.js'],
     bundle: true,
@@ -25,9 +31,7 @@ const jsOptions = {
         copy({
             resolveFrom: 'cwd',
             assets: {
-                from: [
-                    './node_modules/@shoelace-style/shoelace/dist/assets/**/*',
-                ],
+                from: shoelaceIcons,
                 to: ['./dist/shoelace/assets'],
             },
         }),
