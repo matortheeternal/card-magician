@@ -6,6 +6,12 @@ import globImportPlugin from 'esbuild-plugin-import-glob';
 const args = process.argv.slice(2);
 const shouldMinify = args.includes('--minify');
 
+const shoelaceIcons = [
+    'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square', 'lock',
+    'unlock', 'arrow-counterclockwise', 'arrows-fullscreen', 'align-center',
+    'align-middle', 'folder2-open',
+].map(name => `./node_modules/@shoelace-style/shoelace/dist/assets/icons/${name}.svg`);
+
 await esbuild.build({
     entryPoints: ['src/main.js'],
     bundle: true,
@@ -23,10 +29,8 @@ await esbuild.build({
         copy({
             resolveFrom: 'cwd',
             assets: {
-                from: [
-                    './node_modules/@shoelace-style/shoelace/dist/assets/**/*',
-                ],
-                to: ['./resources/shoelace/assets'],
+                from: shoelaceIcons,
+                to: ['./resources/shoelace/assets/icons'],
             },
         }),
     ],
