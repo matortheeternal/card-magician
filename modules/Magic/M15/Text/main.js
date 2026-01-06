@@ -137,7 +137,7 @@ export default class TextModule extends CardMagicianModule {
                 ]
             },
             {
-                id: 'showRt',
+                id: 'autoRt',
                 label: L`Show Reminder Text`,
                 type: 'select',
                 options: [

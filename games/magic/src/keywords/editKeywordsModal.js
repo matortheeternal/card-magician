@@ -17,10 +17,6 @@ export default class EditKeywordsModal extends Modal {
             width: fit-content;
         }
 
-        .warning-unsaved {
-            color: #ed7e38;
-        }
-
         .x-label {
             display: flex;
             align-items: center;
@@ -28,7 +24,7 @@ export default class EditKeywordsModal extends Modal {
         }
 
         .x-label sl-icon:hover {
-            color: red;
+            color: var(--sl-color-danger-400);
             cursor: pointer;
         }
     `;
@@ -36,21 +32,23 @@ export default class EditKeywordsModal extends Modal {
     get onClickHandlers() {
         return ({
             ...super.onClickHandlers,
-            addRt() {
-                this.edited = true;
-                this.data.keyword.reminderTexts.push({template: ''});
-                this.render();
-            },
-            removeRt(event) {
-                this.querySelectorAll('cm-reminder-text-item').forEach((rt, index) => {
-                    if (rt === event.target.closest('cm-reminder-text-item')) {
-                        this.edited = true;
-                        this.data.keyword.reminderTexts.splice(index, 1);
-                        this.render();
-                    }
-                });
-            }
+            addRt: this.addRt,
+            removeRt: this.removeRt
         });
+    }
+
+    addRt() {
+        this.edited = true;
+        this.data.keyword.reminderTexts.push({template: ''});
+        this.renderReminderTextItems();
+    }
+
+    removeRt(event) {
+        const targetItem = event.target.closest('cm-reminder-text-item');
+        const index = targetItem.dataset.index;
+        this.data.keyword.reminderTexts.splice(index, 1);
+        this.edited = true;
+        this.renderReminderTextItems();
     }
 
     saveKeyword() {
@@ -65,6 +63,11 @@ export default class EditKeywordsModal extends Modal {
     close() {
         this.saveKeyword();
         super.close();
+    }
+
+    bind() {
+        super.bind();
+        this.on('cm-field-changed', () => this.edited = true);
     }
 
     get fields() {
@@ -82,33 +85,36 @@ export default class EditKeywordsModal extends Modal {
     }
 
     renderBody() {
-        const numRts = this.data.keyword.reminderTexts.length;
-        const rtHtml = '<cm-reminder-text-item></cm-reminder-text-item>'.repeat(numRts);
-        
         return (
             `<form-field field-id="label"></form-field>
             <form-field field-id="expression"></form-field>
-            <div class="rts-container">${rtHtml}</div>
+            <h2 class="rt-header">Reminder Text Options</h2>
             <sl-button class="add-rt" variant="success" 
                 outline data-click-action="addRt">
                 <sl-icon name="plus" slot="prefix"></sl-icon>
                 Add Reminder Text
             </sl-button>
+            <div class="rts-container"></div>
             <style>${this.css}</style>`
         );
     }
 
     render() {
         super.render();
+        this.renderReminderTextItems();
+    }
 
-        const rts = this.querySelectorAll('cm-reminder-text-item');
-        rts.forEach((rt, index) => {
-            rt.model = this.data.keyword.reminderTexts[index];
-            rt.dataset.index = index + 1;
-            rt.render();
+    renderReminderTextItems() {
+        const rtContainer = this.querySelector('.rts-container');
+        rtContainer.innerHTML = '';
+
+        this.data.keyword.reminderTexts.forEach((rt, index ) => {
+            const rtElement = document.createElement('cm-reminder-text-item');
+            rtContainer.appendChild(rtElement);
+            rtElement.dataset.index = index;
+            rtElement.model = rt;
+            rtElement.render();
         });
-
-        this.addEventListener('cm-field-changed', () => { this.edited = true; });
     }
 }
 

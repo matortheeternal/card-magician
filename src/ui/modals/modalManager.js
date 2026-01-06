@@ -1,3 +1,5 @@
+import { show, hide } from '../../shared/htmlUtils.js';
+
 const Modals = [];
 const modalContainer = document.querySelector('.modal-container');
 
@@ -38,10 +40,10 @@ export function closeModal() {
     const activeModal = activeModals.pop();
     activeModal.remove();
     if (activeModals.length === 0)
-        modalContainer.style.display = 'none';
+        hide(modalContainer);
     else {
         withLastModal(lastModal => {
-            lastModal.style.removeProperty('display');
+            show(lastModal);
             lastModal.render();
         });
     }

@@ -53,7 +53,7 @@ class ReminderTextItem extends ReactiveComponent {
         this.innerHTML
             = `<form-group group-id="rt-${this.dataset.index}" class="with-border">
                 <label class="x-label">
-                    Reminder Text ${this.dataset.index} 
+                    Reminder Text ${this.dataset.index + 1} 
                     <sl-icon name="x-lg" data-click-action="removeRt"></sl-icon>
                 </label>
                 ${matchHtml}
@@ -71,7 +71,7 @@ class ReminderTextItem extends ReactiveComponent {
                 ? this.model.match[i] 
                 : this.model.match;
 
-            matcher.dataset.index =  i + 1;
+            matcher.dataset.index =  i;
             matcher.render();
         });
     }

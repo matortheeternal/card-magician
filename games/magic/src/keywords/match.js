@@ -11,9 +11,7 @@ function genExpressionRegex(expressionTokens) {
         const paramExpr = paramType.expr?.source;
         match = paramType.editMatch(match);
 
-        match += '(';
-        match += paramExpr ? paramExpr : token.variable; // literals and invalid types
-        match += ')';
+        match += `(${paramExpr || token.variable})`;
     }
 
     return new RegExp(match, 'i');

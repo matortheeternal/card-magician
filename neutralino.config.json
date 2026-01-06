@@ -32,7 +32,7 @@
       "minWidth": 1280,
       "minHeight": 720,
       "center": true,
-      "fullScreen": true,
+      "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/resources/icons/appIcon.png",
       "webviewArgs": "--disable-features=Autofill,PasswordManager,AutofillServerCommunication",

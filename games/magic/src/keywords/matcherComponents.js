@@ -44,7 +44,7 @@ class Matcher extends ReactiveComponent {
         this.innerHTML = `
             <form-group class="with-border">
                 <label class="x-label">
-                    Match ${this.dataset.index} 
+                    Match ${this.dataset.index + 1} 
                     <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon>
                 </label>
                 <form-field field-id="type"></form-field>

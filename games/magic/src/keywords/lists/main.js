@@ -1,6 +1,7 @@
 import numericKeywords from './numericKeywords.json';
 import simpleKeywords from  './simpleKeywords.json';
 import otherKeywords from  './otherKeywords.json';
+import abilityWords from './abilityWords.json';
 
 export const baseKeywords = [
     ...numericKeywords,
@@ -9,27 +10,20 @@ export const baseKeywords = [
 ];
 
 export function getKeywords(set) {
-    const keywords = [];
-
-    for (const keyword of baseKeywords) {
-        const override = set.keywordOverrides?.[keyword.label];
-        keywords.push(override ? override : keyword);
-    }
+    const keywords = baseKeywords.map(kw => set.keywordOverrides?.[kw.label] || kw);
 
     return [...set.userKeywords, ...keywords];
 }
 
-function makeAbilityWordConverter(keyword) {
+function makeAbilityWordConverter(abilityWord) {
     return {
         match(str) {
-            return str.match('^' + keyword);
+            return str.match(new RegExp('^' + RegExp.escape(abilityWord)));
         },
         convert(match) {
             return '<i>' + match + '</i>';
         }
     };
 }
-
-import abilityWords from './abilityWords.json';
 
 export const AbilityWordConverters = abilityWords.map(kw => makeAbilityWordConverter(kw));
