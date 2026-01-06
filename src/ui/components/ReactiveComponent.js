@@ -21,9 +21,11 @@ export default class ReactiveComponent extends HTMLElement {
     }
 
     handleEvents(eventName, handlers) {
+        const attr = `data-${eventName}-action`;
         this.on(eventName, event => {
-            const dataKey = `${eventName}Action`;
-            const actionKey = event.target.dataset?.[dataKey];
+            const target = event.target.closest?.(`[${attr}]`);
+            if (!target) return;
+            const actionKey = target.getAttribute(attr);
             const action = handlers[actionKey];
             if (action) action.call(this, event);
         });
