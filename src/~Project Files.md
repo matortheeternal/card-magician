@@ -65,15 +65,15 @@ only stores settings/configuration.
 
 ### Risks and tradeoffs
 - *What security considerations are there for this solution?*
-  - There are no major security trade-offs between different project file architectures 
-    to my knowledge.
+  - There are no major security trade-offs between different project file 
+    architectures to my knowledge. Reviewers with more extensive knowledge are 
+    encouraged to call out concerns I may be missing.
 - *What user pain does this solution solve?*
   - Users care about their hard drive space, this minimizes that cost. 
   - Power users want to be empowered to make choices about how their set files are stored.
   - Technical users benefit from using version control to manage their projects.
 - *What user pain could this solution create?*
-  - Users could share a `.cmproj` file, thinking it includes card images. This seems 
-    unlikely and would only have to be corrected once.
+  - Users could share a `.cmproj` file, thinking it includes card images.
 - *What maintenance burdens could this solution introduce?*
   - The largest maintenance burden will be whatever system is responsible for creating 
     or loading an archive file. The options need to be carefully considered for this 
