@@ -14,7 +14,7 @@ import {
     matchAllKeywords 
 } from './keywords/reminderText.js';
 import EditKeywordsModal from './keywords/editKeywordsModal/editKeywordsModal.js';
-import ViewKeywordsModal from './keywords/viewKeywordsModal.js';
+import ViewKeywordsModal from './keywords/viewKeywordsModal/viewKeywordsModal.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {

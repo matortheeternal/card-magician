@@ -1,5 +1,6 @@
 import { defineRtComponents } from '../reminderTextItem.js';
 import html from './editKeywordsModal.html';
+import css from './editKeywordsModal.css';
 
 const L = localize('game-magic');
 
@@ -7,35 +8,7 @@ export default class EditKeywordsModal extends Modal {
     static id = 'cm-edit-keywords-modal';
     title = L`Edit Keywords`;
     edited = false;
-
-    css = `
-        cm-edit-keywords-modal form-group {
-            grid-template-columns: auto;
-        }
-
-        .add-match {
-            margin-top: 10px;
-            width: fit-content;
-        }
-
-        .rt-label, .matcher-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .rt-label sl-icon:hover, .match-label sl-icon:hover {
-            color: var(--sl-color-danger-400);
-            cursor: pointer;
-        }
-
-        .rt-header {
-            margin-bottom: 0;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-    `;
+    css = css;
 
     get onClickHandlers() {
         return ({
@@ -43,6 +16,10 @@ export default class EditKeywordsModal extends Modal {
             addRt: this.addRt,
             removeRt: this.removeRt
         });
+    }
+
+    async connectedCallback() {
+        super.connectedCallback();
     }
 
     addRt() {

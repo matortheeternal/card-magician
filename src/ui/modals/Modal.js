@@ -5,6 +5,7 @@ export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
     title = '';
     #data = {};
+    css = '';
 
     connectedCallback() {
         this.setAttribute('data-form-provider', '');
@@ -60,6 +61,7 @@ export default class Modal extends ReactiveComponent {
                 </div>
                 <div class="modal-body">${this.renderBody()}</div>
                 ${actionsHTML ? `<div class="modal-actions">${actionsHTML}</div>` : ''}
+                <style>${this.css}</style>
             </div>`
         );
     }

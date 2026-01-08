@@ -1,9 +1,12 @@
-import { getKeywords } from './lists/main.js';
+import { getKeywords } from '../lists/main.js';
+import css from './viewKeywordsModal.css';
+
 const L = localize('game-magic');
 
 export default class ViewKeywordsModal extends Modal {
     static id = 'cm-view-keywords-modal';
     title = L`Keywords`;
+    css = css;
 
     onKeyup = { search: this.onSearch };
     get onClickHandlers() {
@@ -50,61 +53,6 @@ export default class ViewKeywordsModal extends Modal {
             </sl-button>
             <div class="keyword-row-label keyword-actions">Actions</div>
         </div>
-    `;
-
-    css = `
-        .keywords-table {
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-            margin: auto;
-        }
-
-        .keyword-row {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr 6fr 0.6fr;
-            border-bottom: 1px solid white;
-            padding: 8px 0 8px 0;
-            width: 100%;
-            align-items: center;
-        }
-
-        .label-row {
-            grid-template-columns: 1fr 1.2fr 1fr 4fr 1fr 0.6fr;
-        }
-
-        .keyword-label {
-            font-weight: bold;
-            padding: 3px;
-        }
-
-        .keyword-reminder-text {
-            padding: 3px;
-        }
-
-        .keyword-label, .keyword-actions {
-            justify-self: center;
-        }
-
-        .label-row {
-            position: sticky;
-            top: -55px;
-            background: #111;
-            padding-top: 12px;
-            z-index: 2;
-        }
-
-        .keyword-param {
-            color: #bd0052;
-        }
-
-        .new-keyword {
-            margin-left: 8px;
-        }
-
-        cm-view-keywords-modal {
-            width: 100%;
-        }
     `;
 
     bind() {

@@ -3,32 +3,63 @@ import { getTarget } from './target.js';
 import { parseKeywordTokens } from './parse.js';
 import { getParamType } from './params.js';
 
-function genExpressionRegex(expressionTokens) {
-    let match = '';
+class KeywordMatch {
+    #params;
+    #expressionTokens;
 
-    for (const token of expressionTokens) {
-        const paramType = getParamType(token.format);
-        const paramExpr = paramType.expr?.source;
-        match = paramType.editMatch(match);
+    constructor(keyword, str, card) {
+        this.keyword = keyword;
+        this.str = str;
+        this.card = card;
 
-        match += `(${paramExpr || token.variable})`;
+        if (!this.keyword.expressionRegex)
+            this.keyword.expressionRegex = this.genExpressionRegex();
     }
 
-    return new RegExp(match, 'i');
-}
-
-function getParamVariables(expressionTokens, match) {
-    const params = match.slice(1);
-    const paramVariables = {};
-        
-    for (const [i, paramValue] of params.entries()) {
-        const token = expressionTokens[i];
-        const type = getParamType(token.format);
-        const value = type?.handler(paramValue) || paramValue;
-        paramVariables[token.variable] = {value, type};
+    get target() {
+        return getTarget(this.str, this.keyword, this.card);
     }
 
-    return paramVariables;
+    get params() {
+        return this.#params ??= this.getParamVariables(this.expressionTokens, this.match);
+    }
+
+    get expressionTokens() {
+        return this.#expressionTokens ??= parseKeywordTokens(this.keyword.expression);
+    }
+
+    genExpressionRegex() {
+        let match = '';
+
+        for (const token of this.expressionTokens) {
+            const paramType = getParamType(token.format);
+            const paramExpr = paramType.expr?.source;
+            match = paramType.editMatch(match);
+
+            match += `(${paramExpr || token.variable})`;
+        }
+
+        return new RegExp(match, 'i');
+    }
+
+    getParamVariables() {
+        const params = this.match.slice(1);
+        const paramVariables = {};
+            
+        for (const [i, paramValue] of params.entries()) {
+            const token = this.expressionTokens[i];
+            const type = getParamType(token.format);
+            const value = type?.handler(paramValue) || paramValue;
+            paramVariables[token.variable] = {value, type};
+        }
+
+        return paramVariables;
+    }
+
+    matchKeyword() {
+        this.match = this.str.match(this.keyword.expressionRegex);
+        return this.match;
+    }
 }
 
 export function matchAllKeywords(str, card, set) {
@@ -36,17 +67,9 @@ export function matchAllKeywords(str, card, set) {
     const keywords = getKeywords(set);
 
     for (const keyword of keywords) {
-        const expressionTokens = parseKeywordTokens(keyword.expression);
-        if (!keyword.expressionRegex)
-            keyword.expressionRegex = genExpressionRegex(expressionTokens);
-        
-        const keywordMatched = str.match(keyword.expressionRegex);
-        
-        if (keywordMatched) {
-            const params = getParamVariables(expressionTokens, keywordMatched);
-            const target = getTarget(str, keyword.label, card); 
-            matched.push({keyword, params, target});
-        }
+        const keywordMatch = new KeywordMatch(keyword, str, card);
+        if (keywordMatch.matchKeyword())
+            matched.push(keywordMatch);
     }
     
     return matched;
