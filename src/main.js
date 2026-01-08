@@ -12,10 +12,7 @@ import imageCache from './domain/graphics/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
 import ReactiveComponent from './ui/components/ReactiveComponent.js';
 import {
-    createDirectory, initApp,
-    mount,
-    setDraggableRegion,
-    setWindowSize
+    createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 
 // BASE SETUP
@@ -59,7 +56,6 @@ function setupModuleSystem() {
 function loaded() {
     const titleBar = document.createElement('cm-title-bar');
     document.body.prepend(titleBar);
-    setDraggableRegion(titleBar);
     document.querySelector('main').innerHTML = (
         `<cm-display-card></cm-display-card>
          <cm-set-view></cm-set-view>

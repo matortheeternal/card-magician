@@ -3,7 +3,7 @@ import { titleBarMenus } from './titleBarMenus.js';
 import html from './titleBar.html.js';
 import {
     centerWindow, exitApp, getWindowPosition,
-    getWindowSize, maximizeWindow, minimizeWindow,
+    getWindowSize, maximizeWindow, minimizeWindow, setDraggableRegion,
     setWindowSize,
     unmaximizeWindow
 } from '../../../shared/neutralinoAdapter.js';
@@ -93,9 +93,14 @@ export default class TitleBar extends ReactiveComponent {
         });
     }
 
+    makeDraggable() {
+        setDraggableRegion(this.querySelector('.draggable'));
+    }
+
     render() {
         this.innerHTML = html;
         this.renderMenus();
+        this.makeDraggable();
     }
 
     setIsMaximized(value) {

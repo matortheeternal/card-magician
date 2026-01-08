@@ -21,6 +21,10 @@ cm-title-bar sl-button::part(base) {
     border-radius: 0;
 }
 
+cm-title-bar .draggable {
+    flex: 1;
+}
+
 cm-title-bar .menus-container {
     display: flex;
     flex-direction: row;
