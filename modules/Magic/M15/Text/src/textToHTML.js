@@ -1,13 +1,5 @@
 import { getConverters } from './converters.js';
 
-function getConverter(remainingStr, result, state, game) {
-    for (const converter of getConverters(game)) {
-        const match = converter.match(remainingStr, result, state);
-        if (match) return [converter, match];
-    }
-    return [null, null];
-}
-
 class ParagraphConverter {
     constructor(card) {
         this.symbols = [];
@@ -23,12 +15,12 @@ class ParagraphConverter {
         return str;
     }
 
-    convert(str, game) {
+    convert(str, converters) {
         let remainingStr = game.addAutoReminderText(str, this.card);
         let result = '';
         const state = {};
         while (remainingStr.length) {
-            const [converter, match] = getConverter(remainingStr, result, state, game);
+            const [converter, match] = this.getNextConverter(remainingStr, result, state, converters);
             if (!converter || !match[0].length) return result;
             result += converter.convert(match, state, this.card, this.symbols);
             remainingStr = remainingStr.slice(match[0].length);
@@ -36,16 +28,24 @@ class ParagraphConverter {
         this.html += `<div class="t">${this.fixQuotes(result)}</div>`;
     }
 
-    static parse(paragraph, card, game) {
+    static parse(paragraph, card, converters) {
         const converter = new this(card);
-        converter.convert(paragraph, game);
+        converter.convert(paragraph, converters);
         return converter;
+    }
+
+    getNextConverter(remainingStr, result, state, converters) {
+        for (const converter of converters) {
+            const match = converter.match(remainingStr, result, state);
+            if (match) return [converter, match];
+        }
+        return [null, null];
     }
 }
 
-export default function textToHTML(text, card, game) {
+export default function textToHTML(text, card, converters) {
     if (!text || !text.length) return [];
     return text.split('\n').map(paragraph => {
-        return ParagraphConverter.parse(paragraph, card, game);
+        return ParagraphConverter.parse(paragraph, card, converters);
     });
 }

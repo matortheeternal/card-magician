@@ -11,7 +11,7 @@ export default class ViewKeywordsModal extends Modal {
             ...super.onClickHandlers,
             edit(event) {
                 const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
-                if (keyword.user) 
+                if (keyword.isCustom) 
                     keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
 
                 const data = { game: this.data.game, set: this.data.set, keyword };

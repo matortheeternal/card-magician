@@ -44,7 +44,6 @@ export function closeModal() {
     else {
         withLastModal(lastModal => {
             show(lastModal);
-            lastModal.render();
         });
     }
 }

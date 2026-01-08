@@ -15,15 +15,13 @@ export function getKeywords(set) {
     return [...set.userKeywords, ...keywords];
 }
 
-function makeAbilityWordConverter(abilityWord) {
-    return {
-        match(str) {
-            return str.match(new RegExp('^' + RegExp.escape(abilityWord)));
-        },
-        convert(match) {
-            return '<i>' + match + '</i>';
-        }
-    };
-}
-
-export const AbilityWordConverters = abilityWords.map(kw => makeAbilityWordConverter(kw));
+export const AbilityWordConverter = {
+    match(str) {
+        const escapedAbilityWords = abilityWords.map(kw => RegExp.escape(kw));
+        const abilityWordExpr = new RegExp(`^(${escapedAbilityWords.join('|')})`);
+        return str.match(abilityWordExpr);
+    },
+    convert(match) {
+        return '<i>' + match + '</i>';
+    }
+};

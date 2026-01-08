@@ -13,7 +13,7 @@ import {
     AbilityWordConverters, 
     matchAllKeywords 
 } from './keywords/reminderText.js';
-import EditKeywordsModal from './keywords/editKeywordsModal.js';
+import EditKeywordsModal from './keywords/editKeywordsModal/editKeywordsModal.js';
 import ViewKeywordsModal from './keywords/viewKeywordsModal.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
@@ -32,9 +32,6 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.AbilityWordConverters = AbilityWordConverters;
         this.matchAllKeywords = (str, card) => 
             matchAllKeywords(str, card, this.getActiveSet());
-        // this.generateUserKeywordsForm = generateUserKeywordsForm;
-        // this.currentUserKeyword = this.userKeywords[0];
-        // this.userKeywords = [newUserKeyword()];
     }
 
     setupSearch(sifter) {

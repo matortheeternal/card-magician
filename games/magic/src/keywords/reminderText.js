@@ -1,9 +1,9 @@
-import { AbilityWordConverters } from './lists/main.js';
+import { AbilityWordConverter } from './lists/main.js';
 import { targetCard, targetSpell, targetToObject, targetWith } from './target.js';
 import { parseKeywordTokens } from './parse.js';
 import { matchAllKeywords } from './match.js';
 
-export { AbilityWordConverters, matchAllKeywords };
+export { AbilityWordConverter, matchAllKeywords };
 
 const specialVariables = {
     target_type: (token, card) => card.getThisType(),

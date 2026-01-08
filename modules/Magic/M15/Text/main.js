@@ -1,3 +1,4 @@
+import { getConverters } from './src/converters.js';
 import textToHTML from './src/textToHTML.js';
 
 const L = localize('module-M15-text');
@@ -19,7 +20,9 @@ export default class TextModule extends CardMagicianModule {
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
             const game = this.getActiveGame();
-            return textToHTML(html, card, game).map(p => {
+            const converters = getConverters(game);
+
+            return textToHTML(html, card, converters).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;
@@ -33,8 +36,6 @@ export default class TextModule extends CardMagicianModule {
                 || /\bDisturb\b/i.test(card.rulesText)
                 || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
         };
-
-        this.card = card;
     }
 
     async renderRulesHTML(card) {

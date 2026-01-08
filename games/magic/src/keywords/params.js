@@ -152,6 +152,5 @@ export function getParamType(name) {
     for (const paramType of paramTypes)  
         if (paramType.alias === name) return paramType;
     
-    
     return LiteralParam;
 }

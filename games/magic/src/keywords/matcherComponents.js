@@ -43,8 +43,8 @@ class Matcher extends ReactiveComponent {
     render() {
         this.innerHTML = `
             <form-group class="with-border">
-                <label class="x-label">
-                    Match ${this.dataset.index + 1} 
+                <label class="match-label">
+                    Match ${parseInt(this.dataset.index) + 1} 
                     <sl-icon name="x-lg" data-click-action="removeMatch"></sl-icon>
                 </label>
                 <form-field field-id="type"></form-field>
@@ -63,10 +63,6 @@ class Matcher extends ReactiveComponent {
             type: 'select',
             options: matchTypeOptions
         }];
-    }
-
-    asdfadsfdfas() {
-        return matchers[this.model.type];
     }
 
     renderMatcher() {

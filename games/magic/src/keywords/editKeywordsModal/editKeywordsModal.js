@@ -1,4 +1,5 @@
-import { defineRtComponents } from './reminderTextItem.js';
+import { defineRtComponents } from '../reminderTextItem.js';
+import html from './editKeywordsModal.html';
 
 const L = localize('game-magic');
 
@@ -12,20 +13,27 @@ export default class EditKeywordsModal extends Modal {
             grid-template-columns: auto;
         }
 
-        .add-rt, .add-match {
+        .add-match {
             margin-top: 10px;
             width: fit-content;
         }
 
-        .x-label {
+        .rt-label, .match-label {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .x-label sl-icon:hover {
+        .rt-label sl-icon:hover, .match-label sl-icon:hover {
             color: var(--sl-color-danger-400);
             cursor: pointer;
+        }
+
+        .rt-header {
+            margin-bottom: 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
     `;
 
@@ -53,11 +61,12 @@ export default class EditKeywordsModal extends Modal {
 
     saveKeyword() {
         if (!this.edited) return;
-        if (!this.data.keyword.user) 
+        if (!this.data.keyword.isCustom) 
             this.data.set.keywordOverrides[this.data.keyword.label] = this.data.keyword;
         else
             this.data.set.userKeywords[this.data.keyword.saveIndex] = this.data.keyword;
         
+        this.closest('cm-view-keywords-modal').render();
     }
 
     close() {
@@ -85,18 +94,7 @@ export default class EditKeywordsModal extends Modal {
     }
 
     renderBody() {
-        return (
-            `<form-field field-id="label"></form-field>
-            <form-field field-id="expression"></form-field>
-            <h2 class="rt-header">Reminder Text Options</h2>
-            <sl-button class="add-rt" variant="success" 
-                outline data-click-action="addRt">
-                <sl-icon name="plus" slot="prefix"></sl-icon>
-                Add Reminder Text
-            </sl-button>
-            <div class="rts-container"></div>
-            <style>${this.css}</style>`
-        );
+        return html;
     }
 
     render() {
