@@ -22,7 +22,7 @@ export default class TextModule extends CardMagicianModule {
             const game = this.getActiveGame();
             const converters = getConverters(game);
 
-            return textToHTML(html, card, converters).map(p => {
+            return textToHTML(html, card, converters, game).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;

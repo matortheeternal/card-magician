@@ -15,7 +15,7 @@ class ParagraphConverter {
         return str;
     }
 
-    convert(str, converters) {
+    convert(str, converters, game) {
         let remainingStr = game.addAutoReminderText(str, this.card);
         let result = '';
         const state = {};
@@ -28,9 +28,9 @@ class ParagraphConverter {
         this.html += `<div class="t">${this.fixQuotes(result)}</div>`;
     }
 
-    static parse(paragraph, card, converters) {
+    static parse(paragraph, card, converters, game) {
         const converter = new this(card);
-        converter.convert(paragraph, converters);
+        converter.convert(paragraph, converters, game);
         return converter;
     }
 
@@ -43,9 +43,9 @@ class ParagraphConverter {
     }
 }
 
-export default function textToHTML(text, card, converters) {
+export default function textToHTML(text, card, converters, game) {
     if (!text || !text.length) return [];
     return text.split('\n').map(paragraph => {
-        return ParagraphConverter.parse(paragraph, card, converters);
+        return ParagraphConverter.parse(paragraph, card, converters, game);
     });
 }

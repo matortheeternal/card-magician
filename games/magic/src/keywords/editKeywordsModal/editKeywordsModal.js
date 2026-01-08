@@ -18,7 +18,7 @@ export default class EditKeywordsModal extends Modal {
             width: fit-content;
         }
 
-        .rt-label, .match-label {
+        .rt-label, .matcher-label {
             display: flex;
             align-items: center;
             gap: 10px;

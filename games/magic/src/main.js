@@ -10,7 +10,7 @@ import SetInfoModal from './SetInfoModal.js';
 import { getThisType } from './thisType.js';
 import { 
     addAutoReminderText, 
-    AbilityWordConverters, 
+    AbilityWordConverter, 
     matchAllKeywords 
 } from './keywords/reminderText.js';
 import EditKeywordsModal from './keywords/editKeywordsModal/editKeywordsModal.js';
@@ -29,7 +29,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.getThisType = getThisType;
         this.addAutoReminderText = (str, card) => 
             addAutoReminderText(str, card, this.getActiveSet());
-        this.AbilityWordConverters = AbilityWordConverters;
+        this.AbilityWordConverter = AbilityWordConverter;
         this.matchAllKeywords = (str, card) => 
             matchAllKeywords(str, card, this.getActiveSet());
     }
