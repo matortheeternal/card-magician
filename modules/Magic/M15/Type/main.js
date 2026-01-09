@@ -11,7 +11,6 @@ export default class TypeModule extends CardMagicianModule {
         card.isConspiracy = () => /\bconspiracy\b/i.test(card.superType);
         
         const game = this.getActiveGame();
-        card.getThisType = () => game.getThisType(card);
     }
 
     bind(card, watch) {

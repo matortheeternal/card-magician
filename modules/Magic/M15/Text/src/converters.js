@@ -33,24 +33,6 @@ export const SymbolConverter = {
     }
 };
 
-export const LegendNameConverter = {
-    match(str) {
-        return str.match(/^(LEGENDNAME|@)/);
-    },
-    convert(match, state, card) {
-        return card.getLegendName();
-    }
-};
-
-export const CardNameConverter = {
-    match(str) {
-        return str.match(/^(CARDNAME|~)/);
-    },
-    convert(match, state, card) {
-        return card.name;
-    }
-};
-
 export const FallbackConverter = {
     match(str) {
         return str.match(/^[^\s{)”<]+/)
@@ -63,12 +45,10 @@ export const FallbackConverter = {
 
 export function getConverters(game) { 
     return [
-        game.AbilityWordConverter,
+        ...game.AutoReplaceConverters,
         WhitespaceConverter,
         ParenthesisConverter,
         SymbolConverter,
-        LegendNameConverter,
-        CardNameConverter,
         FallbackConverter
     ];
 }

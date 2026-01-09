@@ -34,7 +34,6 @@ class KeywordMatch {
         for (const token of this.expressionTokens) {
             const paramType = getParamType(token.format);
             const paramExpr = paramType.expr?.source;
-            console.log(token);
 
             match += `(${paramExpr || token.variable})`;
         }
@@ -68,7 +67,6 @@ export function matchAllKeywords(str, card, set) {
 
     for (const keyword of keywords) {
         const keywordMatch = new KeywordMatch(keyword, str, card);
-        console.log(keywordMatch.keyword.expressionRegex);
         if (keywordMatch.matchKeyword())
             matched.push(keywordMatch);
     }

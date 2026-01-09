@@ -14,6 +14,13 @@ export const AbilityWordConverter = {
         return str.match(abilityWordExpr);
     },
     convert(match) {
-        return '<i>' + match + '</i>';
+        const escapedMatch = match[0]
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+            
+        return '<i>' + escapedMatch + '</i>';
     }
 };

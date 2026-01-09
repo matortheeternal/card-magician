@@ -34,9 +34,9 @@ const thisTypeStrategies = [{
     type: 'permanent'
 }];
 
-export function getThisType(card) {
+export function getThisType() {
     for (const strategy of thisTypeStrategies) {
-        const match = strategy.match(card);
+        const match = strategy.match(this);
         if (match) return strategy.type;
     }
 }

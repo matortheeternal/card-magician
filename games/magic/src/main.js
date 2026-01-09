@@ -8,13 +8,10 @@ import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
 import { getThisType } from './thisType.js';
-import { 
-    addAutoReminderText, 
-    AbilityWordConverter, 
-    matchAllKeywords 
-} from './keywords/reminderText.js';
+import { addAutoReminderText, matchAllKeywords } from './keywords/reminderText.js';
 import EditKeywordsModal from './keywords/editKeywordsModal/editKeywordsModal.js';
 import ViewKeywordsModal from './keywords/viewKeywordsModal/viewKeywordsModal.js';
+import AutoReplaceConverters from './autoReplacers.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -26,12 +23,11 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.registerModal(SetInfoModal);
         this.registerModal(EditKeywordsModal);
         this.registerModal(ViewKeywordsModal);
-        this.getThisType = getThisType;
         this.addAutoReminderText = (str, card) => 
             addAutoReminderText(str, card, this.getActiveSet());
-        this.AbilityWordConverter = AbilityWordConverter;
         this.matchAllKeywords = (str, card) => 
             matchAllKeywords(str, card, this.getActiveSet());
+        this.AutoReplaceConverters = AutoReplaceConverters;
     }
 
     setupSearch(sifter) {
@@ -64,5 +60,9 @@ export default class MagicTheGathering extends CardMagicianGame {
     newSet() {
         const info = this.initializeFields(setInfoFields);
         return { cards: [], info, keywordOverrides: {}, userKeywords: [] };
+    }
+
+    bindCardFunctions(card) {
+        card.getThisType = getThisType.bind(card);
     }
 }
