@@ -1,7 +1,9 @@
+import { show, hide } from '../../shared/htmlUtils.js';
+
 const Modals = [];
 const modalContainer = document.querySelector('.modal-container');
 
-let activeModal = null;
+const activeModals = [];
 
 export function registerModal(modal) {
     customElements.define(modal.id, modal);
@@ -10,6 +12,11 @@ export function registerModal(modal) {
 
 export function resolveModal(modalId) {
     return Modals.find(m => m.id === modalId);
+}
+
+function withLastModal(callback) {
+    if (activeModals.length === 0) return;
+    callback(activeModals[activeModals.length - 1]);
 }
 
 export function openModal(modalId, data = {}) {
@@ -21,17 +28,27 @@ export function openModal(modalId, data = {}) {
 
     const modalElement = document.createElement(Component.id);
     modalElement.data = data;
-    modalContainer.innerHTML = '';
     modalContainer.appendChild(modalElement);
     modalContainer.style.removeProperty('display');
-    activeModal = modalElement;
+    withLastModal(lastModal => {
+        lastModal.style.display = 'none';
+    });
+    activeModals.push(modalElement);
 }
 
 export function closeModal() {
-    modalContainer.style.display = 'none';
-    activeModal = null;
+    const activeModal = activeModals.pop();
+    activeModal.remove();
+    if (activeModals.length === 0)
+        hide(modalContainer);
+    else {
+        withLastModal(lastModal => {
+            show(lastModal);
+        });
+    }
 }
 
 export function getActiveModal() {
-    return activeModal;
+    if (activeModals.length === 0) return null;
+    return activeModals[activeModals.length - 1];
 }

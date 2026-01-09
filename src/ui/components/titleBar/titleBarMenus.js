@@ -3,6 +3,7 @@ import { registerHotkey } from '../../systems/hotkeySystem.js';
 import { openModal } from '../../modals/modalManager.js';
 import { getAvailableLocales, prepareSchema } from '../../../shared/localize.js';
 import { getActiveSet } from '../../../domain/sets/setManager.js';
+import { getActiveGame } from '../../../domain/game/gameManager.js';
 import { exitApp } from '../../../shared/neutralinoAdapter.js';
 
 const L = localize('title-bar');
@@ -37,6 +38,11 @@ const actions = {
             selectedLocale: locales[0]
         });
     },
+    editKeywords: () => {
+        const game = getActiveGame();
+        const set = getActiveSet();
+        openModal('cm-view-keywords-modal', { game, set });
+    },
     editSetInfo: () => openModal('cm-set-info-modal', getActiveSet().info),
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
@@ -69,6 +75,7 @@ export const titleBarMenus = [{
         menuItem(L`Set Info`, ``, actions.editSetInfo),
         menuItem(L`Preferences`, ``, actions.editPreferences),
         menuItem(L`Localization`, ``, actions.editLocales),
+        menuItem(L`Keywords`, ``, actions.editKeywords)
     ]
 }, {
     title: L`Cards`,

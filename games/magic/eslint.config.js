@@ -25,7 +25,8 @@ export default [
                 localize: 'readonly',
                 CardMagicianModule: 'readonly',
                 CardMagicianGame: 'readonly',
-                Modal: 'readonly'
+                Modal: 'readonly',
+                ReactiveComponent: 'readonly'
             }
         }
     },

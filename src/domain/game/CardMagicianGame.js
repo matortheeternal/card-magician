@@ -5,7 +5,7 @@ import {
     registerBinaryAdapter
 } from '../sets/adapters/adapterRegistry.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
-import { registerModal } from '../../ui/modals/modalManager.js';
+import { openModal, registerModal } from '../../ui/modals/modalManager.js';
 import { loadFont } from '../template/fontService.js';
 import { getActiveSet } from '../sets/setManager.js';
 
@@ -155,12 +155,21 @@ export default class CardMagicianGame {
     }
 
     /**
-     * Registers a modal with the modal manager. Every game should register a
-     * set info modal.
+     * Registers a modal with the modal manager. Every game should register a 
+     * 'cm-set-info-modal'.
      *
      * @param {Modal} ModalClass
      */
     registerModal(ModalClass) {
         registerModal(ModalClass);
+    }
+
+    /**
+     * Opens a modal with the modal manager.
+     * 
+     * @param {string} modalId
+     */
+    openModal(modalId, data) {
+        openModal(modalId, data);
     }
 }

@@ -1,6 +1,7 @@
 import RenderScheduler from '../template/renderScheduler.js';
 import ImageFieldValue from './ImageFieldValue.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
+import { getActiveGame } from '../game/gameManager.js';
 
 export default class BaseCardModel {
     fields = [];
@@ -9,6 +10,8 @@ export default class BaseCardModel {
 
     constructor(key) {
         this.id = key;
+        this.game = getActiveGame();
+        this.game.bindCardFunctions(this);
     }
 
     dispose() {

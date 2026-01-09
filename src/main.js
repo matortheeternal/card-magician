@@ -10,6 +10,7 @@ import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
 import imageCache from './domain/graphics/ImageCache.js';
 import Modal from './ui/modals/Modal.js';
+import ReactiveComponent from './ui/components/ReactiveComponent.js';
 import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
@@ -49,6 +50,7 @@ function setupModuleSystem() {
     window.CardMagicianModule = CardMagicianModule;
     window.CardMagicianGame = CardMagicianGame;
     window.Modal = Modal;
+    window.ReactiveComponent = ReactiveComponent;
 }
 
 function loaded() {

@@ -1,3 +1,4 @@
+import { getConverters } from './src/converters.js';
 import textToHTML from './src/textToHTML.js';
 
 const L = localize('module-M15-text');
@@ -18,7 +19,10 @@ export default class TextModule extends CardMagicianModule {
 
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
-            return textToHTML(html, card).map(p => {
+            const game = this.getActiveGame();
+            const converters = getConverters(game);
+
+            return textToHTML(html, card, converters, game).map(p => {
                 if (outputSymbols)
                     p.symbols.forEach(sym => outputSymbols.push(sym));
                 return p.html;
@@ -133,6 +137,16 @@ export default class TextModule extends CardMagicianModule {
                     { id: 'short', name: L`Short Text` },
                 ]
             },
+            {
+                id: 'autoRt',
+                label: L`Show Reminder Text`,
+                type: 'select',
+                options: [
+                    { id: 'default', name: L`Default` },
+                    { id: 'all', name: L`All Keywords` },
+                    { id: 'none', name: L`No Keywords` }
+                ]
+            }
         ];
     }
 
