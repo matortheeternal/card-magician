@@ -27,9 +27,29 @@ export const ThisConverter = {
     }
 };
 
+export const BulletPointConverter = {
+    match(str) {
+        return str.match(/^(::|->)/);
+    },
+    convert() {
+        return '•';
+    }
+};
+
+export const EmDashConverter = {
+    match(str) {
+        return str.match(/^--/);
+    },
+    convert() {
+        return '—';
+    }
+};
+
 export default [
     AbilityWordConverter,
     LegendNameConverter,
     CardNameConverter,
-    ThisConverter
+    ThisConverter,
+    BulletPointConverter,
+    EmDashConverter
 ];
