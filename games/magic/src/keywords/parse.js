@@ -1,6 +1,5 @@
 function parseNextKeywordToken(str) {
     const match = str.match(/\s?<.*?>|[^<]*[^\s<]/);
-    console.log(str, str.match(/\s<.*?>|[^<]+[^\s<]/))
     const token = match[0];
 
     if (!token.includes('<')) {

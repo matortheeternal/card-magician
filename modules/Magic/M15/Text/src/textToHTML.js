@@ -1,5 +1,3 @@
-import { getConverters } from './converters.js';
-
 class ParagraphConverter {
     constructor(card) {
         this.symbols = [];
