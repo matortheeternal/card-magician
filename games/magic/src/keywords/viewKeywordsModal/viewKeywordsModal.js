@@ -12,32 +12,36 @@ export default class ViewKeywordsModal extends Modal {
     get onClickHandlers() {
         return {   
             ...super.onClickHandlers,
-            edit(event) {
-                const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
-                if (keyword.isCustom) 
-                    keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
-
-                const data = { game: this.data.game, set: this.data.set, keyword };
-                this.data.game.openModal('cm-edit-keywords-modal', data);
-            },
-            newKeyword() {
-                const keyword = {
-                    label: L`New Keyword`,
-                    expression: '',
-                    user: true,
-                    saveIndex: this.data.set.userKeywords.length,
-                    reminderTexts: [
-                        {
-                            template: ''
-                        }
-                    ]
-                };
-                this.data.set.userKeywords.push(keyword);
-
-                const data = { game: this.data.game, set: this.data.set, keyword };
-                this.data.game.openModal('cm-edit-keywords-modal', data);
-            }
+            edit: this.editKeyword,
+            newKeyword: this.newKeyword
         };
+    }
+
+    editKeyword(event) {
+        const keyword = JSON.parse(event.target.parentElement.dataset.keyword);
+        if (keyword.isCustom) 
+            keyword.saveIndex =  this.data.set.userKeywords.indexOf(keyword);
+
+        const data = { game: this.data.game, set: this.data.set, keyword };
+        this.data.game.openModal('cm-edit-keywords-modal', data);
+    }
+
+    newKeyword() {
+        const keyword = {
+            label: L`New Keyword`,
+            expression: '',
+            user: true,
+            saveIndex: this.data.set.userKeywords.length,
+            reminderTexts: [
+                {
+                    template: ''
+                }
+            ]
+        };
+        this.data.set.userKeywords.push(keyword);
+
+        const data = { game: this.data.game, set: this.data.set, keyword };
+        this.data.game.openModal('cm-edit-keywords-modal', data);
     }
 
     baseRowHtml = `

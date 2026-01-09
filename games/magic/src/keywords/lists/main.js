@@ -1,13 +1,5 @@
-import numericKeywords from './numericKeywords.json';
-import simpleKeywords from  './simpleKeywords.json';
-import otherKeywords from  './otherKeywords.json';
+import baseKeywords from './keywords.json';
 import abilityWords from './abilityWords.json';
-
-export const baseKeywords = [
-    ...numericKeywords,
-    ...simpleKeywords,
-    ...otherKeywords
-];
 
 export function getKeywords(set) {
     const keywords = baseKeywords.map(kw => set.keywordOverrides?.[kw.label] || kw);

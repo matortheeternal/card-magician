@@ -72,7 +72,7 @@ function processReminderText(templateTokens, params, card, target, keyword) {
 
         const formatFn = param.type?.[token.format] || param.type.invalid_format;
 
-        output += formatFn(param.value, token.formatArgs, card, target);
+        output += ' ' + formatFn(param.value, token.formatArgs, card, target);
     }
 
     return output;

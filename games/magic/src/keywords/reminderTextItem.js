@@ -5,31 +5,35 @@ const L = localize('game-magic');
 class ReminderTextItem extends ReactiveComponent {
     #model;
     onClickHandlers = {
-        addMatch() {
-            if (!this.model.match) 
-                this.model.match = {type: '', params: {}};
-            else if (Array.isArray(this.model.match)) 
-                this.model.match.push({type: '', params: {}});
-            else
-                this.model.match = [this.model.match, {type: '', params: {}}];
-            
-            this.render();
-        },
-        removeMatch(event) {
-            if (Array.isArray(this.model.match)) {
-                const matcher = event.target.closest('cm-matcher');
-                const matchIndex = this.model.match.indexOf(matcher.model);
-                this.model.match.splice(matchIndex, 1);
-
-                this.model.match = this.model.match.length === 1 
-                    ? this.model.match[0] 
-                    : this.model.match;
-            } else
-                delete this.model.match;
-
-            this.render();
-        }
+        addMatch: this.addMatch,
+        removeMatch: this.removeMatch
     };
+
+    addMatch() {
+        if (!this.model.match) 
+            this.model.match = {type: '', params: {}};
+        else if (Array.isArray(this.model.match)) 
+            this.model.match.push({type: '', params: {}});
+        else
+            this.model.match = [this.model.match, {type: '', params: {}}];
+        
+        this.render();
+    }
+
+    removeMatch(event) {
+        if (Array.isArray(this.model.match)) {
+            const matcher = event.target.closest('cm-matcher');
+            const matchIndex = this.model.match.indexOf(matcher.model);
+            this.model.match.splice(matchIndex, 1);
+
+            this.model.match = this.model.match.length === 1 
+                ? this.model.match[0] 
+                : this.model.match;
+        } else
+            delete this.model.match;
+
+        this.render();
+    }
 
     get model() {
         return this.#model;

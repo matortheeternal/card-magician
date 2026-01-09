@@ -48,14 +48,10 @@ class DirectiveParam {
     static invalid_format(value) {
         return value;
     }
-
-    static editMatch(match) {
-        return match;
-    }
 }
 
 class NumberParam extends DirectiveParam {
-    static expr = /[XYZ\d]+/;
+    static expr = / [XYZ\d]+/;
     static alias = 'number';
 
     static handler(value) {
@@ -83,22 +79,22 @@ class NumberParam extends DirectiveParam {
 }
 
 class NameParam extends DirectiveParam {
-    static expr = /[\w ]+?/;
+    static expr = / [\w ]+?/;
     static alias = 'name';
 }
 
 class OneWordParam extends DirectiveParam {
-    static expr = /[^ ,:;.!?]+/;
+    static expr = / [^ ,:;.!?]+/;
     static alias = 'one_word';
 }
 
 class PrefixParam extends DirectiveParam {
-    static expr = /[^,:;.!?]*?/;
+    static expr = / [^,:;.!?]*?/;
     static alias = 'prefix';
 }
 
 class NumberWordParam extends DirectiveParam {
-    static expr = /(up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/;
+    static expr = / (up to )?(a|an|one|two|three|four|five|six|seven|eight|nine|ten| )/;
     static alias = 'number_word';
 
     static handler(value) {
@@ -107,12 +103,12 @@ class NumberWordParam extends DirectiveParam {
 }
 
 class AParam extends DirectiveParam {
-    static expr = /an?/;
+    static expr = / an?/;
     static alias = 'a';
 }
 
 class SParam extends DirectiveParam {
-    static expr = /[a-z]?s?/;
+    static expr = / [a-z]?s?/;
     static alias = 's';
 
     static handler(value) {
@@ -126,10 +122,6 @@ class CostParam extends DirectiveParam {
 
     static handler(value) {
         return value.replace('—', '');
-    }
-
-    static editMatch(match) {
-        return match.slice(0, match.length - 2) + ')';
     }
 }
 

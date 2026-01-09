@@ -1,5 +1,6 @@
 function parseNextKeywordToken(str) {
-    const match = str.match(/<.*?>|[^<]*/);
+    const match = str.match(/\s?<.*?>|[^<]*[^\s<]/);
+    console.log(str, str.match(/\s<.*?>|[^<]+[^\s<]/))
     const token = match[0];
 
     if (!token.includes('<')) {
@@ -9,7 +10,7 @@ function parseNextKeywordToken(str) {
         ];
     }
 
-    const tokenSplit = token.substring(1, token.length - 1).split(':');
+    const tokenSplit = token.split('>')[0].split('<')[1].split(':');
     const [variable, _format, ...formatArgs] = tokenSplit;
     const format = _format ? _format : variable; // so we can have things like <number>
 
