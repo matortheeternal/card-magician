@@ -1,3 +1,11 @@
+module-container[module="FaceSymbol"] {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 34.5px;
+    height: 34.5px;
+}
+
 module-container[module="FaceSymbol"] img {
     width: 33.5px;
     margin-left: 3px;

@@ -28,6 +28,10 @@ export default class MapFrame extends NormalFrame {
         return resolveAssetPath('mask/map');
     }
 
+    get frameId() {
+        return 'map';
+    }
+
     maskFrame(imageUrl) {
         // TODO: image size mismatch
         return imageUrl;

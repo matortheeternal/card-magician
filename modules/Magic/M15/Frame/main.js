@@ -64,7 +64,7 @@ export default class FrameModule extends CardMagicianModule {
             'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
             'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle', 'vehicleStyle',
             'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle', 'mutateStyle',
-            'ubStyle'
+            'ubStyle', 'otherFrameOptions'
         ], () => this.updateFrame(card));
     }
 

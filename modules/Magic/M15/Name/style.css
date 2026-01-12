@@ -3,6 +3,7 @@ module-container[module="Name"] {
     align-items: center;
     flex: 1;
     min-width: 0;
+    padding: 0 5px;
     overflow: hidden;
     font-size: 20px;
     font-family: 'Beleren Bold', serif;

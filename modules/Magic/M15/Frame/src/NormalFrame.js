@@ -110,10 +110,14 @@ export default class NormalFrame extends CardFrame {
         return 'normal.png';
     }
 
-    get trimMaskUrl() {
+    get trimMaskFolder() {
         const folder = this.numTrims > 0 ? 'doubletrim' : 'trim';
         this.numTrims += 1;
-        return resolveAssetPath(`mask/${folder}/${this.trimMaskFilename}`);
+        return folder;
+    }
+
+    get trimMaskUrl() {
+        return resolveAssetPath(`mask/${this.trimMaskFolder}/${this.trimMaskFilename}`);
     }
 
     maskTrim(image) {

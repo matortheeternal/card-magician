@@ -4,6 +4,7 @@
   "description": "Template for representing normal Magic 2015 cards.",
   "version": "0.0",
   "card": [
+    "Magic/M15/CardLayout",
     "Magic/M15/Frame",
     "Magic/M15/Color",
     "Magic/M15/Symbols",

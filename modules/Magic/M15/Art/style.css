@@ -1,4 +1,16 @@
+module-container[module="Art"] {
+    display: block;
+    position: relative;
+    z-index: 0;
+    flex: 1;
+    overflow: hidden;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    margin: 2px 14px 2px 13px;
+}
+
 module-container[module="Art"] img {
+    height: 100%;
     width: 100%;
 }
 

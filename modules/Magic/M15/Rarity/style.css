@@ -1,3 +1,13 @@
+module-container[module="Rarity"] {
+    min-width: 18px;
+    min-height: 18px;
+    padding-left: 4px;
+}
+
+module-container[module="Rarity"] > span {
+    display: flex;
+}
+
 .set-icon linearGradient stop:nth-child(1) { stop-color: var(--rar-g1); }
 .set-icon linearGradient stop:nth-child(2) { stop-color: var(--rar-g2); }
 .set-icon linearGradient stop:nth-child(3) { stop-color: var(--rar-g3); }

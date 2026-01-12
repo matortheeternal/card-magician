@@ -1,0 +1,6 @@
+module-container[module="ColorIndicator"] img {
+    width: 15px;
+    height: 15px;
+    margin-right: 4px;
+    margin-top: 2px;
+}

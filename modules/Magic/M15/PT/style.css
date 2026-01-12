@@ -1,3 +1,21 @@
+module-container[render="renderPT"] {
+    position: absolute;
+    bottom: 21px;
+    height: 37px;
+    right: 22px;
+    width: 70px;
+    z-index: 3;
+}
+
+module-container[render="renderNotchPT"] {
+    position: absolute;
+    bottom: 64px;
+    height: fit-content;
+    right: 29px;
+    min-width: fit-content;
+    z-index: 3;
+}
+
 .pt-text {
     background-repeat: no-repeat;
     background-size: 70px 38px;

@@ -4,6 +4,7 @@
   "description": "This template is for the Ixalan Map Frame.",
   "version": "0.0",
   "card": [
+    "Magic/M15/CardLayout",
     "Magic/M15/MapFrame",
     "Magic/M15/Color",
     "Magic/M15/Symbols",

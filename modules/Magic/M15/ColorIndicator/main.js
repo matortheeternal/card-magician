@@ -1,8 +1,6 @@
-const L = localize('module-M15-color-indicator');
-
 export default class ColorIndicatorModule extends CardMagicianModule {
     async getIndicatorImage(card) {
-        if (!card.colorIndicator?.length) return '';
+        if (!card.colorOverride?.length) return '';
         const colors = card.colorIdentity.colors;
         if (colors.length === 1) {
             const key = card.getCardColorKey();
@@ -17,36 +15,22 @@ export default class ColorIndicatorModule extends CardMagicianModule {
         return '';
     }
 
-    async updateColorIdentity(card) {
-        const overrideColors = (card.colorIndicator || []);
-        card.colorIdentity.setOverride(overrideColors.join(''));
-        changed(card, 'colorIdentity');
+    async updateIndicator(card) {
         this.colorIdentityImage = await this.getIndicatorImage(card);
         this.requestRender();
     }
 
     bind(card, watch) {
-        watch(card, 'colorIndicator', () => this.updateColorIdentity(card));
+        watch(card, 'colorIdentity', () => this.updateIndicator(card));
     }
 
     render(card) {
-        return card.colorIndicator?.length && (
+        return card.colorOverride?.length && (
             `<img src="${this.colorIdentityImage}">`
         );
     }
 
-    get fields() {
-        return [{
-            id: 'colorIndicator',
-            label: L`Color (Override)`,
-            type: 'multiselect',
-            options: [
-                { id: 'w', name: L`White` },
-                { id: 'u', name: L`Blue` },
-                { id: 'b', name: L`Black` },
-                { id: 'r', name: L`Red` },
-                { id: 'g', name: L`Green` },
-            ]
-        }];
+    async styles() {
+        return [await this.loadFile('style.css')];
     }
 }

@@ -4,6 +4,7 @@
   "description": "Template for Magic 2015 adventure cards.",
   "version": "0.0",
   "card": [
+    "Magic/M15/CardLayout",
     "Magic/M15/AdventureFrame",
     "Magic/M15/Color",
     "Magic/M15/Symbols",

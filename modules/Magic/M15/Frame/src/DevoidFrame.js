@@ -52,7 +52,7 @@ export default class DevoidFrame extends NormalFrame {
 
     maskTrim(imageUrl) {
         const maskedImg = super.maskTrim(imageUrl);
-        if (!this.card.other.avoidCoveringDevoid) return maskedImg;
+        if (!this.card.otherFrameOptions.avoidCoveringDevoid) return maskedImg;
         return this.ctx.maskImage(maskedImg, this.devoidTrimMaskUrl);
     }
 

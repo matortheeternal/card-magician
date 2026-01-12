@@ -4,6 +4,7 @@ module-container[module="Type"] {
     height: inherit;
     flex: 1;
     min-width: 0;
+    font-size: 17px;
     overflow: hidden;
     font-family: "Beleren Bold", serif;
     font-kerning: none;

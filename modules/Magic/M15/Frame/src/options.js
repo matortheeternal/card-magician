@@ -127,7 +127,7 @@ export default (frameOptions) => ([{
         { id: 'hybrid', name: L`Hybrid` },
     ]
 }, {
-    id: 'other',
+    id: 'otherFrameOptions',
     type: 'checkboxlist',
     label: L`Extra options`,
     options: [

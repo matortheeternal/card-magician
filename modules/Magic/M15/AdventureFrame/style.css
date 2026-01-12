@@ -1,12 +1,7 @@
-.bg {
+module-container[module="AdventureFrame"]:not([render]) {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+    inset: 0;
+    z-index: 1;
 }
 
 .bg.binding {

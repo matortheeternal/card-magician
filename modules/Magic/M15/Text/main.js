@@ -15,6 +15,7 @@ export default class TextModule extends CardMagicianModule {
         card.isCompanion = () => /^companion\b/i.test(card.rulesText);
         card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
         card.isMutate = () => /^mutate\b/i.test(card.rulesText);
+        card.hasNoText = () => !card.rulesText.length;
 
         card.textToHTML = (text, outputSymbols) => {
             const html = this.sanitize(text, { allowedTags });
