@@ -3,7 +3,7 @@ cm-options-form > div {
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 0 var(--sl-spacing-2x-large);
+    padding: 0 var(--sl-spacing-x-large);
     font-family: var(--sl-font-sans);
 }
 

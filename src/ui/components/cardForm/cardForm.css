@@ -2,7 +2,7 @@ cm-card-form {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
-    min-width: 30em;
+    min-width: 28em;
     background-color: #040404;
 }
 
