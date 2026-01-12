@@ -20,7 +20,9 @@ export function loadImage(url) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = e => reject(
+            new Error(`Failed to load image ${url}, ${e.message}`)
+        );
         img.src = url;
     });
 }
@@ -34,7 +36,9 @@ export function getImageSize(url) {
                 height: img.naturalHeight
             });
         };
-        img.onerror = reject;
+        img.onerror = e => reject(
+            new Error(`Failed to load image ${url}, ${e.message}`)
+        );
         img.src = url;
     });
 }
