@@ -230,6 +230,7 @@ export default class ListView extends ReactiveComponent {
     }
 
     onHeaderClick(event, column) {
+        if (this.resizing) return;
         event.stopImmediatePropagation();
         const mode = getColumnSelectMode(column, event);
         mode.select(column, this.activeColumns);
@@ -241,6 +242,7 @@ export default class ListView extends ReactiveComponent {
     onResizeMouseDown(event, colIndex) {
         event.stopImmediatePropagation();
 
+        this.resizing = true;
         document.body.classList.add('column-resizing');
         const column = this.colGroup.children[colIndex];
         const startX = event.clientX;
@@ -252,7 +254,9 @@ export default class ListView extends ReactiveComponent {
             column.style.width = newWidth + 'px';
         }
 
-        function onMouseUp() {
+        function onMouseUp(event) {
+            event.stopImmediatePropagation();
+            this.resizing = false;
             document.body.classList.remove('column-resizing');
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
