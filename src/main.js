@@ -59,6 +59,11 @@ function loaded() {
          <cm-set-view></cm-set-view>
          <cm-card-form></cm-card-form>`
     );
+    if (NL_RESMODE !== 'bundle') {
+        console.log('Development mode detected');
+        const devState = document.createElement('dev-state');
+        document.body.appendChild(devState);
+    }
 }
 
 async function startApp() {

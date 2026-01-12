@@ -1,0 +1,21 @@
+dev-state {
+    display: flex;
+    gap: var(--sl-spacing-x-small);
+    align-items: center;
+    position: fixed;
+    bottom: var(--sl-spacing-medium);
+    right: var(--sl-spacing-medium);
+    z-index: 9999;
+    font-family: var(--sl-font-sans);
+    background: var(--sl-color-neutral-0);
+    border: 1px solid var(--sl-color-neutral-300);
+    border-radius: 6px;
+    padding: var(--sl-spacing-small);
+    box-shadow: var(--sl-shadow-medium);
+}
+
+dev-state .error {
+    color: var(--sl-color-danger-600);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}

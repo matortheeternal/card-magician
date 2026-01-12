@@ -27,12 +27,12 @@
     "games/magic"
   ],
   "scripts": {
-    "build": "node esbuild.config.js --minify && npm --prefix games/magic run build",
-    "localize": "npm run dev && neu run -- --localize",
-    "dev": "node esbuild.config.js && npm --prefix games/magic run build",
-    "release": "neu build --release",
-    "start": "npm run dev && neu run -- --window-enable-inspector",
-    "test": "npm run dev && neu run -- --run-tests",
+    "build": "node scripts/build.js",
+    "release": "node scripts/release.js",
+    "dev": "node scripts/serve.js",
+    "start": "npm run build && concurrently -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --window-enable-inspector\"",
+    "test": "npm run build && concurrently -k -n dev,test -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --run-tests\"",
+    "localize": "npm run build && concurrently -k -n dev,localize -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --localize\"",
     "lint": "npx eslint src modules"
   },
   "dependencies": {
@@ -48,6 +48,8 @@
   "devDependencies": {
     "@neutralinojs/lib": "^6.4.0",
     "@stylistic/eslint-plugin": "^5.6.1",
+    "chokidar": "^5.0.0",
+    "concurrently": "^9.2.1",
     "esbuild": "^0.25.10",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-css-modules": "^0.3.0",

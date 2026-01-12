@@ -4,6 +4,7 @@
 @import "ui/components/cardProperties/cardProperties.css";
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
+@import "ui/components/devState/devState.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
 @import "ui/modals/setInfoModal/setInfoModal.css";
