@@ -13,10 +13,18 @@ class StatusMessage {
             : null;
     }
 
+    updateText(newText) {
+        this.text = newText;
+        changed(statusMessages);
+    }
+
     remove() {
         this.removing = true;
         changed(statusMessages);
-        setTimeout(() => statusMessages.remove(this), REMOVE_DELAY);
+        setTimeout(() => {
+            statusMessages.remove(this);
+            changed(statusMessages);
+        }, REMOVE_DELAY);
     }
 }
 
