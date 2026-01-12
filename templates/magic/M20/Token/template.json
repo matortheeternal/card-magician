@@ -1,0 +1,19 @@
+{
+  "id": "M20Token",
+  "label": "M20 Token",
+  "description": "This template is for the M20 Token Frame.",
+  "version": "0.0",
+  "card": [
+    "Magic/M15/CardLayout",
+    "Magic/M20/TokenFrame",
+    "Magic/M15/Color",
+    "Magic/M15/Symbols",
+    "Magic/M15/Name",
+    "Magic/M15/Art",
+    "Magic/M15/Type",
+    "Magic/M15/Text",
+    "Magic/M15/PT",
+    "Magic/M15/Rarity",
+    "Magic/M15/Footer"
+  ]
+}

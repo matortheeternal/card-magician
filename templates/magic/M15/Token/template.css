@@ -1,0 +1,31 @@
+.frame-token .header {
+    padding: 2px 35px;
+    margin-top: 4px;
+}
+
+.frame-token module-container[module="Art"] {
+    margin-bottom: 1px;
+}
+
+.frame-token .type-line {
+    height: 29px;
+}
+
+.hide-rarity module-container[module="Rarity"] {
+    display: none;
+}
+
+.frame-token module-container[module="Text"] {
+    padding: 12px 24px;
+    height: 155px;
+    margin-bottom: 6px;
+}
+
+.token-short module-container[module="Text"] {
+    height: 23px;
+    padding: 0;
+}
+
+.token-normal module-container[module="Text"] {
+    height: 98px;
+}

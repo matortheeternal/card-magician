@@ -1,0 +1,50 @@
+.frame-token .header {
+    padding: 2px 35px;
+    margin-top: 6px;
+}
+
+.frame-token module-container[module="Name"] {
+    font-family: "Beleren Small Caps";
+    font-kerning: none;
+    font-size: 24px;
+    letter-spacing: 0.3px;
+    padding: 0 4px;
+    justify-content: center;
+    color: #fff;
+}
+
+.hide-rarity module-container[module="Rarity"] {
+    display: none;
+}
+
+.frame-token.inverted-name module-container[module="Name"] {
+    color: #000;
+}
+
+.frame-token module-container[module="Art"] {
+    margin: 0;
+    overflow: visible;
+}
+
+.frame-token module-container[module="Art"] crop-image {
+    display: block;
+    height: 470px;
+    position: absolute;
+    left: 0;
+    top: -47px;
+}
+
+.frame-token .type-line {
+    font-size: 18px;
+    padding: 4px 12px;
+    height: 30px;
+}
+
+.token-short module-container[module="Text"] {
+    height: 27px;
+    padding: 0;
+}
+
+.token-normal module-container[module="Text"] {
+    height: 98px;
+}

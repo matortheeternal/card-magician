@@ -1,0 +1,13 @@
+module-container[module="TokenFrame"] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.frame-token module-container[module="Name"] {
+    font-family: "Beleren Small Caps";
+    font-size: 22px;
+    padding: 0 4px;
+    justify-content: center;
+    color: #d8c96c;
+}
