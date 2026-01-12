@@ -40,6 +40,10 @@
     height: 30px;
 }
 
+.frame-token module-container[module="Text"] {
+    height: 161px;
+}
+
 .token-short module-container[module="Text"] {
     height: 27px;
     padding: 0;
