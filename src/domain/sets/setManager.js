@@ -51,7 +51,7 @@ export async function save() {
     const message = addStatusMessage(L`Saving...`, -1);
     console.info('Saving set to:', setFilePath);
     await saveSetData(setFilePath, activeSet);
-    message.text = L`Saved.`;
+    message.updateText(L`Saved.`);
     setTimeout(() => message.remove(), 1000);
 }
 
