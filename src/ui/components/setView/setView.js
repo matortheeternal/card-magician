@@ -11,8 +11,6 @@ import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import { filter } from '../../../domain/game/search.js';
 
 export default class SetView extends ReactiveComponent {
-    #cardsWatch = null;
-
     connectedCallback() {
         this.render();
         this.bind();
@@ -21,8 +19,7 @@ export default class SetView extends ReactiveComponent {
     bind() {
         onActiveSetChanged(set => {
             this.updateCards(set);
-            if (this.#cardsWatch) this.#cardsWatch.remove();
-            this.#cardsWatch = this.watch('cards', set, 'cards', () => {
+            this.watch('cards', set, 'cards', () => {
                 this.updateCards(set);
             });
         });

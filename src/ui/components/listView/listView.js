@@ -50,6 +50,7 @@ export default class ListView extends ReactiveComponent {
             this.activeRows[i].lastSelected = i === maxIndex;
             this.activeRows[i].selected = indexesToSelect.includes(i);
         }
+        this.updateSelectedClasses();
     }
 
     computeColumns() {

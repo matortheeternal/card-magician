@@ -106,6 +106,7 @@ export function onActiveCardChanged(callback) {
 
 export function onActiveSetChanged(callback) {
     setChangedCallbacks.push(callback);
+    callback(activeSet);
 }
 
 export async function setActiveCard(card) {
