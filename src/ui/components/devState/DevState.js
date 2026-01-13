@@ -4,41 +4,19 @@ import { hide, show } from '../../../shared/htmlUtils.js';
 export default class DevState extends ReactiveComponent {
     dirty = false;
     building = false;
-    pollInterval = null;
 
     connectedCallback() {
         this.render();
         this.bind();
-        this.startPolling();
-    }
-
-    disconnectedCallback() {
-        clearInterval(this.pollInterval);
     }
 
     bind() {
         this.handleEvents('click', {
             rebuild: () => this.onRebuildClick()
         });
-    }
-
-    async fetchDevState() {
-        try {
-            const res = await fetch('http://127.0.0.1:3344/__dev/state');
-            const state = await res.json();
-            if (state.dirty && !this.dirty) {
-                this.dirty = true;
-                this.render();
-            }
-        } catch {
-            return null;
-        }
-    }
-
-    startPolling() {
-        this.pollInterval = setInterval(async () => {
-            await this.fetchDevState();
-        }, 1000);
+        console.log('hello world');
+        this.ws = new WebSocket('ws://127.0.0.1:3344');
+        this.ws.addEventListener('message', event => this.onWebSocketMessage(event));
     }
 
     get button() {
@@ -78,11 +56,7 @@ export default class DevState extends ReactiveComponent {
     }
 
     async rebuild() {
-        const res = await fetch('http://127.0.0.1:3344/__dev/rebuild', {
-            method: 'POST'
-        });
-        if (!res.ok) throw new Error('Build failed');
-        location.reload();
+        this.ws.send('rebuild');
     }
 
     startBuild() {
@@ -96,10 +70,21 @@ export default class DevState extends ReactiveComponent {
         console.error(error);
         this.labelContainer.textContent = 'Build error';
         this.updateError('Build failed. See terminal.');
-        this.button.loading = false
+        this.button.loading = false;
         this.button.disabled = false;
         this.button.variant = 'success';
         this.button.textContent = 'Retry';
+    }
+
+    onWebSocketMessage(event) {
+        console.log('received message', event.data);
+        const msg = JSON.parse(event.data);
+        if (!this.dirty && msg.dirty) {
+            this.dirty = msg.dirty;
+            this.render();
+        }
+        if (msg.lastError) this.handleRebuildError(msg.lastError);
+        if (msg.reload) location.reload();
     }
 
     async onRebuildClick() {

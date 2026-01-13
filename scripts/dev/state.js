@@ -11,6 +11,7 @@ export function markDirty(path) {
     if (state.dirty) return;
     console.info(`change detected, build marked dirty > ${path}`);
     state.dirty = true;
+    return true;
 }
 
 export function startBuild() {
