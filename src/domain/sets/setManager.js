@@ -34,7 +34,7 @@ export async function saveAs() {
     const defaultPath = setFilePath
         ?  setFilePath.split(/[\\\/]/).pop()
         : `${activeSet.title || L`My Set`}.json`;
-    const filePath = saveSingleFileDialog(L`Save set to file`, defaultPath, [
+    const filePath = await saveSingleFileDialog(L`Save set to file`, defaultPath, [
         { name: L`JSON Files`, extensions: ['json'] },
         { name: L`Packed Files`, extensions: ['msgpack'] },
         { name: L`YAML Files`, extensions: ['yml'] },
