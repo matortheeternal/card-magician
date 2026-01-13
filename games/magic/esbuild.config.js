@@ -10,7 +10,7 @@ export async function buildMagic({ minify = false }) {
     await esbuild.build({
         entryPoints: [path.resolve(__dirname, 'src/main.js')],
         bundle: true,
-        outdir: '.',
+        outdir: __dirname,
         format: 'esm',
         sourcemap: true,
         minify,
