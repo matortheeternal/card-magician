@@ -14,7 +14,6 @@ import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 
-
 async function ensureDirectories() {
     const paths = [
         NL_PATH + '/modules',
@@ -74,6 +73,17 @@ async function startApp() {
     await imageCache.preload();
     loaded();
 }
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    try {
+        console.error(JSON.stringify(event.reason, null, 2));
+    } catch {}
+});
+
+window.addEventListener('error', (event) => {
+    console.error('Uncaught Error:', event.error || event.message);
+});
 
 // BASE SETUP
 setupNeutralino().then(() => {
