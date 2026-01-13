@@ -87,9 +87,12 @@ export async function setDraggableRegion(domElementOrID, options = {}) {
     return await Neutralino.window.setDraggableRegion(domElementOrID, options);
 }
 
-export function initApp() {
+export async function initApp() {
     Neutralino.init();
     Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
+    return new Promise((resolve) => {
+        Neutralino.events.on('ready', () => resolve());
+    });
 }
 
 export function exitApp(code = 0) {

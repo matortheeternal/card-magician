@@ -14,10 +14,6 @@ import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 
-// BASE SETUP
-setupNeutralino();
-setupShoelace();
-setupModuleSystem();
 
 async function ensureDirectories() {
     const paths = [
@@ -26,13 +22,13 @@ async function ensureDirectories() {
         NL_PATH + '/games',
         NL_DATAPATH + '/cache/images'
     ];
-    return paths.map(dirPath => {
+    await Promise.all(paths.map(dirPath => {
         return createDirectory(dirPath).catch(() => {});
-    });
+    }));
 }
 
 async function setupNeutralino() {
-    initApp();
+    await initApp();
     await setWindowSize({ resizable: true });
     await ensureDirectories();
     await mount('/modules', NL_PATH + '/modules');
@@ -79,4 +75,11 @@ async function startApp() {
     loaded();
 }
 
-startApp();
+// BASE SETUP
+setupNeutralino().then(() => {
+    setupShoelace();
+    setupModuleSystem();
+    startApp().then(() => {
+        // ?
+    });
+});
