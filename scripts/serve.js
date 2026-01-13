@@ -9,9 +9,9 @@ async function handleRebuild() {
     if (building) return;
     building = true;
 
+    console.log('start build');
+    let start = Date.now();
     try {
-        console.log('start build');
-        let start = Date.now();
         await build({ minify: false });
         console.log(`build completed (${Date.now() - start}ms)`);
         dirty = false;
