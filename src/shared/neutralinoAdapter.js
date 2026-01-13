@@ -52,7 +52,11 @@ export async function createDirectory(path) {
 }
 
 export async function mount(path, target) {
-    return await Neutralino.server.mount(path, target);
+    try {
+        await Neutralino.server.mount(path, target);
+    } catch (error) {
+        if (error.code !== 'NE_SR_MPINUSE') throw error;
+    }
 }
 
 export async function minimizeWindow() {
