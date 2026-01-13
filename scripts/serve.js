@@ -1,39 +1,42 @@
 import { WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import { finishBuild, getState, startBuild, markDirty } from './dev/state.js';
 import { build } from './build.js';
 
+let building = false;
+let dirty = false;
+
 async function handleRebuild() {
-    if (getState().building) return;
+    if (building) return;
+    building = true;
 
     try {
-        startBuild();
+        console.log('start build');
+        let start = Date.now();
         await build({ minify: false });
-        finishBuild(true);
+        console.log(`build completed (${Date.now() - start}ms)`);
+        dirty = false;
+        building = false;
         return { reload: true };
     } catch(error) {
-        finishBuild(false, error.stack || String(error));
-        return { lastError: error.stack || String(error) };
+        console.log(`build failed (${Date.now() - start}ms)`);
+        building = false;
+        return { error: error.stack || String(error) };
     }
 }
 
 function onFilesChange(path) {
-    if (!markDirty(path)) return;
-    const state = JSON.stringify(getState());
+    if (dirty) return;
+    console.info(`change detected, build marked dirty > ${path}`);
+    dirty = true;
     for (const client of server.clients) {
         if (client.readyState === WebSocket.OPEN)
-            client.send(state);
+            client.send(JSON.stringify({ dirty: true }));
     }
 }
 
 console.info('Starting dev server at localhost:3344');
 const server = new WebSocketServer({ port: 3344 });
 server.on('connection', ws => {
-    console.log('websocket client connected');
-    ws.send(JSON.stringify(getState()));
-    ws.on('close', () => {
-        console.log('websocket client disconnected');
-    });
     ws.on('message', async data => {
         if (data.toString('utf8') !== 'rebuild') return;
         console.log('received rebuild request');

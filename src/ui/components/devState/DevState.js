@@ -14,7 +14,6 @@ export default class DevState extends ReactiveComponent {
         this.handleEvents('click', {
             rebuild: () => this.onRebuildClick()
         });
-        console.log('hello world');
         this.ws = new WebSocket('ws://127.0.0.1:3344');
         this.ws.addEventListener('message', event => this.onWebSocketMessage(event));
     }
@@ -77,8 +76,8 @@ export default class DevState extends ReactiveComponent {
     }
 
     onWebSocketMessage(event) {
-        console.log('received message', event.data);
         const msg = JSON.parse(event.data);
+        console.log('received message', msg);
         if (!this.dirty && msg.dirty) {
             this.dirty = msg.dirty;
             this.render();

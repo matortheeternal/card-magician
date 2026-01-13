@@ -164,3 +164,7 @@ main {
     opacity: 0;
     font-size: 0;
 }
+
+*::part(form-control) {
+    margin-top: var(--sl-spacing-x-small);
+}
