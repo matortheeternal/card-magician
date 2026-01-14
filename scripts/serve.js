@@ -15,12 +15,12 @@ async function handleRebuild() {
         await build({ minify: false });
         console.log(`build completed (${Date.now() - start}ms)`);
         dirty = false;
-        building = false;
         return { reload: true };
     } catch(error) {
         console.log(`build failed (${Date.now() - start}ms)`);
-        building = false;
         return { error: error.stack || String(error) };
+    } finally {
+        building = false;
     }
 }
 
