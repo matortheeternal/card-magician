@@ -5,7 +5,7 @@ module-container[module="TokenFrame"] {
 }
 
 .frame-token module-container[module="Name"] {
-    font-family: "Beleren Small Caps";
+    font-family: "Beleren Small Caps Bold";
     font-size: 22px;
     padding: 0 4px;
     justify-content: center;
