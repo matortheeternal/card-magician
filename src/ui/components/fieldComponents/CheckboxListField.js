@@ -31,7 +31,7 @@ export default class CheckboxListField extends FieldComponent {
     }
 
     loadValue() {
-        if (!this.checkboxes.length) return;
+        if (!this.checkboxes.length || !this.value) return;
         this.checkboxes.forEach(checkbox => {
             const optionId = checkbox.dataset.id;
             checkbox.value = this.value[optionId];
