@@ -10,8 +10,8 @@ function createFrameHelpers(card) {
     card.isBeyond = () => card.frame.ub;
     card.isFNM = () => card.frame.fnm;
     card.isEnergyLand = () => false;
-    card.isFrameless = () => card.frame.frameless;
-    card.isBorderless = () => card.frame.borderless;
+    card.isFrameless = () => card.artSize.frameless;
+    card.isBorderless = () => card.artSize.borderless;
     card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
     card.isClear = () => card.frame.clear;
     card.isDevoid = () => card.frame.devoid;

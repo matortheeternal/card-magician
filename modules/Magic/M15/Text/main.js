@@ -17,13 +17,9 @@ export default class TextModule extends CardMagicianModule {
         card.isMutate = () => /^mutate\b/i.test(card.rulesText);
         card.hasNoText = () => !card.rulesText.length;
 
-        card.textToHTML = (text, outputSymbols) => {
+        card.textToHTML = (text, options) => {
             const html = this.sanitize(text, { allowedTags });
-            return textToHTML(html, card).map(p => {
-                if (outputSymbols)
-                    p.symbols.forEach(sym => outputSymbols.push(sym));
-                return p.html;
-            }).join('');
+            return textToHTML(html, card, options).map(p => p.html).join('');
         };
 
         // TODO: probably should use a keyword system instead or be just user-configured
@@ -37,7 +33,9 @@ export default class TextModule extends CardMagicianModule {
 
     async renderRulesHTML(card) {
         const textSymbols = [];
-        card.rulesHTML = card.textToHTML(card.rulesText, textSymbols);
+        card.rulesHTML = card.textToHTML(card.rulesText, {
+            outputSymbols: textSymbols
+        });
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
         changed(card, ['colorIdentity', 'rulesHTML']);
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);

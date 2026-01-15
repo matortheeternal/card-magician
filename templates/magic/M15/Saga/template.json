@@ -1,0 +1,22 @@
+{
+  "id": "M15Saga",
+  "label": "Saga",
+  "description": "This template is for M15 Sagas.",
+  "version": "0.0",
+  "card": [
+    "Magic/M15/CardLayout",
+    "Magic/M15/SagaFrame",
+    "Magic/M15/Color",
+    "Magic/M15/Symbols",
+    "Magic/M15/FaceSymbol",
+    "Magic/M15/Name",
+    "Magic/M15/Cost",
+    "Magic/M15/Art",
+    "Magic/M15/ColorIndicator",
+    "Magic/M15/Type",
+    "Magic/M15/SagaText",
+    "Magic/M15/PT",
+    "Magic/M15/Rarity",
+    "Magic/M15/Footer"
+  ]
+}

@@ -28,7 +28,7 @@ export const SymbolConverter = {
     },
     convert(match, state, card, outputSymbols) {
         const symbols = card.parseSymbols(match[1]);
-        outputSymbols.push(...symbols);
+        outputSymbols?.push(...symbols);
         return card.symbolsToHTML(symbols);
     }
 };

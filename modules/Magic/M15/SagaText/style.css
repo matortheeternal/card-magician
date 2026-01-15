@@ -1,0 +1,90 @@
+module-container[module="SagaText"] {
+    display: flex;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    padding: 6px 13px;
+    margin-bottom: 0.5px;
+}
+
+module-container[module="SagaText"] auto-fit-text {
+    overflow: hidden;
+    font-size: 19px;
+    line-height: 1;
+    font-family: "MPlantin", sans-serif;
+    letter-spacing: 0.15px;
+}
+
+module-container[module="SagaText"] auto-fit-text i {
+    font-family: "MPlantin-Italic", serif;
+}
+
+module-container[module="SagaText"] .rules-text div.t {
+    padding: 4px 0;
+}
+
+module-container[module="SagaText"] .rules-text > div {
+    margin: 6px 0;
+}
+
+module-container[module="SagaText"] .rules-text > div:first-of-type {
+    margin-top: 0;
+}
+
+module-container[module="SagaText"] .rules-text > div:last-of-type {
+    margin-bottom: 0;
+}
+
+.saga-chapter {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+.chapter-icons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chapter-icon {
+    width: 30px;
+    height: 33.5px;
+    margin: 8px 0;
+}
+
+.chapter-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5px;
+}
+
+module-container[module="SagaText"] auto-fit-text div.sym {
+    font-size: 97%;
+    line-height: 0.95;
+    height: 0.85em;
+    width: 0.85em;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0.1em;
+    margin-left: 1px;
+}
+
+module-container[module="SagaText"] .flavor-text {
+    font-family: "MPlantin-Italic", serif;
+    font-style: italic;
+}
+
+module-container[module="SagaText"] auto-fit-text span.q:last-child {
+    display: inline-block;
+    width: 8px;
+    margin-left: -2px;
+}
+
+module-container[module="SagaText"] auto-fit-text span.q:first-child {
+    display: inline-block;
+    margin-left: -2px;
+}
