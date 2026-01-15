@@ -9,14 +9,6 @@ cm-title-bar {
     -webkit-user-select: none;
 }
 
-cm-title-bar img {
-    width: 32px;
-    height: 32px;
-    margin: 0 4px;
-    border: 1px solid grey;
-    box-sizing: content-box;
-}
-
 cm-title-bar sl-button::part(base) {
     border: none;
     border-radius: 0;
@@ -44,12 +36,4 @@ cm-title-bar .menu-item > div:first-of-type {
 cm-title-bar .menu-active > sl-button::part(base) {
     background-color: var(--sl-color-primary-50);
     color: var(--sl-color-primary-700);
-}
-
-cm-title-bar sl-button::part(label) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    padding: 0;
 }

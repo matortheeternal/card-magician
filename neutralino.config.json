@@ -38,8 +38,6 @@
       "webviewArgs": "--disable-features=Autofill,PasswordManager,AutofillServerCommunication",
       "enableInspector": true,
       "openInspectorOnStartup": false,
-      "borderless": true,
-      "transparent": true,
       "moveable": true,
       "maximize": false,
       "hidden": false,
