@@ -5,6 +5,7 @@ cm-options-form > div {
     position: relative;
     padding: 0 var(--sl-spacing-x-large);
     font-family: var(--sl-font-sans);
+    width: 30em;
 }
 
 form-group {
