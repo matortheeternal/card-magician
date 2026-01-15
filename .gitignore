@@ -1,4 +1,5 @@
 # Developer tools' files
+.idea
 .lite_workspace.lua
 
 # Neutralinojs binaries and builds
