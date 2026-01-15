@@ -63,8 +63,9 @@ cm-options-form .no-content-prompt {
 .remove-btn {
     cursor: pointer;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -2px;
+    right: -2px;
+    font-size: var(--sl-font-size-small);
 }
 
 .remove-btn::part(base) {
