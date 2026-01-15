@@ -31,6 +31,7 @@ body {
     color: var(--sl-color-gray-900);
     display: flex;
     user-select: none;
+    -webkit-user-select: none;
     flex-direction: column;
     overflow: hidden;
 }
@@ -163,8 +164,4 @@ main {
 .status-message.removing {
     opacity: 0;
     font-size: 0;
-}
-
-*::part(form-control) {
-    margin-top: var(--sl-spacing-x-small);
 }

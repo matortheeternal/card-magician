@@ -9,6 +9,7 @@ cm-image-select {
 cm-image-select sl-card {
     cursor: pointer;
     user-select: none;
+    -webkit-user-select: none;
     position: relative;
     text-align: center;
     transition: background-color 0.2s, border-color 0.2s;

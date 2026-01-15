@@ -6,6 +6,7 @@ cm-title-bar {
     color: var(--sl-input-label-color);
     background: var(--sl-color-neutral-0);
     user-select: none;
+    -webkit-user-select: none;
 }
 
 cm-title-bar img {

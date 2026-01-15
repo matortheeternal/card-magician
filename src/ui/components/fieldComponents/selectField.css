@@ -5,6 +5,7 @@
 .sl-select-field .sl-field__label {
     display: inline-block;
     user-select: none;
+    -webkit-user-select: none;
     margin-bottom: var(--sl-spacing-3x-small);
     font-size: var(--sl-font-size-small);
     font-weight: var(--sl-font-weight-medium);

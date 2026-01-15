@@ -13,6 +13,7 @@ body.column-resizing * {
     width: 100%;
     table-layout: fixed;
     user-select: none;
+    -webkit-user-select: none;
     cursor: default;
 }
 
