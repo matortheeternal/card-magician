@@ -30,6 +30,7 @@ form-field {
 
 sl-button.add-btn {
     margin-top: var(--sl-spacing-x-small);
+    margin-bottom: var(--sl-spacing-2x-small);
 }
 
 sl-button.add-btn sl-icon {
