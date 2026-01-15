@@ -5,8 +5,8 @@ import globImportPlugin from 'esbuild-plugin-import-glob';
 
 const shoelaceIcons = [
     'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square',
-    'lock', 'unlock', 'arrow-counterclockwise', 'arrows-fullscreen', 'align-center',
-    'align-middle', 'folder2-open'
+    'lock', 'unlock', 'arrow-up', 'arrow-down', 'arrow-counterclockwise',
+    'arrows-fullscreen', 'align-center', 'align-middle', 'folder2-open'
 ].map(
     name => `./node_modules/@shoelace-style/shoelace/dist/assets/icons/${name}.svg`
 );
