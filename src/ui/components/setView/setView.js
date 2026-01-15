@@ -37,6 +37,7 @@ export default class SetView extends ReactiveComponent {
         this.addEventListener('row-selected', event => this.onRowSelected(event));
         this.addEventListener('sl-input', this.updateSearch.debounce(200));
         this.addEventListener('add-row-click', event => this.addCard(event));
+        this.addEventListener('sort-updated', () => this.updateStatus());
 
         registerAction('toggle-search', () => this.toggleSearch());
         registerAction('add-card', () => this.addCard());
@@ -55,6 +56,10 @@ export default class SetView extends ReactiveComponent {
 
     get listView() {
         return this.querySelector('cm-list-view');
+    }
+
+    get statusBar() {
+        return this.querySelector('.status-bar');
     }
 
     get noContentPrompt() {
@@ -94,6 +99,7 @@ export default class SetView extends ReactiveComponent {
         const hasCards = Boolean(set.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         if (this.searchValue) this.updateSearch();
+        this.updateStatus();
     }
 
     deleteSelectedCards() {
@@ -111,7 +117,7 @@ export default class SetView extends ReactiveComponent {
         });
     }
 
-    addCard() {
+    async addCard() {
         const game = getActiveGame();
         const activeSet = getActiveSet();
         const card = game.newCard();
@@ -119,6 +125,7 @@ export default class SetView extends ReactiveComponent {
         changed(activeSet, 'cards');
         this.listView.selection = [indexToSelect];
         selectCard(card);
+        this.updateStatus();
     }
 
     copyCard() {
@@ -164,9 +171,35 @@ export default class SetView extends ReactiveComponent {
             this.listView.rows = this.searchValue
                 ? filter(cards, this.searchValue)
                 : cards;
+            this.updateStatus();
         } catch (e) {
             console.debug('%cSearch error:', 'color:grey', e.message);
         }
+    }
+
+    updateStatus() {
+        const activeSet = getActiveSet();
+        const totalCount = activeSet.cards.length;
+        const visibleCount = this.listView.rows.length;
+        const filterStr = this.searchValue
+            ? `Showing ${visibleCount} / `
+            : '';
+        const totalCardsStr = `${totalCount} cards`;
+        const sortCols = this.listView.activeColumns
+            .filter(col => Boolean(col.sort))
+            .sort((a, b) => a.sort.priority - b.sort.priority)
+            .map(col => `${col.label} ${col.sort.direction === 'asc' ? '↑' : '↓'}`);
+        const sortStr = sortCols.length
+            ? `, sorted by ${sortCols.join(', ')}`
+            : '';
+        const primaryStatus = [filterStr, totalCardsStr, sortStr].join('');
+        const secondaryStatus = this.listView.selection.length
+            ? `${this.listView.selection.length} selected`
+            : '';
+        this.statusBar.innerHTML = (
+            `<div>${primaryStatus}</div>
+             <div>${secondaryStatus}</div>`
+        );
     }
 
     searchInputKeyDown(event) {
@@ -182,6 +215,7 @@ export default class SetView extends ReactiveComponent {
         const { row } = event.detail;
         console.log('%cSelected card:', 'color:orange', row.data.name);
         selectCard(row.original);
+        this.updateStatus();
     }
 }
 

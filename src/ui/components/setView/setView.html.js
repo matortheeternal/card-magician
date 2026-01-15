@@ -12,6 +12,7 @@ export default
 <cm-list-view
     add-row-label="${L`Click to add a card or press Ctrl+Enter`}"
 ></cm-list-view>
+<div class="status-bar"></div>
 <div class="no-content-prompt">
     <div>${L`This set has no cards in it.`}</div>
     <div class="buttons-container">

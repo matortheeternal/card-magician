@@ -237,6 +237,7 @@ export default class ListView extends ReactiveComponent {
         mode.select(column, this.activeColumns);
         if (!column.sort) this.computeRows();
         this.sortRows();
+        emit(this, 'sort-updated');
         this.render();
     }
 
