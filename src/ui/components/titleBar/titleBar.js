@@ -70,7 +70,6 @@ export default class TitleBar extends ReactiveComponent {
     render() {
         this.innerHTML = `<div class="menus-container"></div>`;
         this.renderMenus();
-        this.makeDraggable();
     }
 
     onMenuHide(event) {

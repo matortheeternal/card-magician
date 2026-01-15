@@ -86,10 +86,6 @@ export function getActiveSet() {
     return activeSet;
 }
 
-export function getSetCards() {
-    return activeSet.cards.slice();
-}
-
 export function getSelectedCard() {
     return selectedCard;
 }
