@@ -30,7 +30,7 @@
     "build": "node scripts/build.js",
     "release": "node scripts/release.js",
     "dev": "node scripts/serve.js",
-    "start": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --window-enable-inspector\"",
+    "start": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --window-enable-inspector --mode=chrome\"",
     "test": "npm run build && concurrently --handle-input -k -n dev,test -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --run-tests\"",
     "localize": "npm run build && concurrently --handle-input -k -n dev,localize -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --localize\"",
     "lint": "npx eslint src modules"
