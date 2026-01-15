@@ -98,6 +98,7 @@ export async function saveActiveCard() {
     selectedCard.front = await activeCard.front.save();
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
+    changed(activeSet, 'cards');
 }
 
 export function onActiveCardChanged(callback) {
