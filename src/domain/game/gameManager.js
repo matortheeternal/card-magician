@@ -1,5 +1,4 @@
 import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
-import { sifter } from './search.js';
 import AppConfig from './appConfig.js';
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { newSet } from '../sets/setManager.js';
