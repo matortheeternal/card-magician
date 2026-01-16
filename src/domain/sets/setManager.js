@@ -43,7 +43,7 @@ export async function saveAs() {
     if (!filePath) return;
     console.info('Saving set to:', filePath);
     setFilePath = filePath;
-    await saveSetData(filePath, activeSet);
+    await saveProject(filePath, activeSet);
 }
 
 export async function save() {
