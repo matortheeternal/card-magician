@@ -44,7 +44,7 @@ export default class ImageOperation {
         }
 
         const preparedArgs = await Promise.all(argPromises);
-        return await op.fn(...preparedArgs);
+        return op.fn(...preparedArgs);
     }
 
     async publish(imageFormat = 'image/png', imageQuality = 0.92) {
@@ -54,7 +54,7 @@ export default class ImageOperation {
 
         console.debug('%cCache miss %s', 'color:grey', filename);
         const canvas = await this.execute();
-        return await imageCache.save(filename, canvas, imageFormat, imageQuality);
+        return imageCache.save(filename, canvas, imageFormat, imageQuality);
     }
 }
 

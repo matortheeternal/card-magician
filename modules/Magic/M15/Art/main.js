@@ -48,7 +48,7 @@ export default class ArtModule extends CardMagicianModule {
         const typeImage = this.getDefaultTypeImage(card);
         if (typeImage) {
             const blendImage = this.combineBlend(colorImage, typeImage);
-            return await blendImage.publish();
+            return blendImage.publish();
         }
         return colorImage.publish
             ? await colorImage.publish()

@@ -136,7 +136,7 @@ export default class ImageField extends FieldComponent {
         const file = event.target.files?.[0];
         if (!file || !file.type.startsWith('image/'))
             return this.value;
-        return await ImageFieldValue.fromFile(file);
+        return ImageFieldValue.fromFile(file);
     }
 
     selectImage(event) {

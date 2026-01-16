@@ -27,7 +27,7 @@ export async function saveSetData(filePath, data) {
 
 export async function loadSetData(filePath) {
     const serializer = serializers.find(s => s.matches(filePath));
-    return await serializer.load(filePath);
+    return serializer.load(filePath);
 }
 
 export async function saveAs() {
@@ -47,7 +47,7 @@ export async function saveAs() {
 }
 
 export async function save() {
-    if (!setFilePath) return await saveAs();
+    if (!setFilePath) return saveAs();
     const message = addStatusMessage(L`Saving...`, -1);
     console.info('Saving set to:', setFilePath);
     await saveSetData(setFilePath, activeSet);

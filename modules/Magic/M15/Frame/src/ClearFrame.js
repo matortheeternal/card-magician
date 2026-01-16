@@ -39,6 +39,6 @@ export default class ClearFrame extends NormalFrame {
     async resolveMiracleTrim(card) {
         if (!card.isMiracle?.()) return null;
         const imageUrl = `${this.miracleFolder}/x.png`;
-        return await this.background('miracle-trim', imageUrl);
+        return this.background('miracle-trim', imageUrl);
     }
 }

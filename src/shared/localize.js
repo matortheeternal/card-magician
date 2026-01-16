@@ -27,7 +27,7 @@ export async function loadLocales() {
         .filter(e => e.type === 'FILE' && e.entry.endsWith('.yml'))
         .map(e => e.entry.slice(0, -4));
 
-    return await Promise.all(
+    return Promise.all(
         Object.entries(manifest).filter(([key]) => {
             return availableFiles.includes(key);
         }).map(([key, value]) => {
@@ -53,7 +53,7 @@ async function saveLocaleRegistry() {
 }
 
 export async function getAvailableLocales() {
-    return await localesPromise;
+    return localesPromise;
 }
 
 export async function saveLocale(locale) {

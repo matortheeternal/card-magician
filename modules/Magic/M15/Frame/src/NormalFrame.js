@@ -26,7 +26,7 @@ export default class NormalFrame extends CardFrame {
 
     async buildBackgrounds(key, card) {
         this.numTrims = 0;
-        return await super.buildBackgrounds(key, card);
+        return super.buildBackgrounds(key, card);
     }
 
     /*
@@ -102,7 +102,7 @@ export default class NormalFrame extends CardFrame {
             hasLandTemplates: this.frameHasLandTemplates
         });
         const maskedImg = this.maskFrame(image);
-        return await this.background(this.frameId, maskedImg);
+        return this.background(this.frameId, maskedImg);
     }
 
     // --- TRIM MASKS ---
@@ -180,7 +180,7 @@ export default class NormalFrame extends CardFrame {
             blendMaskFolder: this.crownBlendMaskFolder
         });
         const maskedImg = this.applyMasks(image, this.crownMasks);
-        return await this.background('crown', maskedImg);
+        return this.background('crown', maskedImg);
     }
 
     // --- VEHICLE TRIM ---
@@ -196,7 +196,7 @@ export default class NormalFrame extends CardFrame {
     async resolveVehicleTrim() {
         if (!this.showVehicleTrim) return null;
         const maskedImg = this.maskTrim(this.vehicleTrimUrl);
-        return await this.background('vehicle-trim', maskedImg);
+        return this.background('vehicle-trim', maskedImg);
     }
 
     // --- DRAFT TRIM ---
@@ -220,7 +220,7 @@ export default class NormalFrame extends CardFrame {
             blendMaskFolder: this.draftBlendMaskFolder
         });
         const maskedImg = this.maskTrim(image);
-        return await this.background('draft-trim', maskedImg);
+        return this.background('draft-trim', maskedImg);
     }
 
     // --- NYX TRIM ---
@@ -261,7 +261,7 @@ export default class NormalFrame extends CardFrame {
             blendMaskFolder: this.nyxBlendMaskFolder
         });
         const maskedImg = this.maskTrim(image);
-        return await this.background('nyx-trim', maskedImg);
+        return this.background('nyx-trim', maskedImg);
     }
 
     // --- SNOW TRIM ---
@@ -286,7 +286,7 @@ export default class NormalFrame extends CardFrame {
             hasLandTemplates: true
         });
         const maskedImg = this.maskTrim(image);
-        return await this.background('snow-trim', maskedImg);
+        return this.background('snow-trim', maskedImg);
     }
 
     // --- BORDER ---
@@ -305,7 +305,7 @@ export default class NormalFrame extends CardFrame {
     async resolveBorder(card) {
         const borderColor = card.borderColor || '#000000';
         const maskedImg = this.ctx.maskColor(this.borderMaskUrl, borderColor);
-        return await this.background('border', maskedImg);
+        return this.background('border', maskedImg);
     }
 
     // --- SCROLLS ---
@@ -325,7 +325,7 @@ export default class NormalFrame extends CardFrame {
 
     async resolveScrolls() {
         if (!this.showScrolls) return null;
-        return await this.background('conspiracy-scrolls', this.scrollsUrl);
+        return this.background('conspiracy-scrolls', this.scrollsUrl);
     }
 
     // --- NODE ---
@@ -352,7 +352,7 @@ export default class NormalFrame extends CardFrame {
             ext: '.png',
             blendMaskFolder: this.nodeBlendMaskFolder
         });
-        return await this.background('node', image);
+        return this.background('node', image);
     }
 
     // --- MIRACLE TRIM ---
@@ -379,7 +379,7 @@ export default class NormalFrame extends CardFrame {
             ext: '.png',
             blendMaskFolder: this.miracleBlendMaskFolder
         });
-        return await this.background('miracle-trim', image);
+        return this.background('miracle-trim', image);
     }
 
     // --- PT ---
@@ -395,6 +395,6 @@ export default class NormalFrame extends CardFrame {
 
     async resolvePt(card) {
         const image = `${this.ptFolder}/${this.getPtKey(card)}.png`;
-        return await this.background('pt', image);
+        return this.background('pt', image);
     }
 }

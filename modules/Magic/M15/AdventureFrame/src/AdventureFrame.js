@@ -25,7 +25,7 @@ export default class AdventureFrame extends NormalFrame {
 
     async resolveBinding(card) {
         const image = this.coloredBlend(this.bindingUrl, card);
-        return await this.background('binding', image, 1);
+        return this.background('binding', image, 1);
     }
 
     /* --- LEFT PAGE --- */
@@ -39,7 +39,7 @@ export default class AdventureFrame extends NormalFrame {
             hybridMode: 'first',
             ext: '.png'
         });
-        return await this.background('left-page', image, 2);
+        return this.background('left-page', image, 2);
     }
 
     /* --- RIGHT PAGE --- */
@@ -52,6 +52,6 @@ export default class AdventureFrame extends NormalFrame {
             hybridMode: 'first',
             ext: '.png'
         });
-        return await this.background('right-page', image, 2);
+        return this.background('right-page', image, 2);
     }
 }

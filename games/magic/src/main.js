@@ -2,7 +2,7 @@ import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
 import CardMagicianCard from '@sigil-sifter/magic-cm/card';
-import { buildColumns } from './columns.js';
+import {buildColumns, collectMap} from './columns.js';
 import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
@@ -36,6 +36,21 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     get defaultTemplateId() {
         return 'M15Main';
+    }
+
+    getCardName(card) {
+        return collectMap(card, f => f.name || 'blank', ' + ');
+    }
+
+    async getCardImages(card) {
+        return Promise.all(
+            ['front', 'back'].filter(key => {
+                return Boolean(card[key]?.artImage?.imageUrl);
+            }).map(async key => ({
+                data: await card[key].artImage.loadImageData(),
+                key
+            }))
+        );
     }
 
     loadSet(set) {

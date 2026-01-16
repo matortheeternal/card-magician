@@ -4,51 +4,59 @@ export async function openSingleFileDialog(label, filters) {
 }
 
 export async function saveSingleFileDialog(label, defaultPath, filters) {
-    return await Neutralino.os.showSaveDialog(label, { defaultPath, filters });
+    return Neutralino.os.showSaveDialog(label, { defaultPath, filters });
 }
 
 export async function getStoredData(key) {
-    return await Neutralino.storage.getData(key);
+    return Neutralino.storage.getData(key);
 }
 
 export async function storeData(key, value) {
-    return await Neutralino.storage.setData(key, value);
+    return Neutralino.storage.setData(key, value);
 }
 
 export async function readDirectory(path, options) {
-    return await Neutralino.filesystem.readDirectory(path, options);
+    return Neutralino.filesystem.readDirectory(path, options);
 }
 
 export async function readFile(path) {
-    return await Neutralino.filesystem.readFile(path);
+    return Neutralino.filesystem.readFile(path);
 }
 
 export async function writeFile(path, data) {
-    return await Neutralino.filesystem.writeFile(path, data);
+    return Neutralino.filesystem.writeFile(path, data);
 }
 
 export async function writeBinaryFile(path, data) {
-    return await Neutralino.filesystem.writeBinaryFile(path, data);
+    return Neutralino.filesystem.writeBinaryFile(path, data);
 }
 
 export async function readBinaryFile(path) {
-    return await Neutralino.filesystem.readBinaryFile(path);
+    return Neutralino.filesystem.readBinaryFile(path);
 }
 
 export async function getAbsolutePath(path) {
-    return await Neutralino.filesystem.getAbsolutePath(path);
+    return Neutralino.filesystem.getAbsolutePath(path);
 }
 
 export async function open(path) {
-    return await Neutralino.os.open(path);
+    return Neutralino.os.open(path);
 }
 
 export async function getStats(path) {
-    return await Neutralino.filesystem.getStats(path);
+    return Neutralino.filesystem.getStats(path);
+}
+
+export async function getJoinedPath(...paths) {
+    return Neutralino.filesystem.getJoinedPath(...paths);
 }
 
 export async function createDirectory(path) {
-    return await Neutralino.filesystem.createDirectory(path);
+    return Neutralino.filesystem.createDirectory(path);
+}
+
+export async function rmrf(path) {
+    return Neutralino.filesystem.remove(path);
 }
 
 export async function mount(path, target) {
@@ -60,35 +68,35 @@ export async function mount(path, target) {
 }
 
 export async function minimizeWindow() {
-    return await Neutralino.window.minimize();
+    return Neutralino.window.minimize();
 }
 
 export async function maximizeWindow() {
-    return await Neutralino.window.maximize();
+    return Neutralino.window.maximize();
 }
 
 export async function unmaximizeWindow() {
-    return await Neutralino.window.unmaximize();
+    return Neutralino.window.unmaximize();
 }
 
 export async function centerWindow() {
-    return await Neutralino.window.center();
+    return Neutralino.window.center();
 }
 
 export async function getWindowSize() {
-    return await Neutralino.window.getSize();
+    return Neutralino.window.getSize();
 }
 
 export async function getWindowPosition() {
-    return await Neutralino.window.getPosition();
+    return Neutralino.window.getPosition();
 }
 
 export async function setWindowSize(options) {
-    return await Neutralino.window.setSize(options);
+    return Neutralino.window.setSize(options);
 }
 
 export async function setDraggableRegion(domElementOrID, options = {}) {
-    return await Neutralino.window.setDraggableRegion(domElementOrID, options);
+    return Neutralino.window.setDraggableRegion(domElementOrID, options);
 }
 
 export async function initApp() {

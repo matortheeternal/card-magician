@@ -46,7 +46,7 @@ export default class CardMagicianGame {
      * @returns {Promise<string>} Resolves with the file's text content.
      */
     async loadFile(localPath) {
-        return await loadTextFile(this.resolvePath(localPath));
+        return loadTextFile(this.resolvePath(localPath));
     }
 
     /**

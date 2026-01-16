@@ -15,7 +15,7 @@ export default class BinarySerializer extends Serializer {
     static async load(filePath) {
         const serializer = new this();
         const buffer = await readBinaryFile(filePath);
-        return await serializer.deserialize(buffer);
+        return serializer.deserialize(buffer);
     }
 
     constructor(adapters) {

@@ -20,7 +20,7 @@ export default class Serializer {
     static async load(filePath) {
         const serializer = new this();
         const text = await readFile(filePath);
-        return await serializer.deserialize(text);
+        return serializer.deserialize(text);
     }
 
     /**
@@ -111,7 +111,7 @@ export default class Serializer {
             return Promise.all(value.map(v => this.encodeNode(v)));
 
         if (value && typeof value === 'object')
-            return await this.encodeObject(value);
+            return this.encodeObject(value);
 
         return value;
     }
@@ -139,13 +139,13 @@ export default class Serializer {
     async decodeNode(node) {
         if (!node) return node;
         const adapter = this.adapters.find(a => a.canDecode(node));
-        if (adapter) return await adapter.decode(node, this);
+        if (adapter) return adapter.decode(node, this);
 
         if (Array.isArray(node))
             return Promise.all(node.map(n => this.decodeNode(n)));
 
         if (node && typeof node === 'object')
-            return await this.decodeObject(node);
+            return this.decodeObject(node);
 
         return node;
     }

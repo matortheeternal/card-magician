@@ -35,7 +35,7 @@ export async function loadTextFile(filePath) {
     const response = await fetch(filePath);
     if (!response.ok)
         throw new Error(`Failed to load file ${filePath}, ${response.status}`);
-    return await response.text();
+    return response.text();
 }
 
 /**

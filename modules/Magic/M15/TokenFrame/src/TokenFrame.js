@@ -65,6 +65,6 @@ export default class TokenFrame extends NormalFrame {
     async resolveCrown(card) {
         if (!this.showCrown) return null;
         const image = resolveAssetPath(`element/crown/base.png`);
-        return await this.background('crown', image);
+        return this.background('crown', image);
     }
 }
