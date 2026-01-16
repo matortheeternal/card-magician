@@ -9,6 +9,7 @@ import {
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
+import {saveProject} from './saveProject.js';
 
 const L = localize('set-manager');
 const serializers = [MessagePackSerializer, YAMLSerializer, JSONSerializer];
