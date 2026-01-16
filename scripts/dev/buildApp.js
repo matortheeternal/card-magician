@@ -17,7 +17,8 @@ async function buildJs({ minify }) {
         bundle: true,
         outdir: 'resources/js',
         format: 'iife',
-        sourcemap: true,
+        sourcemap: 'inline',
+        sourcesContent: true,
         minify,
         target: ['es2020'],
         loader: {
