@@ -135,12 +135,15 @@ export default class CardMagicianGame {
     }
 
     /**
-     * This function gets called after the init function is called.
-     * Use this function to configure SigilSifter to work with your game mode.
+     * This function gets called when a user attempts to search a set of cards.
+     * Return an array of cards that match the query. For search engine, consider
+     * using sigil-sifter.
      *
-     * @param {SigilSifter} sifter
+     * @param {Array<card>} cards
+     * @param {string} query
+     * @returns {Array<card>}
      */
-    setupSearch(sifter) {}
+    filter(cards, query) {}
 
     /**
      * Initializes a set of fields on a passed object, and returns a reference to the

@@ -15,7 +15,6 @@ export async function setGame(gameId) {
     const { default: Module } = await import('/' + mainPath);
     activeGame = new Module(game.path);
     await activeGame.init();
-    activeGame.setupSearch(sifter);
     newSet();
     appConfig = new AppConfig(gameId);
     return activeGame;

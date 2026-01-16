@@ -7,6 +7,7 @@ import { autoNumberCards } from './autoNumber.js';
 import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
+import SigilSifter from 'sigil-sifter';
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
@@ -16,11 +17,17 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
+        this.setupSearch();
     }
 
-    setupSearch(sifter) {
-        Magic(sifter, CardMagicianCard);
-        CardMagicianMagic(sifter);
+    setupSearch() {
+        this.sifter = new SigilSifter();
+        Magic(this.sifter, CardMagicianCard);
+        CardMagicianMagic(this.sifter);
+    }
+
+    filter(cards, query) {
+        return this.sifter.filter(cards, query);
     }
 
     get columns () {

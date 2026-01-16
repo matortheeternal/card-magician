@@ -8,7 +8,6 @@ import {
 } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
-import { filter } from '../../../domain/game/search.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -166,10 +165,11 @@ export default class SetView extends ReactiveComponent {
     updateSearch(event) {
         if (event) this.searchValue = event.target.value;
         const cards = getActiveSet().cards;
+        const game = getActiveGame();
         try {
             console.debug('%cSearching for:', 'color:orange', this.searchValue);
             this.listView.rows = this.searchValue
-                ? filter(cards, this.searchValue)
+                ? game.filter(cards, this.searchValue)
                 : cards;
             this.updateStatus();
         } catch (e) {
