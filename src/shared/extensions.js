@@ -115,6 +115,27 @@ addPrototypeFunction(Array, 'remove', {
 
 /**
  * @method
+ * @name Array#zip
+ * @param {Array<any>} otherArray - Another array to zip with.
+ * @returns {Array<Array<any, any>>}
+ * @description Combines two arrays together.
+ * Example:
+ * ```js
+ * [1, 2, 3].zip(['a', 'b', 'c']);
+ * // -> [[1, 'a'], [2, 'b'], [3, 'c']]
+ * ```
+ */
+addPrototypeFunction(Array, 'zip', {
+    value: function zip(otherArray) {
+        const res = [];
+        for (let i = 0; i < this.length && i < otherArray.length; i++)
+            res.push([this[i], otherArray[i]]);
+        return res;
+    }
+});
+
+/**
+ * @method
  * @name Function#debounce
  * @param {number} delay - Debounce delay before function execution.
  * @returns {Function}
