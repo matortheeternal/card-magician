@@ -1,4 +1,4 @@
-import {getImageSize, loadImage} from '../../shared/imageUtils.js';
+import { getImageSize } from '../../shared/imageUtils.js';
 import ImageCrop from './ImageCrop.js';
 
 export default class ImageFieldValue {

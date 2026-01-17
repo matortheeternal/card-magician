@@ -1,7 +1,7 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
-import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
+import { emit, esc } from '../../../shared/htmlUtils.js';
 import { openModal } from '../../modals/modalManager.js';
 
 function getBaseHTML(label) {

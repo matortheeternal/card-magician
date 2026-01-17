@@ -1,5 +1,4 @@
 import RenderScheduler from '../template/renderScheduler.js';
-import ImageFieldValue from './ImageFieldValue.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 export default class BaseCardModel {
