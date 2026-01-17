@@ -1,18 +1,18 @@
 export default function MakeManaCostAdapter(SerializerAdapter, ManaCost) {
     return class ManaCostAdapter extends SerializerAdapter {
-        nodeType = 'ManaCost';
+        static nodeType = 'ManaCost';
 
         canEncode(value) {
             return value instanceof ManaCost;
         }
 
         canDecode(node) {
-            return node.__type === this.nodeType;
+            return node.__type === ManaCostAdapter.nodeType;
         }
 
         async encode(manaCost) {
             return {
-                __type: this.nodeType,
+                __type: ManaCostAdapter.nodeType,
                 data: manaCost.toString(true)
             };
         }
