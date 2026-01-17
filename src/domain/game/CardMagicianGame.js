@@ -93,10 +93,10 @@ export default class CardMagicianGame {
      * Returns an object representing a new set for this game.
      *
      * @abstract
-     * @returns {Object}
+     * @returns {object}
      */
     newSet() {
-        return { cards: [], info: {} };
+        return { cards: [] };
     }
 
     /**

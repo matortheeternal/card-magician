@@ -27,9 +27,9 @@ export function collectorNumberSort(a, b) {
 }
 
 export function formatCollectorNumber(set, num, suffix = '') {
-    if (set.info.collectorNumberFormat === 'four')
+    if (set.collectorNumberFormat === 'four')
         return num.toString().padStart(4, '0') + suffix;
-    if (set.info.collectorNumberFormat === 'threeOutOf') {
+    if (set.collectorNumberFormat === 'threeOutOf') {
         const current = num.toString().padStart(3, '0') + suffix;
         const max = set.cards.length.toString().padStart(3, '0');
         return `${current} / ${max}`;

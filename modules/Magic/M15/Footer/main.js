@@ -24,7 +24,7 @@ export default class FooterModule extends CardMagicianModule {
             'rarityCharacter', 'autoCollectorNumber', 'collectorNumber',
             'setCode', 'language', 'illustrator'
         ], () => this.requestRender({ render: 'renderInfo' }));
-        watch(this.set.info, ['rarityOrder', 'language', 'illustrator', 'setCode'],
+        watch(this.set, ['rarityOrder', 'language', 'illustrator', 'setCode'],
               () => this.requestRender({ render: 'renderInfo' })
         );
         watch(card, 'legalText', () => this.requestRender({ render: 'renderLegal' }));
@@ -34,14 +34,14 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderSetCodeAndLanguage(card) {
-        const setCode = this.escapeHTML(card.setCode || this.set.info.setCode || '');
-        const language = this.escapeHTML(card.language || this.set.info.language || '');
+        const setCode = this.escapeHTML(card.setCode || this.set.setCode || '');
+        const language = this.escapeHTML(card.language || this.set.language || '');
         return `<div>${setCode} &bullet; ${language}</div>`;
     }
 
     renderIllustrator(card) {
         const illustrator = this.escapeHTML(
-            card.illustrator || this.set.info.illustrator || ''
+            card.illustrator || this.set.illustrator || ''
         );
 
         return (
@@ -55,7 +55,7 @@ export default class FooterModule extends CardMagicianModule {
     renderInfo(card) {
         const number = card.collectorNumber || card.autoCollectorNumber || '';
 
-        return this.set.info.rarityOrder === 'after' ? (
+        return this.set.rarityOrder === 'after' ? (
             `<div class="column">
                 <div>${this.escapeHTML(number)}</div>
                 ${this.renderSetCodeAndLanguage(card)}
@@ -77,11 +77,11 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderLegal(card) {
-        return card.legalText || this.set.info.legalText;
+        return card.legalText || this.set.legalText;
     }
 
     get fields() {
-        const { illustrator, setCode, language, legalText } = this.set.info;
+        const { illustrator, setCode, language, legalText } = this.set;
         return [
             { id: 'illustrator', label: L`Illustrator`, placeholder: illustrator },
             { id: 'autoCollectorNumber', label: L`Auto Collector Number` },

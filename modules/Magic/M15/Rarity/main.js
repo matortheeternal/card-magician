@@ -14,7 +14,7 @@ export default class RarityModule extends CardMagicianModule {
     render(card) {
         const set = this.getActiveSet();
         const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
-        return (`<span class="${rarityClass}">${set.info.symbol || ''}</span>`);
+        return (`<span class="${rarityClass}">${set.symbol || ''}</span>`);
     }
 
     get fields() {

@@ -37,7 +37,7 @@ const actions = {
             selectedLocale: locales[0]
         });
     },
-    editSetInfo: () => openModal('cm-set-info-modal', getActiveSet().info),
+    editSetInfo: () => openModal('cm-set-info-modal', getActiveSet()),
     addCard: () => executeAction('add-card'),
     deleteCards: () => executeAction('delete-selected-cards'),
 };

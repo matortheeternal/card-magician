@@ -60,7 +60,7 @@ export default class MagicTheGathering extends CardMagicianGame {
             card.notes ||= '';
             card.tags ||= [];
         });
-        return { ...newSet, ...set, info };
+        return { ...info, ...newSet, ...set };
     }
 
     newCard() {
@@ -69,6 +69,6 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     newSet() {
         const info = this.initializeFields(setInfoFields);
-        return { cards: [], info };
+        return { ...info, version: SET_FILE_VERSION, cards: [] };
     }
 }
