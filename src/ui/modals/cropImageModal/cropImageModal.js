@@ -12,7 +12,7 @@ export default class CropImageModal extends Modal {
     maxHeight = 600;
 
     connectedCallback() {
-        this.title = `${L`Crop Image`} (<span>${esc(this.value.filename)}</span>)`;
+        this.title = `${L`Crop Image`}`;
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;

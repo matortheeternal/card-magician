@@ -2,9 +2,8 @@ import {getImageSize, loadImage} from '../../shared/imageUtils.js';
 import ImageCrop from './ImageCrop.js';
 
 export default class ImageFieldValue {
-    constructor(imageUrl = null, filename = '', width = 0, height = 0, crop) {
+    constructor(imageUrl = null, width = 0, height = 0, crop) {
         this.imageUrl = imageUrl;
-        this.filename = filename;
         this.width = width;
         this.height = height;
         this.crop = crop || new ImageCrop();
@@ -19,18 +18,21 @@ export default class ImageFieldValue {
 
     static async load(data) {
         return new this(
-            data.imageUrl,
-            data.filename || '',
+            null,
             data.width || 0,
             data.height || 0,
             ImageCrop.load(data)
         );
     }
 
+    async loadImageData() {
+        if (!this.imageUrl) return null;
+        return (await fetch(this.imageUrl)).arrayBuffer();
+
+    }
+
     async save() {
         return {
-            imageUrl: this.imageUrl,
-            filename: this.filename,
             width: this.width,
             height: this.height,
             ...this.crop.save()
@@ -40,7 +42,6 @@ export default class ImageFieldValue {
     clone() {
         const clone = new this.constructor(
             this.imageUrl,
-            this.filename,
             this.width,
             this.height,
             this.crop.clone()

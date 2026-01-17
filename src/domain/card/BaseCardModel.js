@@ -18,16 +18,12 @@ export default class BaseCardModel {
     async saveField(field) {
         if (Object.hasOwn(field, 'save'))
             return field.save(this[field.id]);
-        if (field.type === 'image')
-            return this[field.id].save();
         return this[field.id];
     }
 
     async loadField(dataToLoad, field) {
         if (Object.hasOwn(field, 'load'))
             return field.load(dataToLoad);
-        if (field.type === 'image')
-            return ImageFieldValue.load(dataToLoad[field.id]);
         return dataToLoad[field.id];
     }
 

@@ -112,7 +112,6 @@ export default class ImageField extends FieldComponent {
                         <div class="crop-region"></div>
                     </div>
                 </sl-tooltip>
-                <div class="preview-name">${escapeHTML(this.value.filename)}</div>
             </div>`
         );
     }
