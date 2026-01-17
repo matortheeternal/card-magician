@@ -1,0 +1,39 @@
+import SerializerAdapter from './SerializerAdapter.js';
+import ImageFieldValue from '../../card/ImageFieldValue.js';
+
+/**
+ * Adapter for encoding/decoding object URLs as raw binary data.
+ */
+export default class ImageFieldAdapter extends SerializerAdapter {
+    static nodeType = 'image';
+
+    canDecode(node) {
+        return node.__type === ImageFieldAdapter.nodeType;
+    }
+
+    canEncode(value) {
+        return value instanceof ImageFieldValue;
+    }
+
+    /**
+     * Encode an ImageFieldValue into an object.
+     * @param {ImageFieldValue} value
+     * @returns {Promise<object>}
+     */
+    async encode(value) {
+        return {
+            __type: ImageFieldAdapter.nodeType,
+            ...await value.save()
+        };
+    }
+
+    /**
+     * Decode an object into an ImageFieldValue.
+     *
+     * @param {object} node
+     * @returns {Promise<ImageFieldValue>} A new ImageFieldValue.
+     */
+    async decode(node) {
+        return ImageFieldValue.load(node);
+    }
+}

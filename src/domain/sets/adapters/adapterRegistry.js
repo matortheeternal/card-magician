@@ -1,4 +1,4 @@
-import ObjectUrlAdapter from './ObjectUrlAdapter.js';
+import ImageFieldAdapter from './ImageFieldAdapter.js';
 import ObjectUrlBinaryAdapter from './ObjectUrlBinaryAdapter.js';
 
 const adapters = new Set();
@@ -20,5 +20,5 @@ export function getBinaryAdapters() {
     return [...binaryAdapters];
 }
 
-registerAdapter(ObjectUrlAdapter);
+registerAdapter(ImageFieldAdapter);
 registerBinaryAdapter(ObjectUrlBinaryAdapter);
