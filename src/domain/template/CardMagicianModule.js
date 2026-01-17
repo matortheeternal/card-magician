@@ -61,7 +61,6 @@ import { watch } from '../../shared/reactivity.js';
  *
  * @typedef {object} ImageFieldValue
  * @property {BlobURL|null} image
- * @property {string} filename
  * @property {number} [xOffset]
  * @property {number} [yOffset]
  * @property {number} [width]
