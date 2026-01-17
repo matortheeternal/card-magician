@@ -1,51 +1,5 @@
-import { getImageSize } from '../../shared/imageUtils.js';
-
-export class CropValue {
-    constructor(width = 0, height = 0, xOffset = 0, yOffset = 0) {
-        this.width = width;
-        this.height = height;
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-    }
-
-    static load(data) {
-        return new CropValue(
-            data.cropWidth || data.width || 1,
-            data.cropHeight || data.height || 1,
-            data.xOffset || 0,
-            data.yOffset || 0
-        );
-    }
-
-    clamp(sourceWidth, sourceHeight, isMove) {
-        const maxOffsetX = sourceWidth - (isMove ? this.width : 1);
-        const maxOffsetY = sourceHeight - (isMove ? this.height : 1);
-        this.xOffset = Math.max(0, Math.min(this.xOffset, maxOffsetX));
-        this.yOffset = Math.max(0, Math.min(this.yOffset, maxOffsetY));
-        const maxWidth = sourceWidth - this.xOffset;
-        const maxHeight = sourceHeight - this.yOffset;
-        this.width = Math.min(Math.max(this.width, 1), maxWidth);
-        this.height = Math.min(Math.max(this.height, 1), maxHeight);
-    }
-
-    save() {
-        return {
-            cropWidth: this.width,
-            cropHeight: this.height,
-            xOffset: this.xOffset,
-            yOffset: this.yOffset
-        };
-    }
-
-    clone() {
-        return new this.constructor(
-            this.width,
-            this.height,
-            this.xOffset,
-            this.yOffset
-        );
-    }
-}
+import {getImageSize, loadImage} from '../../shared/imageUtils.js';
+import ImageCrop from './ImageCrop.js';
 
 export default class ImageFieldValue {
     constructor(imageUrl = null, filename = '', width = 0, height = 0, crop) {
@@ -53,14 +7,14 @@ export default class ImageFieldValue {
         this.filename = filename;
         this.width = width;
         this.height = height;
-        this.crop = crop || new CropValue();
+        this.crop = crop || new ImageCrop();
     }
 
     static async fromFile(file) {
         const imageUrl = URL.createObjectURL(file);
         const { width, height } = await getImageSize(imageUrl);
-        const crop = new CropValue(width, height);
-        return new this(imageUrl, file.name, width, height, crop);
+        const crop = new ImageCrop(width, height);
+        return new this(imageUrl, width, height, crop);
     }
 
     static async load(data) {
@@ -69,7 +23,7 @@ export default class ImageFieldValue {
             data.filename || '',
             data.width || 0,
             data.height || 0,
-            CropValue.load(data)
+            ImageCrop.load(data)
         );
     }
 
