@@ -13,9 +13,9 @@ export function binarySearch(min, max, check, maxIt) {
         if (fits) {
             best = mid;
             low = mid;
-        } else 
+        } else {
             high = mid;
-        
+        }
     }
 
     return best;

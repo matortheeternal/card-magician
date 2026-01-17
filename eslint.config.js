@@ -22,6 +22,7 @@ export default [
                 NL_PATH: 'readonly',
                 NL_DATAPATH: 'readonly',
                 NL_ARGS: 'readonly',
+                NL_RESMODE: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
                 changed: 'readonly',
@@ -97,7 +98,7 @@ export default [
             'valid-typeof': 'warn',
 
             // Explicitness & clarity
-            'curly': ['error', 'multi-or-nest'],
+            'curly': ['error', 'multi-or-nest', 'consistent'],
             'eqeqeq': ['error', 'always'],
             'no-implied-eval': 'error',
             'no-with': 'error',
