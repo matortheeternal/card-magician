@@ -5,7 +5,7 @@ import { compareRowColors } from './compareRowColors.js';
 
 const L = localize('game-magic-columns');
 
-function collect(row, key, separator = ' // ') {
+export function collect(row, key, separator = ' // ') {
     return [row.front[key], row.back && row.back[key]]
         .filter(Boolean)
         .join(separator);
