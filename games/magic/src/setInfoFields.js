@@ -7,6 +7,11 @@ export const titleField = {
     label: L`Title`,
 };
 
+export const authorField = {
+    id: 'author',
+    label: L`Author`,
+};
+
 export const descriptionField = {
     id: 'description',
     label: L`Description`,
@@ -63,6 +68,7 @@ export const symbolField = {
 
 export default [
     titleField,
+    authorField,
     descriptionField,
     illustratorField,
     legalTextField,
