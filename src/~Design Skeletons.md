@@ -40,15 +40,16 @@ of unfilled skeleton slots, for quick structural validation of custom sets.
 The system will allow users to create and share skeleton templates. A skeleton template 
 will define a set of skeleton slots and may optionally define additional slots for
 specific size variants (e.g. 360 card skeleton, 250 card skeleton). Users will be 
-able to export their current set skeleton as a shareable .cm-skeleton file.
+able to export their current set skeleton as a shareable .cmskeleton file.
 
 ### Standards
 Most software treats generators as a first step. This system is unique in how it treats 
 a design skeleton as both a generation and a validation surface.
 
 #### Magic Set Editor
-Magic Set Editor provides fixed skeleton buttons that generate predefined card 
-distributions. These skeletons are not customizable.
+Magic Set Editor provides fixed skeleton buttons that generate card distributions. The 
+distributions can be edited at runtime by changing the `skeleton_` variables in the
+console.
 
 ### Risks and tradeoffs
 - *What security considerations are there for this solution?*
