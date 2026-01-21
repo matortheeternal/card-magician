@@ -1,6 +1,7 @@
 import YAMLSerializer from './YAMLSerializer.js';
 import { getJoinedPath, readBinaryFile } from '../../shared/neutralinoAdapter.js';
 import { getActiveGame } from '../game/gameManager.js';
+import {checkFileExists} from '../../shared/fsUtils.js';
 
 async function loadImages(card, basePath) {
     const game = getActiveGame();
@@ -8,11 +9,11 @@ async function loadImages(card, basePath) {
         const imageFilePath = count > 1
             ? `${basePath} - ${key.toTitleCase()}.jpg`
             : `${basePath}.jpg`;
-        try {
-            const data = await readBinaryFile(imageFilePath);
-            const blob = new Blob([data], { type: 'image/jpg' });
-            setCallback(card, blob);
-        } catch {}
+        const imageExists = await checkFileExists(imageFilePath);
+        if (!imageExists) return;
+        const data = await readBinaryFile(imageFilePath);
+        const blob = new Blob([data], { type: 'image/jpg' });
+        setCallback(card, blob);
     });
 }
 

@@ -13,7 +13,7 @@ export async function loadJson(filePath) {
 /**
  * Returns true if a file exists at the given file path.
  * @param {string} filePath
- * @returns {Promise<(() => boolean)>}
+ * @returns {Promise<boolean>}
  */
 export async function checkFileExists(filePath) {
     try {
