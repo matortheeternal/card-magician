@@ -25,7 +25,6 @@ async function handleRebuild() {
 }
 
 function onFilesChange(path) {
-    if (dirty) return;
     console.info(`change detected, build marked dirty > ${path}`);
     dirty = true;
     for (const client of server.clients) {
