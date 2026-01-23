@@ -5,6 +5,20 @@ import { build } from './build.js';
 let building = false;
 let dirty = false;
 
+function debounce(func, delay) {
+    let timeout = null;
+    return function() {
+        const context = this;
+        const args = arguments;
+        const later = function() {
+            timeout = null;
+            func.apply(context, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, delay);
+    };
+}
+
 async function handleRebuild() {
     if (building) return;
     building = true;
@@ -24,14 +38,14 @@ async function handleRebuild() {
     }
 }
 
-function onFilesChange(path) {
+const onFilesChange = debounce(function onFilesChange(path) {
     console.info(`change detected, build marked dirty > ${path}`);
     dirty = true;
     for (const client of server.clients) {
         if (client.readyState === WebSocket.OPEN)
             client.send(JSON.stringify({ dirty: true }));
     }
-}
+}, 500);
 
 console.info('Starting dev server at localhost:3344');
 const server = new WebSocketServer({ port: 3344 });
