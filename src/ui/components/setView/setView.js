@@ -97,6 +97,7 @@ export default class SetView extends ReactiveComponent {
         this.listView.rows = set.cards || [];
         const hasCards = Boolean(set.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
+        toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
         if (this.searchValue) this.updateSearch();
         this.updateStatus();
     }

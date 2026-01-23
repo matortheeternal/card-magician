@@ -29,7 +29,7 @@ export function buildColumns() {
         data: row => collect(row, 'name')
     }, {
         label: L`Cost`,
-        width: '87px',
+        width: '75px',
         data: row => collectMap(row, f => {
             if (!f.manaCost?.toString) return '';
             return f.manaCost.toString().toUpperCase();
@@ -37,7 +37,7 @@ export function buildColumns() {
         compare: compareRowManaCosts
     }, {
         label: L`CMC`,
-        width: '60px',
+        width: '50px',
         data: row => collectMap(row, f => {
             if (!f.manaCost?.cmc) return '';
             return f.manaCost.cmc.toString();
@@ -48,7 +48,7 @@ export function buildColumns() {
         }
     }, {
         label: L`Type`,
-        width: '230px',
+        width: '280px',
         data: row => collectMap(row, f => {
             if (!f.superType && !f.subType) return '';
             if (!f.subType) return f.superType;
@@ -73,7 +73,7 @@ export function buildColumns() {
         compare: compareRowColors
     }, {
         label: L`Rarity`,
-        width: '100px',
+        width: '75px',
         data: row => {
             if (!row.front.rarity) return '';
             return row.front.rarity.slice(0, 1).toUpperCase()
