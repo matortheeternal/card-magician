@@ -2,8 +2,8 @@ module-container[module="Text"] {
     display: flex;
     position: relative;
     z-index: 2;
-    padding: 6px 13px;
-    height: 165px;
+    padding: 6px 16px 6px 13px;
+    height: 163px;
     margin-bottom: 0.5px;
 }
 
@@ -13,7 +13,7 @@ module-container[module="Text"] {
     justify-content: center;
     flex: 1;
     position: relative;
-    padding: 0 6px;
+    padding: 0 4px;
     overflow: hidden;
     font-size: 19px;
     line-height: 1;

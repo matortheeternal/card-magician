@@ -36,12 +36,14 @@ auto-fit-line {
     justify-content: space-between;
     position: relative;
     z-index: 2;
-    padding: 12px 10px 2px 40px;
+    padding: 12px;
+    padding-bottom: 2px;
     height: 40px;
 }
 
-.header:has(module-container[module="FaceSymbol"][style*="display: none"]) {
-    padding-left: 10px;
+.frame-node .header,
+.header module-container[module="FaceSymbol"]:has(*) {
+    padding-left: 40px;
 }
 
 .type-line {
@@ -50,7 +52,7 @@ auto-fit-line {
     position: relative;
     z-index: 2;
     padding: 4px 14px;
-    height: 26px;
+    height: 28px;
     align-items: center;
     margin: 1.5px 3px;
 }
