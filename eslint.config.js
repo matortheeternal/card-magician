@@ -25,6 +25,7 @@ export default [
                 NL_RESMODE: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
+                log: 'readonly',
                 changed: 'readonly',
                 CardMagicianModule: 'readonly'
             }
