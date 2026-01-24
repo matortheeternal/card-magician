@@ -5,6 +5,7 @@ import {
     readFile,
     writeFile
 } from './neutralinoAdapter.js';
+import { checkFileExists } from './fsUtils.js';
 
 const generateSchema = NL_ARGS.includes('--localize');
 const schemaPromise = loadSchema();
@@ -105,6 +106,7 @@ async function updateSchema(namespaceKey, entryKey) {
 export async function loadSchema() {
     try {
         const inputPath = `locales/schema.json`;
+        if (!await checkFileExists(inputPath)) return {};
         const text = await readFile(inputPath);
         return JSON.parse(text);
     } catch (e) {
