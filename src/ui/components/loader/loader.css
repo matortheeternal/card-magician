@@ -1,0 +1,52 @@
+cm-loader .square-spinner {
+    width: 4em;
+    height: 4em;
+    background: var(--sl-color-primary-500);
+    animation: rotate-square 1.66s ease-in-out infinite;
+}
+
+@keyframes rotate-square {
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+cm-loader.error .square-spinner {
+    background: var(--sl-color-neutral-300);
+    animation: error-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes error-pulse {
+    0%, 70%, 100% {
+        box-shadow: none;
+    }
+    80% {
+        box-shadow: 0 0 0.6em 0.15em rgba(255, 0, 0, 0.35);
+    }
+}
+
+cm-loader .spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+cm-loader .spinner-container > div {
+    padding: 1em;
+}
+
+cm-loader .error-log {
+    margin-top: 1em;
+    max-width: 40rem;
+    max-height: 12rem;
+    overflow: auto;
+    font-family: monospace;
+    font-size: 0.85em;
+    color: #b00020;
+    background: #111;
+    padding: 1em;
+    border-radius: 4px;
+    white-space: pre-wrap;
+}

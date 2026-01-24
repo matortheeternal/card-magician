@@ -2,15 +2,14 @@ import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/log.js';
 import './shared/extensions.js';
 import './shared/localize.js';
+import './domain/template/CardMagicianModule.js';
+import './domain/game/CardMagicianGame.js';
 import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-import CardMagicianModule from './domain/template/CardMagicianModule.js';
-import CardMagicianGame from './domain/game/CardMagicianGame.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { setupTestHarness, runTests } from './tests';
 import imageCache from './domain/graphics/ImageCache.js';
-import Modal from './ui/modals/Modal.js';
 import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
@@ -41,16 +40,7 @@ async function setupNeutralino() {
     await mount('/templates', NL_PATH + '/templates');
     await mount('/games', NL_PATH + '/games');
     await mount('/cache', NL_DATAPATH + '/cache');
-}
-
-function setupShoelace() {
-    setBasePath('/shoelace');
-}
-
-function setupModuleSystem() {
-    window.CardMagicianModule = CardMagicianModule;
-    window.CardMagicianGame = CardMagicianGame;
-    window.Modal = Modal;
+    startupLog.debug('Mounts done');
 }
 
 function loaded() {
@@ -88,22 +78,13 @@ async function startApp() {
     loaded();
 }
 
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled Promise Rejection:', event.reason);
+(async function() {
     try {
-        console.error(JSON.stringify(event.reason, null, 2));
-    } catch {}
-});
-
-window.addEventListener('error', (event) => {
-    console.error('Uncaught Error:', event.error || event.message);
-});
-
-// BASE SETUP
-setupNeutralino().then(() => {
-    setupShoelace();
-    setupModuleSystem();
-    startApp().then(() => {
-        // ?
-    });
-});
+        await setupNeutralino();
+        setBasePath('/shoelace');
+        await startApp();
+    } catch (error) {
+        startupLog.error('Startup error:', error);
+        this.querySelector('cm-loader').showError();
+    }
+})();

@@ -436,3 +436,5 @@ export default class CardMagicianModule {
      */
     renderNamed(card) {}
 }
+
+window.CardMagicianModule = CardMagicianModule;

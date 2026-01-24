@@ -72,3 +72,5 @@ export default class Modal extends ReactiveComponent {
         log('render').debug(`Rendered ${this.constructor.id} in ${new Date() - start}ms`);
     }
 }
+
+window.Modal = Modal;

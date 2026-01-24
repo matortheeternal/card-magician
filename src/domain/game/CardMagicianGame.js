@@ -167,3 +167,5 @@ export default class CardMagicianGame {
         registerModal(ModalClass);
     }
 }
+
+window.CardMagicianGame = CardMagicianGame;
