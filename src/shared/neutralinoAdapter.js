@@ -1,3 +1,19 @@
+import safeStringify from './safeStringify.js';
+
+const levelToLogType = {
+    info: 'INFO',
+    warn: 'WARNING',
+    error: 'ERROR',
+};
+
+export async function debugLog(level, message, args) {
+    const type = levelToLogType[level] ?? 'INFO';
+    const messageWithArgs = message + args.map(arg => {
+        return `\n${safeStringify(arg)}`;
+    }).join('');
+    return Neutralino.debug.log(messageWithArgs, type);
+}
+
 export async function openSingleFileDialog(label, filters) {
     const res = await Neutralino.os.showOpenDialog(label, { filters });
     return res?.[0];
