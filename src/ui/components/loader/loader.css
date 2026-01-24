@@ -1,3 +1,12 @@
+cm-loader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--sl-font-serif);
+    flex: 1;
+}
+
 cm-loader .square-spinner {
     width: 4em;
     height: 4em;
@@ -33,20 +42,31 @@ cm-loader .spinner-container {
     flex: 1;
 }
 
-cm-loader .spinner-container > div {
+cm-loader .square-spinner,
+cm-loader .loading-message {
     padding: 1em;
 }
 
 cm-loader .error-log {
-    margin-top: 1em;
     max-width: 40rem;
     max-height: 12rem;
+    padding: var(--sl-spacing-small);
+    margin-top: 0;
     overflow: auto;
-    font-family: monospace;
-    font-size: 0.85em;
-    color: #b00020;
-    background: #111;
-    padding: 1em;
+    background: var(--sl-input-background-color);
+    border: 1px solid var(--sl-input-border-color);
     border-radius: 4px;
+    font-family: monospace;
+    font-size: var(--sl-font-size-x-small);
     white-space: pre-wrap;
+}
+
+cm-loader .actions-container {
+    display: flex;
+    gap: var(--sl-spacing-x-small);
+    justify-content: center;
+}
+
+cm-loader button {
+    cursor: pointer;
 }
