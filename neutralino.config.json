@@ -47,7 +47,7 @@
     "chrome": {
       "width": 1280,
       "height": 720,
-      "args": "--user-agent=\"Neutralinojs chrome mode\""
+      "args": "--user-agent=\"Neutralinojs chrome mode\" --log-level=3"
     }
   },
   "cli": {
