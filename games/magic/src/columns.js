@@ -11,7 +11,7 @@ function collect(row, key, separator = ' // ') {
         .join(separator);
 }
 
-function collectMap(row, fn, separator = ' // ') {
+export function collectMap(row, fn, separator = ' // ') {
     return [fn(row.front), row.back && fn(row.back)]
         .filter(Boolean)
         .join(separator);
