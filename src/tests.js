@@ -47,6 +47,9 @@ export async function setupTestHarness() {
 }
 
 export async function runTests() {
+    log('startup').info('--run-tests detected, loading test harness');
+    await setupTestHarness();
+    log('startup').info('Running tests');
     buildCombineBlendTests();
     buildLinearBlendTests();
     buildMaskBlendTests();

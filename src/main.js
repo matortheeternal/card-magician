@@ -8,7 +8,7 @@ import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
-import { setupTestHarness, runTests } from './tests';
+import { runTests } from './tests';
 import imageCache from './domain/graphics/ImageCache.js';
 import {
     createDirectory, initApp, mount, setWindowSize
@@ -43,6 +43,12 @@ async function setupNeutralino() {
     startupLog.debug('Mounts done');
 }
 
+function setupDevState() {
+    startupLog.info('Development mode detected');
+    const devState = document.createElement('dev-state');
+    document.body.appendChild(devState);
+}
+
 function loaded() {
     const titleBar = document.createElement('cm-title-bar');
     document.body.prepend(titleBar);
@@ -51,21 +57,13 @@ function loaded() {
          <cm-set-view></cm-set-view>
          <cm-card-form></cm-card-form>`
     );
-    if (NL_RESMODE !== 'bundle') {
-        startupLog.info('Development mode detected');
-        const devState = document.createElement('dev-state');
-        document.body.appendChild(devState);
-    }
 }
 
 async function startApp() {
-    if (NL_ARGS.includes('--run-tests')) {
-        startupLog.info('--run-tests detected, loading test harness');
-        await setupTestHarness();
-        startupLog.info('Running tests');
-        await runTests();
-        return;
-    }
+    if (NL_RESMODE !== 'bundle') setupDevState();
+    if (NL_ARGS.includes('--run-tests'))
+        return await runTests();
+
     startupLog.debug('Loading games');
     await loadGames();
     startupLog.debug('Setting game to magic');
@@ -85,6 +83,6 @@ async function startApp() {
         await startApp();
     } catch (error) {
         startupLog.error('Startup error:', error);
-        this.querySelector('cm-loader').showError();
+        document.querySelector('cm-loader').showError();
     }
 })();
