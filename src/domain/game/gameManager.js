@@ -9,7 +9,7 @@ let appConfig = null;
 
 export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
-    if (!game) throw new Error('Could not find game:', gameId);
+    if (!game) throw new Error(`Could not find game "${gameId}"`);
     const mainPath = [game.path, 'main.js'].join('/');
     const { default: Module } = await import('/' + mainPath);
     activeGame = new Module(game.path);
