@@ -42,13 +42,16 @@ export default function safeStringify(value, maxDepth = 4, maxLength = 10_000) {
 
     let result;
     try {
-        result = JSON.stringify(serialize(value, 0), null, 2);
+        const serializedValue = serialize(value, 0);
+        result = typeof serializedValue === 'string'
+            ? serializedValue
+            : JSON.stringify(serializedValue, null, 2);
     } catch (error) {
         console.error(error);
         return '[Unserializable]';
     }
 
-    if (result.length > maxLength)
+    if (result && result.length > maxLength)
         return result.slice(0, maxLength) + '\n[Truncated]';
 
     return result;
