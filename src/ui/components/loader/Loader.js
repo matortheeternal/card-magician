@@ -6,6 +6,15 @@ import safeStringify from '../../../shared/safeStringify.js';
 export default class Loader extends ReactiveComponent {
     connectedCallback() {
         this.render();
+        this.bind();
+    }
+
+    bind() {
+        this.handleEvents('click', {
+            copyLog: () => this.copyLog(),
+            submitIssue: () => this.submitIssue(),
+            joinDiscord: () => this.joinDiscord()
+        });
     }
 
     get loadingMessage() {
@@ -49,6 +58,18 @@ export default class Loader extends ReactiveComponent {
                 </div>
             </div>`
         );
+    }
+
+    copyLog() {
+        navigator.clipboard.writeText(this.errorLog.textContent);
+    }
+
+    async submitIssue() {
+        await open('https://codeberg.org/mator/card-magician/issues');
+    }
+
+    async joinDiscord() {
+        await open('https://discord.com/invite/nj98EBpnNv');
     }
 }
 
