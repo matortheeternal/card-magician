@@ -22,14 +22,14 @@ cm-loader .square-spinner {
 
 cm-loader.error .square-spinner {
     background: var(--sl-color-neutral-300);
-    animation: error-pulse 3.5s ease-in-out infinite;
+    animation: error-pulse 2.5s ease-in-out infinite;
 }
 
 @keyframes error-pulse {
-    0%, 70%, 100% {
+    0%, 50%, 100% {
         box-shadow: none;
     }
-    80% {
+    70% {
         box-shadow: 0 0 0.6em 0.15em rgba(255, 0, 0, 0.35);
     }
 }
