@@ -74,6 +74,10 @@ export function getActiveSet() {
     return activeSet;
 }
 
+export function getSetFilePath() {
+    return setFilePath;
+}
+
 export function getSelectedCard() {
     return selectedCard;
 }
