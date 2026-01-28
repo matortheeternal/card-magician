@@ -1,6 +1,6 @@
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/log.js';
-import './shared/prototypeExtensions.js';
+import './shared/extensions.js';
 import './shared/localize.js';
 import './domain/template/CardMagicianModule.js';
 import './domain/game/CardMagicianGame.js';
@@ -13,6 +13,7 @@ import imageCache from './domain/graphics/ImageCache.js';
 import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
+import { loadExporters } from './domain/sets/exporterManager.js';
 
 const startupLog = log('startup');
 
@@ -37,6 +38,7 @@ async function setupNeutralino() {
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
     await mount('/modules', NL_PATH + '/modules');
+    await mount('/exporters', NL_PATH + '/exporters');
     await mount('/templates', NL_PATH + '/templates');
     await mount('/games', NL_PATH + '/games');
     await mount('/cache', NL_DATAPATH + '/cache');
@@ -70,6 +72,8 @@ async function startApp() {
     await setGame('magic');
     startupLog.debug('Loading templates');
     await loadTemplates();
+    startupLog.debug('Loading exporters');
+    await loadExporters();
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
