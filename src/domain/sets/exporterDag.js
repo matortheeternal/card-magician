@@ -58,7 +58,7 @@ class ExporterDAG {
 }
 
 export function feedTheDag(exporters) {
-    console.debug('Feeding the DAG');
+    log('export').debug('Feeding the DAG');
     const exportersById = exporters.toDictionary(exporter => exporter.id);
     const theDag = new ExporterDAG();
     exporters.forEach(exporter => {
@@ -94,7 +94,7 @@ async function saveArtifact(exporter, localPath, artifact) {
     const filePath = await getJoinedPath(setFilePath, 'output', exporter.id, localPath);
     const parentPath = await getParentPath(filePath);
     await createDirectory(parentPath);
-    console.info(`Saving ${filePath}`);
+    log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
 }
 
@@ -106,10 +106,10 @@ async function saveArtifact(exporter, localPath, artifact) {
  */
 async function passArtifactDown(sourceArtifact, targetNodes) {
     for (const node of targetNodes) {
-        console.debug(`Passing to "${node.id}"`);
+        log('export').debug(`Passing to "${node.id}"`);
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.transform(sourceArtifact)) {
-            console.debug(`Produced artifact "${filePath}"`);
+            log('export').debug(`Produced artifact "${filePath}"`);
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
             await passArtifactDown(artifact, node.children);
@@ -122,12 +122,12 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
  * @returns {Promise<void>}
  */
 export async function walkTheDag(dagFootNodes) {
-    console.debug('Walking the DAG');
+    log('export').debug('Walking the DAG');
     for (const node of dagFootNodes) {
-        console.debug(`Walking from "${node.id}"`);
+        log('export').debug(`Walking from "${node.id}"`);
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.produce()) {
-            console.debug(`Produced artifact "${filePath}"`);
+            log('export').debug(`Produced artifact "${filePath}"`);
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
             await passArtifactDown(artifact, node.children);

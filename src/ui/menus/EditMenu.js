@@ -12,8 +12,8 @@ export default class EditMenu extends ReactiveMenu {
 
     get items() {
         return [
-            this.menuItem(L`Undo`, L`Ctrl+Z`, () => console.log('Undo')),
-            this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => console.log('Redo')),
+            this.menuItem(L`Undo`, L`Ctrl+Z`, () => log('user').info('Undo')),
+            this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => log('user').info('Redo')),
             this.DIVIDER,
             this.menuItem(L`Find`, L`Ctrl+F`, () => executeAction('toggle-search')),
             this.menuItem(L`Cut`, L`Ctrl+X`, () => executeAction('cut')),
@@ -23,7 +23,7 @@ export default class EditMenu extends ReactiveMenu {
             this.menuItem(L`Set Info`, ``, () => {
                 openModal('cm-set-info-modal', getActiveSet().info);
             }),
-            this.menuItem(L`Preferences`, ``, () => console.log('Edit preferences')),
+            this.menuItem(L`Preferences`, ``, () => log('user').info('Edit preferences')),
             this.menuItem(L`Localization`, ``, async () => {
                 await prepareSchema();
                 const locales = await getAvailableLocales();

@@ -38,4 +38,5 @@ addLogGroup('cache',   'grey');
 addLogGroup('user',    'khaki');
 addLogGroup('render',  'turquoise');
 addLogGroup('state',   'violet');
+addLogGroup('export',  'black');
 addLogGroup('plugin',  'lightgreen');
