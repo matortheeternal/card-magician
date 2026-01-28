@@ -72,6 +72,11 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     newSet() {
         const info = this.initializeFields(setInfoFields);
-        return { ...info, version: SET_FILE_VERSION, cards: [] };
+        return {
+            ...info,
+            version: SET_FILE_VERSION,
+            export: { CardImagesExporter: {} },
+            cards: []
+        };
     }
 }
