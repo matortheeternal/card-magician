@@ -90,7 +90,7 @@ function getDiff(watcherPaths, changedPaths, deep) {
  * @param {string|string[]|null} pathsArg - Dot-separated paths that changed. Pass null
  *      or an empty string to indicate the entire object has changed.
  */
-window.changed = function changed(obj, pathsArg) {
+window.changed = function changed(obj, pathsArg = '') {
     const paths = resolvePathsArg(pathsArg);
     watchers.forEach(watcher => {
         if (watcher.obj !== obj) return;
