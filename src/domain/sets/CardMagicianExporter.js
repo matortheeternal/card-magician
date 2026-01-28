@@ -14,7 +14,7 @@ import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 export default class CardMagicianExporter {
     constructor(config, metadata) {
-        this.config = config || this.defaultConfig;
+        this.config = Object.assign(this.defaultConfig, config || {});
         this.metadata = metadata;
     }
 
