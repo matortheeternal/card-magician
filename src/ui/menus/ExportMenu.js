@@ -46,7 +46,10 @@ export default class ExportMenu extends ReactiveMenu {
             this.menuItem(
                 L`Configure Exporters`,
                 L`Ctrl+Shift+E`,
-                () => openModal('cm-configure-exporters')
+                () => {
+                    const activeSet = getActiveSet();
+                    openModal('cm-configure-exporters-modal', activeSet.export);
+                }
             ),
         ];
     }
