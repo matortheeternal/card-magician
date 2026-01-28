@@ -24,6 +24,16 @@ export default class ExportMenu extends ReactiveMenu {
         });
     }
 
+    get exporterMenuItems() {
+        const set = getActiveSet();
+        return Object.keys(set.export).map(exporterId => {
+            const exporter = getExporter(exporterId);
+            return this.menuItem(L`Export ${exporter.label}`, ``, () => {
+                // TODO: export
+            });
+        });
+    }
+
     get items() {
         return [
             this.menuItem(
@@ -31,12 +41,7 @@ export default class ExportMenu extends ReactiveMenu {
                 L`Ctrl+Shift+A`,
                 () => executeAction('export-all')
             ),
-            Object.keys(getActiveSet().export).map(exporterId => {
-                const exporter = getExporter(exporterId);
-                return this.menuItem(L`Export ${exporter.label}`, ``, () => {
-                    // TODO: export
-                });
-            }),
+            ...this.exporterMenuItems,
             this.DIVIDER,
             this.menuItem(
                 L`Configure Exporters`,
