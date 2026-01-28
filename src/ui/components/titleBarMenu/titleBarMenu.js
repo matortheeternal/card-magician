@@ -50,7 +50,7 @@ export default class TitleBarMenu extends ReactiveComponent {
 
     createMenu(dropdown, menu) {
         const menuElement = document.createElement('sl-menu');
-        menu.items().forEach(item => {
+        menu.items.forEach(item => {
             const itemElement = item.isDivider
                 ? this.createDivider()
                 : this.createMenuItem(item);

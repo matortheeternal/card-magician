@@ -22,7 +22,7 @@ export default class TitleBar extends ReactiveComponent {
     bind() {
         this.addEventListener('sl-hide', event => this.onMenuHide(event));
         this.addEventListener('sl-show', event => this.onMenuShow(event));
-        this.addEventListener('trigger-enter', el => this.onTriggerEnter(el));
+        this.addEventListener('trigger-enter', event => this.onTriggerEnter(event));
     }
 
     get menusContainer() {
@@ -57,8 +57,8 @@ export default class TitleBar extends ReactiveComponent {
         menu.classList.add('menu-active');
     }
 
-    onTriggerEnter(triggerElement) {
-        const menu = triggerElement.closest('sl-dropdown');
+    onTriggerEnter(event) {
+        const menu = event.detail.closest('sl-dropdown');
         if (!this.openMenu || this.openMenu === menu) return;
         this.openMenu.hide();
         menu.show();
