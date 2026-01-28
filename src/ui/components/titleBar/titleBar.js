@@ -1,57 +1,28 @@
 import ReactiveComponent from '../ReactiveComponent.js';
-import { titleBarMenus } from './titleBarMenus.js';
+import FileMenu from '../../menus/FileMenu.js';
+import EditMenu from '../../menus/EditMenu.js';
+import CardsMenu from '../../menus/CardMenu.js';
+import ExportMenu from '../../menus/ExportMenu.js';
+
+const titleBarMenus = [
+    new FileMenu(),
+    new EditMenu(),
+    new CardsMenu(),
+    new ExportMenu(),
+];
 
 export default class TitleBar extends ReactiveComponent {
     openMenu = null;
 
     connectedCallback() {
         this.render();
+        this.bind();
     }
 
-    createDropdown() {
-        const dropdown = document.createElement('sl-dropdown');
-        dropdown.addEventListener('sl-hide', event => this.onMenuHide(event));
-        dropdown.addEventListener('sl-show', event => this.onMenuShow(event));
-        return dropdown;
-    }
-
-    createTrigger(dropdown, title) {
-        const trigger = document.createElement('sl-button');
-        trigger.size = 'small';
-        trigger.addEventListener('mouseenter', event => this.onMenuEnter(event));
-        trigger.slot = 'trigger';
-        trigger.textContent = title;
-        dropdown.appendChild(trigger);
-    }
-
-    createDivider() {
-        const divider = document.createElement('sl-divider');
-        divider.style.setProperty('--spacing', '0.5rem');
-        return divider;
-    }
-
-    createMenuItem(item) {
-        const menuItem = document.createElement('sl-menu-item');
-        menuItem.value = item.value;
-        menuItem.addEventListener('click', item.action);
-        menuItem.innerHTML = (
-            `<div class="menu-item">
-                <div>${item.label}</div>
-                <div>${item.hotkey}</div>
-            </div>`
-        );
-        return menuItem;
-    }
-
-    createMenu(dropdown, items) {
-        const menu = document.createElement('sl-menu');
-        items.forEach(item => {
-            const itemElement = item.isDivider
-                ? this.createDivider()
-                : this.createMenuItem(item);
-            menu.appendChild(itemElement);
-        });
-        dropdown.appendChild(menu);
+    bind() {
+        this.addEventListener('sl-hide', event => this.onMenuHide(event));
+        this.addEventListener('sl-show', event => this.onMenuShow(event));
+        this.addEventListener('trigger-enter', el => this.onTriggerEnter(el));
     }
 
     get menusContainer() {
@@ -60,10 +31,9 @@ export default class TitleBar extends ReactiveComponent {
 
     renderMenus() {
         titleBarMenus.forEach(menu => {
-            const dropdown = this.createDropdown();
-            this.createTrigger(dropdown, menu.title);
-            this.createMenu(dropdown, menu.items);
-            this.menusContainer.appendChild(dropdown);
+            const menuElement = document.createElement('title-bar-menu');
+            menuElement.menu = menu;
+            this.menusContainer.appendChild(menuElement);
         });
     }
 
@@ -87,8 +57,8 @@ export default class TitleBar extends ReactiveComponent {
         menu.classList.add('menu-active');
     }
 
-    onMenuEnter(event) {
-        const menu = event.target.parentNode;
+    onTriggerEnter(triggerElement) {
+        const menu = triggerElement.closest('sl-dropdown');
         if (!this.openMenu || this.openMenu === menu) return;
         this.openMenu.hide();
         menu.show();
