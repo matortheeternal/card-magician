@@ -33,7 +33,7 @@ async function loadExporter(exporterMetadata) {
     return exporterMetadata.ExporterClass = await import('/' + mainPath);
 }
 
-function getExporter(id) {
+export function getExporter(id) {
     const exporter = exporters.find(exporter => exporter.id === id);
     if (!exporter)
         throw new Error(`Exporter ${id} not found`);

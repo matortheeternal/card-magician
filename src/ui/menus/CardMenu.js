@@ -1,0 +1,20 @@
+import ReactiveMenu from './ReactiveMenu.js';
+import { executeAction } from '../systems/actionSystem.js';
+
+const L = localize('title-bar');
+
+export default class CardsMenu extends ReactiveMenu {
+    id = 'cards';
+    title = L`Cards`;
+
+    get items() {
+        return [
+            this.menuItem(L`Add Card`, L`Ctrl+Enter`, () => executeAction('add-card')),
+            this.menuItem(
+                L`Delete Cards`,
+                L`Delete`,
+                () => executeAction('delete-selected-cards')
+            ),
+        ];
+    }
+}
