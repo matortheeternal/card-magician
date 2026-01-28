@@ -10,6 +10,13 @@ export default class ExporterConfig extends ReactiveComponent {
         this.handleEvents('click', {
             onRemoveClick: () => this.onRemoveClick()
         });
+        this.addEventListener('cm-field-changed', () => {
+            changed(this.activeSet.export);
+        });
+    }
+
+    get activeSet() {
+        return this._activeSet ??= getActiveSet();
     }
 
     get exporterId() {
@@ -21,7 +28,7 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     get model() {
-        return this._model ??= getActiveSet().export[this.exporterId];
+        return this._model ??= this.activeSet.export[this.exporterId];
     }
 
     render() {
@@ -38,8 +45,7 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     onRemoveClick() {
-        const set = getActiveSet();
-        delete set.export[this.exporterId];
+        delete this.activeSet.export[this.exporterId];
         emit(this, 'exporter-removed', { id: this.exporterId });
     }
 }
