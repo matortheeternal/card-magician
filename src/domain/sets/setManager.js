@@ -29,7 +29,7 @@ export async function saveAs() {
         filters
     );
     if (!filePath) return;
-    console.info('Saving set to:', filePath);
+    log('fs').info('Saving set to:', filePath);
     setFilePath = filePath;
     await saveProject(filePath, activeSet);
 }
@@ -37,7 +37,7 @@ export async function saveAs() {
 export async function save() {
     if (!setFilePath) return saveAs();
     const message = addStatusMessage(L`Saving...`, -1);
-    console.info('Saving set to:', setFilePath);
+    log('fs').info('Saving set to:', setFilePath);
     await saveProject(setFilePath, activeSet);
     message.updateText(L`Saved.`);
     setTimeout(() => message.remove(), 1000);
@@ -59,7 +59,7 @@ export function newSet() {
 export async function openSet(filePath) {
     filePath = filePath || await openSingleFileDialog(L`Open a set`, filters);
     if (!filePath) return;
-    console.info('%cOpening set:', 'color:gold', filePath);
+    log('state').info('Opening set:', filePath);
     const game = getActiveGame();
     const setData = await loadProject(filePath);
     setFilePath = filePath;

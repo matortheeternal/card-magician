@@ -30,10 +30,10 @@ export function getConfig() {
 export async function loadGames() {
     const gameFolders = await readDirectory('games');
     for (const gameFolder of gameFolders) {
-        console.debug('%cReading game:', 'color:gold', gameFolder.path);
+        log('startup').debug('Reading game:', gameFolder.path);
         const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');
         if (!await checkFileExists(jsonPath)) {
-            console.debug('No game.json found at', jsonPath);
+            log('startup').debug('No game.json found at', jsonPath);
             continue;
         }
         const game = await loadJson(jsonPath);

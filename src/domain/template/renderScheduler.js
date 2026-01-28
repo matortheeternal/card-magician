@@ -70,7 +70,7 @@ export default class RenderScheduler {
         const prettyRender = queue.map(task =>
             `${task.card.id}:${task.module.name}.${task.options?.render || 'render'}`
         );
-        console.debug(`%cRendering %d items:`, 'color:#4f4', queue.length, prettyRender);
+        log('render').debug(`Rendering ${queue.length} items:`, prettyRender);
         for (const { card, module, options } of queue) {
             const renderKey = options?.render || 'render';
             const subcardKey = card.isSubcard ? card.id : null;

@@ -18,7 +18,7 @@ export default class DisplayCardFace extends HTMLElement {
     onInit() {
         this.initialized = true;
         this.shadowRoot.removeEventListener('RenderScheduler:flushed', this.onInit);
-        console.debug(`%ccard-face:initialized(%s)`, 'color:gold', this.#face.id);
+        log('render').debug(`card-face:initialized(${this.#face.id})`);
         emit(this, 'card-face:initialized');
     }
 

@@ -15,7 +15,7 @@ export function resolveModal(modalId) {
 export function openModal(modalId, data = {}) {
     const Component = resolveModal(modalId);
     if (!Component) {
-        console.error('Skipped rendering unknown modal', modalId);
+        log('render').error('Skipped rendering unknown modal', modalId);
         return;
     }
 

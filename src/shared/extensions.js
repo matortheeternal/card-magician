@@ -5,7 +5,7 @@ function addPrototypeFunction(ctor, name, descriptor) {
         throw new TypeError('Second argument must be a string');
 
     if (Object.prototype.hasOwnProperty.call(ctor.prototype, name)) {
-        console.warn(`${ctor.name}.prototype.${name} already defined — skipping.`);
+        log('startup').warn(`${ctor.name}.prototype.${name} already defined — skipping.`);
         return;
     }
 

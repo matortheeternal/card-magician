@@ -52,7 +52,7 @@ export default class ImageOperation {
         if (imageCache.has(filename))
             return imageCache.get(filename);
 
-        console.debug('%cCache miss %s', 'color:grey', filename);
+        log('cache').debug(`Cache miss ${filename}`);
         const canvas = await this.execute();
         return imageCache.save(filename, canvas, imageFormat, imageQuality);
     }

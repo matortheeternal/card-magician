@@ -47,7 +47,7 @@ export default class BaseCardModel {
             const { default: Module } = await import(mainPath);
             this.modules.push(new Module(this, modulePath));
         } catch (error) {
-            console.error('Failed to load module:', error);
+            log('plugin').error('Failed to load module:', error);
         }
     }
 

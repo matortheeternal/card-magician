@@ -75,7 +75,7 @@ export default class DevState extends ReactiveComponent {
     }
 
     handleRebuildError(error) {
-        console.error(error);
+        log('state').error(error);
         this.labelContainer.textContent = 'Build error';
         this.updateError('Build failed. See terminal.');
         this.primaryButton.loading = false;
@@ -87,7 +87,7 @@ export default class DevState extends ReactiveComponent {
 
     onWebSocketMessage(event) {
         const msg = JSON.parse(event.data);
-        console.log('received message', msg);
+        log('state').debug('received message', msg);
         this.dirty = msg.dirty;
         if (this.dirty) this.render();
         if (msg.lastError) this.handleRebuildError(msg.lastError);

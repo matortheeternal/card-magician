@@ -152,7 +152,7 @@ export default class EditLocalesModal extends Modal {
             this.updateStats();
             this.debouncedSave();
         } catch (e) {
-            console.error(e);
+            log('render').error(e);
         }
     }
 

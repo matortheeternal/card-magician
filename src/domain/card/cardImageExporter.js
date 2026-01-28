@@ -32,7 +32,7 @@ async function inlineImages(root) {
             const dataURL = await urlToDataURL(src);
             img.setAttribute('src', dataURL);
         } catch (e) {
-            console.warn('Failed to inline <img>', src, e);
+            log('render').warn('Failed to inline <img>', src, e);
         }
     }
 
@@ -50,7 +50,7 @@ async function inlineImages(root) {
             try {
                 replacedParts[url] = await urlToDataURL(url);
             } catch (e) {
-                console.warn('Failed to inline BG image', url, e);
+                log('render').warn('Failed to inline BG image', url, e);
             }
         }
 
@@ -83,22 +83,22 @@ export async function saveHTMLAsImage(node, filename) {
         window.__EXPORTING__ = true;
         let t0 = performance.now();
         await inlineImages(node);
-        console.debug('[saveHTMLAsImage] inlineImages:', performance.now() - t0);
+        log('render').debug('[saveHTMLAsImage] inlineImages:', performance.now() - t0);
 
         t0 = performance.now();
         const result = await snapdom(node, { embedFonts: true, cache: 'full' });
-        console.debug('[saveHTMLAsImage] snapdom:', performance.now() - t0);
+        log('render').debug('[saveHTMLAsImage] snapdom:', performance.now() - t0);
 
         t0 = performance.now();
         const ext = filename.split('.').pop().toLowerCase();
         const formatFn = imageFormats[ext];
         const img = await formatFn(result, { scale: 2 });
         window.__EXPORTING__ = false;
-        console.debug(`[saveHTMLAsImage] ${ext}:`, performance.now() - t0);
+        log('render').debug(`[saveHTMLAsImage] ${ext}:`, performance.now() - t0);
 
         downloadImage(img.src, filename);
-        console.log(`Saved image to ${filename}`);
+        log('fs').log(`Saved image to ${filename}`);
     } catch (err) {
-        console.error('Failed to save image:', err);
+        log('fs').error('Failed to save image:', err);
     }
 }

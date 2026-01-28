@@ -1,4 +1,5 @@
 import '@shoelace-style/shoelace/dist/shoelace.js';
+import './shared/log.js';
 import './shared/extensions.js';
 import './shared/localize.js';
 import './ui/**/*.js';
@@ -13,6 +14,8 @@ import Modal from './ui/modals/Modal.js';
 import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
+
+const startupLog = log('startup');
 
 async function ensureDirectories() {
     const paths = [
@@ -55,7 +58,7 @@ function loaded() {
          <cm-card-form></cm-card-form>`
     );
     if (NL_RESMODE !== 'bundle') {
-        console.log('Development mode detected');
+        startupLog.info('Development mode detected');
         const devState = document.createElement('dev-state');
         document.body.appendChild(devState);
     }

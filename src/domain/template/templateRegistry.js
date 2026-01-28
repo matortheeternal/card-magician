@@ -30,7 +30,7 @@ export async function loadTemplates() {
         template.form = await loadTemplateView(folder, 'form');
         template.options = await loadTemplateView(folder, 'options');
         if (!template.css || !template.html || !template.form.html) {
-            console.warn(`Incomplete template found at`, folder.path);
+            log('plugin').warn(`Incomplete template found at`, folder.path);
             continue;
         }
         templates.push(template);

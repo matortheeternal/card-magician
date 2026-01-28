@@ -69,7 +69,7 @@ export async function setLocalization(localeId) {
         activeLocalization = await Localization.load(localeId);
         return true;
     } catch (e) {
-        console.error('Error loading localization, ', e.message);
+        log('plugin').error('Error loading localization,', e.message);
         return false;
     }
 }
@@ -90,7 +90,7 @@ const writeSchemaFile = (async function writeSchemaFile() {
     const schema = await schemaPromise;
     const json = JSON.stringify(schema, null, 2);
     const outputPath = `locales/schema.json`;
-    console.log(`Writing localization schema to `, outputPath);
+    log('plugin').log(`Writing localization schema to `, outputPath);
     await createDirectory('locales').catch(() => {});
     await writeFile(outputPath, json);
 }).debounce(1000);
@@ -110,7 +110,7 @@ export async function loadSchema() {
         const text = await readFile(inputPath);
         return JSON.parse(text);
     } catch (e) {
-        console.error(e);
+        log('plugin').error('Error loading localization schema:', e);
         return {};
     }
 }

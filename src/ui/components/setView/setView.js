@@ -26,7 +26,7 @@ export default class SetView extends ReactiveComponent {
         getConfig().onRecentFilesChanged(() => this.renderRecentSets());
 
         this.handleEvents('click', {
-            openAdvancedSearch: () => console.log('Open advanced search.'),
+            openAdvancedSearch: () => log('user').info('Open advanced search.'),
             addCard: () => this.addCard(),
             openSet: () => openSet()
         });
@@ -107,7 +107,7 @@ export default class SetView extends ReactiveComponent {
         this.listView.selection.forEach(r => {
             const index = activeSet.cards.indexOf(r.original);
             if (index === -1) {
-                console.warn(`Couldn't find card:`, r.original);
+                log('state').warn(`Couldn't find card:`, r.original);
                 return;
             }
             activeSet.cards.splice(index, 1);
@@ -153,7 +153,6 @@ export default class SetView extends ReactiveComponent {
             this.listView.selection = [indexToSelect];
             await selectCard(activeSet.cards[indexToSelect]);
         } catch (e) {
-            console.debug('%cPaste failed', 'color:red', e.message);
         }
     }
 
@@ -165,16 +164,16 @@ export default class SetView extends ReactiveComponent {
 
     updateSearch(event) {
         if (event) this.searchValue = event.target.value;
+        log('user').info('Searching for:', this.searchValue);
         const cards = getActiveSet().cards;
         const game = getActiveGame();
         try {
-            console.debug('%cSearching for:', 'color:orange', this.searchValue);
             this.listView.rows = this.searchValue
                 ? game.filter(cards, this.searchValue)
                 : cards;
             this.updateStatus();
         } catch (e) {
-            console.debug('%cSearch error:', 'color:grey', e.message);
+            log('user').debug('Search error:', e);
         }
     }
 
@@ -214,7 +213,7 @@ export default class SetView extends ReactiveComponent {
     onRowSelected(event) {
         event.stopPropagation();
         const { row } = event.detail;
-        console.log('%cSelected card:', 'color:orange', row.data.name);
+        log('user').info('Selected card:', row.data.name);
         selectCard(row.original);
         this.updateStatus();
     }

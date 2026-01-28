@@ -60,7 +60,7 @@ const warned = {};
 
 function noSymbol(sym) {
     if (!warned[sym.raw]) {
-        console.warn('No image path adapter found for ' + sym.raw);
+        log('render').warn('No image path adapter found for ' + sym.raw);
         warned[sym.raw] = true;
     }
     return '';

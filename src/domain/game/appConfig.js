@@ -23,7 +23,7 @@ export default class AppConfig {
             const raw = await getStoredData(this.key);
             this.#data = JSON.parse(raw) || {};
         } catch(e) {
-            console.warn('App config not found', e);
+            log('startup').info(`Could not load ${this.key}`, e);
             this.#data = {};
         }
 
