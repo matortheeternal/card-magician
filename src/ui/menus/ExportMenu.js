@@ -29,7 +29,7 @@ export default class ExportMenu extends ReactiveMenu {
         return Object.keys(set.export).map(exporterId => {
             const exporter = getExporter(exporterId);
             return this.menuItem(L`Export ${exporter.label}`, ``, () => {
-                // TODO: export
+                executeAction('run-exporter', exporterId);
             });
         });
     }
@@ -39,7 +39,7 @@ export default class ExportMenu extends ReactiveMenu {
             this.menuItem(
                 L`Export All`,
                 L`Ctrl+Shift+A`,
-                () => executeAction('export-all')
+                () => executeAction('run-exporter', 'all')
             ),
             ...this.exporterMenuItems,
             this.DIVIDER,

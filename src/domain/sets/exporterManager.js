@@ -2,6 +2,7 @@ import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { getActiveSet } from './setManager.js';
+import { registerAction } from '../../ui/systems/actionSystem.js';
 
 const exporters = [];
 
@@ -98,3 +99,8 @@ export function gatherExporterParams(targetExporterId) {
     }
     return Object.values(params);
 }
+
+registerAction('run-exporter', async exporterId => {
+    const params = gatherExporterParams(exporterId);
+    await runExporters(params);
+});
