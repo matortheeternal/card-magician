@@ -1,6 +1,7 @@
 import { getActiveGame } from '../game/gameManager.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
 import { getActiveSet } from './setManager.js';
+import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 /**
  * @typedef OutputItem
@@ -35,6 +36,10 @@ export default class CardMagicianExporter {
 
     get saveOutputs() {
         return this.config.saveOutputs;
+    }
+
+    get defaultConfig() {
+        return initializeFields(this.options);
     }
 
     /**
@@ -87,13 +92,13 @@ export default class CardMagicianExporter {
     }
 
     /**
-     * Returns an object representing the default configuration values to initialize
-     * for this exporter.
+     * Returns the option field definitions for this exporter.
      *
-     * @returns {object}
+     * @abstract
+     * @returns {Array<Field>}
      */
-    get defaultConfig() {
-        return {};
+    get options() {
+        return [];
     }
 
     /**

@@ -1,12 +1,22 @@
 import CardImageArtifact from './src/CardImageArtifact.js';
 
+const L = localize('card-images-exporter');
+
 export default class CardImagesExporter extends CardMagicianExporter {
-    get defaultConfig() {
-        return {
-            imageType: 'image/jpg',
-            quality: 0.92,
-            scale: 1.5
-        };
+    get options() {
+        return [{
+            id: 'imageType',
+            label: L`Image Type`,
+            type: 'select',
+            options: [
+                { id: 'image/jpg', name: L`JPG` },
+                { id: 'image/png', name: L`PNG` },
+            ]
+        }, {
+            id: 'quality',
+            label: L`Image Quality`,
+            default: '0.92'
+        }];
     }
 
     /**

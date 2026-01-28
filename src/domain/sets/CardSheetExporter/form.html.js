@@ -1,0 +1,10 @@
+export default
+`<form-field field-id="imageType"></form-field>
+<form-field field-id="quality"></form-field>
+<form-field field-id="scale"></form-field>
+<form-field field-id="columns"></form-field>
+<form-field field-id="rows"></form-field>
+<form-field field-id="gap"></form-field>
+<form-field field-id="backFaceMode"></form-field>
+<form-field field-id="backgroundColor"></form-field>
+<form-field field-id="leaveLastEmpty"></form-field>`;

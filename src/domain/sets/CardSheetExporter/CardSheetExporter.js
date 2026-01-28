@@ -1,19 +1,58 @@
 import CardSheetPair from './CardSheetPair.js';
 import { addNativeExporter } from '../exporterManager.js';
+import form from './form.html.js';
+
+const L = localize('card-sheet-exporter');
 
 export default class CardSheetExporter extends CardMagicianExporter {
-    get defaultConfig() {
-        return {
-            imageType: 'png',
-            quality: 0.92,
-            scale: 1.5,
-            columns: 10,
-            rows: 7,
-            gap: 0,
-            backFaceMode: 'adjacent',
-            backgroundColor: 'black',
-            leaveLastEmpty: true,
-        };
+    get options() {
+        return [{
+            id: 'imageType',
+            label: L`Image Type`,
+            type: 'select',
+            options: [
+                { id: 'png', name: L`PNG` },
+                { id: 'jpg', name: L`JPG` },
+            ]
+        }, {
+            id: 'quality',
+            label: L`Image Quality`,
+            default: '0.92'
+        }, {
+            id: 'scale',
+            label: L`Scale`,
+            default: '2'
+        }, {
+            id: 'columns',
+            label: L`Columns`,
+            default: '10'
+        }, {
+            id: 'rows',
+            label: L`Rows`,
+            default: '7'
+        }, {
+            id: 'gap',
+            label: L`Gap`,
+            default: '0'
+        }, {
+            id: 'backFaceMode',
+            label: L`Back Face Mode`,
+            type: 'select',
+            options: [
+                { id: 'adjacent', name: 'Adjacent' },
+                { id: 'separate', name: 'Separate' },
+            ]
+        }, {
+            id: 'backgroundColor',
+            label: L`Background Color`,
+            type: 'color',
+            default: 'black'
+        }, {
+            id: 'leaveLastEmpty',
+            label: L`Leave Last Slot Empty`,
+            type: 'checkbox',
+            default: true
+        }];
     }
 
     get activeSheet() {
@@ -48,5 +87,6 @@ addNativeExporter({
     id: 'CardSheetExporter',
     description: 'Exports to a sheet of cards.',
     version: '0.0',
+    ExporterForm: form,
     ExporterClass: CardSheetExporter
 });
