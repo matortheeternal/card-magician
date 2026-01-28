@@ -55,9 +55,13 @@ function isUserEditing() {
 function onKeyDown(event) {
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
-    if (isUserEditing()) return;
+    if (isUserEditing()) {
+        log('user').debug(`User editing, ignoring hotkey ${hotkey.keyStr}`);
+        return;
+    }
     event.stopImmediatePropagation();
     event.preventDefault();
+    log('user').info(`User pressed hotkey ${hotkey.keyStr}`);
     hotkey.action?.(event);
 }
 

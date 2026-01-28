@@ -23,9 +23,13 @@ let activeCard = null;
 let selectedCard = null;
 
 export async function saveAs() {
+    log('user').info('save as');
+    const defaultPath = setFilePath
+        ?  setFilePath.split(/[\\\/]/).pop()
+        : `${activeSet.title || L`My Set`}.json`;
     const filePath = await saveSingleFileDialog(
         L`Save set to file`,
-        setFilePath || `${activeSet.title || L`My Set`}.cmproj`,
+        defaultPath,
         filters
     );
     if (!filePath) return;
@@ -52,11 +56,13 @@ function setActiveSet(set) {
 }
 
 export function newSet() {
+    log('user').info('new set');
     setFilePath = null;
     setActiveSet();
 }
 
 export async function openSet(filePath) {
+    log('user').info('Open set');
     filePath = filePath || await openSingleFileDialog(L`Open a set`, filters);
     if (!filePath) return;
     log('state').info('Opening set:', filePath);
@@ -76,6 +82,7 @@ export function getSelectedCard() {
 }
 
 export async function saveActiveCard() {
+    log('state').debug('save active card');
     selectedCard.front = await activeCard.front.save();
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
@@ -104,10 +111,12 @@ export async function selectCard(card) {
 }
 
 registerAction('add-face', faceId => {
+    log('state').debug('add face', faceId);
     selectedCard[faceId] = {};
     setActiveCard(selectedCard);
 });
 registerAction('change-template', (faceId, newTemplateId) => {
+    log('state').debug('change template', faceId, newTemplateId);
     selectedCard[faceId].template = newTemplateId;
     setActiveCard(selectedCard);
 });

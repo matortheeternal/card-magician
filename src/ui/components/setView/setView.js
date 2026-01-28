@@ -103,6 +103,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     deleteSelectedCards() {
+        log('user').info('delete selected cards');
         const activeSet = getActiveSet();
         this.listView.selection.forEach(r => {
             const index = activeSet.cards.indexOf(r.original);
@@ -118,6 +119,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     async addCard() {
+        log('user').info('Add card');
         const game = getActiveGame();
         const activeSet = getActiveSet();
         const card = game.newCard();
@@ -129,6 +131,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     copyCard() {
+        log('user').info('copy card');
         const cards = [];
         this.listView.selection.forEach(r => {
             cards.push(r.original);
@@ -139,6 +142,7 @@ export default class SetView extends ReactiveComponent {
 
     async pasteCard() {
         try {
+            log('user').info('paste card');
             const clipboardText = await navigator.clipboard.readText();
             const clipboard = JSON.parse(clipboardText) || [];
             if (!clipboard?.cards?.length) return;
@@ -153,6 +157,7 @@ export default class SetView extends ReactiveComponent {
             this.listView.selection = [indexToSelect];
             await selectCard(activeSet.cards[indexToSelect]);
         } catch (e) {
+            log('user').debug('Paste failed', e);
         }
     }
 
@@ -178,6 +183,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     updateStatus() {
+        log('render').debug('update set status');
         const activeSet = getActiveSet();
         const totalCount = activeSet.cards.length;
         const visibleCount = this.listView.rows.length;

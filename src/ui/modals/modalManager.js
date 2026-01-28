@@ -19,6 +19,7 @@ export function openModal(modalId, data = {}) {
         return;
     }
 
+    log('render').debug(`Opening modal ${Component.id}`);
     const modalElement = document.createElement(Component.id);
     modalElement.data = data;
     modalContainer.innerHTML = '';

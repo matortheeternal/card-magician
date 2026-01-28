@@ -7,6 +7,7 @@ export default class Modal extends ReactiveComponent {
     #data = {};
 
     connectedCallback() {
+        log('render').debug(`Component ${this.constructor.id} connected`);
         this.setAttribute('data-form-provider', '');
         this.render();
         this.bind();
@@ -17,7 +18,12 @@ export default class Modal extends ReactiveComponent {
     }
 
     get onClickHandlers() {
-        return { close: this.close };
+        return {
+            close: () => {
+                log('user').info(`User closed modal ${this.constructor.id}`);
+                this.close();
+            }
+        };
     }
 
     get model() {
@@ -49,6 +55,7 @@ export default class Modal extends ReactiveComponent {
     }
 
     render() {
+        const start = new Date();
         const actionsHTML = this.renderActions();
         this.innerHTML = (
             `<div class="modal">
@@ -62,5 +69,6 @@ export default class Modal extends ReactiveComponent {
                 ${actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`}
             </div>`
         );
+        log('render').debug(`Rendered ${this.constructor.id} in ${new Date() - start}ms`);
     }
 }

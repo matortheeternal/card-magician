@@ -31,8 +31,12 @@ async function ensureDirectories() {
 
 async function setupNeutralino() {
     await initApp();
+    startupLog.debug('Neutralino initialized');
     await setWindowSize({ resizable: true });
+    startupLog.debug('Ensuring directories exist');
     await ensureDirectories();
+    startupLog.debug('Directories created');
+    startupLog.debug('Mounting directories');
     await mount('/modules', NL_PATH + '/modules');
     await mount('/templates', NL_PATH + '/templates');
     await mount('/games', NL_PATH + '/games');
@@ -66,14 +70,21 @@ function loaded() {
 
 async function startApp() {
     if (NL_ARGS.includes('--run-tests')) {
+        startupLog.info('--run-tests detected, loading test harness');
         await setupTestHarness();
+        startupLog.info('Running tests');
         await runTests();
         return;
     }
+    startupLog.debug('Loading games');
     await loadGames();
+    startupLog.debug('Setting game to magic');
     await setGame('magic');
+    startupLog.debug('Loading templates');
     await loadTemplates();
+    startupLog.debug('Preloading image cache');
     await imageCache.preload();
+    startupLog.info('Startup successful, loading UI');
     loaded();
 }
 
