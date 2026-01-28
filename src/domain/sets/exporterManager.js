@@ -1,5 +1,5 @@
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
-import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
+import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { getActiveSet } from './setManager.js';
 
@@ -16,6 +16,9 @@ export async function loadExporters() {
         }
         const exporter = await loadJson(jsonPath);
         exporter.path = exporterFolder.path;
+        const formPath = ['.', exporterFolder.path, 'form.html'].join('/');
+        if (await checkFileExists(jsonPath))
+            exporter.form = await loadTextFile(formPath);
         exporters.push(exporter);
     }
 }
