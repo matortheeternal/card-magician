@@ -136,6 +136,32 @@ addPrototypeFunction(Array, 'zip', {
 
 /**
  * @method
+ * @name Array#toDictionary
+ * @param {(item) => any} keyCallback - Callback function that returns the key to use
+ * for a passed item.
+ * @returns {object}
+ * @description Transforms an array into a dictionary, keyed by the keys returned by
+ * the keyCallback for each item.
+ * Example:
+ * ```js
+ * [{ id: 'hello' }, { id: 'world' }].toDictionary(item => item.id);
+ * // { hello: { id: 'hello' }, world: { id: 'world' } }
+ * ```
+ */
+addPrototypeFunction(Array, 'toDictionary', {
+    value: function toDictionary(keyCallback) {
+        return this.reduce((dictionary, item) => {
+            const key = keyCallback(item);
+            if (Object.hasOwn(dictionary, key))
+                throw new Error(`Encountered duplicate key ${key}`);
+            dictionary[key] = item;
+            return dictionary;
+        }, {});
+    }
+});
+
+/**
+ * @method
  * @name Function#debounce
  * @param {number} delay - Debounce delay before function execution.
  * @returns {Function}
