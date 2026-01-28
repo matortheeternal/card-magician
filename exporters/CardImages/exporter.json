@@ -2,5 +2,8 @@
   "id": "CardImagesExporter",
   "label": "Card Images",
   "description": "Exports the set's cards to individual image files.",
-  "version": "0.0"
+  "version": "0.0",
+  "dependencies": [
+    "CardSheetExporter"
+  ]
 }
