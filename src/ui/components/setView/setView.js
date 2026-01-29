@@ -123,10 +123,13 @@ export default class SetView extends ReactiveComponent {
         const game = getActiveGame();
         const activeSet = getActiveSet();
         const card = game.newCard();
-        const indexToSelect = activeSet.cards.push(card) - 1;
+        activeSet.cards.push(card);
         changed(activeSet, 'cards');
+        const indexToSelect = this.listView.activeRows.findIndex(row => {
+            return row.original === card;
+        });
         this.listView.selection = [indexToSelect];
-        selectCard(card);
+        await selectCard(card);
         this.updateStatus();
     }
 
