@@ -14,7 +14,7 @@ module-container[module="AdventureFrame"]:not([render]) {
 
 .frame-adventure .bg.left-page, .frame-adventure .bg.right-page {
     top: 3px;
-    height: 96%;
+    height: 97%;
 }
 
 .bg.left-page,
