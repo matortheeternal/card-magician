@@ -41,8 +41,7 @@ auto-fit-line {
     height: 40px;
 }
 
-.frame-node .header,
-.header module-container[module="FaceSymbol"]:has(*) {
+.frame-node .header {
     padding-left: 40px;
 }
 
