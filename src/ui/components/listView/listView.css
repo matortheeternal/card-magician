@@ -7,8 +7,8 @@ body.column-resizing * {
 }
 
 .list-view-table {
-    font-family: var(--sl-font-mono);
-    font-size: var(--sl-font-size-x-small);
+    font-family: var(--sl-font-sans);
+    font-size: 0.8rem;
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
