@@ -39,7 +39,7 @@ const imagePathAdapters = [{
         const num = parseInt(sym.raw);
         return (num >= 0) && (num <= 20);
     },
-    resolve: (sym, size) => `${size}/num/${sym.raw}.png`,
+    resolve: (sym, size) => `${size}/num/${sym.raw.toLowerCase()}.png`,
 }, {
     match: sym => {
         return (sym.type === 'typedMana' && sym.raw.toLowerCase() === 's')
