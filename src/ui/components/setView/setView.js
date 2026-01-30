@@ -8,6 +8,7 @@ import {
 } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
+import JSONSerializer from '../../../domain/sets/serializers/JSONSerializer.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -133,21 +134,24 @@ export default class SetView extends ReactiveComponent {
         this.updateStatus();
     }
 
-    copyCard() {
+    async copyCard() {
         log('user').info('copy card');
         const cards = [];
         this.listView.selection.forEach(r => {
             cards.push(r.original);
         });
 
-        navigator.clipboard.writeText(JSON.stringify({ cards }));
+        const serializer = new JSONSerializer();
+        const text = await serializer.serialize({ cards });
+        await navigator.clipboard.writeText(text);
     }
 
     async pasteCard() {
         try {
             log('user').info('paste card');
             const clipboardText = await navigator.clipboard.readText();
-            const clipboard = JSON.parse(clipboardText) || [];
+            const serializer = new JSONSerializer();
+            const clipboard = await serializer.deserialize(clipboardText) || [];
             if (!clipboard?.cards?.length) return;
             const activeSet = getActiveSet();
 
