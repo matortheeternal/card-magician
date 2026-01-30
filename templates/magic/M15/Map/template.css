@@ -21,3 +21,17 @@
 .frame-map module-container[module="Type"] {
     justify-content: center;
 }
+
+:host(.back) .frame-map module-container[module="Type"],
+:host(.back) .frame-map module-container[module="Name"] {
+    color: black;
+}
+
+.frame-map module-container[module="Art"] {
+    margin: 0;
+}
+
+
+.frame-map module-container[module="Text"] {
+    height: 160px;
+}
