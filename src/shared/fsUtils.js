@@ -25,6 +25,16 @@ export async function checkFileExists(filePath) {
     }
 }
 
+export async function checkFolderExists(folderPath) {
+    try {
+        const stats = await getStats(folderPath);
+        return !stats.isFile;
+    } catch (error) {
+        if (error.code === 'NE_FS_NOPATHE') return false;
+        throw error;
+    }
+}
+
 /**
  * Loads a text file from the given mounted file path.
  *
