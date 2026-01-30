@@ -1,6 +1,7 @@
 :host > div {
     display: flex;
     flex-direction: column;
+    color: black;
     overflow: hidden;
     position: relative;
     width: 375px;
