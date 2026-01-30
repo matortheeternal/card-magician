@@ -22,6 +22,18 @@ export default class CardSheetArtifact extends ExportArtifact {
         return this.cards.length;
     }
 
+    get gap() {
+        return parseInt(this.config.gap);
+    }
+
+    get columns() {
+        return parseInt(this.config.columns);
+    }
+
+    get rows() {
+        return parseInt(this.config.rows);
+    }
+
     add(entry) {
         this.cards.push(entry);
     }
@@ -94,10 +106,10 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     cutCard(canvas, index, cardWidth, cardHeight) {
-        const col = index % this.config.columns;
-        const row = Math.floor(index / this.config.columns);
-        const x = col * (cardWidth + this.config.gap);
-        const y = row * (cardHeight + this.config.gap);
+        const col = index % this.columns;
+        const row = Math.floor(index / this.columns);
+        const x = col * (cardWidth + this.gap);
+        const y = row * (cardHeight + this.gap);
 
         const cardCanvas = document.createElement('canvas');
         cardCanvas.width = cardWidth;
@@ -109,14 +121,14 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     getCanvasCardWidth(canvas) {
-        const numColumns = Math.min(this.config.columns, this.cards.length);
-        const widthGap = (numColumns - 1) * this.config.gap;
+        const numColumns = Math.min(this.columns, this.cards.length);
+        const widthGap = (numColumns - 1) * this.gap;
         return (canvas.width - widthGap) / numColumns;
     }
 
     getCanvasCardHeight(canvas) {
-        const numRows = Math.ceil(this.cards.length / this.config.columns);
-        const heightGap = (numRows - 1) * this.config.gap;
+        const numRows = Math.ceil(this.cards.length / this.columns);
+        const heightGap = (numRows - 1) * this.gap;
         return (canvas.height - heightGap) / numRows;
     }
 
