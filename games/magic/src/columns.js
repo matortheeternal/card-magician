@@ -65,7 +65,7 @@ export function buildColumns() {
         compare: compareRowPTs
     }, {
         label: L`Color`,
-        width: '200px',
+        width: '150px',
         data: row => collectUnique(row, f => {
             if (!f?.colors) return [];
             return f.colors.map(c => c.name);
