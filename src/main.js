@@ -1,6 +1,6 @@
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/log.js';
-import './shared/extensions.js';
+import './shared/prototypeExtensions.js';
 import './shared/localize.js';
 import './domain/template/CardMagicianModule.js';
 import './domain/game/CardMagicianGame.js';
