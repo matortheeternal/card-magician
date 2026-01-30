@@ -1,4 +1,4 @@
-import { snapdom } from '@zumer/snapdom';
+import { preCache, snapdom } from '@zumer/snapdom';
 import ExportArtifact from '../ExportArtifact.js';
 import bake from '../../../shared/theBakery.js';
 import { waitForStableLayout } from '../../../shared/htmlUtils.js';
@@ -87,6 +87,11 @@ export default class CardSheetArtifact extends ExportArtifact {
         tracker.lap('waitForStableLayout');
 
         try {
+            await preCache({
+                root: container,
+                embedFonts: true
+            });
+            tracker.lap('precache');
             const result = await snapdom(container, {
                 embedFonts: true,
                 cache: 'full'
