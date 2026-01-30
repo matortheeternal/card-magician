@@ -1,8 +1,9 @@
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
-import { getActiveSet } from './setManager.js';
+import { getActiveSet } from '../sets/setManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
+import { updateBaseNames } from '../sets/cardNamer.js';
 
 const exporters = [];
 
@@ -34,7 +35,7 @@ async function loadExporter(exporterMetadata) {
         return exporterMetadata.ExporterClass;
 
     const mainPath = [exporterMetadata.path, 'main.js'].join('/');
-    return exporterMetadata.ExporterClass = await import('/' + mainPath);
+    return exporterMetadata.ExporterClass = (await import('/' + mainPath)).default;
 }
 
 export function getExporter(id) {
@@ -80,8 +81,9 @@ export async function runExporters(exporterParams) {
 }
 
 function addDependencyParams(exporterId, set, params) {
-    const { dependencies } = getExporter(exporterId);
-    for (const id of dependencies) {
+    const exporter = getExporter(exporterId);
+    if (!exporter.dependencies) return;
+    for (const id of exporter.dependencies) {
         if (Object.hasOwn(params, id)) continue;
         params[id] = { id, config: set.export[id] };
         addDependencyParams(id, set, params);
@@ -94,13 +96,15 @@ export function gatherExporterParams(targetExporterId) {
     for (const [id, config] of Object.entries(set.export)) {
         if (targetExporterId !== 'all' && targetExporterId !== id)
             continue;
-        addDependencyParams(set, params, id);
+        addDependencyParams(id, set, params);
         params[id] ??= { id, config };
     }
     return Object.values(params);
 }
 
 registerAction('run-exporter', async exporterId => {
+    const cards = getActiveSet().cards;
+    updateBaseNames(cards);
     const params = gatherExporterParams(exporterId);
     await runExporters(params);
 });

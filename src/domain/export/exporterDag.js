@@ -3,7 +3,8 @@ import {
     writeBinaryFile,
     writeFile
 } from '../../shared/neutralinoAdapter.js';
-import { getSetFilePath } from './setManager.js';
+import { getSetFilePath } from '../sets/setManager.js';
+import { checkFolderExists } from '../../shared/fsUtils.js';
 
 /**
  * @typedef DagNode
@@ -90,10 +91,11 @@ async function saveArtifact(exporter, localPath, artifact) {
             + `  ${typeof output}, constructor ${output?.constructor?.name}`
         );
     }
-    const setFilePath = getSetFilePath();
-    const filePath = await getJoinedPath(setFilePath, 'output', exporter.id, localPath);
+    const setFolderPath = await getParentPath(getSetFilePath());
+    const filePath = await getJoinedPath(setFolderPath, 'output', exporter.id, localPath);
     const parentPath = await getParentPath(filePath);
-    await createDirectory(parentPath);
+    if (!await checkFolderExists(parentPath))
+        await createDirectory(parentPath);
     log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
 }

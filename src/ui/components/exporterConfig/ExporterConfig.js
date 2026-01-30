@@ -1,5 +1,5 @@
 import ReactiveComponent from '../ReactiveComponent.js';
-import { getExporter } from '../../../domain/sets/exporterManager.js';
+import { getExporter } from '../../../domain/export/exporterManager.js';
 import { getActiveSet } from '../../../domain/sets/setManager.js';
 import { emit } from '../../../shared/htmlUtils.js';
 
