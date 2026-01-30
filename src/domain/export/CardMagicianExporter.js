@@ -1,6 +1,6 @@
 import { getActiveGame } from '../game/gameManager.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
-import { getActiveSet } from './setManager.js';
+import { getActiveSet } from '../sets/setManager.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 /**
@@ -15,6 +15,7 @@ import { initializeFields } from '../../ui/systems/fieldSystem.js';
 export default class CardMagicianExporter {
     constructor(config, metadata) {
         this.config = Object.assign(this.defaultConfig, config || {});
+        this.saveOutputs = true;
         this.metadata = metadata;
     }
 
@@ -32,10 +33,6 @@ export default class CardMagicianExporter {
 
     get exporterPath() {
         return this.metadata.path;
-    }
-
-    get saveOutputs() {
-        return this.config.saveOutputs;
     }
 
     get defaultConfig() {

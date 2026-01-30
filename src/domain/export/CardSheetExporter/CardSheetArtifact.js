@@ -1,5 +1,8 @@
 import { snapdom } from '@zumer/snapdom';
 import ExportArtifact from '../ExportArtifact.js';
+import bake from '../../../shared/theBakery.js';
+import { waitForStableLayout } from '../../../shared/htmlUtils.js';
+import Stopwatch from '../../../shared/Stopwatch.js';
 
 /**
  * @typedef CardOutput
@@ -15,12 +18,6 @@ export default class CardSheetArtifact extends ExportArtifact {
         this.cards = [];
     }
 
-    dispose() {
-        this._capture = null;
-        this.config = null;
-        this.cards = null;
-    }
-
     get length() {
         return this.cards.length;
     }
@@ -30,12 +27,13 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     createCardsContainer() {
+        const reset = document.createElement('div');
         const container = document.createElement('div');
-        container.style.display = 'grid';
-        container.style.gridTemplateColumns = `repeat(${this.config.columns}, auto)`;
-        container.style.gap = `${this.config.gap}px`;
-        container.style.width = 'max-content';
-        container.style.background = this.config.backgroundColor;
+        // container.style.position = 'absolute';
+        // reset.style.marginTop = '1000em';
+        reset.style.all = 'initial';
+        reset.appendChild(container);
+        document.body.appendChild(reset);
         return container;
     }
 
@@ -47,19 +45,47 @@ export default class CardSheetArtifact extends ExportArtifact {
         }));
     }
 
+    applyGridStyle(container) {
+        container.style.display = 'grid';
+        container.style.gridTemplateColumns = `repeat(${this.config.columns}, auto)`;
+        container.style.gap = `${this.config.gap}px`;
+        container.style.background = this.config.backgroundColor;
+        container.style.width = 'max-content';
+    }
+
     async capture() {
+        const tracker = new Stopwatch('CardSheetArtifact');
+
         const container = this.createCardsContainer();
+        tracker.lap('createCardsContainer');
+
         await this.createCardElements(container);
-        document.body.appendChild(container);
+        tracker.lap('createCardElements');
+
+        await waitForStableLayout(container);
+        tracker.lap('waitForStableLayout');
+
+        bake(container);
+        tracker.lap('bake');
+
+        this.applyGridStyle(container);
+        tracker.lap('applyGridStyle');
+
+        await waitForStableLayout(container);
+        tracker.lap('waitForStableLayout');
 
         try {
-            return await snapdom(container, {
+            const result = await snapdom(container, {
                 embedFonts: true,
-                cache: 'full',
-                scale: this.config.scale
+                cache: 'full'
             });
+            tracker.lap('snapdom');
+            return result;
+        } catch (error) {
+            return Promise.reject(error);
         } finally {
-            document.body.removeChild(container);
+            document.body.removeChild(container.parentElement);
+            tracker.complete();
         }
     }
 

@@ -1,6 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { getActiveSet, onActiveSetChanged } from '../../domain/sets/setManager.js';
-import { getExporter } from '../../domain/sets/exporterManager.js';
+import { getExporter } from '../../domain/export/exporterManager.js';
 import { watch } from '../../shared/reactivity.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';

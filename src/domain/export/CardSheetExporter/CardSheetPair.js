@@ -45,7 +45,7 @@ export default class CardSheetPair {
         for (const faceKey of ['front', 'back']) {
             if (!this[faceKey].length) continue;
             const filePath = this.getFilePath(faceKey);
-            const artifact = new CardSheetArtifact(this, faceKey);
+            const artifact = this[faceKey];
             yield { filePath, artifact };
         }
     }

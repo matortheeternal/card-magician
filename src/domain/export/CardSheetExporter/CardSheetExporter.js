@@ -25,11 +25,11 @@ export default class CardSheetExporter extends CardMagicianExporter {
         }, {
             id: 'columns',
             label: L`Columns`,
-            default: '10'
+            default: '7'
         }, {
             id: 'rows',
             label: L`Rows`,
-            default: '7'
+            default: '10'
         }, {
             id: 'gap',
             label: L`Gap`,
