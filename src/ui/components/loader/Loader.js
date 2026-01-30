@@ -1,7 +1,7 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { getLogMessages } from '../../../shared/log.js';
 import { show } from '../../../shared/htmlUtils.js';
-import safeStringify from '../../../shared/safeStringify.js';
+import safeStringify from '../../../shared/thePrinter.js';
 
 export default class Loader extends ReactiveComponent {
     connectedCallback() {

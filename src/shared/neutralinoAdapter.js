@@ -1,4 +1,4 @@
-import safeStringify from './safeStringify.js';
+import safeStringify from './thePrinter.js';
 
 const levelToLogType = {
     info: 'INFO',
