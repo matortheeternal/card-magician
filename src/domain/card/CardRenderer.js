@@ -18,14 +18,8 @@ export default class CardRenderer {
 
     async renderCardFace(face, cardFace) {
         if (!face) return this.renderDefaultFace();
-        return new Promise((resolve) => {
-            const onInitialized = () => {
-                cardFace.removeEventListener('card-face:initialized', onInitialized);
-                resolve(cardFace);
-            };
-            cardFace.addEventListener('card-face:initialized', onInitialized);
-            cardFace.face = face;
-        });
+        cardFace.face = face;
+        return cardFace;
     }
 
     async render(faceKey, cardFace) {
