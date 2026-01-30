@@ -19,14 +19,18 @@ export default class CardImagesExporter extends CardMagicianExporter {
         }];
     }
 
+    get extension() {
+        return this.config.imageType.split('/').pop();
+    }
+
     /**
      * @param {CardSheetArtifact} cardSheetArtifact
      * @yields {Promise<OutputItem>}
      */
     async *transform(cardSheetArtifact) {
-        for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs) {
-            const filePath = `${card.baseName}.${this.extension}`;
-            const artifact = new CardImageArtifact(card, cardCanvas, this.config);
+        for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs()) {
+            const filePath = `${card.card.baseCard.baseName}.${this.extension}`;
+            const artifact = new CardImageArtifact(cardCanvas, this.config);
             yield { filePath, artifact };
         }
     }

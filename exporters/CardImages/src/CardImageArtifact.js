@@ -1,7 +1,6 @@
 export default class CardImageArtifact extends ExportArtifact {
-    constructor(card, cardCanvas, config) {
+    constructor(cardCanvas, config) {
         super();
-        this.card = card;
         this.cardCanvas = cardCanvas;
         this.config = config;
     }
