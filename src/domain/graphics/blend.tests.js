@@ -1,4 +1,4 @@
-import { combineBlend, linearBlend, maskBlend } from './blending.js';
+import { combineBlend, linearBlend, maskBlend } from './compositeOperations.js';
 import { writeBinaryFile, writeFile } from '../../shared/neutralinoAdapter.js';
 
 async function saveCanvasToFile(canvas, filePath) {

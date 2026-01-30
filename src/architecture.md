@@ -81,7 +81,7 @@ particular area of the codebase, read the documentation closest to that code.
 - BaseCardModel
 - CardMagicianModule
 - CardMagicianGame
-- ImageOperation
+- ImageOp
 - setManager
 - Serializer
 - morphHTML

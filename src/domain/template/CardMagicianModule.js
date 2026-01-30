@@ -1,12 +1,12 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
-import { loadFont } from './fontService.js';
+import { loadFont } from './dynamicFontLoader.js';
 import {
     combineBlendOp,
     linearBlendOp,
     maskBlendOp,
     maskColorOp,
     maskImageOp
-} from '../graphics/blending.js';
+} from '../graphics/compositeOperations.js';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
 import { getActiveGame } from '../game/gameManager.js';
@@ -247,9 +247,9 @@ export default class CardMagicianModule {
      * Tints an image using a color mask.
      *
      * @async
-     * @param {ImageOperation|string} source - The source image.
+     * @param {ImageOp|string} source - The source image.
      * @param {HexColor} color - Hex color string (e.g. "#ff00aa").
-     * @returns {ImageOperation} A deferred image operation.
+     * @returns {ImageOp} A deferred image operation.
      */
     maskColor(source, color) {
         return maskColorOp(source, color);
@@ -258,9 +258,9 @@ export default class CardMagicianModule {
     /**
      * Applies an alpha mask image to another image.
      *
-     * @param {ImageOperation|string} source - The source image.
-     * @param {ImageOperation|string} mask - The mask image.
-     * @returns {ImageOperation} A deferred image operation.
+     * @param {ImageOp|string} source - The source image.
+     * @param {ImageOp|string} mask - The mask image.
+     * @returns {ImageOp} A deferred image operation.
      */
     maskImage(source, mask) {
         return maskImageOp(source, mask);
@@ -269,10 +269,10 @@ export default class CardMagicianModule {
     /**
      * Blends two images using a pixel-level blending mode.
      *
-     * @param {ImageOperation|string} imgA - The first image.
-     * @param {ImageOperation|string} imgB - The second image.
+     * @param {ImageOp|string} imgA - The first image.
+     * @param {ImageOp|string} imgB - The second image.
      * @param {BlendMode} [mode='symmetricOverlay'] - Name of the blend mode to use.
-     * @returns {ImageOperation} A deferred image operation.
+     * @returns {ImageOp} A deferred image operation.
      */
     combineBlend(imgA, imgB, mode = 'symmetricOverlay') {
         return combineBlendOp(imgA, imgB, mode);
@@ -282,13 +282,13 @@ export default class CardMagicianModule {
     /**
      * Blends two images using a linear gradient between two points.
      *
-     * @param {ImageOperation|string} imgA - First image.
-     * @param {ImageOperation|string} imgB - Second image.
+     * @param {ImageOp|string} imgA - First image.
+     * @param {ImageOp|string} imgB - Second image.
      * @param {number} x1 - Gradient start X (0–1 relative).
      * @param {number} y1 - Gradient start Y (0–1).
      * @param {number} x2 - Gradient end X (0–1).
      * @param {number} y2 - Gradient end Y (0–1).
-     * @returns {ImageOperation} A deferred image operation.
+     * @returns {ImageOp} A deferred image operation.
      */
     linearBlend(imgA, imgB, x1, y1, x2, y2) {
         return linearBlendOp(imgA, imgB, x1, y1, x2, y2);
@@ -298,10 +298,10 @@ export default class CardMagicianModule {
      * Blends two images together using a mask image that controls pixel mixing.
      *
      * @async
-     * @param {ImageOperation|string} imgToMask - The image whose pixels are blended.
-     * @param {ImageOperation|string} baseImg - The base/background image.
-     * @param {ImageOperation|string} mask - The mask image (uses red channel as mask).
-     * @returns {ImageOperation} A deferred image operation.
+     * @param {ImageOp|string} imgToMask - The image whose pixels are blended.
+     * @param {ImageOp|string} baseImg - The base/background image.
+     * @param {ImageOp|string} mask - The mask image (uses red channel as mask).
+     * @returns {ImageOp} A deferred image operation.
      */
     maskedBlend(imgToMask, baseImg, mask) {
         return maskBlendOp(imgToMask, baseImg, mask);
