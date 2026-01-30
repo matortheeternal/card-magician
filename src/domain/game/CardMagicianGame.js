@@ -6,7 +6,7 @@ import {
 } from '../sets/adapters/adapterRegistry.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
-import { loadFont } from '../template/fontService.js';
+import { loadFont } from '../template/dynamicFontLoader.js';
 import { getActiveSet } from '../sets/setManager.js';
 
 export default class CardMagicianGame {
