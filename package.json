@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
-    "@zumer/snapdom": "^2.0.0",
+    "@zumer/snapdom": "^2.0.2",
     "codejar": "^4.3.0",
     "highlight.js": "^11.11.1",
     "notepack.io": "^3.0.1",
