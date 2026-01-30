@@ -1,9 +1,12 @@
 import '@shoelace-style/shoelace/dist/shoelace.js';
 import './shared/log.js';
-import './shared/extensions.js';
+import './shared/prototypeExtensions.js';
 import './shared/localize.js';
 import './domain/template/CardMagicianModule.js';
 import './domain/game/CardMagicianGame.js';
+import './domain/export/ExportArtifact.js';
+import './domain/export/CardMagicianExporter.js';
+import './domain/export/CardSheetExporter/CardSheetExporter.js';
 import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
@@ -13,7 +16,7 @@ import imageCache from './domain/graphics/ImageCache.js';
 import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
-import { loadExporters } from './domain/sets/exporterManager.js';
+import { loadExporters } from './domain/export/exporterManager.js';
 
 const startupLog = log('startup');
 
