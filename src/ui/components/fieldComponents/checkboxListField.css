@@ -9,7 +9,7 @@ cm-checkbox-list .label {
     -webkit-user-select: none;
     margin-bottom: var(--sl-spacing-3x-small);
     font-size: var(--sl-font-size-small);
-    font-weight: var(--sl-font-weight-medium);
+    font-weight: var(--sl-font-weight-semibold);
     color: var(--sl-input-label-color);
     cursor: default;
 }
