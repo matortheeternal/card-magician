@@ -2,28 +2,9 @@ import {
     createDirectory, getJoinedPath, rmrf,
     writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
-import YAMLSerializer from './YAMLSerializer.js';
-import sanitize from 'sanitize-filename';
+import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
-
-function addCardBaseName(card, usedBaseNames) {
-    const game = getActiveGame();
-    const cardName = game.getCardName(card);
-    const base = sanitize(cardName.normalize('NFC'), {
-        replacement: '-'
-    });
-    let name = base;
-    let i = 2;
-    while (usedBaseNames.includes(name))
-        name = `${base}-${i++}`;
-    usedBaseNames.push(name);
-}
-
-function resolveCardBaseNames(cards) {
-    const baseNames = [];
-    cards.map(card => addCardBaseName(card, baseNames));
-    return baseNames;
-}
+import { updateBaseNames } from './cardNamer.js';
 
 async function prepareCardsDirectory(filePath) {
     const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
@@ -66,7 +47,7 @@ async function saveSet(filePath, setData, serializer) {
 
 export async function saveProject(filePath, data) {
     const serializer = new YAMLSerializer();
-    const cardBaseNames = resolveCardBaseNames(data.cards);
+    const cardBaseNames = updateBaseNames(data.cards);
     await saveCards(filePath, cardBaseNames.zip(data.cards), serializer);
     await saveSet(filePath, {
         ...data,

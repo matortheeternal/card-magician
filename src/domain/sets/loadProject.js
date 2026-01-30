@@ -1,4 +1,4 @@
-import YAMLSerializer from './YAMLSerializer.js';
+import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getJoinedPath, readBinaryFile } from '../../shared/neutralinoAdapter.js';
 import { getActiveGame } from '../game/gameManager.js';
 import {checkFileExists} from '../../shared/fsUtils.js';
