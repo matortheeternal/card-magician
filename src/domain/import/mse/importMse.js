@@ -6,6 +6,7 @@ import { setActiveSet } from '../../sets/setManager.js';
 import { loadMseFile } from './loadMseFile.js';
 import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
+import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
 
 const L = localize('import-mse');
 
@@ -105,10 +106,12 @@ registerAction('import-mse-set', async () => {
     log('state').info('Importing MSE set:', folderPath);
     openModal('cm-progress-modal', { title: 'Importing...' });
     try {
-        const set = await importMseFolder(folderPath);
-        progress.setTitle('Import complete!');
-        progress.complete();
-        if (set) setActiveSet(set);
+        await withNewContext(async () => {
+            const set = await importMseFolder(folderPath);
+            progress.setTitle('Import complete!');
+            progress.complete();
+            setActiveSet(set);
+        });
     } catch (error) {
         progress.onError(error);
         log('user').error('Error importing MSE set', error);

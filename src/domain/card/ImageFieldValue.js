@@ -1,5 +1,6 @@
 import { getImageSize } from '../../shared/imageUtils.js';
 import ImageCrop from './ImageCrop.js';
+import { createURL } from '../../ui/systems/objectUrlSystem.js';
 
 export default class ImageFieldValue {
     constructor(imageUrl = null, width = 0, height = 0, crop) {
@@ -10,7 +11,7 @@ export default class ImageFieldValue {
     }
 
     static async fromFile(file) {
-        const imageUrl = URL.createObjectURL(file);
+        const imageUrl = createURL(file);
         const { width, height } = await getImageSize(imageUrl);
         const crop = new ImageCrop(width, height);
         const value = new this(imageUrl, width, height, crop);
