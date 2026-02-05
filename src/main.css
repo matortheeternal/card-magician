@@ -10,6 +10,7 @@
 @import "ui/modals/modals.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
+@import "ui/modals/progressModal/progressModal.css";
 @import "ui/modals/setInfoModal/setInfoModal.css";
 @import "ui/components/cardForm/cardForm.css";
 @import "ui/components/faceForm/faceForm.css";
