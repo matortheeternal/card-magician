@@ -3,4 +3,10 @@ cm-card-properties {
     margin: var(--sl-spacing-medium);
     margin-top: 0;
     font-family: var(--sl-font-sans);
+    min-height: 0;
+}
+
+cm-card-properties sl-textarea::part(textarea) {
+    max-height: 20em;
+    overflow-y: auto;
 }
