@@ -1,0 +1,48 @@
+cm-progress-modal {
+    display: block;
+    margin-top: 10%;
+}
+
+cm-progress-modal .modal-body {
+    padding-top: var(--sl-spacing-x-large);
+}
+
+sl-progress-bar {
+    --height: 1.5em;
+    margin: var(--sl-spacing-2x-small) 0;
+}
+
+sl-progress-bar::part(base) {
+    position: relative;
+    border-radius: var(--sl-border-radius-small);
+    border: 1px solid var(--sl-input-border-color);
+}
+
+sl-progress-bar::part(indicator) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--sl-font-mono);
+    font-weight: var(--sl-font-weight-bold);
+}
+
+cm-progress-modal.error sl-progress-bar::part(indicator) {
+    background-color: var(--sl-color-danger-400);
+}
+
+cm-progress-modal.done sl-progress-bar::part(indicator) {
+    background-color: var(--sl-color-success-400);
+}
+
+sl-progress-bar::part(label) {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.operation-message {
+    font-size: var(--sl-font-size-small);
+    white-space: pre;
+}

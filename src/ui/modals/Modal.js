@@ -60,7 +60,7 @@ export default class Modal extends ReactiveComponent {
         this.innerHTML = (
             `<div class="modal">
                 <div class="modal-title-bar">
-                    <div>${this.title}</div>
+                    <div class="title">${this.title}</div>
                     <div class="close-modal">
                         <sl-icon name="x-lg" data-click-action="close"></sl-icon>
                     </div>
