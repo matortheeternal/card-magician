@@ -29,9 +29,17 @@ export default class CardImagesExporter extends CardMagicianExporter {
      */
     async *transform(cardSheetArtifact) {
         for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs()) {
-            const filePath = `${card.card.baseCard.baseName}.${this.extension}`;
+            const hasBackFace = Object.hasOwn(card.card.baseCard, 'back');
+            const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
+            const filePath = `${card.card.baseCard.baseName}${suffix}.${this.extension}`;
             const artifact = new CardImageArtifact(cardCanvas, this.config);
             yield { filePath, artifact };
         }
+    }
+
+    getOutputCount() {
+        return this.activeSet.cards.reduce((total, card) => {
+            return total + 1 + (Object.hasOwn(card, 'back') ? 1 : 0);
+        }, 0);
     }
 }
