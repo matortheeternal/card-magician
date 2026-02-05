@@ -2,7 +2,7 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import html from './displayCard.html.js';
 import { onActiveCardChanged } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
-import { saveHTMLAsImage } from '../../../domain/card/cardImageExporter.js';
+import { saveHTMLAsImage } from '../../../domain/export/cardImageExporter.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 
 export default class DisplayCard extends ReactiveComponent {
@@ -63,8 +63,7 @@ export default class DisplayCard extends ReactiveComponent {
         const card = this.querySelector('cm-card');
         const cardFaces = card.querySelectorAll(`cm-card-face`);
         cardFaces.forEach((cardFace, index) => {
-            const div = cardFace.shadowRoot.firstElementChild;
-            saveHTMLAsImage(div, `card${index}.jpg`);
+            saveHTMLAsImage(cardFace, `card${index}.jpg`);
         });
     }
 }
