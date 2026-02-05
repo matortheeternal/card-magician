@@ -16,12 +16,21 @@ div .type-line {
 /* ADVENTURE SPOTLIGHT FRAME */
 .frame-spotlight module-container[module="Name"] {
     padding-left: 30px;
-    padding-top: 3px;
+    padding-top: 2px;
+}
+
+.frame-spotlight module-container[module="Cost"] {
+    gap: 1px;
+}
+
+.frame-spotlight module-container[module="Cost"]:not([subcard]) div.sym {
+    height: 22px;
+    width: 21px;
 }
 
 .frame-spotlight module-container[module="Type"]:not([subcard]) {
     justify-content: center;
-    padding: 0 45px;
+    padding: 1px 45px 0;
 }
 
 .frame-spotlight module-container[module="Rarity"] {
