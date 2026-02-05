@@ -1,18 +1,15 @@
 module-container[module="Rarity"] {
+    display: flex;
     min-width: 18px;
     min-height: 18px;
     padding-left: 4px;
-    margin-bottom: 2px;
+    margin: 2px 0;
 }
 
-module-container[module="Rarity"] > span {
-    display: flex;
-}
-
-.set-icon linearGradient stop:nth-child(1) { stop-color: var(--rar-g1); }
-.set-icon linearGradient stop:nth-child(2) { stop-color: var(--rar-g2); }
-.set-icon linearGradient stop:nth-child(3) { stop-color: var(--rar-g3); }
-.set-icon linearGradient stop:nth-child(4) { stop-color: var(--rar-g4); }
+.set-icon [offset="0%"] { stop-color: var(--rar-g1); }
+.set-icon [offset="45%"] { stop-color: var(--rar-g2); }
+.set-icon [offset="55%"] { stop-color: var(--rar-g3); }
+.set-icon [offset="100%"] { stop-color: var(--rar-g4); }
 
 .set-icon .outer {
     stroke: var(--rar-stroke-outer);
@@ -27,12 +24,11 @@ module-container[module="Rarity"] > span {
 .set-icon {
     height: 18px;
     width: 18px;
-    margin-top: 2px;
     --rar-stroke-outer: black;
     --rar-stroke-inner: black;
 }
 
-.rarity-common .set-icon {
+.rarity-common.set-icon {
     --rar-g1: black;
     --rar-g2: black;
     --rar-g3: black;
@@ -40,21 +36,21 @@ module-container[module="Rarity"] > span {
     --rar-stroke-outer: white;
 }
 
-.rarity-uncommon .set-icon {
+.rarity-uncommon.set-icon {
     --rar-g1: #6c7d8f;
     --rar-g2: #c0d6e5;
     --rar-g3: #c0d6e5;
     --rar-g4: #9ab4c8;
 }
 
-.rarity-rare .set-icon {
+.rarity-rare.set-icon {
     --rar-g1: #876c13;
     --rar-g2: #f6e8a3;
     --rar-g3: #f6e8a3;
     --rar-g4: #d7bf55;
 }
 
-.rarity-mythic .set-icon {
+.rarity-mythic.set-icon {
     --rar-g1: #b02929;
     --rar-g2: #ffb347;
     --rar-g3: #ffb347;
