@@ -5,6 +5,8 @@ import cardPropertyImporters from '../cardPropertyImporters.js';
 const baseLevelKeys = ['notes'];
 
 export default class M15AlteredImporter extends BaseCardImporter {
+    static template = 'M15Main';
+
     static checkStylesheet(stylesheet, stylesheetVersion) {
         if (stylesheet !== 'm15-altered')
             return `Using m15-altered importer fallback for "${stylesheet}"`;
