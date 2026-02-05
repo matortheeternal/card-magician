@@ -4,6 +4,8 @@ import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { getActiveSet } from '../sets/setManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { updateBaseNames } from '../sets/cardNamer.js';
+import { openModal } from '../../ui/modals/modalManager.js';
+import * as progress from '../../ui/systems/progressSystem.js';
 
 const exporters = [];
 
@@ -75,8 +77,9 @@ export async function runExporters(exporterParams) {
     const exporters = await Promise.all(
         exporterParams.map(params => createExporter(params))
     );
-    const dagFootNodes = feedTheDag(exporters);
     await Promise.all(exporters.map(exporter => exporter.prepare()));
+    progress.setOperation('Building dependency tree');
+    const dagFootNodes = feedTheDag(exporters);
     await walkTheDag(dagFootNodes);
 }
 
@@ -103,8 +106,17 @@ export function gatherExporterParams(targetExporterId) {
 }
 
 registerAction('run-exporter', async exporterId => {
-    const cards = getActiveSet().cards;
-    updateBaseNames(cards);
-    const params = gatherExporterParams(exporterId);
-    await runExporters(params);
+    openModal('cm-progress-modal', { title: `Exporting...` });
+    try {
+        progress.setStatus('Preparing cards');
+        const cards = getActiveSet().cards;
+        updateBaseNames(cards);
+        progress.setStatus('Preparing exporters');
+        const params = gatherExporterParams(exporterId);
+        await runExporters(params);
+        progress.setTitle('Export Complete');
+        progress.complete();
+    } catch (error) {
+        progress.onError(error);
+    }
 });
