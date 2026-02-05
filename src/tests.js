@@ -1,17 +1,11 @@
-import {
-    buildCombineBlendTests,
-    buildLinearBlendTests,
-    buildMaskBlendTests
-} from './domain/graphics/blend.tests.js';
-import { buildBlobEncodingTests } from './domain/sets/adapters/blobEncoding.tests.js';
 import { mount } from './shared/neutralinoAdapter.js';
+import { buildLoadMseFileTests } from './domain/import/mse/loadMseFile.tests.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
     `${JASMINE_BASE}/jasmine.js`,
     `${JASMINE_BASE}/jasmine-html.js`,
     `${JASMINE_BASE}/boot0.js`,
-    `${JASMINE_BASE}/boot1.js`
 ];
 const jasmineStyle = `${JASMINE_BASE}/jasmine.css`;
 
@@ -37,11 +31,11 @@ function loadStyle(href) {
 }
 
 export async function setupTestHarness() {
+    document.querySelectorAll('main').forEach(el => el.remove());
     await mount('/tests', NL_PATH + '/tests');
     await loadStyle(jasmineStyle);
     for (const src of scripts)
         await loadScript(src);
-    document.querySelectorAll('nav, template').forEach(el => el.remove());
     document.body.style.userSelect = 'auto';
     return true;
 }
@@ -49,9 +43,11 @@ export async function setupTestHarness() {
 export async function runTests() {
     log('startup').info('--run-tests detected, loading test harness');
     await setupTestHarness();
+
     log('startup').info('Running tests');
-    buildCombineBlendTests();
-    buildLinearBlendTests();
-    buildMaskBlendTests();
-    buildBlobEncodingTests();
+    buildLoadMseFileTests();
+
+    await loadScript(`${JASMINE_BASE}/boot1.js`);
+    if (document.readyState === 'complete') window.onload();
 }
+
