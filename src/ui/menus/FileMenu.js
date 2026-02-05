@@ -31,6 +31,11 @@ export default class FileMenu extends ReactiveMenu {
                 () => executeAction('save-set-as')
             ),
             this.DIVIDER,
+            this.menuItem(
+                L`Export current card`,
+                ``,
+                () => executeAction('export-card-image')
+            ),
             this.menuItem(L`Print`, L`Ctrl+P`, () => log('user').info('Print')),
             this.DIVIDER,
             this.menuItem(L`Exit`, ``, () => exitApp()),
