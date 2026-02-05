@@ -6,6 +6,7 @@ export default class ProgressModal extends Modal {
     static id = 'cm-progress-modal';
     title = 'Progress';
 
+    #unregister = null;
     #data = {};
     #statusMessage = '';
     #operationMessage = ' ';
@@ -14,7 +15,7 @@ export default class ProgressModal extends Modal {
 
     connectedCallback() {
         super.connectedCallback();
-        registerProgressEndpoint({
+        this.#unregister = registerProgressEndpoint({
             setStatus: value => this.statusMessage = value,
             setOperation: value => this.operationMessage = value,
             setMax: value => this.maxProgress = value,
@@ -23,6 +24,10 @@ export default class ProgressModal extends Modal {
             complete: () => this.done(),
             onError: error => this.onError(error)
         });
+    }
+
+    disconnectedCallback() {
+        this.#unregister?.();
     }
 
     get onClickHandlers() {

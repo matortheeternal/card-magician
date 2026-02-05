@@ -2,6 +2,7 @@ const progressEndpoints = [];
 
 export function registerProgressEndpoint(progressEndpoint) {
     progressEndpoints.push(progressEndpoint);
+    return () => progressEndpoints.remove(progressEndpoint);
 }
 
 export function setStatus(status) {
