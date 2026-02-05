@@ -49,13 +49,12 @@ module-container[module="Text"] {
     font-size: 97%;
     line-height: 0.95;
     height: 0.85em;
-    width: 0.85em;
+    width: 0.9em;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center center;
     display: inline-block;
     vertical-align: top;
-    margin-top: 0.1em;
     margin-left: 1px;
     margin-top: 1px;
 }
