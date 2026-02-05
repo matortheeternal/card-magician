@@ -1,4 +1,5 @@
-import { getStats, readFile } from './neutralinoAdapter.js';
+import { getStats, readBinaryFile, readFile } from './neutralinoAdapter.js';
+import { determineImageType } from './imageUtils.js';
 
 /**
  * Loads and parses a JSON file from the given file path.
@@ -61,4 +62,16 @@ export function fnv1a(str) {
         hash = (hash * 0x01000193) >>> 0;
     }
     return (hash >>> 0).toString(16);
+}
+
+/**
+ * Loads an image file from a file path and returns a blob containing it.
+ *
+ * @param {string} filePath - path to the image file to load
+ * @returns {Promise<Blob>} - the image file as a blob
+ */
+export async function loadImageFile(filePath) {
+    const data = await readBinaryFile(filePath);
+    const type = determineImageType(data);
+    return new Blob([data], { type });
 }
