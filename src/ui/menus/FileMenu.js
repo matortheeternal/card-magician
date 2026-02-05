@@ -32,6 +32,11 @@ export default class FileMenu extends ReactiveMenu {
             ),
             this.DIVIDER,
             this.menuItem(
+                L`Import MSE set`,
+                ``,
+                () => executeAction('import-mse-set')
+            ),
+            this.menuItem(
                 L`Export current card`,
                 ``,
                 () => executeAction('export-card-image')
