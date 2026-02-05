@@ -106,6 +106,7 @@ registerAction('import-mse-set', async () => {
     openModal('cm-progress-modal', { title: 'Importing...' });
     try {
         const set = await importMseFolder(folderPath);
+        progress.setTitle('Import complete!');
         progress.complete();
         if (set) setActiveSet(set);
     } catch (error) {
