@@ -1,18 +1,18 @@
 export default class Stopwatch {
-    constructor(label) {
-        this.label = label;
+    constructor(group) {
+        this.group = group;
         this.startTime = performance.now();
         this.lastTime = this.startTime;
     }
 
-    lap(lapLabel) {
+    lap(label) {
         const lapTime = (performance.now() - this.lastTime).toFixed(2);
-        console.log(`[${this.label}] ${lapLabel}: ${lapTime}ms`);
+        log(this.group).debug(`${label}: ${lapTime}ms`);
         this.lastTime = performance.now();
     }
 
-    complete() {
+    complete(label) {
         const completionTime = (performance.now() - this.startTime).toFixed(2);
-        console.log(`[${this.label}] completed in ${completionTime}ms`);
+        log(this.group).debug(`${label} completed in ${completionTime}ms`);
     }
 }
