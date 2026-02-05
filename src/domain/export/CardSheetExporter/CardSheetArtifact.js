@@ -1,8 +1,7 @@
-import { preCache, snapdom } from '@zumer/snapdom';
 import ExportArtifact from '../ExportArtifact.js';
-import bake from '../../../shared/theBakery.js';
 import { waitForStableLayout } from '../../../shared/htmlUtils.js';
 import Stopwatch from '../../../shared/Stopwatch.js';
+import { cardToCanvas } from '../cardToCanvas/cardToCanvas.js';
 
 /**
  * @typedef CardOutput
@@ -41,8 +40,8 @@ export default class CardSheetArtifact extends ExportArtifact {
     createCardsContainer() {
         const reset = document.createElement('div');
         const container = document.createElement('div');
-        // container.style.position = 'absolute';
-        // reset.style.marginTop = '1000em';
+        container.style.position = 'fixed';
+        reset.style.top = '1000em';
         reset.style.all = 'initial';
         reset.appendChild(container);
         document.body.appendChild(reset);
@@ -69,6 +68,7 @@ export default class CardSheetArtifact extends ExportArtifact {
         const tracker = new Stopwatch('CardSheetArtifact');
 
         const container = this.createCardsContainer();
+        this.applyGridStyle(container);
         tracker.lap('createCardsContainer');
 
         await this.createCardElements(container);
@@ -77,26 +77,9 @@ export default class CardSheetArtifact extends ExportArtifact {
         await waitForStableLayout(container);
         tracker.lap('waitForStableLayout');
 
-        bake(container);
-        tracker.lap('bake');
-
-        this.applyGridStyle(container);
-        tracker.lap('applyGridStyle');
-
-        await waitForStableLayout(container);
-        tracker.lap('waitForStableLayout');
-
         try {
-            await preCache({
-                root: container,
-                embedFonts: true
-            });
-            tracker.lap('precache');
-            const result = await snapdom(container, {
-                embedFonts: true,
-                cache: 'full'
-            });
-            tracker.lap('snapdom');
+            const result = await cardToCanvas(container, { scale: 1 });
+            tracker.lap('cardToCanvas');
             return result;
         } catch (error) {
             return Promise.reject(error);
@@ -141,9 +124,7 @@ export default class CardSheetArtifact extends ExportArtifact {
      * @yields {Promise<CardOutput>}
      */
     async *cardOutputs() {
-        const result = await this.capturePromise;
-        const canvas = await result.toCanvas();
-
+        const canvas = await this.capturePromise;
         const cardWidth = this.getCanvasCardWidth(canvas);
         const cardHeight = this.getCanvasCardHeight(canvas);
 
@@ -155,10 +136,9 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     async toBuffer() {
-        const result = await this.capturePromise;
-        const blob = await result.toBlob({
-            type: this.config.imageType,
-            quality: this.config.quality,
+        const canvas = await this.capturePromise;
+        const blob = await new Promise(resolve => {
+            canvas.toBlob(resolve, this.config.imageType, this.config.quality);
         });
         const arrayBuffer = await blob.arrayBuffer();
         return new Uint8Array(arrayBuffer);
