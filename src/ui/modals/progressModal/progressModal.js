@@ -5,6 +5,7 @@ import { registerProgressEndpoint } from '../../systems/progressSystem.js';
 export default class ProgressModal extends Modal {
     static id = 'cm-progress-modal';
     title = 'Progress';
+    canClose = false;
 
     #unregister = null;
     #data = {};
@@ -100,10 +101,13 @@ export default class ProgressModal extends Modal {
     }
 
     allowClose() {
-        this.showCloseButton = true;
-        this.querySelector('.modal-actions').innerHTML = (
-            `<sl-button data-click-action="close">Close</sl-button>`
-        );
+        this.canClose = true;
+        this.render();
+    }
+
+    close() {
+        if (!this.canClose) return;
+        super.close();
     }
 
     onError(error) {
@@ -114,7 +118,7 @@ export default class ProgressModal extends Modal {
     }
 
     done() {
-        this.allowClose();
+        this.progress = this.#maxProgress;
         this.statusMessage = 'Done.';
         this.operationMessage = `Completed in ${this.timeElapsed}`;
         this.classList.add('done');
@@ -125,21 +129,28 @@ export default class ProgressModal extends Modal {
     async cancel() {
         log('user').info(`User cancelled ${this.title}`);
         this.setTitle('Cancelling...');
-        await this.data.cancelCallback();
+        await this.data?.cancelCallback?.();
         this.allowClose();
     }
 
     renderBody() {
         return (
             `<div class="status-message">${this.statusMessage}</div>
-             <sl-progress-bar value="0">${this.progressBarLabel}</sl-progress-bar>
+             <sl-progress-bar
+                value="${this.progressPercent.toFixed(0)}"
+             >${this.progressBarLabel}</sl-progress-bar>
              <div class="operation-message">${this.operationMessage}</div>`
         );
     }
 
     renderActions() {
-        return (
-            `<sl-button data-click-action="cancel">Cancel</sl-button>`
+        return this.canClose ? (
+            `<sl-button data-click-action="close">Close</sl-button>`
+        ) : (
+            `<sl-button
+                data-click-action="cancel"
+                ${this.data?.cancelCallback ? '' : 'disabled'}
+             >Cancel</sl-button>`
         );
     }
 }
