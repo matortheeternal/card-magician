@@ -123,6 +123,17 @@ export default class CardMagicianExporter {
      * @yields {Promise<OutputItem>}
      */
     async *produce() {}
+
+    /**
+     * @abstract
+     * Returns the number of distinct artifacts this exporter will output given
+     * a number of artifacts that will be passed to its transform function.
+     * @param {number} inputCount
+     * @returns {number}
+     */
+    getOutputCount(inputCount) {
+        return 0;
+    }
 }
 
 window.CardMagicianExporter = CardMagicianExporter;

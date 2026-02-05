@@ -25,11 +25,11 @@ export default class CardSheetExporter extends CardMagicianExporter {
         }, {
             id: 'columns',
             label: L`Columns`,
-            default: '7'
+            default: '10'
         }, {
             id: 'rows',
             label: L`Rows`,
-            default: '10'
+            default: '7'
         }, {
             id: 'gap',
             label: L`Gap`,
@@ -80,6 +80,12 @@ export default class CardSheetExporter extends CardMagicianExporter {
                 yield value;
         }
         return manifest;
+    }
+
+    getOutputCount() {
+        return this.sheets.reduce((total, sheet) => {
+            return total + sheet.getOutputCount();
+        }, 0);
     }
 }
 

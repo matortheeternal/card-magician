@@ -49,4 +49,9 @@ export default class CardSheetPair {
             yield { filePath, artifact };
         }
     }
+
+    getOutputCount() {
+        return (this.front.length > 0 ? 1 : 0)
+             + (this.back.length > 0  ? 1 : 0);
+    }
 }

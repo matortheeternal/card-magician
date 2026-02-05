@@ -5,6 +5,7 @@ import {
 } from '../../shared/neutralinoAdapter.js';
 import { getSetFilePath } from '../sets/setManager.js';
 import { checkFolderExists } from '../../shared/fsUtils.js';
+import * as progress from '../../ui/systems/progressSystem.js';
 
 /**
  * @typedef DagNode
@@ -18,6 +19,18 @@ class ExporterDAG {
     constructor() {
         this.nodesById = {};
         this.nodesWithParents = new Set();
+    }
+
+    get totalSteps() {
+        const countSteps = (nodes, baseCount = 0) => {
+            if (!nodes) return 0;
+            return nodes.reduce((total, node) => {
+                const count = node.value.getOutputCount(baseCount);
+                return total + count + countSteps(node.children, count);
+            }, 0);
+        };
+
+        return countSteps(this.footNodes);
     }
 
     get nodes() {
@@ -70,7 +83,9 @@ export function feedTheDag(exporters) {
             theDag.addParent(node, exporter);
         });
     });
+    progress.setOperation('Checking for circular dependencies');
     theDag.dontEatYourTail();
+    progress.setMax(theDag.totalSteps);
     return theDag.footNodes;
 }
 
@@ -112,6 +127,8 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.transform(sourceArtifact)) {
             log('export').debug(`Produced artifact "${filePath}"`);
+            progress.setOperation(`Produced ${filePath}`);
+            progress.increment();
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
             await passArtifactDown(artifact, node.children);
@@ -126,10 +143,13 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
 export async function walkTheDag(dagFootNodes) {
     log('export').debug('Walking the DAG');
     for (const node of dagFootNodes) {
+        progress.setStatus(`Exporting from ${node.id}`);
         log('export').debug(`Walking from "${node.id}"`);
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.produce()) {
             log('export').debug(`Produced artifact "${filePath}"`);
+            progress.setOperation(`Produced ${filePath}`);
+            progress.increment();
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
             await passArtifactDown(artifact, node.children);
