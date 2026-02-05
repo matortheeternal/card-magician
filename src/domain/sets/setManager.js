@@ -11,6 +11,7 @@ import { saveProject } from './saveProject.js';
 import { loadProject } from './loadProject.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
+import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const L = localize('set-manager');
 
@@ -70,8 +71,10 @@ export async function newSet() {
     log('user').info('new set');
     setFilePath = null;
     const game = getActiveGame();
-    const newSet = game.newSet();
-    setActiveSet(newSet);
+    await withNewContext(() => {
+        const newSet = game.newSet();
+        setActiveSet(newSet);
+    });
 }
 
 export async function openSet(filePath) {
@@ -80,10 +83,11 @@ export async function openSet(filePath) {
     if (!filePath) return;
     log('state').info('Opening set:', filePath);
     const game = getActiveGame();
-    const setData = await loadProject(filePath);
-    setFolderPath = await getParentPath(filePath);
-    setFilePath = filePath;
-    setActiveSet(game.loadSet(setData));
+    await withNewContext(async () => {
+        const setData = await loadProject(filePath);
+        setFilePath = filePath;
+        setActiveSet(game.loadSet(setData));
+    });
     await getConfig().addRecentFile(filePath);
 }
 

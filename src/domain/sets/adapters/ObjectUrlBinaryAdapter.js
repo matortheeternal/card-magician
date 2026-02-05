@@ -1,4 +1,5 @@
 import SerializerAdapter from './SerializerAdapter.js';
+import { createURL } from '../../../ui/systems/objectUrlSystem.js';
 
 /**
  * Adapter for encoding/decoding object URLs as raw binary data.
@@ -41,6 +42,6 @@ export default class ObjectUrlBinaryAdapter extends SerializerAdapter {
     async decode(node) {
         const bytes = new Uint8Array(node.binary);
         const blob = new Blob([bytes], { type: node.mime });
-        return URL.createObjectURL(blob);
+        return createURL(blob);
     }
 }
