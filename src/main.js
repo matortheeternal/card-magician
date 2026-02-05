@@ -66,8 +66,7 @@ function loaded() {
 
 async function startApp() {
     if (NL_RESMODE !== 'bundle') setupDevState();
-    if (NL_ARGS.includes('--run-tests'))
-        return await runTests();
+    if (NL_ARGS.includes('--run-tests')) return runTests();
 
     startupLog.debug('Loading games');
     await loadGames();
