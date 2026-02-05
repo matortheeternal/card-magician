@@ -42,3 +42,36 @@ export function getImageSize(url) {
         img.src = url;
     });
 }
+
+
+function hasPngMagic(bytes) {
+    return bytes.length >= 8
+        && bytes[0] === 0x89
+        && bytes[1] === 0x50
+        && bytes[2] === 0x4E
+        && bytes[3] === 0x47
+        && bytes[4] === 0x0D
+        && bytes[5] === 0x0A
+        && bytes[6] === 0x1A
+        && bytes[7] === 0x0A;
+}
+
+function hasJpegMagic(bytes) {
+    return bytes.length >= 3
+        && bytes[0] === 0xFF
+        && bytes[1] === 0xD8
+        && bytes[2] === 0xFF;
+}
+
+/**
+ * Returns the image mime type for a given buffer of data.
+ *
+ * @param {ArrayBuffer} data - image bytes loaded from disk.
+ * @returns {'image/jpeg'|'image/png'}
+ */
+export function determineImageType(data) {
+    const bytes = new Uint8Array(data);
+    if (hasPngMagic(bytes)) return 'image/png';
+    if (hasJpegMagic(bytes)) return 'image/jpeg';
+    throw new Error('Unknown image type');
+}
