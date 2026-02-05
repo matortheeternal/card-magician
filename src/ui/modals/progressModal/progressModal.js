@@ -15,6 +15,7 @@ export default class ProgressModal extends Modal {
 
     connectedCallback() {
         super.connectedCallback();
+        this.start = performance.now();
         this.#unregister = registerProgressEndpoint({
             setStatus: value => this.statusMessage = value,
             setOperation: value => this.operationMessage = value,
@@ -87,6 +88,11 @@ export default class ProgressModal extends Modal {
         this.querySelector('sl-progress-bar').textContent = this.progressBarLabel;
     }
 
+    get timeElapsed() {
+        const diff = performance.now() - this.start;
+        return `${(diff / 1000).toFixed(2)}s`;
+    }
+
     setTitle(newTitle) {
         this.title = newTitle;
         const titleDiv = this.querySelector('.modal-title-bar > .title');
@@ -110,6 +116,7 @@ export default class ProgressModal extends Modal {
     done() {
         this.allowClose();
         this.statusMessage = 'Done.';
+        this.operationMessage = `Completed in ${this.timeElapsed}`;
         this.classList.add('done');
         this.allowClose();
         if (this.data?.autoclose) closeModal();
