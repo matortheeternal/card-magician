@@ -16,7 +16,8 @@ function stripTags(str) {
 
 function convertSymbols(str) {
     if (!str) return '';
-    return str.replace(/<sym-auto>([^<]+)<\/sym-auto>/g, (match, g1) => {
+    const expr = /<sym-auto>([^<]+)<\/sym-auto>|<sym>([^<]+)<\/sym>/g;
+    return str.replace(expr, (match, g1) => {
         return ActivationCost.parse(g1).toString(true);
     });
 }
