@@ -1,7 +1,7 @@
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
-import { getActiveSet } from '../sets/setManager.js';
+import { getActiveSet, selectSetFolderPath } from '../sets/setManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { updateBaseNames } from '../sets/cardNamer.js';
 import { openModal } from '../../ui/modals/modalManager.js';
@@ -106,6 +106,7 @@ export function gatherExporterParams(targetExporterId) {
 }
 
 registerAction('run-exporter', async exporterId => {
+    if (!await selectSetFolderPath()) return;
     openModal('cm-progress-modal', { title: `Exporting...` });
     try {
         progress.setStatus('Preparing cards');
@@ -117,6 +118,8 @@ registerAction('run-exporter', async exporterId => {
         progress.setTitle('Export Complete');
         progress.complete();
     } catch (error) {
+        progress.setTitle('Export failed');
         progress.onError(error);
+        log('user').error(`Error during export`, error);
     }
 });
