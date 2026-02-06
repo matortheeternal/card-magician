@@ -21,14 +21,25 @@ function convertSymbols(str) {
     });
 }
 
-const knownColors = ['white', 'blue', 'black', 'red', 'green'];
+const colorSymbols = {
+    white: 'w', blue: 'u', black: 'b', red: 'r', green: 'g',
+    colorless: 'c', artifact: 'a', land: 'l',
+    hybrid: 'h', multicolor: 'm'
+};
+
+export const tokenPropImporters = {
+    casting_cost: (value, cmCardFace) => {
+        const cost = ManaCost.parse(value);
+        cmCardFace.colorOverride = cost.colors.map(c => c.toLowerCase())
+    },
+};
 
 export default {
     notes: (value, cmCard) => cmCard.notes = stripTags(value),
     card_color: (value, cmCardFace) => {
-        cmCardFace.colorOverride = value.split(', ').filter(color => {
-            return knownColors.includes(color);
-        });
+        cmCardFace.colorOverride = value.split(', ')
+            .map(key => colorSymbols[key])
+            .filter(Boolean);
     },
     name: (value, cmCardFace) => cmCardFace.name = value,
     casting_cost: (value, cmCardFace) => {

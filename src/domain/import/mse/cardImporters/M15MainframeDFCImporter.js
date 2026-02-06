@@ -1,14 +1,12 @@
 import M15AlteredImporter from './M15AlteredImporter.js';
-import { registerCardImporter } from '../cardImporterRegistry.js';
 
 export default class M15MainframeDFCImporter extends M15AlteredImporter {
     static expectedVersion = '2024-09-06';
     static expectedStylesheet = 'm15-mainframe-dfc';
-    static template = 'M15Main';
 
     static checkStylesheet(stylesheetVersion) {
         if (stylesheetVersion === this.expectedVersion) return;
-        return `Using m15-mainframe-dfc importer for untested `
+        return `Using ${this.expectedStylesheet} importer for untested `
              + `version "${stylesheetVersion}"`;
     }
 
@@ -21,6 +19,12 @@ export default class M15MainframeDFCImporter extends M15AlteredImporter {
         return true;
     }
 
+    getPropImporter(key) {
+        return super.getPropImporter(
+            key.endsWith('_2') ? key.slice(0, -2) : key
+        );
+    }
+
     getPropertyGroup([key]) {
         return key.endsWith('_2') ? 'back' : super.getPropertyGroup([key]);
     }
@@ -28,15 +32,10 @@ export default class M15MainframeDFCImporter extends M15AlteredImporter {
     async import() {
         const { base, front, back } = this.groupedProperties;
         await this.importProps(base, this.cmCard);
-        this.cmCard.front.template = this.constructor.template;
+        this.cmCard.front.template = this.template;
         await this.importProps(front, this.cmCard.front);
-        if (!back.length) return;
-        this.cmCard.back = { template: this.constructor.template };
-        await this.importProps(
-            back.map(([key, value]) => [key.slice(0, -2), value]),
-            this.cmCard.back
-        );
+        if (!back?.length) return;
+        this.cmCard.back = { template: this.template };
+        await this.importProps(back, this.cmCard.back);
     }
 }
-
-registerCardImporter(M15MainframeDFCImporter);
