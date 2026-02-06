@@ -1,6 +1,6 @@
 import { getActiveGame } from '../../game/gameManager.js';
 import { openFolderDialog } from '../../../shared/neutralinoAdapter.js';
-import { findMatchingImporter } from './cardImporterRegistry.js';
+import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
 import { setActiveSet } from '../../sets/setManager.js';
 import { loadMseFile } from './loadMseFile.js';
@@ -70,7 +70,7 @@ function importSetInfo(mseInfo, cmSet) {
 async function importCard(filename, game, folderPath, mseSet) {
     const cmCard = game.newCard();
     const mseCard = await loadMseFile(folderPath, filename);
-    const cardImporter = findMatchingImporter(mseSet, mseCard.card, cmCard, folderPath);
+    const cardImporter = createImporter(mseSet, mseCard.card, cmCard, folderPath);
     await cardImporter.import();
     return cmCard;
 }

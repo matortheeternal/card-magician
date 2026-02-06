@@ -7,7 +7,7 @@ import './domain/game/CardMagicianGame.js';
 import './domain/export/ExportArtifact.js';
 import './domain/export/CardMagicianExporter.js';
 import './domain/export/CardSheetExporter/CardSheetExporter.js';
-import './domain/import/mse/**/*.js';
+import './domain/import/mse/importMse.js';
 import './ui/**/*.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
