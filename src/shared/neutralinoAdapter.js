@@ -33,6 +33,11 @@ export async function openSingleFileDialog(label, filters) {
     return res?.[0];
 }
 
+export async function openFolderDialog(label) {
+    log('fs').debug('openFolderDialog', label);
+    return wrapError(() => Neutralino.os.showFolderDialog(label));
+}
+
 export async function saveSingleFileDialog(label, defaultPath, filters) {
     log('fs').debug('saveSingleFileDialog', label, defaultPath, filters);
     return wrapError(

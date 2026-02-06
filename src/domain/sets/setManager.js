@@ -2,6 +2,8 @@ import { addStatusMessage } from '../../ui/systems/statusSystem.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { getActiveGame, getConfig } from '../game/gameManager.js';
 import {
+    getParentPath,
+    openFolderDialog,
     openSingleFileDialog,
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
@@ -18,9 +20,16 @@ const filters = [
 const cardChangedCallbacks = [];
 const setChangedCallbacks = [];
 let activeSet = { cards: [] };
+let setFolderPath = null;
 let setFilePath = null;
 let activeCard = null;
 let selectedCard = null;
+
+export async function selectSetFolderPath() {
+    if (setFolderPath) return true;
+    setFolderPath = await openFolderDialog(L`Choose folder to save set files to`);
+    return Boolean(setFolderPath);
+}
 
 export async function saveAs() {
     log('user').info('save as');
@@ -31,6 +40,7 @@ export async function saveAs() {
     );
     if (!filePath) return;
     log('fs').info('Saving set to:', filePath);
+    setFolderPath = await getParentPath(filePath);
     setFilePath = filePath;
     await saveProject(filePath, activeSet);
 }
@@ -74,8 +84,8 @@ export function getActiveSet() {
     return activeSet;
 }
 
-export function getSetFilePath() {
-    return setFilePath;
+export function getSetFolderPath() {
+    return setFolderPath;
 }
 
 export function getSelectedCard() {

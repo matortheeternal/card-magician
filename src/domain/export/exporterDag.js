@@ -3,7 +3,7 @@ import {
     writeBinaryFile,
     writeFile
 } from '../../shared/neutralinoAdapter.js';
-import { getSetFilePath } from '../sets/setManager.js';
+import { getSetFolderPath } from '../sets/setManager.js';
 import { checkFolderExists } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
@@ -106,7 +106,7 @@ async function saveArtifact(exporter, localPath, artifact) {
             + `  ${typeof output}, constructor ${output?.constructor?.name}`
         );
     }
-    const setFolderPath = await getParentPath(getSetFilePath());
+    const setFolderPath = getSetFolderPath();
     const filePath = await getJoinedPath(setFolderPath, 'output', exporter.id, localPath);
     const parentPath = await getParentPath(filePath);
     if (!await checkFolderExists(parentPath))
