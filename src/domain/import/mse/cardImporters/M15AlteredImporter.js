@@ -1,12 +1,9 @@
 import BaseCardImporter from './BaseCardImporter.js';
-import { registerCardImporter } from '../cardImporterRegistry.js';
 import cardPropertyImporters from '../cardPropertyImporters.js';
 
 const baseLevelKeys = ['notes'];
 
 export default class M15AlteredImporter extends BaseCardImporter {
-    static template = 'M15Main';
-
     static checkStylesheet(stylesheet, stylesheetVersion) {
         if (stylesheet !== 'm15-altered')
             return `Using m15-altered importer fallback for "${stylesheet}"`;
@@ -22,6 +19,10 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return true;
     }
 
+    get template() {
+        return 'M15Main';
+    }
+
     get properties() {
         return Object.entries(this.mseCard).filter(([,value]) => Boolean(value));
     }
@@ -34,10 +35,14 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return Object.groupBy(this.properties, this.getPropertyGroup);
     }
 
+    getPropImporter(key) {
+        return cardPropertyImporters[key];
+    }
+
     async importProps(mseFaceEntries, cmCardFace) {
         if (!mseFaceEntries) return;
         for (const [key, value] of mseFaceEntries) {
-            const propImporter = cardPropertyImporters[key];
+            const propImporter = this.getPropImporter(key);
             await propImporter?.(value, cmCardFace, this.folderPath);
         }
     }
@@ -48,5 +53,3 @@ export default class M15AlteredImporter extends BaseCardImporter {
         await this.importProps(front, this.cmCard.front);
     }
 }
-
-registerCardImporter(M15AlteredImporter);

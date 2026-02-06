@@ -1,6 +1,7 @@
 export default class BaseCardImporter {
-    constructor(mseCard, cmCard, folderPath) {
+    constructor(mseCard, cmCard, mseSet, folderPath) {
         this.mseCard = mseCard;
+        this.mseSet = mseSet;
         this.cmCard = cmCard;
         this.folderPath = folderPath;
     }
@@ -13,6 +14,24 @@ export default class BaseCardImporter {
      */
     static match(mseCard, mseSet) {
         return false;
+    }
+
+    /**
+     * @abstract
+     * @returns {string}
+     */
+    get template() {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * @desc Returns styling data for the card.
+     * @returns {object}
+     */
+    get stylingData() {
+        return this.mseCard.has_styling === 'false'
+            ? this.mseSet.styling?.[`magic-${this.mseCard.stylesheet}`]
+            : this.mseCard.styling_data;
     }
 
     /**
