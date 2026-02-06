@@ -92,9 +92,6 @@ export default [
             'no-unused-vars': ['warn', { args: 'none' }],
             'no-useless-assignment': 'warn',
             'no-useless-backreference': 'warn',
-            'require-atomic-updates': ['warn', {
-                allowProperties: true
-            }],
             'use-isnan': 'error',
             'valid-typeof': 'warn',
 
