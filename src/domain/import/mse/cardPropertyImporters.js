@@ -22,6 +22,12 @@ function convertSymbols(str) {
     });
 }
 
+export function hasPropertyValues(obj) {
+    return Object.values(obj).some(val => {
+        return stripTags(val).length > 0;
+    });
+}
+
 const colorSymbols = {
     white: 'w', blue: 'u', black: 'b', red: 'r', green: 'g',
     colorless: 'c', artifact: 'a', land: 'l',
@@ -31,7 +37,7 @@ const colorSymbols = {
 export const tokenPropImporters = {
     casting_cost: (value, cmCardFace) => {
         const cost = ManaCost.parse(value);
-        cmCardFace.colorOverride = cost.colors.map(c => c.toLowerCase())
+        cmCardFace.colorOverride = cost.colors.map(c => c.toLowerCase());
     },
 };
 
