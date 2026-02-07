@@ -1,16 +1,18 @@
-import AdventureFrame from './AdventureFrame.js';
+import CardFrame from '../../Frame/src/CardFrame.js';
+import Frame from '../../Frame/src/mixins/Frame.js';
+import Border from '../../Frame/src/mixins/Border.js';
+import PT from '../../Frame/src/mixins/PT.js';
+import LeftPage from './mixins/LeftPage.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
-
-export default class AdventureSpotlightFrame extends AdventureFrame {
+export default class AdventureSpotlightFrame extends CardFrame.with(
+    Frame,
+    Border,
+    PT,
+    LeftPage,
+) {
     static matches(card) {
         return card.frame === 'spotlight';
     }
-
-    frame = [this.resolveFrame, this.resolveBorder];
-    pages = [this.resolveLeftPage];
 
     get useHybridBlend() {
         return false;
@@ -26,7 +28,7 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
     }
 
     get frameFolder() {
-        return resolveAssetPath('frame/spotlight');
+        return this.resolveAdventureAssetPath('frame/spotlight');
     }
 
     maskFrame(imageUrl) {
@@ -44,11 +46,11 @@ export default class AdventureSpotlightFrame extends AdventureFrame {
 
     /* --- PT --- */
     get ptFolder() {
-        return resolveAssetPath('pt');
+        return this.resolveAdventureAssetPath('pt');
     }
 
     /* --- LEFT PAGE --- */
     get leftPageUrl() {
-        return resolveAssetPath('page/spotlight');
+        return this.resolveAdventureAssetPath('page/spotlight');
     }
 }

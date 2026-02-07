@@ -1,6 +1,6 @@
 const BindingMixin = {
     get bindingUrl() {
-        return this.resolveAdvAssetPath('binding');
+        return this.resolveAdventureAssetPath('binding');
     },
 
     async resolveBinding(card) {

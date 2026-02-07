@@ -1,6 +1,6 @@
 const RightPageMixin = {
     get rightPageUrl() {
-        return this.resolveAdvAssetPath('page/blank');
+        return this.resolveAdventureAssetPath('page/blank');
     },
 
     async resolveRightPage(card) {

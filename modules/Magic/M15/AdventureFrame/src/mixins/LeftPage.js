@@ -1,7 +1,7 @@
 const LeftPageMixin = {
     get leftPageUrl() {
         const leftPagePath = `page/${this.card.pageStyle || 'name_and_type'}`;
-        return this.resolveAdvAssetPath(leftPagePath);
+        return this.resolveAdventureAssetPath(leftPagePath);
     },
 
     async resolveLeftPage(card) {
