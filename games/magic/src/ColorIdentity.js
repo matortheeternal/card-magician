@@ -1,3 +1,5 @@
+import { ActivationCost } from 'mana-scribe';
+
 const colorNames = {
     w: 'white',
     u: 'blue',
@@ -92,4 +94,28 @@ export default class ColorIdentity {
     isArtifact() {
         return this.override && this.override.includes('a');
     }
+}
+
+function getTextSymbols(rulesText) {
+    const symbols = [];
+    for (const match of rulesText.matchAll(/^{(.+?)}/g)) {
+        const cost = ActivationCost.parse(match[1]);
+        symbols.push(cost.symbols);
+    }
+    return symbols;
+}
+
+function isLand(cardFace) {
+    return /\bland\b/i.test(cardFace.superType);
+}
+
+export function getCardFaceColors(cardFace) {
+    const colorIdentity = new ColorIdentity();
+    if (cardFace.manaCost)
+        colorIdentity.addColorSource('card', cardFace.manaCost.symbols);
+    if (cardFace.colorOverride)
+        colorIdentity.setOverride(cardFace.colorOverride.join(''));
+    if (cardFace.rulesText && isLand(cardFace))
+        colorIdentity.addColorSource('text', getTextSymbols(cardFace.rulesText));
+    return colorIdentity.getColors();
 }
