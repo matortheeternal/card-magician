@@ -2,6 +2,7 @@ import makeOptions from './src/options.js';
 import DevoidFrame from './src/DevoidFrame.js';
 import NormalFrame from './src/NormalFrame.js';
 import ClearFrame from './src/ClearFrame.js';
+import FNMPromoFrame from './src/FNMPromoFrame.js';
 
 function createFrameHelpers(card) {
     card.isDKA = () => false;
@@ -25,6 +26,7 @@ export default class FrameModule extends CardMagicianModule {
         card.frames = [
             DevoidFrame,
             ClearFrame,
+            FNMPromoFrame,
             NormalFrame
         ];
 
