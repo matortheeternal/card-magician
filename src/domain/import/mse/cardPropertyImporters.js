@@ -16,16 +16,14 @@ function stripTags(str) {
 
 function convertSymbols(str) {
     if (!str) return '';
-    const expr = /<sym-auto>([^<]+)<\/sym-auto>|<sym>([^<]+)<\/sym>/g;
+    const expr = /<sym(?:-auto)?>([^<]+)<\/sym(?:-auto)?>/g;
     return str.replace(expr, (match, g1) => {
         return ActivationCost.parse(g1).toString(true);
     });
 }
 
-export function hasPropertyValues(obj) {
-    return Object.values(obj).some(val => {
-        return stripTags(val).length > 0;
-    });
+export function hasPropertyValues(entries) {
+    return entries && entries.some(([, val]) => stripTags(val).length);
 }
 
 const colorSymbols = {
