@@ -1,12 +1,35 @@
-import NormalFrame from './NormalFrame.js';
+import CardFrame from './CardFrame.js';
+import FrameResolution from './mixins/FrameResolution.js';
+import TrimMasks from './mixins/TrimMasks.js';
+import VehicleTrim from './mixins/VehicleTrim.js';
+import SnowTrim from './mixins/SnowTrim.js';
+import DraftTrim from './mixins/DraftTrim.js';
+import Border from './mixins/Border.js';
+import Scrolls from './mixins/Scrolls.js';
+import Node from './mixins/Node.js';
+import Crowns from './mixins/Crowns.js';
+import MiracleTrim from './mixins/MiracleTrim.js';
+import PT from './mixins/PT.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
-
-export default class ClearFrame extends NormalFrame {
+export default class ClearFrame extends CardFrame.with(
+    FrameResolution,
+    TrimMasks,
+    VehicleTrim,
+    SnowTrim,
+    DraftTrim,
+    Border,
+    Scrolls,
+    Node,
+    Crowns,
+    MiracleTrim,
+    PT,
+) {
     static matches(card) {
         return card.frame === 'clear';
+    }
+
+    resolveClearAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
     }
 
     coloredBlend(folder) {
@@ -19,7 +42,7 @@ export default class ClearFrame extends NormalFrame {
 
     /* --- FRAME --- */
     maskFrame(imageUrl) {
-        const maskUrl = resolveAssetPath('mask/frame/clear.png');
+        const maskUrl = this.resolveClearAssetPath('mask/frame/clear.png');
         return this.ctx.maskImage(imageUrl, maskUrl);
     }
 

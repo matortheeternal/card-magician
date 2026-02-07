@@ -11,16 +11,45 @@ function xor(x, y) {
 }
 
 export default class CardFrame {
+    static with(...mixins) {
+        class Mixed extends this {}
+
+        for (const { mixin } of mixins) {
+            Object.defineProperties(
+                Mixed.prototype,
+                Object.getOwnPropertyDescriptors(mixin)
+            );
+        }
+
+        Mixed.prototype.mixins = mixins;
+        return Mixed;
+    }
+
     constructor(card, module) {
         this.card = card;
         this.ctx = module;
     }
 
-    async buildBackgrounds(key, card) {
+    get artDimensions() {
+        return { width: 316, height: 223 };
+    }
+
+    resolveAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
+
+    resolveMixinsGroup(group) {
+        return this.mixins.filter(m => m.group === group);
+    }
+
+    async buildBackgrounds(group, card) {
         this.zIndex = 0;
         const backgrounds = [];
-        for (const f of (this[key] || [])) {
-            const bg = await f.call(this, card);
+        for (const mixin of (this.resolveMixinsGroup(group) || [])) {
+            const resolve = this[mixin.resolve];
+            if (typeof resolve !== 'function')
+                throw new Error(`Missing resolver ${mixin.resolve}`);
+            const bg = await resolve.call(this, card);
             backgrounds.push(bg);
         }
         return backgrounds.filter(Boolean);

@@ -1,11 +1,16 @@
-import NormalFrame from '../../Frame/src/NormalFrame.js';
+import CardFrame from '../../Frame/src/CardFrame.js';
+import FrameResolution from '../../Frame/src/mixins/FrameResolution.js';
+import Border from '../../Frame/src/mixins/Border.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
+export default class MapFrame extends CardFrame.with(
+    FrameResolution,
+    Border,
+) {
+    frame = [this.resolveFrame, this.resolveBorder];
 
-export default class MapFrame extends NormalFrame {
-    frame = [this.resolveFrame];
+    resolveMapAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
 
     // --- FRAME RESOLUTION ---
     get frameExt() {
@@ -13,11 +18,11 @@ export default class MapFrame extends NormalFrame {
     }
 
     get frameMaskFolder() {
-        return resolveAssetPath('mask/frame');
+        return this.resolveMapAssetPath('mask/frame');
     }
 
     get frameFolder() {
-        return resolveAssetPath(`frame/map`);
+        return this.resolveMapAssetPath(`frame/map`);
     }
 
     get frameMaskFilename() {
@@ -25,7 +30,7 @@ export default class MapFrame extends NormalFrame {
     }
 
     get frameBlendMaskFolder() {
-        return resolveAssetPath('mask/map');
+        return this.resolveMapAssetPath('mask/map');
     }
 
     get frameId() {

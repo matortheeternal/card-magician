@@ -1,57 +1,43 @@
-import NormalFrame from '../../Frame/src/NormalFrame.js';
+import CardFrame from '../../Frame/src/CardFrame.js';
+import Frame from '../../Frame/src/mixins/FrameResolution.js';
+import TrimMasks from '../../Frame/src/mixins/TrimMasks.js';
+import VehicleTrim from '../../Frame/src/mixins/VehicleTrim.js';
+import SnowTrim from '../../Frame/src/mixins/SnowTrim.js';
+import DraftTrim from '../../Frame/src/mixins/DraftTrim.js';
+import Border from '../../Frame/src/mixins/Border.js';
+import Scrolls from '../../Frame/src/mixins/Scrolls.js';
+import Node from '../../Frame/src/mixins/Node.js';
+import Crowns from '../../Frame/src/mixins/Crowns.js';
+import MiracleTrim from '../../Frame/src/mixins/MiracleTrim.js';
+import PT from '../../Frame/src/mixins/PT.js';
+import Binding from './mixins/Binding.js';
+import LeftPage from './mixins/LeftPage.js';
+import RightPage from './mixins/RightPage.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
-
-export default class AdventureFrame extends NormalFrame {
-    pages = [
-        this.resolveBinding,
-        this.resolveLeftPage,
-        this.resolveRightPage
-    ];
+export default class AdventureFrame extends CardFrame.with(
+    Frame,
+    TrimMasks,
+    VehicleTrim,
+    SnowTrim,
+    DraftTrim,
+    Border,
+    Scrolls,
+    Node,
+    Crowns,
+    MiracleTrim,
+    PT,
+    Binding,
+    LeftPage,
+    RightPage
+) {
+    resolveAdvAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
 
     /* --- FRAME --- */
     get frameId() {
         return this.card.frame === 'reversed'
             ? 'reversed'
             : 'adventure';
-    }
-
-    /* --- BINDING --- */
-    get bindingUrl() {
-        return resolveAssetPath('binding');
-    }
-
-    async resolveBinding(card) {
-        const image = this.coloredBlend(this.bindingUrl, card);
-        return this.background('binding', image, 1);
-    }
-
-    /* --- LEFT PAGE --- */
-    get leftPageUrl() {
-        return resolveAssetPath(`page/${this.card.pageStyle || 'name_and_type'}`);
-    }
-
-    async resolveLeftPage(card) {
-        const adventure = card.subcards.find(s => s.id === 'adventure');
-        const image = this.coloredBlend(this.leftPageUrl, adventure, {
-            hybridMode: 'first',
-            ext: '.png'
-        });
-        return this.background('left-page', image, 2);
-    }
-
-    /* --- RIGHT PAGE --- */
-    get rightPageUrl() {
-        return resolveAssetPath('page/blank');
-    }
-
-    async resolveRightPage(card) {
-        const image = this.coloredBlend(this.rightPageUrl, card, {
-            hybridMode: 'first',
-            ext: '.png'
-        });
-        return this.background('right-page', image, 2);
     }
 }
