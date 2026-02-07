@@ -1,5 +1,6 @@
 import M15AlteredImporter from './M15AlteredImporter.js';
 import { hasPropertyValues } from '../cardPropertyImporters.js';
+import { getActiveGame } from '../../../game/gameManager.js';
 
 export default class M15MainframeDFCImporter extends M15AlteredImporter {
     static expectedVersion = '2024-09-06';
@@ -35,9 +36,11 @@ export default class M15MainframeDFCImporter extends M15AlteredImporter {
         await this.importProps(base, this.cmCard);
         this.cmCard.front.template = this.template;
         await this.importProps(front, this.cmCard.front);
+        getActiveGame().addComputedProps(this.cmCard.front);
         if (!hasPropertyValues(back)) return;
         this.cmCard.front.faceSymbol = 'auto';
         this.cmCard.back = { template: this.template, faceSymbol: 'auto' };
         await this.importProps(back, this.cmCard.back);
+        getActiveGame().addComputedProps(this.cmCard.back);
     }
 }

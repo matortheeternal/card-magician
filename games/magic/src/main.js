@@ -69,6 +69,11 @@ export default class MagicTheGathering extends CardMagicianGame {
         return { ...info, ...newSet, ...set };
     }
 
+    addComputedProps(cardFace) {
+        cardFace.rarity ??= 'common';
+        cardFace.colors = getCardFaceColors(cardFace);
+    }
+
     newCard() {
         return { front: {}, notes: '', dirty: true, tags: [] };
     }
