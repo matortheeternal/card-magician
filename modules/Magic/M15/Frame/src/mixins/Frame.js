@@ -1,4 +1,4 @@
-const FrameResolutionMixin = {
+const FrameMixin = {
     get frameExt() {
         return '.jpg';
     },
@@ -56,5 +56,5 @@ const FrameResolutionMixin = {
 export default {
     group: 'frame',
     resolve: 'resolveFrame',
-    mixin: FrameResolutionMixin
+    mixin: FrameMixin
 };

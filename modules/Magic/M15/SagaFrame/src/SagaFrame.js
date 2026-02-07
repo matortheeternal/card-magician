@@ -1,5 +1,5 @@
 import CardFrame from '../../Frame/src/CardFrame.js';
-import FrameResolution from '../../Frame/src/mixins/FrameResolution.js';
+import FrameResolution from '../../Frame/src/mixins/Frame.js';
 import TrimMasks from '../../Frame/src/mixins/TrimMasks.js';
 import VehicleTrim from '../../Frame/src/mixins/VehicleTrim.js';
 import SnowTrim from '../../Frame/src/mixins/SnowTrim.js';

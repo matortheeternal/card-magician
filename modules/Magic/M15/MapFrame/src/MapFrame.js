@@ -1,5 +1,5 @@
 import CardFrame from '../../Frame/src/CardFrame.js';
-import FrameResolution from '../../Frame/src/mixins/FrameResolution.js';
+import FrameResolution from '../../Frame/src/mixins/Frame.js';
 import Border from '../../Frame/src/mixins/Border.js';
 
 export default class MapFrame extends CardFrame.with(
