@@ -8,12 +8,14 @@ import MakeManaCostAdapter from './ManaCostAdapter.js';
 import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
 import SigilSifter from 'sigil-sifter';
+import ColorIdentity, { getCardFaceColors } from './ColorIdentity.js';
 
 const SET_FILE_VERSION = 1;
 
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.ManaScribe = ManaScribe;
+        this.ColorIdentity = ColorIdentity;
         this.addSerializerAdapter(SerializerAdapter => {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
