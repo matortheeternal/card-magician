@@ -5,27 +5,8 @@ import { getActiveGame } from '../../../game/gameManager.js';
 const baseLevelKeys = ['notes'];
 
 export default class M15AlteredImporter extends BaseCardImporter {
-    static checkStylesheet(stylesheet, stylesheetVersion) {
-        if (stylesheet !== 'm15-altered')
-            return `Using m15-altered importer fallback for "${stylesheet}"`;
-        if (stylesheetVersion === '2024-09-23') return;
-        return `Using m15-altered importer for untested version "${stylesheetVersion}"`;
-    }
-
-    static match(mseCard, mseSet) {
-        const stylesheet = mseCard.stylesheet || mseSet.stylesheet;
-        const version = mseCard.stylesheet_version || mseSet.stylesheet_version;
-        const warning = this.checkStylesheet(stylesheet, version);
-        if (warning) log('import').warn(warning);
-        return true;
-    }
-
     get template() {
-        return 'M15Main';
-    }
-
-    get properties() {
-        return Object.entries(this.mseCard).filter(([,value]) => Boolean(value));
+        return this.mseFrames.includes('map') ? 'M15Map' : 'M15Main';
     }
 
     getPropertyGroup([key]) {
@@ -48,10 +29,41 @@ export default class M15AlteredImporter extends BaseCardImporter {
         }
     }
 
+    get mseFrames() {
+        const framesValue = this.stylingData?.frames;
+        return framesValue ? framesValue.split(', ') : [];
+    }
+
+    get frame() {
+        if (this.mseFrames.includes('clear')) return 'clear';
+        if (this.mseFrames.includes('devoid')) return 'devoid';
+        return '';
+    }
+
+    get chopTop() {
+        const chopTop = this.stylinbackgData.chop_top;
+        return chopTop?.length ? chopTop : '';
+    }
+
+    get chopBottom() {
+        const chopBottom = this.stylingData.chop_bottom;
+        return chopBottom?.length ? chopBottom : '';
+    }
+
+    async importOptions(cmCardFace) {
+        cmCardFace.options = {};
+        cmCardFace.options.frame = this.frame;
+        cmCardFace.options.chopTop = this.chopTop;
+        cmCardFace.options.chopBottom = this.chopBottom;
+    }
+
     async import() {
-        const { base, front } = this.groupedProperties;
-        await this.importProps(base, this.cmCard);
-        await this.importProps(front, this.cmCard.front);
+        this.cmCard.front.template = this.template;
+        const props = this.groupedProperties;
+        await this.importProps(props.base, this.cmCard);
+        await this.importProps(props.front, this.cmCard.front);
+        await this.importOptions(this.cmCard.front);
         getActiveGame().addComputedProps(this.cmCard.front);
+        return props;
     }
 }

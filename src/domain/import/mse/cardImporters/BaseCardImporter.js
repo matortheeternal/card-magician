@@ -1,4 +1,7 @@
 export default class BaseCardImporter {
+    static expectedStylesheet = '';
+    static expectedVersion = '';
+
     constructor(mseCard, cmCard, mseSet, folderPath) {
         this.mseCard = mseCard;
         this.mseSet = mseSet;
@@ -6,14 +9,19 @@ export default class BaseCardImporter {
         this.folderPath = folderPath;
     }
 
-    /**
-     * @abstract
-     * @param mseCard
-     * @param mseSet
-     * @returns {boolean}
-     */
+    static checkStylesheet(stylesheetVersion) {
+        if (stylesheetVersion === this.expectedVersion) return;
+        return `Using ${this.expectedStylesheet} importer for untested `
+            + `version "${stylesheetVersion}"`;
+    }
+
     static match(mseCard, mseSet) {
-        return false;
+        const stylesheet = mseCard.stylesheet || mseSet.stylesheet;
+        const version = mseCard.stylesheet_version || mseSet.stylesheet_version;
+        if (stylesheet !== this.expectedStylesheet) return false;
+        const warning = this.checkStylesheet(version);
+        if (warning) log('import').warn(warning);
+        return true;
     }
 
     /**
