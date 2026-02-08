@@ -42,8 +42,12 @@ export default class CardFrame {
         return this.mixins.filter(m => m.group === group);
     }
 
-    async buildBackgrounds(group, card) {
+    beforeBuild() {
         this.zIndex = 0;
+    }
+
+    async buildBackgrounds(group, card) {
+        this.beforeBuild();
         const backgrounds = [];
         for (const mixin of (this.resolveMixinsGroup(group) || [])) {
             const resolve = this[mixin.resolve];

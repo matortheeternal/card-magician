@@ -14,6 +14,10 @@ export default class AdventureSpotlightFrame extends CardFrame.with(
         return card.frame === 'spotlight';
     }
 
+    resolveAdventureAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
+
     get useHybridBlend() {
         return false;
     }

@@ -39,7 +39,7 @@ export default class NormalFrame extends CardFrame.with(
 
     get crownMasks() {
         const masks = super.crownMasks;
-        if (this.isMaxArt() && this.card.isMiracle())
+        if (this.isMaxArt && this.card.isMiracle())
             masks.push('mask/crown/miracle_borderless.png');
         if (this.isExpanded && this.card.hasAlias?.())
             masks.push('mask/crown/expanded_alias.png');

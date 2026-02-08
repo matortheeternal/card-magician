@@ -1,22 +1,30 @@
-import NormalFrame from '../../../M15/Frame/src/NormalFrame.js';
+import CardFrame from '../../../M15/Frame/src/CardFrame.js';
+import Frame from '../../../M15/Frame/src/mixins/Frame.js';
+import TrimMasks from '../../../M15/Frame/src/mixins/TrimMasks.js';
+import VehicleTrim from '../../../M15/Frame/src/mixins/VehicleTrim.js';
+import SnowTrim from '../../../M15/Frame/src/mixins/SnowTrim.js';
+import NyxTrim from '../../../M15/Frame/src/mixins/NyxTrim.js';
+import Border from '../../../M15/Frame/src/mixins/Border.js';
+import Crowns from '../../../M15/Frame/src/mixins/Crowns.js';
+import PT from '../../../M15/Frame/src/mixins/PT.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
-
-export default class M20TokenFrame extends NormalFrame {
+export default class M20TokenFrame extends CardFrame.with(
+    Frame,
+    TrimMasks,
+    VehicleTrim,
+    SnowTrim,
+    NyxTrim,
+    Border,
+    Crowns,
+    PT
+) {
     static matches() {
         return true;
     }
 
-    frame = [
-        this.resolveFrame,
-        this.resolveVehicleTrim,
-        this.resolveSnowTrim,
-        this.resolveNyxTrim,
-        this.resolveBorder,
-        this.resolveCrown,
-    ];
+    resolveTokenAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
 
     // --- LAYOUT ---
     get artDimensions() {
@@ -37,7 +45,7 @@ export default class M20TokenFrame extends NormalFrame {
     }
 
     get frameFolder() {
-        return resolveAssetPath(`frame/${this.frameHeight}`);
+        return this.resolveTokenAssetPath(`frame/${this.frameHeight}`);
     }
 
     get frameMaskFilename() {
@@ -49,7 +57,7 @@ export default class M20TokenFrame extends NormalFrame {
     }
 
     get frameBlendMaskFolder() {
-        return resolveAssetPath(`mask/${this.frameHeight}`);
+        return this.resolveTokenAssetPath(`mask/${this.frameHeight}`);
     }
 
     get frameId() {
@@ -62,7 +70,7 @@ export default class M20TokenFrame extends NormalFrame {
     }
 
     get frameMaskFolder() {
-        return resolveAssetPath('mask/frame');
+        return this.resolveTokenAssetPath('mask/frame');
     }
 
     // TODO: snowbox, snowtype

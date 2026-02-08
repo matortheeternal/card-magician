@@ -30,6 +30,10 @@ export default class AdventureFrame extends CardFrame.with(
     LeftPage,
     RightPage
 ) {
+    static matches() {
+        return true;
+    }
+
     resolveAdventureAssetPath(path) {
         return new URL(`../assets/${path}`, import.meta.url).pathname;
     }

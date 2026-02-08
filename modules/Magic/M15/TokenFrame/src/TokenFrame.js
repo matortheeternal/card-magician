@@ -1,22 +1,30 @@
-import NormalFrame from '../../Frame/src/NormalFrame.js';
+import CardFrame from '../../Frame/src/CardFrame.js';
+import Frame from '../../Frame/src/mixins/Frame.js';
+import TrimMasks from '../../Frame/src/mixins/TrimMasks.js';
+import VehicleTrim from '../../Frame/src/mixins/VehicleTrim.js';
+import SnowTrim from '../../Frame/src/mixins/SnowTrim.js';
+import NyxTrim from '../../Frame/src/mixins/NyxTrim.js';
+import Border from '../../Frame/src/mixins/Border.js';
+import Crowns from '../../Frame/src/mixins/Crowns.js';
+import PT from '../../Frame/src/mixins/PT.js';
 
-function resolveAssetPath(path) {
-    return new URL(`../assets/${path}`, import.meta.url).pathname;
-}
-
-export default class TokenFrame extends NormalFrame {
+export default class TokenFrame extends CardFrame.with(
+    Frame,
+    TrimMasks,
+    VehicleTrim,
+    SnowTrim,
+    NyxTrim,
+    Border,
+    Crowns,
+    PT
+) {
     static matches() {
         return true;
     }
 
-    frame = [
-        this.resolveFrame,
-        this.resolveVehicleTrim,
-        this.resolveSnowTrim,
-        this.resolveNyxTrim,
-        this.resolveBorder,
-        this.resolveCrown,
-    ];
+    resolveTokenAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
 
     // --- LAYOUT ---
     get artDimensions() {
@@ -33,11 +41,11 @@ export default class TokenFrame extends NormalFrame {
 
     // --- FRAME RESOLUTION ---
     get frameMaskFolder() {
-        return resolveAssetPath('mask/frame');
+        return this.resolveTokenAssetPath('mask/frame');
     }
 
     get frameFolder() {
-        return resolveAssetPath(`frame/${this.frameHeight}`);
+        return this.resolveTokenAssetPath(`frame/${this.frameHeight}`);
     }
 
     get frameMaskFilename() {
@@ -49,7 +57,7 @@ export default class TokenFrame extends NormalFrame {
     }
 
     get frameBlendMaskFolder() {
-        return resolveAssetPath(`mask/${this.frameHeight}`);
+        return this.resolveTokenAssetPath(`mask/${this.frameHeight}`);
     }
 
     get frameId() {
@@ -62,9 +70,9 @@ export default class TokenFrame extends NormalFrame {
     }
 
     // --- CROWNS ---
-    async resolveCrown(card) {
+    async resolveCrown() {
         if (!this.showCrown) return null;
-        const image = resolveAssetPath(`element/crown/base.png`);
+        const image = this.resolveTokenAssetPath(`element/crown/base.png`);
         return this.background('crown', image);
     }
 }

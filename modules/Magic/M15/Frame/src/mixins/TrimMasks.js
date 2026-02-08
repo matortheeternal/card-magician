@@ -1,7 +1,7 @@
 const TrimMasksMixin = {
-    async buildBackgrounds(key, card) {
+    beforeBuild() {
         this.numTrims = 0;
-        return super.buildBackgrounds(key, card);
+        this.zIndex = 0;
     },
 
     get trimMaskFilename() {
