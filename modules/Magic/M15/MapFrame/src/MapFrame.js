@@ -1,10 +1,12 @@
 import CardFrame from '../../Frame/src/CardFrame.js';
 import Frame from '../../Frame/src/mixins/Frame.js';
 import Border from '../../Frame/src/mixins/Border.js';
+import PT from '../../Frame/src/mixins/PT.js';
 
 export default class MapFrame extends CardFrame.with(
     Frame,
     Border,
+    PT,
 ) {
     static matches() {
         return true;
