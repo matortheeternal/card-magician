@@ -66,7 +66,7 @@ export async function writeFile(path, data) {
 }
 
 export async function writeBinaryFile(path, data) {
-    log('fs').debug('writeBinaryFile', path, `${data.length} bytes`);
+    log('fs').debug('writeBinaryFile', path, `${data.byteLength} bytes`);
     return wrapError(() => Neutralino.filesystem.writeBinaryFile(path, data));
 }
 
@@ -112,12 +112,18 @@ export async function rmrf(path) {
     return wrapError(() => Neutralino.filesystem.remove(path));
 }
 
+export async function unmount(path) {
+    log('fs').debug('unmount', path);
+    await wrapError(() => Neutralino.server.unmount(path));
+}
+
 export async function mount(path, target) {
     log('fs').debug('mount', path, target);
     try {
         await Neutralino.server.mount(path, target);
     } catch (error) {
-        if (error.code !== 'NE_SR_MPINUSE') throw error;
+        if (error.code !== 'NE_SR_MPINUSE')
+            throw new Error(`${error.code} ${error.message}`);
     }
 }
 

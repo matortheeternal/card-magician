@@ -50,20 +50,9 @@ export default class MagicTheGathering extends CardMagicianGame {
                 return Boolean(card[key]?.artImage?.imageUrl);
             }).map(async key => ({
                 data: await card[key].artImage.loadImageData(),
+                updateUrl: url => card[key].artImage.imageUrl = url,
                 key
             }))
-        );
-    }
-
-    async loadCardImages(card, callback) {
-        return Promise.all(
-            ['front', 'back'].filter(key => {
-                return Object.hasOwn(card, key);
-            }).map(async (key, n, ary) => {
-                return callback(key, ary.length, (card, blob) => {
-                    card[key].artImage.imageUrl = URL.createObjectURL(blob);
-                });
-            })
         );
     }
 

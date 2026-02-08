@@ -1,36 +1,24 @@
 import YAMLSerializer from './serializers/YAMLSerializer.js';
-import { getJoinedPath, readBinaryFile } from '../../shared/neutralinoAdapter.js';
-import { getActiveGame } from '../game/gameManager.js';
-import {checkFileExists} from '../../shared/fsUtils.js';
+import {
+    getJoinedPath,
+    getParentPath,
+    mount
+} from '../../shared/neutralinoAdapter.js';
 
-async function loadImages(card, basePath) {
-    const game = getActiveGame();
-    await game.loadCardImages(card, async (key, count, setCallback) => {
-        const imageFilePath = count > 1
-            ? `${basePath} - ${key.toTitleCase()}.jpg`
-            : `${basePath}.jpg`;
-        const imageExists = await checkFileExists(imageFilePath);
-        if (!imageExists) return;
-        const data = await readBinaryFile(imageFilePath);
-        const blob = new Blob([data], { type: 'image/jpg' });
-        setCallback(card, blob);
-    });
-}
-
-async function loadCards(set, filePath) {
-    const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
+async function loadCards(set, projectPath) {
+    const cardsFolderPath = await getJoinedPath(projectPath, 'cards');
     set.cards = await Promise.all(
         set.cards.map(async baseName => {
             const basePath = await getJoinedPath(cardsFolderPath, baseName);
-            const card = await YAMLSerializer.load(`${basePath}.yml`);
-            await loadImages(card, basePath);
-            return card;
+            return YAMLSerializer.load(`${basePath}.yml`);
         })
     );
 }
 
 export async function loadProject(filePath) {
+    const projectPath = await getParentPath(filePath);
+    await mount('/project', projectPath, { replace: true });
     const set = await YAMLSerializer.load(filePath);
-    await loadCards(set, filePath);
+    await loadCards(set, projectPath);
     return set;
 }

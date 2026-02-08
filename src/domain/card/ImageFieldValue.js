@@ -18,7 +18,7 @@ export default class ImageFieldValue {
 
     static async load(data) {
         return new this(
-            null,
+            data.imageUrl,
             data.width || 0,
             data.height || 0,
             ImageCrop.load(data)
@@ -33,6 +33,7 @@ export default class ImageFieldValue {
 
     async save() {
         return {
+            imageUrl: this.imageUrl,
             width: this.width,
             height: this.height,
             ...this.crop.save()

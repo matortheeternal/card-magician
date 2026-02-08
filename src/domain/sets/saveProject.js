@@ -1,5 +1,5 @@
 import {
-    createDirectory, getJoinedPath, rmrf,
+    createDirectory, getJoinedPath, getParentPath, mount, rmrf, unmount,
     writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
@@ -15,28 +15,31 @@ async function prepareCardsDirectory(filePath) {
     return cardsFolderPath;
 }
 
-async function saveCardData(basePath, card, serializer) {
+async function saveCardData(cardsFolderPath, baseName, card, serializer) {
     const text = await serializer.serialize(card);
+    const basePath = await getJoinedPath(cardsFolderPath, baseName);
     await writeFile(`${basePath}.yml`, text);
 }
 
-async function saveCardImages(basePath, card) {
+async function saveCardImages(cardsFolderPath, baseName, card) {
     const game = getActiveGame();
     const images = await game.getCardImages(card);
     for (const image of images) {
-        const imagePath = images.length > 1
-            ? `${basePath} - ${image.key.toTitleCase()}.jpg`
-            : `${basePath}.jpg`;
+        const imageFileName = images.length > 1
+            ? `${baseName} - ${image.key.toTitleCase()}.jpg`
+            : `${baseName}.jpg`;
+        const imagePath = await getJoinedPath(cardsFolderPath, imageFileName);
         await writeBinaryFile(imagePath, image.data);
+        const imageUrl = await getJoinedPath('/project/cards', imageFileName);
+        image.updateUrl(imageUrl);
     }
 }
 
 async function saveCards(filePath, zippedCards, serializer) {
     const cardsFolderPath = await prepareCardsDirectory(filePath);
     for (const [baseName, card] of zippedCards) {
-        const basePath = await getJoinedPath(cardsFolderPath, baseName);
-        await saveCardData(basePath, card, serializer);
-        await saveCardImages(basePath, card);
+        await saveCardImages(cardsFolderPath, baseName, card);
+        await saveCardData(cardsFolderPath, baseName, card, serializer);
     }
 }
 
@@ -53,4 +56,7 @@ export async function saveProject(filePath, data) {
         ...data,
         cards: cardBaseNames
     }, serializer);
+    await unmount('/project');
+    const folderPath = await getParentPath(filePath);
+    await mount('/project', folderPath, { replace: true });
 }
