@@ -45,12 +45,12 @@ export default class M15AlteredImporter extends BaseCardImporter {
     }
 
     get chopTop() {
-        const chopTop = this.stylinbackgData.chop_top;
+        const chopTop = this.stylingData?.chop_top;
         return chopTop?.length ? chopTop : '';
     }
 
     get chopBottom() {
-        const chopBottom = this.stylingData.chop_bottom;
+        const chopBottom = this.stylingData?.chop_bottom;
         return chopBottom?.length ? chopBottom : '';
     }
 
