@@ -1,3 +1,4 @@
+import ManaCostAdapter from './ManaCostAdapter.js';
 import ImageFieldAdapter from './ImageFieldAdapter.js';
 import ObjectUrlBinaryAdapter from './ObjectUrlBinaryAdapter.js';
 
@@ -21,4 +22,5 @@ export function getBinaryAdapters() {
 }
 
 registerAdapter(ImageFieldAdapter);
+registerAdapter(ManaCostAdapter);
 registerBinaryAdapter(ObjectUrlBinaryAdapter);
