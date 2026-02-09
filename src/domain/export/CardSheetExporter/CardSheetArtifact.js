@@ -34,7 +34,7 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     get scale() {
-        return parseInt(this.config.scale) || 1;
+        return parseFloat(this.config.scale) || 1;
     }
 
     add(entry) {
