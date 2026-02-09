@@ -21,18 +21,6 @@ function segmentGraphemes(text) {
     }));
 }
 
-function binarySubdivision(startIndex, endIndex, getPart, shouldDivide) {
-    const part = getPart(startIndex, endIndex);
-    if (!shouldDivide(part) || endIndex - startIndex === 1)
-        return [part];
-
-    const mid = Math.floor((startIndex + endIndex) / 2);
-    return Array.prototype.concat(
-        binarySubdivision(startIndex, mid, getPart, shouldDivide),
-        binarySubdivision(mid, endIndex, getPart, shouldDivide)
-    );
-}
-
 /**
  * @typedef TextUnit
  * @property {Array<DOMRect>} rects
@@ -40,35 +28,23 @@ function binarySubdivision(startIndex, endIndex, getPart, shouldDivide) {
  * @property {number} end
  */
 
-function makeGetGraphemePart(textNode, graphemes, range) {
-    return function getGraphemePart(startIndex, endIndex) {
-        const start = graphemes[startIndex].start;
-        const end = graphemes[endIndex - 1].end;
-        range.setStart(textNode, start);
-        range.setEnd(textNode, end);
-        const rects = Array.from(range.getClientRects());
-        return { rects, start, end };
-    };
-}
-
-function getNextUnit(range, textNode, unit, mergedUnits) {
-    const previousUnit = mergedUnits[mergedUnits.length - 1];
-    if (!previousUnit || unit.rects[0].top !== previousUnit.rects[0].top)
-        return unit;
-    mergedUnits.pop();
-    range.setStart(textNode, previousUnit.start);
-    range.setEnd(textNode, unit.end);
+function merge(currentUnit, textNode, grapheme, range) {
+    if (!currentUnit) return;
+    range.setStart(textNode, currentUnit.start);
+    range.setEnd(textNode, grapheme.end);
     const rects = Array.from(range.getClientRects());
-    return { rects, start: previousUnit.start, end: unit.end };
+    const firstTop = rects[0]?.top;
+    if (rects.some(rect => rect.top !== firstTop)) return;
+    currentUnit.end = grapheme.end;
+    return true;
 }
 
-function mergeTextUnits(range, textNode, units) {
-    const mergedUnits = [];
-    for (const unit of units) {
-        const nextUnit = getNextUnit(range, textNode, unit, mergedUnits);
-        mergedUnits.push(nextUnit);
-    }
-    return mergedUnits;
+function newTextUnit(textNode, grapheme, range) {
+    const { start, end } = grapheme;
+    range.setStart(textNode, start);
+    range.setEnd(textNode, end);
+    const rects = Array.from(range.getClientRects());
+    return { rects, start, end };
 }
 
 /**
@@ -81,19 +57,15 @@ function mergeTextUnits(range, textNode, units) {
  * @returns {Array<TextUnit>}
  */
 function getTextUnits(textNode) {
-    const graphemes = segmentGraphemes(textNode.data);
     const range = document.createRange();
-    const textUnits = binarySubdivision(
-        0,
-        graphemes.length,
-        makeGetGraphemePart(textNode, graphemes, range),
-        ({ rects }) => {
-            const firstTop = rects[0]?.top;
-            return rects.some(rect => rect.top !== firstTop);
-        }
-    );
-
-    return mergeTextUnits(range, textNode, textUnits);
+    const textUnits = [];
+    let currentUnit = null;
+    for (const grapheme of segmentGraphemes(textNode.data)) {
+        if (merge(currentUnit, textNode, grapheme, range)) continue;
+        currentUnit = newTextUnit(textNode, grapheme, range);
+        textUnits.push(currentUnit);
+    }
+    return textUnits;
 }
 
 function getMinimumOffset(rects) {
