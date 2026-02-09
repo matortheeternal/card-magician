@@ -13,6 +13,10 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return baseLevelKeys.includes(key) ? 'base' : 'front';
     }
 
+    get properties() {
+        return Object.entries(this.mseCard).filter(([,value]) => Boolean(value));
+    }
+
     get groupedProperties() {
         return Object.groupBy(this.properties, this.getPropertyGroup);
     }
