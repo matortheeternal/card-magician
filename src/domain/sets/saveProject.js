@@ -22,7 +22,8 @@ async function saveCardImages(cardsFolderPath, baseName, card) {
             : `${baseName}.jpg`;
         const imagePath = await getJoinedPath(cardsFolderPath, imageFileName);
         await writeBinaryFile(imagePath, data);
-        value.imageUrl = await getJoinedPath('/project/cards', imageFileName);
+        const filenameUrlPart = encodeURIComponent(imageFileName);
+        value.imageUrl = await getJoinedPath('/project/cards', filenameUrlPart);
         delete value.dirty;
     }
 }
