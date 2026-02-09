@@ -75,6 +75,7 @@ export async function openSet(filePath) {
     log('state').info('Opening set:', filePath);
     const game = getActiveGame();
     const setData = await loadProject(filePath);
+    setFolderPath = await getParentPath(filePath);
     setFilePath = filePath;
     setActiveSet(game.loadSet(setData));
     await getConfig().addRecentFile(filePath);
