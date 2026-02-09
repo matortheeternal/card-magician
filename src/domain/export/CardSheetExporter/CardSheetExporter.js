@@ -21,15 +21,15 @@ export default class CardSheetExporter extends CardMagicianExporter {
         }, {
             id: 'scale',
             label: L`Scale`,
-            default: '2'
+            default: '1.5'
         }, {
             id: 'columns',
             label: L`Columns`,
-            default: '10'
+            default: '5'
         }, {
             id: 'rows',
             label: L`Rows`,
-            default: '7'
+            default: '5'
         }, {
             id: 'gap',
             label: L`Gap`,
@@ -46,7 +46,7 @@ export default class CardSheetExporter extends CardMagicianExporter {
             id: 'backgroundColor',
             label: L`Background Color`,
             type: 'color',
-            default: 'black'
+            default: 'white'
         }, {
             id: 'leaveLastEmpty',
             label: L`Leave Last Slot Empty`,

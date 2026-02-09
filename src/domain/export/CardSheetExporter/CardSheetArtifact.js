@@ -33,18 +33,19 @@ export default class CardSheetArtifact extends ExportArtifact {
         return parseInt(this.config.rows);
     }
 
+    get scale() {
+        return parseInt(this.config.scale) || 1;
+    }
+
     add(entry) {
         this.cards.push(entry);
     }
 
     createCardsContainer() {
-        const reset = document.createElement('div');
         const container = document.createElement('div');
         container.style.position = 'fixed';
-        reset.style.top = '1000em';
-        reset.style.all = 'initial';
-        reset.appendChild(container);
-        document.body.appendChild(reset);
+        container.style.top = '1000em';
+        document.body.appendChild(container);
         return container;
     }
 
@@ -78,7 +79,7 @@ export default class CardSheetArtifact extends ExportArtifact {
         tracker.lap('waitForStableLayout');
 
         try {
-            const result = await cardToCanvas(container, { scale: 1 });
+            const result = await cardToCanvas(container, { scale: this.scale });
             tracker.lap('cardToCanvas');
             return result;
         } catch (error) {
@@ -93,45 +94,35 @@ export default class CardSheetArtifact extends ExportArtifact {
         return this._capture ??= this.capture();
     }
 
-    cutCard(canvas, index, cardWidth, cardHeight) {
-        const col = index % this.columns;
-        const row = Math.floor(index / this.columns);
-        const x = col * (cardWidth + this.gap);
-        const y = row * (cardHeight + this.gap);
-
-        const cardCanvas = document.createElement('canvas');
-        cardCanvas.width = cardWidth;
-        cardCanvas.height = cardHeight;
-        const ctx = cardCanvas.getContext('2d');
-        ctx.drawImage(canvas, x, y, cardWidth, cardHeight, 0, 0, cardWidth, cardHeight);
-
-        return cardCanvas;
-    }
-
-    getCanvasCardWidth(canvas) {
-        const numColumns = Math.min(this.columns, this.cards.length);
-        const widthGap = (numColumns - 1) * this.gap;
-        return (canvas.width - widthGap) / numColumns;
-    }
-
-    getCanvasCardHeight(canvas) {
-        const numRows = Math.ceil(this.cards.length / this.columns);
-        const heightGap = (numRows - 1) * this.gap;
-        return (canvas.height - heightGap) / numRows;
-    }
-
     /**
      * @yields {Promise<CardOutput>}
      */
     async *cardOutputs() {
-        const canvas = await this.capturePromise;
-        const cardWidth = this.getCanvasCardWidth(canvas);
-        const cardHeight = this.getCanvasCardHeight(canvas);
+        const tracker = new Stopwatch('CardSheetArtifact');
 
-        for (let i = 0; i < this.cards.length; i++) {
-            const card = this.cards[i];
-            const cardCanvas = this.cutCard(canvas, i, cardWidth, cardHeight);
-            yield { card, cardCanvas };
+        const container = this.createCardsContainer();
+        this.applyGridStyle(container);
+        tracker.lap('createCardsContainer');
+
+        await this.createCardElements(container);
+        tracker.lap('createCardElements');
+
+        await waitForStableLayout(container);
+        tracker.lap('waitForStableLayout');
+
+        try {
+            const options = { scale: this.scale };
+            for (let i = 0; i < this.cards.length; i++) {
+                const card = this.cards[i];
+                const cardElement = container.children[i];
+                const cardCanvas = await cardToCanvas(cardElement, options);
+                yield { card, cardCanvas };
+            }
+        } catch (error) {
+            return Promise.reject(error);
+        } finally {
+            document.body.removeChild(container);
+            tracker.complete();
         }
     }
 

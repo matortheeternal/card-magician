@@ -127,7 +127,7 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.transform(sourceArtifact)) {
             log('export').debug(`Produced artifact "${filePath}"`);
-            progress.setOperation(`Produced ${filePath}`);
+            progress.setOperation(`Producing ${filePath}`);
             progress.increment();
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
@@ -148,7 +148,7 @@ export async function walkTheDag(dagFootNodes) {
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.produce()) {
             log('export').debug(`Produced artifact "${filePath}"`);
-            progress.setOperation(`Produced ${filePath}`);
+            progress.setOperation(`Producing ${filePath}`);
             progress.increment();
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);

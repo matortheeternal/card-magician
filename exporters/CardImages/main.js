@@ -3,6 +3,8 @@ import CardImageArtifact from './src/CardImageArtifact.js';
 const L = localize('card-images-exporter');
 
 export default class CardImagesExporter extends CardMagicianExporter {
+    saveOutputs = true;
+
     get options() {
         return [{
             id: 'imageType',
