@@ -114,7 +114,12 @@ export async function rmrf(path) {
 
 export async function unmount(path) {
     log('fs').debug('unmount', path);
-    await wrapError(() => Neutralino.server.unmount(path));
+    try {
+        await Neutralino.server.unmount(path);
+    } catch (error) {
+        if (error.code !== 'NE_SR_NOMTPTH')
+            throw new Error(`${error.code} ${error.message}`);
+    }
 }
 
 export async function mount(path, target) {
