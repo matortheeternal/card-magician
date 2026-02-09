@@ -24,12 +24,9 @@ let selectedCard = null;
 
 export async function saveAs() {
     log('user').info('save as');
-    const defaultPath = setFilePath
-        ?  setFilePath.split(/[\\\/]/).pop()
-        : `${activeSet.title || L`My Set`}.json`;
     const filePath = await saveSingleFileDialog(
         L`Save set to file`,
-        defaultPath,
+        setFilePath || `${activeSet.title || L`My Set`}.cmproj`,
         filters
     );
     if (!filePath) return;
