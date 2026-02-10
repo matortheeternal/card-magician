@@ -6,18 +6,18 @@ import FNMPromoFrame from './src/FNMPromoFrame.js';
 
 function createFrameHelpers(card) {
     card.isDKA = () => false;
-    card.isShifted = () => card.frame.planeshifted;
-    card.isInverted = () => card.frame.inverted;
-    card.isBeyond = () => card.frame.ub;
-    card.isFNM = () => card.frame.fnm;
+    card.isShifted = () => card.frame === 'planeshifted';
+    card.isInverted = () => card.frame === 'inverted';
+    card.isBeyond = () => card.frame === 'ub';
+    card.isFNM = () => card.frame === 'fnm';
     card.isEnergyLand = () => false;
-    card.isFrameless = () => card.artSize.frameless;
-    card.isBorderless = () => card.artSize.borderless;
+    card.isFrameless = () => card.artSize === 'frameless';
+    card.isBorderless = () => card.artSize === 'borderless';
     card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
-    card.isClear = () => card.frame.clear;
-    card.isDevoid = () => card.frame.devoid;
+    card.isClear = () => card.frame === 'clear';
+    card.isDevoid = () => card.frame === 'devoid';
     card.isClearTop = () => false;
-    card.isPuma = () => card.frame.puma;
+    card.isPuma = () => card.frame === 'puma';
     card.isBrawl = () => false;
 }
 
