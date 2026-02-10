@@ -12,7 +12,6 @@ module-container[module="SagaText"] auto-fit-text {
     font-size: 19px;
     line-height: 1;
     font-family: "MPlantin", sans-serif;
-    letter-spacing: 0.15px;
 }
 
 module-container[module="SagaText"] auto-fit-text i {
