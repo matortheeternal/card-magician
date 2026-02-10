@@ -8,11 +8,13 @@ export default class ColorModule extends CardMagicianModule {
 
         card.getCardColorKey = function() {
             const colors = card.colorIdentity.colors;
-            if (colors.length === 0)
-                return card.isArtifact?.() ? 'a' : 'c';
+            if (card.colorIdentity.isMulticolor())
+                return 'm';
+            if (card.colorIdentity.isArtifact())
+                return 'a';
             if (colors.length === 1)
                 return colors[0].char;
-            return 'm';
+            return card.isArtifact?.() ? 'a' : 'c';
         };
     }
 

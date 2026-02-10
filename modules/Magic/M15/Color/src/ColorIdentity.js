@@ -72,6 +72,7 @@ export default class ColorIdentity {
     }
 
     isMulticolor() {
+        if (this.override && this.override.includes('m')) return true;
         return (this.colors.length > 2) || (
             (this.colors.length === 2)
             && !this.isHybrid()
@@ -79,7 +80,16 @@ export default class ColorIdentity {
     }
 
     isHybrid() {
+        if (this.override && this.override.includes('h')) return true;
         return (this.colors.length === 2)
             && this.colors.every(c => c.sources.hybrid && !c.sources.normal);
+    }
+
+    isLand() {
+        return this.override && this.override.includes('l');
+    }
+
+    isArtifact() {
+        return this.override && this.override.includes('a');
     }
 }

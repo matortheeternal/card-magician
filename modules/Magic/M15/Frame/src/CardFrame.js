@@ -34,6 +34,14 @@ export default class CardFrame {
         return { width: 316, height: 223 };
     }
 
+    get isLand() {
+        return this.card?.isLand() || this.card?.colorIdentity?.isLand();
+    }
+
+    get isArtifact() {
+        return this.card?.isArtifact() || this.card?.colorIdentity?.isArtifact();
+    }
+
     resolveAssetPath(path) {
         return new URL(`../assets/${path}`, import.meta.url).pathname;
     }
@@ -67,10 +75,11 @@ export default class CardFrame {
     }
 
     resolveColorKey(folder, key, options) {
-        const landSuffix = (this.card.isLand?.()
-            && options.hasLandTemplates
-            && key !== 'a') ? 'l' : '';
-        return `${folder}/${key}${landSuffix}${options.ext}`;
+        const isLand = this.isLand && options.hasLandTemplates;
+        const landSuffix = isLand ? 'l' : '';
+        const isArtifactLand = key === 'a' && isLand;
+        const fixedKey = isArtifactLand ? 'cl' : key + landSuffix;
+        return `${folder}/${fixedKey}${options.ext}`;
     }
 
     getHybridOrder(card, c1, c2) {
@@ -115,11 +124,11 @@ export default class CardFrame {
         return img;
     }
 
-    get useLandBlend() {
+    get useLandHybridBlend() {
         return Boolean(this.blendMaskFolder)
-            && this.card.isLand?.()
+            && this.isLand
             && this.card.hybridBlendStyle !== 'hybrid'
-            && this.card.colorIdentity?.isMulticolor();
+            && this.card.colorIdentity?.colors?.length === 2;
     }
 
     get hybridBlendKey() {
@@ -133,7 +142,7 @@ export default class CardFrame {
     get useMulticolorBlend() {
         return Boolean(this.blendMaskFolder)
             && this.card.colorIdentity?.isMulticolor()
-            && !this.card.isLand?.();
+            && !this.isLand;
     }
 
     get multicolorBlendMaskUrl() {
@@ -151,8 +160,7 @@ export default class CardFrame {
     }
 
     get useArtifactBlend() {
-        return Boolean(this.blendMaskFolder)
-            && this.card.isArtifact?.();
+        return Boolean(this.blendMaskFolder) && this.isArtifact && !this.isLand;
     }
 
     get artifactBlendMaskUrl() {
@@ -165,7 +173,7 @@ export default class CardFrame {
         this.blendMaskFolder = options.blendMaskFolder;
         return this.applyMaskedBlends(
             base,
-            this.useLandBlend && [
+            this.useLandHybridBlend && [
                 `${folder}/${this.hybridBlendKey}${options.ext}`,
                 this.landBlendMaskUrl
             ],

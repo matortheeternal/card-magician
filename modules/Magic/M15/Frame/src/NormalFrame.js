@@ -1,5 +1,5 @@
 import CardFrame from './CardFrame.js';
-import FrameResolution from './mixins/Frame.js';
+import Frame from './mixins/Frame.js';
 import TrimMasks from './mixins/TrimMasks.js';
 import Crowns from './mixins/Crowns.js';
 import VehicleTrim from './mixins/VehicleTrim.js';
@@ -12,7 +12,7 @@ import Node from './mixins/Node.js';
 import PT from './mixins/PT.js';
 
 export default class NormalFrame extends CardFrame.with(
-    FrameResolution,
+    Frame,
     TrimMasks,
     VehicleTrim,
     SnowTrim,
