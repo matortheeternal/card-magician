@@ -26,6 +26,16 @@ export default class M20TokenFrame extends CardFrame.with(
         return new URL(`../assets/${path}`, import.meta.url).pathname;
     }
 
+    // --- HYBRID ---
+    getHybridOrder(card, c1, c2) {
+        // replce white hybrid frame with colorless
+        return super.getHybridOrder(
+            card,
+            c1 === 'w' ? 'c' : c1,
+            c2 === 'w' ? 'c' : c2
+        );
+    }
+
     // --- LAYOUT ---
     get artDimensions() {
         return { width: 343, height: 471 };
