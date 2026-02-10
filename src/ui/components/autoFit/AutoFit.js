@@ -1,13 +1,14 @@
-export function binarySearch(min, max, check, maxIt) {
+export function binarySearch(min, max, check, maxIt, step = 0.1) {
     if (check(max)) return max;
     if (!check(min)) return min;
+    const quantize = value => Math.round(value / step) * step;
 
     let low = min;
     let high = max;
     let best = low;
 
     for (let i = 0; i < maxIt; i++) {
-        const mid = (low + high) / 2;
+        const mid = quantize((low + high) / 2);
         const fits = check(mid);
 
         if (fits) {
