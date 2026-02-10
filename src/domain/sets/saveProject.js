@@ -41,6 +41,14 @@ async function saveSet(filePath, setData, serializer) {
     await writeFile(filePath, text);
 }
 
+async function updateProjectMount(filePath) {
+    const folderPath = await getParentPath(filePath);
+    const mounts = await getMounts();
+    if (mounts['/project'] === folderPath) return;
+    await unmount('/project');
+    await mount('/project', folderPath, { replace: true });
+}
+
 export async function saveProject(filePath, data) {
     const serializer = new YAMLSerializer();
     const cardBaseNames = updateBaseNames(data.cards);
@@ -49,7 +57,5 @@ export async function saveProject(filePath, data) {
         ...data,
         cards: cardBaseNames
     }, serializer);
-    await unmount('/project');
-    const folderPath = await getParentPath(filePath);
-    await mount('/project', folderPath, { replace: true });
+    await updateProjectMount(filePath);
 }
