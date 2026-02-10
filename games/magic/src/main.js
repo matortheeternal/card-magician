@@ -47,10 +47,11 @@ export default class MagicTheGathering extends CardMagicianGame {
     async getCardImages(card) {
         return Promise.all(
             ['front', 'back'].filter(key => {
-                return Boolean(card[key]?.artImage?.imageUrl);
+                return card[key]?.artImage?.imageUrl
+                    && card[key]?.artImage?.dirty;
             }).map(async key => ({
                 data: await card[key].artImage.loadImageData(),
-                updateUrl: url => card[key].artImage.imageUrl = url,
+                value: card[key].artImage,
                 key
             }))
         );
@@ -67,7 +68,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     newCard() {
-        return { front: {}, notes: '', tags: [] };
+        return { front: {}, notes: '', dirty: true, tags: [] };
     }
 
     newSet() {

@@ -95,6 +95,7 @@ export function getSelectedCard() {
 
 export async function saveActiveCard() {
     log('state').debug('save active card');
+    selectedCard.dirty = true;
     selectedCard.front = await activeCard.front.save();
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
