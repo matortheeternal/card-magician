@@ -1,11 +1,12 @@
 import Modal from '../Modal.js';
-import { registerModal } from '../modalManager.js';
+import { closeModal, registerModal } from '../modalManager.js';
 import { registerProgressEndpoint } from '../../systems/progressSystem.js';
 
 export default class ProgressModal extends Modal {
     static id = 'cm-progress-modal';
     title = 'Progress';
 
+    #data = {};
     #statusMessage = '';
     #operationMessage = ' ';
     #progress = 0;
@@ -31,8 +32,12 @@ export default class ProgressModal extends Modal {
         };
     }
 
+    get data() {
+        return this.#data;
+    }
+
     set data(newValue) {
-        super.data = newValue;
+        this.#data = newValue;
         this.setTitle(newValue.title);
     }
 
@@ -101,6 +106,8 @@ export default class ProgressModal extends Modal {
         this.allowClose();
         this.statusMessage = 'Done.';
         this.classList.add('done');
+        this.allowClose();
+        if (this.data?.autoclose) closeModal();
     }
 
     async cancel() {
