@@ -27,9 +27,25 @@ export function hasPropertyValues(entries) {
 }
 
 const colorSymbols = {
-    white: 'w', blue: 'u', black: 'b', red: 'r', green: 'g',
-    colorless: 'c', artifact: 'a', land: 'l',
-    hybrid: 'h', multicolor: 'm'
+    white: 'w',
+    blue: 'u',
+    black: 'b',
+    red: 'r',
+    green: 'g',
+    colorless: 'c',
+    artifact: 'a',
+    land: 'l',
+    hybrid: 'h',
+    multicolor: 'm'
+};
+
+const rarity = {
+    common: 'common',
+    uncommon: 'uncommon',
+    rare: 'rare',
+    'mythic rare': 'mythic',
+    special: 'mythic',
+    masterpiece: 'mythic',
 };
 
 export const tokenPropImporters = {
@@ -61,7 +77,7 @@ export default {
     sub_type: (value, cmCardFace) => {
         cmCardFace.subType = stripTags(value).trimEnd();
     },
-    rarity: (value, cmCardFace) => cmCardFace.rarity = value,
+    rarity: (value, cmCardFace) => cmCardFace.rarity = rarity[value] || 'common',
     rule_text: (value, cmCardFace) => {
         cmCardFace.rulesText = stripTags(convertSymbols(value));
     },

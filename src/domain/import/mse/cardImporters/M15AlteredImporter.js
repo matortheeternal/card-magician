@@ -5,6 +5,9 @@ import { getActiveGame } from '../../../game/gameManager.js';
 const baseLevelKeys = ['notes'];
 
 export default class M15AlteredImporter extends BaseCardImporter {
+    static expectedStylesheet = 'm15-altered';
+    static expectedVersion = '2024-09-23';
+
     get template() {
         return this.mseFrames.includes('map') ? 'M15Map' : 'M15Main';
     }
