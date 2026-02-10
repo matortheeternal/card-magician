@@ -41,6 +41,10 @@ module-container[module="Text"] {
     margin-bottom: 0;
 }
 
+.text .symbol-block {
+    white-space: nowrap;
+}
+
 .text div.sym {
     font-size: 97%;
     line-height: 0.95;
