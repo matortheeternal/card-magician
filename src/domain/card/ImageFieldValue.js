@@ -13,7 +13,9 @@ export default class ImageFieldValue {
         const imageUrl = URL.createObjectURL(file);
         const { width, height } = await getImageSize(imageUrl);
         const crop = new ImageCrop(width, height);
-        return new this(imageUrl, width, height, crop);
+        const value = new this(imageUrl, width, height, crop);
+        value.dirty = true;
+        return value;
     }
 
     static async load(data) {

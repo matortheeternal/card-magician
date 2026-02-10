@@ -24,20 +24,22 @@ async function saveCardData(cardsFolderPath, baseName, card, serializer) {
 async function saveCardImages(cardsFolderPath, baseName, card) {
     const game = getActiveGame();
     const images = await game.getCardImages(card);
-    for (const image of images) {
+    for (const { data, key, value } of images) {
         const imageFileName = images.length > 1
-            ? `${baseName} - ${image.key.toTitleCase()}.jpg`
+            ? `${baseName} - ${key.toTitleCase()}.jpg`
             : `${baseName}.jpg`;
         const imagePath = await getJoinedPath(cardsFolderPath, imageFileName);
-        await writeBinaryFile(imagePath, image.data);
-        const imageUrl = await getJoinedPath('/project/cards', imageFileName);
-        image.updateUrl(imageUrl);
+        await writeBinaryFile(imagePath, data);
+        value.imageUrl = await getJoinedPath('/project/cards', imageFileName);
+        delete value.dirty;
     }
 }
 
 async function saveCards(filePath, zippedCards, serializer) {
-    const cardsFolderPath = await prepareCardsDirectory(filePath);
+    const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
+    await createDirectory(cardsFolderPath);
     for (const [baseName, card] of zippedCards) {
+        if (!card.dirty) continue;
         await saveCardImages(cardsFolderPath, baseName, card);
         await saveCardData(cardsFolderPath, baseName, card, serializer);
     }
