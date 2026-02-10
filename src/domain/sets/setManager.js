@@ -54,18 +54,20 @@ export async function save() {
     setTimeout(() => message.remove(), 1000);
 }
 
-function setActiveSet(set) {
+export function setActiveSet(set) {
     const game = getActiveGame();
-    activeSet = set || game.newSet();
+    activeSet = set;
     game.autoNumberCards(activeSet);
     for (const callback of setChangedCallbacks)
         callback(activeSet);
 }
 
-export function newSet() {
+export async function newSet() {
     log('user').info('new set');
     setFilePath = null;
-    setActiveSet();
+    const game = getActiveGame();
+    const newSet = game.newSet();
+    setActiveSet(newSet);
 }
 
 export async function openSet(filePath) {
