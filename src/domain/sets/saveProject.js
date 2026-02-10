@@ -5,6 +5,7 @@ import {
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
 import { updateBaseNames } from './cardNamer.js';
+import * as progress from '../../ui/systems/progressSystem.js';
 
 async function saveCardData(cardsFolderPath, baseName, card, serializer) {
     const text = await serializer.serialize(card);
@@ -31,8 +32,10 @@ async function saveCards(filePath, zippedCards, serializer) {
     await createDirectory(cardsFolderPath);
     for (const [baseName, card] of zippedCards) {
         if (!card.dirty) continue;
+        progress.setOperation(`Saving card ${baseName}`);
         await saveCardImages(cardsFolderPath, baseName, card);
         await saveCardData(cardsFolderPath, baseName, card, serializer);
+        progress.increment();
     }
 }
 
@@ -51,11 +54,18 @@ async function updateProjectMount(filePath) {
 
 export async function saveProject(filePath, data) {
     const serializer = new YAMLSerializer();
+    progress.setStatus('Preparing cards');
+    const changedCards = data.cards.filter(card => card.dirty);
     const cardBaseNames = updateBaseNames(data.cards);
+    progress.setStatus('Saving cards');
+    progress.setMax(changedCards.length + 2);
     await saveCards(filePath, cardBaseNames.zip(data.cards), serializer);
+    progress.setStatus('Saving project file');
     await saveSet(filePath, {
         ...data,
         cards: cardBaseNames
     }, serializer);
+    progress.increment();
+    progress.setStatus('Remounting project');
     await updateProjectMount(filePath);
 }

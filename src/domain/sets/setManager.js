@@ -1,4 +1,3 @@
-import { addStatusMessage } from '../../ui/systems/statusSystem.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { getActiveGame, getConfig } from '../game/gameManager.js';
 import {
@@ -10,6 +9,8 @@ import {
 import { buildCard } from '../card/cardBuilder.js';
 import { saveProject } from './saveProject.js';
 import { loadProject } from './loadProject.js';
+import { openModal } from '../../ui/modals/modalManager.js';
+import * as progress from '../../ui/systems/progressSystem.js';
 
 const L = localize('set-manager');
 
@@ -39,19 +40,22 @@ export async function saveAs() {
         filters
     );
     if (!filePath) return;
-    log('fs').info('Saving set to:', filePath);
     setFolderPath = await getParentPath(filePath);
     setFilePath = filePath;
-    await saveProject(filePath, activeSet);
+    return save();
 }
 
 export async function save() {
     if (!setFilePath) return saveAs();
-    const message = addStatusMessage(L`Saving...`, -1);
-    log('fs').info('Saving set to:', setFilePath);
-    await saveProject(setFilePath, activeSet);
-    message.updateText(L`Saved.`);
-    setTimeout(() => message.remove(), 1000);
+    openModal('cm-progress-modal', { title: 'Saving...', autoclose: true });
+    try {
+        log('fs').info('Saving set to:', setFilePath);
+        await saveProject(setFilePath, activeSet);
+        progress.complete();
+    } catch (error) {
+        progress.onError(error);
+        log('state').error(error);
+    }
 }
 
 export function setActiveSet(set) {
