@@ -58,10 +58,9 @@ export default class M15AlteredImporter extends BaseCardImporter {
     }
 
     async importOptions(cmCardFace) {
-        cmCardFace.options = {};
-        cmCardFace.options.frame = this.frame;
-        cmCardFace.options.chopTop = this.chopTop;
-        cmCardFace.options.chopBottom = this.chopBottom;
+        cmCardFace.frame = this.frame;
+        cmCardFace.chopTop = this.chopTop;
+        cmCardFace.chopBottom = this.chopBottom;
     }
 
     async import() {
