@@ -9,6 +9,18 @@ export default class M15MainframeTokensImporter extends M15AlteredImporter {
         return this.mseFrames.includes('M20') ? 'M20Token' : 'M15Token';
     }
 
+    get otherOptions() {
+        const optionsValue = this.stylingData?.other_options;
+        return optionsValue ? optionsValue.split(', ') : [];
+    }
+
+    async importOptions(cmCardFace) {
+        cmCardFace.otherFrameOptions = {
+            tall: this.mseFrames.includes('tall'),
+            hideSymbol: this.otherOptions.includes('remove rarity symbol')
+        };
+    }
+
     getPropImporter(key) {
         return tokenPropImporters[key] || super.getPropImporter(key);
     }
