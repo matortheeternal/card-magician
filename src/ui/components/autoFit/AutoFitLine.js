@@ -6,7 +6,7 @@ class AutoFitLine extends AutoFit {
     }
 
     checkFit(size) {
-        this.style.fontSize = `${size}px`;
+        this.style.fontSize = `${Math.floor(size * 10) / 10}px`;
         return this.scrollWidth <= this.clientWidth;
     }
 
