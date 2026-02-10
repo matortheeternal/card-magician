@@ -97,7 +97,12 @@ export async function getJoinedPath(...paths) {
 
 export async function createDirectory(path) {
     log('fs').debug('createDirectory', path);
-    return wrapError(() => Neutralino.filesystem.createDirectory(path));
+    try {
+        await Neutralino.filesystem.createDirectory(path);
+    } catch (error) {
+        if (error.code !== 'NE_FS_DIRCRER')
+            throw new Error(`${error.code} ${error.message}`);
+    }
 }
 
 export async function getParentPath(path) {
@@ -112,10 +117,18 @@ export async function rmrf(path) {
     return wrapError(() => Neutralino.filesystem.remove(path));
 }
 
+export async function getMounts() {
+    log('fs').debug('getMounts');
+    return wrapError(() => Neutralino.server.getMounts());
+}
+
 export async function unmount(path) {
     log('fs').debug('unmount', path);
     try {
         await Neutralino.server.unmount(path);
+        // This protects us from a timing bug which occurs when the code
+        // tries to mount a path after unmounting it.
+        await Neutralino.server.getMounts();
     } catch (error) {
         if (error.code !== 'NE_SR_NOMTPTH')
             throw new Error(`${error.code} ${error.message}`);
