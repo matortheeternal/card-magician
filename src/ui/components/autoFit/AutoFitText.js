@@ -66,7 +66,7 @@ class AutoFitText extends AutoFit {
     }
 
     checkFit(size) {
-        this.style.fontSize = `${Math.floor(size * 10) / 10}px`;
+        this.style.fontSize = `${size}px`;
         const fitsWidth = this.scrollWidth <= this.clientWidth;
         const fitsHeight = this.scrollHeight <= this.clientHeight;
         return fitsWidth && fitsHeight && !this.textIntersects();
