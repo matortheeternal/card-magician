@@ -1,19 +1,10 @@
 import {
-    createDirectory, getJoinedPath, getParentPath, mount, rmrf, unmount,
+    createDirectory, getJoinedPath, getMounts, getParentPath, mount, unmount,
     writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
 import { updateBaseNames } from './cardNamer.js';
-
-async function prepareCardsDirectory(filePath) {
-    const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
-    try {
-        await rmrf(cardsFolderPath);
-    } catch {}
-    await createDirectory(cardsFolderPath);
-    return cardsFolderPath;
-}
 
 async function saveCardData(cardsFolderPath, baseName, card, serializer) {
     const text = await serializer.serialize(card);
