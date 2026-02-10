@@ -2,7 +2,7 @@ import SerializerAdapter from './SerializerAdapter.js';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
 
 /**
- * Adapter for encoding/decoding object URLs as raw binary data.
+ * Adapter for encoding/decoding image field values.
  */
 export default class ImageFieldAdapter extends SerializerAdapter {
     static nodeType = 'image';
