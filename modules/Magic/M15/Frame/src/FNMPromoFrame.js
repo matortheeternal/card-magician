@@ -1,5 +1,5 @@
 import CardFrame from './CardFrame.js';
-import FrameResolution from './mixins/Frame.js';
+import Frame from './mixins/Frame.js';
 import TrimMasks from './mixins/TrimMasks.js';
 import VehicleTrim from './mixins/VehicleTrim.js';
 import SnowTrim from './mixins/SnowTrim.js';
@@ -12,7 +12,7 @@ import MiracleTrim from './mixins/MiracleTrim.js';
 import PT from './mixins/PT.js';
 
 export default class FNMPromoFrame extends CardFrame.with(
-    FrameResolution,
+    Frame,
     TrimMasks,
     VehicleTrim,
     SnowTrim,
