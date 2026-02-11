@@ -14,7 +14,7 @@ function applyFontStyle(ctx, style) {
 
 function segmentGraphemes(text) {
     const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-    const segmentData = segmenter.segment(text);
+    const segmentData = segmenter.segment(text.trimStart());
     return Array.from(segmentData, ({ index, segment }) => ({
         start: index,
         end: index + segment.length
