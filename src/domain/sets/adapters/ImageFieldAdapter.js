@@ -5,10 +5,10 @@ import ImageFieldValue from '../../card/ImageFieldValue.js';
  * Adapter for encoding/decoding image field values.
  */
 export default class ImageFieldAdapter extends SerializerAdapter {
-    static nodeType = 'image';
+    nodeType = 'image';
 
     canDecode(node) {
-        return node.__type === ImageFieldAdapter.nodeType;
+        return node.__type === this.nodeType;
     }
 
     canEncode(value) {
@@ -22,7 +22,7 @@ export default class ImageFieldAdapter extends SerializerAdapter {
      */
     async encode(value) {
         return {
-            __type: ImageFieldAdapter.nodeType,
+            __type: this.nodeType,
             ...await value.save()
         };
     }

@@ -5,14 +5,14 @@ import { getActiveGame } from '../../game/gameManager.js';
  * Adapter for encoding/decoding object URLs as raw binary data.
  */
 export default class ManaCostAdapter extends SerializerAdapter {
-    static nodeType = 'ManaCost';
+    nodeType = 'ManaCost';
 
     canEncode(value) {
         return value && value.constructor.name === 'ManaCost';
     }
 
     canDecode(node) {
-        return node.__type === ManaCostAdapter.nodeType;
+        return node.__type === this.nodeType;
     }
 
     /**
@@ -22,7 +22,7 @@ export default class ManaCostAdapter extends SerializerAdapter {
      */
     async encode(manaCost) {
         return {
-            __type: ManaCostAdapter.nodeType,
+            __type: this.nodeType,
             symbols: manaCost.toString()
         };
     }

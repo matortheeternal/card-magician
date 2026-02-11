@@ -8,7 +8,7 @@ export default class SerializerAdapter {
      * Subclasses must override this value.
      * @type {string}
      */
-    type = 'BaseAdapter';
+    nodeType = 'BaseAdapter';
 
     /**
      * Determine whether this adapter can encode the given value.

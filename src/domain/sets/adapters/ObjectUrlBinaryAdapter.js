@@ -13,7 +13,7 @@ export default class ObjectUrlBinaryAdapter extends SerializerAdapter {
     }
 
     canDecode(node) {
-        return node.__type === ObjectUrlBinaryAdapter.nodeType;
+        return node.__type === this.nodeType;
     }
 
     /**
@@ -27,7 +27,7 @@ export default class ObjectUrlBinaryAdapter extends SerializerAdapter {
         const buffer = await blob.arrayBuffer();
 
         return {
-            __type: ObjectUrlBinaryAdapter.nodeType,
+            __type: this.nodeType,
             mime: blob.type,
             binary: buffer
         };
