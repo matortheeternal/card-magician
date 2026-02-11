@@ -13,7 +13,7 @@ export default class StructuredTextModule extends CardMagicianModule {
 
         card.hasNoFlavorText = () => !card.flavorText.length;
 
-        card.textToHTML = (text, options) => {
+        card.textToHTML = (text, options = {}) => {
             const html = this.sanitize(text, { allowedTags });
             return textToHTML(html, card, options).map(p => p.html).join('');
         };
@@ -25,6 +25,16 @@ export default class StructuredTextModule extends CardMagicianModule {
 
     get structureConverters() {
         return [];
+    }
+
+    get defaultPreText() {
+        return '';
+    }
+
+    async renderPreHTML(card) {
+        this.preHTML = card.textToHTML(card.preText || this.defaultPreText);
+        changed(card, ['preHTML']);
+        this.requestRender({ render: 'renderPreText' });
     }
 
     async renderRulesHTML(card) {
@@ -44,6 +54,7 @@ export default class StructuredTextModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
+        watch(card, 'preText', () => this.renderPreHTML(card));
         watch(card, 'rulesText', () => this.renderRulesHTML(card));
         watch(card, 'flavorText', () => this.renderFlavorHTML(card));
         watch(card, ['maxFontSize', 'chopTop', 'chopBottom'],
@@ -57,10 +68,20 @@ export default class StructuredTextModule extends CardMagicianModule {
         ].filter(Boolean).join('; ');
     }
 
-    renderRulesText(card) {
+    renderPreText(card) {
         return (
             `<auto-fit-text
                ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
+           >
+                <div class="pre-text">${this.preHTML}</div>
+            </auto-fit-text>`
+        );
+    }
+
+    renderRulesText(card) {
+        return (
+            `<auto-fit-text
+               ${card.maxPreFontSize ? `max="${card.maxPreFontSize}"` : ''}
                style="${this.getTextStyle(card)}"
             >
                 <div class="rules-text">${card.rulesHTML}</div>
@@ -68,9 +89,12 @@ export default class StructuredTextModule extends CardMagicianModule {
         );
     }
 
-    renderFlavorText() {
+    renderFlavorText(card) {
         return (
-            `<auto-fit-text style="text-align: center">
+            `<auto-fit-text
+               ${card.maxFlavorFontSize ? `max="${card.maxFlavorFontSize}"` : ''}
+               style="text-align: center"
+           >
                 <div class="flavor-text">${this.flavorHTML}</div>
             </auto-fit-text>`
         );
@@ -78,6 +102,7 @@ export default class StructuredTextModule extends CardMagicianModule {
 
     get fields() {
         return [
+            { id: 'preText', type: 'textarea', label: L`Pretext` },
             { id: 'rulesText', type: 'textarea', label: L`Rules Text` },
             { id: 'flavorText', type: 'textarea', label: L`Flavor Text` }
         ];
@@ -88,6 +113,8 @@ export default class StructuredTextModule extends CardMagicianModule {
             { id: 'chopTop', label: L`Chop Top` },
             { id: 'chopBottom', label: L`Chop Bottom` },
             { id: 'maxFontSize', label: L`Max Font Size` },
+            { id: 'maxPreFontSize', label: L`Max Pretext Font Size` },
+            { id: 'maxFlavorFontSize', label: L`Max Flavor Font Size` },
         ];
     }
 }
