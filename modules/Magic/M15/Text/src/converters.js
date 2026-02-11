@@ -23,12 +23,14 @@ export const ParenthesisConverter = {
 
 export const SymbolConverter = {
     match(str) {
-        return str.match(/^(?:{[^}]+})+([^ ])?/);
+        return str.match(/^([^ ]+)?((?:{[^}]+})+)([^ ]+)?/);
     },
     convert(match, state, card, outputSymbols) {
-        const symbols = card.parseSymbols(match[0]);
+        const symbols = card.parseSymbols(match[2]);
         outputSymbols?.push(...symbols);
-        const content = card.symbolsToHTML(symbols) + (match[1] || '');
+        const content = (match[1] || '')
+            + card.symbolsToHTML(symbols)
+            + (match[3] || '');
         return `<span class="symbol-block">${content}</span>`;
     }
 };
