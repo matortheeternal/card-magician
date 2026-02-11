@@ -20,11 +20,28 @@ export default class SagaFrame extends CardFrame.with(
     Bookmark,
     PT,
 ) {
+    static matches() {
+        return true;
+    }
+
     get artDimensions() {
         return { width: 158, height: 446 };
     }
 
     resolveSagaAssetPath(path) {
         return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
+
+    // --- FRAME ---
+    get frameMaskFolder() {
+        return this.resolveSagaAssetPath('mask/frame');
+    }
+
+    get frameMaskFilename() {
+        return 'saga.png';
+    }
+
+    get frameFolder() {
+        return this.resolveSagaAssetPath('frame/saga');
     }
 }
