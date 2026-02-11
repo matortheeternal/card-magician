@@ -9,7 +9,6 @@ const allowedTags = [
 
 export default class TextModule extends CardMagicianModule {
     async init(card) {
-        await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
         card.isCompanion = () => /^companion\b/i.test(card.rulesText);

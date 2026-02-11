@@ -8,10 +8,6 @@ export default class FooterModule extends CardMagicianModule {
             label: L`Collector Number`
         };
         this.set = this.getActiveSet();
-
-        await this.loadFont('Beleren Small Caps Bold', 'belerensmallcaps-bold.ttf');
-        await this.loadFont('Relay Medium', 'relay-medium.ttf');
-        await this.loadFont('MPlantin', 'mplantin.ttf');
     }
 
     updateCollectorNumberPlaceholder(card) {

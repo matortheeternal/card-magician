@@ -2,7 +2,6 @@ const L = localize('module-M15-name');
 
 export default class NameModule extends CardMagicianModule {
     async init(card) {
-        await this.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');
         card.getLegendName = function() {
             if (!card.isLegendary()) return card.name;
             const match = card.name.match(/^(.+),|(.+) the/);

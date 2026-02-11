@@ -9,8 +9,6 @@ const allowedTags = [
 
 export default class StructuredTextModule extends CardMagicianModule {
     async init(card) {
-        await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');
-
         card.hasNoFlavorText = () => !card.flavorText.length;
 
         card.textToHTML = (text, options = {}) => {

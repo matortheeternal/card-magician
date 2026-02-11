@@ -27,6 +27,7 @@ module-container[module="Text"] {
 .text i {
     font-family: "MPlantin-Italic", serif;
     font-style: normal;
+    font-weight: 300;
 }
 
 .rules-text > div {
@@ -73,6 +74,7 @@ module-container[module="Text"] {
 .flavor-text {
     font-family: "MPlantin-Italic", serif;
     font-style: normal;
+    font-weight: 300;
 }
 
 .text span.q:last-child {
