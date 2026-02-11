@@ -6,7 +6,7 @@ const BookmarkMixin = {
     async resolveBookmark(card) {
         const colorKey = card.getCardColorKey();
         const image = `${this.bookmarkFolder}/${colorKey}.png`;
-        return this.background('bookmark', image, 1);
+        return this.background('bookmark', image, 2);
     }
 };
 
