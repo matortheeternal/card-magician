@@ -10,7 +10,7 @@ function extractBackgroundUrl(css) {
 function parseBackgroundPart(str, parentDimension) {
     if (str.endsWith('px')) return parseFloat(str);
     if (!str.endsWith('%'))
-        throw new Error(`unrecognized background size expression ${str}`);
+        throw new Error(`unrecognized expression ${str}`);
     return parseFloat(str) * parentDimension / 100;
 }
 
@@ -62,6 +62,22 @@ function getOriginRect(rect, style) {
     );
 }
 
+function parseBackgroundPosition(rootRect, style) {
+    const [x, y] = style.backgroundPosition.split(' ');
+    if (x.includes('%')) return [0, 0];
+    return [
+        parseBackgroundPart(x, rootRect.width),
+        parseBackgroundPart(y, rootRect.height)
+    ];
+}
+
+function getBackgroundPosition(rootRect, originRect, style) {
+    const [xOffset, yOffset] = parseBackgroundPosition(rootRect, style);
+    const x = originRect.left - rootRect.left + xOffset;
+    const y = originRect.top - rootRect.top + yOffset;
+    return { x, y };
+}
+
 export async function drawBackground(ctx, element, style, rootRect) {
     const url = extractBackgroundUrl(style.backgroundImage);
     if (!url) return;
@@ -70,8 +86,7 @@ export async function drawBackground(ctx, element, style, rootRect) {
     const elementRect = element.getBoundingClientRect();
     const originRect = getOriginRect(elementRect, style);
     const { width, height } = getBackgroundSize(img, originRect, style);
-    const x = originRect.left - rootRect.left;
-    const y = originRect.top - rootRect.top;
+    const { x, y } = getBackgroundPosition(rootRect, originRect, style);
 
     ctx.drawImage(img, x, y, width, height);
 }
