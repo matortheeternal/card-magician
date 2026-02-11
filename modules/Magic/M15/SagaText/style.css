@@ -1,42 +1,66 @@
-module-container[module="SagaText"] {
+.text-column {
     display: flex;
+    flex-direction: column;
     position: relative;
     z-index: 2;
-    flex: 1;
-    padding: 6px 13px;
+    padding: 4px 0 3px 13px;
+    min-height: 0;
     margin-bottom: 0.5px;
+    overflow: hidden;
+}
+
+module-container[module="SagaText"] {
+    display: flex;
+    min-height: 0;
 }
 
 module-container[module="SagaText"] auto-fit-text {
-    overflow: hidden;
     font-size: 19px;
+    padding: 5px 3px 5px 5px;
     line-height: 1;
     font-family: "MPlantin", sans-serif;
 }
 
+module-container[render="renderRulesText"] auto-fit-text {
+    padding-top: 0;
+}
+
 module-container[module="SagaText"] auto-fit-text i {
     font-family: "MPlantin-Italic", serif;
+    font-style: normal;
+    font-weight: 300;
 }
 
-module-container[module="SagaText"] .rules-text div.t {
+module-container[module="SagaText"] div.t {
     padding: 4px 0;
-}
-
-module-container[module="SagaText"] .rules-text > div {
     margin: 6px 0;
 }
 
-module-container[module="SagaText"] .rules-text > div:first-of-type {
-    margin-top: 0;
+module-container[module="SagaText"] .pre-text {
+    height: 83px;
+
+    > div:first-of-type {
+        margin-top: 0;
+    }
 }
 
-module-container[module="SagaText"] .rules-text > div:last-of-type {
-    margin-bottom: 0;
+.symbol-block {
+    white-space: nowrap;
 }
 
 .saga-chapter {
     display: grid;
     grid-template-columns: 1fr 5fr;
+    margin-left: -19px;
+}
+
+.chapter-bar {
+    width: 95%;
+    height: 2px;
+    background-repeat: no-repeat;
+    background-position: -30px -10px;
+    background-size: 190px 24px;
+    margin-left: 9px;
 }
 
 .chapter-icons {
@@ -45,10 +69,11 @@ module-container[module="SagaText"] .rules-text > div:last-of-type {
     justify-content: center;
 }
 
-.chapter-icon {
+div[class^="chapter-icon-"] {
     width: 30px;
     height: 33.5px;
-    margin: 8px 0;
+    margin: 1px 0;
+    background-size: 100% 100%;
 }
 
 .chapter-content {
@@ -73,7 +98,8 @@ module-container[module="SagaText"] auto-fit-text div.sym {
 
 module-container[module="SagaText"] .flavor-text {
     font-family: "MPlantin-Italic", serif;
-    font-style: italic;
+    font-style: normal;
+    font-weight: 300;
 }
 
 module-container[module="SagaText"] auto-fit-text span.q:last-child {
