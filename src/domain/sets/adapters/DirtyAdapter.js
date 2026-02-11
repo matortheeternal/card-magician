@@ -13,9 +13,9 @@ export default class DirtyAdapter extends SerializerAdapter {
             && Object.hasOwn(value, 'dirty');
     }
 
-    async encode(value) {
+    async encode(value, serializer) {
         delete value.dirty;
-        return value;
+        return serializer.encodeNode(value);
     }
 
     async decode(node) {
