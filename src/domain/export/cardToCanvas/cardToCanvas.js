@@ -17,7 +17,9 @@ function findAllShadowRoots(startElement) {
 
 function getZIndex(style) {
     const zIndex = parseInt(style.zIndex, 10);
-    return isNaN(zIndex) ? 0 : zIndex;
+    const res = isNaN(zIndex) ? 0 : zIndex;
+    if (res !== 0) return res;
+    return style.position !== 'static' ? 0.5 : 0;
 }
 
 async function paintNode(node, style, ctx, rootRect) {
@@ -68,8 +70,16 @@ function stackNodes(elementNodes, groupedNodes) {
         if (!groupedNodes.has(zIndex))
             groupedNodes.set(zIndex, []);
         groupedNodes.get(zIndex).push(element);
-        if (!createsStackingContext(element.style))
-            stackNodes(resolveChildNodes(element.node), groupedNodes);
+        if (createsStackingContext(element.style)) return;
+        const stack = new Map();
+        stackNodes(resolveChildNodes(element.node), stack);
+        const orderedKeys = Array.from(stack.keys()).sort((a, b) => a - b);
+        for (const key of orderedKeys) {
+            if (!groupedNodes.has(key))
+                groupedNodes.set(key, []);
+            const fixedKey = key < zIndex ? zIndex : key;
+            groupedNodes.get(fixedKey).push(...stack.get(key));
+        }
     });
 }
 
@@ -77,11 +87,6 @@ async function paintChildren(parent, ctx, rootRect) {
     const elementNodes = resolveChildNodes(parent);
     const groupedNodes = new Map();
     stackNodes(elementNodes, groupedNodes);
-    groupedNodes.get(0)?.sort?.((a, b) => {
-        const aNotInFlow = a.style.position !== 'static' ? 1 : 0;
-        const bNotInFlow = b.style.position !== 'static' ? 1 : 0;
-        return aNotInFlow - bNotInFlow;
-    });
     await paintElements(groupedNodes, ctx, rootRect);
 }
 
