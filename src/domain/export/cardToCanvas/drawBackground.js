@@ -20,8 +20,8 @@ function getBackgroundSize(img, rect, style) {
 
     const [width, height] = style.backgroundSize.split(' ');
     return {
-        width: parseBackgroundPart(width, rect.width),
-        height: parseBackgroundPart(height, rect.height)
+        width: parseBackgroundPart(width || `${rect.width}px`, rect.width),
+        height: parseBackgroundPart(height || `${rect.height}px`, rect.height)
     };
 }
 
@@ -62,12 +62,16 @@ function getOriginRect(rect, style) {
     );
 }
 
+function parseBackgroundPositionPart(str) {
+    return str.endsWith('px') ? parseFloat(str) : 0;
+}
+
 function parseBackgroundPosition(rootRect, style) {
     const [x, y] = style.backgroundPosition.split(' ');
     if (x.includes('%')) return [0, 0];
     return [
-        parseBackgroundPart(x, rootRect.width),
-        parseBackgroundPart(y, rootRect.height)
+        parseBackgroundPositionPart(x),
+        parseBackgroundPositionPart(y)
     ];
 }
 
