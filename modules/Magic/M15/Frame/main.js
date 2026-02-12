@@ -41,7 +41,9 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     updateTopClasses(card) {
-        const classes = [];
+        const classes = [
+            `color-${card.getCardColorKey()}`
+        ];
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
         card.dom.root.className = classes.join(' ');
