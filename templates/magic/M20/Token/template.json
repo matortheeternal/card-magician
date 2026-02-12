@@ -14,6 +14,7 @@
     "Magic/M15/Text",
     "Magic/M15/PT",
     "Magic/M15/Rarity",
-    "Magic/M15/Footer"
+    "Magic/M15/Footer",
+    "Magic/M15/AutoNumber"
   ]
 }
