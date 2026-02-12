@@ -47,6 +47,7 @@ export default class FrameModule extends CardMagicianModule {
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
         card.dom.root.className = classes.join(' ');
+        card.dom.root.style = this.objectToStyle(this.varStyle);
     }
 
     async updateFrame(card) {
@@ -59,6 +60,8 @@ export default class FrameModule extends CardMagicianModule {
         card.activeFrame = () => this.activeFrame;
         changed(card, 'activeFrame');
         this.backgrounds = await this.activeFrame.buildBackgrounds('frame', card);
+        const vars = await this.activeFrame.buildBackgrounds('vars', card);
+        this.varStyle = Object.assign({}, ...vars.map(v => v.style));
         this.updateTopClasses(card);
         this.requestRender();
     }

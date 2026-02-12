@@ -1,3 +1,7 @@
+:root {
+    --pt-background: 'none';
+}
+
 module-container[render="renderPT"] {
     position: absolute;
     bottom: 21px;
@@ -5,10 +9,6 @@ module-container[render="renderPT"] {
     right: 22px;
     width: 70px;
     z-index: 3;
-}
-
-.frame-vehicle-trim module-container[render="renderPT"] {
-    color: white;
 }
 
 module-container[render="renderNotchPT"] {
@@ -21,6 +21,7 @@ module-container[render="renderNotchPT"] {
 }
 
 .pt-text {
+    background-image: var(--pt-background);
     background-repeat: no-repeat;
     background-size: 70px 38px;
     padding: 4px 7px 4px 12px;
@@ -29,6 +30,7 @@ module-container[render="renderNotchPT"] {
     font-size: 19.5px;
     display: flex;
     justify-content: center;
+    height: 100%;
 }
 
 .pt-text > span:not(.d) {
@@ -42,6 +44,10 @@ module-container[render="renderNotchPT"] {
 
 .pt-text > span:last-child {
     text-align: left;
+}
+
+.frame-vehicle-trim .pt-text {
+    color: white;
 }
 
 .notch-pt-text {

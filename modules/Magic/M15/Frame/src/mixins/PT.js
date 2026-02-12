@@ -12,20 +12,21 @@ const PTMixin = {
         return card.getCardColorKey();
     },
 
-    gtPtPath(card) {
+    getPtPath(card) {
         if (this.showVehicleTrim)
             return this.resolveAssetPath(`element/pt/vehicle.png`);
         return `${this.ptFolder}/${this.getPtKey(card)}.png`;
     },
 
     async resolvePt(card) {
-        const image = this.gtPtPath(card);
-        return this.background('pt', image);
+        const image = this.getPtPath(card);
+        const style = { '--pt-background': `url("${image}")` };
+        return { id: 'pt', style };
     },
 };
 
 export default {
-    group: 'pt',
+    group: 'vars',
     resolve: 'resolvePt',
     mixin: PTMixin
 };

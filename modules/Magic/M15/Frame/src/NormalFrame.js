@@ -9,7 +9,9 @@ import Border from './mixins/Border.js';
 import Scrolls from './mixins/Scrolls.js';
 import MiracleTrim from './mixins/MiracleTrim.js';
 import Node from './mixins/Node.js';
+import Levels from './mixins/Levels.js';
 import PT from './mixins/PT.js';
+import LevelPTs from './mixins/LevelPTs.js';
 
 export default class NormalFrame extends CardFrame.with(
     Frame,
@@ -22,7 +24,9 @@ export default class NormalFrame extends CardFrame.with(
     Node,
     Crowns,
     MiracleTrim,
+    Levels,
     PT,
+    LevelPTs,
 ) {
     static matches() {
         return true;

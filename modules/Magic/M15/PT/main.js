@@ -2,12 +2,8 @@ const L = localize('module-M15-pt');
 
 export default class PTModule extends CardMagicianModule {
     async updatePT(card) {
-        const activeFrame = card.activeFrame?.();
-        if (!activeFrame) return;
         card.showPT = Boolean(card.toughness || card.power);
         changed(card, 'showPT');
-        const ptBackgrounds = await activeFrame.buildBackgrounds('pt', card);
-        this.ptStyle = this.objectToStyle(ptBackgrounds[0].style);
         await this.updateFrontNotchPt(card);
         this.requestRender({ render: 'renderPT' });
     }
@@ -22,7 +18,7 @@ export default class PTModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(card, ['toughness', 'power', 'activeFrame'], () => this.updatePT(card));
+        watch(card, ['toughness', 'power'], () => this.updatePT(card));
         watch(card, ['showNotchPT'],
               () => this.requestRender({ render: 'renderNotchPT' })
         );
@@ -31,7 +27,7 @@ export default class PTModule extends CardMagicianModule {
     renderPT(card) {
         if (!card.showPT) return;
         return (
-            `<div class="pt-text" style="${this.ptStyle}">
+            `<div class="pt-text">
                 <span>${this.escapeHTML(card.power)}</span>
                 <span class="d">/</span>
                 <span>${this.escapeHTML(card.toughness)}</span>
