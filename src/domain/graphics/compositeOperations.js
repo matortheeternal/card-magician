@@ -16,7 +16,7 @@ function blendImageData(baseData, topData, mode) {
         o[i]   = func(a[i],   b[i]);
         o[i+1] = func(a[i+1], b[i+1]);
         o[i+2] = func(a[i+2], b[i+2]);
-        o[i+3] = Math.max(a[i+3], b[i+3]);
+        o[i+3] = Math.min(a[i+3], b[i+3]);
     }
 
     return out;
