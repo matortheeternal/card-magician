@@ -23,7 +23,7 @@ export const ChapterConverter = {
     match(str) {
         return str.match(chapterExpr);
     },
-    convert(match) {
+    convert(match, { convertParagraphs }) {
         const activeChapters = match[1].slice(0, -3).split(', ');
         const icons = activeChapters.map(ch => (
             `<div class="chapter-icon-${ch.toUpperCase()}"></div>`
@@ -33,7 +33,7 @@ export const ChapterConverter = {
             <div class="saga-chapter">
                  <div class="chapter-icons">${icons.join('')}</div>
                  <div class="chapter-content">
-                    <div class="t">${match[2]}</div>
+                    ${convertParagraphs(match[2])}
                 </div>
             </div>`
         );

@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    z-index: 2;
     padding: 4px 0 3px 13px;
     min-height: 0;
     margin-bottom: 0.5px;
@@ -11,35 +12,65 @@
 module-container[module="SagaText"] {
     display: flex;
     min-height: 0;
-}
 
-module-container[module="SagaText"] auto-fit-text {
-    font-size: 19px;
-    padding: 5px 3px 5px 5px;
-    line-height: 1;
-    font-family: "MPlantin", sans-serif;
-}
+    auto-fit-text {
+        font-size: 19px;
+        padding: 5px 3px 5px 5px;
+        line-height: 1;
+        font-family: "MPlantin", sans-serif;
+    }
 
-module-container[render="renderRulesText"] auto-fit-text {
-    padding-top: 0;
-}
+    &:not([render="renderPreText"]) auto-fit-text {
+        padding-top: 0;
+    }
 
-module-container[module="SagaText"] auto-fit-text i {
-    font-family: "MPlantin-Italic", serif;
-    font-style: normal;
-    font-weight: 300;
-}
+    i {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
 
-module-container[module="SagaText"] div.t {
-    padding: 4px 0;
-    margin: 6px 0;
-}
+    div.sym {
+        font-size: 97%;
+        line-height: 0.95;
+        height: 0.9em;
+        width: 0.85em;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1px;
+    }
 
-module-container[module="SagaText"] .pre-text {
-    height: 83px;
+    div.t {
+        padding: 4px 0;
+        margin: 6px 0;
+    }
 
-    > div:first-of-type {
-        margin-top: 0;
+    .pre-text {
+        height: 83px;
+
+        > div:first-of-type {
+            margin-top: 0;
+        }
+    }
+
+    .flavor-text {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
+
+    span.q:last-child {
+        display: inline-block;
+        width: 8px;
+        margin-left: -2px;
+    }
+
+    span.q:first-child {
+        display: inline-block;
+        margin-left: -2px;
     }
 }
 
@@ -83,34 +114,4 @@ div[class^="chapter-icon-"] {
     flex-direction: column;
     justify-content: center;
     padding: 5px;
-}
-
-module-container[module="SagaText"] auto-fit-text div.sym {
-    font-size: 97%;
-    line-height: 0.95;
-    height: 0.9em;
-    width: 0.85em;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center center;
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 1px;
-}
-
-module-container[module="SagaText"] .flavor-text {
-    font-family: "MPlantin-Italic", serif;
-    font-style: normal;
-    font-weight: 300;
-}
-
-module-container[module="SagaText"] auto-fit-text span.q:last-child {
-    display: inline-block;
-    width: 8px;
-    margin-left: -2px;
-}
-
-module-container[module="SagaText"] auto-fit-text span.q:first-child {
-    display: inline-block;
-    margin-left: -2px;
 }
