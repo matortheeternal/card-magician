@@ -14,11 +14,12 @@ export default class TextModule extends CardMagicianModule {
         card.isCompanion = () => /^companion\b/i.test(card.rulesText);
         card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
         card.isMutate = () => /^mutate\b/i.test(card.rulesText);
+        card.hasLevels = () => levelCardExpr.test(card.rulesText);
         card.hasNoText = () => !card.rulesText.length && !card.flavorText.length;
 
         card.textToHTML = (text, options) => {
             const html = this.sanitize(text, { allowedTags });
-            return textToHTML(html, card, options).map(p => p.html).join('');
+            return textToHTML(html, card, options);
         };
 
         // TODO: probably should use a keyword system instead or be just user-configured
@@ -30,10 +31,15 @@ export default class TextModule extends CardMagicianModule {
         };
     }
 
+    get structureConverters() {
+        return [LevelConverter, StationConverter];
+    }
+
     async renderRulesHTML(card) {
         const textSymbols = [];
         card.rulesHTML = card.textToHTML(card.rulesText, {
-            outputSymbols: textSymbols
+            outputSymbols: textSymbols,
+            structureConverters: this.structureConverters,
         });
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
         changed(card, ['colorIdentity', 'rulesHTML']);
