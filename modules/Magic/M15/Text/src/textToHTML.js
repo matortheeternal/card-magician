@@ -1,61 +1,47 @@
-import { converters } from './converters.js';
-
-function getConverter(remainingStr, result, state) {
-    for (const converter of converters) {
-        const match = converter.match(remainingStr, result, state);
-        if (match) return [converter, match];
-    }
-    return [null, null];
-}
+import tokenConverters from './tokenConverters.js';
 
 // matches any text, wrapping leading and trailing quotes in span.q if found
 // span.q is used to fix quote character width
-const QuoteConverter = {
+const ParagraphConverter = {
     match(str) {
-        return str.match(/.+/);
+        return str.match(/^([^\n]+)/);
     },
-    convert(match) {
-        const result = match[0]
+    convert(match, options) {
+        const content = convertText(match[1], tokenConverters, options)
             .replace(/^[“"]/, `<span class="q">“</span>`)
             .replace(/["”]$/, `<span class="q">”</span>`);
-        return `<div class="t">${result}</div>`;
+        return `<div class="t">${content}</div>`;
     }
 };
 
-class ParagraphConverter {
-    constructor(card, options) {
-        this.symbols = options.outputSymbols;
-        this.structureConverters = [
-            ...(options.structureConverters || []),
-            QuoteConverter
-        ];
-        this.card = card;
-        this.html = '';
+function chomp(str, match) {
+    const res = str.slice(match[0].length);
+    const newlineMatch = res.match(/^\n+/);
+    return newlineMatch ? res.slice(newlineMatch[0].length) : res;
+}
+
+function convertText(text, converters, options = {}) {
+    let remainingStr = text;
+    let result = '';
+
+    function getConverter() {
+        for (const converter of converters) {
+            const match = converter.match(remainingStr, result, options);
+            if (match) return [converter, match];
+        }
+        return [null, null];
     }
 
-    convert(str) {
-        let remainingStr = str;
-        let result = '';
-        const state = {};
-        while (remainingStr.length) {
-            const [converter, match] = getConverter(remainingStr, result, state);
-            if (!converter || !match[0].length) return result;
-            result += converter.convert(match, state, this.card, this.symbols);
-            remainingStr = remainingStr.slice(match[0].length);
+    while (remainingStr.length) {
+        const [converter, match] = getConverter();
+        if (!match) {
+            const context = remainingStr.slice(0, 10);
+            throw new Error(`Failed to convert ${context}`);
         }
-        for (const converter of this.structureConverters) {
-            const match = converter.match(result);
-            if (!match) continue;
-            this.html += converter.convert(match);
-            break;
-        }
+        result += converter.convert(match, options);
+        remainingStr = chomp(remainingStr, match);
     }
-
-    static parse(paragraph, card, options) {
-        const converter = new this(card, options);
-        converter.convert(paragraph);
-        return converter;
-    }
+    return result;
 }
 
 /**
@@ -67,8 +53,8 @@ class ParagraphConverter {
 /**
  * @typedef TextToHTMLOptions
  * @property {Array<StructureConverter>} structureConverters
- *   Ordered list of paragraph-level converters.
- *   Converters are checked in order; the first match wins.
+ *   An ordered list of structural converters.
+ *   Converters are checked in order: first match wins.
  * @property {Array} outputSymbols
  *   If provided, symbol objects encountered during token conversion
  *   are pushed into this array.
@@ -78,30 +64,37 @@ class ParagraphConverter {
  * Converts MTG-style rules or flavor text into HTML paragraphs.
  *
  * Behavior:
- * - Input text is assumed to be sanitized HTML.
- * - Text is split into paragraphs on newline boundaries.
- * - Each paragraph is processed in two phases:
- *   1. Token conversion (inline, left-to-right) using the global token converters.
- *   2. Structural conversion (paragraph-level), where the first matching
- *      structureConverter is applied.
- * - A base structural converter which handles leading and trailing quotes is always
- *   provided by default.
+ * - Input text is escaped.
+ * - Then text is processed in two phases:
+ *   1. Structural conversion, where the first matching structureConverter is applied.
+ *   2. Token conversion (inline, left-to-right) using the global token converters.
  *
- * @param {string} text
- *   Raw rules or flavor text. Newlines delimit paragraphs.
+ * @param {string} text - Raw rules or flavor text.
+ * @param {Object} card - The card object being rendered.
+ * @param {TextToHTMLOptions} [options={}] - Optional configuration object.
  *
- * @param {Object} card
- *   The card object being rendered. Passed through to converters.
- *
- * @param {TextToHTMLOptions} [options={}]
- *   Optional configuration object.
- *
- * @returns {Array<{ html: string }>}
- *   An array of paragraph objects. Each object contains a single `html` field.
+ * @returns {string} An HTML string.
  */
-export default function textToHTML(text, card, options = {}) {
-    if (!text || !text.length) return [];
-    return text.split(/\n+/).map(paragraph => {
-        return ParagraphConverter.parse(paragraph, card, options);
-    });
+export default function textToHTML(text, card, {
+    outputSymbols = [],
+    structureConverters = []
+} = {}) {
+    if (!text || !text.length) return '';
+
+    const convertParagraphs = str => {
+        if (!str || !str.length) return '';
+        const paragraphOptions = { state: {}, card, outputSymbols };
+        return str.split(/\n+/).filter(Boolean).map(paragraph => {
+            const match = ParagraphConverter.match(paragraph);
+            if (!match) {
+                const context = str.slice(0, 10);
+                throw new Error(`Failed to convert paragraph ${context}`);
+            }
+            return ParagraphConverter.convert(match, paragraphOptions);
+        }).join('\n');
+    };
+
+    const options = { state: {}, convertParagraphs, card, outputSymbols };
+    const converters = [...structureConverters, ParagraphConverter];
+    return convertText(text, converters, options);
 }
