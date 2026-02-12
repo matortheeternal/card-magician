@@ -1,8 +1,10 @@
-import StructuredTextModule from '../StructuredText/main.js';
+import TextModule from '../Text/main.js';
 import romanToInt from './src/romanToInt.js';
 import { ChapterConverter, parseChapters, chapters } from './src/ChapterConverter.js';
 
-export default class SagaText extends StructuredTextModule {
+const L = localize('module-M15-sagatext');
+
+export default class SagaText extends TextModule {
     get structureConverters() {
         return [ChapterConverter];
     }
@@ -23,6 +25,28 @@ export default class SagaText extends StructuredTextModule {
              + `Sacrifice after ${this.maxChapter}.)`;
     }
 
+    async renderPreHTML(card) {
+        this.preHTML = card.textToHTML(card.preText || this.defaultPreText);
+        changed(card, ['preHTML']);
+        this.requestRender({ render: 'renderPreText' });
+    }
+
+    bind(card, watch) {
+        super.bind(card, watch);
+        watch(card, ['maxFontSize', 'chopTop', 'chopBottom', 'preText'],
+              () => this.renderPreHTML(card));
+    }
+
+    renderPreText(card) {
+        return (
+            `<auto-fit-text
+               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
+           >
+                <div class="pre-text">${this.preHTML}</div>
+            </auto-fit-text>`
+        );
+    }
+
     get chapterBarStyle() {
         return (
             `.chapter-bar {
@@ -40,6 +64,13 @@ export default class SagaText extends StructuredTextModule {
                 }`
             );
         }).join('\n');
+    }
+
+    get fields() {
+        return [
+            { id: 'preText', type: 'textarea', label: L`Pretext` },
+            ...super.fields
+        ];
     }
 
     async styles() {
