@@ -30,15 +30,15 @@ module-container[module="Text"] {
     font-weight: 300;
 }
 
-.rules-text > div {
+.rules-text > div.t {
     margin: 0.5em 0;
 }
 
-.rules-text > div:first-of-type {
+.rules-text > div.t:first-of-type {
     margin-top: 0;
 }
 
-.rules-text > div:last-of-type {
+.rules-text > div.t:last-of-type {
     margin-bottom: 0;
 }
 
