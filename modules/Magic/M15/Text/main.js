@@ -1,4 +1,5 @@
 import textToHTML from './src/textToHTML.js';
+import { levelCardExpr, LevelConverter } from './src/LevelConverter.js';
 
 const L = localize('module-M15-text');
 
@@ -140,7 +141,23 @@ export default class TextModule extends CardMagicianModule {
         ];
     }
 
+    get levelArrowStyles() {
+        const colorKeys = ['a', 'b', 'c', 'g', 'm', 'r', 'u', 'w'];
+        return colorKeys.map(colorKey => {
+            const arrowPath = n => `arrows/level-${n}/${colorKey}.png`;
+            return `.color-${colorKey} {
+                --level-1-arrow: url("${this.resolveAsset(arrowPath(1))}");
+                --level-2-arrow: url("${this.resolveAsset(arrowPath(2))}");
+                --level-3-arrow: url("${this.resolveAsset(arrowPath(3))}");
+            }`;
+        }).join('\n\n');
+    }
+
     async styles() {
-        return [await this.loadFile('style.css')];
+        return [
+            await this.loadFile('style.css'),
+            await this.loadFile('levelStyle.css'),
+            this.levelArrowStyles,
+        ];
     }
 }
