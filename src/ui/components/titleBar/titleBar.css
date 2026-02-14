@@ -27,6 +27,7 @@ cm-title-bar .menus-container {
 cm-title-bar .menu-item {
     display: flex;
     justify-content: space-between;
+    padding-right: 0.5em;
 }
 
 cm-title-bar .menu-item > div:first-of-type {
