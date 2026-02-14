@@ -1,31 +1,43 @@
-.frame-clear module-container[module="Art"],
-.frame-devoid module-container[module="Art"] {
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 1.5px;
-    overflow: visible;
+.frame-clear, .frame-borderless {
+    module-container[module="Art"] {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 1.5px;
+        overflow: visible;
+
+        crop-image {
+            display: block;
+            height: 203%;
+            position: absolute;
+            left: 0;
+            top: -18.5%;
+        }
+    }
 }
 
-.frame-clear module-container[module="Art"] crop-image {
-    display: block;
-    height: 203%;
-    position: absolute;
-    left: 0;
-    top: -18.5%;
+.frame-devoid {
+    module-container[module="Art"] {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 1.5px;
+        overflow: visible;
+
+        crop-image {
+            display: block;
+            height: 185%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
 }
 
-.frame-devoid module-container[module="Art"] crop-image {
-    display: block;
-    height: 185%;
-    position: absolute;
-    left: 0;
-    top: 0;
-}
+.frame-conspiracy-scrolls {
+    module-container[module="Cost"] {
+        margin-right: 14px;
+    }
 
-.frame-conspiracy-scrolls module-container[module="Cost"] {
-    margin-right: 14px;
-}
-
-.frame-conspiracy-scrolls module-container[module="Rarity"] {
-    margin-right: 10px
+    module-container[module="Rarity"] {
+        margin-right: 10px
+    }
 }
