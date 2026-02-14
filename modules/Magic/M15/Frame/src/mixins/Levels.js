@@ -1,6 +1,6 @@
 const LevelsMixin = {
     get levelsSubfolder() {
-        return this.card.isBackDFC?.() ? 'back' : 'normal';
+        return this.card.isBackDFC?.() ? 'back' : 'standard';
     },
 
     get levelsFolder() {
@@ -12,17 +12,26 @@ const LevelsMixin = {
         return card.getCardColorKey();
     },
 
-    getLevelPath(card, level) {
-        // TODO: use blends
-        return `${this.levelsFolder}/${level}/${this.getLevelKey(card)}.png`;
+    get transparentLevels() {
+        if (!this.card.isStation?.() || !this.card.artSize === 'borderless')
+            return null;
+        return [1, 0.15, 0.5, 0.85];
+    },
+
+    async resolveLevel(card, level) {
+        const basePath = `${this.levelsFolder}/${level}/${this.getLevelKey(card)}.png`;
+        if (!this.transparentLevels) return basePath;
+        const opacityValue = this.transparentLevels[level];
+        return this.ctx.makeTransparent(basePath, opacityValue).publish();
     },
 
     async resolveLevels(card) {
-        if (!card.hasLevels?.()) return;
+        if (!card.hasLevels?.() && !card.isStation?.()) return;
         const style = {
-            '--level-1-bg': `url("${this.getLevelPath(card, 1)}")`,
-            '--level-2-bg': `url("${this.getLevelPath(card, 2)}")`,
-            '--level-3-bg': `url("${this.getLevelPath(card, 3)}")`,
+            '--level-0-bg': `url("${await this.resolveLevel(card, 0)}")`,
+            '--level-1-bg': `url("${await this.resolveLevel(card, 1)}")`,
+            '--level-2-bg': `url("${await this.resolveLevel(card, 2)}")`,
+            '--level-3-bg': `url("${await this.resolveLevel(card, 3)}")`,
         };
         return { id: 'levels', style };
     },

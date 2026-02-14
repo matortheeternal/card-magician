@@ -1,19 +1,10 @@
 const NyxTrimMixin = {
     get showNyxTrim() {
-        return (this.card.nyxStyle !== 'disabled')
-            && (this.card.nyxStyle !== 'auto' || this.card.isEnchantment?.());
-    },
-
-    get autoNyxSubfolder() {
-        if (this.card.isCompanion?.()) return 'companion';
-        if (this.card.isShifted?.()) return 'shifted';
-        return 'normal';
+        return this.card.nyxStyle !== 'disabled';
     },
 
     get nyxSubfolder() {
-        return this.card.nyxStyle === 'auto'
-            ? this.autoNyxSubfolder
-            : this.card.nyxStyle;
+        return this.card.nyxStyle;
     },
 
     get nyxFolder() {
@@ -22,7 +13,7 @@ const NyxTrimMixin = {
 
     get nyxBlendMaskSubfolder() {
         if (this.nyxSubfolder === 'star') return 'star';
-        return 'normal';
+        return 'standard';
     },
 
     get nyxBlendMaskFolder() {

@@ -4,8 +4,8 @@ const NodeMixin = {
     },
 
     get nodeSubfolder() {
-        if (this.card.isShifted?.()) return 'shifted';
-        return 'normal';
+        if (this.card.frame === 'planeshifted') return 'shifted';
+        return 'standard';
     },
 
     get nodeFolder() {

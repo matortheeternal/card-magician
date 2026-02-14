@@ -1,29 +1,20 @@
 const CrownMixin = {
     get showCrown() {
-        return (this.card.crownStyle !== 'disabled')
-            && (this.card.crownStyle !== 'auto' || this.card.isLegendary?.());
+        return this.card.crownStyle !== 'disabled';
     },
 
     get brawlCrownSubfolder() {
         return this.card.hasFaceSymbol?.() ? 'brawl_with_face_symbol' : 'brawl';
     },
 
-    get autoCrownSubfolder() {
-        if (this.showNyxTrim) return 'nyx';
-        if (this.card.isCompanion?.()) return 'companion';
-        if (this.card.isBrawl?.()) return this.brawlCrownSubfolder;
-        return 'normal';
-    },
-
     get crownSubfolder() {
-        if (this.card.crownStyle === 'auto') return this.autoCrownSubfolder;
         if (this.card.crownStyle === 'brawl') return this.brawlCrownSubfolder;
         return this.card.crownStyle;
     },
 
     get crownFolder() {
         let subfolder = this.crownSubfolder;
-        if (this.card.isShifted?.() && !subfolder.startsWith('brawl'))
+        if (this.card.frame === 'planeshifted' && !subfolder.startsWith('brawl'))
             subfolder = `shifted/${subfolder}`;
         return this.resolveAssetPath(`element/crown/${subfolder}`);
     },
@@ -37,8 +28,8 @@ const CrownMixin = {
 
     get crownBlendMaskSubfolder() {
         const subfolder = this.crownSubfolder;
-        if (subfolder.startsWith('brawl')) return 'normal';
-        return this.card.isShifted?.()
+        if (subfolder.startsWith('brawl')) return 'standard';
+        return this.card.frame === 'planeshifted'
             ? `shifted/${subfolder}`
             : subfolder;
     },

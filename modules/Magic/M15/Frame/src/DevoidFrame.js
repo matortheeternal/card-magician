@@ -28,10 +28,6 @@ export default class DevoidFrame extends CardFrame.with(
         return card.frame === 'devoid';
     }
 
-    resolveDevoidAssetPath(path) {
-        return new URL(`../assets/${path}`, import.meta.url).pathname;
-    }
-
     get artDimensions() {
         return { width: 343, height: 429 };
     }
@@ -46,11 +42,11 @@ export default class DevoidFrame extends CardFrame.with(
     }
 
     get frameFolder() {
-        return this.resolveDevoidAssetPath('frame/devoid');
+        return this.resolveAssetPath('frame/devoid');
     }
 
     maskFrame(imageUrl) {
-        const maskUrl = this.resolveDevoidAssetPath('mask/frame/clear.png');
+        const maskUrl = this.resolveAssetPath('mask/frame/clear.png');
         return this.ctx.maskImage(imageUrl, maskUrl);
     }
 
@@ -60,7 +56,7 @@ export default class DevoidFrame extends CardFrame.with(
 
     /* --- TRIM MASKS --- */
     get devoidTrimMaskUrl() {
-        return this.resolveDevoidAssetPath('mask/trim/devoid.png');
+        return this.resolveAssetPath('mask/trim/devoid.png');
     }
 
     maskTrim(imageUrl) {

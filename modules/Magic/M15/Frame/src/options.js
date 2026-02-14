@@ -1,11 +1,52 @@
 const L = localize('module-M15-frame');
 
+function computeFrame(card) {
+    if (/\bdevoid\b/i.test(card.rulesText)) return 'devoid';
+    if (card.isColorless?.() && !card.isArtifact?.()) return 'clear';
+    return 'standard';
+}
+
+function computeArtSize(card) {
+    if (card.isStation?.()) return 'borderless';
+    return 'standard';
+}
+
+function computeCrownStyle(card) {
+    if (!card.isLegendary?.()) return 'disabled';
+    if (card.isCompanion?.()) return 'companion';
+    if (card.isBrawl?.()) return 'brawl';
+    if (card.nyxStyle !== 'disabled') return 'nyx';
+    return 'standard';
+}
+
+function computeNyxStyle(card) {
+    if (!card.isEnchantment?.()) return 'disabled';
+    return this.card.frame === 'planeshifted' ? 'shifted' : 'normal';
+}
+
+function computeVehicleStyle(card) {
+    return card.isVehicle?.() ? 'normal' : 'disabled';
+}
+
+function computeSnowStyle(card) {
+    return card.isSnow?.() ? 'normal' : 'disabled';
+}
+
+function computeScrollsStyle(card) {
+    return card.isConspiracy?.() ? 'normal' : 'disabled';
+}
+
+function computeMiracleStyle(card) {
+    return card.isMiracle?.() ? 'normal' : 'disabled';
+}
+
 export default (frameOptions) => ([{
     id: 'frame',
     label: L`Frame`,
     type: 'select',
     options: frameOptions || [
-        { id: 'normal',          name: L`Default` },
+        { id: 'auto',            name: L`Auto`, compute: computeFrame },
+        { id: 'standard',        name: L`Standard` },
         { id: 'devoid',          name: L`Devoid` },
         { id: 'clear',           name: L`Clear` },
         { id: 'fnm',             name: L`FNM Promo` },
@@ -18,7 +59,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Art Size`,
     options: [
-        { id: 'normal',           name: L`Default` },
+        { id: 'auto',             name: L`Auto`, compute: computeArtSize },
+        { id: 'standard',         name: L`Standard` },
         { id: 'borderless',       name: L`Borderless` },
         { id: 'clearBorderless',  name: L`Clear Borderless` },
         { id: 'frameless',        name: L`Frameless` },
@@ -29,8 +71,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Crown`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeCrownStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'nyx',        name: L`Nyx` },
         { id: 'companion',  name: L`Companion` },
         { id: 'brawl',      name: L`Brawl` },
@@ -41,8 +83,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Nyx`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeNyxStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'star',       name: L`Star` },
         { id: 'disabled',   name: L`Disabled` },
     ]
@@ -51,8 +93,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Vehicle`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeVehicleStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
@@ -60,8 +102,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Snow`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeSnowStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
@@ -69,8 +111,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Scrolls`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeScrollsStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
@@ -78,8 +120,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Draft`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeScrollsStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
@@ -87,17 +129,8 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Miracle`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
-        { id: 'disabled',   name: L`Disabled` },
-    ]
-}, {
-    id: 'mutateStyle',
-    type: 'select',
-    label: L`Mutate`,
-    options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        { id: 'auto',       name: L`Auto`, compute: computeMiracleStyle },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {
@@ -105,8 +138,9 @@ export default (frameOptions) => ([{
     type: 'select',
     label: L`Universes Beyond`,
     options: [
-        { id: 'auto',       name: L`Auto` },
-        { id: 'normal',     name: L`Normal` },
+        // TODO: how do we compute this when it's auto?
+        { id: 'auto',       name: L`Auto`, compute: () => 'disabled' },
+        { id: 'standard',   name: L`Standard` },
         { id: 'disabled',   name: L`Disabled` },
     ]
 }, {

@@ -14,7 +14,7 @@ const FrameMixin = {
             return 'back';
         if (this.card.hasFaceSymbol() || this.card.isFrontDFC?.())
             return 'front';
-        return 'normal';
+        return 'standard';
     },
 
     get frameFolder() {
@@ -22,7 +22,9 @@ const FrameMixin = {
     },
 
     get frameMaskFilename() {
-        return 'normal.png';
+        if (this.card.isStation?.() && this.card.artSize === 'borderless')
+            return 'spacecraft.png';
+        return 'standard.png';
     },
 
     get frameHasLandTemplates() {
@@ -30,7 +32,7 @@ const FrameMixin = {
     },
 
     get frameBlendMaskFolder() {
-        return this.resolveAssetPath('mask/normal');
+        return this.resolveAssetPath('mask/standard');
     },
 
     maskFrame(image) {
@@ -39,7 +41,8 @@ const FrameMixin = {
     },
 
     get frameId() {
-        return 'normal';
+        if (this.card.artSize === 'borderless') return 'borderless';
+        return 'standard';
     },
 
     async resolveFrame(card) {

@@ -5,11 +5,7 @@ const L = localize('module-M15-saga-frame');
 
 export default class SagaFrameModule extends FrameModule {
     async init(card) {
-        await super.init(card, false);
-
-        card.isReducedArt = () => card.artSize.reduced;
-        card.isBorderless = () => card.artSize.borderless;
-
+        await super.init(card);
         card.frames = [SagaFrame];
     }
 

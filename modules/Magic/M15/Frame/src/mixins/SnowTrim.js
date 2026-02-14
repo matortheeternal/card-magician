@@ -1,7 +1,6 @@
 const SnowTrimMixin = {
     get showSnowTrim() {
-        return (this.card.snowStyle !== 'disabled')
-            && (this.card.snowStyle !== 'auto' || this.card.isSnow?.());
+        return this.card.snowStyle !== 'disabled';
     },
 
     get snowFolder() {

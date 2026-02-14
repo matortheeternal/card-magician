@@ -1,7 +1,6 @@
 const DraftTrimMixin = {
     get showDraftTrim() {
-        return (this.card.draftStyle !== 'disabled')
-            && (this.card.draftStyle !== 'auto' || this.card.isConspiracy?.());
+        return this.card.draftStyle !== 'disabled';
     },
 
     get draftFolder() {

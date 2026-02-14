@@ -1,7 +1,6 @@
 const VehicleTrimMixin = {
     get showVehicleTrim() {
-        return (this.card.vehicleStyle !== 'disabled')
-            && (this.card.vehicleStyle !== 'auto' || this.card.isVehicle?.());
+        return this.card.vehicleStyle !== 'disabled';
     },
 
     get vehicleTrimUrl() {

@@ -28,10 +28,6 @@ export default class ClearFrame extends CardFrame.with(
         return card.frame === 'clear';
     }
 
-    resolveClearAssetPath(path) {
-        return new URL(`../assets/${path}`, import.meta.url).pathname;
-    }
-
     coloredBlend(folder) {
         return `${folder}/x.png`;
     }
@@ -42,7 +38,7 @@ export default class ClearFrame extends CardFrame.with(
 
     /* --- FRAME --- */
     maskFrame(imageUrl) {
-        const maskUrl = this.resolveClearAssetPath('mask/frame/clear.png');
+        const maskUrl = this.resolveAssetPath('mask/frame/clear.png');
         return this.ctx.maskImage(imageUrl, maskUrl);
     }
 

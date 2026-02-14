@@ -1,6 +1,7 @@
 const PTMixin = {
     get ptSubfolder() {
-        return this.card.isBackDFC?.() ? 'back' : 'normal';
+        if (this.card.isStation?.()) return 'spacecraft';
+        return this.card.isBackDFC?.() ? 'back' : 'standard';
     },
 
     get ptFolder() {

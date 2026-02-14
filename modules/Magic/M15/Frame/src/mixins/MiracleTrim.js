@@ -1,11 +1,10 @@
 const MiracleTrimMixin = {
     get showMiracleTrim() {
-        return (this.card.miracleStyle !== 'disabled')
-            && (this.card.miracleStyle !== 'auto' || this.card.isMiracle?.());
+        return this.card.miracleStyle !== 'disabled';
     },
 
     get miracleSubfolder() {
-        return this.card.isSnow?.() ? 'snow' : 'normal';
+        return this.card.isSnow?.() ? 'snow' : 'standard';
     },
 
     get miracleFolder() {

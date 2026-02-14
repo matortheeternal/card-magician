@@ -5,7 +5,7 @@ const TrimMasksMixin = {
     },
 
     get trimMaskFilename() {
-        return 'normal.png';
+        return 'standard.png';
     },
 
     get trimMaskFolder() {

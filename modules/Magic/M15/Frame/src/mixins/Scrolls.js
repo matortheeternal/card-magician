@@ -1,12 +1,11 @@
 const ScrollsMixin = {
     get showScrolls() {
-        return (this.card.scrollsStyle !== 'disabled')
-            && (this.card.scrollsStyle !== 'auto' || this.card.isConspiracy?.());
+        return this.card.scrollsStyle !== 'disabled';
     },
 
     get scrollsFilename() {
         if (this.card.isMiracle?.()) return 'miracle.png';
-        return 'normal.png';
+        return 'standard.png';
     },
 
     get scrollsUrl() {

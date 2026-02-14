@@ -2,7 +2,7 @@ const L = localize('module-M15-rarity');
 
 export default class RarityModule extends CardMagicianModule {
     updateRarity(card) {
-        card.rarityCharacter = card.rarity.slice(0, 1).toUpperCase();
+        card.rarityCharacter = card.rarity.id.slice(0, 1).toUpperCase();
         changed(card, 'rarityCharacter');
         this.requestRender();
     }
@@ -13,7 +13,7 @@ export default class RarityModule extends CardMagicianModule {
 
     render(card) {
         const set = this.getActiveSet();
-        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
+        const rarityClass = `rarity-${card.rarity.id.toLowerCase()}`;
         return set.symbol.replaceAll('"set-icon"', `"set-icon ${rarityClass}"`);
     }
 
