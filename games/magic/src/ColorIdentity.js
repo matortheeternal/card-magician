@@ -73,6 +73,11 @@ export default class ColorIdentity {
         this.colors = this.getColors();
     }
 
+    isColorless() {
+        if (this.override && this.override.includes('c')) return true;
+        return this.colors.length === 0;
+    }
+
     isMulticolor() {
         if (this.override && this.override.includes('m')) return true;
         return (this.colors.length > 2) || (
