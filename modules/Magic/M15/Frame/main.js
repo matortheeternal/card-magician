@@ -1,33 +1,16 @@
 import makeOptions from './src/options.js';
 import DevoidFrame from './src/DevoidFrame.js';
-import NormalFrame from './src/NormalFrame.js';
+import StandardFrame from './src/StandardFrame.js';
 import ClearFrame from './src/ClearFrame.js';
 import FNMPromoFrame from './src/FNMPromoFrame.js';
 
-function createFrameHelpers(card) {
-    card.isDKA = () => false;
-    card.isShifted = () => card.frame === 'planeshifted';
-    card.isInverted = () => card.frame === 'inverted';
-    card.isBeyond = () => card.frame === 'ub';
-    card.isFNM = () => card.frame === 'fnm';
-    card.isEnergyLand = () => false;
-    card.isFrameless = () => card.artSize === 'frameless';
-    card.isBorderless = () => card.artSize === 'borderless';
-    card.usesExpandedArt = () => card.isBorderless?.() || card.isFrameless?.();
-    card.isClear = () => card.frame === 'clear';
-    card.isDevoid = () => card.frame === 'devoid';
-    card.isClearTop = () => false;
-    card.isPuma = () => card.frame === 'puma';
-    card.isBrawl = () => false;
-}
-
 export default class FrameModule extends CardMagicianModule {
-    async init(card, createHelpers = true) {
+    async init(card) {
         card.frames = [
             DevoidFrame,
             ClearFrame,
             FNMPromoFrame,
-            NormalFrame
+            StandardFrame
         ];
 
         card.hasFaceSymbol = () => Boolean(card.faceSymbol);
@@ -37,7 +20,6 @@ export default class FrameModule extends CardMagicianModule {
         };
         card.isFrontDFC = () => card.isDFC() && card.id === 'front';
         card.isBackDFC = () => card.id === 'back';
-        if (createHelpers) createFrameHelpers(card);
     }
 
     updateTopClasses(card) {
@@ -69,8 +51,8 @@ export default class FrameModule extends CardMagicianModule {
     bind(card, watch) {
         watch(card, [
             'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
-            'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle', 'vehicleStyle',
-            'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle', 'mutateStyle',
+            'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle',
+            'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle',
             'ubStyle', 'otherFrameOptions', 'faceSymbol'
         ], () => this.updateFrame(card));
     }

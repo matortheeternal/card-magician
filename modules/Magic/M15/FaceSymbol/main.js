@@ -1,5 +1,5 @@
 import makeSymbolOptions from './src/symbolOptions.js';
-import { resolveOption, computeOption, getFaceSymbolClass } from './src/helpers.js';
+import { getFaceSymbolClass } from './src/helpers.js';
 
 const L = localize('module-M15-face-symbol');
 
@@ -27,28 +27,13 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     updateFaceSymbol(card) {
-        this.selectedFaceSymbol = resolveOption(
-            this.faceSymbolField.options,
-            card.faceSymbol
-        );
-        this.faceSymbolClass = getFaceSymbolClass(this.selectedFaceSymbol);
+        this.faceSymbolClass = getFaceSymbolClass(card.faceSymbol);
         this.requestRender();
-    }
-
-    updateAutoSymbols(card) {
-        if (!card.parent) return;
-        for (const option of this.faceSymbolField.options) {
-            computeOption(card, option, this.faceSymbolField.options);
-            if (!option.items) continue;
-            for (const item of option.items)
-                computeOption(card, item, option.items);
-        }
-        changed(this.faceSymbolField, 'options');
     }
 
     bind(card, watch) {
         watch(card, ['colorIdentity', 'superType', 'parent'],
-              () => this.updateAutoSymbols(card)
+              () => changed(this.faceSymbolField, '')
         );
         watch(card, ['faceSymbol', 'parent'], () => this.updateFaceSymbol(card));
     }

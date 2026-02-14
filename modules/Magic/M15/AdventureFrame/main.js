@@ -6,7 +6,7 @@ const L = localize('module-M15-adventure-frame');
 
 export default class AdventureFrameModule extends FrameModule {
     async init(card) {
-        await super.init(card, false);
+        await super.init(card);
         card.frames = [AdventureSpotlightFrame, AdventureFrame];
         this.frameOptions = [
             { id: 'normal',     name: L`Adventure` },

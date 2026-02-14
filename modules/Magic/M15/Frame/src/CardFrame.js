@@ -1,3 +1,5 @@
+import createCardPropertyWrapper from './cardPropertyWraper.js';
+
 const defaultColoredOptions = {
     ext: '.jpg',
     hybridMode: 'hybrid',
@@ -26,7 +28,7 @@ export default class CardFrame {
     }
 
     constructor(card, module) {
-        this.card = card;
+        this.card = createCardPropertyWrapper(card);
         this.ctx = module;
     }
 

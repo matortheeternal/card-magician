@@ -9,7 +9,7 @@ function menuPrefixIcon(option) {
 }
 
 function submenu(option) {
-    return `<sl-menu-item data-id="${option.id}">
+    return `<sl-menu-item data-id="${option.id}" data-has-submenu>
     ${menuPrefixIcon(option.items[0])}
     ${option.name}
     <sl-menu slot="submenu">
@@ -52,17 +52,17 @@ function buildSelectHTML(label, options) {
     );
 }
 
-function resolveOption(selectedValue, options) {
-    if (!selectedValue || !Array.isArray(options)) return [null, null];
+function resolveOptionParent(selectedOption, options) {
+    if (!selectedOption || !Array.isArray(options)) return null;
 
     for (const option of options) {
-        if (option.id === selectedValue) return [option, null];
+        if (option.id === selectedOption.id) return null;
         if (!option.items) continue;
         for (const item of option.items)
-            if (item.id === selectedValue) return [item, option];
+            if (item.id === selectedOption.id) return option;
 
     }
-    return [null, null];
+    return null;
 }
 
 function buildTriggerHTML(option, parent, rawValue) {
@@ -108,13 +108,14 @@ export default class SelectField extends FieldComponent {
     }
 
     loadValue() {
-        const [option, parent] = resolveOption(this.value, this.field.options);
-        this.renderTriggerButton(option, parent);
+        const parent = resolveOptionParent(this.value, this.field.options);
+        this.renderTriggerButton(this.value, parent);
         this.updateSelectedClasses(parent?.id);
     }
 
     async getChangedValue(event) {
-        return event.detail?.item?.value || this.value;
+        const id = event.detail?.item?.value || this.value;
+        return this.field.options.find(option => option.id === id);
     }
 }
 
