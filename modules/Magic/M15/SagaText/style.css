@@ -16,7 +16,7 @@ module-container[module="SagaText"] {
     auto-fit-text {
         font-size: 19px;
         padding: 5px 3px 5px 5px;
-        line-height: 1;
+        line-height: 0.95;
         font-family: "MPlantin", sans-serif;
     }
 
