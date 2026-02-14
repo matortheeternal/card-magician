@@ -3,6 +3,7 @@ import { loadFont } from './dynamicFontLoader.js';
 import {
     combineBlendOp,
     linearBlendOp,
+    makeTransparentOp,
     maskBlendOp,
     maskColorOp,
     maskImageOp
@@ -305,6 +306,18 @@ export default class CardMagicianModule {
      */
     maskedBlend(imgToMask, baseImg, mask) {
         return maskBlendOp(imgToMask, baseImg, mask);
+    }
+
+    /**
+     * Sets the alpha value of every pixel in the input image to the specified opacity.
+     *
+     * @async
+     * @param {ImageOp|string} image - The image to make transparent.
+     * @param {number} opacityValue - The alpha value to use, in the range 0.0 to 1.0.
+     * @returns {ImageOp} A deferred image operation.
+     */
+    makeTransparent(image, opacityValue) {
+        return makeTransparentOp(image, opacityValue);
     }
 
     /**

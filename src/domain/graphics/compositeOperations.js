@@ -133,8 +133,17 @@ export function maskColor(maskImg, hexColor) {
     return canvas;
 }
 
+export function makeTransparent(image, opacityValue) {
+    const { width, height } = image;
+    const { canvas, ctx } = newCanvas(width, height);
+    ctx.globalAlpha = opacityValue;
+    ctx.drawImage(image, 0, 0);
+    return canvas;
+}
+
 export const combineBlendOp = ImageOp.register(combineBlend, 2);
 export const linearBlendOp = ImageOp.register(linearBlend, 2);
 export const maskBlendOp = ImageOp.register(maskBlend, 3);
 export const maskImageOp = ImageOp.register(maskImage, 2);
 export const maskColorOp = ImageOp.register(maskColor, 1);
+export const makeTransparentOp = ImageOp.register(makeTransparent, 1);
