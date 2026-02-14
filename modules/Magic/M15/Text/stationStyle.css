@@ -1,0 +1,104 @@
+:host {
+    --station-circle: 'none';
+    --pt-bottom: 60px;
+    --level-0-bg: 'none';
+}
+
+:host:has(.station-level) {
+    module-container[render="renderPT"] {
+        position-anchor: --last-station-level;
+        bottom: anchor(bottom);
+        margin-top: 6px;
+        align-self: anchor-center;
+        right: 20px;
+        color: white;
+    }
+}
+
+module-container[module="Text"]:has(.station-level) {
+    padding: 4px 5px 4px 0;
+    margin-left: -7px;
+
+    auto-fit-text {
+        padding: 0;
+    }
+
+    .rules-text {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+}
+
+.station-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+    padding: 4px 5px 0;
+    max-width: 316px;
+    flex: 1;
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    div.t {
+        margin: 4px 0;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+    }
+}
+
+.station-level {
+    display: grid;
+    grid-template-columns: 30px 305px;
+    background-repeat: no-repeat;
+    background-size: 316px;
+    background-position: 20px;
+    padding: 2px 0;
+    flex: 1;
+
+    .station-circle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        div {
+            background-image: var(--station-circle);
+            background-repeat: no-repeat;
+            font-family: "Beleren Bold", serif;
+            width: 30px;
+            height: 30px;
+            background-size: 100% 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            padding-left: 2px;
+            margin-bottom: 1px;
+        }
+    }
+
+    .station-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-left: 4px;
+    }
+
+    div.t {
+        margin: 0.2em 0;
+    }
+
+    &:last-of-type div.t:last-of-type {
+        margin-bottom: 0;
+    }
+}
+
+:host:has(.pt-text) .station-level:last-of-type {
+    grid-template-columns: 30px 250px;
+    anchor-name: --last-station-level;
+}

@@ -1,4 +1,5 @@
 import textToHTML from './src/textToHTML.js';
+import { stationCardExpr, StationConverter } from './src/StationConverter.js';
 import { levelCardExpr, LevelConverter } from './src/LevelConverter.js';
 
 const L = localize('module-M15-text');
@@ -16,6 +17,7 @@ export default class TextModule extends CardMagicianModule {
         card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
         card.isMutate = () => /^mutate\b/i.test(card.rulesText);
         card.hasLevels = () => levelCardExpr.test(card.rulesText);
+        card.isStation = () => stationCardExpr.test(card.rulesText);
         card.hasNoText = () => !card.rulesText.length && !card.flavorText.length;
 
         card.textToHTML = (text, options) => {
@@ -153,11 +155,23 @@ export default class TextModule extends CardMagicianModule {
         }).join('\n\n');
     }
 
+    get levelCircleStyles() {
+        const colorKeys = ['a', 'b', 'c', 'g', 'm', 'r', 'u', 'w'];
+        return colorKeys.map(colorKey => {
+            const circlePath = this.resolveAsset(`circles/${colorKey}.png`);
+            return `.color-${colorKey} {
+                --station-circle: url("${circlePath}");
+            }`;
+        }).join('\n\n');
+    }
+
     async styles() {
         return [
             await this.loadFile('style.css'),
             await this.loadFile('levelStyle.css'),
+            await this.loadFile('stationStyle.css'),
             this.levelArrowStyles,
+            this.levelCircleStyles,
         ];
     }
 }

@@ -104,7 +104,12 @@ module-container[module="Text"]:has(.creature-level) {
     }
 }
 
+.level-0 {
+    background-image: var(--level-0-bg);
+}
+
 .level-1 {
+    anchor-name: --level-1;
     background-image: var(--level-1-bg);
 
     .level-arrow {
