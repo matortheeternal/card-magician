@@ -1,0 +1,4 @@
+/* This fixes Shoelace menu items text overflowing too greedily. */
+sl-menu-item:not([data-has-submenu])::part(submenu-icon) {
+    display: none;
+}
