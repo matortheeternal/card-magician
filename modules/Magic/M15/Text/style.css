@@ -16,7 +16,7 @@ module-container[module="Text"] {
     position: relative;
     padding: 0 4px;
     font-size: 19px;
-    line-height: 1;
+    line-height: 0.95;
     font-family: "MPlantin", sans-serif;
 }
 
@@ -57,7 +57,7 @@ module-container[module="Text"] {
     display: inline-block;
     vertical-align: top;
     margin-left: 1px;
-    margin-top: 1px;
+    margin-top: -1px;
 }
 
 .text .flavor-bar {
