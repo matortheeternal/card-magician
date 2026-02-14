@@ -6,9 +6,8 @@ const L = localize('module-M15-token-frame');
 
 export default class TokenFrameModule extends FrameModule {
     async init(card) {
-        await super.init(card, false);
+        await super.init(card);
         card.isTall = () => card.otherFrameOptions?.tall;
-        card.isClear = () => card.frame?.clear;
 
         card.frames = [TokenFrame, ClearTokenFrame];
         this.frameOptions = [
