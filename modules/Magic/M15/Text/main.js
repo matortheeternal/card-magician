@@ -120,7 +120,7 @@ export default class TextModule extends CardMagicianModule {
 
     get fields() {
         return [
-            { id: 'rulesText', type: 'textarea', label: L`Rules Text` },
+            { id: 'rulesText', type: 'code', syntax: 'mtg', label: L`Rules Text` },
             { id: 'flavorText', type: 'textarea', label: L`Flavor Text` }
         ];
     }

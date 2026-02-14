@@ -1,5 +1,6 @@
 @import "@shoelace-style/shoelace/dist/themes/dark.css";
 @import "ui/vendor/shoelaceFixes.css";
+@import "ui/vendor/hljsMagicCardLanguage.css";
 @import "highlight.js/styles/monokai-sublime.min.css";
 @import "ui/components/loader/loader.css";
 @import "ui/status.css";

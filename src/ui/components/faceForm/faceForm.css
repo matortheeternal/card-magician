@@ -93,3 +93,7 @@ form-group.with-border label {
 form-group.three-columns {
     grid-template-columns: 1fr 1fr 1fr;
 }
+
+cm-face-form cm-code .codejar-editor {
+    font-size: var(--sl-font-size-small);
+}

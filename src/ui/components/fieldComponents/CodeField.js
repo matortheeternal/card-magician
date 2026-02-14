@@ -3,12 +3,14 @@ import { CodeJar } from 'codejar';
 import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
 import xml from 'highlight.js/lib/languages/xml';
+import mtg from '../../vendor/hljsMagicCardLanguage.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('xml', xml);
 hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('mtg', mtg);
 
 function fixYAML(editor) {
     const stringSpans = editor.querySelectorAll('.hljs-string');
@@ -63,6 +65,7 @@ export default class CodeField extends FieldComponent {
         this.renderLabel();
         const editor = document.createElement('pre');
         editor.classList.add('codejar-editor');
+        editor.classList.add(`language-${this.field.syntax || 'plaintext'}`);
         this.appendChild(editor);
         this.#jar = CodeJar(editor, this.syntax, {
             tab: '    ',
