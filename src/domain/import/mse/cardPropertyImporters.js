@@ -4,26 +4,22 @@ import { loadImageFile } from '../../../shared/fsUtils.js';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
 
 /**
- * Removes HTML tags from the input string, preserving the text in the tags.
+ * Removes XML tags from the input string, preserving the text in the tags.
  *
  * @param {string} str
  * @returns {string}
  */
 function stripTags(str) {
     if (!str) return '';
-    return str.replace(/<[^>]*>/g, '');
+    return str.replaceAll(/<[^>]*>/g, '');
 }
 
 function convertSymbols(str) {
     if (!str) return '';
     const expr = /<sym(?:-auto)?>([^<]+)<\/sym(?:-auto)?>/g;
-    return str.replace(expr, (match, g1) => {
+    return str.replaceAll(expr, (match, g1) => {
         return ActivationCost.parse(g1).toString(true);
     });
-}
-
-export function hasPropertyValues(entries) {
-    return entries && entries.some(([, val]) => stripTags(val).length);
 }
 
 const colorSymbols = {
@@ -40,6 +36,7 @@ const colorSymbols = {
 };
 
 const rarity = {
+    'basic land': 'common',
     common: 'common',
     uncommon: 'uncommon',
     rare: 'rare',

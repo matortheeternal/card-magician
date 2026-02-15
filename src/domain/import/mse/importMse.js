@@ -10,27 +10,33 @@ import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
 
 const L = localize('import-mse');
 
+const TESTED_MSE_VERSION = '2.0.2';
+const TESTED_MSE_GAME = 'magic';
+const TESTED_MSE_GAME_VERSION = '2024-10-01';
+const TESTED_STYLESHEET = 'm15-altered';
+const TESTED_STYLESHEET_VERSION = '2024-09-23';
+
 function checkVersion(mseVersion) {
-    if (mseVersion !== '2.0.2')
-        return `Untested MSE version "${mseVersion}"`;
+    if (mseVersion !== TESTED_MSE_VERSION)
+        return L`Untested MSE version "${mseVersion}"`;
 }
 
 function checkGame(mseGame, mseGameVersion) {
-    if (mseGame !== 'magic')
+    if (mseGame !== TESTED_MSE_GAME)
         throw new Error('Import only supports Magic: The Gathering sets.');
-    if (mseGameVersion !== '2024-10-01')
-        return `Untested MSE game version "${mseGameVersion}"`;
+    if (mseGameVersion !== TESTED_MSE_GAME_VERSION)
+        return L`Untested MSE game version "${mseGameVersion}"`;
 }
 
 function checkStylesheet(mseStylesheet, mseStylesheetVersion) {
-    if (mseStylesheet !== 'm15-altered')
-        return `Set has unrecognized base stylesheet ${mseStylesheet}`;
-    if (mseStylesheetVersion !== '2024-09-23')
-        return `Untested m15-altered stylesheet version ${mseStylesheetVersion}`;
+    if (mseStylesheet !== TESTED_STYLESHEET)
+        return L`Set has unrecognized base stylesheet ${mseStylesheet}`;
+    if (mseStylesheetVersion !== TESTED_STYLESHEET_VERSION)
+        return L`Untested m15-altered stylesheet version ${mseStylesheetVersion}`;
 }
 
 function verifySet(mseSet) {
-    progress.setOperation('Verifying MSE set file');
+    progress.setOperation(L`Verifying MSE set file`);
     const versionWarning = checkVersion(mseSet.mse_version);
     const gameWarning = checkGame(mseSet.game, mseSet.game_version);
     const styleWarning = checkStylesheet(mseSet.stylesheet, mseSet.stylesheet_version);
@@ -40,9 +46,10 @@ function verifySet(mseSet) {
         .join('\n');
     if (!combinedWarning) return true;
     return confirm(
-        `Warning: This is an experimental feature. `
-        + `The provided MSE Set file has the following untested values. `
-        + `Imported may fail or be incomplete.\n\n${combinedWarning}`
+        L`Warning: This is an experimental feature.
+        The provided MSE Set file has the following untested values.
+        Imported may fail or be incomplete.`
+        + `\n\n${combinedWarning}`
     );
 }
 
@@ -88,13 +95,13 @@ async function importCards(mseSet, cmSet, game, folderPath) {
 export async function importMseFolder(folderPath) {
     const game = getActiveGame();
     const cmSet = game.newSet();
-    progress.setStatus('Loading MSE set file');
+    progress.setStatus(L`Loading MSE set file`);
     const mseSet = await loadMseFile(folderPath, 'set');
     if (!verifySet(mseSet)) return;
     progress.setMax(mseSet.include_file.length);
-    progress.setStatus('Loading set info');
+    progress.setStatus(L`Loading set info`);
     importSetInfo(mseSet.set_info, cmSet);
-    progress.setStatus('Importing cards');
+    progress.setStatus(L`Importing cards`);
     await importCards(mseSet, cmSet, game, folderPath);
     return cmSet;
 }
@@ -104,11 +111,11 @@ registerAction('import-mse-set', async () => {
     const folderPath = await openFolderDialog(L`Import an MSE Set`);
     if (!folderPath) return;
     log('state').info('Importing MSE set:', folderPath);
-    openModal('cm-progress-modal', { title: 'Importing...' });
+    openModal('cm-progress-modal', { title: L`Importing...` });
     try {
         await withNewContext(async () => {
             const set = await importMseFolder(folderPath);
-            progress.setTitle('Import complete!');
+            progress.setTitle(L`Import complete!`);
             progress.complete();
             setActiveSet(set);
         });

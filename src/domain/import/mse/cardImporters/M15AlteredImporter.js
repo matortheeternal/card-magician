@@ -21,7 +21,9 @@ export default class M15AlteredImporter extends BaseCardImporter {
     }
 
     get groupedProperties() {
-        return Object.groupBy(this.properties, this.getPropertyGroup);
+        return this._groupedProperties ??= Object.groupBy(
+            this.properties, this.getPropertyGroup
+        );
     }
 
     getPropImporter(key) {
@@ -65,11 +67,10 @@ export default class M15AlteredImporter extends BaseCardImporter {
 
     async import() {
         this.cmCard.front.template = this.template;
-        const props = this.groupedProperties;
-        await this.importProps(props.base, this.cmCard);
-        await this.importProps(props.front, this.cmCard.front);
+        const { base, front } = this.groupedProperties;
+        await this.importProps(base, this.cmCard);
+        await this.importProps(front, this.cmCard.front);
         await this.importOptions(this.cmCard.front);
         getActiveGame().addComputedProps(this.cmCard.front);
-        return props;
     }
 }

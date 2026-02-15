@@ -16,12 +16,11 @@ export default class M15MainframeDFCImporter extends M15AlteredImporter {
     }
 
     async import() {
-        const props = await super.import();
+        const { back } = this.groupedProperties;
         this.cmCard.front.faceSymbol = 'auto';
         this.cmCard.back = { template: this.template, faceSymbol: 'auto' };
-        await this.importProps(props.back, this.cmCard.back);
+        await this.importProps(back, this.cmCard.back);
         await this.importOptions(this.cmCard.back);
         getActiveGame().addComputedProps(this.cmCard.back);
-        return props;
     }
 }
