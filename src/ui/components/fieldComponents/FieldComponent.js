@@ -7,6 +7,10 @@ export default class FieldComponent extends ReactiveComponent {
     eventKey = 'sl-input';
 
     connectedCallback() {
+        this.bind();
+    }
+
+    bind() {
         this.on(this.eventKey, event => this.onChange(event));
     }
 
