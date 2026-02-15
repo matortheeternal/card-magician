@@ -1,0 +1,17 @@
+:root {
+    --mtg-block-border: #555;
+}
+
+.language-mtg {
+    .hljs-block {
+        display: block;
+        border: 1px solid var(--mtg-block-border);;
+        color: initial;
+        padding: 3px;
+        margin: 4px 0;
+    }
+
+    .hljs-comment {
+        font-style: italic;
+    }
+}

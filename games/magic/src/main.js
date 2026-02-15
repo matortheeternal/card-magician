@@ -9,6 +9,7 @@ import setInfoFields from './setInfoFields.js';
 import SetInfoModal from './SetInfoModal.js';
 import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './ColorIdentity.js';
+import mtg from './hljsMtg.js';
 
 const SET_FILE_VERSION = 1;
 
@@ -21,6 +22,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
+        this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
         this.setupSearch();
     }
 

@@ -8,6 +8,8 @@ import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
 import { loadFont } from '../template/dynamicFontLoader.js';
 import { getActiveSet } from '../sets/setManager.js';
+import hljs from 'highlight.js';
+import * as styleManager from '../../ui/systems/styleManager.js';
 
 export default class CardMagicianGame {
     /**
@@ -146,7 +148,7 @@ export default class CardMagicianGame {
     filter(cards, query) {}
 
     /**
-     * Initializes a set of fields on a passed object, and returns a reference to the
+     * Initializes a set of fields on a passed object and returns a reference to the
      * object. When no object is passed, it creates a new object.
      *
      * @param fields
@@ -165,6 +167,15 @@ export default class CardMagicianGame {
      */
     registerModal(ModalClass) {
         registerModal(ModalClass);
+    }
+
+    registerLanguage(languageName, language, css) {
+        hljs.registerLanguage(languageName, language);
+        styleManager.add(`language-${languageName}`, css);
+        return function update(updatedLanguage) {
+            hljs.unregisterLanguage(languageName);
+            hljs.registerLanguage(languageName, updatedLanguage);
+        };
     }
 }
 
