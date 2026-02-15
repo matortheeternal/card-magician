@@ -7,6 +7,7 @@
 @import "ui/components/inlineInput/inlineInput.css";
 @import "ui/components/listView/listView.css";
 @import "ui/components/devState/devState.css";
+@import "ui/components/exporterConfig/exporterConfig.css";
 @import "ui/modals/modals.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
