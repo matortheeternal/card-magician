@@ -44,8 +44,14 @@ export default class TextModule extends CardMagicianModule {
             outputSymbols: textSymbols,
             structureConverters: this.structureConverters,
         });
+        const oldColors = card.colorIdentity?.colors || [];
         card.colorIdentity?.addColorSource('text', textSymbols, !card.isLand());
-        changed(card, ['colorIdentity', 'rulesHTML']);
+        const newColors = card.colorIdentity?.colors || [];
+        const colorIdentityChanged = oldColors.join('') !== newColors.join('');
+        changed(card, [
+            'rulesHTML',
+            ...(colorIdentityChanged ? ['colorIdentity'] : [])
+        ]);
         this.showFlavorBar = Boolean(card.flavorText && card.rulesText);
         this.requestRender();
     }

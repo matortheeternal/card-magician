@@ -10,7 +10,6 @@ export default class ArtModule extends CardMagicianModule {
 
         card.setAspectRatio = ({ width, height }) => {
             this.artImageField.aspectRatio = width / height;
-            changed(this.artImageField, 'aspectRatio');
         };
     }
 
