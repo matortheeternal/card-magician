@@ -5,7 +5,7 @@ const L = localize('card-images-exporter');
 export default class CardImagesExporter extends CardMagicianExporter {
     saveOutputs = true;
 
-    get options() {
+    static get options() {
         return [{
             id: 'imageType',
             label: L`Image Type`,

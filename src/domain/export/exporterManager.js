@@ -32,7 +32,7 @@ export function addNativeExporter(exporter) {
     exporters.push(exporter);
 }
 
-async function loadExporter(exporterMetadata) {
+export async function loadExporter(exporterMetadata) {
     if (exporterMetadata.ExporterClass)
         return exporterMetadata.ExporterClass;
 

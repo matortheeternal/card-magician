@@ -11,6 +11,6 @@ export function getDefaultValue(field) {
 
 export function initializeFields(fields, obj = {}) {
     for (const field of fields)
-        obj[field.id] = getDefaultValue(field);
+        obj[field.id] ||= getDefaultValue(field);
     return obj;
 }

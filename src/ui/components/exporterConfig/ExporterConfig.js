@@ -1,11 +1,18 @@
 import ReactiveComponent from '../ReactiveComponent.js';
-import { getExporter } from '../../../domain/export/exporterManager.js';
+import { getExporter, loadExporter } from '../../../domain/export/exporterManager.js';
 import { getActiveSet } from '../../../domain/sets/setManager.js';
 import { emit } from '../../../shared/htmlUtils.js';
+import { initializeFields } from '../../systems/fieldSystem.js';
 
 const L = localize('exporter-config');
 
 export default class ExporterConfig extends ReactiveComponent {
+    connectedCallback() {
+        this.setAttribute('data-form-provider', '');
+        this.render();
+        this.bind();
+    }
+
     bind() {
         this.handleEvents('click', {
             onRemoveClick: () => this.onRemoveClick()
@@ -28,18 +35,27 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     get model() {
-        return this._model ??= this.activeSet.export[this.exporterId];
+
+        return this._model ??= initializeFields(
+            this.fields,
+            this.activeSet.export[this.exporterId]
+        );
     }
 
-    render() {
-        return (
+    get fields() {
+        return this._fields ??= this.exporter.ExporterClass.options;
+    }
+
+    async render() {
+        await loadExporter(this.exporter);
+        this.innerHTML = (
             `<sl-tooltip content="${L`Remove exporter}`}">
                 <sl-icon-button
                     class="remove-btn"
                     name="x-lg"
                     data-click-action="onRemoveClick"></sl-icon-button>
             </sl-tooltip>
-            <h3>${L`${this.exporter.label}`}</h3>
+            <div>${this.exporter.label}</div>
             ${this.exporter.form}`
         );
     }
@@ -49,3 +65,5 @@ export default class ExporterConfig extends ReactiveComponent {
         emit(this, 'exporter-removed', { id: this.exporterId });
     }
 }
+
+customElements.define('cm-exporter-config', ExporterConfig);
