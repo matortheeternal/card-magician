@@ -1,18 +1,8 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
-import { emit, esc } from '../../../shared/htmlUtils.js';
+import { emit, esc, toggleDisplay } from '../../../shared/htmlUtils.js';
 import { openModal } from '../../modals/modalManager.js';
-
-function getBaseHTML(label) {
-    return (
-        `<label>${label}</label>
-        <sl-card class="dropzone">
-            <div class="upload-prompt"></div>
-            <input type="file" hidden />
-        </sl-card>`
-    );
-}
 
 function computePreviewSize(srcW, srcH, maxW, maxH) {
     const widthRatio = maxW / srcW;
@@ -79,56 +69,54 @@ export default class ImageField extends FieldComponent {
         this.addEventListener('click', this.onClick);
     }
 
-    render() {
-        this.innerHTML = getBaseHTML(this.field.label);
-        requestAnimationFrame(() => this.loadValue());
-    }
-
-    renderUploadPrompt() {
-        return (
-            `<div class="upload-prompt">
-                <sl-icon name="image"></sl-icon>
-                <div>Select image</div>
-            </div>`
-        );
-    }
-
     renderPreview() {
         return (
-            `<div class="preview">
-                <div class="actions">
-                    <sl-tooltip content="Remove image">
-                        <sl-icon-button class="clear-btn" name="x-lg"></sl-icon-button>
-                    </sl-tooltip>
-                    <sl-tooltip content="Crop image">
-                        <sl-icon-button class="crop-btn" name="scissors"></sl-icon-button>
-                    </sl-tooltip>
-                </div>
-                <sl-tooltip content="Click to change image">
-                    <div class="preview-container">
-                        <img class="preview-image"
-                             alt="Preview"
-                             src="${esc(this.value.imageUrl)}" />
-                        <div class="crop-region"></div>
-                    </div>
+            `<div class="actions">
+                <sl-tooltip content="Remove image">
+                    <sl-icon-button class="clear-btn" name="x-lg"></sl-icon-button>
                 </sl-tooltip>
-            </div>`
+                <sl-tooltip content="Crop image">
+                    <sl-icon-button class="crop-btn" name="scissors"></sl-icon-button>
+                </sl-tooltip>
+            </div>
+            <sl-tooltip content="Click to change image">
+                <div class="preview-container">
+                    <img class="preview-image" alt="Preview" />
+                    <div class="crop-region"></div>
+                </div>
+            </sl-tooltip>`
         );
+    }
+
+    render() {
+        this.innerHTML = (
+            `<label>${this.field.label}</label>
+            <sl-card class="dropzone">
+                <div class="upload-prompt">
+                    <sl-icon name="image"></sl-icon>
+                    <div>Select image</div>
+                </div>
+                <div class="preview" style="display: none">
+                    ${this.renderPreview()}
+                </div>
+                <input type="file" hidden />
+            </sl-card>`
+        );
+        requestAnimationFrame(() => this.loadValue());
     }
 
     loadValue() {
         if (!this.value) return;
-        const container = this.querySelector('div.upload-prompt, div.preview');
-        container.outerHTML = this.value.imageUrl
-            ? this.renderPreview()
-            : this.renderUploadPrompt();
-        if (this.value.imageUrl) {
-            updateCropRegion(
-                this.value,
-                this.querySelector('img.preview-image'),
-                this.querySelector('div.crop-region')
-            );
-        }
+        const prompt = this.querySelector('.upload-prompt');
+        const preview = this.querySelector('.preview');
+        const hasImage = this.value?.imageUrl;
+        toggleDisplay(hasImage, preview, prompt);
+        if (!hasImage) return;
+
+        const img = preview.querySelector('img.preview-image');
+        const cropRegion = preview.querySelector('div.crop-region');
+        img.setAttribute('src', this.value.imageUrl);
+        updateCropRegion(this.value, img, cropRegion);
     }
 
     async getChangedValue(event) {
