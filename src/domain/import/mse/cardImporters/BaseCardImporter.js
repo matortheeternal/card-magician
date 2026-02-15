@@ -1,3 +1,5 @@
+const L = localize('import-mse');
+
 export default class BaseCardImporter {
     static expectedStylesheet = '';
     static expectedVersion = '';
@@ -11,8 +13,10 @@ export default class BaseCardImporter {
 
     static checkStylesheet(stylesheetVersion) {
         if (stylesheetVersion === this.expectedVersion) return;
-        return `Using ${this.expectedStylesheet} importer for untested `
-            + `version "${stylesheetVersion}"`;
+        return (
+            L`Using ${this.expectedStylesheet} importer for
+            untested version "${stylesheetVersion}"`
+        );
     }
 
     static match(mseCard, mseSet) {
