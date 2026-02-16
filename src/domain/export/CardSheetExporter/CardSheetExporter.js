@@ -5,7 +5,7 @@ import form from './form.html.js';
 const L = localize('card-sheet-exporter');
 
 export default class CardSheetExporter extends CardMagicianExporter {
-    get options() {
+    static get options() {
         return [{
             id: 'imageType',
             label: L`Image Type`,
@@ -21,15 +21,15 @@ export default class CardSheetExporter extends CardMagicianExporter {
         }, {
             id: 'scale',
             label: L`Scale`,
-            default: '1.5'
+            default: '1'
         }, {
             id: 'columns',
             label: L`Columns`,
-            default: '5'
+            default: '10'
         }, {
             id: 'rows',
             label: L`Rows`,
-            default: '5'
+            default: '7'
         }, {
             id: 'gap',
             label: L`Gap`,
