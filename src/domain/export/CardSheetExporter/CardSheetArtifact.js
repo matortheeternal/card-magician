@@ -97,7 +97,7 @@ export default class CardSheetArtifact extends ExportArtifact {
     /**
      * @yields {Promise<CardOutput>}
      */
-    async *cardOutputs() {
+    async *cardOutputs(options = {}) {
         const tracker = new Stopwatch('CardSheetArtifact');
 
         const container = this.createCardsContainer();
@@ -111,7 +111,6 @@ export default class CardSheetArtifact extends ExportArtifact {
         tracker.lap('waitForStableLayout');
 
         try {
-            const options = { scale: this.scale };
             for (let i = 0; i < this.cards.length; i++) {
                 const card = this.cards[i];
                 const cardElement = container.children[i];

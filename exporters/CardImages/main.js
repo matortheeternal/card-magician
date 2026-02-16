@@ -18,6 +18,10 @@ export default class CardImagesExporter extends CardMagicianExporter {
             id: 'quality',
             label: L`Image Quality`,
             default: '0.92'
+        }, {
+            id: 'scale',
+            label: L`Scale`,
+            default: '2'
         }];
     }
 
@@ -30,7 +34,9 @@ export default class CardImagesExporter extends CardMagicianExporter {
      * @yields {Promise<OutputItem>}
      */
     async *transform(cardSheetArtifact) {
-        for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs()) {
+        for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs({
+            scale: this.scale
+        })) {
             const hasBackFace = Object.hasOwn(card.card.baseCard, 'back');
             const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
             const filePath = `${card.card.baseCard.baseName}${suffix}.${this.extension}`;
