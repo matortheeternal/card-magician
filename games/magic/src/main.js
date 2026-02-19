@@ -45,7 +45,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     getCardName(card) {
-        return collectMap(card, f => f.name || 'blank', ' + ');
+        return collectMap(card, f => f.name, ' + ') || 'blank';
     }
 
     async getCardImages(card) {
