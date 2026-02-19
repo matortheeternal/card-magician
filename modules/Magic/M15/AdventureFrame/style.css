@@ -4,6 +4,10 @@ module-container[module="AdventureFrame"]:not([render]) {
     z-index: 1;
 }
 
+.bg.frame-node {
+    height: 63px;
+}
+
 .bg.binding {
     position: absolute;
     top: 0;
