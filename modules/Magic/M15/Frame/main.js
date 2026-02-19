@@ -22,14 +22,17 @@ export default class FrameModule extends CardMagicianModule {
         card.isBackDFC = () => card.id === 'back';
     }
 
-    updateTopClasses(card) {
-        const classes = [
-            `color-${card.getCardColorKey()}`
-        ];
+    get cardClasses() {
+        const classes = [`color-${this.card.getCardColorKey()}`];
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
-        card.dom.root.className = classes.join(' ');
-        card.dom.root.style = this.objectToStyle(this.varStyle);
+        return classes;
+    }
+
+    updateCardClasses(card) {
+        if (!card.dom) return;
+        card.dom.root.className = this.cardClasses.join(' ');
+        card.dom.root.style = this.objectToStyle(this.varStyle || {});
     }
 
     async updateFrame(card) {
@@ -44,7 +47,7 @@ export default class FrameModule extends CardMagicianModule {
         this.backgrounds = await this.activeFrame.buildBackgrounds('frame', card);
         const vars = await this.activeFrame.buildBackgrounds('vars', card);
         this.varStyle = Object.assign({}, ...vars.map(v => v.style));
-        this.updateTopClasses(card);
+        this.updateCardClasses(card);
         this.requestRender();
     }
 

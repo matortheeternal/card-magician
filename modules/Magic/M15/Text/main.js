@@ -88,8 +88,8 @@ export default class TextModule extends CardMagicianModule {
     }
 
     shouldCenter(card) {
-        if (card.centerText === 'always') return true;
-        return card.centerText === 'short'
+        if (card.centerText.id === 'always') return true;
+        return card.centerText.id === 'short'
             && card.rulesText.length < 15
             && !card.flavorText.length;
     }
@@ -127,7 +127,7 @@ export default class TextModule extends CardMagicianModule {
     get fields() {
         return [
             { id: 'rulesText', type: 'code', syntax: 'mtg', label: L`Rules Text` },
-            { id: 'flavorText', type: 'textarea', label: L`Flavor Text` }
+            { id: 'flavorText', type: 'textarea', label: L`Flavor Text`, default: null }
         ];
     }
 

@@ -1,8 +1,11 @@
 const L = localize('module-M15-pt');
 
 export default class PTModule extends CardMagicianModule {
-    async updatePT(card) {
+    async init(card) {
         card.showPT = Boolean(card.toughness || card.power);
+    }
+
+    async updatePT(card) {
         changed(card, 'showPT');
         await this.updateFrontNotchPt(card);
         this.requestRender({ render: 'renderPT' });

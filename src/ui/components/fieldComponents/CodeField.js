@@ -25,7 +25,7 @@ function fixYAML(editor) {
 
 export default class CodeField extends FieldComponent {
     static tagName = 'cm-code';
-    #jar = null;
+    jar = null;
 
     static matches(field) {
         return field.type === 'code';
@@ -42,11 +42,12 @@ export default class CodeField extends FieldComponent {
     }
 
     bind() {
-        this.#jar.onUpdate(code => this.onChange(code));
+        this.jar.onUpdate(code => this.onChange(code));
     }
 
     loadValue() {
-        this.#jar.updateCode(this.value);
+        if (this.jar.toString() === this.value) return;
+        this.jar.updateCode(this.value);
     }
 
     renderLabel() {
@@ -65,7 +66,7 @@ export default class CodeField extends FieldComponent {
         editor.classList.add('codejar-editor');
         editor.classList.add(`language-${this.field.syntax || 'plaintext'}`);
         this.appendChild(editor);
-        this.#jar = CodeJar(editor, this.syntax, {
+        this.jar = CodeJar(editor, this.syntax, {
             tab: '    ',
             spellcheck: false
         });

@@ -5,8 +5,7 @@ const LeftPageMixin = {
     },
 
     async resolveLeftPage(card) {
-        const adventure = card.subcards.find(s => s.id === 'adventure');
-        const image = this.coloredBlend(this.leftPageUrl, adventure, {
+        const image = this.coloredBlend(this.leftPageUrl, card.adventure, {
             hybridMode: 'first',
             ext: '.png'
         });

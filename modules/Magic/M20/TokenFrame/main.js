@@ -8,14 +8,16 @@ export default class M20TokenFrameModule extends TokenFrameModule {
         card.frames = [ClearM20TokenFrame, M20TokenFrame];
     }
 
-    updateTopClasses(card) {
-        const classes = [`token-${this.activeFrame.frameHeight}`];
-        if (card.getCardColorKey() === 'w')
-            classes.push('inverted-name');
-        if (card.otherFrameOptions.hideSymbol)
-            classes.push(`hide-rarity`);
-        for (const bg of this.backgrounds)
-            classes.push(`frame-${bg.id}`);
-        card.dom.root.className = classes.join(' ');
+    get cardClasses() {
+        return [
+            `token-${this.activeFrame.frameHeight}`,
+            ...(this.card.getCardColorKey() === 'w'
+                ? ['inverted-name']
+                : []),
+            ...(this.card.otherFrameOptions.hideSymbol
+                ? ['hide-rarity']
+                : []),
+            ...super.cardClasses
+        ];
     }
 }

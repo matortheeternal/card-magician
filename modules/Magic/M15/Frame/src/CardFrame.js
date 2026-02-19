@@ -37,11 +37,11 @@ export default class CardFrame {
     }
 
     get isLand() {
-        return this.card?.isLand() || this.card?.colorIdentity?.isLand();
+        return this.card.isLand?.() || this.card?.colorIdentity?.isLand();
     }
 
     get isArtifact() {
-        return this.card?.isArtifact() || this.card?.colorIdentity?.isArtifact();
+        return this.card.isArtifact?.() || this.card?.colorIdentity?.isArtifact();
     }
 
     resolveAssetPath(path) {

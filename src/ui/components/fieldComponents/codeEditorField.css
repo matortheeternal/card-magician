@@ -10,6 +10,7 @@ cm-code .field-label {
 cm-code .codejar-editor {
     position: relative;
     height: fit-content;
+    min-height: 4rem;
     max-height: 400px;
     background: var(--sl-input-background-color);
     border: 1px solid var(--sl-input-border-color);

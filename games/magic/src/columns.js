@@ -6,19 +6,42 @@ import { compareRowColors } from './compareRowColors.js';
 const L = localize('game-magic-columns');
 
 export function collect(row, key, separator = ' // ') {
-    return [row.front[key], row.back && row.back[key]]
-        .filter(Boolean)
-        .join(separator);
+    return [
+        row.front[key],
+        row.front.bottom && row.front.bottom[key],
+        row.front.top && row.front.top[key],
+        row.front.adventure && row.front.adventure[key],
+        row.back && row.back[key],
+        row.back?.bottom && row.back.bottom[key],
+        row.back?.top && row.back.top[key],
+        row.back?.adventure && row.back.adventure[key],
+    ].filter(Boolean).join(separator);
 }
 
 export function collectMap(row, fn, separator = ' // ') {
-    return [fn(row.front), row.back && fn(row.back)]
-        .filter(Boolean)
-        .join(separator);
+    return [
+        fn(row.front),
+        row.front.bottom && fn(row.front.bottom),
+        row.front.top && fn(row.front.top),
+        row.front.adventure && fn(row.front.adventure),
+        row.back && fn(row.back),
+        row.back?.bottom && fn(row.back.bottom),
+        row.back?.top && fn(row.back.top),
+        row.back?.adventure && fn(row.back.adventure),
+    ].filter(Boolean).join(separator);
 }
 
 function collectUnique(row, fn, separator = ', ') {
-    const values = new Set([...fn(row.front), ...fn(row.back)]);
+    const values = new Set([
+        ...fn(row.front),
+        ...fn(row.front.bottom),
+        ...fn(row.front.top),
+        ...fn(row.front.adventure),
+        ...fn(row.back),
+        ...fn(row.back?.bottom),
+        ...fn(row.back?.top),
+        ...fn(row.back?.adventure),
+    ]);
     return [...values].join(separator);
 }
 

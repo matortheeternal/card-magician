@@ -16,13 +16,14 @@ export default class TokenFrameModule extends FrameModule {
         ];
     }
 
-    updateTopClasses(card) {
-        const classes = [`token-${this.activeFrame.frameHeight}`];
-        if (card.otherFrameOptions.hideSymbol)
-            classes.push(`hide-rarity`);
-        for (const bg of this.backgrounds)
-            classes.push(`frame-${bg.id}`);
-        card.dom.root.className = classes.join(' ');
+    get cardClasses() {
+        return [
+            `token-${this.activeFrame.frameHeight}`,
+            ...(this.card.otherFrameOptions.hideSymbol
+                ? ['hide-rarity']
+                : []),
+            ...super.cardClasses
+        ];
     }
 
     get options() {

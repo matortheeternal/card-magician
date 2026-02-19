@@ -15,18 +15,17 @@ export default class AdventureFrameModule extends FrameModule {
         ];
     }
 
-    updateTopClasses(card) {
-        if (!this.backgrounds) return;
-        const classes = [`page-style-${card.pageStyle}`];
-        for (const bg of this.backgrounds)
-            classes.push(`frame-${bg.id}`);
-        card.dom.root.className = classes.join(' ');
+    get cardClasses() {
+        return [
+            `page-style-${this.card.pageStyle}`,
+            ...super.cardClasses
+        ];
     }
 
     async updatePages(card) {
         if (!this.activeFrame) return;
         this.pageBackgrounds = await this.activeFrame.buildBackgrounds('pages', card);
-        this.updateTopClasses(card);
+        this.updateCardClasses(card);
         this.requestRender({ render: 'renderPages' });
     }
 

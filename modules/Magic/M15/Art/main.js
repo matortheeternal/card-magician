@@ -20,7 +20,7 @@ export default class ArtModule extends CardMagicianModule {
     getDefaultColorImage(card, colorCount) {
         const colors = card.colorIdentity.colors;
         if (colorCount === 0)
-            return this.defaultImage(card.isLand() ? 'l' : 'c');
+            return this.defaultImage(card.isLand?.() ? 'l' : 'c');
         if (colorCount === 1)
             return this.defaultImage(card.getCardColorKey());
         if (colorCount === 2) {
@@ -32,11 +32,11 @@ export default class ArtModule extends CardMagicianModule {
     }
 
     getDefaultTypeImage(card) {
-        if (card.isLand())
+        if (card.isLand?.())
             return this.defaultImage('l');
-        if (card.colorIdentity.isMulticolor())
+        if (card.colorIdentity?.isMulticolor())
             return this.defaultImage('m');
-        if (card.isArtifact())
+        if (card.isArtifact?.())
             return this.defaultImage('a');
         return null;
     }

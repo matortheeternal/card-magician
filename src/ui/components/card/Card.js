@@ -3,6 +3,7 @@ import { getFaceKeys } from '../../../domain/card/cardBuilder.js';
 class Card extends HTMLElement {
     #card;
     canFlip = false;
+    canRotate = false;
     initializedFaces = new Set();
 
     constructor() {
@@ -18,6 +19,7 @@ class Card extends HTMLElement {
     set card(card) {
         this.#card = card;
         this.canFlip = Boolean(card?.front && card?.back);
+        this.canRotate = Boolean(card?.front?.canRotate);
         if (this.isConnected) this.renderFaces();
     }
 
@@ -60,10 +62,14 @@ class Card extends HTMLElement {
         if (!this.#card) return;
 
         this.startInitializing();
-        this.renderFace(this.#card.front);
-        this.renderFace(this.#card.back);
 
         this.classList.toggle('flip-container', this.canFlip);
+        this.classList.toggle('flipping', false);
+        this.classList.toggle('flipped', false);
+        this.classList.toggle('rotated', false);
+
+        this.renderFace(this.#card.front);
+        this.renderFace(this.#card.back);
     }
 
     flip() {
@@ -84,6 +90,27 @@ class Card extends HTMLElement {
 
         this.classList.toggle('flipped');
         this.dispatchEvent(new CustomEvent('card-flip-start', { bubbles: true }));
+        this.addEventListener('transitionend', onEnd);
+    }
+
+    rotate() {
+        if (!this.canRotate) return;
+        if (this.classList.contains('rotating')) {
+            this.classList.toggle('rotated');
+            return;
+        }
+
+        this.classList.add('rotating');
+
+        const onEnd = e => {
+            if (!(e.target instanceof Element) || e.propertyName !== 'transform') return;
+            this.classList.remove('rotating');
+            this.classList.toggle('rotated');
+            this.dispatchEvent(new CustomEvent('card-rotate-end', { bubbles: true }));
+            this.removeEventListener('transitionend', onEnd);
+        };
+
+        this.dispatchEvent(new CustomEvent('card-rotate-start', { bubbles: true }));
         this.addEventListener('transitionend', onEnd);
     }
 }

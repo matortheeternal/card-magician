@@ -30,6 +30,14 @@ export default class DisplayCard extends ReactiveComponent {
         return this.querySelector('.buttons-container');
     }
 
+    get flipButton() {
+        return this.querySelector('sl-button[data-click-action="flip"]');
+    }
+
+    get rotateButton() {
+        return this.querySelector('sl-button[data-click-action="rotate"]');
+    }
+
     applyTransform() {
         const scaleFactor = Math.min(1, this.viewport.offsetWidth / 375);
         this.canvas.style.transform = `scale(${scaleFactor})`;
@@ -40,12 +48,18 @@ export default class DisplayCard extends ReactiveComponent {
             cancelAnimationFrame(this.raf);
             this.raf = requestAnimationFrame(() => this.applyTransform());
         });
-        this.handleEvents('click', { flip: this.flipCard});
+        this.handleEvents('click', {
+            flip: this.flipCard,
+            rotate: this.rotateCard
+        });
         this.resizeObserver.observe(this.viewport);
         registerAction('export-card-image', () => this.exportCardImage());
         onActiveCardChanged((card) => {
             this.useFlip = Boolean(card?.front && card?.back);
-            toggleDisplay(this.useFlip, this.buttons);
+            this.useRotate = Boolean(card?.front?.canRotate);
+            toggleDisplay(this.useFlip || this.useRotate, this.buttons);
+            toggleDisplay(this.useFlip, this.flipButton);
+            toggleDisplay(this.useRotate, this.rotateButton);
             this.querySelector('cm-card').card = card;
             this.querySelector('cm-card-properties').card = card;
         });
@@ -53,6 +67,10 @@ export default class DisplayCard extends ReactiveComponent {
 
     flipCard() {
         this.querySelector('cm-card').flip();
+    }
+
+    rotateCard() {
+        this.querySelector('cm-card').rotate();
     }
 
     render() {

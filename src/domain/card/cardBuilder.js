@@ -32,15 +32,14 @@ const templateField = () => ({
         name: template.label
     })),
     onChange: (model, newValue) => {
-        executeAction('change-template', model.id, newValue);
+        executeAction('change-template', model.id, newValue.id);
     }
 });
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
-    face.template = getActiveGame().defaultTemplateId;
-    const templateId = faceData.template || face.template;
-    const template = getTemplate(templateId);
+    faceData.template ??= getActiveGame().defaultTemplateId;
+    const template = getTemplate(faceData.template);
     face.dom.setHTML(template.html);
     face.dom.addCSS(template.css);
     face.form.setHTML(template.form.html);

@@ -12,7 +12,7 @@ const FrameMixin = {
             return 'notched';
         if (this.card.isBackDFC?.())
             return 'back';
-        if (this.card.hasFaceSymbol() || this.card.isFrontDFC?.())
+        if (this.card.hasFaceSymbol?.() || this.card.isFrontDFC?.())
             return 'front';
         return 'standard';
     },

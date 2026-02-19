@@ -46,3 +46,32 @@ cm-card.flipping.flipped > cm-card-face.back,
 cm-card.flipping:not(.flipped) > cm-card-face.front {
     transform: rotateY(180deg);
 }
+
+cm-card.rotating {
+    position: absolute;
+    transition: transform 250ms ease;
+    transform-style: preserve-3d;
+    transform: rotate(90deg);
+    pointer-events: none;
+
+    &:not(.rotated) {
+        transform: rotate(90deg) translate(-20%, -14%);
+    }
+}
+
+cm-card.rotating:not(.rotated) {
+    transition: transform 350ms ease;
+}
+
+cm-card.rotating.rotated {
+    transform: rotate(0deg);
+}
+
+cm-card.rotated {
+    position: absolute;
+    transform: rotate(90deg);
+
+    &:not(.rotating) {
+        transform: rotate(90deg) translate(-20%, -14%);
+    }
+}
