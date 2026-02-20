@@ -85,6 +85,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         return {
             ...info,
             version: SET_FILE_VERSION,
+            defaultBackImage: this.resolveAsset('back.png'),
             export: { CardImagesExporter: {} },
             cards: []
         };
