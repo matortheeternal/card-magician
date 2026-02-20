@@ -41,6 +41,12 @@ export default class CodeField extends FieldComponent {
         };
     }
 
+    get addClosing() {
+        return this.field.syntax !== 'mtg'
+            && this.field.syntax !== 'plaintext'
+            && this.field.syntax?.length;
+    }
+
     bind() {
         this.jar.onUpdate(code => this.onChange(code));
     }
@@ -67,6 +73,7 @@ export default class CodeField extends FieldComponent {
         editor.classList.add(`language-${this.field.syntax || 'plaintext'}`);
         this.appendChild(editor);
         this.jar = CodeJar(editor, this.syntax, {
+            addClosing: this.addClosing,
             tab: '    ',
             spellcheck: false
         });
