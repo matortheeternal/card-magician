@@ -35,7 +35,6 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     get model() {
-
         return this._model ??= initializeFields(
             this.fields,
             this.activeSet.export[this.exporterId]

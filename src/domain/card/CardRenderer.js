@@ -12,7 +12,7 @@ export default class CardRenderer {
             const img = document.createElement('img');
             img.onload = () => resolve(img);
             img.className = 'default-card-back';
-            img.src = getActiveSet().defaultBackFace;
+            img.src = getActiveSet().defaultBackImage;
         });
     }
 

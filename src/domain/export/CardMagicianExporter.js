@@ -35,7 +35,7 @@ export default class CardMagicianExporter {
     }
 
     get defaultConfig() {
-        return initializeFields(this.options);
+        return initializeFields(this.constructor.options);
     }
 
     /**

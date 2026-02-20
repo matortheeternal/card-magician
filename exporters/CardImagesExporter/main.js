@@ -3,7 +3,7 @@ import CardImageArtifact from './src/CardImageArtifact.js';
 const L = localize('card-images-exporter');
 
 function expandCanvas(canvas, padding) {
-    if (!padding) return canvas;
+    if (!padding || !canvas.width || !canvas.height) return canvas;
 
     const newCanvas = document.createElement('canvas');
     newCanvas.width = canvas.width + padding * 2;

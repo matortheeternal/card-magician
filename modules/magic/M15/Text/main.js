@@ -20,7 +20,7 @@ export default class TextModule extends CardMagicianModule {
         card.hasLevels = () => levelCardExpr.test(card.rulesText);
         card.isStation = () => stationCardExpr.test(card.rulesText);
         card.hasChoices = () => listExpr.test(card.rulesText);
-        card.hasNoText = () => !card.rulesText.length && !card.flavorText.length;
+        card.hasNoText = () => !card.rulesText?.length && !card.flavorText?.length;
 
         card.textToHTML = (text, options) => {
             const html = this.sanitize(text, { allowedTags });
