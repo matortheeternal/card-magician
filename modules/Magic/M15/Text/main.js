@@ -1,6 +1,7 @@
 import textToHTML from './src/textToHTML.js';
 import { stationCardExpr, StationConverter } from './src/StationConverter.js';
 import { levelCardExpr, LevelConverter } from './src/LevelConverter.js';
+import { ListConverter, listExpr } from './src/ListConverter.js';
 
 const L = localize('module-M15-text');
 
@@ -18,6 +19,7 @@ export default class TextModule extends CardMagicianModule {
         card.isMutate = () => /^mutate\b/i.test(card.rulesText);
         card.hasLevels = () => levelCardExpr.test(card.rulesText);
         card.isStation = () => stationCardExpr.test(card.rulesText);
+        card.hasChoices = () => listExpr.test(card.rulesText);
         card.hasNoText = () => !card.rulesText.length && !card.flavorText.length;
 
         card.textToHTML = (text, options) => {
@@ -35,7 +37,7 @@ export default class TextModule extends CardMagicianModule {
     }
 
     get structureConverters() {
-        return [LevelConverter, StationConverter];
+        return [ListConverter, LevelConverter, StationConverter];
     }
 
     async renderRulesHTML(card) {

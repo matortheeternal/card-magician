@@ -1,6 +1,7 @@
 import { drawImage, drawSvg } from './drawImage.js';
 import { drawText } from './drawText.js';
 import { drawBackground } from './drawBackground.js';
+import drawListMarker from './drawListMarker.js';
 
 function isHidden(node, style) {
     return style.display === 'none'
@@ -30,6 +31,8 @@ async function paintNode(node, style, ctx, rootRect) {
         await drawSvg(ctx, node, rootRect);
     if (node instanceof Image)
         await drawImage(ctx, node, rootRect);
+    if (style.display === 'list-item')
+        await drawListMarker(ctx, node, style, rootRect);
     for (const child of node.childNodes) {
         if (child.nodeType === Node.TEXT_NODE)
             drawText(ctx, child, style, rootRect);
