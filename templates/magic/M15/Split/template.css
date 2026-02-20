@@ -67,3 +67,11 @@
         margin: 4px 18px 5px;
     }
 }
+
+:host(.back) module-container[module="Name"] {
+    color: black !important;
+}
+
+:host(.back) module-container[module="Type"] {
+    color: black !important;
+}
