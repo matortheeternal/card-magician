@@ -5,11 +5,6 @@ import { ListConverter, listExpr } from './src/ListConverter.js';
 
 const L = localize('module-M15-text');
 
-const allowedTags = [
-    'b', 'ol', 'pre', 'ul', 'li', 'br', 'code',
-    'em', 'q', 'strong', 'sub', 'sup', 'u', 'sym'
-];
-
 export default class TextModule extends CardMagicianModule {
     async init(card) {
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
@@ -23,7 +18,7 @@ export default class TextModule extends CardMagicianModule {
         card.hasNoText = () => !card.rulesText?.length && !card.flavorText?.length;
 
         card.textToHTML = (text, options) => {
-            const html = this.sanitize(text, { allowedTags });
+            const html = this.escapeHTML(text);
             return textToHTML(html, card, options);
         };
 
