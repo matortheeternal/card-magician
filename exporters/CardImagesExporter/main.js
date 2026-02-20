@@ -2,6 +2,21 @@ import CardImageArtifact from './src/CardImageArtifact.js';
 
 const L = localize('card-images-exporter');
 
+function expandCanvas(canvas, padding) {
+    if (!padding) return canvas;
+
+    const newCanvas = document.createElement('canvas');
+    newCanvas.width = canvas.width + padding * 2;
+    newCanvas.height = canvas.height + padding * 2;
+
+    const ctx = newCanvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+    ctx.drawImage(canvas, padding, padding);
+
+    return newCanvas;
+}
+
 export default class CardImagesExporter extends CardMagicianExporter {
     saveOutputs = true;
 
@@ -11,8 +26,8 @@ export default class CardImagesExporter extends CardMagicianExporter {
             label: L`Image Type`,
             type: 'select',
             options: [
-                { id: 'image/jpg', name: L`JPG` },
-                { id: 'image/png', name: L`PNG` },
+                { id: 'jpg', name: L`JPG` },
+                { id: 'png', name: L`PNG` },
             ]
         }, {
             id: 'quality',
@@ -22,11 +37,15 @@ export default class CardImagesExporter extends CardMagicianExporter {
             id: 'scale',
             label: L`Scale`,
             default: '2'
+        }, {
+            id: 'bleed',
+            label: L`Bleed`,
+            default: '0'
         }];
     }
 
     get extension() {
-        return this.config.imageType.split('/').pop();
+        return this.config.imageType.id;
     }
 
     /**
@@ -35,12 +54,15 @@ export default class CardImagesExporter extends CardMagicianExporter {
      */
     async *transform(cardSheetArtifact) {
         for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs({
-            scale: this.scale
+            scale: this.config.scale
         })) {
             const hasBackFace = Object.hasOwn(card.card.baseCard, 'back');
             const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
             const filePath = `${card.card.baseCard.baseName}${suffix}.${this.extension}`;
-            const artifact = new CardImageArtifact(cardCanvas, this.config);
+            const artifact = new CardImageArtifact(
+                expandCanvas(cardCanvas, this.config.bleed * this.config.scale),
+                this.config
+            );
             yield { filePath, artifact };
         }
     }

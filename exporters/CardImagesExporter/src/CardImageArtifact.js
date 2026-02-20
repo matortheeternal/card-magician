@@ -6,7 +6,7 @@ export default class CardImageArtifact extends ExportArtifact {
     }
 
     get imageType() {
-        return this.config.imageType;
+        return `image/${this.config.imageType.id}`;
     }
 
     get imageQuality() {
