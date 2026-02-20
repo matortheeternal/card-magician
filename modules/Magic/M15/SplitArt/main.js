@@ -29,9 +29,9 @@ export default class SplitArtModule extends ArtModule {
     renderTop(card) {
         if (!card.defaultTopImageUrl && !card.artImage.imageUrl) return '';
         return card.artImage.imageUrl ? (
-            `<crop-image crop-width="${card.artImage.crop.width / 2 - 15}"
+            `<crop-image crop-width="${card.artImage.crop.width / 2 - 1}"
                          crop-height="${card.artImage.crop.height}"
-                         offset-x="${card.artImage.crop.width / 2 + 15}"
+                         offset-x="${card.artImage.crop.width / 2 + 1}"
                          offset-y="${card.artImage.crop.yOffset}"
                          src="${card.artImage.imageUrl}">
             </crop-image>`
@@ -41,7 +41,7 @@ export default class SplitArtModule extends ArtModule {
     renderBottom(card) {
         if (!card.defaultBottomImageUrl && !card.artImage.imageUrl) return '';
         return card.artImage.imageUrl ? (
-            `<crop-image crop-width="${card.artImage.crop.width / 2 - 15}"
+            `<crop-image crop-width="${card.artImage.crop.width / 2 - 1}"
                          crop-height="${card.artImage.crop.height}"
                          offset-x="${card.artImage.crop.xOffset}"
                          offset-y="${card.artImage.crop.yOffset}"
