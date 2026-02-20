@@ -97,3 +97,11 @@ form-group.three-columns {
 cm-face-form cm-code .codejar-editor {
     font-size: var(--sl-font-size-small);
 }
+
+.buttons-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sl-spacing-small);
+}

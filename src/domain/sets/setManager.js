@@ -138,6 +138,11 @@ registerAction('add-face', faceId => {
     selectedCard[faceId] = {};
     setActiveCard(selectedCard);
 });
+registerAction('remove-face', faceId => {
+    log('state').debug('remove face', faceId);
+    delete selectedCard[faceId];
+    setActiveCard(selectedCard);
+});
 registerAction('change-template', (faceId, newTemplateId) => {
     log('state').debug('change template', faceId, newTemplateId);
     selectedCard[faceId].template = newTemplateId;

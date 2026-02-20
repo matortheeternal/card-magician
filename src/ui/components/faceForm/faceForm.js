@@ -8,7 +8,10 @@ export default class FaceForm extends ReactiveComponent {
 
     connectedCallback() {
         this.setAttribute('data-form-provider', '');
-        this.handleEvents('click', { addFace: this.addFace });
+        this.handleEvents('click', {
+            addFace: this.addFace,
+            removeFace: this.removeFace,
+        });
     }
 
     set face(value) {
@@ -54,10 +57,33 @@ export default class FaceForm extends ReactiveComponent {
         return '';
     }
 
+    renderRemoveFaceButton() {
+        const faceId = this.dataset.faceId;
+        const section = document.createElement('section');
+        section.classList.add('buttons-container');
+        section.innerHTML = (
+            `<sl-button
+                class="remove-face-btn"
+                variant="danger"
+                outline
+                size="large"
+                data-click-action="removeFace">
+                ${L`Remove ${faceId} face`}
+            </sl-button>`
+        );
+        return section;
+    }
+
     render() {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
         this.appendChild(this.form.root);
+        if (this.dataset.faceId === 'back')
+            this.appendChild(this.renderRemoveFaceButton());
+    }
+
+    removeFace() {
+        executeAction('remove-face', this.dataset.faceId);
     }
 
     addFace() {
