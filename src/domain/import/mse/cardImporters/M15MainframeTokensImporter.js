@@ -6,7 +6,7 @@ export default class M15MainframeTokensImporter extends M15AlteredImporter {
     static expectedStylesheet = 'm15-mainframe-tokens';
 
     get template() {
-        return this.mseFrames.includes('M20') ? 'M20Token' : 'M15Token';
+        return this.mseFrames.includes('M20') ? 'magic/M20/Token' : 'magic/M15/Token';
     }
 
     get otherOptions() {

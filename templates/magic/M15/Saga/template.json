@@ -1,22 +1,22 @@
 {
-  "id": "M15Saga",
+  "id": "magic/M15/Saga",
   "label": "Saga",
   "description": "This template is for M15 Sagas.",
   "version": "0.0",
   "card": [
-    "Magic/M15/CardLayout",
-    "Magic/M15/SagaFrame",
-    "Magic/M15/Color",
-    "Magic/M15/Symbols",
-    "Magic/M15/FaceSymbol",
-    "Magic/M15/Name",
-    "Magic/M15/Cost",
-    "Magic/M15/Art",
-    "Magic/M15/ColorIndicator",
-    "Magic/M15/Type",
-    "Magic/M15/SagaText",
-    "Magic/M15/PT",
-    "Magic/M15/Rarity",
-    "Magic/M15/Footer"
+    "magic/M15/CardLayout",
+    "magic/M15/SagaFrame",
+    "magic/M15/Color",
+    "magic/M15/Symbols",
+    "magic/M15/FaceSymbol",
+    "magic/M15/Name",
+    "magic/M15/Cost",
+    "magic/M15/Art",
+    "magic/M15/ColorIndicator",
+    "magic/M15/Type",
+    "magic/M15/SagaText",
+    "magic/M15/PT",
+    "magic/M15/Rarity",
+    "magic/M15/Footer"
   ]
 }

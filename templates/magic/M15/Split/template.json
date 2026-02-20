@@ -1,36 +1,36 @@
 {
-  "id": "M15Split",
+  "id": "magic/M15/Split",
   "label": "M15 Split",
   "description": "Template for representing Magic 2015 split cards.",
   "version": "0.0",
   "card": [
-    "Magic/M15/SplitFrame",
-    "Magic/M15/CardLayout",
-    "Magic/M15/SplitArt",
-    "Magic/M15/Rarity",
-    "Magic/M15/Footer",
-    "Magic/M15/AutoNumber"
+    "magic/M15/SplitFrame",
+    "magic/M15/CardLayout",
+    "magic/M15/SplitArt",
+    "magic/M15/Rarity",
+    "magic/M15/Footer",
+    "magic/M15/AutoNumber"
   ],
   "subcards": {
     "top": [
-      "Magic/M15/Color",
-      "Magic/M15/Symbols",
-      "Magic/M15/Name",
-      "Magic/M15/Cost",
-      "Magic/M15/ColorIndicator",
-      "Magic/M15/Type",
-      "Magic/M15/Text",
-      "Magic/M15/PT"
+      "magic/M15/Color",
+      "magic/M15/Symbols",
+      "magic/M15/Name",
+      "magic/M15/Cost",
+      "magic/M15/ColorIndicator",
+      "magic/M15/Type",
+      "magic/M15/Text",
+      "magic/M15/PT"
     ],
     "bottom": [
-      "Magic/M15/Color",
-      "Magic/M15/Symbols",
-      "Magic/M15/Name",
-      "Magic/M15/Cost",
-      "Magic/M15/ColorIndicator",
-      "Magic/M15/Type",
-      "Magic/M15/Text",
-      "Magic/M15/PT"
+      "magic/M15/Color",
+      "magic/M15/Symbols",
+      "magic/M15/Name",
+      "magic/M15/Cost",
+      "magic/M15/ColorIndicator",
+      "magic/M15/Type",
+      "magic/M15/Text",
+      "magic/M15/PT"
     ]
   }
 }

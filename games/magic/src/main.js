@@ -41,7 +41,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     get defaultTemplateId() {
-        return 'M15Main';
+        return 'magic/M15/Main';
     }
 
     getCardName(card) {
