@@ -77,7 +77,7 @@ export function feedTheDag(exporters) {
     const theDag = new ExporterDAG();
     exporters.forEach(exporter => {
         const node = theDag.feed(exporter);
-        exporter.dependencies.forEach(id => {
+        Object.keys(exporter.dependencies).forEach(id => {
             const exporter = exportersById[id];
             if (!exporter) throw new Error(`Exporter ${id} not found.`);
             theDag.addParent(node, exporter);

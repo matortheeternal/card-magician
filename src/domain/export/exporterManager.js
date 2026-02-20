@@ -86,7 +86,7 @@ export async function runExporters(exporterParams) {
 function addDependencyParams(exporterId, set, params) {
     const exporter = getExporter(exporterId);
     if (!exporter.dependencies) return;
-    for (const id of exporter.dependencies) {
+    for (const id of Object.keys(exporter.dependencies)) {
         if (Object.hasOwn(params, id)) continue;
         params[id] = { id, config: set.export[id] };
         addDependencyParams(id, set, params);
