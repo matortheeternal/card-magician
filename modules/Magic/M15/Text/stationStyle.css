@@ -92,10 +92,6 @@ module-container[module="Text"]:has(.station-level) {
     div.t {
         margin: 0.2em 0;
     }
-
-    &:last-of-type div.t:last-of-type {
-        margin-bottom: 0;
-    }
 }
 
 :host:has(.pt-text) .station-level:last-of-type {

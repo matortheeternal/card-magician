@@ -12,12 +12,16 @@
 module-container[module="SagaText"] {
     display: flex;
     min-height: 0;
+    --chop-top: 0px;
+    --chop-bottom: 0px;
 
     auto-fit-text {
         font-size: 19px;
         padding: 5px 3px 5px 5px;
         line-height: 0.95;
         font-family: "MPlantin", sans-serif;
+        margin-top: var(--chop-top);
+        margin-bottom: var(--chop-bottom);
     }
 
     &:not([render="renderPreText"]) auto-fit-text {
@@ -78,12 +82,6 @@ module-container[module="SagaText"] {
     white-space: nowrap;
 }
 
-.saga-chapter {
-    display: grid;
-    grid-template-columns: 1fr 5fr;
-    margin-left: -19px;
-}
-
 .chapter-bar {
     width: 95%;
     height: 2px;
@@ -95,23 +93,29 @@ module-container[module="SagaText"] {
     margin-left: 9px;
 }
 
-.chapter-icons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    z-index: 3;
-}
+.saga-chapter {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    margin-left: -19px;
 
-div[class^="chapter-icon-"] {
-    width: 30px;
-    height: 33.5px;
-    margin: 1px 0;
-    background-size: 100% 100%;
-}
+    .chapter-icons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 3;
 
-.chapter-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 5px;
+        > div {
+            width: 30px;
+            height: 33.5px;
+            margin: 1px 0;
+            background-size: 100% 100%;
+        }
+    }
+
+    .chapter-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 5px;
+    }
 }

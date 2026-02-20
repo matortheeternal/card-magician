@@ -41,6 +41,7 @@ export default class SagaText extends TextModule {
         return (
             `<auto-fit-text
                ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
+               style="${this.getTextStyle(card)}"
            >
                 <div class="pre-text">${this.preHTML}</div>
             </auto-fit-text>`

@@ -96,8 +96,8 @@ export default class TextModule extends CardMagicianModule {
 
     getTextStyle(card) {
         return [
-            card.chopTop ? `margin-top: ${card.chopTop}px` : '',
-            card.chopBottom ? `margin-bottom: ${card.chopBottom}px` : '',
+            card.chopTop ? `--chop-top: ${card.chopTop}px` : '',
+            card.chopBottom ? `--chop-bottom: ${card.chopBottom}px` : '',
             this.shouldCenter(card) ? 'text-align: center' : '',
         ].filter(Boolean).join('; ');
     }

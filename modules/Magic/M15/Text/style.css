@@ -6,6 +6,19 @@ module-container[module="Text"] {
     padding: 8px 16px 6px 13px;
     height: 163px;
     margin-bottom: 0.5px;
+    --chop-top: 0px;
+    --chop-bottom: 0px;
+
+    ul {
+        padding-inline-start: 18px;
+        margin-block-start: -0.2em;
+        margin-block-end: 0;
+
+        li div.t {
+            margin-left: -5px;
+            margin-top: 0.2em;
+        }
+    }
 }
 
 .text {
@@ -18,6 +31,8 @@ module-container[module="Text"] {
     font-size: 19px;
     line-height: 0.95;
     font-family: "MPlantin", sans-serif;
+    margin-top: var(--chop-top);
+    margin-bottom: var(--chop-bottom);
 }
 
 .text.flag-padding {
@@ -34,11 +49,11 @@ module-container[module="Text"] {
     margin: 0.5em 0;
 }
 
-.rules-text > div.t:first-of-type {
+.rules-text > div.t:first-child {
     margin-top: 0;
 }
 
-.rules-text > div.t:last-of-type {
+.rules-text > div.t:last-child {
     margin-bottom: 0;
 }
 
