@@ -62,23 +62,32 @@ function getOriginRect(rect, style) {
     );
 }
 
-function parseBackgroundPositionPart(str) {
-    return str.endsWith('px') ? parseFloat(str) : 0;
+function normalizePositionToken(token) {
+    token = token.trim();
+    if (token === 'left' || token === 'top') return '0%';
+    if (token === 'center') return '50%';
+    if (token === 'right' || token === 'bottom') return '100%';
+    return token;
 }
 
-function parseBackgroundPosition(rootRect, style) {
-    const [x, y] = style.backgroundPosition.split(' ');
-    if (x.includes('%')) return [0, 0];
-    return [
-        parseBackgroundPositionPart(x),
-        parseBackgroundPositionPart(y)
-    ];
+function parsePositionValue(token, areaSize, imageSize) {
+    token = normalizePositionToken(token);
+    if (token.endsWith('%')) {
+        const pct = parseFloat(token) / 100;
+        return (areaSize - imageSize) * pct;
+    }
+
+    return token.endsWith('px') ? parseFloat(token) : 0;
 }
 
-function getBackgroundPosition(rootRect, originRect, style) {
-    const [xOffset, yOffset] = parseBackgroundPosition(rootRect, style);
-    const x = originRect.left - rootRect.left + xOffset;
-    const y = originRect.top - rootRect.top + yOffset;
+function getBackgroundPosition(rootRect, originRect, imgSize, style) {
+    const [xToken = '0%', yToken = '0%'] = style.backgroundPosition.split(' ');
+    const offsetX = parsePositionValue(xToken, originRect.width, imgSize.width);
+    const offsetY = parsePositionValue(yToken, originRect.height, imgSize.height);
+
+    const x = originRect.left - rootRect.left + offsetX;
+    const y = originRect.top - rootRect.top + offsetY;
+
     return { x, y };
 }
 
@@ -89,8 +98,18 @@ export async function drawBackground(ctx, element, style, rootRect) {
     const img = await loadImage(url);
     const elementRect = element.getBoundingClientRect();
     const originRect = getOriginRect(elementRect, style);
-    const { width, height } = getBackgroundSize(img, originRect, style);
-    const { x, y } = getBackgroundPosition(rootRect, originRect, style);
+    const imgSize = getBackgroundSize(img, originRect, style);
+    const { x, y } = getBackgroundPosition(rootRect, originRect, imgSize, style);
 
-    ctx.drawImage(img, x, y, width, height);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(
+        elementRect.left - rootRect.left,
+        elementRect.top - rootRect.top,
+        elementRect.width,
+        elementRect.height
+    );
+    ctx.clip();
+    ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+    ctx.restore();
 }
