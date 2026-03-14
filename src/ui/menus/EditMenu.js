@@ -21,7 +21,7 @@ export default class EditMenu extends ReactiveMenu {
             this.menuItem(L`Paste`, L`Ctrl+V`, () => executeAction('paste')),
             this.DIVIDER,
             this.menuItem(L`Set Info`, ``, () => {
-                openModal('cm-set-info-modal', getActiveSet().info);
+                openModal('cm-set-info-modal', getActiveSet());
             }),
             this.menuItem(L`Preferences`, ``, () => log('user').info('Edit preferences')),
             this.menuItem(L`Localization`, ``, async () => {
