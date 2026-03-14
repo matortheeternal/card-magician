@@ -72,6 +72,7 @@ export default class MagicTheGathering extends CardMagicianGame {
     }
 
     addComputedProps(cardFace) {
+        cardFace.showPT = Boolean(cardFace.power || cardFace.toughness);
         cardFace.rarity ??= 'common';
         cardFace.colors = getCardFaceColors(cardFace);
     }
