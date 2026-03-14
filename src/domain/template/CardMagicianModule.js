@@ -50,7 +50,7 @@ import { watch } from '../../shared/reactivity.js';
  * @typedef {object} FieldOption
  * @property {string} id              - Option identifier.
  * @property {string} name            - Human-friendly label.
- * @property {BlobURL} [imageURL]     - Optional icon to render next to the option.
+ * @property {BlobURL} [imageUrl]     - Optional icon to render next to the option.
  * @property {Array<FieldOption>} [items]
  *   Nested submenu items (for group selects).
  * @property {boolean} [separator]

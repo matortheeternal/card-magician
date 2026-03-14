@@ -46,7 +46,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
     get frame() {
         if (this.mseFrames.includes('clear')) return 'clear';
         if (this.mseFrames.includes('devoid')) return 'devoid';
-        return '';
+        return 'auto';
     }
 
     get chopTop() {
