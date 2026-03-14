@@ -30,5 +30,5 @@ export function getFaceSymbolClass(option) {
 export function computeOption(card, option, optionsToSearch) {
     if (!option.compute) return;
     option.resolved = option.compute(card, optionsToSearch);
-    if (option.resolved) option.imageURL = option.resolved.imageURL;
+    if (option.resolved) option.imageUrl = option.resolved.imageUrl;
 }

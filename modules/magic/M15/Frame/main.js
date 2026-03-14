@@ -24,6 +24,8 @@ export default class FrameModule extends CardMagicianModule {
 
     get cardClasses() {
         const classes = [`color-${this.card.getCardColorKey()}`];
+        const meldStyle = this.card.meldStyle?.id || 'none';
+        if (meldStyle !== 'none') classes.push(`meld-${meldStyle}`);
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
         return classes;
@@ -56,7 +58,7 @@ export default class FrameModule extends CardMagicianModule {
             'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
             'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle',
             'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle',
-            'ubStyle', 'otherFrameOptions', 'faceSymbol'
+            'ubStyle', 'meldStyle', 'otherFrameOptions', 'faceSymbol'
         ], () => this.updateFrame(card));
     }
 

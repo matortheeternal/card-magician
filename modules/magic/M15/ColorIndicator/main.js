@@ -1,10 +1,7 @@
 export default class ColorIndicatorModule extends CardMagicianModule {
     async getIndicatorImage(card) {
         if (!card.colorOverride?.length) return '';
-        const colors = card.colorIdentity.colors.filter(c => {
-            return c.sources.includes('override');
-        });
-        if (colors.every(c => c.sources.length > 1)) return '';
+        const colors = card.colorIdentity.colors.filter(c => c.sources.override);
         if (colors.length === 1) {
             const key = card.getCardColorKey();
             return this.resolveAsset(`indicator/${key}.png`);

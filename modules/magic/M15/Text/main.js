@@ -18,6 +18,7 @@ export default class TextModule extends CardMagicianModule {
         card.hasNoText = () => !card.rulesText?.length && !card.flavorText?.length;
 
         card.textToHTML = (text, options) => {
+            if (!text) return '';
             const html = this.escapeHTML(text);
             return textToHTML(html, card, options);
         };

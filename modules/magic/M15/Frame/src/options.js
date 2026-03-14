@@ -21,23 +21,23 @@ function computeCrownStyle(card) {
 
 function computeNyxStyle(card) {
     if (!card.isEnchantment?.()) return 'disabled';
-    return this.card.frame === 'planeshifted' ? 'shifted' : 'normal';
+    return card.frame === 'planeshifted' ? 'shifted' : 'standard';
 }
 
 function computeVehicleStyle(card) {
-    return card.isVehicle?.() ? 'normal' : 'disabled';
+    return card.isVehicle?.() ? 'standard' : 'disabled';
 }
 
 function computeSnowStyle(card) {
-    return card.isSnow?.() ? 'normal' : 'disabled';
+    return card.isSnow?.() ? 'standard' : 'disabled';
 }
 
 function computeScrollsStyle(card) {
-    return card.isConspiracy?.() ? 'normal' : 'disabled';
+    return card.isConspiracy?.() ? 'standard' : 'disabled';
 }
 
 function computeMiracleStyle(card) {
-    return card.isMiracle?.() ? 'normal' : 'disabled';
+    return card.isMiracle?.() ? 'standard' : 'disabled';
 }
 
 export default (frameOptions) => ([{
@@ -159,6 +159,15 @@ export default (frameOptions) => ([{
         { id: 'grey',   name: L`Grey` },
         { id: 'gold',   name: L`Gold` },
         { id: 'hybrid', name: L`Hybrid` },
+    ]
+}, {
+    id: 'meldStyle',
+    type: 'select',
+    label: L`Meld Style`,
+    options: [
+        { id: 'none',   name: L`None` },
+        { id: 'top',    name: L`Top` },
+        { id: 'bottom', name: L`Bottom` },
     ]
 }, {
     id: 'otherFrameOptions',
