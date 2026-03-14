@@ -10,12 +10,14 @@ import Node from './mixins/Node.js';
 import Crowns from './mixins/Crowns.js';
 import MiracleTrim from './mixins/MiracleTrim.js';
 import PT from './mixins/PT.js';
+import NyxTrim from './mixins/NyxTrim.js';
 
 export default class DevoidFrame extends CardFrame.with(
     Frame,
     TrimMasks,
     VehicleTrim,
     SnowTrim,
+    NyxTrim,
     DraftTrim,
     Border,
     Scrolls,
@@ -25,7 +27,7 @@ export default class DevoidFrame extends CardFrame.with(
     PT,
 ) {
     static matches(card) {
-        return card.frame === 'devoid';
+        return card.frame.id === 'devoid';
     }
 
     get artDimensions() {

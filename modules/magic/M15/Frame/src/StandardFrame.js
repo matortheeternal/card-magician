@@ -12,12 +12,14 @@ import Node from './mixins/Node.js';
 import Levels from './mixins/Levels.js';
 import PT from './mixins/PT.js';
 import LevelPTs from './mixins/LevelPTs.js';
+import NyxTrim from './mixins/NyxTrim.js';
 
 export default class StandardFrame extends CardFrame.with(
     Frame,
     TrimMasks,
     VehicleTrim,
     SnowTrim,
+    NyxTrim,
     DraftTrim,
     Border,
     Scrolls,
