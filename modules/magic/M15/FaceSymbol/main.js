@@ -5,7 +5,7 @@ const L = localize('module-M15-face-symbol');
 
 export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
-        opt.imageURL = this.resolveAsset(opt.imagePath);
+        opt.imageUrl = this.resolveAsset(opt.imagePath);
     }
 
     loadFaceSymbolImages(options) {
@@ -20,7 +20,6 @@ export default class FaceSymbolModule extends CardMagicianModule {
             type: 'select',
             label: L`Face Symbol`,
             options: makeSymbolOptions(),
-            initialValue: 'autodetect',
             default: null
         };
         this.loadFaceSymbolImages(this.faceSymbolField.options);
@@ -39,11 +38,9 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     render(card) {
-        if (!card.faceSymbol) return;
-        const src = this.selectedFaceSymbol?.imageURL;
-        if (!src) return '';
+        if (!card.faceSymbol?.imageUrl) return;
         return (
-            `<img src="${src}" class="${this.faceSymbolClass}"/>`
+            `<img src="${card.faceSymbol.imageUrl}" class="${this.faceSymbolClass}"/>`
         );
     }
 
