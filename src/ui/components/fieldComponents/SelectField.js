@@ -1,11 +1,12 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
+import { resolveOption } from '../../../../modules/magic/M15/FaceSymbol/src/helpers.js';
 
 const selectDividerSpacing = '--spacing: var(--sl-spacing-3x-small)';
 
 function menuPrefixIcon(option) {
-    if (!option || !option.imageURL) return '';
-    return `<img class="icon" slot="prefix" src="${option.imageURL}" />`;
+    if (!option || !option.imageUrl) return '';
+    return `<img class="icon" slot="prefix" src="${option.imageUrl}" />`;
 }
 
 function submenu(option) {
@@ -36,7 +37,7 @@ function buildSelectHTML(label, options) {
         return menuItem(option);
     }).join('');
 
-    const optionsHaveIcons = options.some(opt => Boolean(opt.imageURL));
+    const optionsHaveIcons = options.some(opt => Boolean(opt.imageUrl));
     const className = [
         'sl-select-field',
         optionsHaveIcons ? ['has-icons'] : []
@@ -52,17 +53,16 @@ function buildSelectHTML(label, options) {
     );
 }
 
-function resolveOptionParent(selectedOption, options) {
-    if (!selectedOption || !Array.isArray(options)) return null;
+function resolveOptionAndParent(selectedOption, options) {
+    if (!selectedOption || !Array.isArray(options)) return [null, null];
 
     for (const option of options) {
-        if (option.id === selectedOption.id) return null;
+        if (option.id === selectedOption) return [option, null];
         if (!option.items) continue;
         for (const item of option.items)
-            if (item.id === selectedOption.id) return option;
-
+            if (item.id === selectedOption) return [item, option];
     }
-    return null;
+    return [null, null];
 }
 
 function buildTriggerHTML(option, parent, rawValue) {
@@ -108,14 +108,18 @@ export default class SelectField extends FieldComponent {
     }
 
     loadValue() {
-        const parent = resolveOptionParent(this.value, this.field.options);
-        this.renderTriggerButton(this.value, parent);
+        const [option, parent] = resolveOptionAndParent(
+            this.value?.id,
+            this.field.options
+        );
+        this.renderTriggerButton(option, parent);
         this.updateSelectedClasses(parent?.id);
     }
 
     async getChangedValue(event) {
         const id = event.detail?.item?.value || this.value;
-        return this.field.options.find(option => option.id === id);
+        const [option] = resolveOptionAndParent(id, this.field.options);
+        return option;
     }
 }
 

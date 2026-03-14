@@ -2,6 +2,7 @@ import { resolveFieldComponent } from '../../systems/fieldComponentRegistry.js';
 import { emit, esc, escapeHTML, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import FormToggle from './FormToggle.js';
+import { getDefaultValue, getInitialValue } from '../../systems/fieldSystem.js';
 
 export default class FormField extends ReactiveComponent {
     connectedCallback() {
@@ -95,7 +96,7 @@ export default class FormField extends ReactiveComponent {
 
     toggleShow(show) {
         this.model[this.fieldId] = show
-            ? this.field.initialValue || ''
+            ? getInitialValue(this.field)
             : null;
         changed(this.model, this.fieldId);
         emit(this, 'cm-field-changed');
