@@ -1,3 +1,15 @@
+.meld-top, .meld-bottom {
+    position: absolute;
+    transform-origin: center;
+    scale: 1.397;
+    transform: rotate(90deg);
+    right: 48%;
+}
+
+.meld-bottom {
+    left: 48%;
+}
+
 .frame-clear, .frame-borderless {
     module-container[module="Art"] {
         margin-left: 0;
@@ -12,6 +24,10 @@
             left: 0;
             top: -18.5%;
         }
+    }
+
+    .type-line {
+        padding: 0 14px 4px;
     }
 }
 
