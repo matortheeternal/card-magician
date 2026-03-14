@@ -13,12 +13,14 @@ import PT from '../../Frame/src/mixins/PT.js';
 import Binding from './mixins/Binding.js';
 import LeftPage from './mixins/LeftPage.js';
 import RightPage from './mixins/RightPage.js';
+import NyxTrim from '../../Frame/src/mixins/NyxTrim.js';
 
 export default class AdventureFrame extends CardFrame.with(
     Frame,
     TrimMasks,
     VehicleTrim,
     SnowTrim,
+    NyxTrim,
     DraftTrim,
     Border,
     Scrolls,
