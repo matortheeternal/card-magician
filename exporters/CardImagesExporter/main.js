@@ -32,15 +32,21 @@ export default class CardImagesExporter extends CardMagicianExporter {
         }, {
             id: 'quality',
             label: L`Image Quality`,
-            default: '0.92'
+            default: '0.92',
+            hint: L`A number between 0 and 1 indicating the image quality to be used
+                    when creating images using file formats that support lossy compression.`
         }, {
             id: 'scale',
             label: L`Scale`,
-            default: '2'
+            default: '2',
+            hint: L`A number corresponding to how much the base card size should be
+                    scaled. A value of 2 corresponds to doubling the size.`
         }, {
             id: 'bleed',
             label: L`Bleed`,
-            default: '0'
+            default: '0',
+            hint: L`A number corresponding to the number of pixels of bleed outline to
+                    add around exported images.`
         }];
     }
 
