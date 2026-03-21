@@ -1,7 +1,7 @@
 const colorIndices = 'WUBRG';
 
 function extractFaceColors(face) {
-    if (!face) return [];
+    if (!face?.colors) return [];
     return face.colors.map(c => c.char.toUpperCase());
 }
 
