@@ -1,3 +1,12 @@
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 export const WhitespaceConverter = {
     match(str) {
         return str.match(/^\s+/);
@@ -35,12 +44,21 @@ export const SymbolConverter = {
     }
 };
 
+export const AbilityWordConverter = {
+    match(str) {
+        return str.match(/^(\w+) [-—] /);
+    },
+    convert(match) {
+        return `<i>${match[1]}</i> — `;
+    }
+};
+
 export const LegendNameConverter = {
     match(str) {
         return str.match(/^(LEGENDNAME|@)/);
     },
     convert(match, { card }) {
-        return card.getLegendName();
+        return escapeHTML(card.getLegendName());
     }
 };
 
@@ -49,7 +67,7 @@ export const CardNameConverter = {
         return str.match(/^(CARDNAME|~)/);
     },
     convert(match, { card }) {
-        return card.name;
+        return escapeHTML(card.name);
     }
 };
 
@@ -69,5 +87,6 @@ export default [
     SymbolConverter,
     LegendNameConverter,
     CardNameConverter,
+    AbilityWordConverter,
     FallbackConverter
 ];
