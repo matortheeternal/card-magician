@@ -91,15 +91,24 @@ function getBackgroundPosition(rootRect, originRect, imgSize, style) {
     return { x, y };
 }
 
-export async function drawBackground(ctx, element, style, rootRect) {
+function drawBackgroundColor(ctx, style) {
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fill();
+}
+
+async function drawBackgroundImage(ctx, elementRect, rootRect, style) {
     const url = extractBackgroundUrl(style.backgroundImage);
     if (!url) return;
 
     const img = await loadImage(url);
-    const elementRect = element.getBoundingClientRect();
     const originRect = getOriginRect(elementRect, style);
     const imgSize = getBackgroundSize(img, originRect, style);
     const { x, y } = getBackgroundPosition(rootRect, originRect, imgSize, style);
+    ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+}
+
+export async function drawBackground(ctx, element, style, rootRect) {
+    const elementRect = element.getBoundingClientRect();
 
     ctx.save();
     ctx.beginPath();
@@ -110,6 +119,7 @@ export async function drawBackground(ctx, element, style, rootRect) {
         elementRect.height
     );
     ctx.clip();
-    ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+    drawBackgroundColor(ctx, style);
+    await drawBackgroundImage(ctx, elementRect, rootRect, style);
     ctx.restore();
 }

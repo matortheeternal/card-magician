@@ -5,6 +5,7 @@ import drawListMarker from './drawListMarker.js';
 
 function isHidden(node, style) {
     return style.display === 'none'
+        || node.visibility === 'hidden'
         || node.tagName === 'STYLE';
 }
 
@@ -25,7 +26,7 @@ function getZIndex(style) {
 
 async function paintNode(node, style, ctx, rootRect) {
     if (isHidden(node, style)) return;
-    if (style.backgroundImage !== 'none')
+    if (style.background !== 'none')
         await drawBackground(ctx, node, style, rootRect);
     if (node instanceof SVGElement)
         await drawSvg(ctx, node, rootRect);
