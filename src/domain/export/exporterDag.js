@@ -53,7 +53,7 @@ class ExporterDAG {
 
         function visit(node) {
             if (visiting.has(node))
-                throw new Error(`Cycle detected at exporter ${node.id}`);
+                throw new Error(`Circular dependency found at exporter ${node.id}`);
             if (visited.has(node)) return;
 
             visiting.add(node);
