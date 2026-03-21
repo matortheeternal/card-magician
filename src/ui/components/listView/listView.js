@@ -1,12 +1,12 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { getColumnSelectMode } from './columnSortService.js';
 import { selectRow } from './rowSelectionService.js';
-import { emit } from '../../../shared/htmlUtils.js';
+import { emit, escapeHTML } from '../../../shared/htmlUtils.js';
 
 const L = localize('list-view');
 
 function makeDefaultDisplayFunction(column) {
-    return (row) => `${row.data[column.id]}`;
+    return (row) => escapeHTML(`${row.data[column.id]}`);
 }
 
 export default class ListView extends ReactiveComponent {
