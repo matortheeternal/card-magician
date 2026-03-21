@@ -17,6 +17,7 @@ export default class CardImageArtifact extends ExportArtifact {
         const blob = await new Promise(resolve => {
             this.cardCanvas.toBlob(resolve, this.imageType, this.imageQuality);
         });
+        if (!blob) return;
         const arrayBuffer = await blob.arrayBuffer();
         return new Uint8Array(arrayBuffer);
     }

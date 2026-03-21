@@ -100,29 +100,32 @@ export default class CardSheetArtifact extends ExportArtifact {
     async *cardOutputs(options = {}) {
         const tracker = new Stopwatch('CardSheetArtifact');
 
-        const container = this.createCardsContainer();
-        this.applyGridStyle(container);
+        this.cardsContainer = this.createCardsContainer();
+        this.applyGridStyle(this.cardsContainer);
         tracker.lap('createCardsContainer');
 
-        await this.createCardElements(container);
+        await this.createCardElements(this.cardsContainer);
         tracker.lap('createCardElements');
 
-        await waitForStableLayout(container);
+        await waitForStableLayout(this.cardsContainer);
         tracker.lap('waitForStableLayout');
 
         try {
             for (let i = 0; i < this.cards.length; i++) {
                 const card = this.cards[i];
-                const cardElement = container.children[i];
+                const cardElement = this.cardsContainer.children[i];
                 const cardCanvas = await cardToCanvas(cardElement, options);
                 yield { card, cardCanvas };
             }
         } catch (error) {
             return Promise.reject(error);
         } finally {
-            document.body.removeChild(container);
-            tracker.complete();
+            tracker.complete('cardOutputs');
         }
+    }
+
+    cleanup() {
+        document.body.removeChild(this.cardsContainer.parentElement);
     }
 
     async toBuffer() {
@@ -130,6 +133,7 @@ export default class CardSheetArtifact extends ExportArtifact {
         const blob = await new Promise(resolve => {
             canvas.toBlob(resolve, this.config.imageType, this.config.quality);
         });
+        if (!blob) return;
         const arrayBuffer = await blob.arrayBuffer();
         return new Uint8Array(arrayBuffer);
     }

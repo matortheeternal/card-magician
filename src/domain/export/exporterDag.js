@@ -99,6 +99,7 @@ const outputHandlers = [{
 
 async function saveArtifact(exporter, localPath, artifact) {
     const output = await artifact.toBuffer();
+    if (!output) return;
     const handler = outputHandlers.find(h => h.match(output));
     if (!handler) {
         throw new Error(
@@ -132,6 +133,7 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
             if (exporter.saveOutputs)
                 await saveArtifact(exporter, filePath, artifact);
             await passArtifactDown(artifact, node.children);
+            artifact.cleanup?.();
         }
     }
 }
