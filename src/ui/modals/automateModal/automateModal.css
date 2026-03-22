@@ -1,0 +1,10 @@
+cm-automate-modal {
+    .script-selection form-group {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    form-field[field-id="script"] {
+        flex: 1;
+    }
+}

@@ -10,6 +10,7 @@
 @import "ui/components/devState/devState.css";
 @import "ui/components/exporterConfig/exporterConfig.css";
 @import "ui/modals/modals.css";
+@import "ui/modals/automateModal/automateModal.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
 @import "ui/modals/progressModal/progressModal.css";
