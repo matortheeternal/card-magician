@@ -1,5 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
+import { openModal } from '../modals/modalManager.js';
 
 const L = localize('title-bar');
 
@@ -15,6 +16,7 @@ export default class CardsMenu extends ReactiveMenu {
                 L`Delete`,
                 () => executeAction('delete-selected-cards')
             ),
+            this.menuItem(L`Automate`, L`Ctrl+M`, () => openModal('cm-automate-modal'))
         ];
     }
 }
