@@ -2,11 +2,17 @@ import { resolveFieldComponent } from '../../systems/fieldComponentRegistry.js';
 import { emit, esc, escapeHTML, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import FormToggle from './FormToggle.js';
-import { getDefaultValue, getInitialValue } from '../../systems/fieldSystem.js';
+import { getInitialValue } from '../../systems/fieldSystem.js';
 
 export default class FormField extends ReactiveComponent {
     connectedCallback() {
         this.render();
+        if (!this.modelKey) return;
+        this.watch('submodel', this.provider.model, this.modelKey, () => {
+            delete this._model;
+            delete this._field;
+            this.render();
+        });
     }
 
     get provider() {
