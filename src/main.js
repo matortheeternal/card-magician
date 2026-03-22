@@ -18,6 +18,7 @@ import {
     createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
+import { loadScripts } from './domain/scripts/scriptManager.js';
 
 const startupLog = log('startup');
 
@@ -77,6 +78,8 @@ async function startApp() {
     await loadTemplates();
     startupLog.debug('Loading exporters');
     await loadExporters();
+    startupLog.debug('Loading scripts');
+    await loadScripts();
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
