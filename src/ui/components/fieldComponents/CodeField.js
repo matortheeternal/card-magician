@@ -8,7 +8,7 @@ import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('xml', xml);
-hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('js', javascript);
 
 function fixYAML(editor) {
     const stringSpans = editor.querySelectorAll('.hljs-string');
