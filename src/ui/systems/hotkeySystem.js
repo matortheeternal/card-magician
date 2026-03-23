@@ -1,9 +1,11 @@
 const modifiers = ['ctrl', 'shift', 'alt'];
+const editingHotkeys = ['ctrl+c', 'ctrl+v', 'ctrl+x', 'ctrl+a'];
 
 export class Hotkey {
     constructor(keyStr, action) {
         this.keyStr = keyStr;
         this.action = action;
+        this.ignoreWhenEditing = editingHotkeys.includes(keyStr.toLowerCase());
         this.parseKeys(keyStr);
     }
 
@@ -56,7 +58,7 @@ function isUserEditing() {
 function onKeyDown(event) {
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
-    if (isUserEditing()) {
+    if (isUserEditing() && hotkey.ignoreWhenEditing) {
         log('user').debug(`User editing, ignoring hotkey ${hotkey.keyStr}`);
         return;
     }
