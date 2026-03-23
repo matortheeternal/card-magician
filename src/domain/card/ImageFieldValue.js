@@ -55,6 +55,7 @@ export default class ImageFieldValue {
     }
 
     applyCoordinateSpace(targetWidth, targetHeight) {
+        this.scale = 1.0;
         if (targetWidth < this.width)
             this.scale = this.width / targetWidth;
         if (targetHeight < this.height)
