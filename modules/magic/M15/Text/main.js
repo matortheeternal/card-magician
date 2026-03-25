@@ -61,7 +61,7 @@ export default class TextModule extends CardMagicianModule {
     }
 
     bind(card, watch) {
-        watch(card, 'rulesText', () => this.renderRulesHTML(card));
+        watch(card, ['rulesText', 'name'], () => this.renderRulesHTML(card));
         watch(card, 'flavorText', () => this.renderFlavorHTML(card));
         watch(card, [
             'showPT', 'showFlag', 'maxFontSize',
