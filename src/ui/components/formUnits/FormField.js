@@ -26,8 +26,8 @@ export default class FormField extends ReactiveComponent {
     get model() {
         return this._model ??= (
             this.modelKey
-                ? this.provider.model[this.modelKey]
-                : this.provider.model
+                ? this.provider?.model?.[this.modelKey]
+                : this.provider?.model
         );
     }
 
