@@ -1,0 +1,13 @@
+cm-number-field sl-input::part(input) {
+    width: 3em;
+    padding: 0;
+    text-align: center;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+cm-number-field sl-input::part(input)::-webkit-outer-spin-button,
+cm-number-field sl-input::part(input)::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

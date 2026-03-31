@@ -20,6 +20,7 @@
 @import "ui/components/fieldComponents/checkboxListField.css";
 @import "ui/components/fieldComponents/codeEditorField.css";
 @import "ui/components/fieldComponents/imageField.css";
+@import "ui/components/fieldComponents/numberField.css";
 @import "ui/components/fieldComponents/selectField.css";
 @import "ui/components/formUnits/formUnit.css";
 @import "ui/components/displayCard/displayCard.css";
