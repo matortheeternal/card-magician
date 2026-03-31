@@ -30,6 +30,8 @@ export default [
                 CardMagicianModule: 'readonly',
                 CardMagicianGame: 'readonly',
                 CardMagicianExporter: 'readonly',
+                ReactiveComponent: 'readonly',
+                Modal: 'readonly',
             }
         }
     },
