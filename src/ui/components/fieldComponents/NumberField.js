@@ -3,14 +3,14 @@ import { esc } from '../../../shared/htmlUtils.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 
 export default class NumberField extends FieldComponent {
-    static tagName = 'cm-number-field';
+    static tagName = 'cm-number';
 
     static matches(field) {
         return field.type === 'number';
     }
 
     get input() {
-        return this.querySelector('cm-number-input');
+        return this.querySelector('sl-input');
     }
 
     render() {
@@ -29,17 +29,9 @@ export default class NumberField extends FieldComponent {
         this.loadValue();
     }
 
-    bind() {
-        this.on('cm-input', event => this.onChange(event));
-    }
-
     loadValue() {
-        if (this.input)
-            this.input.value = this.value;
-    }
-
-    async getChangedValue(event) {
-        return event.detail.value;
+        if (!this.input) return;
+        this.input.value = this.value;
     }
 }
 
