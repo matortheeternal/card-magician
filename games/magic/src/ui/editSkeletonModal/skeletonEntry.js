@@ -43,6 +43,7 @@ export default class SkeletonEntry extends window.ReactiveComponent {
 
     onRemoveClick() {
         const event = new CustomEvent('entry-removed', {
+            detail: this.model,
             bubbles: true,
             composed: true,
             cancelable: false
