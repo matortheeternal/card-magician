@@ -171,7 +171,7 @@ export default class CardMagicianGame {
 
     registerLanguage(languageName, language, css) {
         hljs.registerLanguage(languageName, language);
-        styleManager.add(`language-${languageName}`, css);
+        styleManager.addStyle(`language-${languageName}`, css);
         return function update(updatedLanguage) {
             hljs.unregisterLanguage(languageName);
             hljs.registerLanguage(languageName, updatedLanguage);
