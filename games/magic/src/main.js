@@ -2,14 +2,15 @@ import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
 import CardMagicianCard from '@sigil-sifter/magic-cm/card';
-import {buildColumns, collectMap} from './columns.js';
-import { autoNumberCards } from './autoNumber.js';
-import MakeManaCostAdapter from './ManaCostAdapter.js';
-import setInfoFields from './setInfoFields.js';
-import SetInfoModal from './SetInfoModal.js';
+import { buildColumns, collectMap } from './ui/listView/columns.js';
+import { autoNumberCards } from './domain/autoNumber.js';
+import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
+import setInfoFields from './ui/setInfoModal/setInfoFields.js';
+import SetInfoModal from './ui/setInfoModal/SetInfoModal.js';
+import EditSkeletonModal from './ui/editSkeletonModal/editSkeletonModal.js';
 import SigilSifter from 'sigil-sifter';
-import ColorIdentity, { getCardFaceColors } from './ColorIdentity.js';
-import mtg from './hljsMtg.js';
+import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
+import mtg from './domain/hljsMtg.js';
 
 const SET_FILE_VERSION = 1;
 
@@ -22,6 +23,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
+        this.registerModal(EditSkeletonModal);
         this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
         this.setupSearch();
     }
