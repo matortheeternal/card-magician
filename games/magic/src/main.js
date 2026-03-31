@@ -14,6 +14,10 @@ import mtg from './domain/hljsMtg.js';
 
 const SET_FILE_VERSION = 1;
 
+const skeletonCategories = [
+    'White', 'Blue', 'Black', 'Red', 'Green', 'Multicolor', 'Artifact', 'Land'
+];
+
 export default class MagicTheGathering extends CardMagicianGame {
     async init() {
         this.ManaScribe = ManaScribe;
@@ -83,10 +87,23 @@ export default class MagicTheGathering extends CardMagicianGame {
         return { front: {}, notes: '', dirty: true, tags: [] };
     }
 
+    newSkeleton() {
+        return skeletonCategories.reduce((skeleton, category) => {
+            skeleton[category] = {
+                mythic: [],
+                rare: [],
+                uncommon: [],
+                common: []
+            };
+            return skeleton;
+        }, {});
+    }
+
     newSet() {
         const info = this.initializeFields(setInfoFields);
         return {
             ...info,
+            skeleton: this.newSkeleton(),
             version: SET_FILE_VERSION,
             defaultBackImage: this.resolveAsset('back.png'),
             export: { CardImagesExporter: {} },

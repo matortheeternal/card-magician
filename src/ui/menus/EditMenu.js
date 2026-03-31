@@ -1,45 +1,10 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';
-import { getActiveSet } from '../../domain/sets/setManager.js';
+import { getActiveSet, getActiveSkeleton } from '../../domain/sets/setManager.js';
 import { getAvailableLocales, prepareSchema } from '../../shared/localize.js';
 
 const L = localize('title-bar');
-
-function getActiveSkeleton() {
-    return {
-        Monocolor: {
-            mythic: [],
-            rare: [],
-            uncommon: [],
-            common: []
-        },
-        'Two color': {
-            mythic: [],
-            rare: [],
-            uncommon: [],
-            common: []
-        },
-        Multicolor: {
-            mythic: [],
-            rare: [],
-            uncommon: [],
-            common: []
-        },
-        Colorless: {
-            mythic: [],
-            rare: [],
-            uncommon: [],
-            common: []
-        },
-        Lands: {
-            mythic: [],
-            rare: [],
-            uncommon: [],
-            common: []
-        }
-    };
-}
 
 export default class EditMenu extends ReactiveMenu {
     id = 'edit';

@@ -95,6 +95,10 @@ export function getActiveSet() {
     return activeSet;
 }
 
+export function getActiveSkeleton() {
+    return activeSet.skeleton;
+}
+
 export function getSetFolderPath() {
     return setFolderPath;
 }
