@@ -6,6 +6,41 @@ import { getAvailableLocales, prepareSchema } from '../../shared/localize.js';
 
 const L = localize('title-bar');
 
+function getActiveSkeleton() {
+    return {
+        Monocolor: {
+            mythic: [],
+            rare: [],
+            uncommon: [],
+            common: []
+        },
+        'Two color': {
+            mythic: [],
+            rare: [],
+            uncommon: [],
+            common: []
+        },
+        Multicolor: {
+            mythic: [],
+            rare: [],
+            uncommon: [],
+            common: []
+        },
+        Colorless: {
+            mythic: [],
+            rare: [],
+            uncommon: [],
+            common: []
+        },
+        Lands: {
+            mythic: [],
+            rare: [],
+            uncommon: [],
+            common: []
+        }
+    };
+}
+
 export default class EditMenu extends ReactiveMenu {
     id = 'edit';
     title = L`Edit`;
@@ -22,6 +57,9 @@ export default class EditMenu extends ReactiveMenu {
             this.DIVIDER,
             this.menuItem(L`Set Info`, ``, () => {
                 openModal('cm-set-info-modal', getActiveSet());
+            }),
+            this.menuItem(L`Set Skeleton`, ``, () => {
+                openModal('cm-edit-skeleton-modal', getActiveSkeleton());
             }),
             this.menuItem(L`Preferences`, ``, () => log('user').info('Edit preferences')),
             this.menuItem(L`Localization`, ``, async () => {
