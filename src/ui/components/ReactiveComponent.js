@@ -43,3 +43,5 @@ export default class ReactiveComponent extends HTMLElement {
         };
     }
 }
+
+window.ReactiveComponent = ReactiveComponent;
