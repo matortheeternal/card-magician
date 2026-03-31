@@ -44,6 +44,14 @@ body {
     overflow: hidden;
 }
 
+body.sl-theme-dark {
+    --sl-font-sans: "Atkinson Hyperlegible Next", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol";
+    --sl-font-mono: "Atkinson Hyperlegible Mono", SFMono-Regular, Consolas,
+        "Liberation Mono", Menlo, monospace;
+}
+
 main {
     position: relative;
     flex: 1;
