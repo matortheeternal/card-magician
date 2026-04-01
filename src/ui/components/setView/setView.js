@@ -7,8 +7,10 @@ import {
     selectCard,
 } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
-import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { emit, hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/sets/serializers/JSONSerializer.js';
+import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
+import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -38,6 +40,8 @@ export default class SetView extends ReactiveComponent {
         this.addEventListener('sl-input', this.updateSearch.debounce(200));
         this.addEventListener('add-row-click', event => this.addCard(event));
         this.addEventListener('sort-updated', () => this.updateStatus());
+        this.addEventListener('dragover', event => this.onDragOver(event));
+        this.addEventListener('drop', event => this.onDrop(event));
 
         registerAction('toggle-search', () => this.toggleSearch());
         registerAction('add-card', () => this.addCard());
@@ -229,6 +233,37 @@ export default class SetView extends ReactiveComponent {
         log('user').info('Selected card:', row.data.name);
         selectCard(row.original);
         this.updateStatus();
+    }
+
+    canDrop(event) {
+        return Array.from(event.dataTransfer.items)
+            .some(item => item.kind === 'file' && item.type.startsWith('image'));
+    }
+
+    onDragOver(event) {
+        event.dataTransfer.dropEffect = this.canDrop(event) ? 'move' : 'none';
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    async onDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const files = Array.from(event.dataTransfer.items).filter(item => {
+            return item.kind === 'file' && item.type.startsWith('image');
+        }).map(item => item.getAsFile());
+        const game = getActiveGame();
+        const activeSet = getActiveSet();
+        for (const file of files) {
+            const card = game.newCard();
+            // TODO: This need to be cross-game compatible
+            card.front.artImage = await ImageFileValue.fromFile(file);
+            activeSet.cards.push(card);
+        }
+        changed(activeSet, 'cards');
+        const indexToSelect = activeSet.cards.length - 1;
+        this.listView.selection = [indexToSelect];
+        await selectCard(activeSet.cards[indexToSelect]);
     }
 }
 
