@@ -67,6 +67,8 @@ export default class ImageField extends FieldComponent {
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('click', this.onClick);
+        this.addEventListener('dragover', event => this.onDragOver(event));
+        this.addEventListener('drop', event => this.onDrop(event));
     }
 
     renderPreview() {
@@ -161,6 +163,27 @@ export default class ImageField extends FieldComponent {
         return this.clearImage(event)
             || this.cropImage(event)
             || this.selectImage(event);
+    }
+
+    canDrop(event) {
+        return Array.from(event.dataTransfer.items)
+            .some(item => item.kind === 'file' && item.type.startsWith('image'));
+    }
+
+    onDragOver(event) {
+        event.dataTransfer.dropEffect = this.canDrop(event) ? 'move' : 'none';
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    async onDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const item = Array.from(event.dataTransfer.items).find(item => {
+            return item.kind === 'file' && item.type.startsWith('image');
+        });
+        this.value = await ImageFieldValue.fromFile(item.getAsFile());
+        emit(this, 'cm-field-changed');
     }
 }
 
