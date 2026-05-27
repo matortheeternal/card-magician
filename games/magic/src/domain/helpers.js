@@ -28,3 +28,7 @@ export function isMulticolor(card) {
     return card.front.colors?.length
         && card.front.colors.length > 1;
 }
+
+export function isToken(card) {
+    return /\bToken\b/i.test(card.front.superType || '');
+}

@@ -1,6 +1,6 @@
 import {
     isUninitializedCard, isColorless, isMonoColor,
-    isMulticolor, isArtifact, isLand, isBasicLand
+    isMulticolor, isArtifact, isLand, isBasicLand, isToken
 } from './helpers.js';
 
 export const numberingRules = [
@@ -45,8 +45,17 @@ export function setAutoNumber(set, card, num) {
     card.back.autoCollectorNumber = formatCollectorNumber(set, num, 'b');
 }
 
-export function autoNumberCards(set) {
-    const sortedCards = set.cards.slice().sort(collectorNumberSort);
+function sortAndNumber(set, cards) {
+    if (!cards) return;
+    const sortedCards = cards.sort(collectorNumberSort);
     for (const [i, card] of sortedCards.entries())
         setAutoNumber(set, card, i + 1);
+}
+
+export function autoNumberCards(set) {
+    const groups = Object.groupBy(set.cards, card => {
+        return isToken(card) ? 'tokens' : 'main';
+    });
+    sortAndNumber(set, groups.main);
+    sortAndNumber(set, groups.tokens);
 }

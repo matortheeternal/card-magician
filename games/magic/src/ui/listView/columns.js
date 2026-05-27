@@ -1,7 +1,8 @@
 import compareRowPTs from './compareRowPTs.js';
 import compareRowManaCosts from './compareRowManaCosts.js';
 import compareRowRarity from './compareRarity.js';
-import { compareRowColors } from './compareRowColors.js';
+import compareRowColors from './compareRowColors.js';
+import compareRowCNs from './compareRowCNs.js';
 
 const L = localize('game-magic-columns');
 
@@ -104,11 +105,13 @@ export function buildColumns() {
         },
         compare: compareRowRarity
     }, {
+        id: 'collectorNumber',
         label: L`#`,
         width: '50px',
         data: row => {
             const number = row.front.collectorNumber || row.front.autoCollectorNumber;
             return (parseInt(number) || 0).toString().padStart(4, '0');
-        }
+        },
+        compare: compareRowCNs
     }];
 }

@@ -12,7 +12,7 @@ function extractRowColors(card) {
     return [...uniqueColors];
 }
 
-export function compareRowColors(a, b) {
+export default function compareRowColors(a, b) {
     const colorsA = extractRowColors(a);
     const colorsB = extractRowColors(b);
     if (colorsA.length > colorsB.length) return 1;

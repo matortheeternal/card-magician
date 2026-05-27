@@ -1,8 +1,14 @@
 const L = localize('module-M15-rarity');
 
 export default class RarityModule extends CardMagicianModule {
+    getRarityCharacter(card) {
+        if (card.isToken?.()) return 'T';
+        if (card.isPromo?.()) return 'P';
+        return card.rarity.id.slice(0, 1).toUpperCase();
+    }
+
     updateRarity(card) {
-        card.rarityCharacter = card.rarity.id.slice(0, 1).toUpperCase();
+        card.rarityCharacter = this.getRarityCharacter(card);
         changed(card, 'rarityCharacter');
         this.requestRender();
     }
