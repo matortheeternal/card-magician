@@ -32,7 +32,7 @@ export const ParenthesisConverter = {
 
 export const SymbolConverter = {
     match(str) {
-        return str.match(/^([^ {]+)?((?:{[^{}]+})+)([^ {]+)?/);
+        return str.match(/^([^ {]+)?((?:{[^{}]+})+)([^ {)]+)?/);
     },
     convert(match, { card, outputSymbols }) {
         const symbols = card.parseSymbols(match[2]);
