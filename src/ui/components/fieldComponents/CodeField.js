@@ -68,7 +68,7 @@ export default class CodeField extends FieldComponent {
         if (!this.model || !this.field) return;
         this.innerHTML = '';
         this.renderLabel();
-        const editor = document.createElement('pre');
+        const editor = document.createElement('div');
         editor.classList.add('codejar-editor');
         editor.classList.add(`language-${this.field.syntax || 'plaintext'}`);
         this.appendChild(editor);
