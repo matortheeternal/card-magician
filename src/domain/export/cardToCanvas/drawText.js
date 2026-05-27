@@ -4,6 +4,7 @@ function hasText(node) {
 
 function applyFontStyle(ctx, style) {
     ctx.fillStyle = style.color;
+    ctx.fontKerning = style.fontKerning;
     ctx.font = [
         style.fontStyle,
         style.fontWeight,
