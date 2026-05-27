@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
   "applicationId": "cardmagician",
   "version": "1.0.0",
-  "defaultMode": "window",
+  "defaultMode": "chrome",
   "port": 0,
   "documentRoot": "/resources/",
   "url": "/",
@@ -59,8 +59,9 @@
     "clientVersion": "6.5.0",
     "copyItems": [
       "/modules/",
-      "/games/",
-      "/templates/"
+      "/templates/",
+      "/exporters/",
+      "/scripts/"
     ]
   }
 }
