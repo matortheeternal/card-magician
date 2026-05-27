@@ -74,12 +74,10 @@ export default class CardSheetExporter extends CardMagicianExporter {
     }
 
     async *produce() {
-        const manifest = {};
         for (const sheet of this.sheets) {
             for await (const value of sheet.produce())
                 yield value;
         }
-        return manifest;
     }
 
     getOutputCount() {
@@ -91,6 +89,7 @@ export default class CardSheetExporter extends CardMagicianExporter {
 
 addNativeExporter({
     id: 'CardSheetExporter',
+    folder: 'sheets',
     description: 'Exports to a sheet of cards.',
     version: '0.0',
     ExporterForm: form,

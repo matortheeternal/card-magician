@@ -22,6 +22,10 @@ export default class CardMagicianExporter {
         return this.metadata.id;
     }
 
+    get folder() {
+        return this.metadata.folder || this.metadata.id;
+    }
+
     get version() {
         return this.metadata.version;
     }

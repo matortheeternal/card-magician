@@ -54,6 +54,10 @@ export default class CardImagesExporter extends CardMagicianExporter {
         return this.config.imageType.id;
     }
 
+    async prepare() {
+        this.activeSet.imageExportPath = 'dist/images/';
+    }
+
     /**
      * @param {CardSheetArtifact} cardSheetArtifact
      * @yields {Promise<OutputItem>}
@@ -62,9 +66,12 @@ export default class CardImagesExporter extends CardMagicianExporter {
         for await (const { card, cardCanvas } of cardSheetArtifact.cardOutputs({
             scale: this.config.scale
         })) {
-            const hasBackFace = Object.hasOwn(card.card.baseCard, 'back');
+            const baseCard = card.card.baseCard;
+            const hasBackFace = Object.hasOwn(baseCard, 'back');
             const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
-            const filePath = `${card.card.baseCard.baseName}${suffix}.${this.extension}`;
+            const filePath = `${baseCard.baseName}${suffix}.${this.extension}`;
+            baseCard.imageExports ||= {};
+            baseCard.imageExports[card.faceKey] = filePath;
             const artifact = new CardImageArtifact(
                 expandCanvas(cardCanvas, this.config.bleed * this.config.scale),
                 this.config
