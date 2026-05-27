@@ -1,5 +1,5 @@
 const modifiers = ['ctrl', 'shift', 'alt'];
-const editingHotkeys = ['ctrl+c', 'ctrl+v', 'ctrl+x', 'ctrl+a'];
+const editingHotkeys = ['ctrl+c', 'ctrl+v', 'ctrl+x', 'ctrl+a', 'delete'];
 
 export class Hotkey {
     constructor(keyStr, action) {
