@@ -43,15 +43,15 @@ export async function saveAs() {
     if (!filePath) return;
     setFolderPath = await getParentPath(filePath);
     setFilePath = filePath;
-    return save();
+    return save(true);
 }
 
-export async function save() {
+export async function save(fullSave = false) {
     if (!setFilePath) return saveAs();
     openModal('cm-progress-modal', { title: 'Saving...', autoclose: true });
     try {
         log('fs').info('Saving set to:', setFilePath);
-        await saveProject(setFilePath, activeSet);
+        await saveProject(setFilePath, activeSet, fullSave);
         progress.complete();
     } catch (error) {
         progress.onError(error);

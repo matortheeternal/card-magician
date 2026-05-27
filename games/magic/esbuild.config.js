@@ -13,6 +13,7 @@ export async function buildMagic({ minify = false }) {
         outdir: __dirname,
         format: 'esm',
         sourcemap: true,
+        keepNames: true,
         minify,
         target: ['es2020'],
         loader: {
@@ -25,7 +26,7 @@ export async function buildMagic({ minify = false }) {
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 if (isMain) {
     const args = process.argv.slice(2);
-    const minify = args.includes('--minify');
+    const minify = false;
     buildMagic({ minify }).catch(err => {
         console.error(err);
         process.exit(1);

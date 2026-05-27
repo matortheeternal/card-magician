@@ -7,7 +7,6 @@ import { autoNumberCards } from './domain/autoNumber.js';
 import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
 import setInfoFields from './ui/setInfoModal/setInfoFields.js';
 import SetInfoModal from './ui/setInfoModal/SetInfoModal.js';
-import EditSkeletonModal from './ui/editSkeletonModal/editSkeletonModal.js';
 import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
 import mtg from './domain/hljsMtg.js';
@@ -23,7 +22,6 @@ export default class MagicTheGathering extends CardMagicianGame {
         });
         this.autoNumberCards = autoNumberCards;
         this.registerModal(SetInfoModal);
-        this.registerModal(EditSkeletonModal);
         this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
         this.setupSearch();
     }
@@ -50,11 +48,11 @@ export default class MagicTheGathering extends CardMagicianGame {
         return collectMap(card, f => f.name, ' + ') || 'blank';
     }
 
-    async getCardImages(card) {
+    async getCardImages(card, fullSave) {
         return Promise.all(
             ['front', 'back'].filter(key => {
                 return card[key]?.artImage?.imageUrl
-                    && card[key]?.artImage?.dirty;
+                    && (card[key]?.artImage?.dirty || fullSave);
             }).map(async key => ({
                 data: await card[key].artImage.loadImageData(),
                 value: card[key].artImage,

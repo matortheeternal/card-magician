@@ -13,9 +13,9 @@ async function saveCardData(cardsFolderPath, baseName, card, serializer) {
     await writeFile(`${basePath}.yml`, text);
 }
 
-async function saveCardImages(cardsFolderPath, baseName, card) {
+async function saveCardImages(cardsFolderPath, baseName, card, fullSave) {
     const game = getActiveGame();
-    const images = await game.getCardImages(card);
+    const images = await game.getCardImages(card, fullSave);
     for (const { data, key, value } of images) {
         const imageFileName = images.length > 1
             ? `${baseName} - ${key.toTitleCase()}.jpg`
@@ -28,13 +28,13 @@ async function saveCardImages(cardsFolderPath, baseName, card) {
     }
 }
 
-async function saveCards(filePath, zippedCards, serializer) {
+async function saveCards(filePath, zippedCards, serializer, fullSave) {
     const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
     await createDirectory(cardsFolderPath);
     for (const [baseName, card] of zippedCards) {
-        if (!card.dirty) continue;
+        if (!card.dirty && !fullSave) continue;
         progress.setOperation(`Saving card ${baseName}`);
-        await saveCardImages(cardsFolderPath, baseName, card);
+        await saveCardImages(cardsFolderPath, baseName, card, fullSave);
         await saveCardData(cardsFolderPath, baseName, card, serializer);
         progress.increment();
     }
@@ -53,14 +53,14 @@ async function updateProjectMount(filePath) {
     await mount('/project', folderPath, { replace: true });
 }
 
-export async function saveProject(filePath, data) {
+export async function saveProject(filePath, data, fullSave) {
     const serializer = new YAMLSerializer();
     progress.setStatus('Preparing cards');
-    const changedCards = data.cards.filter(card => card.dirty);
+    const changedCards = data.cards.filter(card => card.dirty || fullSave);
     const cardBaseNames = updateBaseNames(data.cards);
     progress.setStatus('Saving cards');
     progress.setMax(changedCards.length + 2);
-    await saveCards(filePath, cardBaseNames.zip(data.cards), serializer);
+    await saveCards(filePath, cardBaseNames.zip(data.cards), serializer, fullSave);
     progress.setStatus('Saving project file');
     await saveSet(filePath, {
         ...data,
