@@ -66,7 +66,7 @@ export default class Modal extends ReactiveComponent {
                     </div>
                 </div>
                 <div class="modal-body">${this.renderBody()}</div>
-                ${actionsHTML && `<div class="modal-actions">${actionsHTML}</div>`}
+                ${actionsHTML ? `<div class="modal-actions">${actionsHTML}</div>` : ''}
             </div>`
         );
         log('render').debug(`Rendered ${this.constructor.id} in ${new Date() - start}ms`);
