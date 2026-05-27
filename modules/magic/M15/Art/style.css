@@ -18,4 +18,5 @@ module-container[module="Art"] crop-image {
     display: block;
     height: 100%;
     width: 100%;
+    transform: translateZ(1px);
 }
