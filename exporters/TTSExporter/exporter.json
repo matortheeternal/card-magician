@@ -1,0 +1,7 @@
+{
+  "id": "TTSExporter",
+  "label": "Tabletop Simulator",
+  "folder": "tts",
+  "description": "Exports the set's cards to a tabletop simulator saved object JSON file.",
+  "version": "0.0"
+}
