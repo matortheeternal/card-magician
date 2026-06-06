@@ -46,10 +46,10 @@ export const SymbolConverter = {
 
 export const AbilityWordConverter = {
     match(str) {
-        return str.match(/^(\w+) [-—] /);
+        return str.match(/^((?:\w+ ){1,3})[-—] /);
     },
     convert(match) {
-        return `<i>${match[1]}</i> — `;
+        return `<i>${match[1]}</i>— `;
     }
 };
 
