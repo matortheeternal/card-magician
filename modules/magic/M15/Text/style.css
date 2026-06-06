@@ -86,7 +86,7 @@ module-container[module="Text"] {
     }
 
     .flavor-text {
-        q, p:first-child {
+        q, p {
             font-family: "MPlantin-Italic", serif;
             font-style: normal;
             font-weight: 300;
@@ -94,7 +94,8 @@ module-container[module="Text"] {
             margin: 0.25em 0;
         }
 
-        p {
+        q, p, cite {
+            display: block;
             margin: 0.25em 0;
         }
     }

@@ -9,9 +9,10 @@ const ParagraphConverter = {
     convert(match, options) {
         const content = convertText(match[1], tokenConverters, options);
         const useQuoteTag = content.match(/^["“](.+?)["”]$/);
-        return useQuoteTag
-            ? `<q>${useQuoteTag[1]}</q>`
-            : `<p>${content}</p>`;
+        const useCiteTag = content.match(/^(--|—)/);
+        if (useCiteTag) return `<cite>${content}</cite>`;
+        if (useQuoteTag) return `<q>${useQuoteTag[1]}</q>`;
+        return `<p>${content}</p>`;
     }
 };
 
