@@ -75,15 +75,15 @@ module-container[module="Text"]:has(.creature-level) {
         justify-content: center;
         margin: 0.2em 0;
 
-        > div.t {
+        > p {
             margin: 0.2em 0;
         }
 
-        > div.t:first-of-type {
+        > p first-of-type {
             margin-top: 0;
         }
 
-        > div.t:last-of-type {
+        > p last-of-type {
             margin-bottom: 0;
         }
     }

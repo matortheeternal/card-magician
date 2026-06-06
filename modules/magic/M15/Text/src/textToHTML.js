@@ -7,10 +7,11 @@ const ParagraphConverter = {
         return str.match(/^([^\n]+)/);
     },
     convert(match, options) {
-        const content = convertText(match[1], tokenConverters, options)
-            .replace(/^[“"]/, `<span class="q">“</span>`)
-            .replace(/["”]$/, `<span class="q">”</span>`);
-        return `<div class="t">${content}</div>`;
+        const content = convertText(match[1], tokenConverters, options);
+        const useQuoteTag = content.match(/^["“](.+?)["”]$/);
+        return useQuoteTag
+            ? `<q>${useQuoteTag[1]}</q>`
+            : `<p>${content}</p>`;
     }
 };
 

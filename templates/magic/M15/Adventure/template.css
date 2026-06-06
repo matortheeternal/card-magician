@@ -23,7 +23,7 @@ div .type-line {
     gap: 1px;
 }
 
-.frame-spotlight module-container[module="Cost"]:not([subcard]) div.sym {
+.frame-spotlight module-container[module="Cost"]:not([subcard]) abbr.sym {
     height: 22px;
     width: 21px;
 }
@@ -133,7 +133,7 @@ div .type-line {
     height: 22px;
 }
 
-.left .header div.sym {
+.left .header abbr.sym {
     height: 16px;
     width: 16px;
     font-size: 15.5px;

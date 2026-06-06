@@ -34,7 +34,7 @@ module-container[module="SagaText"] {
         font-weight: 300;
     }
 
-    div.sym {
+    abbr.sym {
         font-size: 97%;
         line-height: 0.95;
         height: 0.9em;
@@ -47,7 +47,7 @@ module-container[module="SagaText"] {
         margin-left: 1px;
     }
 
-    div.t {
+    p {
         padding: 4px 0;
         margin: 6px 0;
     }
@@ -60,21 +60,10 @@ module-container[module="SagaText"] {
         }
     }
 
-    .flavor-text {
+    q {
         font-family: "MPlantin-Italic", serif;
         font-style: normal;
         font-weight: 300;
-    }
-
-    span.q:last-child {
-        display: inline-block;
-        width: 8px;
-        margin-left: -2px;
-    }
-
-    span.q:first-child {
-        display: inline-block;
-        margin-left: -2px;
     }
 }
 

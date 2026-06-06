@@ -41,7 +41,7 @@ module-container[module="Text"]:has(.station-level) {
     background-repeat: no-repeat;
     background-size: 100%;
 
-    div.t {
+    p {
         margin: 4px 0;
 
         &:first-of-type {
@@ -89,7 +89,7 @@ module-container[module="Text"]:has(.station-level) {
         margin-left: 4px;
     }
 
-    div.t {
+    p {
         margin: 0.2em 0;
     }
 }
