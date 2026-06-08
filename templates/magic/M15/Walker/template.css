@@ -1,0 +1,22 @@
+.frame-standard .type-line {
+    padding-top: 2px;
+    margin: 2px 3px;
+}
+
+.frame-standard .header {
+    padding: 3px 12px;
+    padding-bottom: 4px;
+    height: 34px;
+}
+
+.frame-standard module-container[module="Art"] {
+    overflow: visible;
+
+    crop-image {
+        display: block;
+        height: 185%;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}

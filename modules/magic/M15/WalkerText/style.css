@@ -1,0 +1,109 @@
+module-container[module="WalkerText"] {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    padding: 8px 16px 13px 0;
+    height: 163px;
+    margin-bottom: 0.5px;
+    --chop-top: 0px;
+    --chop-bottom: 0px;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+    padding: 0 4px 0 1px;
+    font-size: 19px;
+    line-height: 0.95;
+    font-family: "MPlantin", sans-serif;
+    margin-top: var(--chop-top);
+    margin-bottom: var(--chop-bottom);
+
+    &.flag-padding {
+        padding-bottom: 20px;
+    }
+
+    i {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
+
+    .symbol-block {
+        white-space: nowrap;
+    }
+
+    p {
+        margin: 0.5em 0;
+        padding-left: 30px;
+    }
+
+    p:first-child {
+        margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    abbr.sym {
+        font-size: 97%;
+        line-height: 0.95;
+        height: 0.85em;
+        width: 0.9em;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1px;
+        margin-top: -1px;
+    }
+}
+
+.walker-ability {
+    display: flex;
+
+
+    .walker-ability-content p {
+        padding-left: 0;
+    }
+
+    .walker-ability-cost {
+        display: flex;
+
+        div:first-of-type {
+            background-size: 100%;
+            background-repeat: no-repeat;
+            color: white;
+            width: 42px;
+            height: 34px;
+            text-align: center;
+            padding: 10px 4px 0px 4px;
+            font-size: 15px;
+        }
+
+        div:last-of-type {
+            font-size: 18px;
+            margin-top: 4px;
+            margin-right: 4px;
+        }
+
+        .walker-ability-plus {
+            background-image: var(--walker-ability-plus-bg);
+        }
+
+        .walker-ability-minus {
+            background-image: var(--walker-ability-minus-bg);
+        }
+
+        .walker-ability-zero {
+            background-image: var(--walker-ability-zero-bg);
+        }
+
+    }
+}
