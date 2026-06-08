@@ -133,6 +133,10 @@ export async function selectCard(card) {
     await setActiveCard(card);
 }
 
+export function getOpenedSetPath() {
+    return setFilePath;
+}
+
 registerAction('add-face', faceId => {
     log('state').debug('add face', faceId);
     selectedCard[faceId] = {};

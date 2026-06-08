@@ -21,6 +21,7 @@ import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 
 const startupLog = log('startup');
+let devState;
 
 async function ensureDirectories() {
     const paths = [
@@ -52,7 +53,7 @@ async function setupNeutralino() {
 
 function setupDevState() {
     startupLog.info('Development mode detected');
-    const devState = document.createElement('dev-state');
+    devState = document.createElement('dev-state');
     document.body.appendChild(devState);
 }
 
@@ -84,6 +85,7 @@ async function startApp() {
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
     loaded();
+    if (devState) await devState.requestData();
 }
 
 (async function() {

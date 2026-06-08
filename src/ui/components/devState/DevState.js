@@ -1,9 +1,17 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { hide, show } from '../../../shared/htmlUtils.js';
+import {
+    getOpenedSetPath,
+    getSelectedCard,
+    openSet,
+    selectCard,
+    getActiveSet,
+} from '../../../domain/sets/setManager.js';
 
 export default class DevState extends ReactiveComponent {
     dirty = false;
     building = false;
+    opened = null;
 
     connectedCallback() {
         this.render();
@@ -16,7 +24,15 @@ export default class DevState extends ReactiveComponent {
             dismiss: () => this.onDismissClick()
         });
         this.ws = new WebSocket('ws://127.0.0.1:3344');
+        this.opened = new Promise((resolve, reject) => {
+            this.ws.addEventListener('open', resolve);
+        });
         this.ws.addEventListener('message', event => this.onWebSocketMessage(event));
+    }
+
+    async requestData() {
+        await this.opened;
+        this.ws.send(JSON.stringify({'action': 'request data'}));
     }
 
     get primaryButton() {
@@ -63,7 +79,13 @@ export default class DevState extends ReactiveComponent {
     }
 
     async rebuild() {
-        this.ws.send('rebuild');
+        const msg = {
+            'action': 'rebuild',
+            'set': getOpenedSetPath(),
+            'card': getActiveSet().cards.indexOf(getSelectedCard()),
+        };
+        console.log(msg);
+        this.ws.send(JSON.stringify(msg));
     }
 
     startBuild() {
@@ -85,13 +107,16 @@ export default class DevState extends ReactiveComponent {
         this.primaryButton.textContent = 'Retry';
     }
 
-    onWebSocketMessage(event) {
+    async onWebSocketMessage(event) {
         const msg = JSON.parse(event.data);
         log('state').debug('received message', msg);
         this.dirty = msg.dirty;
         if (this.dirty) this.render();
         if (msg.lastError) this.handleRebuildError(msg.lastError);
         if (msg.reload) location.reload();
+        if (msg.openSet) await openSet(msg.openSet);
+        if (Number.isInteger(msg.selectCard))
+            selectCard(getActiveSet().cards[msg.selectCard]);
     }
 
     async onRebuildClick() {
