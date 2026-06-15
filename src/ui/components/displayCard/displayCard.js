@@ -4,6 +4,7 @@ import { onActiveCardChanged } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { saveHTMLAsImage } from '../../../domain/export/cardImageExporter.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
+import { registerState } from '../../systems/navigationSystem.js';
 
 export default class DisplayCard extends ReactiveComponent {
     useFlip = false;
@@ -62,6 +63,10 @@ export default class DisplayCard extends ReactiveComponent {
             toggleDisplay(this.useRotate, this.rotateButton);
             this.querySelector('cm-card').card = card;
             this.querySelector('cm-card-properties').card = card;
+        });
+        registerState('preview-card', {
+            onEnter: () => this.classList.add('open'),
+            onExit: () => this.classList.remove('open'),
         });
     }
 

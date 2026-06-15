@@ -3,6 +3,7 @@ import {
     onActiveCardChanged,
     saveActiveCard
 } from '../../../domain/sets/setManager.js';
+import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
 
@@ -21,6 +22,7 @@ class CardForm extends ReactiveComponent {
         this.addEventListener('cm-field-changed', this.save);
         onActiveCardChanged(card => {
             this.card = card;
+            pushState('card-form');
         });
         this.bind();
     }
@@ -48,7 +50,11 @@ class CardForm extends ReactiveComponent {
             toggleFront: () => this.toggleFace('front'),
             toggleBack: () => this.toggleFace('back'),
             removeBack: () => this.removeBackFace(),
+            showPreview: () => pushState('preview-card'),
         });
+        registerState('card-form', {
+            onEnter: () => this.classList.add('open'),
+            onExit: () => this.classList.remove('open'),
         });
     }
 
