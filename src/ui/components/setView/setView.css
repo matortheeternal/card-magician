@@ -23,37 +23,43 @@ cm-list-view {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: var(--sl-font-size-2x-large);
-    font-family: var(--sl-font-sans);
-}
 
-.no-content-prompt .buttons-container {
-    padding: var(--sl-spacing-small);
-}
+    h2 {
+        text-align: center;
+        padding: 0 1em;
+        margin: 0;
+        font-size: var(--sl-font-size-2x-large);
+        font-family: var(--sl-font-sans);
+    }
 
-.no-content-prompt .buttons-container > sl-button {
-    padding: var(--sl-spacing-2x-small);
-}
+    .buttons-container {
+        padding: var(--sl-spacing-small);
 
-.no-content-prompt sl-button::part(base) {
-    font-size: var(--sl-font-size-large);
+        > sl-button {
+            padding: var(--sl-spacing-2x-small);
+        }
+    }
+
+    sl-button::part(base) {
+        font-size: var(--sl-font-size-large);
+    }
 }
 
 .recent-sets-container {
     padding: var(--sl-spacing-medium);
     font-size: var(--sl-font-size-medium);
     text-align: center;
-}
 
-.recent-sets-container .buttons-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-}
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
 
-.no-content-prompt .recent-sets-container sl-button::part(base) {
-    font-size: var(--sl-font-size-small);
-    padding: var(--sl-spacing-3x-small);
+    sl-button::part(base) {
+        font-size: var(--sl-font-size-small);
+        padding: var(--sl-spacing-3x-small);
+    }
 }
 
 .search-bar {
@@ -62,20 +68,20 @@ cm-list-view {
     z-index: 1;
     gap: 2px;
     background: var(--sl-input-border-color);
-}
 
-.search-bar sl-input {
-    flex: 1;
-}
+    sl-input {
+        flex: 1;
+    }
 
-.search-bar sl-input::part(base),
-.search-bar sl-button::part(base) {
-    border-radius: 0;
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    border-bottom-width: 1.5px;
+    sl-input::part(base),
+    sl-button::part(base) {
+        border-radius: 0;
+        box-shadow: none;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom-width: 1.5px;
+    }
 }
 
 cm-set-view .status-bar {

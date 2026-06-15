@@ -7,9 +7,8 @@ import {
     selectCard,
 } from '../../../domain/sets/setManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
-import { emit, hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/sets/serializers/JSONSerializer.js';
-import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
 
 export default class SetView extends ReactiveComponent {
