@@ -9,6 +9,10 @@ cm-title-bar {
     -webkit-user-select: none;
 }
 
+.layout-mobile cm-title-bar {
+    display: none;
+}
+
 cm-title-bar sl-button::part(base) {
     border: none;
     border-radius: 0;

@@ -27,6 +27,7 @@
 @import "ui/components/displayCard/displayCard.css";
 @import "ui/components/setView/setView.css";
 @import "ui/components/titleBar/titleBar.css";
+@import "ui/components/mobileActions/mobileActions.css";
 
 * {
     box-sizing: border-box;

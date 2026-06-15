@@ -65,6 +65,8 @@ function loaded() {
          <cm-set-view></cm-set-view>
          <cm-card-form class="drawer-right"></cm-card-form>`
     );
+    const mobileActions = document.createElement('cm-mobile-actions');
+    document.body.append(mobileActions);
 }
 
 async function startApp() {
