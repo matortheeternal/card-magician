@@ -31,7 +31,7 @@ export default class FileMenu extends ReactiveMenu {
                 () => executeAction('save-set-as')
             ),
             this.DIVIDER,
-            this.menuItem(
+            this.desktopMenuItem(
                 L`Import MSE set`,
                 ``,
                 () => executeAction('import-mse-set')
@@ -41,9 +41,9 @@ export default class FileMenu extends ReactiveMenu {
                 ``,
                 () => executeAction('export-card-image')
             ),
-            this.menuItem(L`Print`, L`Ctrl+P`, () => log('user').info('Print')),
+            this.desktopMenuItem(L`Print`, L`Ctrl+P`, () => log('user').info('Print')),
             this.DIVIDER,
-            this.menuItem(L`Exit`, ``, () => exitApp()),
+            this.desktopMenuItem(L`Exit`, ``, () => exitApp()),
         ];
     }
 }
