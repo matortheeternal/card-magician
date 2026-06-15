@@ -3,6 +3,7 @@
 @import "highlight.js/styles/monokai-sublime.min.css";
 @import "ui/components/loader/loader.css";
 @import "ui/status.css";
+@import "ui/drawer.css";
 @import "ui/components/card/card.css";
 @import "ui/components/cardProperties/cardProperties.css";
 @import "ui/components/inlineInput/inlineInput.css";

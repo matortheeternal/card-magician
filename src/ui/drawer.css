@@ -1,0 +1,39 @@
+.layout-mobile {
+    .drawer-right, .drawer-left {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        transition: transform 0.3s ease;
+        z-index: 100;
+
+        &.open {
+            transform: translateX(0);
+        }
+    }
+
+    .drawer-right {
+        transform: translateX(100%);
+    }
+
+    .drawer-left {
+        z-index: 101;
+        transform: translateX(-100%);
+    }
+
+    .drawer-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        sl-button::part(base) {
+            padding: var(--sl-spacing-medium);
+        }
+    }
+}
+
+.layout-desktop {
+    .drawer-actions {
+        display: none;
+    }
+}

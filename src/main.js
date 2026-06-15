@@ -60,9 +60,9 @@ function loaded() {
     const titleBar = document.createElement('cm-title-bar');
     document.body.prepend(titleBar);
     document.querySelector('main').innerHTML = (
-        `<cm-display-card></cm-display-card>
+        `<cm-display-card class="drawer-left"></cm-display-card>
          <cm-set-view></cm-set-view>
-         <cm-card-form></cm-card-form>`
+         <cm-card-form class="drawer-right"></cm-card-form>`
     );
 }
 
