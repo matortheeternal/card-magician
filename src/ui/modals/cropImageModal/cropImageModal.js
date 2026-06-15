@@ -13,6 +13,9 @@ export default class CropImageModal extends Modal {
 
     connectedCallback() {
         this.title = `${L`Crop Image`}`;
+        const useMobileView = window.innerWidth <= 900;
+        this.maxWidth = useMobileView ? 300 : 600;
+        this.maxHeight = useMobileView ? 300 : 600;
         this.realCrop = this.value.crop.clone();
         this.realWidth = this.value.width;
         this.realHeight = this.value.height;
