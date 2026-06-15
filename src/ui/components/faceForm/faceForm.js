@@ -1,4 +1,3 @@
-import { executeAction } from '../../systems/actionSystem.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 
 const L = localize('face-form');
@@ -8,10 +7,6 @@ export default class FaceForm extends ReactiveComponent {
 
     connectedCallback() {
         this.setAttribute('data-form-provider', '');
-        this.handleEvents('click', {
-            addFace: this.addFace,
-            removeFace: this.removeFace,
-        });
     }
 
     set face(value) {
@@ -25,23 +20,6 @@ export default class FaceForm extends ReactiveComponent {
     get fields() { return this.#face.fields; }
     get subcards() { return this.#face.subcards; }
 
-    getMissingFaceHTML() {
-        const faceId = this.dataset.faceId;
-        return (
-            `<div class="no-content-prompt">
-                <span>${L`This card does not have a ${faceId} face.`}</span>
-                <div class="buttons-container">
-                    <sl-button
-                        class="add-face-btn"
-                        size="large"
-                        data-click-action="addFace">
-                        ${L`Add ${faceId} face`}
-                    </sl-button>
-                </div>
-            </div>`
-        );
-    }
-
     getMissingFormHTML() {
         return (
             `<div class="no-content-prompt">
@@ -51,43 +29,16 @@ export default class FaceForm extends ReactiveComponent {
     }
 
     getBaseHTML() {
-        if (!this.face) return this.getMissingFaceHTML();
+        if (!this.face) return '';
         if (!this.form || !this.fields)
             return this.getMissingFormHTML();
-        return '';
-    }
-
-    renderRemoveFaceButton() {
-        const faceId = this.dataset.faceId;
-        const section = document.createElement('section');
-        section.classList.add('buttons-container');
-        section.innerHTML = (
-            `<sl-button
-                class="remove-face-btn"
-                variant="danger"
-                outline
-                size="large"
-                data-click-action="removeFace">
-                ${L`Remove ${faceId} face`}
-            </sl-button>`
-        );
-        return section;
+        return '<form-field field-id="template"></form-field>';
     }
 
     render() {
         this.innerHTML = this.getBaseHTML();
         if (!this.face || !this.form || !this.fields) return;
         this.appendChild(this.form.root);
-        if (this.dataset.faceId === 'back')
-            this.appendChild(this.renderRemoveFaceButton());
-    }
-
-    removeFace() {
-        executeAction('remove-face', this.dataset.faceId);
-    }
-
-    addFace() {
-        executeAction('add-face', this.dataset.faceId);
     }
 }
 

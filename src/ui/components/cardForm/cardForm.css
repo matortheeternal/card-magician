@@ -2,64 +2,43 @@ cm-card-form {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
-    min-width: 28em;
+    width: 30em;
     background-color: #040404;
-}
-
-/* propagate flex all the way down tab groups to content  */
-sl-tab-group,
-sl-tab-group::part(base),
-sl-tab-group::part(body),
-sl-tab-panel[active],
-sl-tab-panel::part(base) {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
     min-height: 0;
-}
-
-sl-tab-panel::part(base) {
+    z-index: 1;
     overflow-y: auto;
+    padding: var(--sl-spacing-large);
+
+    .face-actions {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
-sl-tab-group::part(body) {
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-}
-
-sl-tab-panel {
-    display: flex; /* override shoelace's display: none */
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-            transform 300ms cubic-bezier(.2, .7, .3, 1),
-            opacity 250ms ease;
-}
-
-sl-tab-panel[active] {
-    opacity: 1;
-    position: relative;
-    pointer-events: auto;
-    z-index: 2;
-}
-
-/* Any panel AFTER the active one slides to the right */
-sl-tab-panel[active] ~ sl-tab-panel {
-    transform: translateX(100%);
-    opacity: 0;
-    z-index: 1;
-}
-
-/* Any panel BEFORE the active one slides to the left. */
-sl-tab-panel:has(~ sl-tab-panel[active]) {
-    transform: translateX(-100%);
-    opacity: 0;
-    z-index: 1;
+.layout-desktop .face-actions .preview-card {
+    display: none;
 }
 
 cm-face-form section > * {
     margin-bottom: var(--sl-spacing-x-small);
+}
+
+sl-details {
+    margin: var(--sl-spacing-small) 0;
+}
+
+sl-details::part(base) {
+    background-color: rgb(from var(--sl-color-neutral-0) r g b / 0.5);
+}
+
+sl-details::part(content) {
+    padding-top: 0;
+}
+
+sl-details[open]::part(header) {
+    border-bottom: 1px solid var(--sl-input-border-color);
+}
+
+sl-details::part(header) {
+    padding: var(--sl-spacing-small);
 }

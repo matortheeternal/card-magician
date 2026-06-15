@@ -6,6 +6,13 @@ class OptionsForm extends FaceForm {
     get fields() { return this.face.options; }
     get form() { return this.face.optionsForm; }
 
+    getBaseHTML() {
+        if (!this.face) return '';
+        if (!this.form || !this.fields)
+            return this.getMissingFormHTML();
+        return '';
+    }
+
     getFields(modelKey) {
         return modelKey ? this.face?.[modelKey]?.options : this.face.options;
     }

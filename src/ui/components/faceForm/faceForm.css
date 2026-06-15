@@ -3,9 +3,7 @@ cm-options-form > div {
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 0 var(--sl-spacing-x-large);
     font-family: var(--sl-font-sans);
-    width: 30em;
 }
 
 form-group {
@@ -25,12 +23,7 @@ form-group[optional][active] {
 form-field {
     position: relative;
     display: block;
-    margin-top: var(--sl-spacing-3x-small);
-}
-
-sl-button.add-btn {
     margin-top: var(--sl-spacing-x-small);
-    margin-bottom: var(--sl-spacing-2x-small);
 }
 
 sl-button.add-btn sl-icon {
@@ -71,6 +64,10 @@ cm-options-form .no-content-prompt {
 .remove-btn::part(base) {
     padding: var(--sl-spacing-2x-small);
     color: var(--sl-color-danger-600);
+}
+
+form-group > form-toggle .add-btn {
+    margin-top: var(--sl-spacing-x-small);
 }
 
 form-group.with-border {
