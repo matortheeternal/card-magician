@@ -129,8 +129,8 @@ export default class ImageField extends FieldComponent {
     }
 
     selectImage(event) {
-        const dropzone = event.target.closest('sl-card.dropzone');
-        if (!dropzone) return;
+        const previewContainer = event.target.closest('div.preview-container');
+        if (!previewContainer) return;
         const fileInput = this.querySelector('input[type="file"]');
         fileInput.click();
         return true;
