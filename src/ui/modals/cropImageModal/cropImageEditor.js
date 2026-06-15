@@ -82,14 +82,18 @@ export default class CropImageEditor extends HTMLElement {
 
     updateImageInfo() {
         this.imageInfo.innerHTML = (
-            `<span>${L`Image`}&nbsp;</span>
-            <span>${this.modal.realWidth}</span>
-            <span>x</span>
-            <span>${this.modal.realHeight}</span>
-            <span>, ${L`scaled to`}&nbsp;</span>
-            <span>${this.value.width}</span>
-            <span>x</span>
-            <span>${this.value.height}</span>`
+            `<div>
+                <span>${L`Image`}&nbsp;</span>
+                <span>${this.modal.realWidth}</span>
+                <span>x</span>
+                <span>${this.modal.realHeight},</span>
+            </div>
+            <div>
+                <span>${L`scaled to`}&nbsp;</span>
+                <span>${this.value.width}</span>
+                <span>x</span>
+                <span>${this.value.height}</span>
+            </div>`
         );
     }
 

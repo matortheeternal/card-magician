@@ -45,13 +45,18 @@ export default
 <div class="info-container">
     <div class="image-info"></div>
     <div class="crop-info">
-        <span>${L`crop`}&nbsp;</span>
-        <cm-inline-input data-crop-key="width"></cm-inline-input>
-        <span>x</span>
-        <cm-inline-input data-crop-key="height"></cm-inline-input>
-        <span>, x+</span>
-        <cm-inline-input data-crop-key="xOffset"></cm-inline-input>
-        <span>&nbsp;y+</span>
-        <cm-inline-input data-crop-key="yOffset"></cm-inline-input>
+        <div>
+            <span>${L`crop`}&nbsp;</span>
+            <cm-inline-input data-crop-key="width"></cm-inline-input>
+            <span>x</span>
+            <cm-inline-input data-crop-key="height"></cm-inline-input>
+            <span>, </span>
+        </div>
+        <div>
+            <span>x+</span>
+            <cm-inline-input data-crop-key="xOffset"></cm-inline-input>
+            <span>&nbsp;y+</span>
+            <cm-inline-input data-crop-key="yOffset"></cm-inline-input>
+        </div>
     </div>
 </div>`;
