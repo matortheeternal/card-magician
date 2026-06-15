@@ -11,10 +11,9 @@ async function loadTemplateFile(templateFolder, filename) {
 }
 
 async function loadTemplateView(templateFolder, baseName) {
-    return {
-        css: await loadTemplateFile(templateFolder, `${baseName}.css`),
-        html: await loadTemplateFile(templateFolder, `${baseName}.html`)
-    };
+    const css = await loadTemplateFile(templateFolder, `${baseName}.css`);
+    const html = await loadTemplateFile(templateFolder, `${baseName}.html`);
+    return { css, html };
 }
 
 export async function loadTemplates() {
