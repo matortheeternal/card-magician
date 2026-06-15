@@ -7,7 +7,6 @@ cm-image-select {
 }
 
 cm-image-select sl-card {
-    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     position: relative;
@@ -46,6 +45,7 @@ cm-image-select .preview-container {
     margin: auto;
     border-radius: var(--sl-border-radius-medium);
     overflow: hidden;
+    cursor: pointer;
 }
 
 cm-image-select .crop-region {
