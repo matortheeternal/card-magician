@@ -9,7 +9,6 @@ import './domain/export/CardMagicianExporter.js';
 import './domain/export/CardSheetExporter/CardSheetExporter.js';
 import './domain/import/mse/importMse.js';
 import './ui/**/*.js';
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import { runTests } from './tests';
@@ -91,7 +90,6 @@ async function startApp() {
 (async function() {
     try {
         await setupNeutralino();
-        setBasePath('/shoelace');
         await startApp();
     } catch (error) {
         startupLog.error('Startup error:', error);
