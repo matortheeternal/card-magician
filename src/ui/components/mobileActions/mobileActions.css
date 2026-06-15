@@ -1,0 +1,29 @@
+cm-mobile-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    font-size: 30px;
+    border-top: 1px solid var(--sl-input-border-color);
+
+    sl-icon-button {
+        flex: 1;
+    }
+
+    sl-icon-button::part(base) {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.layout-desktop cm-mobile-actions,
+.layout-desktop cm-mobile-menu {
+    display: none;
+}
+
+cm-mobile-menu {
+    position: absolute;
+    bottom: 47px;
+    left: 0;
+    width: 100%;
+    z-index: 200;
+}
