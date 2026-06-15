@@ -18,6 +18,7 @@ import {
 } from './shared/neutralinoAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
+import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
 
 const startupLog = log('startup');
 
@@ -82,11 +83,13 @@ async function startApp() {
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
+    applyDeviceLayout();
     loaded();
 }
 
 (async function() {
     try {
+        window.addEventListener('resize', applyDeviceLayout.debounce(200));
         await setupNeutralino();
         await startApp();
     } catch (error) {
