@@ -14,7 +14,7 @@ export default
 ></cm-list-view>
 <div class="status-bar"></div>
 <div class="no-content-prompt">
-    <div>${L`This set has no cards in it.`}</div>
+    <h2>${L`This set has no cards in it.`}</h2>
     <div class="buttons-container">
         <sl-button size="large" data-click-action="addCard">
             ${L`Add a card`}
