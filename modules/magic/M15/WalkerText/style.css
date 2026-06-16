@@ -1,3 +1,9 @@
+:host {
+    --walker-ability-plus-bg: 'none';
+    --walker-ability-minus-bg: 'none';
+    --walker-ability-zero-bg: 'none';
+}
+
 module-container[module="WalkerText"] {
     display: flex;
     position: relative;
@@ -68,7 +74,6 @@ module-container[module="WalkerText"] {
 .walker-ability {
     display: flex;
 
-
     .walker-ability-content p {
         padding-left: 0;
     }
@@ -83,7 +88,7 @@ module-container[module="WalkerText"] {
             width: 42px;
             height: 34px;
             text-align: center;
-            padding: 10px 4px 0px 4px;
+            padding: 10px 4px 0 4px;
             font-size: 15px;
         }
 

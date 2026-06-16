@@ -3,7 +3,7 @@ const WalkerAbilitiesMixin = {
         return this.resolveWalkerAssetPath(`loyalty/${type}.png`);
     },
 
-    async resolveAbilities(card) {
+    async resolveAbilities() {
         const style = {
             '--walker-ability-plus-bg': `url("${await this.resolveAbility('plus')}")`,
             '--walker-ability-minus-bg': `url("${await this.resolveAbility('minus')}")`,
