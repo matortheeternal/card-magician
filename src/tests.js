@@ -1,4 +1,4 @@
-import { mount } from './shared/neutralinoAdapter.js';
+import { mount, readDirectory } from './shared/neutralinoAdapter.js';
 import { buildLoadMseFileTests } from './domain/import/mse/loadMseFile.tests.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
@@ -40,12 +40,34 @@ export async function setupTestHarness() {
     return true;
 }
 
+async function findTestFiles(dir) {
+    const files = await readDirectory(dir);
+    const testFiles = [];
+    for (const file of files) {
+        const path = `${dir}/${file.entry}`;
+        if (file.type === 'DIRECTORY') {
+            if (file.entry === '.' || file.entry === '..') continue;
+            testFiles.push(...await findTestFiles(path));
+        } else if (file.entry.endsWith('.tests.js')) {
+            testFiles.push(path);
+        }
+    }
+    return testFiles;
+}
+
+export async function buildModuleTests() {
+    const testFiles = await findTestFiles('modules');
+    for (const file of testFiles)
+        await import(`/${file}`);
+}
+
 export async function runTests() {
     log('startup').info('--run-tests detected, loading test harness');
     await setupTestHarness();
 
     log('startup').info('Running tests');
     buildLoadMseFileTests();
+    await buildModuleTests();
 
     await loadScript(`${JASMINE_BASE}/boot1.js`);
     if (document.readyState === 'complete') window.onload();
