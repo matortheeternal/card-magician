@@ -24,6 +24,7 @@ form-field {
     position: relative;
     display: block;
     margin-top: var(--sl-spacing-x-small);
+    min-width: 0;
 }
 
 sl-button.add-btn sl-icon {

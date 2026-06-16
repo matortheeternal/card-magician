@@ -21,3 +21,7 @@ cm-code .codejar-editor {
     font-size: var(--sl-font-size-medium);
     margin: 0;
 }
+
+.layout-mobile cm-code .codejar-editor {
+    font-size: var(--sl-font-size-x-small);
+}

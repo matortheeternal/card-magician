@@ -11,9 +11,6 @@ cm-crop-image-toolbox {
     }
 
     cm-crop-image-modal {
-        height: 100%;
-        width: 100%;
-
         sl-tab-group {
             flex: 1;
         }

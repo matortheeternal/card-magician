@@ -25,6 +25,11 @@ cm-edit-locales-modal .input-fields {
     gap: var(--sl-spacing-small);
 }
 
+.layout-mobile cm-edit-locales-modal .input-fields {
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
 cm-edit-locales-modal form-field[field-id="text"] {
     margin-top: var(--sl-spacing-medium);
 }
