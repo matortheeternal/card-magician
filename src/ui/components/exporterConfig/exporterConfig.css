@@ -2,4 +2,5 @@ cm-exporter-config {
     position: relative;
     padding: var(--sl-spacing-small);
     border: 1px solid var(--sl-input-border-color);
+    margin-bottom: var(--sl-spacing-small);
 }
