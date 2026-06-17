@@ -6,28 +6,34 @@ const L = localize('module-M15-walker-frame');
 export default class WalkerFrameModule extends FrameModule {
     async init(card) {
         await super.init(card);
+        card.isTall = () => card.otherFrameOptions?.tall;
         card.frames = [WalkerFrame];
     }
 
-    get options() {
-        const parentOptionIds = [
-            'crownStyle', 'nyxStyle', 'snowStyle', 'vehicleStyle',
-            'ubStyle', 'hybridStyle', 'hybridBlendStyle'
-        ];
+    get cardClasses() {
         return [
-            {
-                id: 'artSize',
-                type: 'select',
-                label: L`Art Size`,
-                options: [
-                    { id: 'normal',     name: L`Default` },
-                    { id: 'reduced',    name: L`Reduced` },
-                    { id: 'borderless', name: L`Borderless` },
-                ]
-            },
-            ...super.options.filter(
-                opt => parentOptionIds.includes(opt.id)
-            ),
+            `walker-${this.activeFrame.frameHeight}`,
+            ...super.cardClasses
         ];
+    }
+
+    get options() {
+        return [{
+            id: 'artSize',
+            type: 'select',
+            label: L`Art Size`,
+            options: [
+                { id: 'normal',     name: L`Default` },
+                { id: 'borderless', name: L`Borderless` },
+            ]
+        }, {
+            id: 'otherFrameOptions',
+            type: 'checkboxlist',
+            label: L`Extra options`,
+            options: [
+                { id: 'tall', label: L`Tall text box` },
+            ],
+            default: { tall: false }
+        }];
     }
 }

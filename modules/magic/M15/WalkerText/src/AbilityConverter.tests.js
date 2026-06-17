@@ -29,7 +29,7 @@ describe('AbilityConverter', () => {
         const match = AbilityConverter.match(text);
         const result = AbilityConverter.convert(match, options);
         expect(result).toContain('<div class="walker-ability">');
-        expect(result).toContain('<div class="walker-ability-zero">0</div>');
+        expect(result).toContain('<div class="walker-ability-zero cost">0</div>');
         expect(result).toContain('<div class="walker-ability-content">');
         expect(result).toContain('<p>Neutral ability.</p>');
     });
@@ -39,7 +39,7 @@ describe('AbilityConverter', () => {
         const match = AbilityConverter.match(text);
         const result = AbilityConverter.convert(match, options);
         expect(result).toContain('<div class="walker-ability">');
-        expect(result).toContain('<div class="walker-ability-plus">+1</div>');
+        expect(result).toContain('<div class="walker-ability-plus cost">+1</div>');
         expect(result).toContain('<div class="walker-ability-content">');
         expect(result).toContain('<p>Plus ability.</p>');
     });
@@ -49,7 +49,7 @@ describe('AbilityConverter', () => {
         const match = AbilityConverter.match(text);
         const result = AbilityConverter.convert(match, options);
         expect(result).toContain('<div class="walker-ability">');
-        expect(result).toContain('<div class="walker-ability-minus">-3</div>');
+        expect(result).toContain('<div class="walker-ability-minus cost">-3</div>');
         expect(result).toContain('<div class="walker-ability-content">');
         expect(result).toContain('<p>Minus ability.</p>');
     });
@@ -60,7 +60,7 @@ describe('AbilityConverter', () => {
         expect(match).toBeTruthy();
         const result = AbilityConverter.convert(match, options);
         expect(result).toContain('<div class="walker-ability">');
-        expect(result).toContain('<div class="walker-ability-minus">-X</div>');
+        expect(result).toContain('<div class="walker-ability-minus cost">-X</div>');
         expect(result).toContain('<div class="walker-ability-content">');
         expect(result).toContain('<p>Minus X ability.</p>');
     });
@@ -75,9 +75,9 @@ describe('AbilityConverter', () => {
         const result = AbilityConverter.convert(match, options);
         const abilityMatches = result.match(/<div class="walker-ability">/g);
         expect(abilityMatches.length).toBe(3);
-        expect(result).toContain('<div class="walker-ability-plus">+1</div>');
-        expect(result).toContain('<div class="walker-ability-minus">-2</div>');
-        expect(result).toContain('<div class="walker-ability-minus">-7</div>');
+        expect(result).toContain('<div class="walker-ability-plus cost">+1</div>');
+        expect(result).toContain('<div class="walker-ability-minus cost">-2</div>');
+        expect(result).toContain('<div class="walker-ability-minus cost">-7</div>');
         expect(result).toContain('<p>Draw a card.</p>');
         expect(result).toContain('<p>Target creature gets -2/-2.</p>');
         expect(result).toContain('<p>You win the game.</p>');
@@ -89,7 +89,7 @@ describe('AbilityConverter', () => {
         const result = AbilityConverter.convert(match, options);
         const abilityMatches = result.match(/<div class="walker-(static-)?ability">/g);
         expect(abilityMatches.length).toBe(3);
-        expect(result).toContain('<div class="walker-ability-plus">+1</div>');
+        expect(result).toContain('<div class="walker-ability-plus cost">+1</div>');
         expect(result).toContain('<p>Static 1.</p>');
         expect(result).toContain('<p>Plus.</p>');
         expect(result).toContain('<p>Static 2.</p>');

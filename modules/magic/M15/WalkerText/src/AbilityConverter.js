@@ -24,8 +24,8 @@ const abilityConverters = [{
         return (
             `<div class="walker-ability">
                 <div class="walker-ability-cost">
-                    <div class="walker-ability-${type}">${cost}</div>
-                    <div>:</div>
+                    <div class="walker-ability-${type} cost">${cost}</div>
+                    <div class="colon">:</div>
                 </div>
                 <div class="walker-ability-content">
                     ${convertParagraphs(content)}

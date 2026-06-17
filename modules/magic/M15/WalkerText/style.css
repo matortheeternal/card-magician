@@ -9,7 +9,7 @@ module-container[module="WalkerText"] {
     position: relative;
     overflow: hidden;
     z-index: 2;
-    padding: 8px 16px 13px 0;
+    padding: 4px 13px 16px 0;
     height: 163px;
     margin-bottom: 0.5px;
     --chop-top: 0px;
@@ -22,7 +22,7 @@ module-container[module="WalkerText"] {
     justify-content: center;
     flex: 1;
     position: relative;
-    padding: 0 4px 0 1px;
+    padding: 0;
     font-size: 19px;
     line-height: 0.95;
     font-family: "MPlantin", sans-serif;
@@ -44,8 +44,7 @@ module-container[module="WalkerText"] {
     }
 
     p {
-        margin: 0.5em 0;
-        padding-left: 30px;
+        margin: 0.4em 0;
     }
 
     p:first-child {
@@ -71,43 +70,69 @@ module-container[module="WalkerText"] {
     }
 }
 
+.rules-text {
+    > div {
+        margin: 0.5em 0;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    .walker-static-ability {
+        padding-left: 36px;
+        padding-right: 7px;
+    }
+}
+
 .walker-ability {
     display: flex;
-
-    .walker-ability-content p {
-        padding-left: 0;
-    }
+    align-items: center;
+    padding-right: 7px;
 
     .walker-ability-cost {
         display: flex;
+        align-items: center;
 
-        div:first-of-type {
+        div.cost {
             background-size: 100%;
+            background-position-y: bottom;
             background-repeat: no-repeat;
             color: white;
-            width: 42px;
-            height: 34px;
+            width: 45px;
+            height: 30px;
             text-align: center;
-            padding: 10px 4px 0 4px;
-            font-size: 15px;
+            padding: 4px 4px 0 4px;
+            font-size: 16px;
+            font-family: 'Beleren Bold';
+
+            &.walker-ability-plus {
+                background-size: 100% 36px;
+                background-image: var(--walker-ability-plus-bg);
+            }
+
+            &.walker-ability-minus {
+                background-size: 100% 36px;
+                background-image: var(--walker-ability-minus-bg);
+            }
+
+            &.walker-ability-zero {
+                background-image: var(--walker-ability-zero-bg);
+                background-size: 100% 40px;
+                background-position-y: -6px;
+                padding-top: 6px;
+            }
         }
 
-        div:last-of-type {
+        div.colon {
             font-size: 18px;
             margin-top: 4px;
             margin-right: 4px;
-        }
-
-        .walker-ability-plus {
-            background-image: var(--walker-ability-plus-bg);
-        }
-
-        .walker-ability-minus {
-            background-image: var(--walker-ability-minus-bg);
-        }
-
-        .walker-ability-zero {
-            background-image: var(--walker-ability-zero-bg);
+            margin-bottom: 6px;
         }
 
     }

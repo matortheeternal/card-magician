@@ -20,3 +20,11 @@
         top: 0;
     }
 }
+
+.walker-tall module-container[module="WalkerText"] {
+    height: 197px;
+}
+
+.walker-tall module-container[module="Art"] crop-image {
+    height: 210%;
+}
