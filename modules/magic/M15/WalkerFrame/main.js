@@ -17,6 +17,13 @@ export default class WalkerFrameModule extends FrameModule {
         ];
     }
 
+    bind(card, watch) {
+        watch(card, [
+            'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
+            'artSize', 'meldStyle', 'otherFrameOptions', 'faceSymbol', 'abilityRects'
+        ], () => this.updateFrame(card));
+    }
+
     get options() {
         return [{
             id: 'artSize',

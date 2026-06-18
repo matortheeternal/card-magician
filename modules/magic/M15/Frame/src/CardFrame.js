@@ -61,8 +61,9 @@ export default class CardFrame {
             const resolve = this[mixin.resolve];
             if (typeof resolve !== 'function')
                 throw new Error(`Missing resolver ${mixin.resolve}`);
-            const bg = await resolve.call(this, card);
-            backgrounds.push(bg);
+            const result = await resolve.call(this, card);
+            const bgs = Array.isArray(result) ? result : [result];
+            backgrounds.push(...bgs);
         }
         return backgrounds.filter(Boolean);
     }
