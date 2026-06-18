@@ -366,6 +366,17 @@ export default class CardMagicianModule {
         return escapeHTML(str);
     }
 
+    getCardClientRect(element) {
+        const rect = element.getBoundingClientRect();
+        const rootRect = this.card.dom.root.getBoundingClientRect();
+        return new DOMRect(
+            rect.left - rootRect.left,
+            rect.top - rootRect.top,
+            rect.width,
+            rect.height
+        );
+    }
+
     objectToStyle(obj) {
         return Object.entries(obj)
             .map(([key, value]) => `${key.separate('-').toLowerCase()}: ${value}`)
