@@ -1,16 +1,16 @@
 const WalkerAbilitiesMixin = {
-    async resolveAbility(type) {
+    resolveCostIcon(type) {
         return this.resolveWalkerAssetPath(`loyalty/${type}.png`);
     },
 
     async resolveAbilities() {
         const style = {
-            '--walker-ability-plus-bg': `url("${await this.resolveAbility('plus')}")`,
-            '--walker-ability-minus-bg': `url("${await this.resolveAbility('minus')}")`,
-            '--walker-ability-zero-bg': `url("${await this.resolveAbility('zero')}")`,
+            '--walker-ability-plus-bg': `url("${this.resolveCostIcon('plus')}")`,
+            '--walker-ability-minus-bg': `url("${this.resolveCostIcon('minus')}")`,
+            '--walker-ability-zero-bg': `url("${this.resolveCostIcon('zero')}")`,
         };
         return { id: 'walker-ability', style };
-    },
+    }
 };
 
 export default {
