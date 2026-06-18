@@ -1,3 +1,5 @@
+import { emit } from '../../../shared/htmlUtils.js';
+
 export function binarySearch(min, max, check, maxIt, step = 0.1) {
     if (check(max)) return max;
     if (!check(min)) return min;
@@ -81,5 +83,6 @@ export default class AutoFit extends HTMLElement {
             6
         );
         this.style.fontSize = `${best}px`;
+        emit(this, 'text-resized', this);
     }
 }
