@@ -96,6 +96,7 @@ function drawBackgroundColor(ctx, style) {
     ctx.fill();
 }
 
+// TODO: add support for multiple backgrounds
 async function drawBackgroundImage(ctx, elementRect, rootRect, style) {
     const url = extractBackgroundUrl(style.backgroundImage);
     if (!url) return;
