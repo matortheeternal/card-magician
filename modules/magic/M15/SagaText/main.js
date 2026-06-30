@@ -31,10 +31,18 @@ export default class SagaText extends TextModule {
         this.requestRender({ render: 'renderPreText' });
     }
 
+    async renderPostHTML(card) {
+        this.postHTML = card.textToHTML(card.postText || '');
+        changed(card, ['postHTML']);
+        this.requestRender({ render: 'renderPostText' });
+    }
+
     bind(card, watch) {
         super.bind(card, watch);
         watch(card, ['maxFontSize', 'chopTop', 'chopBottom', 'preText'],
               () => this.renderPreHTML(card));
+        watch(card, ['maxFontSize', 'chopTop', 'chopBottom', 'postText'],
+              () => this.renderPostHTML(card));
     }
 
     renderPreText(card) {
@@ -44,6 +52,17 @@ export default class SagaText extends TextModule {
                style="${this.getTextStyle(card)}"
            >
                 <div class="pre-text">${this.preHTML}</div>
+            </auto-fit-text>`
+        );
+    }
+
+    renderPostText(card) {
+        return (
+            `<auto-fit-text
+               ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
+               style="${this.getTextStyle(card)}"
+           >
+                <div class="post-text">${this.postHTML}</div>
             </auto-fit-text>`
         );
     }
@@ -70,6 +89,7 @@ export default class SagaText extends TextModule {
     get fields() {
         return [
             { id: 'preText', type: 'textarea', label: L`Pretext` },
+            { id: 'postText', type: 'textarea', label: L`Post Text` },
             ...super.fields
         ];
     }
