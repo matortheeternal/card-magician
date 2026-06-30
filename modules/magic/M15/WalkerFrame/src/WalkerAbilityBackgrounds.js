@@ -16,7 +16,7 @@ const WalkerAbilityBackgroundsMixin = {
 
     async bottomAbilityBackground({ top, height }, first, last) {
         const bgUrl = await this.abilityBackground('stripe/bottom.png');
-        const bgTopOffset = first ? 0 : 8;
+        const bgTopOffset = first ? 20 : 8;
         return {
             background: `url('${bgUrl}')`,
             backgroundPosition: `46px ${height + bgTopOffset}px`,
@@ -27,11 +27,11 @@ const WalkerAbilityBackgroundsMixin = {
 
     // TODO: use constants to make this clearer
     async baseAbilityBackground({ top, height }, first, last) {
-        const bgColor = 'rgba(255, 255, 255, 0.40)';
-        const topOffset = first ? -5 : -15;
+        const bgColor = 'rgba(255, 255, 255, 0.47)';
+        const topOffset = first ? -25 : -15;
         const bgTopOffset = first ? '0' : '20px';
-        const bgHeight = `${height - (first ? -6 : 6) - (last ? -10 : 6)}px`;
-        const heightOffset = (first ? 9 : 20) + (last ? 10 : 0);
+        const bgHeight = `${height + (first ? 26 : -6) + (last ? 50 : -6)}px`;
+        const heightOffset = (first ? 29 : 20) + (last ? 50 : 0);
         return {
             background: `linear-gradient(${bgColor}, ${bgColor})`,
             backgroundPosition: `46px ${bgTopOffset}`,
