@@ -96,17 +96,27 @@ export function maskBlend(img1, img2, mask) {
 
 export function maskImage(sourceImg, maskImg) {
     const { width, height } = sourceImg;
-    if (maskImg.width !== width || maskImg.height !== height)
-        throw new Error('Images must have the same size');
 
     const { canvas, ctx, imageData: srcImageData } = imageToCanvas(sourceImg);
     const { imageData: maskImageData } = imageToCanvas(maskImg);
 
     const srcData = srcImageData.data;
     const maskData = maskImageData.data;
+
+    const scaleX = maskImg.width / width;
+    const scaleY = maskImg.height / height;
+
     for (let i = 0; i < srcData.length; i += 4) {
+        const pixelIndex = i / 4;
+        const srcX = pixelIndex % width;
+        const srcY = Math.floor(pixelIndex / width);
+
+        const maskX = Math.min(Math.round(srcX * scaleX), maskImg.width - 1);
+        const maskY = Math.min(Math.round(srcY * scaleY), maskImg.height - 1);
+
         const srcAlpha = srcData[i + 3];
-        srcData[i + 3] = Math.round(srcAlpha * (maskData[i] / 255));
+        const maskAlpha = maskData[(maskY * maskImg.width + maskX) * 4];
+        srcData[i + 3] = Math.round(srcAlpha * (maskAlpha / 255));
     }
 
     ctx.putImageData(srcImageData, 0, 0);
