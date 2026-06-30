@@ -44,7 +44,7 @@ export default class SagaFrame extends CardFrame.with(
     }
 
     get frameBlendMaskFolder() {
-        return this.resolveAssetPath('mask/saga');
+        return this.resolveSagaAssetPath('mask/saga');
     }
 
     get frameFolder() {
