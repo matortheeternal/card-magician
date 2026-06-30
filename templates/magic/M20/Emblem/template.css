@@ -1,0 +1,44 @@
+.frame-emblem .header {
+    padding: 2px 35px;
+    margin-top: 6px;
+}
+
+.frame-emblem module-container[module="Name"] {
+    font-family: "Beleren Small Caps Bold";
+    font-kerning: none;
+    font-size: 24px;
+    letter-spacing: 0.3px;
+    padding: 0 4px;
+    justify-content: center;
+    color: #fff;
+}
+
+.frame-emblem module-container[module="Rarity"] {
+    margin-top: 0;
+}
+
+.frame-emblem module-container[module="EmblemArt"] {
+    margin: 0;
+    overflow: visible;
+    border: none;
+}
+
+.frame-emblem module-container[module="EmblemArt"] crop-image {
+    display: block;
+    height: 523px;
+    position: absolute;
+    left: -15px;
+    width: 375px;
+    top: -60px;
+}
+
+.frame-emblem .type-line {
+    font-size: 18px;
+    padding: 4px 12px;
+    height: 30px;
+}
+
+.frame-emblem module-container[module="Text"] {
+    height: 102px;
+    padding-top: 3px;
+}
