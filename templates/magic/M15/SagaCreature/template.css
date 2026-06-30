@@ -1,0 +1,16 @@
+.saga-columns {
+    display: grid;
+    flex: 1;
+    grid-template-columns: 1fr 1fr;
+    min-height: 0;
+}
+
+:host {
+    module-container[module="Art"] {
+        margin: 1px 14px 2px -1px;
+    }
+
+    .type-line {
+        margin-bottom: 17px;
+    }
+}
