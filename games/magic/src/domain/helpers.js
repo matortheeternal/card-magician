@@ -32,3 +32,7 @@ export function isMulticolor(card) {
 export function isToken(card) {
     return /\bToken\b/i.test(card.front.superType || '');
 }
+
+export function isEmblem(card) {
+    return /\bEmblem\b/i.test(card.front.superType || '');
+}

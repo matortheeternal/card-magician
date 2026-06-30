@@ -1,6 +1,6 @@
 import {
     isUninitializedCard, isColorless, isMonoColor,
-    isMulticolor, isArtifact, isLand, isBasicLand, isToken
+    isMulticolor, isArtifact, isLand, isBasicLand, isToken, isEmblem
 } from './helpers.js';
 
 export const numberingRules = [
@@ -54,7 +54,7 @@ function sortAndNumber(set, cards) {
 
 export function autoNumberCards(set) {
     const groups = Object.groupBy(set.cards, card => {
-        return isToken(card) ? 'tokens' : 'main';
+        return isToken(card) || isEmblem(card) ? 'tokens' : 'main';
     });
     sortAndNumber(set, groups.main);
     sortAndNumber(set, groups.tokens);

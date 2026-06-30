@@ -10,6 +10,7 @@ export default class TypeModule extends CardMagicianModule {
         card.isSnow = () => /\bsnow\b/i.test(card.superType);
         card.isConspiracy = () => /\bconspiracy\b/i.test(card.superType);
         card.isToken = () => /\btoken\b/i.test(card.superType);
+        card.isEmblem = () => /\bemblem\b/i.test(card.superType);
     }
 
     bind(card, watch) {

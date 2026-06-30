@@ -1,4 +1,4 @@
-import { isToken } from '../../domain/helpers.js';
+import { isEmblem, isToken } from '../../domain/helpers.js';
 
 function compareTokenValues(aToken, bToken) {
     if (bToken && !aToken) return -1;
@@ -7,8 +7,8 @@ function compareTokenValues(aToken, bToken) {
 }
 
 export default function compareRowCNs(a, b) {
-    const aToken = isToken(a.original);
-    const bToken = isToken(b.original);
+    const aToken = isToken(a.original) || isEmblem(a.original);
+    const bToken = isToken(b.original) || isEmblem(b.original);
     const tokenCmp = compareTokenValues(aToken, bToken);
 
     if (tokenCmp !== 0) return tokenCmp;
