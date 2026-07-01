@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@sigil-sifter/magic": "^1.0.0",
-    "@sigil-sifter/magic-cm": "^1.0.0",
+    "@sigil-sifter/magic": "^1.0.2",
+    "@sigil-sifter/magic-cm": "^1.1.0",
     "mana-scribe": "^2.1.1"
   },
   "devDependencies": {
