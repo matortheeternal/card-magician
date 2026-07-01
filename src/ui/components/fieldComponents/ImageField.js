@@ -1,8 +1,9 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
-import { emit, esc, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { emit, toggleDisplay } from '../../../shared/htmlUtils.js';
 import { openModal } from '../../modals/modalManager.js';
+import imageFieldHtml from './imageField.html.js';
 
 function computePreviewSize(srcW, srcH, maxW, maxH) {
     const widthRatio = maxW / srcW;
@@ -43,13 +44,17 @@ export default class ImageField extends FieldComponent {
     static tagName = 'cm-image-select';
     eventKey = 'change';
 
-    static matches(field) {
-        return field.type === 'image';
+    bind() {
+        super.bind();
+        this.handleEvents('click', {
+            clearImage: this.clearImage,
+            selectImage: this.selectImage,
+            cropImage: this.cropImage,
+        });
     }
 
-    constructor() {
-        super();
-        this.onClick = this.onClick.bind(this);
+    static matches(field) {
+        return field.type === 'image';
     }
 
     get value() {
@@ -71,39 +76,8 @@ export default class ImageField extends FieldComponent {
         this.addEventListener('drop', event => this.onDrop(event));
     }
 
-    renderPreview() {
-        return (
-            `<div class="actions">
-                <sl-tooltip content="Remove image">
-                    <sl-icon-button class="clear-btn" name="x-lg"></sl-icon-button>
-                </sl-tooltip>
-                <sl-tooltip content="Crop image">
-                    <sl-icon-button class="crop-btn" name="scissors"></sl-icon-button>
-                </sl-tooltip>
-            </div>
-            <sl-tooltip content="Click to change image">
-                <div class="preview-container">
-                    <img class="preview-image" alt="Preview" />
-                    <div class="crop-region"></div>
-                </div>
-            </sl-tooltip>`
-        );
-    }
-
     render() {
-        this.innerHTML = (
-            `<label>${this.field.label}</label>
-            <sl-card class="dropzone">
-                <div class="upload-prompt">
-                    <sl-icon name="image"></sl-icon>
-                    <div>Select image</div>
-                </div>
-                <div class="preview" style="display: none">
-                    ${this.renderPreview()}
-                </div>
-                <input type="file" hidden />
-            </sl-card>`
-        );
+        this.innerHTML = `<label>${this.field.label}</label>\n` + imageFieldHtml;
         requestAnimationFrame(() => this.loadValue());
     }
 
@@ -128,16 +102,13 @@ export default class ImageField extends FieldComponent {
         return ImageFieldValue.fromFile(file);
     }
 
-    selectImage(event) {
-        const previewContainer = event.target.closest('div.preview-container');
-        if (!previewContainer) return;
+    selectImage() {
         const fileInput = this.querySelector('input[type="file"]');
         fileInput.click();
         return true;
     }
 
     clearImage(event) {
-        if (!event.target.classList.contains('clear-btn')) return;
         event.stopPropagation();
         this.value = new ImageFieldValue();
         emit(this, 'cm-field-changed');
@@ -145,7 +116,6 @@ export default class ImageField extends FieldComponent {
     }
 
     cropImage(event) {
-        if (!event.target.classList.contains('crop-btn')) return;
         event.stopPropagation();
         openModal('cm-crop-image-modal', {
             value: this.value.clone(),
@@ -157,12 +127,6 @@ export default class ImageField extends FieldComponent {
             }
         });
         return true;
-    }
-
-    onClick(event) {
-        return this.clearImage(event)
-            || this.cropImage(event)
-            || this.selectImage(event);
     }
 
     canDrop(event) {
