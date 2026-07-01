@@ -34,7 +34,8 @@ export default class RarityModule extends CardMagicianModule {
                 { id: 'common',     name: L`Common` },
                 { id: 'uncommon',   name: L`Uncommon` },
                 { id: 'rare',       name: L`Rare` },
-                { id: 'mythic',     name: L`Mythic Rare` }
+                { id: 'mythic',     name: L`Mythic Rare` },
+                { id: 'special',     name: L`Special` }
             ]
         }];
     }

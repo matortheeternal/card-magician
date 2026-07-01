@@ -1,4 +1,4 @@
-const rarities = ['common', 'uncommon', 'rare', 'mythic'];
+const rarities = ['common', 'uncommon', 'rare', 'mythic', 'special'];
 
 function getRarity(card, face = 'front') {
     return card.original[face]?.rarity;

@@ -41,7 +41,7 @@ const rarity = {
     uncommon: 'uncommon',
     rare: 'rare',
     'mythic rare': 'mythic',
-    special: 'mythic',
+    special: 'special',
     masterpiece: 'mythic',
 };
 

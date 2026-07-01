@@ -50,3 +50,11 @@ module-container[module="Rarity"] {
     --rar-g3: #ffb347;
     --rar-g4: #ff8a00;
 }
+
+.rarity-special.set-icon {
+    --rar-g1: #240f3d;
+    --rar-g2: #a07baa;
+    --rar-g3: #907697;
+    --rar-g4: #1a0a34;
+    --rar-stroke-outer: white;
+}
