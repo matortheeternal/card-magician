@@ -9,6 +9,7 @@ import Crowns from '../../Frame/src/mixins/Crowns.js';
 import PT from '../../Frame/src/mixins/PT.js';
 import Bookmark from './Bookmark.js';
 import NyxTrim from '../../Frame/src/mixins/NyxTrim.js';
+import BookmarkStripe from './BookmarkStripe.js';
 
 export default class SagaFrame extends CardFrame.with(
     Frame,
@@ -20,6 +21,7 @@ export default class SagaFrame extends CardFrame.with(
     Node,
     Crowns,
     Bookmark,
+    BookmarkStripe,
     PT,
 ) {
     static matches() {
