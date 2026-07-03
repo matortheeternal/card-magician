@@ -125,6 +125,13 @@ export async function getParentPath(path) {
     return parentPath;
 }
 
+export async function getFileName(path) {
+    const { filename } = await wrapError(
+        () => Neutralino.filesystem.getPathParts(path)
+    );
+    return filename;
+}
+
 export async function rmrf(path) {
     log('fs').debug('remove', path);
     return wrapError(() => Neutralino.filesystem.remove(path));

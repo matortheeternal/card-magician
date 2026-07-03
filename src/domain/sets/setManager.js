@@ -12,6 +12,7 @@ import { loadProject } from './loadProject.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
+import cleanProject from './cleanProject.js';
 
 const L = localize('set-manager');
 
@@ -52,6 +53,19 @@ export async function save(fullSave = false) {
     try {
         log('fs').info('Saving set to:', setFilePath);
         await saveProject(setFilePath, activeSet, fullSave);
+        progress.complete();
+    } catch (error) {
+        progress.onError(error);
+        log('state').error(error);
+    }
+}
+
+export async function clean() {
+    if (!setFilePath) return;
+    openModal('cm-progress-modal', { title: 'Cleaning...' });
+    try {
+        log('fs').info('Cleaning set files in:', setFilePath);
+        await cleanProject(setFilePath, activeSet);
         progress.complete();
     } catch (error) {
         progress.onError(error);
@@ -165,3 +179,5 @@ registerAction('new-set', () => {
 });
 registerAction('save-set', save);
 registerAction('save-set-as', saveAs);
+
+registerAction('clean-set', clean);

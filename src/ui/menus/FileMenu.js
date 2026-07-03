@@ -30,6 +30,11 @@ export default class FileMenu extends ReactiveMenu {
                 L`Ctrl+Shift+S`,
                 () => executeAction('save-set-as')
             ),
+            this.menuItem(
+                L`Clean`,
+                ``,
+                () => executeAction('clean-set')
+            ),
             this.DIVIDER,
             this.desktopMenuItem(
                 L`Import MSE set`,

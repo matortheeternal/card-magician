@@ -12,6 +12,8 @@ function addCardBaseName(card, usedBaseNames) {
     while (usedBaseNames.includes(name))
         name = `${base}-${i++}`;
     usedBaseNames.push(name);
+    if(card.baseName && card.baseName !== name)
+        card.oldBaseName = card.baseName;
     card.baseName = name;
 }
 
