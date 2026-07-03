@@ -3,11 +3,21 @@ const BookmarkMixin = {
         return this.resolveSagaAssetPath('bookmark');
     },
 
+    get bookmarkBlendMaskFolder() {
+        return this.resolveSagaAssetPath('mask/bookmark');
+    },
+
+    get blendCoords() {
+        return [0.49, 0, 0.51, 0];
+    },
+
     async resolveBookmark(card) {
-        const colorKey = card.getCardColorKey();
-        const image = `${this.bookmarkFolder}/${colorKey}.png`;
-        return this.background('bookmark', image, 1);
-    }
+        const image = this.resolveColored(this.bookmarkFolder, card, {
+            ext: '.png',
+            blendCoords: this.blendCoords,
+        });
+        return this.background('bookmark', image);
+    },
 };
 
 export default {

@@ -101,9 +101,11 @@ export default class CardFrame {
         if (card.colorIdentity.isHybrid() && options.hybridMode === 'first')
             return this.resolveColorKey(folder, colors[0].char, options);
         const [c1, c2] = this.getHybridOrder(card, colors[0].char, colors[1].char);
-        const blendCoords = card.hybridStyle?.includes('vertical')
-            ? [0, 0.4, 0, 0.6]
-            : [0.4, 0, 0.6, 0];
+        const blendCoords = options.blendCoords || (
+            this.card.hybridStyle?.includes('vertical')
+                ? [0, 0.4, 0, 0.6]
+                : [0.4, 0, 0.6, 0]
+        );
         return this.ctx.linearBlend(
             this.resolveColorKey(folder, c1, options),
             this.resolveColorKey(folder, c2, options),
