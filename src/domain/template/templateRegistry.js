@@ -16,6 +16,14 @@ async function loadTemplateView(templateFolder, baseName) {
     return { css, html };
 }
 
+function sortTemplates() {
+    templates.sort((a, b) => {
+        if (a.label < b.label) return -1;
+        if (a.label > b.label) return 1;
+        return 0;
+    });
+}
+
 export async function loadTemplates() {
     const templateFolders = await readDirectory(
         'templates',
@@ -34,6 +42,7 @@ export async function loadTemplates() {
         }
         templates.push(template);
     }
+    sortTemplates();
 }
 
 export function getTemplate(templateId) {
