@@ -11,6 +11,7 @@ export default class SagaText extends TextModule {
 
     get maxChapter() {
         const chapters = parseChapters(this.card.rulesText);
+        if (!chapters.length) return 'III';
         const maxChapter = chapters.reduce((max, chapter) => {
             const currentValue = romanToInt(chapter);
             return currentValue > (max?.value || 0)

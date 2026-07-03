@@ -54,6 +54,8 @@ module-container[module="SagaText"] {
 
     .pre-text {
         height: 83px;
+        text-indent: -0.4em;
+        padding-left: 0.4em;
 
         > div:first-of-type {
             margin-top: 0;
