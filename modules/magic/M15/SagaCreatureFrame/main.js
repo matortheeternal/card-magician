@@ -8,9 +8,7 @@ export default class SagaCreatureFrameModule extends FrameModule {
     }
 
     get options() {
-        const parentOptionIds = [
-            'crownStyle', 'ubStyle'
-        ];
+        const parentOptionIds = ['ubStyle'];
         return [
             ...super.options.filter(
                 opt => parentOptionIds.includes(opt.id)

@@ -1,13 +1,11 @@
 import CardFrame from '../../Frame/src/CardFrame.js';
 import Frame from '../../Frame/src/mixins/Frame.js';
 import Border from '../../Frame/src/mixins/Border.js';
-import Crowns from '../../Frame/src/mixins/Crowns.js';
 import PT from '../../Frame/src/mixins/PT.js';
 
 export default class SagaCreatureFrame extends CardFrame.with(
     Frame,
     Border,
-    Crowns,
     PT,
 ) {
     static matches() {
@@ -51,7 +49,13 @@ export default class SagaCreatureFrame extends CardFrame.with(
         return this.resolveSagaAssetPath('mask/saga');
     }
 
+    get frameSubfolder() {
+        if (this.card.ubStyle === 'standard')
+            return 'beyond';
+        return 'standard';
+    }
+
     get frameFolder() {
-        return this.resolveSagaAssetPath('frame/standard');
+        return this.resolveSagaAssetPath(`frame/${this.frameSubfolder}`);
     }
 }
