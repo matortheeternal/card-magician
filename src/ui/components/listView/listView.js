@@ -243,8 +243,8 @@ export default class ListView extends ReactiveComponent {
 
     onResizeMouseDown(event, colIndex) {
         event.stopImmediatePropagation();
-
-        this.resizing = true;
+        const listView = this;
+        listView.resizing = true;
         document.body.classList.add('column-resizing');
         const column = this.colGroup.children[colIndex];
         const startX = event.clientX;
@@ -258,7 +258,7 @@ export default class ListView extends ReactiveComponent {
 
         function onMouseUp(event) {
             event.stopImmediatePropagation();
-            this.resizing = false;
+            listView.resizing = false;
             document.body.classList.remove('column-resizing');
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseup', onMouseUp);
