@@ -27,7 +27,7 @@ export default class ClearFrame extends CardFrame.with(
     PT,
 ) {
     static matches(card) {
-        return card.frame.id === 'clear';
+        return card.frame === 'clear';
     }
 
     coloredBlend(folder) {

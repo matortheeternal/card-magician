@@ -17,18 +17,12 @@ export default class BaseCardModel {
     async saveField(field) {
         if (Object.hasOwn(field, 'save'))
             return field.save(this[field.id]);
-        if (field.type === 'select')
-            return this[field.id]?.id;
         return this[field.id];
     }
 
     async loadField(dataToLoad, field) {
         if (Object.hasOwn(field, 'load'))
             return field.load(dataToLoad);
-        if (field.type === 'select' && dataToLoad[field.id]) {
-            return field.options.find(option => option.id === dataToLoad[field.id])
-                || field.options[0];
-        }
         return dataToLoad[field.id];
     }
 

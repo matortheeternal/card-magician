@@ -27,7 +27,7 @@ export default class DevoidFrame extends CardFrame.with(
     PT,
 ) {
     static matches(card) {
-        return card.frame.id === 'devoid';
+        return card.frame === 'devoid';
     }
 
     get artDimensions() {

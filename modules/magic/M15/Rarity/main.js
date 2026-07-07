@@ -5,7 +5,7 @@ export default class RarityModule extends CardMagicianModule {
         if (card.isToken?.()) return 'T';
         if (card.isEmblem?.()) return 'E';
         if (card.isPromo?.()) return 'P';
-        return card.rarity.id.slice(0, 1).toUpperCase();
+        return card.rarity.slice(0, 1).toUpperCase();
     }
 
     updateRarity(card) {
@@ -20,7 +20,7 @@ export default class RarityModule extends CardMagicianModule {
 
     render(card) {
         const set = this.getActiveSet();
-        const rarityClass = `rarity-${card.rarity.id.toLowerCase()}`;
+        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
         return set.symbol.replaceAll('"set-icon"', `"set-icon ${rarityClass}"`);
     }
 

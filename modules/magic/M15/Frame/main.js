@@ -3,8 +3,11 @@ import DevoidFrame from './src/DevoidFrame.js';
 import StandardFrame from './src/StandardFrame.js';
 import ClearFrame from './src/ClearFrame.js';
 import FNMPromoFrame from './src/FNMPromoFrame.js';
+import proxyAutoOptions from './src/proxyAutoOptions.js';
 
 export default class FrameModule extends CardMagicianModule {
+    #options = null;
+
     async init(card) {
         card.frames = [
             DevoidFrame,
@@ -24,7 +27,7 @@ export default class FrameModule extends CardMagicianModule {
 
     get cardClasses() {
         const classes = [`color-${this.card.getCardColorKey()}`];
-        const meldStyle = this.card.meldStyle?.id || 'none';
+        const meldStyle = this.card.meldStyle || 'none';
         if (meldStyle !== 'none') classes.push(`meld-${meldStyle}`);
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
@@ -39,10 +42,9 @@ export default class FrameModule extends CardMagicianModule {
 
     async updateFrame(card) {
         if (!card.parent || card.rulesHTML === undefined) return;
-        const Frame = card.frames.find(frame => {
-            return frame.matches(card);
-        });
-        this.activeFrame = new Frame(card, this);
+        const wrapped = proxyAutoOptions(card, this.options);
+        const Frame = card.frames.find(frame => frame.matches(wrapped));
+        this.activeFrame = new Frame(wrapped, this);
         card.setAspectRatio(this.activeFrame.artDimensions);
         card.activeFrame = () => this.activeFrame;
         changed(card, 'activeFrame');
@@ -58,7 +60,7 @@ export default class FrameModule extends CardMagicianModule {
             'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
             'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle',
             'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle',
-            'ubStyle', 'meldStyle', 'otherFrameOptions', 'faceSymbol'
+            'ubStyle', 'meldStyle', 'otherFrameOptions', 'resolvedFaceSymbol'
         ], () => this.updateFrame(card));
     }
 
@@ -77,6 +79,6 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     get options() {
-        return makeOptions(this.frameOptions);
+        return this.#options ||= makeOptions(this.frameOptions);
     }
 }

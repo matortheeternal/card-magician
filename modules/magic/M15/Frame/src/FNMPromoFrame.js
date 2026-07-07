@@ -27,7 +27,7 @@ export default class FNMPromoFrame extends CardFrame.with(
     PT,
 ) {
     static matches(card) {
-        return card.frame.id === 'fnm';
+        return card.frame === 'fnm';
     }
 
     /* --- FRAME --- */

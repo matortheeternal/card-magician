@@ -1,6 +1,5 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
-import { resolveOption } from '../../../../modules/magic/M15/FaceSymbol/src/helpers.js';
 
 const selectDividerSpacing = '--spacing: var(--sl-spacing-3x-small)';
 
@@ -109,7 +108,7 @@ export default class SelectField extends FieldComponent {
 
     loadValue() {
         const [option, parent] = resolveOptionAndParent(
-            this.value?.id,
+            this.value?.id || this.value,
             this.field.options
         );
         this.renderTriggerButton(option, parent);
@@ -117,9 +116,7 @@ export default class SelectField extends FieldComponent {
     }
 
     async getChangedValue(event) {
-        const id = event.detail?.item?.value || this.value;
-        const [option] = resolveOptionAndParent(id, this.field.options);
-        return option;
+        return event.detail?.item?.value || this.value;
     }
 }
 

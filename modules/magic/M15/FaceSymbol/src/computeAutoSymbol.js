@@ -45,7 +45,8 @@ function findMatchingRule(str) {
 }
 
 export default function computeAutoSymbol(card, options) {
-    if (card.id !== 'front' && card.id !== 'back') return 'eldrazi';
+    if (card.id !== 'front' && card.id !== 'back')
+        return resolveOption(card, options, 'eldrazi');
     const defaultSymbolId = `${card.id}_triangle`;
     const otherSymbol = getOtherFaceSymbol(card);
     const [rule, matchData] = findMatchingRule(otherSymbol);
