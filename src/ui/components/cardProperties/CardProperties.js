@@ -1,37 +1,11 @@
-import { esc } from '../../../shared/htmlUtils.js';
-import { getTags } from '../../../domain/game/tagManager.js';
+import { getActiveGame } from '../../../domain/game/gameManager.js';
 import { getSelectedCard } from '../../../domain/sets/setManager.js';
-
-const L = localize('card-properties');
 
 function buildHTML(card) {
     if (!card) return '';
-    const tags = getTags();
     return (
-        `<sl-select
-          size="small"
-          label="${L`Tags`}"
-          name="tags"
-          value="${esc(card.tags.join(' '))}"
-          placeholder="${L`Click to add tags`}"
-          maxOptionsVisible="5"
-          clearable
-          multiple
-          hoist
-        >
-        ${tags.map(tag => (
-            `<sl-option value="${esc(tag.id)}">${tag.name}</sl-option>`
-        )).join('\n')}
-        </sl-select>
-        <sl-textarea
-          size="small"
-          resize="auto"
-          autocomplete="off"
-          label="${L`Notes`}"
-          name="notes"
-          value="${esc(card.notes)}"
-          rows="3"
-        ></sl-textarea>`
+        `<form-field field-id="tags"></form-field>
+        <form-field field-id="notes"></form-field>`
     );
 }
 
@@ -39,13 +13,13 @@ class CardProperties extends HTMLElement {
     #card;
 
     connectedCallback() {
+        this.setAttribute('data-form-provider', '');
         this.render();
         this.bind();
     }
 
-    bind(){
-        this.addEventListener('sl-input', this.onInput);
-        this.addEventListener('sl-change', this.onChange);
+    bind() {
+        this.addEventListener('cm-field-changed', this.save);
     }
 
     set card(card) {
@@ -53,36 +27,23 @@ class CardProperties extends HTMLElement {
         if (this.isConnected) this.render();
     }
 
-    get card() {
-        return this.#card;
+    get card() { return this.#card; }
+    get model() { return this.#card; }
+
+    get fields() {
+        const game = getActiveGame();
+        return game.baseCardFields;
     }
 
     render() {
         this.innerHTML = buildHTML(this.#card);
     }
 
-    updateNotes(e) {
-        if (e.target.name !== 'notes') return;
-        this.#card.notes = e.target.value;
+    save() {
         const selectedCard = getSelectedCard();
+        selectedCard.dirty = true;
         selectedCard.notes = this.#card.notes;
-        return true;
-    }
-
-    onInput(e) {
-        return this.updateNotes(e);
-    }
-
-    updateTags(e) {
-        if (e.target.name !== 'tags') return;
-        this.#card.tags = e.target.value;
-        const selectedCard = getSelectedCard();
         selectedCard.tags = this.#card.tags;
-        return true;
-    }
-
-    onChange(e) {
-        return this.updateTags(e);
     }
 }
 
