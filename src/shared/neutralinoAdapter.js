@@ -67,12 +67,20 @@ export async function readFile(path) {
 
 export async function writeFile(path, data) {
     log('fs').debug('writeFile', path, `${data.length} bytes`);
-    return wrapError(() => Neutralino.filesystem.writeFile(path, data));
+    return wrapError(async () => {
+        const { parentPath } = await Neutralino.filesystem.getPathParts(path);
+        await createDirectory(parentPath);
+        await Neutralino.filesystem.writeFile(path, data);
+    });
 }
 
 export async function writeBinaryFile(path, data) {
     log('fs').debug('writeBinaryFile', path, `${data.byteLength} bytes`);
-    return wrapError(() => Neutralino.filesystem.writeBinaryFile(path, data));
+    return wrapError(async () => {
+        const { parentPath } = await Neutralino.filesystem.getPathParts(path);
+        await createDirectory(parentPath);
+        await Neutralino.filesystem.writeBinaryFile(path, data);
+    });
 }
 
 export async function readBinaryFile(path) {

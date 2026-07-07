@@ -110,9 +110,6 @@ async function saveArtifact(exporter, localPath, artifact) {
     const setFolderPath = getSetFolderPath();
     const folder = exporter.folder;
     const filePath = await getJoinedPath(setFolderPath, 'dist', folder, localPath);
-    const parentPath = await getParentPath(filePath);
-    if (!await checkFolderExists(parentPath))
-        await createDirectory(parentPath);
     log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
 }

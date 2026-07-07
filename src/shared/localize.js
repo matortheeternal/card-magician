@@ -1,6 +1,5 @@
 import Localization from './Localization.js';
 import {
-    createDirectory,
     readDirectory,
     readFile,
     writeFile
@@ -91,7 +90,6 @@ const writeSchemaFile = (async function writeSchemaFile() {
     const json = JSON.stringify(schema, null, 2);
     const outputPath = `locales/schema.json`;
     log('plugin').log(`Writing localization schema to `, outputPath);
-    await createDirectory('locales').catch(() => {});
     await writeFile(outputPath, json);
 }).debounce(1000);
 

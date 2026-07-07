@@ -1,6 +1,6 @@
 import {
-    createDirectory, getJoinedPath, getMounts, getParentPath, mount, unmount,
-    writeBinaryFile, writeFile
+    getJoinedPath, getMounts, getParentPath,
+    mount, unmount, writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
@@ -31,7 +31,6 @@ async function saveCardImages(cardsFolderPath, baseName, card, fullSave) {
 
 async function saveCards(filePath, zippedCards, serializer, fullSave) {
     const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
-    await createDirectory(cardsFolderPath);
     for (const [baseName, card] of zippedCards) {
         if (!card.dirty && !fullSave) continue;
         progress.setOperation(`Saving card ${baseName}`);
