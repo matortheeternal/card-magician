@@ -1,13 +1,4 @@
-const tags = [{
-    id: 'wip',
-    name: 'Work in progress'
-}, {
-    id: 'removal',
-    name: 'Removal'
-}, {
-    id: 'bomb',
-    name: 'Bomb'
-}];
+const tags = [];
 
 export function getTags() {
     return tags.slice();
