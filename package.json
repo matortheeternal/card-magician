@@ -39,6 +39,7 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
     "codejar": "^4.3.0",
+    "fast-levenshtein": "^3.0.0",
     "highlight.js": "^11.11.1",
     "notepack.io": "^3.0.1",
     "sanitize-filename": "^1.6.3",
