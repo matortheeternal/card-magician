@@ -1,0 +1,14 @@
+cm-edit-tags-modal {
+    .tags-container {
+        display: grid;
+        grid-template-columns: minmax(auto, 16em) 0.5fr 0.5fr;
+        gap: var(--sl-spacing-x-small);
+        align-items: end;
+
+        > div {
+            display: contents;
+            font-size: var(--sl-input-font-size-small);
+            color: var(--sl-input-label-color);
+        }
+    }
+}
