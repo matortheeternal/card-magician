@@ -1,0 +1,11 @@
+cm-edit-tag {
+    display: contents;
+
+    form-field {
+        margin-top: 0;
+    }
+
+    .sl-select-field .sl-field__label {
+        display: none;
+    }
+}
