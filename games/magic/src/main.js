@@ -10,6 +10,7 @@ import SetInfoModal from './ui/setInfoModal/SetInfoModal.js';
 import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
 import mtg from './domain/hljsMtg.js';
+import baseCardFields from './baseCardFields.js';
 
 const SET_FILE_VERSION = 1;
 
@@ -75,6 +76,10 @@ export default class MagicTheGathering extends CardMagicianGame {
         cardFace.showPT = Boolean(cardFace.power || cardFace.toughness);
         cardFace.rarity ??= 'common';
         cardFace.colors = getCardFaceColors(cardFace);
+    }
+
+    get baseCardFields() {
+        return Object.values(baseCardFields);
     }
 
     newCard() {
