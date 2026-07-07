@@ -13,8 +13,13 @@ export function getTags() {
     return tags.slice();
 }
 
-export function addTag(id, name) {
-    if (tags.some(tag => tag.id === id))
-        throw new Error(`tag id ${id} already used`);
-    tags.push({id, name});
+export function findOrCreateTag(text) {
+    const existingTag = tags.find(tag => tag.text === text);
+    if (existingTag) return existingTag;
+    const newTag = {
+        text,
+        variant: 'neutral'
+    };
+    tags.push(newTag);
+    return newTag;
 }
