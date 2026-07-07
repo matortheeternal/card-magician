@@ -1,3 +1,5 @@
+import fuzzysort from 'fuzzysort';
+
 const tags = [];
 
 export function getTags() {
@@ -13,4 +15,12 @@ export function findOrCreateTag(text) {
     };
     tags.push(newTag);
     return newTag;
+}
+
+export function searchTags(value) {
+    if (!value.trim().length) return [];
+    return fuzzysort.go(value, tags, {
+        key: 'text',
+        limit: 20
+    }).map(r => r.obj);
 }
