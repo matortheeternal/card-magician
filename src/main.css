@@ -14,9 +14,11 @@
 @import "ui/modals/automateModal/automateModal.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
+@import "ui/modals/editTagsModal/editTagsModal.css";
 @import "ui/modals/progressModal/progressModal.css";
 @import "ui/modals/setInfoModal/setInfoModal.css";
 @import "ui/components/cardForm/cardForm.css";
+@import "ui/components/editTag/editTag.css";
 @import "ui/components/faceForm/faceForm.css";
 @import "ui/components/fieldComponents/checkboxListField.css";
 @import "ui/components/fieldComponents/codeEditorField.css";

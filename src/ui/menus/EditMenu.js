@@ -3,6 +3,7 @@ import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';
 import { getActiveSet } from '../../domain/sets/setManager.js';
 import { getAvailableLocales, prepareSchema } from '../../shared/localize.js';
+import { getTags } from '../../domain/game/tagManager.js';
 
 const L = localize('title-bar');
 
@@ -22,6 +23,9 @@ export default class EditMenu extends ReactiveMenu {
             this.DIVIDER,
             this.menuItem(L`Set Info`, ``, () => {
                 openModal('cm-set-info-modal', getActiveSet());
+            }),
+            this.menuItem(L`Tags`, ``, () => {
+                openModal('cm-edit-tags-modal', getTags());
             }),
             this.menuItem(L`Preferences`, ``, () => log('user').info('Edit preferences')),
             this.menuItem(L`Localization`, ``, async () => {
