@@ -55,8 +55,10 @@ async function updateProjectMount(filePath) {
 }
 
 export async function saveProjectTags(filePath) {
+    const projectTags = getTags();
+    if (!projectTags.length) return;
     const tagsPath = await getJoinedPath(filePath, '..', 'tags.yml');
-    await YAMLSerializer.save(tagsPath, getTags());
+    await YAMLSerializer.save(tagsPath, projectTags);
 }
 
 export async function saveProject(filePath, data, fullSave) {
