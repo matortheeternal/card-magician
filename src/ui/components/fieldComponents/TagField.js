@@ -1,12 +1,17 @@
 import FieldComponent from './FieldComponent.js';
-import { emit, hide, show } from '../../../shared/htmlUtils.js';
+import { emit } from '../../../shared/htmlUtils.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import { findOrCreateTag, searchTags } from '../../../domain/game/tagManager.js';
 
 export default class TagField extends FieldComponent {
     static tagName = 'cm-tags';
     eventKey = 'sl-change';
-
+    focusedOptionIndex = -1;
+    onKeyDownHandlers = {
+        Enter: () => this.handleEnter(),
+        ArrowDown: event => this.handleArrowDown(event),
+        ArrowUp: event => this.handleArrowUp(event),
+    };
 
     static matches(field) {
         return field.type === 'tags';
@@ -18,7 +23,6 @@ export default class TagField extends FieldComponent {
             onItemSelected: event => this.onItemSelected(event)
         });
         this.addEventListener('sl-remove', event => this.handleRemove(event));
-        this.addEventListener('keydown', event => this.handleKeyDown(event));
         this.addEventListener('input', () => this.handleInput());
     }
 
@@ -38,6 +42,13 @@ export default class TagField extends FieldComponent {
         return this.querySelector('div.menu');
     }
 
+    bindKeyDown() {
+        this.textInput.addEventListener('keydown', event => {
+            const handler = this.onKeyDownHandlers[event.key];
+            handler?.(event);
+        });
+    }
+
     render() {
         this.innerHTML = (
             `<label class="form-control__label" aria-hidden="false">
@@ -52,6 +63,7 @@ export default class TagField extends FieldComponent {
             </div>`
         );
         this.loadValue();
+        this.bindKeyDown();
     }
 
     createTagElement(tagText) {
@@ -89,13 +101,40 @@ export default class TagField extends FieldComponent {
         this.textInput.focus();
     }
 
-    handleKeyDown(event) {
-        if (event.key !== 'Enter') return;
-        const value = this.textInput.value.trim();
+    handleEnter() {
+        const value = this.focusedOptionIndex > -1
+            ? this.querySelector('sl-option.active')?.value
+            : this.textInput.value.trim();
         if (!value) return;
         this.addTag(value);
         this.popup.removeAttribute('active');
         this.textInput.value = '';
+    }
+
+    focusOption() {
+        const options = Array.from(this.querySelectorAll('sl-option'));
+        for (let i = 0; i < options.length; i++) {
+            const active = this.focusedOptionIndex === i;
+            options[i].classList.toggle('active', active);
+        }
+    }
+
+    handleArrowDown(event) {
+        event.preventDefault();
+        this.focusedOptionIndex = Math.min(
+            this.maxOptionIndex,
+            this.focusedOptionIndex + 1
+        );
+        this.focusOption();
+    }
+
+    handleArrowUp(event) {
+        event.preventDefault();
+        this.focusedOptionIndex = Math.max(
+            0,
+            this.focusedOptionIndex - 1
+        );
+        this.focusOption();
     }
 
     generateNewTagItem(newTagText) {
@@ -116,6 +155,8 @@ export default class TagField extends FieldComponent {
         if (!matches.some(tag => tag.text === newTagText))
             menuItems.push(this.generateNewTagItem(newTagText));
         this.menu.innerHTML = menuItems.join('\n');
+        this.maxOptionIndex = menuItems.length - 1;
+        this.focusedOptionIndex = -1;
         this.popup.setAttribute('active', '');
     }
 

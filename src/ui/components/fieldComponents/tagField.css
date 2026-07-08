@@ -13,6 +13,11 @@ cm-tags {
         sl-option::part(label) {
             font-size: var(--sl-font-size-small);
         }
+
+        sl-option.active::part(base) {
+            background-color: var(--sl-color-neutral-100);
+            color: var(--sl-color-neutral-1000);
+        }
     }
 
     div.input {
