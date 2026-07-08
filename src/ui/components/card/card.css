@@ -6,6 +6,8 @@ cm-card {
 cm-card.flip-container {
     display: block;
     position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 cm-card.flipping {
