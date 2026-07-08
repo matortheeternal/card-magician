@@ -1,79 +1,6 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
-
-const selectDividerSpacing = '--spacing: var(--sl-spacing-3x-small)';
-
-function menuPrefixIcon(option) {
-    if (!option || !option.imageUrl) return '';
-    return `<img class="icon" slot="prefix" src="${option.imageUrl}" />`;
-}
-
-function submenu(option) {
-    return `<sl-menu-item data-id="${option.id}" data-has-submenu>
-    ${menuPrefixIcon(option.items[0])}
-    ${option.name}
-    <sl-menu slot="submenu">
-      ${option.items.map(sub => menuItem(sub)).join('')}
-    </sl-menu>
-  </sl-menu-item>`;
-}
-
-function menuItem(option) {
-    return `<sl-menu-item value="${option.id}" data-id="${option.id}">
-        ${menuPrefixIcon(option)}
-        ${option.name}
-    </sl-menu-item>`;
-}
-
-function buildSelectHTML(label, options) {
-    const optionsHTML = (options || []).map(option => {
-        if (option.separator)
-            return `<sl-divider style="${selectDividerSpacing}"></sl-divider>`;
-
-        if (option.items)
-            return submenu(option);
-
-        return menuItem(option);
-    }).join('');
-
-    const optionsHaveIcons = options.some(opt => Boolean(opt.imageUrl));
-    const className = [
-        'sl-select-field',
-        optionsHaveIcons ? ['has-icons'] : []
-    ].flat().join(' ');
-    return(
-        `<div class="${className}">
-             <div class="sl-field__label">${label ?? ''}</div>
-             <sl-dropdown class="select-like" hoist sync="width">
-                 <sl-button slot="trigger" size="small" caret></sl-button>
-                 <sl-menu>${optionsHTML}</sl-menu>
-             </sl-dropdown>
-         </div>`
-    );
-}
-
-function resolveOptionAndParent(selectedOption, options) {
-    if (!selectedOption || !Array.isArray(options)) return [null, null];
-
-    for (const option of options) {
-        if (option.id === selectedOption) return [option, null];
-        if (!option.items) continue;
-        for (const item of option.items)
-            if (item.id === selectedOption) return [item, option];
-    }
-    return [null, null];
-}
-
-function buildTriggerHTML(option, parent, rawValue) {
-    if (!option) {
-        return rawValue
-            ? `<span class="unknown-value">ERROR: ${rawValue}</span>`
-            : `<span class="no-selection">No Selection</span>`;
-    }
-    let html = menuPrefixIcon(option);
-    if (parent) html += parent.name + ' / ';
-    return html + option.name;
-}
+import { esc } from '../../../shared/htmlUtils.js';
 
 export default class SelectField extends FieldComponent {
     static tagName = 'cm-select';
@@ -83,36 +10,31 @@ export default class SelectField extends FieldComponent {
         return field.type === 'select';
     }
 
-    render() {
-        this.innerHTML = buildSelectHTML(this.field.label, this.field.options);
-        this.loadValue();
+    get select() {
+        return this.querySelector('sl-select');
     }
 
-    isSelected(el, groupId) {
-        const itemId = el.getAttribute('data-id');
-        return itemId === this.value
-            || itemId === groupId;
+    renderOptions() {
+        return this.field.options.map(opt => (
+            `<sl-option value="${opt.id}">${opt.name}</sl-option>`
+        )).join('\n');
+    }
+
+    render() {
+        this.innerHTML = (
+            `<sl-select
+              size="small"
+              name="${esc(this.field.id)}"
+              label="${esc(this.field.label)}"
+              value="${esc(this.value)}"
+            >${this.renderOptions()}</sl-select>`
+        );
     }
 
     updateSelectedClasses(groupId) {
         this.querySelectorAll('sl-menu-item').forEach(el => {
             el.classList.toggle('selected', this.isSelected(el, groupId));
         });
-    }
-
-    renderTriggerButton(option, parent) {
-        const triggerButton = this.querySelector(`sl-button[slot="trigger"]`);
-        if (!triggerButton) return;
-        triggerButton.innerHTML = buildTriggerHTML(option, parent, this.value);
-    }
-
-    loadValue() {
-        const [option, parent] = resolveOptionAndParent(
-            this.value?.id || this.value,
-            this.field.options
-        );
-        this.renderTriggerButton(option, parent);
-        this.updateSelectedClasses(parent?.id);
     }
 
     async getChangedValue(event) {

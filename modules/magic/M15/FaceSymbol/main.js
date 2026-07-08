@@ -17,7 +17,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     async init(card) {
         this.faceSymbolField = {
             id: 'faceSymbol',
-            type: 'select',
+            type: 'nested-menu',
             label: L`Face Symbol`,
             options: makeSymbolOptions(),
             default: null
