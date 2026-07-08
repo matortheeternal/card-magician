@@ -14,9 +14,11 @@ export default class TagField extends FieldComponent {
 
     bind() {
         super.bind();
+        this.handleEvents('click', {
+            onItemSelected: event => this.onItemSelected(event)
+        });
         this.addEventListener('sl-remove', event => this.handleRemove(event));
         this.addEventListener('keydown', event => this.handleKeyDown(event));
-        this.addEventListener('sl-select', event => this.onItemSelected(event));
         this.addEventListener('input', () => this.handleInput());
     }
 
@@ -28,8 +30,12 @@ export default class TagField extends FieldComponent {
         return this.querySelector('input[type="text"]');
     }
 
+    get popup() {
+        return this.querySelector('sl-popup');
+    }
+
     get menu() {
-        return this.querySelector('sl-menu');
+        return this.querySelector('div.menu');
     }
 
     render() {
@@ -39,8 +45,10 @@ export default class TagField extends FieldComponent {
             </label>
             <div class="input">
                 <div class="active-tags"></div>
-                <input type="text" placeholder="Add tag..." />
-                <sl-menu style="display: none; "></sl-menu>
+                <sl-popup placement="bottom-start">
+                    <input slot="anchor" type="text" placeholder="Add tag..." />
+                    <div class="menu"></div>
+                </sl-popup>
             </div>`
         );
         this.loadValue();
@@ -75,9 +83,8 @@ export default class TagField extends FieldComponent {
     }
 
     onItemSelected(event) {
-        const item = event.detail.item;
-        this.addTag(item.value);
-        hide(this.menu);
+        this.addTag(event.target.value);
+        this.popup.removeAttribute('active');
         this.textInput.value = '';
         this.textInput.focus();
     }
@@ -87,32 +94,34 @@ export default class TagField extends FieldComponent {
         const value = this.textInput.value.trim();
         if (!value) return;
         this.addTag(value);
-        hide(this.menu);
+        this.popup.removeAttribute('active');
         this.textInput.value = '';
     }
 
     generateNewTagItem(newTagText) {
         return (
-            `<sl-menu-item value="${newTagText}">
+            `<sl-option data-click-action="onItemSelected" value="${newTagText}">
                 Add new tag "${newTagText}"
-            </sl-menu-item>`
+            </sl-option>`
         );
     }
 
     renderMenu(matches) {
         const newTagText = this.textInput.value.trim().toLowerCase().replaceAll(' ', '-');
-        const menuItems = matches.map(tag => {
-            return `<sl-menu-item value="${tag.text}">${tag.text}</sl-menu-item>`;
-        });
+        const menuItems = matches.map(tag => (
+            `<sl-option data-click-action="onItemSelected" value="${tag.text}">
+                ${tag.text}
+            </sl-option>`
+        ));
         if (!matches.some(tag => tag.text === newTagText))
             menuItems.push(this.generateNewTagItem(newTagText));
         this.menu.innerHTML = menuItems.join('\n');
-        show(this.menu);
+        this.popup.setAttribute('active', '');
     }
 
     handleInput() {
         if (!this.textInput.value.trim().length) {
-            hide(this.menu);
+            this.popup.removeAttribute('active');
             return;
         }
 

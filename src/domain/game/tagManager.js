@@ -31,10 +31,10 @@ export function deleteTag(tag) {
     projectTags.remove(tag);
 }
 
-export function searchTags(value) {
+export function searchTags(value, limit=9) {
     if (!value.trim().length) return [];
     return fuzzysort.go(value, tags.concat(projectTags), {
         key: 'text',
-        limit: 20
+        limit
     }).map(r => r.obj);
 }

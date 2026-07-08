@@ -4,6 +4,10 @@ cm-card-properties {
     margin-top: 0;
     font-family: var(--sl-font-sans);
     min-height: 0;
+
+    form-field[field-id="tags"] {
+        z-index: 2;
+    }
 }
 
 cm-card-properties sl-textarea::part(textarea) {

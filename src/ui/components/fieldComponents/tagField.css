@@ -1,17 +1,18 @@
 cm-tags {
-    sl-menu {
-        position: absolute;
-        z-index: 10;
-        width: 100%;
-        height: auto;
-        top: 95%;
-    }
-
     label.form-control__label {
         display: inline-block;
         font-size: var(--sl-input-label-font-size-small);
         color: var(--sl-input-label-color);
         margin-bottom: var(--sl-spacing-3x-small);
+    }
+
+    div.menu {
+        background: var(--sl-input-background-color);
+        border: 1px solid var(--sl-input-border-color);
+
+        sl-option::part(label) {
+            font-size: var(--sl-font-size-small);
+        }
     }
 
     div.input {
