@@ -32,7 +32,7 @@ const templateField = () => ({
         name: template.label
     })),
     onChange: (model, newValue) => {
-        executeAction('change-template', model.id, newValue.id);
+        executeAction('change-template', model.id, newValue);
     }
 });
 
