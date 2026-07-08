@@ -56,7 +56,13 @@ export default class TagField extends FieldComponent {
             </label>
             <div class="input">
                 <div class="active-tags"></div>
-                <sl-popup placement="bottom-start" shift shift-padding="22">
+                <sl-popup
+                    placement="bottom-start"
+                    shift
+                    shift-padding="22"
+                    strategy="fixed"
+                    auto-size="vertical"
+                    auto-size-padding="5">
                     <input slot="anchor" type="text" placeholder="Add tag..." />
                     <div class="menu"></div>
                 </sl-popup>

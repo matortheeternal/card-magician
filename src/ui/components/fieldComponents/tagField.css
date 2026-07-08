@@ -1,4 +1,6 @@
 cm-tags {
+    --auto-size-available-height: 24rem;
+
     label.form-control__label {
         display: inline-block;
         font-size: var(--sl-input-label-font-size-small);
@@ -9,7 +11,7 @@ cm-tags {
     div.menu {
         background: var(--sl-input-background-color);
         border: 1px solid var(--sl-input-border-color);
-        max-height: 24rem;
+        max-height: min(24rem, var(--auto-size-available-height));
         min-width: max-content;
         overflow: auto;
 

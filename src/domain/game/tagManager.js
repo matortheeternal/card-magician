@@ -31,7 +31,7 @@ export function deleteTag(tag) {
     projectTags.remove(tag);
 }
 
-export function searchTags(value, limit=9) {
+export function searchTags(value, limit = 8) {
     if (!value.trim().length) return [];
     return fuzzysort.go(value, tags.concat(projectTags), {
         key: 'text',
