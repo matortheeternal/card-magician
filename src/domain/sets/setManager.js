@@ -137,6 +137,12 @@ export function getOpenedSetPath() {
     return setFilePath;
 }
 
+export function removeTagFromSet(tag) {
+    for (const card of activeSet.cards)
+        card.tags?.remove?.(tag.text);
+    changed(activeCard, 'tags');
+}
+
 registerAction('add-face', faceId => {
     log('state').debug('add face', faceId);
     selectedCard[faceId] = {};

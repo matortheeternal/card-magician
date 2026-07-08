@@ -1,6 +1,8 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import editTagFields from './editTagFields.js';
+import { deleteTag } from '../../../domain/game/tagManager.js';
+import { removeTagFromSet } from '../../../domain/sets/setManager.js';
 
 export default class EditTag extends ReactiveComponent {
     #tag = null;
@@ -30,8 +32,8 @@ export default class EditTag extends ReactiveComponent {
     async render() {
         this.innerHTML = (
             `<div>
-                <sl-tag size="medium" variant="${this.model.variant}">
-                    ${this.model.text}
+                <sl-tag size="medium" variant="${this.tag.variant}">
+                    ${this.tag.text}
                 </sl-tag>
             </div>
             <form-field field-id="variant"></form-field>
@@ -47,7 +49,9 @@ export default class EditTag extends ReactiveComponent {
     }
 
     onRemoveClick() {
-        // TODO
+        removeTagFromSet(this.tag);
+        deleteTag(this.tag);
+        this.remove();
     }
 
     onChange() {

@@ -27,6 +27,10 @@ export function findOrCreateTag(text) {
     return newTag;
 }
 
+export function deleteTag(tag) {
+    projectTags.remove(tag);
+}
+
 export function searchTags(value) {
     if (!value.trim().length) return [];
     return fuzzysort.go(value, tags.concat(projectTags), {
