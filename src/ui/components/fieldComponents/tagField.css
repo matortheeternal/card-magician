@@ -9,6 +9,9 @@ cm-tags {
     div.menu {
         background: var(--sl-input-background-color);
         border: 1px solid var(--sl-input-border-color);
+        max-height: 24rem;
+        min-width: max-content;
+        overflow: auto;
 
         sl-option::part(label) {
             font-size: var(--sl-font-size-small);
