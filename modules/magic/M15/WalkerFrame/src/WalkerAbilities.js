@@ -3,11 +3,22 @@ const WalkerAbilitiesMixin = {
         return this.resolveWalkerAssetPath(`loyalty/${type}.png`);
     },
 
+    resolveAbilityBorder(type) {
+        const source = this.resolveWalkerAssetPath(`stripe/${type}.png`);
+        return this.ctx.makeTransparent(source, 0.5).publish();
+    },
+
     async resolveAbilities() {
         const style = {
             '--walker-ability-plus-bg': `url("${this.resolveCostIcon('plus')}")`,
             '--walker-ability-minus-bg': `url("${this.resolveCostIcon('minus')}")`,
             '--walker-ability-zero-bg': `url("${this.resolveCostIcon('zero')}")`,
+            '--walker-ability-top-bg': `url("${
+                await this.resolveAbilityBorder('top')
+            }")`,
+            '--walker-ability-bottom-bg': `url("${
+                await this.resolveAbilityBorder('bottom')
+            }")`,
         };
         return { id: 'walker-ability', style };
     }

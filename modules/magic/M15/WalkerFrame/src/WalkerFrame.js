@@ -4,7 +4,6 @@ import TrimMasks from '../../Frame/src/mixins/TrimMasks.js';
 import Border from '../../Frame/src/mixins/Border.js';
 import Node from '../../Frame/src/mixins/Node.js';
 import WalkerAbilities from './WalkerAbilities.js';
-import WalkerAbilityBackgrounds from './WalkerAbilityBackgrounds.js';
 
 export default class WalkerFrame extends CardFrame.with(
     Frame,
@@ -12,7 +11,6 @@ export default class WalkerFrame extends CardFrame.with(
     Border,
     Node,
     WalkerAbilities,
-    WalkerAbilityBackgrounds,
 ) {
     get frameExt() {
         return '.png';

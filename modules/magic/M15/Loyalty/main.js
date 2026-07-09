@@ -10,7 +10,7 @@ export default class LoyaltyModule extends CardMagicianModule {
         const style = `background-image: url('${loyaltyImage}')`;
         return (
             `<div class="loyalty-text" style="${style}">
-                ${this.escapeHTML(card.loyalty)}
+                <div style="position: relative;">${this.escapeHTML(card.loyalty)}</div>
             </div>`
         );
     }

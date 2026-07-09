@@ -17,9 +17,18 @@ function parseAbility(match) {
     };
 }
 
+function abiltiyBackgroundParts(index) {
+    if (index % 2 !== 0) return '';
+    return (
+        `<div class="border-top"></div>
+        <div class="middle-bg"></div>
+        <div class="border-bottom"></div>`
+    );
+}
+
 const abilityConverters = [{
     match: str => str.match(abilityExpr),
-    convert: (match, convertParagraphs) => {
+    convert: (match, convertParagraphs, index) => {
         const { type, cost, content } = parseAbility(match);
         return (
             `<div class="walker-ability">
@@ -28,6 +37,7 @@ const abilityConverters = [{
                     <div class="colon">:</div>
                 </div>
                 <div class="walker-ability-content">
+                    ${abiltiyBackgroundParts(index)}
                     ${convertParagraphs(content)}
                 </div>
             </div>`
@@ -35,15 +45,17 @@ const abilityConverters = [{
     }
 }, {
     match: str => str.match(/^([\s\S]+?)(?=[+−-]?(\d+|X):)/),
-    convert: (match, convertParagraphs) => (
+    convert: (match, convertParagraphs, index) => (
         `<div class="walker-static-ability">
+            ${abiltiyBackgroundParts(index)}
             ${convertParagraphs(match[1])}
         </div>`
     )
 }, {
     match: str => str.match(/^([\s\S]+?)$/),
-    convert: (match, convertParagraphs) => (
+    convert: (match, convertParagraphs, index) => (
         `<div class="walker-static-ability">
+            ${abiltiyBackgroundParts(index)}
             ${convertParagraphs(match[1])}
         </div>`
     )
@@ -63,10 +75,12 @@ export const AbilityConverter = {
     convert(match, { convertParagraphs }) {
         const html = [];
         let remainingStr = match[0];
+        let index = 0;
         while (remainingStr.length) {
             const [converter, match] = getAbilityConverter(remainingStr);
             if (!converter) throw new Error('Unknown ability');
-            html.push(converter.convert(match, convertParagraphs));
+            html.push(converter.convert(match, convertParagraphs, index));
+            index++;
             remainingStr = remainingStr.slice(match[0].length).trimStart();
         }
         return html.join('');

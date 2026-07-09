@@ -2,16 +2,19 @@
     --walker-ability-plus-bg: 'none';
     --walker-ability-minus-bg: 'none';
     --walker-ability-zero-bg: 'none';
+    --walker-ability-top-bg: 'none';
+    --walker-ability-bottom-bg: 'none';
+    --walker-ability-middle-offset: 5px;
 }
 
 module-container[module="WalkerText"] {
     display: flex;
     position: relative;
     overflow: hidden;
-    z-index: 2;
-    padding: 8px 13px 16px 0;
+    padding: 0 13px 7px 0;
     height: 163px;
     margin-bottom: 0.5px;
+    background-color: rgba(255, 255, 255, 0.3);
     --chop-top: 0px;
     --chop-bottom: 0px;
 }
@@ -76,10 +79,70 @@ module-container[module="WalkerText"] {
 
         &:first-of-type {
             margin-top: 0;
+            padding-top: 8px;
+
+            .border-top {
+                display: none;
+            }
+
+            .middle-bg {
+                top: 0;
+                height: calc(100% - var(--walker-ability-middle-offset));
+            }
         }
 
         &:last-of-type {
             margin-bottom: 0;
+            padding-bottom: 8px;
+
+            .border-bottom {
+                display: none;
+            }
+
+            .middle-bg {
+                height: calc(100% - var(--walker-ability-middle-offset));
+            }
+        }
+    }
+
+    .walker-ability-content, .walker-static-ability {
+        position: relative;
+
+        .border-top {
+            position: absolute;
+            left: 31px;
+            top: calc(var(--walker-ability-middle-offset) - 13px);
+            height: 13px;
+            width: 300px;
+            background: var(--walker-ability-top-bg);
+        }
+
+        .middle-bg {
+            position: absolute;
+            left: 31px;
+            top: var(--walker-ability-middle-offset);
+            height: calc(100% - 2 * var(--walker-ability-middle-offset));
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .border-bottom {
+            position: absolute;
+            left: 31px;
+            bottom: calc(var(--walker-ability-middle-offset) - 20px);
+            height: 20px;
+            width: 300px;
+            background: var(--walker-ability-bottom-bg);
+        }
+
+        p {
+            position: relative;
+        }
+    }
+
+    .walker-ability-content {
+        .border-top, .middle-bg, .border-bottom {
+            left: -23px;
         }
     }
 
@@ -97,6 +160,7 @@ module-container[module="WalkerText"] {
     .walker-ability-cost {
         display: flex;
         align-items: center;
+        z-index: 10;
 
         div.cost {
             background-size: 100%;
