@@ -1,9 +1,12 @@
+cm-face-form, cm-options-form {
+    font-family: var(--sl-font-sans);
+}
+
 cm-face-form > div,
 cm-options-form > div {
     display: flex;
     flex-direction: column;
     position: relative;
-    font-family: var(--sl-font-sans);
 }
 
 form-group {
