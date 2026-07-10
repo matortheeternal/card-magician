@@ -4,7 +4,7 @@ import { esc } from '../../../shared/htmlUtils.js';
 
 export default class SelectField extends FieldComponent {
     static tagName = 'cm-select';
-    eventKey = 'sl-select';
+    eventKey = 'sl-change';
 
     static matches(field) {
         return field.type === 'select';
@@ -38,7 +38,7 @@ export default class SelectField extends FieldComponent {
     }
 
     async getChangedValue(event) {
-        return event.detail?.item?.value || this.value;
+        return event.target.value;
     }
 }
 
