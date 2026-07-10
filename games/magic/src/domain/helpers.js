@@ -8,7 +8,8 @@ export function isColorless(card) {
 }
 
 export function isMonoColor(card, color) {
-    return card.front.colors?.length === 1
+    return !isLand(card)
+        && card.front.colors?.length === 1
         && card.front.colors[0].name === color;
 }
 
@@ -25,7 +26,8 @@ export function isBasicLand(card) {
 }
 
 export function isMulticolor(card) {
-    return card.front.colors?.length
+    return  !isLand(card)
+        && card.front.colors?.length
         && card.front.colors.length > 1;
 }
 
@@ -35,4 +37,8 @@ export function isToken(card) {
 
 export function isEmblem(card) {
     return /\bEmblem\b/i.test(card.front.superType || '');
+}
+
+export function isCreature(card) {
+    return /\bCreature\b/i.test(card.front.superType || '');
 }

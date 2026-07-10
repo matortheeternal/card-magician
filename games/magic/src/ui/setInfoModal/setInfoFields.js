@@ -43,6 +43,8 @@ export const collectorNumberFormatField = {
     label: L`Collector Number Format`,
     type: 'select',
     options: [
+        { id: 'cardCodes', name: L`Card Codes` },
+        { id: 'static', name: L`Static (TEST)` },
         { id: 'four', name: '0001' },
         { id: 'threeOutOf', name: '001/999' },
     ]

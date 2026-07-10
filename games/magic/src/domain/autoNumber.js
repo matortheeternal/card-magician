@@ -1,6 +1,6 @@
 import {
     isUninitializedCard, isColorless, isMonoColor,
-    isMulticolor, isArtifact, isLand, isBasicLand, isToken, isEmblem
+    isMulticolor, isArtifact, isLand, isBasicLand, isToken, isEmblem, isCreature
 } from './helpers.js';
 
 export const numberingRules = [
@@ -27,9 +27,11 @@ export function collectorNumberSort(a, b) {
 }
 
 export function formatCollectorNumber(set, num, suffix = '') {
-    if (set.collectorNumberFormat.id === 'four')
+    if (set.collectorNumberFormat === 'static')
+        return 'TEST';
+    if (set.collectorNumberFormat === 'four')
         return num.toString().padStart(4, '0') + suffix;
-    if (set.collectorNumberFormat.id === 'threeOutOf') {
+    if (set.collectorNumberFormat === 'threeOutOf') {
         const current = num.toString().padStart(3, '0') + suffix;
         const max = set.cards.length.toString().padStart(3, '0');
         return `${current} / ${max}`;
@@ -52,10 +54,59 @@ function sortAndNumber(set, cards) {
         setAutoNumber(set, card, i + 1);
 }
 
-export function autoNumberCards(set) {
+function cardCodeSort(a, b) {
+    const aCreature = isCreature(a);
+    const bCreature = isCreature(b);
+    if (aCreature && !bCreature) return -1;
+    if (!aCreature && bCreature) return 1;
+    const acmc = parseInt(a.front?.manaCost?.cmc) || 0;
+    const bcmc = parseInt(b.front?.manaCost?.cmc) || 0;
+    return acmc - bcmc;
+}
+
+function getCardCodeGroup(card) {
+    const rarity = card?.front?.rarity || 'common';
+    const R = rarity.slice(0, 1).toUpperCase();
+    if (isToken(card) || isEmblem(card)) return `T`;
+    if (isBasicLand(card)) return `B`;
+    if (isLand(card)) return `${R}L`;
+    if (isArtifact(card) && !card.front.colors?.length) return `${R}A`;
+    if (isColorless(card)) return `${R}C`;
+    if (isMulticolor(card)) return `${R}Z`;
+    try {
+        return R + card.front.colors[0].char.toUpperCase();
+    } catch {
+        return `${R}?`;
+    }
+}
+
+function assignCardCode(key, card, index) {
+    card.front.autoCollectorNumber = [
+        key,
+        index.toString().padStart(2, '0')
+    ].join('');
+}
+
+function applyCardCodes(set) {
+    const groups = Object.groupBy(set.cards, getCardCodeGroup);
+    for (const [key, value] of Object.entries(groups)) {
+        value.sort(cardCodeSort);
+        for (let i = 0; i < value.length; i++)
+            assignCardCode(key, value[i], i + 1);
+    }
+}
+
+function applyCollectorNumbers(set) {
     const groups = Object.groupBy(set.cards, card => {
         return isToken(card) || isEmblem(card) ? 'tokens' : 'main';
     });
     sortAndNumber(set, groups.main);
     sortAndNumber(set, groups.tokens);
+}
+
+export function autoNumberCards(set) {
+    const numberFn = set.collectorNumberFormat === 'cardCodes'
+        ? applyCardCodes
+        : applyCollectorNumbers;
+    numberFn(set);
 }

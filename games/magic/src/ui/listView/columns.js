@@ -110,7 +110,7 @@ export function buildColumns() {
         width: '50px',
         data: row => {
             const number = row.front.collectorNumber || row.front.autoCollectorNumber;
-            return (parseInt(number) || 0).toString().padStart(4, '0');
+            return number.padStart(4, '0');
         },
         compare: compareRowCNs
     }];
