@@ -11,7 +11,7 @@ const ParagraphConverter = {
         const useQuoteTag = content.match(/^["“](.+?)["”]$/);
         const useCiteTag = content.match(/^(--|—)/);
         if (useCiteTag) return `<cite>${content}</cite>`;
-        if (useQuoteTag) return `<q>${useQuoteTag[1]}</q>`;
+        if (useQuoteTag) return `<q>“${useQuoteTag[1]}”</q>`;
         return `<p>${content}</p>`;
     }
 };
@@ -98,5 +98,5 @@ export default function textToHTML(text, card, {
 
     const options = { state: {}, convertParagraphs, card, outputSymbols };
     const converters = [...structureConverters, ParagraphConverter];
-    return convertText(text, converters, options);
+    return convertText(text.trim(), converters, options);
 }

@@ -98,5 +98,9 @@ module-container[module="Text"] {
             display: block;
             margin: 0.25em 0;
         }
+
+        q::before, q::after {
+            content: none;
+        }
     }
 }
