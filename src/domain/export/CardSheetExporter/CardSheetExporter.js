@@ -64,9 +64,19 @@ export default class CardSheetExporter extends CardMagicianExporter {
         this.sheets.push(new CardSheetPair(this.config, sheetNumber));
     }
 
+    get selectedCards() {
+        const listView = document.querySelector('cm-list-view');
+        const selection = listView.selection;
+        return this.activeSet.cards.filter(card => {
+            return selection.length === 1 || selection.some(row => {
+                return row.original === card;
+            });
+        });
+    }
+
     async prepare() {
         this.sheets = [];
-        for (const card of this.activeSet.cards) {
+        for (const card of this.selectedCards) {
             if (!this.activeSheet?.hasSpaceFor(card))
                 this.appendNewCardSheet();
             this.activeSheet.add(card);
