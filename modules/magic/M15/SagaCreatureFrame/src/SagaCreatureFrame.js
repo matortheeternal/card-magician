@@ -2,14 +2,10 @@ import CardFrame from '../../Frame/src/CardFrame.js';
 import Frame from '../../Frame/src/mixins/Frame.js';
 import Border from '../../Frame/src/mixins/Border.js';
 import PT from '../../Frame/src/mixins/PT.js';
-import Bookmark from '../../SagaFrame/src/Bookmark.js';
-import BookmarkStripe from '../../SagaFrame/src/BookmarkStripe.js';
 
 export default class SagaCreatureFrame extends CardFrame.with(
     Frame,
     Border,
-    Bookmark,
-    BookmarkStripe,
     PT,
 ) {
     static matches() {
