@@ -97,8 +97,15 @@ const outputHandlers = [{
     write: async (filePath, output) => writeBinaryFile(filePath, output)
 }];
 
+async function getFilePath(exporter, localPath) {
+    const setFolderPath = getSetFolderPath();
+    const folder = exporter.folder;
+    return getJoinedPath(setFolderPath, 'dist', folder, localPath);
+}
+
 async function saveArtifact(exporter, localPath, artifact) {
     const output = await artifact.toBuffer();
+    const hash = await artifact.hash(output);
     if (!output) return;
     const handler = outputHandlers.find(h => h.match(output));
     if (!handler) {
@@ -107,9 +114,10 @@ async function saveArtifact(exporter, localPath, artifact) {
             + `  ${typeof output}, constructor ${output?.constructor?.name}`
         );
     }
-    const setFolderPath = getSetFolderPath();
-    const folder = exporter.folder;
-    const filePath = await getJoinedPath(setFolderPath, 'dist', folder, localPath);
+    const filePath = await getFilePath(
+        exporter,
+        localPath.replaceAll('[HASH]', hash)
+    );
     log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
 }

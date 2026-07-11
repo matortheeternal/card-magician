@@ -8,6 +8,10 @@ export default class ExportArtifact {
     async toBuffer() {
         throw new Error('Not implemented');
     }
+
+    async hash(bytes) {
+        return '';
+    }
 }
 
 window.ExportArtifact = ExportArtifact;

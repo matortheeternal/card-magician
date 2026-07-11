@@ -13,6 +13,15 @@ export default class CardImageArtifact extends ExportArtifact {
         return parseFloat(this.config.quality);
     }
 
+    async hash(buffer) {
+        const hashBuffer = await crypto.subtle.digest('SHA-1', buffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray
+            .slice(0, 4)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
     async toBuffer() {
         const blob = await new Promise(resolve => {
             this.cardCanvas.toBlob(resolve, this.imageType, this.imageQuality);
