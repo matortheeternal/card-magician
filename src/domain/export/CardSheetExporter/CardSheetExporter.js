@@ -4,7 +4,7 @@ import form from './form.html.js';
 
 const L = localize('card-sheet-exporter');
 
-export default class CardSheetExporter extends CardMagicianExporter {
+export default class CardSheetExporter extends CardMageExporter {
     static get options() {
         return [{
             id: 'imageType',

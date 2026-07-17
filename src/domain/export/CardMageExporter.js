@@ -12,7 +12,7 @@ import { initializeFields } from '../../ui/systems/fieldSystem.js';
  *  Artifact object to write to disk.
  */
 
-export default class CardMagicianExporter {
+export default class CardMageExporter {
     constructor(config, metadata) {
         this.config = Object.assign(this.defaultConfig, config || {});
         this.metadata = metadata;
@@ -139,4 +139,4 @@ export default class CardMagicianExporter {
     }
 }
 
-window.CardMagicianExporter = CardMagicianExporter;
+window.CardMageExporter = CardMageExporter;

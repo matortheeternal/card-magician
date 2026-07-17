@@ -57,7 +57,7 @@ export function getExporter(id) {
  * Loads and creates an exporter module.
  *
  * @param {ExporterParams} params
- * @returns {Promise<CardMagicianExporter>}
+ * @returns {Promise<CardMageExporter>}
  */
 async function createExporter(params) {
     const exporterMetadata = getExporter(params.id);

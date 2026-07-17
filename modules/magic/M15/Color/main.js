@@ -1,6 +1,6 @@
 const L = localize('module-M15-color');
 
-export default class ColorModule extends CardMagicianModule {
+export default class ColorModule extends CardMageModule {
     async init(card) {
         const game = this.getActiveGame();
         card.colorIdentity = new game.ColorIdentity();

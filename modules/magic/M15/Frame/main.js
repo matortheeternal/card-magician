@@ -5,7 +5,7 @@ import ClearFrame from './src/ClearFrame.js';
 import FNMPromoFrame from './src/FNMPromoFrame.js';
 import proxyAutoOptions from './src/proxyAutoOptions.js';
 
-export default class FrameModule extends CardMagicianModule {
+export default class FrameModule extends CardMageModule {
     #options = null;
 
     async init(card) {

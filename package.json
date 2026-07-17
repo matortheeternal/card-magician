@@ -1,5 +1,5 @@
 {
-  "name": "card-magician",
+  "name": "card-mage",
   "version": "1.0.0",
   "description": "A tool for creating custom playing cards.",
   "keywords": [
@@ -11,13 +11,13 @@
     "desktop",
     "app"
   ],
-  "homepage": "https://github.com/matortheeternal/card-magician#readme",
+  "homepage": "https://codeberg.org/mator/card-mage#readme",
   "bugs": {
-    "url": "https://github.com/matortheeternal/card-magician/issues"
+    "url": "https://codeberg.org/mator/card-mage/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matortheeternal/card-magician.git"
+    "url": "git+https://codeberg.org/mator/card-mage.git"
   },
   "license": "MIT",
   "author": "mator",

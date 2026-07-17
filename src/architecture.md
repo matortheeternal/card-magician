@@ -79,8 +79,8 @@ particular area of the codebase, read the documentation closest to that code.
 - actionSystem
 - hotkeySystem
 - BaseCardModel
-- CardMagicianModule
-- CardMagicianGame
+- CardMageModule
+- CardMageGame
 - ImageOp
 - setManager
 - Serializer

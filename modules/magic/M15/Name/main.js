@@ -1,6 +1,6 @@
 const L = localize('module-M15-name');
 
-export default class NameModule extends CardMagicianModule {
+export default class NameModule extends CardMageModule {
     async init(card) {
         card.getLegendName = function() {
             if (!card.isLegendary()) return card.name;

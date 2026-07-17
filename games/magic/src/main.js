@@ -1,7 +1,7 @@
 import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';
-import CardMagicianMagic from '@sigil-sifter/magic-cm';
-import CardMagicianCard from '@sigil-sifter/magic-cm/card';
+import CardMageMagic from '@sigil-sifter/magic-cm';
+import CardMageCard from '@sigil-sifter/magic-cm/card';
 import { buildColumns, collectMap } from './ui/listView/columns.js';
 import { autoNumberCards } from './domain/autoNumber.js';
 import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
@@ -14,7 +14,7 @@ import baseCardFields from './baseCardFields.js';
 
 const SET_FILE_VERSION = 1;
 
-export default class MagicTheGathering extends CardMagicianGame {
+export default class MagicTheGathering extends CardMageGame {
     async init() {
         this.ManaScribe = ManaScribe;
         this.ColorIdentity = ColorIdentity;
@@ -29,8 +29,8 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     setupSearch() {
         this.sifter = new SigilSifter();
-        Magic(this.sifter, CardMagicianCard);
-        CardMagicianMagic(this.sifter);
+        Magic(this.sifter, CardMageCard);
+        CardMageMagic(this.sifter);
     }
 
     filter(cards, query) {

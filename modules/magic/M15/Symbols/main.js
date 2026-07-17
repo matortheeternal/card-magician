@@ -1,6 +1,6 @@
 import { symbolToHTML } from './src/symbolToHTML.js';
 
-export default class SymbolsModule extends CardMagicianModule {
+export default class SymbolsModule extends CardMageModule {
     async init(card) {
         const magic = this.getActiveGame();
         this.ActivationCost = magic.ManaScribe.ActivationCost;

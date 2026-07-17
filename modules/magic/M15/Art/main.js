@@ -1,6 +1,6 @@
 const L = localize('module-M15-art');
 
-export default class ArtModule extends CardMagicianModule {
+export default class ArtModule extends CardMageModule {
     async init(card) {
         this.artImageField = {
             id: 'artImage',

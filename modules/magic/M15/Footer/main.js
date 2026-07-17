@@ -1,6 +1,6 @@
 const L = localize('module-M15-footer');
 
-export default class FooterModule extends CardMagicianModule {
+export default class FooterModule extends CardMageModule {
     async init(card) {
         this.brushSvg = await this.loadFile('assets/art.svg');
         this.collectorNumberField = {

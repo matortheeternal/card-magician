@@ -2,7 +2,7 @@ import WebArtifact from './src/WebArtifact.js';
 
 const L = localize('web-exporter');
 
-export default class WebExporter extends CardMagicianExporter {
+export default class WebExporter extends CardMageExporter {
     saveOutputs = true;
 
     static get options() {

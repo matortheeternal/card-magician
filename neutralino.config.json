@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  "applicationId": "cardmagician",
+  "applicationId": "cardmage",
   "version": "1.0.0",
   "defaultMode": "chrome",
   "port": 0,
@@ -51,7 +51,7 @@
     }
   },
   "cli": {
-    "binaryName": "cardmagician",
+    "binaryName": "cardmage",
     "resourcesPath": "/resources/",
     "extensionsPath": "/extensions/",
     "clientLibrary": "/resources/js/neutralino.js",

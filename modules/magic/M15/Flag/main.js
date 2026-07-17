@@ -1,6 +1,6 @@
 const L = localize('module-M15-flag');
 
-export default class FlagModule extends CardMagicianModule {
+export default class FlagModule extends CardMageModule {
     updateFlagStyle(card) {
         const key = card.getCardColorKey();
         const folder = card.id === 'back' ? 'back' : 'front';

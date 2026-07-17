@@ -1,6 +1,6 @@
 const L = localize('module-M15-cost');
 
-export default class CostModule extends CardMagicianModule {
+export default class CostModule extends CardMageModule {
     async init() {
         const game = this.getActiveGame();
         this.ManaCost = game.ManaScribe.ManaCost;

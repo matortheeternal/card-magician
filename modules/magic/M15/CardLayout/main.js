@@ -1,4 +1,4 @@
-export default class CardLayoutModule extends CardMagicianModule {
+export default class CardLayoutModule extends CardMageModule {
     async init() {
         await this.loadFont('Beleren Bold', 'beleren-bold_P1.01.ttf');
         await this.loadFont('MPlantin-Italic', 'mplantinit.ttf');

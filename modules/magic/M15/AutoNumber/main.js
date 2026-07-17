@@ -1,4 +1,4 @@
-export default class AutoNumberModule extends CardMagicianModule {
+export default class AutoNumberModule extends CardMageModule {
     async init() {
         this.set = this.getActiveSet();
         this.game = this.getActiveGame();

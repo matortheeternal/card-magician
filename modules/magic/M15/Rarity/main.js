@@ -1,6 +1,6 @@
 const L = localize('module-M15-rarity');
 
-export default class RarityModule extends CardMagicianModule {
+export default class RarityModule extends CardMageModule {
     getRarityCharacter(card) {
         if (card.isToken?.()) return 'T';
         if (card.isEmblem?.()) return 'E';

@@ -23,8 +23,8 @@ export default [
                 NL_ARGS: 'readonly',
                 // CODEBASE GLOBALS
                 localize: 'readonly',
-                CardMagicianModule: 'readonly',
-                CardMagicianGame: 'readonly',
+                CardMageModule: 'readonly',
+                CardMageGame: 'readonly',
                 Modal: 'readonly'
             }
         }

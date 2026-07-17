@@ -17,7 +17,7 @@ function expandCanvas(canvas, padding) {
     return newCanvas;
 }
 
-export default class CardImagesExporter extends CardMagicianExporter {
+export default class CardImagesExporter extends CardMageExporter {
     saveOutputs = true;
 
     static get options() {

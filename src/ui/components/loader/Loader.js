@@ -65,7 +65,7 @@ export default class Loader extends ReactiveComponent {
     }
 
     async submitIssue() {
-        await open('https://codeberg.org/mator/card-magician/issues');
+        await open('https://codeberg.org/mator/card-mage/issues');
     }
 
     async joinDiscord() {

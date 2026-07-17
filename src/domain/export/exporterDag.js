@@ -9,7 +9,7 @@ import * as progress from '../../ui/systems/progressSystem.js';
 
 /**
  * @typedef DagNode
- * @template {CardMagicianExporter} T
+ * @template {CardMageExporter} T
  * @property {string} id - The id of the exporter this node wraps.
  * @property {T} value - The exporter instance this node wraps.
  * @property {Array<DagNode>} children - The children that consume this node's outputs.

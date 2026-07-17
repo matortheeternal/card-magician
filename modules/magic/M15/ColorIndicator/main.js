@@ -1,4 +1,4 @@
-export default class ColorIndicatorModule extends CardMagicianModule {
+export default class ColorIndicatorModule extends CardMageModule {
     async getIndicatorImage(card) {
         if (!card.colorOverride?.length) return '';
         const colors = card.colorIdentity.colors.filter(c => c.sources.override);

@@ -1,6 +1,6 @@
 const L = localize('module-M15-pt');
 
-export default class PTModule extends CardMagicianModule {
+export default class PTModule extends CardMageModule {
     async init(card) {
         card.showPT = Boolean(card.toughness || card.power);
     }
