@@ -18,5 +18,7 @@ export default
         rx="4"
         ry="4"
         fill="url(#grad)"
+        stroke="var(--rar-stroke-outer)"
+        stroke-width="5"
     />
 </svg>`;
