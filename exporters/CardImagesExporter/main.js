@@ -74,9 +74,9 @@ export default class CardImagesExporter extends CardMageExporter {
         })) {
             const baseCard = card.card.baseCard;
             const filePath = this.getFilePath(baseCard, card);
-            baseCard.imageExports ||= {};
-            baseCard.imageExports[card.faceKey] = filePath;
             const artifact = new CardImageArtifact(
+                baseCard,
+                card.faceKey,
                 expandCanvas(cardCanvas, this.config.bleed * this.config.scale),
                 this.config
             );

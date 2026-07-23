@@ -1,6 +1,8 @@
 export default class CardImageArtifact extends ExportArtifact {
-    constructor(cardCanvas, config) {
+    constructor(baseCard, faceKey, cardCanvas, config) {
         super();
+        this.baseCard = baseCard;
+        this.faceKey = faceKey;
         this.cardCanvas = cardCanvas;
         this.config = config;
     }
@@ -20,6 +22,16 @@ export default class CardImageArtifact extends ExportArtifact {
             .slice(0, 4)
             .map(b => b.toString(16).padStart(2, '0'))
             .join('');
+    }
+
+    async getExportFilePath(folder, localPath, output) {
+        const hash = await this.hash(output);
+        const fixedPath = localPath.replaceAll('[HASH]', hash);
+        const filePath = await super.getExportFilePath(folder, fixedPath);
+        this.baseCard.imageExports ||= {};
+        this.baseCard.imageExports[this.faceKey] = fixedPath;
+        this.baseCard.dirty = true;
+        return filePath;
     }
 
     async toBuffer() {

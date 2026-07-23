@@ -1,10 +1,7 @@
 import {
-    createDirectory, getJoinedPath, getParentPath,
     writeBinaryFile,
     writeFile
 } from '../../shared/neutralinoAdapter.js';
-import { getSetFolderPath } from '../sets/setManager.js';
-import { checkFolderExists } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 /**
@@ -97,26 +94,23 @@ const outputHandlers = [{
     write: async (filePath, output) => writeBinaryFile(filePath, output)
 }];
 
-async function getFilePath(exporter, localPath) {
-    const setFolderPath = getSetFolderPath();
-    const folder = exporter.folder;
-    return getJoinedPath(setFolderPath, 'dist', folder, localPath);
+function getHandler(output, exporter) {
+    const handler = outputHandlers.find(h => h.match(output));
+    if (handler) return handler;
+    throw new Error(
+        `Exporter ${exporter.id} returned unexpected type:\n`
+        + `  ${typeof output}, constructor ${output?.constructor?.name}`
+    );
 }
 
 async function saveArtifact(exporter, localPath, artifact) {
     const output = await artifact.toBuffer();
-    const hash = await artifact.hash(output);
     if (!output) return;
-    const handler = outputHandlers.find(h => h.match(output));
-    if (!handler) {
-        throw new Error(
-            `Exporter ${exporter.id} returned unexpected type:\n`
-            + `  ${typeof output}, constructor ${output?.constructor?.name}`
-        );
-    }
-    const filePath = await getFilePath(
-        exporter,
-        localPath.replaceAll('[HASH]', hash)
+    const handler = getHandler(output, exporter);
+    const filePath = await artifact.getExportFilePath(
+        exporter.folder,
+        localPath,
+        output
     );
     log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
