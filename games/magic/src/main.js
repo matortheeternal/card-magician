@@ -59,4 +59,8 @@ export default class MagicTheGathering extends CardMagicianGame {
     get baseCardFields() {
         return Object.values(baseCardFields);
     }
+
+    newPackSlot() {
+        return { label: 'New Slot', count: 1, pool: [] };
+    }
 }
