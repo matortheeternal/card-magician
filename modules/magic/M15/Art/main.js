@@ -18,7 +18,7 @@ export default class ArtModule extends CardMageModule {
     }
 
     getDefaultColorImage(card, colorCount) {
-        const colors = card.colorIdentity.colors;
+        const colors = card.colorIdentity?.colors || [];
         if (colorCount === 0)
             return this.defaultImage(card.isLand?.() ? 'l' : 'c');
         if (colorCount === 1)
@@ -42,7 +42,7 @@ export default class ArtModule extends CardMageModule {
     }
 
     async getDefaultImage(card) {
-        const colorCount = card.colorIdentity.colors.length;
+        const colorCount = card.colorIdentity?.colors?.length;
         const colorImage = this.getDefaultColorImage(card, colorCount);
         const typeImage = this.getDefaultTypeImage(card);
         if (typeImage) {
