@@ -19,6 +19,7 @@
 @import "ui/modals/setInfoModal/setInfoModal.css";
 @import "ui/components/cardForm/cardForm.css";
 @import "ui/components/editTag/editTag.css";
+@import "ui/components/poolEntry/poolEntry.css";
 @import "ui/components/faceForm/faceForm.css";
 @import "ui/components/fieldComponents/checkboxListField.css";
 @import "ui/components/fieldComponents/codeEditorField.css";

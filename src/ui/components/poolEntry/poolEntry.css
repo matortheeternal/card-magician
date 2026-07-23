@@ -1,0 +1,43 @@
+cm-pool-entry {
+    display: contents;
+
+    form-field {
+        margin-top: 0;
+    }
+
+    sl-icon {
+        color: var(--sl-color-danger-600);
+        cursor: pointer;
+        font-size: var(--sl-font-size-large);
+    }
+
+    .search-container {
+        display: grid;
+        grid-template-columns: 5fr 2fr;
+        align-items: center;
+
+        .result-count {
+            padding-left: var(--sl-spacing-small);
+            font-style: italic;
+            color: var(--sl-input-color);
+            font-size: var(--sl-font-size-small);
+
+            &.error {
+                color: var(--sl-color-danger-600);
+            }
+        }
+    }
+
+    .weight-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .computed-weight {
+            padding-left: var(--sl-spacing-small);
+            font-style: italic;
+            color: var(--sl-input-color);
+            font-size: var(--sl-font-size-small);
+        }
+    }
+}
