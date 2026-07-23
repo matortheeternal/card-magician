@@ -109,7 +109,9 @@ export function buildColumns() {
         label: L`#`,
         width: '50px',
         data: row => {
-            const number = row.front.collectorNumber || row.front.autoCollectorNumber;
+            const number = row.front.collectorNumber
+                || row.front.autoCollectorNumber
+                || '0';
             return number.padStart(4, '0');
         },
         compare: compareRowCNs
