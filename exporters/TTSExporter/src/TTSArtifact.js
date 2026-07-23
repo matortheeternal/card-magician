@@ -7,20 +7,26 @@ export default class TTSArtifact extends ExportArtifact {
             : config.basePath + '/';
     }
 
+    getCardKey(card) {
+        const superType = card?.front?.superType || '';
+        const rarity = card?.front?.rarity || 'common';
+        if (/\btoken\b/i.test(superType)) return 'Token';
+        if (/\bbasic land\b/i.test(superType)) return 'Basic Land';
+        return rarity;
+    }
+
     *cards() {
         for (const card of this.activeSet.cards) {
-            const rarity = card?.front?.superType === 'Basic Land'
-                ? 'Basic Land'
-                : (card?.front?.rarity || 'common');
-            yield { rarity, card };
+            const key = this.getCardKey(card);
+            yield { key, card };
         }
     }
 
     createTransform(y = 0, index = 0) {
         return {
-            posX: 0,
+            posX: 2.5 * index,
             posY: y,
-            posZ: 2.5 * index,
+            posZ: 0,
             rotX: 0,
             rotY: 180,
             rotZ: 180,
@@ -41,7 +47,7 @@ export default class TTSArtifact extends ExportArtifact {
 
     createCustomDeckEntry(card) {
         return {
-            FaceURL: this.basePath + `${encodeURI(card.baseName)}.jpg`,
+            FaceURL: this.basePath + encodeURI(card.imageExports.front),
             BackURL: this.basePath + `CardBack.jpg`,
             NumHeight: 1,
             NumWidth: 1,
@@ -74,12 +80,12 @@ export default class TTSArtifact extends ExportArtifact {
     }
 
     get objectStates() {
-        const CardsByRarity = {};
-        for (const { rarity, card } of this.cards()) {
-            CardsByRarity[rarity] ||= [];
-            CardsByRarity[rarity].push(card);
+        const GroupedCards = {};
+        for (const { key, card } of this.cards()) {
+            GroupedCards[key] ||= [];
+            GroupedCards[key].push(card);
         }
-        return Object.entries(CardsByRarity).map(
+        return Object.entries(GroupedCards).map(
             ([key, value], index) => this.createDeckObject(key, value, index)
         );
     }
