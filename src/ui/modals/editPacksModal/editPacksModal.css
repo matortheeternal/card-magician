@@ -1,0 +1,11 @@
+cm-edit-packs-modal {
+    .modal {
+        width: 40em;
+    }
+
+    .slots-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sl-spacing-small);
+    }
+}
