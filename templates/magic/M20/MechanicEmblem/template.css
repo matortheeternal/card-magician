@@ -1,0 +1,18 @@
+.frame-mechanic {
+    module-container[module="Art"] {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 1.5px;
+        overflow: visible;
+        z-index: -1;
+
+        crop-image, img {
+            display: block;
+            height: 470px;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+    }
+
+}

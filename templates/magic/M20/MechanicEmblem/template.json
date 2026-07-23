@@ -1,0 +1,17 @@
+{
+  "id": "magic/M20/MechanicEmblem",
+  "label": "M20 Mechanic Emblem",
+  "description": "This template is for the Mechanic Emblem Frame.",
+  "version": "0.0",
+  "card": [
+    "magic/M15/CardLayout",
+    "magic/M20/SpecialEmblemFrame",
+    "magic/M15/Symbols",
+    "magic/M20/MechanicName",
+    "magic/M15/Rarity",
+    "magic/M15/Art",
+    "magic/M20/MechanicText",
+    "magic/M15/Footer",
+    "magic/M15/AutoNumber"
+  ]
+}
