@@ -22,24 +22,6 @@ function segmentGraphemes(text) {
     }));
 }
 
-/**
- * @typedef TextUnit
- * @property {Array<DOMRect>} rects
- * @property {number} start
- * @property {number} end
- */
-
-function merge(currentUnit, textNode, grapheme, range) {
-    if (!currentUnit) return;
-    range.setStart(textNode, currentUnit.start);
-    range.setEnd(textNode, grapheme.end);
-    const rects = Array.from(range.getClientRects());
-    const firstTop = rects[0]?.top;
-    if (rects.some(rect => rect.top !== firstTop)) return;
-    currentUnit.end = grapheme.end;
-    return true;
-}
-
 function newTextUnit(textNode, grapheme, range) {
     const { start, end } = grapheme;
     range.setStart(textNode, start);
@@ -60,12 +42,8 @@ function newTextUnit(textNode, grapheme, range) {
 function getTextUnits(textNode) {
     const range = document.createRange();
     const textUnits = [];
-    let currentUnit = null;
-    for (const grapheme of segmentGraphemes(textNode.data)) {
-        if (merge(currentUnit, textNode, grapheme, range)) continue;
-        currentUnit = newTextUnit(textNode, grapheme, range);
-        textUnits.push(currentUnit);
-    }
+    for (const grapheme of segmentGraphemes(textNode.data))
+        textUnits.push(newTextUnit(textNode, grapheme, range));
     return textUnits;
 }
 
