@@ -10,7 +10,7 @@ export default class NumberField extends FieldComponent {
     }
 
     get input() {
-        return this.querySelector('cm-number-input');
+        return this.querySelector('sl-input');
     }
 
     render() {
@@ -29,17 +29,9 @@ export default class NumberField extends FieldComponent {
         this.loadValue();
     }
 
-    bind() {
-        this.on('cm-input', event => this.onChange(event));
-    }
-
     loadValue() {
-        if (this.input)
-            this.input.value = this.value;
-    }
-
-    async getChangedValue(event) {
-        return event.detail.value;
+        if (!this.input) return;
+        this.input.value = this.value;
     }
 }
 
