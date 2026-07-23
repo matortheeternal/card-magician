@@ -1,0 +1,82 @@
+module-container[module="MechanicText"] {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    z-index: 2;
+    padding: 8px 0 6px 0;
+    margin: 0 16px 0 13px;
+    margin-bottom: 0.5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    --chop-top: 0px;
+    --chop-bottom: 0px;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2em;
+        padding-inline-start: 18px;
+        margin-block-start: -0.2em;
+        margin-block-end: 0;
+
+        li p {
+            margin-left: -5px;
+            margin-top: 0.2em;
+        }
+    }
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+    padding: 0 4px;
+    font-size: 19px;
+    line-height: 0.95;
+    font-family: "MPlantin", sans-serif;
+    margin-top: var(--chop-top);
+    margin-bottom: var(--chop-bottom);
+
+    i {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
+
+    .symbol-block {
+        white-space: nowrap;
+    }
+
+    p {
+        margin: 0.5em 0;
+    }
+
+    p:first-child {
+        margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    abbr.sym {
+        font-size: 97%;
+        line-height: 0.95;
+        height: 0.85em;
+        width: 0.9em;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1px;
+        margin-top: -1px;
+    }
+
+    div.section {
+        padding: 8px 2px;
+    }
+}
