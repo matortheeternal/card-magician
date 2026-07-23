@@ -17,7 +17,7 @@
         margin-bottom: 1.5px;
         overflow: visible;
 
-        crop-image {
+        crop-image, img {
             display: block;
             height: 203%;
             position: absolute;
