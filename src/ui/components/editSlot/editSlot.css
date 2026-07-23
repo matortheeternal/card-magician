@@ -1,0 +1,43 @@
+cm-edit-slot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sl-spacing-small);
+    padding: var(--sl-spacing-medium);
+    border: 1px solid var(--sl-input-border-color);
+    border-radius: var(--sl-border-radius-small);
+
+    form-group {
+        display: grid;
+        grid-template-columns: 3fr 1fr 2fr;
+        align-items: end;
+    }
+
+    sl-icon[data-click-action="removeSlot"] {
+        position: absolute;
+        top: var(--sl-spacing-x-small);
+        right: var(--sl-spacing-x-small);
+        color: var(--sl-color-danger-600);
+        cursor: pointer;
+    }
+
+    .pool-container {
+        display: grid;
+        grid-template-columns: 5fr 2fr 20px;
+        gap: var(--sl-spacing-x-small);
+        align-items: center;
+    }
+
+    .add-pool-entry {
+        font-style: italic;
+        color: var(--sl-input-color);
+        transition: color 0.3s ease-in-out;
+        cursor: pointer;
+        text-align: center;
+        padding: var(--sl-spacing-small);
+
+        &:hover {
+            color: var(--sl-color-primary-600);
+        }
+    }
+}
