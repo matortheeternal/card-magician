@@ -1,0 +1,17 @@
+{
+  "id": "magic/M20/Mechanic",
+  "label": "M20 Mechanic",
+  "description": "This template is for the Mechanic Frame.",
+  "version": "0.0",
+  "card": [
+    "magic/M15/CardLayout",
+    "magic/M20/MechanicFrame",
+    "magic/M15/Symbols",
+    "magic/M15/Name",
+    "magic/M15/Rarity",
+    "magic/M15/Art",
+    "magic/M20/MechanicText",
+    "magic/M15/Footer",
+    "magic/M15/AutoNumber"
+  ]
+}
