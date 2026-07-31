@@ -73,7 +73,7 @@ export default class EditSlot extends ReactiveComponent {
             </form-group>
             <section>
                 <div class="pool-container">
-                    <div style="display: contents">
+                    <div class="header-row">
                         <div>${L`Search Expression`}</div>
                         <div>${L`Weight`}</div>
                         <div></div>
@@ -91,7 +91,7 @@ export default class EditSlot extends ReactiveComponent {
         element.entry = { expression: '', weight: 1 };
         this.slot.pool.push(element.entry);
         this.poolContainer.appendChild(element);
-        this.updateTotalWeight();
+        this.updateComputedWeights();
     }
 
     onChange() {

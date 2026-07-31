@@ -26,6 +26,11 @@ cm-edit-slot {
         grid-template-columns: 5fr 2fr 20px;
         gap: var(--sl-spacing-x-small);
         align-items: center;
+
+        .header-row {
+            display: contents;
+            font-size: var(--sl-font-size-small);
+        }
     }
 
     .add-pool-entry {

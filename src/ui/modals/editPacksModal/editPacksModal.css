@@ -3,6 +3,11 @@ cm-edit-packs-modal {
         width: 40em;
     }
 
+    .modal-body {
+        overflow-y: auto;
+        max-height: 78vh;
+    }
+
     .slots-container {
         display: flex;
         flex-direction: column;
