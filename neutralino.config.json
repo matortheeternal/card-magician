@@ -61,7 +61,9 @@
       "/modules/",
       "/templates/",
       "/exporters/",
-      "/scripts/"
+      "/scripts/",
+      "/locales/",
+      "/games/"
     ]
   }
 }
