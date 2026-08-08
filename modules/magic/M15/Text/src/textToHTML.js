@@ -1,7 +1,10 @@
 import tokenConverters from './tokenConverters.js';
 
-// matches any text, wrapping leading and trailing quotes in span.q if found
-// span.q is used to fix quote character width
+function makeCitation(content, options) {
+    const cssClass = options.card?.citationStyle || 'italic';
+    return `<cite class="${cssClass}">${content}</cite>`;
+}
+
 const ParagraphConverter = {
     match(str) {
         return str.match(/^([^\n]+)/);
@@ -10,7 +13,7 @@ const ParagraphConverter = {
         const content = convertText(match[1], tokenConverters, options);
         const useQuoteTag = content.match(/^["“](.+?)["”]$/);
         const useCiteTag = content.match(/^(--|—)/);
-        if (useCiteTag) return `<cite>${content}</cite>`;
+        if (useCiteTag) return makeCitation(content, options);
         if (useQuoteTag) return `<q>“${useQuoteTag[1]}”</q>`;
         return `<p>${content}</p>`;
     }

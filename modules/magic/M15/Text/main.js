@@ -61,8 +61,8 @@ export default class TextModule extends CardMageModule {
     }
 
     bind(card, watch) {
-        watch(card, ['rulesText', 'name'], () => this.renderRulesHTML(card));
-        watch(card, 'flavorText', () => this.renderFlavorHTML(card));
+        watch(card, ['rulesText', 'name', 'superType'], () => this.renderRulesHTML(card));
+        watch(card, ['flavorText', 'citationStyle'], () => this.renderFlavorHTML(card));
         watch(card, [
             'showPT', 'showFlag', 'maxFontSize',
             'chopTop', 'chopBottom', 'centerText'
@@ -144,6 +144,15 @@ export default class TextModule extends CardMageModule {
                     { id: 'short', name: L`Short Text` },
                 ]
             },
+            {
+                id: 'citationStyle',
+                label: L`Citation Style`,
+                type: 'select',
+                options: [
+                    { id: 'italic', name: L`Italic` },
+                    { id: 'normal', name: L`Normal` },
+                ]
+            }
         ];
     }
 

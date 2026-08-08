@@ -95,6 +95,7 @@ async function startApp() {
     try {
         window.addEventListener('resize', applyDeviceLayout.debounce(200));
         window.addEventListener('beforeunload', e => {
+            if (window.suppressExit) return;
             e.preventDefault();
             exitApp();
         });

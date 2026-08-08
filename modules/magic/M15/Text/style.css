@@ -94,6 +94,18 @@ module-container[module="Text"] {
             margin: 0.25em 0;
         }
 
+        cite.italic {
+            font-family: "MPlantin-Italic", serif;
+            font-style: normal;
+            font-weight: 300;
+        }
+
+        cite.normal {
+            font-family: "MPlantin", serif;
+            font-style: normal;
+            font-weight: 300;
+        }
+
         q, p, cite {
             display: block;
             margin: 0.25em 0;
