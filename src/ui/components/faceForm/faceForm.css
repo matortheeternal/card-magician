@@ -70,6 +70,10 @@ cm-options-form .no-content-prompt {
     color: var(--sl-color-danger-600);
 }
 
+form-group form-toggle .remove-btn {
+    top: 6px;
+}
+
 form-group > form-toggle .add-btn {
     margin-top: var(--sl-spacing-x-small);
 }
