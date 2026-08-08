@@ -7,8 +7,8 @@ export default class WebExporter extends CardMageExporter {
 
     static get options() {
         return [{
-            id: 'test',
-            label: L`Test`
+            id: 'baseUrl',
+            label: L`Base URL`
         }];
     }
 

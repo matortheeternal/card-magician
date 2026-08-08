@@ -1,9 +1,10 @@
 import { getPropertyWriter } from './propertyWriters.js';
 
 export default class WebArtifact extends ExportArtifact {
-    constructor(activeSet) {
+    constructor(activeSet, config) {
         super();
         this.activeSet = activeSet;
+        this.baseUrl = config.baseUrl;
     }
 
     exportCardFace(card, faceKey) {
@@ -28,7 +29,8 @@ export default class WebArtifact extends ExportArtifact {
     get set() {
         return {
             ...this.activeSet,
-            cards: this.cards
+            cards: this.cards,
+            baseUrl: this.baseUrl
         }
     }
 
