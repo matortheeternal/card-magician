@@ -14,7 +14,7 @@ import { loadGames, setGame } from './domain/game/gameManager.js';
 import { runTests } from './tests';
 import imageCache from './domain/graphics/ImageCache.js';
 import {
-    createDirectory, initApp, mount, setWindowSize
+    createDirectory, exitApp, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
@@ -94,6 +94,10 @@ async function startApp() {
 (async function() {
     try {
         window.addEventListener('resize', applyDeviceLayout.debounce(200));
+        window.addEventListener('beforeunload', e => {
+            e.preventDefault();
+            exitApp();
+        });
         await setupNeutralino();
         await startApp();
     } catch (error) {
