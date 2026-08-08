@@ -113,7 +113,10 @@ export default class DevState extends ReactiveComponent {
         this.dirty = msg.dirty;
         if (this.dirty) this.render();
         if (msg.lastError) this.handleRebuildError(msg.lastError);
-        if (msg.reload) location.reload();
+        if (msg.reload) {
+            window.suppressExit = true;
+            location.reload();
+        }
         if (msg.openSet) await openSet(msg.openSet);
         if (Number.isInteger(msg.selectCard))
             selectCard(getActiveSet().cards[msg.selectCard]);
