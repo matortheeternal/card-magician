@@ -2,6 +2,7 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import html from './setView.html.js';
 import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
 import {
+    deleteCard,
     getActiveSet,
     onActiveSetChanged, openSet,
     selectCard,
@@ -115,6 +116,7 @@ export default class SetView extends ReactiveComponent {
                 log('state').warn(`Couldn't find card:`, r.original);
                 return;
             }
+            deleteCard(r.original);
             activeSet.cards.splice(index, 1);
             changed(activeSet, 'cards');
             this.listView.selection = [index - 1];

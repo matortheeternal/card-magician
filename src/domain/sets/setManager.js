@@ -3,7 +3,7 @@ import { getActiveGame, getConfig } from '../game/gameManager.js';
 import {
     getParentPath,
     openFolderDialog,
-    openSingleFileDialog,
+    openSingleFileDialog, rmrf,
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
@@ -86,6 +86,7 @@ export async function openSet(filePath) {
     await withNewContext(async () => {
         const setData = await loadProject(filePath);
         setFilePath = filePath;
+        setFolderPath = await getParentPath(filePath);
         setActiveSet(game.loadSet(setData));
     });
     await getConfig().addRecentFile(filePath);
@@ -110,6 +111,11 @@ export async function saveActiveCard() {
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
     changed(activeSet, 'cards');
+}
+
+export async function deleteCard(card) {
+    for (const file of Object.values(card.files))
+        await rmrf(file);
 }
 
 export function onActiveCardChanged(callback) {
