@@ -7,9 +7,8 @@ import {
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
-import { saveCard, saveProject } from './saveProject.js';
+import { saveAll, saveCard, saveProject } from './saveProject.js';
 import { loadProject } from './loadProject.js';
-import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
@@ -43,20 +42,19 @@ export async function saveAs() {
     if (!filePath) return;
     setFolderPath = await getParentPath(filePath);
     setFilePath = filePath;
-    return save(true);
-}
-
-export async function save(fullSave = false) {
-    if (!setFilePath) return saveAs();
-    openModal('cm-progress-modal', { title: 'Saving...', autoclose: true });
     try {
         log('fs').info('Saving set to:', setFilePath);
-        await saveProject(setFilePath, activeSet, fullSave);
+        await saveAll(setFilePath, activeSet);
         progress.complete();
     } catch (error) {
         progress.onError(error);
         log('state').error(error);
     }
+}
+
+export async function saveSet() {
+    if (!setFilePath) return saveAs();
+    await saveProject(setFilePath, activeSet);
 }
 
 export function setActiveSet(set) {
@@ -169,5 +167,5 @@ registerAction('new-set', () => {
     newSet();
     setActiveCard(null);
 });
-registerAction('save-set', save);
+registerAction('save-set', saveSet);
 registerAction('save-set-as', saveAs);

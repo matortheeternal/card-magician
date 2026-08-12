@@ -72,7 +72,7 @@ async function saveCards(filePath, zippedCards, serializer, fullSave) {
     const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
     for (const [baseName, card] of zippedCards) {
         progress.setOperation(`Saving card ${baseName}`);
-        await saveCardImages(cardsFolderPath, baseName, card, fullSave);
+        await saveCardImages(cardsFolderPath, card, fullSave);
         await saveCardData(cardsFolderPath, card, serializer);
         progress.increment();
     }
@@ -98,21 +98,22 @@ export async function saveProjectTags(filePath) {
     await YAMLSerializer.save(tagsPath, projectTags);
 }
 
-export async function saveProject(filePath, data, fullSave) {
+export async function saveProject(filePath, data) {
+    const serializer = new YAMLSerializer();
+    await saveSet(filePath, data, serializer);
+}
+
+export async function saveAll(filePath, data) {
     const serializer = new YAMLSerializer();
     progress.setStatus('Preparing cards');
-    const changedCards = data.cards.filter(card => card.dirty || fullSave);
-    const cardBaseNames = updateBaseNames(data.cards);
+    updateBaseNames(data.cards);
     progress.setStatus('Saving cards');
-    progress.setMax(changedCards.length + 2);
-    await saveCards(filePath, cardBaseNames.zip(data.cards), serializer, fullSave);
+    progress.setMax(data.cards.length + 2);
+    await saveCards(filePath, data.cards, serializer);
     progress.setStatus('Saving tags');
     await saveProjectTags(filePath);
     progress.setStatus('Saving project file');
-    await saveSet(filePath, {
-        ...data,
-        cards: cardBaseNames
-    }, serializer);
+    await saveSet(filePath, data, serializer);
     progress.increment();
     progress.setStatus('Remounting project');
     await updateProjectMount(filePath);
