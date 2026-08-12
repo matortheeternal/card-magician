@@ -7,7 +7,7 @@ import {
     saveSingleFileDialog
 } from '../../shared/neutralinoAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
-import { saveProject } from './saveProject.js';
+import { saveCard, saveProject } from './saveProject.js';
 import { loadProject } from './loadProject.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
@@ -106,10 +106,10 @@ export function getSelectedCard() {
 
 export async function saveActiveCard() {
     log('state').debug('save active card');
-    selectedCard.dirty = true;
     selectedCard.front = await activeCard.front.save();
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
+    await saveCard(selectedCard, setFolderPath);
     changed(activeSet, 'cards');
 }
 
