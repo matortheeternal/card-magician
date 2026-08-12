@@ -118,10 +118,13 @@ export async function createDirectory(path) {
     }
 }
 
+export async function getPathParts(path) {
+    log('fs').debug('getPathParts', path);
+    return wrapError(() => Neutralino.filesystem.getPathParts(path));
+}
+
 export async function getParentPath(path) {
-    const { parentPath } = await wrapError(
-        () => Neutralino.filesystem.getPathParts(path)
-    );
+    const { parentPath } = await getPathParts(path);
     return parentPath;
 }
 
