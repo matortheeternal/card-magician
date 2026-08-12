@@ -94,9 +94,8 @@ async function startApp() {
 (async function() {
     try {
         window.addEventListener('resize', applyDeviceLayout.debounce(200));
-        window.addEventListener('beforeunload', e => {
+        window.addEventListener('beforeunload', () => {
             if (window.suppressExit) return;
-            e.preventDefault();
             exitApp();
         });
         await setupNeutralino();
