@@ -21,11 +21,6 @@ export default class FileMenu extends ReactiveMenu {
                 () => executeAction('open-set')
             ),
             this.menuItem(
-                L`Save`,
-                L`Ctrl+S`,
-                () => executeAction('save-set')
-            ),
-            this.menuItem(
                 L`Save as`,
                 L`Ctrl+Shift+S`,
                 () => executeAction('save-set-as')
