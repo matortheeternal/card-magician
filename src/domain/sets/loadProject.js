@@ -35,7 +35,11 @@ async function loadCardImages(set, projectPath) {
         if (!card?.[faceKey]?.[fieldKey]) continue;
         card.files[faceKey] ||= {};
         card.files[faceKey][fieldKey] = filePath;
-        card[faceKey][fieldKey].imageUrl = `/project/cards/${filename}`;
+        card[faceKey][fieldKey].imageUrl = [
+            '/project',
+            'cards',
+            encodeURIComponent(filename)
+        ].join('/');
     }
 }
 
