@@ -108,6 +108,11 @@ export async function getJoinedPath(...paths) {
     return wrapError(() => Neutralino.filesystem.getJoinedPath(...paths));
 }
 
+export async function moveFile(source, destination) {
+    log('fs').debug('moveFile', source, destination);
+    return wrapError(() => Neutralino.filesystem.move(source, destination));
+}
+
 export async function createDirectory(path) {
     log('fs').debug('createDirectory', path);
     try {
