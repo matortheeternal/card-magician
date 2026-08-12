@@ -31,15 +31,29 @@ async function saveCardImages(cardsFolderPath, card, fullSave) {
     }
 }
 
+function* getFileEntries(files) {
+    for (const [key, value] of Object.entries(files)) {
+        if (value && typeof value === 'object') {
+            yield* getFileEntries(value);
+            continue;
+        }
+
+        yield {
+            change: v => { files[key] = v; },
+            filePath: value
+        };
+    }
+}
+
 async function renameCardFiles(card, cardsFolderPath) {
     if (!card.files?.data) return;
     const baseNameLength = card.files.data.length - 4;
-    for (const [key, oldFilePath] of Object.entries(card.files)) {
-        const newFileName = `${card.baseName}${oldFilePath.slice(baseNameLength)}`;
+    for (const entry of getFileEntries(card.files)) {
+        const newFileName = `${card.baseName}${entry.filePath.slice(baseNameLength)}`;
         const newFilePath = await getJoinedPath(cardsFolderPath, newFileName);
-        if (newFilePath === oldFilePath) continue;
-        await moveFile(oldFilePath, newFilePath);
-        card.files[key] = newFilePath;
+        if (newFilePath === entry.filePath) continue;
+        await moveFile(entry.filePath, newFilePath);
+        entry.change(newFilePath);
     }
 }
 
