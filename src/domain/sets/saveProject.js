@@ -1,6 +1,6 @@
 import {
-    getJoinedPath, getMounts, getParentPath, getPathParts,
-    mount, moveFile, unmount, writeBinaryFile, writeFile
+    getJoinedPath, getMounts, getParentPath, moveFile,
+    mount, unmount, writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
@@ -74,7 +74,7 @@ async function updateProjectMount(filePath) {
     const mounts = await getMounts();
     if (mounts['/project'] === folderPath) return;
     await unmount('/project');
-    await mount('/project', folderPath, { replace: true });
+    await mount('/project', folderPath);
 }
 
 export async function saveProjectTags(filePath) {
