@@ -1,10 +1,16 @@
 import { closeModal } from './modalManager.js';
 import ReactiveComponent from '../components/ReactiveComponent.js';
+import { executeAction } from '../systems/actionSystem.js';
 
 export default class Modal extends ReactiveComponent {
     static id = 'base-modal';
     title = '';
     #data = {};
+
+    constructor() {
+        super();
+        this.saveSet = this.saveSet.debounce(500);
+    }
 
     connectedCallback() {
         log('render').debug(`Component ${this.constructor.id} connected`);
@@ -40,6 +46,10 @@ export default class Modal extends ReactiveComponent {
 
     get fields() {
         return [];
+    }
+
+    saveSet() {
+        executeAction('save-set');
     }
 
     close() {

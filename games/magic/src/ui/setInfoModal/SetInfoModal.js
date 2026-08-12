@@ -11,6 +11,11 @@ export default class SetInfoModal extends Modal {
         this.style.maxWidth = '35em';
     }
 
+    bind() {
+        super.bind();
+        this.addEventListener('cm-field-changed', () => this.saveSet());
+    }
+
     get fields() {
         return setInfoFields;
     }

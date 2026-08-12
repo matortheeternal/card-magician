@@ -13,6 +13,11 @@ export default class ConfigureExportersModal extends Modal {
         this.style.maxWidth = '35em';
     }
 
+    bind() {
+        super.bind();
+        this.on('cm-field-changed', () => this.saveSet());
+    }
+
     addExporter() {
         // TODO
     }
