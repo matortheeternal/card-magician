@@ -1,4 +1,10 @@
-import { getStats, readBinaryFile, readFile } from './neutralinoAdapter.js';
+import {
+    getJoinedPath,
+    getStats,
+    readBinaryFile,
+    readDirectory,
+    readFile
+} from './neutralinoAdapter.js';
 import { determineImageType } from './imageUtils.js';
 
 /**
@@ -34,6 +40,38 @@ export async function checkFolderExists(folderPath) {
         if (error.code === 'NE_FS_NOPATHE') return false;
         throw error;
     }
+}
+
+async function getMatchingEntries(folderPath, options) {
+    options = Object.assign({
+        matching: null,
+        files: true,
+        directories: false,
+        recursive: false,
+    }, options);
+    if (!await checkFolderExists(folderPath)) return [];
+    const entries = await readDirectory(folderPath, { recursive: options.recursive });
+    return entries.filter(({ entry, type }) => {
+        if (!options.files && type === 'FILE') return false;
+        if (!options.directories && type === 'DIRECTORY') return false;
+        return !options.matching || options.matching.test(entry);
+    });
+}
+
+/**
+ * Returns the contents of a folder if it exists, else returns an empty array.
+ * @param {string} folderPath
+ * @param {object} options
+ * @returns {Promise<Array<string>>}
+ */
+export async function find(folderPath, options = {}) {
+    const entries = await getMatchingEntries(folderPath, options);
+    const paths = [];
+    for (const { entry } of entries) {
+        const path = await getJoinedPath(folderPath, entry);
+        paths.push(path);
+    }
+    return paths;
 }
 
 /**
