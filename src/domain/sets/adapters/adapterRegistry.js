@@ -1,4 +1,4 @@
-import DirtyAdapter from './DirtyAdapter.js';
+import BaseNameAdapter from './BaseNameAdapter.js';
 import ManaCostAdapter from './ManaCostAdapter.js';
 import ImageFieldAdapter from './ImageFieldAdapter.js';
 import ObjectUrlBinaryAdapter from './ObjectUrlBinaryAdapter.js';
@@ -24,5 +24,5 @@ export function getBinaryAdapters() {
 
 registerAdapter(ImageFieldAdapter);
 registerAdapter(ManaCostAdapter);
-registerAdapter(DirtyAdapter);
+registerAdapter(BaseNameAdapter);
 registerBinaryAdapter(ObjectUrlBinaryAdapter);
