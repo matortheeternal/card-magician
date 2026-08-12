@@ -1,5 +1,6 @@
 import { getActiveGame } from '../game/gameManager.js';
 import sanitize from 'sanitize-filename';
+import { getActiveSet } from './setManager.js';
 
 function addCardBaseName(card, usedBaseNames) {
     const game = getActiveGame();
@@ -19,4 +20,12 @@ export function updateBaseNames(cards) {
     const baseNames = [];
     cards.map(card => addCardBaseName(card, baseNames));
     return baseNames;
+}
+
+export function updateBaseName(card) {
+    const activeSet = getActiveSet();
+    const cards = activeSet.cards.slice();
+    cards.remove(card);
+    const usedBaseNames = cards.map(card => card.baseName);
+    addCardBaseName(card, usedBaseNames);
 }
