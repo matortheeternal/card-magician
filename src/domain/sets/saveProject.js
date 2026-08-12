@@ -1,26 +1,28 @@
 import {
-    getJoinedPath, getMounts, getParentPath,
-    mount, unmount, writeBinaryFile, writeFile
+    getJoinedPath, getMounts, getParentPath, getPathParts,
+    mount, moveFile, unmount, writeBinaryFile, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { getActiveGame } from '../game/gameManager.js';
-import { updateBaseNames } from './cardNamer.js';
+import { updateBaseNames, updateBaseName } from './cardNamer.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { getTags } from '../game/tagManager.js';
 
-async function saveCardData(cardsFolderPath, baseName, card, serializer) {
+async function saveCardData(cardsFolderPath, card, serializer) {
     const text = await serializer.serialize(card);
-    const basePath = await getJoinedPath(cardsFolderPath, baseName);
+    const basePath = await getJoinedPath(cardsFolderPath, card.baseName);
+    card.files ||= {};
+    card.files.data = `${basePath}.yml`;
     await writeFile(`${basePath}.yml`, text);
 }
 
-async function saveCardImages(cardsFolderPath, baseName, card, fullSave) {
+async function saveCardImages(cardsFolderPath, card, fullSave) {
     const game = getActiveGame();
     const images = await game.getCardImages(card, fullSave);
     for (const { data, key, value } of images) {
         const imageFileName = images.length > 1
-            ? `${baseName} - ${key.toTitleCase()}.jpg`
-            : `${baseName}.jpg`;
+            ? `${card.baseName} - ${key.toTitleCase()}.jpg`
+            : `${card.baseName}.jpg`;
         const imagePath = await getJoinedPath(cardsFolderPath, imageFileName);
         await writeBinaryFile(imagePath, data);
         const filenameUrlPart = encodeURIComponent(imageFileName);
@@ -29,13 +31,35 @@ async function saveCardImages(cardsFolderPath, baseName, card, fullSave) {
     }
 }
 
+async function renameCardFiles(card, cardsFolderPath) {
+    if (!card.files?.data) return;
+    const baseNameLength = card.files.data.length - 4;
+    for (const [key, oldFilePath] of Object.entries(card.files)) {
+        const newFileName = `${card.baseName}${oldFilePath.slice(baseNameLength)}`;
+        const newFilePath = await getJoinedPath(cardsFolderPath, newFileName);
+        if (newFilePath === oldFilePath) continue;
+        await moveFile(oldFilePath, newFilePath);
+        card.files[key] = newFilePath;
+    }
+}
+
+export async function saveCard(card, setFolderPath) {
+    if (!setFolderPath) return;
+    const serializer = new YAMLSerializer();
+    const cardsFolderPath = await getJoinedPath(setFolderPath, 'cards');
+    updateBaseName(card);
+    await renameCardFiles(card, cardsFolderPath);
+    await saveCardData(cardsFolderPath, card, serializer);
+    await saveCardImages(cardsFolderPath, card, false);
+}
+
 async function saveCards(filePath, zippedCards, serializer, fullSave) {
+    if (!fullSave) return;
     const cardsFolderPath = await getJoinedPath(filePath, '..', 'cards');
     for (const [baseName, card] of zippedCards) {
-        if (!card.dirty && !fullSave) continue;
         progress.setOperation(`Saving card ${baseName}`);
         await saveCardImages(cardsFolderPath, baseName, card, fullSave);
-        await saveCardData(cardsFolderPath, baseName, card, serializer);
+        await saveCardData(cardsFolderPath, card, serializer);
         progress.increment();
     }
 }
