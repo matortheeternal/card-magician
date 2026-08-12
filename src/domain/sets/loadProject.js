@@ -1,8 +1,8 @@
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import {
     getJoinedPath,
-    mount
     getParentPath, getPathParts,
+    mount, unmount
 } from '../../shared/neutralinoAdapter.js';
 import { loadTags } from '../game/tagManager.js';
 import { checkFileExists, find } from '../../shared/fsUtils.js';
@@ -41,6 +41,7 @@ async function loadProjectTags(filePath) {
 
 export async function loadProject(filePath) {
     const projectPath = await getParentPath(filePath);
+    await unmount('/project');
     await mount('/project', projectPath, { replace: true });
     const set = await YAMLSerializer.load(filePath);
     await loadCards(set, projectPath);
