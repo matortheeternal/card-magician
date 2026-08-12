@@ -7,12 +7,12 @@ function addCardBaseName(card, usedBaseNames) {
     const cardName = game.getCardName(card);
     const base = sanitize(cardName.normalize('NFC'), {
         replacement: '-'
-    });
+    }).replaceAll(' - ', '--'); // this protects us against image suffix collisions
     let name = base;
     let i = 2;
-    while (usedBaseNames.includes(name))
+    while (usedBaseNames.includes(name.toLowerCase()))
         name = `${base}-${i++}`;
-    usedBaseNames.push(name);
+    usedBaseNames.push(name.toLowerCase());
     card.baseName = name;
 }
 
@@ -26,6 +26,6 @@ export function updateBaseName(card) {
     const activeSet = getActiveSet();
     const cards = activeSet.cards.slice();
     cards.remove(card);
-    const usedBaseNames = cards.map(card => card.baseName);
+    const usedBaseNames = cards.map(card => card.baseName.toLowerCase());
     addCardBaseName(card, usedBaseNames);
 }

@@ -16,6 +16,29 @@ async function loadCard(filePath) {
     return card;
 }
 
+function extractNameParts(filename) {
+    const match = filename.match(/^(.+) - (Front|Back)$/);
+    return {
+        baseName: match ? match[1] : filename,
+        faceKey: match ? match[2].toLowerCase() : 'front',
+        fieldKey: 'artImage'
+    };
+}
+
+async function loadCardImages(set, projectPath) {
+    const cardsFolderPath = await getJoinedPath(projectPath, 'cards');
+    const files = await find(cardsFolderPath, { matching: /.jpg$/i });
+    for (const filePath of files) {
+        const { stem, filename } = await getPathParts(filePath);
+        const { baseName, faceKey, fieldKey } = extractNameParts(stem);
+        const card = set.cards.find(card => card.baseName === baseName);
+        if (!card?.[faceKey]?.[fieldKey]) continue;
+        card.files[faceKey] ||= {};
+        card.files[faceKey][fieldKey] = filePath;
+        card[faceKey][fieldKey].imageUrl = `/project/cards/${filename}`;
+    }
+}
+
 async function loadCards(set, projectPath) {
     set.cards = [];
     const cardsFolderPath = await getJoinedPath(projectPath, 'cards');
@@ -45,6 +68,7 @@ export async function loadProject(filePath) {
     await mount('/project', projectPath, { replace: true });
     const set = await YAMLSerializer.load(filePath);
     await loadCards(set, projectPath);
+    await loadCardImages(set, projectPath);
     await loadProjectTags(filePath);
     return set;
 }
