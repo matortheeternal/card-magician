@@ -71,7 +71,7 @@ export async function saveActiveCard() {
     if (activeCard.back)
         selectedCard.back = await activeCard.back.save();
     await selectedCard.save();
-    changed(activeProject, 'cards');
+    changed(window.activeProject, 'cards');
 }
 
 export function onActiveCardChanged(callback) {

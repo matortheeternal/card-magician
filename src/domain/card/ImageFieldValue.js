@@ -36,7 +36,6 @@ export default class ImageFieldValue {
 
     async save() {
         return {
-            imageUrl: this.imageUrl,
             width: this.width,
             height: this.height,
             ...this.crop.save()

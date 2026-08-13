@@ -18,10 +18,10 @@ export default class SetView extends ReactiveComponent {
     }
 
     bind() {
-        onActiveProjectChanged(set => {
-            this.updateCards(set);
-            this.watch('cards', set, 'cards', () => {
-                this.updateCards(set);
+        onActiveProjectChanged(project => {
+            this.updateCards(project);
+            this.watch('cards', project, 'cards', () => {
+                this.updateCards(project);
             });
         });
 
@@ -97,9 +97,9 @@ export default class SetView extends ReactiveComponent {
         this.renderRecentSets();
     }
 
-    updateCards(set) {
-        this.listView.rows = set.cards || [];
-        const hasCards = Boolean(set.cards?.length);
+    updateCards(project) {
+        this.listView.rows = project.cards || [];
+        const hasCards = Boolean(project.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
         if (this.searchValue) this.updateSearch();
@@ -156,13 +156,16 @@ export default class SetView extends ReactiveComponent {
             if (!clipboard?.cards?.length) return;
 
             let indexToSelect = -1;
-            clipboard.cards.forEach(card => {
+            for (const cardData of clipboard.cards) {
+                const card = new activeGame.Card(cardData);
+                await card.save(true);
                 indexToSelect = activeProject.cards.push(card) - 1;
-            });
+            }
             if (indexToSelect === -1) return;
             changed(activeProject, 'cards');
             this.listView.selection = [indexToSelect];
-            await selectCard(activeProject.cards[indexToSelect]);
+            const cardToSelect = activeProject.cards[indexToSelect];
+            await selectCard(cardToSelect);
         } catch (e) {
             log('user').debug('Paste failed', e);
         }
