@@ -166,7 +166,9 @@ export default class CardMagicianProject {
     }
 
     async save() {
-        await YAMLSerializer.save(this.filePath, this);
+        const data = Object.assign({}, this);
+        delete data.cards;
+        await YAMLSerializer.save(this.filePath, data);
     }
 
     async saveAll(filePath) {

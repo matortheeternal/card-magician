@@ -9,7 +9,7 @@ export default class MagicProject extends CardMagicianProject {
         const info = activeGame.initializeFields(setInfoFields);
         super({
             ...info,
-            setFileVersion: SET_FILE_VERSION,
+            version: SET_FILE_VERSION,
             defaultBackImage: activeGame.resolveAsset('back.png'),
             ...data
         });
