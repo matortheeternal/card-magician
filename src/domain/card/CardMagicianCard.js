@@ -54,7 +54,7 @@ export default class CardMagicianCard {
     }
 
     async loadFiles(filesByName) {
-        await this.files.load(this, filesByName);
+        await this.files.load(filesByName);
     }
 
     async renameFiles() {
