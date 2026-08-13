@@ -15,8 +15,11 @@ export default class CardMagicianProject {
     #tagsPath = '';
 
     constructor(data = {}) {
-        this.cards = [];
-        this.export = data?.export || this.defaultExportConfig;
+        Object.assign(this, {
+            ...data,
+            cards: [],
+        });
+        this.export ??= this.defaultExportConfig;
     }
 
     /**
