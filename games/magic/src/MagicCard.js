@@ -12,6 +12,16 @@ export default class MagicCard extends window.CardMagicianCard {
         });
     }
 
+    get fileDefinitions() {
+        return [
+            ...super.fileDefinitions,
+            new CardImageFileDefinition('front.artImage'),
+            new CardImageFileDefinition('back.artImage', {
+                suffix: ' - Back'
+            }),
+        ];
+    }
+
     get name() {
         return collectMap(this, f => f.name, ' + ') || 'blank';
     }
@@ -21,18 +31,5 @@ export default class MagicCard extends window.CardMagicianCard {
         if (this.front) a.push(this.front);
         if (this.back) a.push(this.back);
         return a;
-    }
-
-    async getImages(fullSave) {
-        return Promise.all(
-            this.faces.filter(face => {
-                return face?.artImage?.imageUrl
-                    && (face?.artImage?.dirty || fullSave);
-            }).map(async face => ({
-                data: await face.artImage.loadImageData(),
-                value: face.artImage,
-                key: face.id
-            }))
-        );
     }
 }

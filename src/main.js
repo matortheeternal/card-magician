@@ -6,6 +6,8 @@ import './domain/template/CardMagicianModule.js';
 import './domain/game/CardMagicianGame.js';
 import './domain/projects/CardMagicianProject.js';
 import './domain/card/CardMagicianCard.js';
+import './domain/card/CardFileDefinition.js';
+import './domain/card/CardImageFileDefinition.js';
 import './domain/export/ExportArtifact.js';
 import './domain/export/CardMagicianExporter.js';
 import './domain/export/CardSheetExporter/CardSheetExporter.js';

@@ -33,7 +33,7 @@ export default class CardMagicianProject {
         const project = new this(data);
         await project.setFilePath(filePath);
         await project.loadCards();
-        await project.loadCardImages();
+        await project.loadCardFiles();
         await project.loadTags();
         await project.afterLoad();
         return project;
@@ -111,35 +111,20 @@ export default class CardMagicianProject {
         }
     }
 
-    extractNameParts(filename) {
-        const match = filename.match(/^(.+) - (Front|Back)$/);
-        return {
-            baseName: match ? match[1] : filename,
-            faceKey: match ? match[2].toLowerCase() : 'front',
-            fieldKey: 'artImage'
-        };
-    }
-
-    async loadCardImage(filePath) {
-        const { stem, filename } = await getPathParts(filePath);
-        const { baseName, faceKey, fieldKey } = this.extractNameParts(stem);
-        const card = this.cards.find(card => card.baseName === baseName);
-        if (!card?.[faceKey]?.[fieldKey]) return;
-        card.files[faceKey] ||= {};
-        card.files[faceKey][fieldKey] = filePath;
-        const filenameUrlPart = encodeURIComponent(filename);
-        card[faceKey][fieldKey].imageUrl = `/project/cards/${filenameUrlPart}`;
-    }
-
-    async loadCardImages() {
-        const files = await find(this.cardsFolderPath, { matching: /.jpg$/i });
-        for (const filePath of files) {
-            try {
-                await this.loadCardImage(filePath);
-            } catch {
-                log('state').error(`Failed to load card image ${filePath}`);
-            }
+    async getFilesByName() {
+        const filePaths = await find(this.cardsFolderPath);
+        const filesByName = new Map();
+        for (const filePath of filePaths) {
+            const { filename } = await getPathParts(filePath);
+            filesByName.set(filename.toLowerCase(), filePath);
         }
+        return filesByName;
+    }
+
+    async loadCardFiles() {
+        const filesByName = await this.getFilesByName();
+        for (const card of this.cards)
+            await card.loadFiles(filesByName);
     }
 
     async loadTags() {

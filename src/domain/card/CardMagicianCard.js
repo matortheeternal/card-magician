@@ -1,14 +1,21 @@
 import {
-    getJoinedPath,
-    getPathParts, moveFile, rmrf, writeBinaryFile
+    getJoinedPath, getPathParts, writeBinaryFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from '../projects/serializers/YAMLSerializer.js';
 import { updateBaseName } from '../projects/cardNamer.js';
+import CardFiles from './CardFiles.js';
+import ImageFieldValue from './ImageFieldValue.js';
 
 export default class CardMagicianCard {
+    #baseName;
+
     constructor(data = {}) {
         Object.assign(this, data);
-        this.files = {};
+        Object.defineProperty(this, 'files', {
+            value: new CardFiles(this, this.fileDefinitions),
+            enumerable: false,
+            configurable: true,
+        });
     }
 
     static async load(filePath) {
@@ -21,82 +28,81 @@ export default class CardMagicianCard {
     async setDataPath(filePath) {
         const { stem } = await getPathParts(filePath);
         this.baseName = stem;
-        this.files.data = filePath;
+        this.files.setDataPath(filePath);
     }
 
-    get name() {
-        return '';
+    get fileDefinitions() {
+        return [
+            new window.CardFileDefinition('data', { extension: '.yml' })
+        ];
     }
 
-    *getFileEntries(files) {
-        for (const [key, value] of Object.entries(files)) {
-            if (value && typeof value === 'object') {
-                yield* this.getFileEntries(value);
-                continue;
-            }
-
-            yield {
-                change: v => { files[key] = v; },
-                filePath: value
-            };
-        }
+    get baseName() {
+        return this.#baseName;
     }
 
-    async renameFiles(cardsFolderPath) {
-        if (!this.files.data) return;
-        const prefixLength = this.files.data.length - 4;
-        for (const entry of this.getFileEntries(this.files)) {
-            const suffix = entry.filePath.slice(prefixLength);
-            const newFileName = this.baseName + suffix;
-            const newFilePath = await getJoinedPath(cardsFolderPath, newFileName);
-            if (newFilePath === entry.filePath) continue;
-            await moveFile(entry.filePath, newFilePath);
-            entry.change(newFilePath);
-        }
-    }
-
-    async deleteFiles() {
-        for (const entry of this.getFileEntries(this.files))
-            await rmrf(entry.filePath);
+    set baseName(value) {
+        this.#baseName = value;
     }
 
     /**
      * @abstract
-     * @param {boolean} saveAll
-     * @returns {Promise<object>}
+     * @returns {string}
      */
-    async getImages(saveAll) {
+    get name() {
         throw new Error('Not implemented');
     }
 
-    async saveImages(cardsFolderPath, saveAll = false) {
-        const images = await this.getImages(saveAll);
-        for (const { data, key, value } of images) {
-            const filename = images.length > 1
-                ? `${this.baseName} - ${key.toTitleCase()}.jpg`
-                : `${this.baseName}.jpg`;
-            const filePath = await getJoinedPath(cardsFolderPath, filename);
-            await writeBinaryFile(filePath, data);
-            const filenameUrlPart = encodeURIComponent(filename);
-            value.imageUrl = await getJoinedPath('/project/cards', filenameUrlPart);
-            delete value.dirty;
+    async loadFiles(filesByName) {
+        await this.files.load(this, filesByName);
+    }
+
+    async renameFiles() {
+        for (const [key] of this.files.entries)
+            await this.files.moveToCanonicalPath(key);
+    }
+
+    async deleteFiles() {
+        for (const [key] of this.files.entries)
+            await this.files.remove(key);
+    }
+
+    async removeClearedImages() {
+        for (const [key, field] of this.files.fields) {
+            if (field.constructor !== ImageFieldValue) continue;
+            if (!field?.imageUrl && this.files.has(key))
+                await this.files.remove(key);
         }
     }
 
-    async saveData(cardsFolderPath) {
-        const basePath = await getJoinedPath(cardsFolderPath, this.baseName);
-        const filePath = `${basePath}.yml`;
-        await YAMLSerializer.save(filePath, this);
-        this.files.data = filePath;
+    async saveImages(saveAll = false) {
+        for (const [key, image] of this.files.fields) {
+            if (image.constructor !== ImageFieldValue) continue;
+            if (!image?.imageUrl || !image.dirty && !saveAll) continue;
+            const filePath = await this.files.getCanonicalPath(key);
+            const data = await image.loadImageData();
+            await writeBinaryFile(filePath, data);
+            await this.files.associate(key, filePath);
+            delete image.dirty;
+        }
     }
 
-    async save() {
-        const cardsFolderPath = window.activeProject.cardsFolderPath;
-        if (!cardsFolderPath) return;
+    async saveData() {
+        const filePath = await getJoinedPath(
+            window.activeProject.cardsFolderPath,
+            `${this.baseName}.yml`
+        );
+        await YAMLSerializer.save(filePath, this);
+        this.files.setDataPath(filePath);
+    }
+
+    async save(saveAll = false) {
+        if (!window.activeProject.cardsFolderPath) return;
         updateBaseName(this);
-        await this.renameFiles(cardsFolderPath);
-        await this.saveData(cardsFolderPath);
-        await this.saveImages(cardsFolderPath);
+        await this.removeClearedImages();
+        await this.renameFiles();
+        await this.saveData();
+        await this.saveImages(saveAll);
     }
 }
 
