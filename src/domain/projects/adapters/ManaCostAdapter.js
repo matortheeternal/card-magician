@@ -1,5 +1,4 @@
 import SerializerAdapter from './SerializerAdapter.js';
-import { getActiveGame } from '../../game/gameManager.js';
 
 /**
  * Adapter for encoding/decoding object URLs as raw binary data.
@@ -34,7 +33,7 @@ export default class ManaCostAdapter extends SerializerAdapter {
      * @returns {Promise<ManaCost>} A new mana cost.
      */
     async decode(node) {
-        const { ManaCost } = getActiveGame().ManaScribe;
+        const { ManaCost } = activeGame.ManaScribe;
         return ManaCost.parse(node.symbols);
     }
 }

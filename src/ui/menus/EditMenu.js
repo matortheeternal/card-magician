@@ -1,7 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';
-import { getActiveSet } from '../../domain/sets/setManager.js';
 import { getAvailableLocales, prepareSchema } from '../../shared/localize.js';
 import { getTags } from '../../domain/game/tagManager.js';
 
@@ -22,7 +21,7 @@ export default class EditMenu extends ReactiveMenu {
             this.menuItem(L`Paste`, L`Ctrl+V`, () => executeAction('paste')),
             this.DIVIDER,
             this.menuItem(L`Set Info`, ``, () => {
-                openModal('cm-set-info-modal', getActiveSet());
+                openModal('cm-set-info-modal', activeProject);
             }),
             this.menuItem(L`Tags`, ``, () => {
                 openModal('cm-edit-tags-modal', getTags());

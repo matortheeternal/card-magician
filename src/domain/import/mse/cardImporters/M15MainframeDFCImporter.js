@@ -1,5 +1,4 @@
 import M15AlteredImporter from './M15AlteredImporter.js';
-import { getActiveGame } from '../../../game/gameManager.js';
 
 export default class M15MainframeDFCImporter extends M15AlteredImporter {
     static expectedVersion = '2024-09-06';
@@ -21,6 +20,6 @@ export default class M15MainframeDFCImporter extends M15AlteredImporter {
         this.cmCard.back = { template: this.template, faceSymbol: 'auto' };
         await this.importProps(back, this.cmCard.back);
         await this.importOptions(this.cmCard.back);
-        getActiveGame().addComputedProps(this.cmCard.back);
+        activeGame.addComputedProps(this.cmCard.back);
     }
 }

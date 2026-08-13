@@ -21,11 +21,22 @@ export default [
                 NL_PATH: 'readonly',
                 NL_DATAPATH: 'readonly',
                 NL_ARGS: 'readonly',
+                NL_RESMODE: 'readonly',
                 // CODEBASE GLOBALS
+                activeGame: 'readonly',
+                activeProject: 'readonly',
+                activeCard: 'readonly',
+                selectedCard: 'readonly',
                 localize: 'readonly',
+                log: 'readonly',
+                changed: 'readonly',
                 CardMagicianModule: 'readonly',
                 CardMagicianGame: 'readonly',
-                Modal: 'readonly'
+                CardMagicianProject: 'readonly',
+                CardMagicianCard: 'readonly',
+                CardMagicianExporter: 'readonly',
+                ReactiveComponent: 'readonly',
+                Modal: 'readonly',
             }
         }
     },

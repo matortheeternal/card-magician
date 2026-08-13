@@ -1,6 +1,5 @@
 import BaseCardImporter from './BaseCardImporter.js';
 import cardPropertyImporters from '../cardPropertyImporters.js';
-import { getActiveGame } from '../../../game/gameManager.js';
 
 const baseLevelKeys = ['notes'];
 
@@ -71,6 +70,6 @@ export default class M15AlteredImporter extends BaseCardImporter {
         await this.importProps(base, this.cmCard);
         await this.importProps(front, this.cmCard.front);
         await this.importOptions(this.cmCard.front);
-        getActiveGame().addComputedProps(this.cmCard.front);
+        activeGame.addComputedProps(this.cmCard.front);
     }
 }

@@ -1,15 +1,14 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import html from './setView.html.js';
-import { getActiveGame, getConfig } from '../../../domain/game/gameManager.js';
+import { getConfig } from '../../../domain/game/gameManager.js';
 import {
-    deleteCard,
-    getActiveSet,
-    onActiveSetChanged, openSet,
+    openProject,
+    onActiveProjectChanged,
     selectCard,
-} from '../../../domain/sets/setManager.js';
+} from '../../../domain/projects/projectManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
-import JSONSerializer from '../../../domain/sets/serializers/JSONSerializer.js';
+import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
 import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
 
 export default class SetView extends ReactiveComponent {
@@ -19,7 +18,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     bind() {
-        onActiveSetChanged(set => {
+        onActiveProjectChanged(set => {
             this.updateCards(set);
             this.watch('cards', set, 'cards', () => {
                 this.updateCards(set);
@@ -31,7 +30,7 @@ export default class SetView extends ReactiveComponent {
         this.handleEvents('click', {
             openAdvancedSearch: () => log('user').info('Open advanced search.'),
             addCard: () => this.addCard(),
-            openSet: () => openSet()
+            openSet: () => openProject()
         });
         this.handleEvents('keydown', {
             searchInputKeyDown: this.searchInputKeyDown
@@ -71,7 +70,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     get recentSetsContainer() {
-        return this.querySelector('.recent-sets-container');
+        return this.querySelector('.recent-projects-container');
     }
 
     renderRecentSets() {
@@ -86,7 +85,7 @@ export default class SetView extends ReactiveComponent {
             button.variant = 'text';
             button.size = 'small';
             button.classList.add('recent-set');
-            button.addEventListener('click', () => openSet(set));
+            button.addEventListener('click', () => openProject(set));
             button.textContent = String(set);
             container.appendChild(button);
         });
@@ -94,7 +93,7 @@ export default class SetView extends ReactiveComponent {
 
     render() {
         this.innerHTML = html;
-        this.listView.columns = getActiveGame().columns;
+        this.listView.columns = activeGame.columns;
         this.renderRecentSets();
     }
 
@@ -109,28 +108,25 @@ export default class SetView extends ReactiveComponent {
 
     deleteSelectedCards() {
         log('user').info('delete selected cards');
-        const activeSet = getActiveSet();
         this.listView.selection.forEach(r => {
-            const index = activeSet.cards.indexOf(r.original);
+            const index = activeProject.cards.indexOf(r.original);
             if (index === -1) {
                 log('state').warn(`Couldn't find card:`, r.original);
                 return;
             }
-            deleteCard(r.original);
-            activeSet.cards.splice(index, 1);
-            changed(activeSet, 'cards');
+            r.original.deleteFiles();
+            activeProject.cards.splice(index, 1);
+            changed(activeProject, 'cards');
             this.listView.selection = [index - 1];
-            selectCard(activeSet.cards[index - 1]);
+            selectCard(activeProject.cards[index - 1]);
         });
     }
 
     async addCard() {
         log('user').info('Add card');
-        const game = getActiveGame();
-        const activeSet = getActiveSet();
-        const card = game.newCard();
-        activeSet.cards.push(card);
-        changed(activeSet, 'cards');
+        const card = new activeGame.Card();
+        activeProject.cards.push(card);
+        changed(activeProject, 'cards');
         const indexToSelect = this.listView.activeRows.findIndex(row => {
             return row.original === card;
         });
@@ -158,16 +154,15 @@ export default class SetView extends ReactiveComponent {
             const serializer = new JSONSerializer();
             const clipboard = await serializer.deserialize(clipboardText) || [];
             if (!clipboard?.cards?.length) return;
-            const activeSet = getActiveSet();
 
             let indexToSelect = -1;
             clipboard.cards.forEach(card => {
-                indexToSelect = activeSet.cards.push(card) - 1;
+                indexToSelect = activeProject.cards.push(card) - 1;
             });
             if (indexToSelect === -1) return;
-            changed(activeSet, 'cards');
+            changed(activeProject, 'cards');
             this.listView.selection = [indexToSelect];
-            await selectCard(activeSet.cards[indexToSelect]);
+            await selectCard(activeProject.cards[indexToSelect]);
         } catch (e) {
             log('user').debug('Paste failed', e);
         }
@@ -182,11 +177,10 @@ export default class SetView extends ReactiveComponent {
     updateSearch(event) {
         if (event) this.searchValue = event.target.value;
         log('user').info('Searching for:', this.searchValue);
-        const cards = getActiveSet().cards;
-        const game = getActiveGame();
+        const cards = activeProject.cards;
         try {
             this.listView.rows = this.searchValue
-                ? game.filter(cards, this.searchValue)
+                ? activeGame.filter(cards, this.searchValue)
                 : cards;
             this.updateStatus();
         } catch (e) {
@@ -196,8 +190,7 @@ export default class SetView extends ReactiveComponent {
 
     updateStatus() {
         log('render').debug('update set status');
-        const activeSet = getActiveSet();
-        const totalCount = activeSet.cards.length;
+        const totalCount = activeProject.cards.length;
         const visibleCount = this.listView.rows.length;
         const filterStr = this.searchValue
             ? `Showing ${visibleCount} / `
@@ -253,18 +246,16 @@ export default class SetView extends ReactiveComponent {
         const files = Array.from(event.dataTransfer.items).filter(item => {
             return item.kind === 'file' && item.type.startsWith('image');
         }).map(item => item.getAsFile());
-        const game = getActiveGame();
-        const activeSet = getActiveSet();
         for (const file of files) {
-            const card = game.newCard();
+            const card = new activeGame.Card();
             // TODO: This need to be cross-game compatible
             card.front.artImage = await ImageFileValue.fromFile(file);
-            activeSet.cards.push(card);
+            activeProject.cards.push(card);
         }
-        changed(activeSet, 'cards');
-        const indexToSelect = activeSet.cards.length - 1;
+        changed(activeProject, 'cards');
+        const indexToSelect = activeProject.cards.length - 1;
         this.listView.selection = [indexToSelect];
-        await selectCard(activeSet.cards[indexToSelect]);
+        await selectCard(activeProject.cards[indexToSelect]);
     }
 }
 

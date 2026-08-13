@@ -1,13 +1,12 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
-import SerializerAdapter from '../sets/adapters/SerializerAdapter.js';
+import SerializerAdapter from '../projects/adapters/SerializerAdapter.js';
 import {
     registerAdapter,
     registerBinaryAdapter
-} from '../sets/adapters/adapterRegistry.js';
+} from '../projects/adapters/adapterRegistry.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
 import { loadFont } from '../template/dynamicFontLoader.js';
-import { getActiveSet } from '../sets/setManager.js';
 import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
 
@@ -18,6 +17,8 @@ export default class CardMagicianGame {
     constructor(gamePath) {
         this.gamePath = gamePath;
         this.name = gamePath.split('/').pop();
+        this.Card = window.CardMagicianCard;
+        this.Project = CardMagicianProject;
     }
 
     /**
@@ -80,45 +81,6 @@ export default class CardMagicianGame {
      * @returns {Array<Column>}
      */
     get columns() { return []; }
-
-    /**
-     * Returns an object representing a new card for this game.
-     *
-     * @abstract
-     * @returns {Object}
-     */
-    newCard() {
-        return { front: {}, notes: '', tags: [] };
-    }
-
-    /**
-     * Returns an object representing a new set for this game.
-     *
-     * @abstract
-     * @returns {object}
-     */
-    newSet() {
-        return { cards: [] };
-    }
-
-    /**
-     * Patches a set object, ensuring required properties are present.
-     * Use for backwards compatibility.
-     *
-     * @abstract
-     * @param {Object} set - Set object.
-     * @returns {Object}
-     */
-    loadSet(set) { return set; }
-
-    /**
-    * Returns the current active set
-    *
-    * @returns {object}
-    */
-    getActiveSet() {
-        return getActiveSet();
-    }
 
     /**
      * Registers a SerializerAdapter constructed by a passed factory

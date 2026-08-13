@@ -2,7 +2,6 @@ import { getTemplate, getTemplates } from '../template/templateRegistry.js';
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
-import { getActiveGame } from '../game/gameManager.js';
 
 async function buildSubcard(parent, key, modulesToLoad, subcardData) {
     const subcard = new SubcardModel(key, parent);
@@ -38,7 +37,7 @@ const templateField = () => ({
 
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
-    faceData.template ??= getActiveGame().defaultTemplateId;
+    faceData.template ??= activeGame.defaultTemplateId;
     const template = getTemplate(faceData.template);
     face.dom.setHTML(template.html);
     face.dom.addCSS(template.css);

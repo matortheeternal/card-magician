@@ -1,6 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import html from './displayCard.html.js';
-import { onActiveCardChanged } from '../../../domain/sets/setManager.js';
+import { onActiveCardChanged } from '../../../domain/projects/projectManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
 import { saveHTMLAsImage } from '../../../domain/export/cardImageExporter.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';

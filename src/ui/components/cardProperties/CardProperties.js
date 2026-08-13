@@ -1,6 +1,3 @@
-import { getActiveGame } from '../../../domain/game/gameManager.js';
-import { getSelectedCard } from '../../../domain/sets/setManager.js';
-
 function buildHTML(card) {
     if (!card) return '';
     return (
@@ -31,8 +28,7 @@ class CardProperties extends HTMLElement {
     get model() { return this.#card; }
 
     get fields() {
-        const game = getActiveGame();
-        return game.baseCardFields;
+        return activeGame.baseCardFields;
     }
 
     render() {
@@ -40,7 +36,6 @@ class CardProperties extends HTMLElement {
     }
 
     save() {
-        const selectedCard = getSelectedCard();
         selectedCard.dirty = true;
         selectedCard.notes = this.#card.notes;
         selectedCard.tags = this.#card.tags;

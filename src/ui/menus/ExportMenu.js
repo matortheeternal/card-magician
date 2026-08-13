@@ -1,5 +1,5 @@
 import ReactiveMenu from './ReactiveMenu.js';
-import { getActiveSet, onActiveSetChanged } from '../../domain/sets/setManager.js';
+import { onActiveProjectChanged } from '../../domain/projects/projectManager.js';
 import { getExporter } from '../../domain/export/exporterManager.js';
 import { watch } from '../../shared/reactivity.js';
 import { executeAction } from '../systems/actionSystem.js';
@@ -17,7 +17,7 @@ export default class ExportMenu extends ReactiveMenu {
     }
 
     subscribe() {
-        onActiveSetChanged(activeSet => {
+        onActiveProjectChanged(activeSet => {
             this.unwatch?.();
             this.unwatch = watch(activeSet, 'export', () => changed(this));
             changed(this);
@@ -25,8 +25,7 @@ export default class ExportMenu extends ReactiveMenu {
     }
 
     get exporterMenuItems() {
-        const set = getActiveSet();
-        return Object.keys(set.export).map(exporterId => {
+        return Object.keys(activeProject.export).map(exporterId => {
             const exporter = getExporter(exporterId);
             return this.menuItem(L`Export ${exporter.label}`, ``, () => {
                 executeAction('run-exporter', exporterId);
@@ -47,8 +46,7 @@ export default class ExportMenu extends ReactiveMenu {
                 L`Configure Exporters`,
                 L`Ctrl+Shift+E`,
                 () => {
-                    const activeSet = getActiveSet();
-                    openModal('cm-configure-exporters-modal', activeSet.export);
+                    openModal('cm-configure-exporters-modal', activeProject.export);
                 }
             ),
         ];

@@ -1,5 +1,4 @@
 import { buildCard } from './cardBuilder.js';
-import { getActiveSet } from '../sets/setManager.js';
 
 export default class CardRenderer {
     constructor(baseCard) {
@@ -12,7 +11,7 @@ export default class CardRenderer {
             const img = document.createElement('img');
             img.onload = () => resolve(img);
             img.className = 'default-card-back';
-            img.src = getActiveSet().defaultBackImage;
+            img.src = activeProject.defaultBackImage;
         });
     }
 

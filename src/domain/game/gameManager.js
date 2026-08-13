@@ -1,10 +1,9 @@
 import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
 import AppConfig from './appConfig.js';
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
-import { newSet } from '../sets/setManager.js';
+import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const games = [];
-let activeGame = null;
 let appConfig = null;
 
 export async function setGame(gameId) {
@@ -12,14 +11,12 @@ export async function setGame(gameId) {
     if (!game) throw new Error(`Could not find game "${gameId}"`);
     const mainPath = [game.path, 'main.js'].join('/');
     const { default: Module } = await import('/' + mainPath);
-    activeGame = new Module(game.path);
+    window.activeGame = new Module(game.path);
     await activeGame.init();
-    await newSet();
+    await withNewContext(() => {
+        window.activeProject = new activeGame.Project();
+    });
     appConfig = new AppConfig(gameId);
-    return activeGame;
-}
-
-export function getActiveGame() {
     return activeGame;
 }
 

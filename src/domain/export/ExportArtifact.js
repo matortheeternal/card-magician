@@ -1,4 +1,3 @@
-import { getSetFolderPath } from '../sets/setManager.js';
 import { getJoinedPath } from '../../shared/neutralinoAdapter.js';
 
 export default class ExportArtifact {
@@ -23,7 +22,7 @@ export default class ExportArtifact {
      */
     async getExportFilePath(folder, localPath) {
         return getJoinedPath(
-            getSetFolderPath(),
+            activeProject.folderPath,
             'dist',
             folder,
             localPath

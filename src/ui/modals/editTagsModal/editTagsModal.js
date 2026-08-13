@@ -1,7 +1,5 @@
 import { registerModal } from '../modalManager.js';
 import Modal from '../Modal.js';
-import { saveProjectTags } from '../../../domain/sets/saveProject.js';
-import { getOpenedSetPath } from '../../../domain/sets/setManager.js';
 
 const L = localize('edit-tags-modal');
 
@@ -67,8 +65,7 @@ export default class EditTagsModal extends Modal {
     }
 
     save() {
-        const setFilePath = getOpenedSetPath();
-        saveProjectTags(setFilePath);
+        activeProject.saveTags();
     }
 }
 

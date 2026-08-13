@@ -1,12 +1,9 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { hide, show } from '../../../shared/htmlUtils.js';
 import {
-    getOpenedSetPath,
-    getSelectedCard,
-    openSet,
-    selectCard,
-    getActiveSet,
-} from '../../../domain/sets/setManager.js';
+    openProject,
+    selectCard
+} from '../../../domain/projects/projectManager.js';
 
 export default class DevState extends ReactiveComponent {
     dirty = false;
@@ -81,8 +78,8 @@ export default class DevState extends ReactiveComponent {
     async rebuild() {
         const msg = {
             'action': 'rebuild',
-            'set': getOpenedSetPath(),
-            'card': getActiveSet().cards.indexOf(getSelectedCard()),
+            'set': activeProject.filePath,
+            'card': activeProject.cards.indexOf(selectedCard),
         };
         console.log(msg);
         this.ws.send(JSON.stringify(msg));
@@ -117,9 +114,9 @@ export default class DevState extends ReactiveComponent {
             window.suppressExit = true;
             location.reload();
         }
-        if (msg.openSet) await openSet(msg.openSet);
+        if (msg.openSet) await openProject(msg.openSet);
         if (Number.isInteger(msg.selectCard))
-            selectCard(getActiveSet().cards[msg.selectCard]);
+            selectCard(activeProject.cards[msg.selectCard]);
     }
 
     async onRebuildClick() {

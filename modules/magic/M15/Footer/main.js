@@ -7,7 +7,6 @@ export default class FooterModule extends CardMagicianModule {
             id: 'collectorNumber',
             label: L`Collector Number`
         };
-        this.set = this.getActiveSet();
     }
 
     updateCollectorNumberPlaceholder(card) {
@@ -20,7 +19,7 @@ export default class FooterModule extends CardMagicianModule {
             'rarityCharacter', 'autoCollectorNumber', 'collectorNumber',
             'setCode', 'language', 'illustrator'
         ], () => this.requestRender({ render: 'renderInfo' }));
-        watch(this.set, ['rarityOrder', 'language', 'illustrator', 'setCode'],
+        watch(activeProject, ['rarityOrder', 'language', 'illustrator', 'setCode'],
               () => this.requestRender({ render: 'renderInfo' })
         );
         watch(card, 'legalText', () => this.requestRender({ render: 'renderLegal' }));
@@ -30,14 +29,14 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderSetCodeAndLanguage(card) {
-        const setCode = this.escapeHTML(card.setCode || this.set.setCode || '');
-        const language = this.escapeHTML(card.language || this.set.language || '');
+        const setCode = this.escapeHTML(card.setCode || activeProject.setCode || '');
+        const language = this.escapeHTML(card.language || activeProject.language || '');
         return `<div>${setCode} &bullet; ${language}</div>`;
     }
 
     renderIllustrator(card) {
         const illustrator = this.escapeHTML(
-            card.illustrator || this.set.illustrator || ''
+            card.illustrator || activeProject.illustrator || ''
         );
 
         return (
@@ -51,7 +50,7 @@ export default class FooterModule extends CardMagicianModule {
     renderInfo(card) {
         const number = card.collectorNumber || card.autoCollectorNumber || '';
 
-        return this.set.rarityOrder === 'after' ? (
+        return activeProject.rarityOrder === 'after' ? (
             `<div class="column">
                 <div>${this.escapeHTML(number)}</div>
                 ${this.renderSetCodeAndLanguage(card)}
@@ -73,11 +72,11 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     renderLegal(card) {
-        return card.legalText || this.set.legalText;
+        return card.legalText || activeProject.legalText;
     }
 
     get fields() {
-        const { illustrator, setCode, language, legalText } = this.set;
+        const { illustrator, setCode, language, legalText } = activeProject;
         return [
             { id: 'illustrator', label: L`Illustrator`, placeholder: illustrator },
             { id: 'autoCollectorNumber', label: L`Auto Collector Number` },

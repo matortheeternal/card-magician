@@ -1,11 +1,7 @@
-import { getActiveGame } from '../game/gameManager.js';
 import sanitize from 'sanitize-filename';
-import { getActiveSet } from './setManager.js';
 
 function addCardBaseName(card, usedBaseNames) {
-    const game = getActiveGame();
-    const cardName = game.getCardName(card);
-    const base = sanitize(cardName.normalize('NFC'), {
+    const base = sanitize(card.name.normalize('NFC'), {
         replacement: '-'
     }).replaceAll(' - ', '--'); // this protects us against image suffix collisions
     let name = base;
@@ -23,8 +19,7 @@ export function updateBaseNames(cards) {
 }
 
 export function updateBaseName(card) {
-    const activeSet = getActiveSet();
-    const cards = activeSet.cards.slice();
+    const cards = activeProject.cards.slice();
     cards.remove(card);
     const usedBaseNames = cards.map(card => card.baseName.toLowerCase());
     addCardBaseName(card, usedBaseNames);

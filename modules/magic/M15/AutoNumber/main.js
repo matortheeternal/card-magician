@@ -1,17 +1,17 @@
 export default class AutoNumberModule extends CardMagicianModule {
-    async init() {
-        this.set = this.getActiveSet();
-        this.game = this.getActiveGame();
-    }
-
-    updateNumbering() {
-        this.game.autoNumberCards(this.set);
-    }
-
     bind(card, watch) {
-        watch(card, ['name', 'color', 'colorIdentity', 'superType'],
-              () => this.updateNumbering()
+        watch(card, [
+            'name',
+            'manaCost',
+            'color',
+            'rarity',
+            'colorIdentity',
+            'superType'
+        ], () => window.activeProject.updateNumbering());
+        watch(
+            window.activeProject,
+            'collectorNumberFormat',
+            () => window.activeProject.updateNumbering()
         );
-        watch(this.set, 'collectorNumberFormat', () => this.updateNumbering());
     }
 }

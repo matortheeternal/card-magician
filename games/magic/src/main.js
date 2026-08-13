@@ -2,22 +2,27 @@ import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
 import CardMagicianCard from '@sigil-sifter/magic-cm/card';
-import { buildColumns, collectMap } from './ui/listView/columns.js';
+import { buildColumns } from './ui/listView/columns.js';
 import { autoNumberCards } from './domain/autoNumber.js';
 import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
-import setInfoFields from './ui/setInfoModal/setInfoFields.js';
 import SetInfoModal from './ui/setInfoModal/SetInfoModal.js';
 import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
 import mtg from './domain/hljsMtg.js';
 import baseCardFields from './baseCardFields.js';
-
-const SET_FILE_VERSION = 1;
+import MagicProject from './MagicProject.js';
+import MagicCard from './MagicCard.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
-    async init() {
+    constructor() {
+        super();
         this.ManaScribe = ManaScribe;
         this.ColorIdentity = ColorIdentity;
+        this.Project = MagicProject;
+        this.Card = MagicCard;
+    }
+
+    async init() {
         this.addSerializerAdapter(SerializerAdapter => {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
@@ -37,39 +42,12 @@ export default class MagicTheGathering extends CardMagicianGame {
         return this.sifter.filter(cards, query);
     }
 
-    get columns () {
+    get columns() {
         return buildColumns();
     }
 
     get defaultTemplateId() {
         return 'magic/M15/Main';
-    }
-
-    getCardName(card) {
-        return collectMap(card, f => f.name, ' + ') || 'blank';
-    }
-
-    async getCardImages(card, fullSave) {
-        return Promise.all(
-            ['front', 'back'].filter(key => {
-                return card[key]?.artImage?.imageUrl
-                    && (card[key]?.artImage?.dirty || fullSave);
-            }).map(async key => ({
-                data: await card[key].artImage.loadImageData(),
-                value: card[key].artImage,
-                key
-            }))
-        );
-    }
-
-    loadSet(set) {
-        const newSet = this.newSet();
-        const info = { ...newSet.info, ...(set?.info ?? {}) };
-        set.cards.forEach(card => {
-            card.notes ||= '';
-            card.tags ||= [];
-        });
-        return { ...info, ...newSet, ...set };
     }
 
     addComputedProps(cardFace) {
@@ -80,20 +58,5 @@ export default class MagicTheGathering extends CardMagicianGame {
 
     get baseCardFields() {
         return Object.values(baseCardFields);
-    }
-
-    newCard() {
-        return { front: {}, notes: '', dirty: true, tags: [] };
-    }
-
-    newSet() {
-        const info = this.initializeFields(setInfoFields);
-        return {
-            ...info,
-            version: SET_FILE_VERSION,
-            defaultBackImage: this.resolveAsset('back.png'),
-            export: { CardImagesExporter: {} },
-            cards: []
-        };
     }
 }

@@ -1,6 +1,4 @@
-import { getActiveGame } from '../game/gameManager.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
-import { getActiveSet } from '../sets/setManager.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 /**
@@ -40,24 +38,6 @@ export default class CardMagicianExporter {
 
     get defaultConfig() {
         return initializeFields(this.constructor.options);
-    }
-
-    /**
-     * Returns the current active set.
-     *
-     * @returns {object}
-     */
-    get activeSet() {
-        return getActiveSet();
-    }
-
-    /**
-     * Returns the current active game.
-     *
-     * @returns {object}
-     */
-    get activeGame() {
-        return getActiveGame();
     }
 
     /**

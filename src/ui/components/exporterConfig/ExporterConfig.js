@@ -1,6 +1,5 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { getExporter, loadExporter } from '../../../domain/export/exporterManager.js';
-import { getActiveSet } from '../../../domain/sets/setManager.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import { initializeFields } from '../../systems/fieldSystem.js';
 
@@ -18,12 +17,8 @@ export default class ExporterConfig extends ReactiveComponent {
             onRemoveClick: () => this.onRemoveClick()
         });
         this.addEventListener('cm-field-changed', () => {
-            changed(this.activeSet.export);
+            changed(activeProject.export);
         });
-    }
-
-    get activeSet() {
-        return this._activeSet ??= getActiveSet();
     }
 
     get exporterId() {
@@ -37,7 +32,7 @@ export default class ExporterConfig extends ReactiveComponent {
     get model() {
         return this._model ??= initializeFields(
             this.fields,
-            this.activeSet.export[this.exporterId]
+            activeProject.export[this.exporterId]
         );
     }
 
@@ -60,7 +55,7 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     onRemoveClick() {
-        delete this.activeSet.export[this.exporterId];
+        delete activeProject.export[this.exporterId];
         emit(this, 'exporter-removed', { id: this.exporterId });
     }
 }

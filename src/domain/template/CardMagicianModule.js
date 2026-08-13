@@ -10,8 +10,6 @@ import {
 } from '../graphics/compositeOperations.js';
 import sanitizeHtml from 'sanitize-html';
 import { escapeHTML } from '../../shared/htmlUtils.js';
-import { getActiveGame } from '../game/gameManager.js';
-import { getActiveSet } from '../sets/setManager.js';
 import { watch } from '../../shared/reactivity.js';
 
 /**
@@ -331,24 +329,6 @@ export default class CardMagicianModule {
      */
     async loadFont(fontName, localPath) {
         await loadFont(fontName, this.resolveAsset(localPath));
-    }
-
-    /**
-     * Returns the current active set
-     *
-     * @returns {object}
-     */
-    getActiveSet() {
-        return getActiveSet();
-    }
-
-    /**
-     * Returns the current active game
-     *
-     * @returns {object}
-     */
-    getActiveGame() {
-        return getActiveGame();
     }
 
     /**

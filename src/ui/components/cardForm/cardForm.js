@@ -2,7 +2,7 @@ import html from './cardForm.html.js';
 import {
     onActiveCardChanged,
     saveActiveCard
-} from '../../../domain/sets/setManager.js';
+} from '../../../domain/projects/projectManager.js';
 import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';

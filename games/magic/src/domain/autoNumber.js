@@ -26,32 +26,32 @@ export function collectorNumberSort(a, b) {
         || (a.front.name || '').localeCompare(b.front.name || '');
 }
 
-export function formatCollectorNumber(set, num, suffix = '') {
-    if (set.collectorNumberFormat === 'static')
+export function formatCollectorNumber(project, num, suffix = '') {
+    if (project.collectorNumberFormat === 'static')
         return 'TEST';
-    if (set.collectorNumberFormat === 'four')
+    if (project.collectorNumberFormat === 'four')
         return num.toString().padStart(4, '0') + suffix;
-    if (set.collectorNumberFormat === 'threeOutOf') {
+    if (project.collectorNumberFormat === 'threeOutOf') {
         const current = num.toString().padStart(3, '0') + suffix;
-        const max = set.cards.length.toString().padStart(3, '0');
+        const max = project.cards.length.toString().padStart(3, '0');
         return `${current} / ${max}`;
     }
     return num.toString() + suffix;
 }
 
-export function setAutoNumber(set, card, num) {
+export function setAutoNumber(project, card, num) {
     const hasBack = Object.hasOwn(card, 'back');
     const frontSuffix = hasBack ? 'a' : '';
-    card.front.autoCollectorNumber = formatCollectorNumber(set, num, frontSuffix);
+    card.front.autoCollectorNumber = formatCollectorNumber(project, num, frontSuffix);
     if (!hasBack) return;
-    card.back.autoCollectorNumber = formatCollectorNumber(set, num, 'b');
+    card.back.autoCollectorNumber = formatCollectorNumber(project, num, 'b');
 }
 
-function sortAndNumber(set, cards) {
+function sortAndNumber(project, cards) {
     if (!cards) return;
     const sortedCards = cards.sort(collectorNumberSort);
     for (const [i, card] of sortedCards.entries())
-        setAutoNumber(set, card, i + 1);
+        setAutoNumber(project, card, i + 1);
 }
 
 function cardCodeSort(a, b) {
@@ -87,8 +87,8 @@ function assignCardCode(key, card, index) {
     ].join('');
 }
 
-function applyCardCodes(set) {
-    const groups = Object.groupBy(set.cards, getCardCodeGroup);
+function applyCardCodes(project) {
+    const groups = Object.groupBy(project.cards, getCardCodeGroup);
     for (const [key, value] of Object.entries(groups)) {
         value.sort(cardCodeSort);
         for (let i = 0; i < value.length; i++)
@@ -96,17 +96,17 @@ function applyCardCodes(set) {
     }
 }
 
-function applyCollectorNumbers(set) {
-    const groups = Object.groupBy(set.cards, card => {
+function applyCollectorNumbers(project) {
+    const groups = Object.groupBy(project.cards, card => {
         return isToken(card) || isEmblem(card) ? 'tokens' : 'main';
     });
-    sortAndNumber(set, groups.main);
-    sortAndNumber(set, groups.tokens);
+    sortAndNumber(project, groups.main);
+    sortAndNumber(project, groups.tokens);
 }
 
-export function autoNumberCards(set) {
-    const numberFn = set.collectorNumberFormat === 'cardCodes'
+export function autoNumberCards(project) {
+    const numberFn = project.collectorNumberFormat === 'cardCodes'
         ? applyCardCodes
         : applyCollectorNumbers;
-    numberFn(set);
+    numberFn(project);
 }

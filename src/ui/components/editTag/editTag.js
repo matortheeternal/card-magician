@@ -2,7 +2,7 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import editTagFields from './editTagFields.js';
 import { deleteTag } from '../../../domain/game/tagManager.js';
-import { removeTagFromSet } from '../../../domain/sets/setManager.js';
+import { removeTagFromSet } from '../../../domain/projects/projectManager.js';
 
 const L = localize('edit-tag');
 

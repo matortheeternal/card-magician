@@ -1,9 +1,9 @@
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
-import { getActiveSet, selectSetFolderPath } from '../sets/setManager.js';
+import { saveAs } from '../projects/projectManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
-import { updateBaseNames } from '../sets/cardNamer.js';
+import { updateBaseNames } from '../projects/cardNamer.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
@@ -94,24 +94,22 @@ function addDependencyParams(exporterId, set, params) {
 }
 
 export function gatherExporterParams(targetExporterId) {
-    const set = getActiveSet();
     const params = {};
-    for (const [id, config] of Object.entries(set.export)) {
+    for (const [id, config] of Object.entries(activeProject.export)) {
         if (targetExporterId !== 'all' && targetExporterId !== id)
             continue;
-        addDependencyParams(id, set, params);
+        addDependencyParams(id, activeProject, params);
         params[id] ??= { id, config };
     }
     return Object.values(params);
 }
 
 registerAction('run-exporter', async exporterId => {
-    if (!await selectSetFolderPath()) return;
+    if (!await saveAs()) return;
     openModal('cm-progress-modal', { title: `Exporting...` });
     try {
         progress.setStatus('Preparing cards');
-        const cards = getActiveSet().cards;
-        updateBaseNames(cards);
+        updateBaseNames(activeProject.cards);
         progress.setStatus('Preparing exporters');
         const params = gatherExporterParams(exporterId);
         await runExporters(params);

@@ -1,8 +1,7 @@
-import { getActiveGame } from '../../game/gameManager.js';
 import { openFolderDialog } from '../../../shared/neutralinoAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
-import { setActiveSet } from '../../sets/setManager.js';
+import { setActiveProject } from '../../projects/projectManager.js';
 import { loadMseFile } from './loadMseFile.js';
 import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
@@ -23,7 +22,7 @@ function checkVersion(mseVersion) {
 
 function checkGame(mseGame, mseGameVersion) {
     if (mseGame !== TESTED_MSE_GAME)
-        throw new Error('Import only supports Magic: The Gathering sets.');
+        throw new Error('Import only supports Magic: The Gathering projects.');
     if (mseGameVersion !== TESTED_MSE_GAME_VERSION)
         return L`Untested MSE game version "${mseGameVersion}"`;
 }
@@ -93,17 +92,16 @@ async function importCards(mseSet, cmSet, game, folderPath) {
 }
 
 export async function importMseFolder(folderPath) {
-    const game = getActiveGame();
-    const cmSet = game.newSet();
+    const project = new activeGame.Project();
     progress.setStatus(L`Loading MSE set file`);
     const mseSet = await loadMseFile(folderPath, 'set');
     if (!verifySet(mseSet)) return;
     progress.setMax(mseSet.include_file.length);
     progress.setStatus(L`Loading set info`);
-    importSetInfo(mseSet.set_info, cmSet);
+    importSetInfo(mseSet.set_info, project);
     progress.setStatus(L`Importing cards`);
-    await importCards(mseSet, cmSet, game, folderPath);
-    return cmSet;
+    await importCards(mseSet, project, activeGame, folderPath);
+    return project;
 }
 
 registerAction('import-mse-set', async () => {
@@ -114,10 +112,10 @@ registerAction('import-mse-set', async () => {
     openModal('cm-progress-modal', { title: L`Importing...` });
     try {
         await withNewContext(async () => {
-            const set = await importMseFolder(folderPath);
+            const project = await importMseFolder(folderPath);
             progress.setTitle(L`Import complete!`);
             progress.complete();
-            setActiveSet(set);
+            setActiveProject(project);
         });
     } catch (error) {
         progress.onError(error);
