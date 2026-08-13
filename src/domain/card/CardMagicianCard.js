@@ -56,8 +56,8 @@ export default class CardMagicianCard {
     }
 
     async deleteFiles() {
-        for (const file of this.getFileEntries(this.files))
-            await rmrf(file);
+        for (const entry of this.getFileEntries(this.files))
+            await rmrf(entry.filePath);
     }
 
     /**
@@ -86,7 +86,7 @@ export default class CardMagicianCard {
     async saveData(cardsFolderPath) {
         const basePath = await getJoinedPath(cardsFolderPath, this.baseName);
         const filePath = `${basePath}.yml`;
-        await YAMLSerializer.write(filePath, this);
+        await YAMLSerializer.save(filePath, this);
         this.files.data = filePath;
     }
 

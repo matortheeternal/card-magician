@@ -43,7 +43,7 @@ export default class CardMagicianProject {
      * @returns {object}
      */
     get defaultExportConfig() {
-        return { CardImagesExport: {} };
+        return { CardImagesExporter: {} };
     }
 
     /**
@@ -125,6 +125,7 @@ export default class CardMagicianProject {
         const { baseName, faceKey, fieldKey } = this.extractNameParts(stem);
         const card = this.cards.find(card => card.baseName === baseName);
         if (!card?.[faceKey]?.[fieldKey]) return;
+        card.files[faceKey] ||= {};
         card.files[faceKey][fieldKey] = filePath;
         const filenameUrlPart = encodeURIComponent(filename);
         card[faceKey][fieldKey].imageUrl = `/project/cards/${filenameUrlPart}`;

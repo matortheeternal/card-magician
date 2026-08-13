@@ -80,12 +80,12 @@ export function onActiveCardChanged(callback) {
 
 export function onActiveProjectChanged(callback) {
     projectChangedCallbacks.push(callback);
-    callback(activeProject);
+    callback(window.activeProject);
 }
 
 export async function setActiveCard(card) {
-    if (activeCard?.front) activeCard.front.dispose();
-    if (activeCard?.back) activeCard.back.dispose();
+    if (window.activeCard?.front) activeCard.front.dispose();
+    if (window.activeCard?.back) activeCard.back.dispose();
     window.activeCard = card ? await buildCard(card) : null;
     cardChangedCallbacks.forEach(cb => cb(activeCard));
 }

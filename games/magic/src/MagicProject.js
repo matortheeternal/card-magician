@@ -20,6 +20,10 @@ export default class MagicProject extends CardMagicianProject {
     }
 
     async afterLoad() {
+        this.updateNumbering();
+    }
+
+    updateNumbering() {
         autoNumberCards(this);
     }
 }

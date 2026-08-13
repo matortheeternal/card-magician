@@ -23,7 +23,7 @@ export default class MagicCard extends window.CardMagicianCard {
         return a;
     }
 
-    async getCardImages(fullSave) {
+    async getImages(fullSave) {
         return Promise.all(
             this.faces.filter(face => {
                 return face?.artImage?.imageUrl

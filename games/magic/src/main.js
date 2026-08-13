@@ -14,8 +14,8 @@ import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
-    constructor() {
-        super();
+    constructor(gamePath) {
+        super(gamePath);
         this.ManaScribe = ManaScribe;
         this.ColorIdentity = ColorIdentity;
         this.Project = MagicProject;

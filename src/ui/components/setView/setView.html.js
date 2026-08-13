@@ -23,8 +23,8 @@ export default
             ${L`Open a set`}
         </sl-button>
     </div>
-    <div class="recent-sets-container">
-        <div>${L`Recent sets`}</div>
+    <div class="recent-projects-container">
+        <div>${L`Recent projects`}</div>
         <div class="buttons-container"></div>
     </div>
 </div>`;

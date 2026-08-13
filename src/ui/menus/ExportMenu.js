@@ -17,9 +17,9 @@ export default class ExportMenu extends ReactiveMenu {
     }
 
     subscribe() {
-        onActiveProjectChanged(activeSet => {
+        onActiveProjectChanged(project => {
             this.unwatch?.();
-            this.unwatch = watch(activeSet, 'export', () => changed(this));
+            this.unwatch = watch(project, 'export', () => changed(this));
             changed(this);
         });
     }

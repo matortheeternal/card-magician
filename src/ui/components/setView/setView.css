@@ -45,7 +45,7 @@ cm-list-view {
     }
 }
 
-.recent-sets-container {
+.recent-projects-container {
     padding: var(--sl-spacing-medium);
     font-size: var(--sl-font-size-medium);
     text-align: center;

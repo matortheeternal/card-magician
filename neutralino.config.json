@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
-  "applicationId": "cardMagician",
+  "applicationId": "cardmagician",
   "version": "1.0.0",
   "defaultMode": "chrome",
   "port": 0,
