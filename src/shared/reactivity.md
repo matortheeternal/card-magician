@@ -59,8 +59,8 @@ watcher from the global registry so it will no longer be triggered by changes.
 However, it should also be noted that most systems in this codebase wrap `watch` for
 you so you don't have to worry about cleanup.  If you're using `watch` inside of a
 [ReactiveComponent](../ui/components/ReactiveComponent.md),
-[CardMageModule](../domain/template/CardMageModule.md), or
-[CardMageGame](../domain/game/CardMageGame.md), lifecycle management will
+[CardMagicianModule](../domain/template/CardMagicianModule.md), or
+[CardMagicianGame](../domain/game/CardMagicianGame.md), lifecycle management will
 be handled for you.
 
 ## execution model

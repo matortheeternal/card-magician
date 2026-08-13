@@ -1,4 +1,4 @@
-# card-mage
+# card-magician
 
 ## how to run locally
 

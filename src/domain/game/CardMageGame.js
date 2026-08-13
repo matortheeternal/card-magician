@@ -11,7 +11,7 @@ import { getActiveSet } from '../sets/setManager.js';
 import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
 
-export default class CardMageGame {
+export default class CardMagicianGame {
     /**
      * @param {string} gamePath - Filesystem path of the game.
      */
@@ -179,4 +179,4 @@ export default class CardMageGame {
     }
 }
 
-window.CardMageGame = CardMageGame;
+window.CardMagicianGame = CardMagicianGame;

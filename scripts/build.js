@@ -1,6 +1,6 @@
 import { buildApp } from './dev/buildApp.js';
 import { fileURLToPath } from 'url';
-import { buildMagic } from '@card-mage/magic/esbuild.config.js';
+import { buildMagic } from '@card-magician/magic/esbuild.config.js';
 
 export async function build(options = { minify: false }) {
     await buildApp(options);

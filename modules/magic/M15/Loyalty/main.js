@@ -1,6 +1,6 @@
 const L = localize('module-M15-loyalty');
 
-export default class LoyaltyModule extends CardMageModule {
+export default class LoyaltyModule extends CardMagicianModule {
     bind(card, watch) {
         watch(card, ['loyalty'], () => this.requestRender());
     }

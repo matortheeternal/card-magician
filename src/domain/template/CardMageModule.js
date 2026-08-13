@@ -140,7 +140,7 @@ import { watch } from '../../shared/reactivity.js';
  * @property {function(object):Promise<void>} load   @internal @private
  *
  * @property {function():CardFace|null} parent       - Resolve parent.
- * @property {function():Array<CardMageModule>} modules - Active modules.
+ * @property {function():Array<CardMagicianModule>} modules - Active modules.
  */
 
 /**
@@ -168,7 +168,7 @@ import { watch } from '../../shared/reactivity.js';
  * functions for loading assets, files, fonts and performing
  * graphical operations.
  */
-export default class CardMageModule {
+export default class CardMagicianModule {
     #watchers = [];
 
     /**
@@ -461,4 +461,4 @@ export default class CardMageModule {
     renderNamed(card) {}
 }
 
-window.CardMageModule = CardMageModule;
+window.CardMagicianModule = CardMagicianModule;

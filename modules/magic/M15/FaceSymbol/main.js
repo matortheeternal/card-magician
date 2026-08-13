@@ -3,7 +3,7 @@ import { getFaceSymbolClass, resolveOption } from './src/helpers.js';
 
 const L = localize('module-M15-face-symbol');
 
-export default class FaceSymbolModule extends CardMageModule {
+export default class FaceSymbolModule extends CardMagicianModule {
     loadImage(opt) {
         opt.imageUrl = this.resolveAsset(opt.imagePath);
     }

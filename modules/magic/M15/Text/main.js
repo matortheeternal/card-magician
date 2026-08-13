@@ -5,7 +5,7 @@ import { ListConverter, listExpr } from './src/ListConverter.js';
 
 const L = localize('module-M15-text');
 
-export default class TextModule extends CardMageModule {
+export default class TextModule extends CardMagicianModule {
     async init(card) {
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 

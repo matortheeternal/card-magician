@@ -1,6 +1,6 @@
 const L = localize('module-M15-face-symbol');
 
-export default class TypeModule extends CardMageModule {
+export default class TypeModule extends CardMagicianModule {
     async init(card) {
         card.isLegendary = () => /\blegendary\b/i.test(card.superType);
         card.isLand = () => /\bland\b/i.test(card.superType);

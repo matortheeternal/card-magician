@@ -2,7 +2,7 @@ import TTSArtifact from './src/TTSArtifact.js';
 
 const L = localize('tts-exporter');
 
-export default class TTSExporter extends CardMageExporter {
+export default class TTSExporter extends CardMagicianExporter {
     saveOutputs = true;
 
     static get options() {
