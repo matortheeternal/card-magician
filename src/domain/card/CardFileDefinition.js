@@ -3,7 +3,7 @@ import { getJoinedPath, getPathParts } from '../../shared/neutralinoAdapter.js';
 export default class CardFileDefinition {
     constructor(key, options = {}) {
         this.key = key;
-        this.suffix = options.suffix;
+        this.suffix = options.suffix || '';
         this.fieldPath = options.fieldPath;
         this.extension = options.extension;
     }
@@ -32,9 +32,9 @@ export default class CardFileDefinition {
      * @abstract
      * @param card
      * @param value
-     * @returns {Promise<void>}
      */
-    async setFieldValue(card, value) {
+    setFieldValue(card, value) {
+        if (!this.fieldPath) return;
         throw new Error('Not implemented');
     }
 
@@ -44,6 +44,7 @@ export default class CardFileDefinition {
      * @returns {Promise<void>}
      */
     async clearFieldValue(card) {
+        if (!this.fieldPath) return;
         throw new Error('Not implemented');
     }
 

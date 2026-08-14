@@ -1,6 +1,5 @@
 import {
     getJoinedPath,
-    getPathParts,
     moveFile,
     rmrf
 } from '../../shared/neutralinoAdapter.js';
@@ -20,7 +19,7 @@ export default class CardFiles {
         return this.paths.has(key);
     }
 
-    async set(key, filePath) {
+    set(key, filePath) {
         const def = this.resolveDefinition(key);
         this.paths.set(key, filePath);
         def.setFieldValue(this.card, filePath);
@@ -47,12 +46,6 @@ export default class CardFiles {
         return window.activeProject.cardsFolderPath;
     }
 
-    async setDataPath(filePath) {
-        const { stem } = await getPathParts(filePath);
-        this.card.baseName = stem;
-        this.paths.set('data', filePath);
-    }
-
     async getCanonicalPath(key) {
         const def = this.resolveDefinition(key);
         const filename = def.getFilename(this.card);
@@ -65,16 +58,16 @@ export default class CardFiles {
         const newFilePath = await this.getCanonicalPath(key);
         if (newFilePath !== oldFilePath)
             await moveFile(oldFilePath, newFilePath);
-        await this.set(key, newFilePath);
+        this.set(key, newFilePath);
     }
 
     async load(filesByName) {
         for (const def of this.definitions) {
             const filename = def.getFilename(this.card);
             const filePath = filesByName.get(filename.toLowerCase())
-                || def.getLegacyFilePath(this.card);
+                || await def.getLegacyFilePath(this.card);
             if (!filePath) continue;
-            await this.set(def.key, filePath);
+            this.set(def.key, filePath);
         }
     }
 
