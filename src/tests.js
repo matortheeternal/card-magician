@@ -1,5 +1,6 @@
 import { mount, readDirectory } from './shared/neutralinoAdapter.js';
 import { buildLoadMseFileTests } from './domain/import/mse/loadMseFile.tests.js';
+import { loadScript, loadStyle } from './shared/testHelpers.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
@@ -8,27 +9,6 @@ const scripts = [
     `${JASMINE_BASE}/boot0.js`,
 ];
 const jasmineStyle = `${JASMINE_BASE}/jasmine.css`;
-
-function loadScript(src) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = () => reject(new Error(`Failed to load Jasmine script: ${src}`));
-        document.head.appendChild(script);
-    });
-}
-
-function loadStyle(href) {
-    return new Promise((resolve, reject) => {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.onload = resolve;
-        link.onerror = () => reject(new Error('Failed to load Jasmine CSS'));
-        document.head.appendChild(link);
-    });
-}
 
 export async function setupTestHarness() {
     document.querySelectorAll('main').forEach(el => el.remove());

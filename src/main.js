@@ -23,8 +23,11 @@ import {
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
+import { prepareSmokeTests, reportSmokeTestError, runSmokeTests } from './smokeTests.js';
 
 const startupLog = log('startup');
+const hasSmokeTestsArg = NL_ARGS.includes('--run-smoke-tests');
+
 let devState;
 
 async function ensureDirectories() {
@@ -56,6 +59,7 @@ async function setupNeutralino() {
 }
 
 function setupDevState() {
+    if (hasSmokeTestsArg) return;
     startupLog.info('Development mode detected');
     devState = document.createElement('dev-state');
     document.body.appendChild(devState);
@@ -76,6 +80,7 @@ function loaded() {
 async function startApp() {
     if (NL_RESMODE !== 'bundle') setupDevState();
     if (NL_ARGS.includes('--run-tests')) return runTests();
+    if (hasSmokeTestsArg) await prepareSmokeTests();
 
     startupLog.debug('Loading games');
     await loadGames();
@@ -104,8 +109,10 @@ async function startApp() {
         });
         await setupNeutralino();
         await startApp();
+        await runSmokeTests();
     } catch (error) {
         startupLog.error('Startup error:', error);
+        if (hasSmokeTestsArg) await reportSmokeTestError(error);
         document.querySelector('cm-loader').showError();
     }
 })();

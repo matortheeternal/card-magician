@@ -23,6 +23,7 @@ export default [
                 NL_DATAPATH: 'readonly',
                 NL_ARGS: 'readonly',
                 NL_RESMODE: 'readonly',
+                NL_APPID: 'readonly',
                 // CODEBASE GLOBALS
                 activeGame: 'readonly',
                 activeProject: 'readonly',
