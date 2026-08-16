@@ -109,7 +109,7 @@ async function startApp() {
         });
         await setupNeutralino();
         await startApp();
-        await runSmokeTests();
+        if (hasSmokeTestsArg) await runSmokeTests();
     } catch (error) {
         startupLog.error('Startup error:', error);
         if (hasSmokeTestsArg) await reportSmokeTestError(error);
