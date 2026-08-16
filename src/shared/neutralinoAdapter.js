@@ -145,15 +145,14 @@ export async function getMounts() {
 
 export async function unmount(path) {
     log('fs').debug('unmount', path);
-    try {
+    return wrapError(async () => {
+        const mounts = await Neutralino.server.getMounts();
+        if (!mounts[path]) return;
         await Neutralino.server.unmount(path);
         // This protects us from a timing bug which occurs when the code
         // tries to mount a path after unmounting it.
         await Neutralino.server.getMounts();
-    } catch (error) {
-        if (error.code !== 'NE_SR_NOMTPTH')
-            throw new Error(`${error.code} ${error.message}`);
-    }
+    });
 }
 
 export async function mount(path, target) {
