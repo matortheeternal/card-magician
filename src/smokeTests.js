@@ -9,11 +9,12 @@ const scripts = [
 
 const suites = {
     startup: () => import('./startup.tests.js'),
+    persistence: () => import('./domain/persistence.tests.js'),
 };
 
 function getArgument(name) {
     const prefix = `${name}=`;
-    const argument = window.NL_ARGS.find(arg => arg.startsWith(prefix));
+    const argument = NL_ARGS.find(arg => arg.startsWith(prefix));
     return argument?.slice(prefix.length);
 }
 
@@ -36,7 +37,7 @@ function verifyTestEnvironment() {
 }
 
 function addProcessReporter(suiteName) {
-    window.jasmine.getEnv().addReporter({
+    jasmine.getEnv().addReporter({
         async jasmineDone(result) {
             const output = JSON.stringify({
                 suite: suiteName,
@@ -47,7 +48,8 @@ function addProcessReporter(suiteName) {
                 `CARD_MAGICIAN_TEST_RESULT:${output}\n`
             );
 
-            Neutralino.app.exit(result.overallStatus === 'passed' ? 0 : 1);
+            const passed = result.overallStatus === 'passed';
+            Neutralino.app.exit(passed ? 0 : 1);
             window.close();
         }
     });
@@ -77,6 +79,14 @@ export async function prepareSmokeTests() {
 
 export async function reportSmokeTestError(error) {
     await Neutralino.app.writeProcessError(`${error.stack ?? error}\n`);
+    const output = JSON.stringify({
+        suite: getArgument('--test-suite'),
+        status: 'failed',
+        error: error.stack ?? error
+    });
+    await Neutralino.app.writeProcessOutput(
+        `CARD_MAGICIAN_TEST_RESULT:${output}\n`
+    );
     Neutralino.app.exit(1);
     window.close();
 }
@@ -87,5 +97,5 @@ export async function runSmokeTests() {
     await suite.load();
     addProcessReporter(suite.name);
     await new Promise((resolve) => { setTimeout(resolve); });
-    window.jasmine.getEnv().execute();
+    jasmine.getEnv().execute();
 }

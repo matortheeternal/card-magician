@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { spawnSync } from 'child_process';
 
-const suites = ['startup'];
+const suites = ['startup', 'persistence'];
 const root = path.resolve(import.meta.dirname, '..');
 const productionConfigPath = path.join(root, 'neutralino.config.json');
 const testConfigPath = path.join(root, 'neutralino.test.config.json');
