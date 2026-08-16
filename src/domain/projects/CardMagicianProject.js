@@ -1,4 +1,5 @@
 import {
+    createDirectory,
     getJoinedPath, getParentPath, getPathParts,
     mount, unmount
 } from '../../shared/neutralinoAdapter.js';
@@ -85,8 +86,9 @@ export default class CardMagicianProject {
         this.#folderPath = await getParentPath(value);
         this.#cardsFolderPath = await getJoinedPath(this.folderPath, 'cards');
         this.#tagsPath = await getJoinedPath(this.folderPath, 'tags.yml');
+        await createDirectory(this.#folderPath);
         await unmount('/project');
-        await mount('/project', this.folderPath);
+        await mount('/project', this.#folderPath);
     }
 
     /**
