@@ -10,7 +10,7 @@ import globals from 'globals';
 // - Maintain a zero-noise baseline: lint should be quiet on intentional code
 export default [
     {
-        files: ['src/**/*.js', 'modules/**/*.js'],
+        files: ['src/*.js', 'src/**/*.js', 'modules/**/*.js'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -24,6 +24,7 @@ export default [
                 NL_ARGS: 'readonly',
                 NL_RESMODE: 'readonly',
                 NL_APPID: 'readonly',
+                NL_CWD: 'readonly',
                 // CODEBASE GLOBALS
                 activeGame: 'readonly',
                 activeProject: 'readonly',
@@ -40,13 +41,6 @@ export default [
                 ReactiveComponent: 'readonly',
                 Modal: 'readonly',
             }
-        }
-    },
-
-    {
-        files: ['src/tests/**/*.js'],
-        languageOptions: {
-            globals: globals.jasmine
         }
     },
 
