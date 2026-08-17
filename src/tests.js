@@ -1,6 +1,6 @@
 import { mount, readDirectory } from './shared/neutralinoAdapter.js';
 import { buildLoadMseFileTests } from './domain/import/mse/loadMseFile.tests.js';
-import { loadScript, loadStyle } from './shared/testHelpers.js';
+import { loadScript, loadStyle } from './shared/htmlUtils.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [

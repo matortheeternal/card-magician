@@ -1,4 +1,4 @@
-import { loadScript } from './shared/testHelpers.js';
+import { loadScript } from './shared/htmlUtils.js';
 import { writeProcessError, writeProcessOutput } from './shared/neutralinoAdapter.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
