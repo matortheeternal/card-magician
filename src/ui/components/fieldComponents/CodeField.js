@@ -51,6 +51,11 @@ export default class CodeField extends FieldComponent {
         this.jar.onUpdate(code => this.onChange(code));
     }
 
+    inputValue(value) {
+        this.jar.updateCode(value);
+        this.onChange(value);
+    }
+
     loadValue() {
         if (this.jar.toString() === this.value) return;
         this.jar.updateCode(this.value);

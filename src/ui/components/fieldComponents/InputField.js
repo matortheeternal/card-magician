@@ -27,6 +27,11 @@ export default class InputField extends FieldComponent {
         this.loadValue();
     }
 
+    inputValue(value) {
+        this.input.value = value;
+        this.input.dispatchEvent(new Event(this.eventKey, { bubbles: true }));
+    }
+
     loadValue() {
         if (!this.input) return;
         this.input.value = this.value;

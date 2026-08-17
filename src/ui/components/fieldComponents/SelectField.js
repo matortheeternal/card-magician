@@ -31,6 +31,11 @@ export default class SelectField extends FieldComponent {
         );
     }
 
+    inputValue(value) {
+        this.select.value = value;
+        this.select.dispatchEvent(new Event(this.eventKey, { bubbles: true }));
+    }
+
     updateSelectedClasses(groupId) {
         this.querySelectorAll('sl-menu-item').forEach(el => {
             el.classList.toggle('selected', this.isSelected(el, groupId));

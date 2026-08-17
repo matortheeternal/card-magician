@@ -81,6 +81,12 @@ export default class ImageField extends FieldComponent {
         requestAnimationFrame(() => this.loadValue());
     }
 
+    inputValue(value) {
+        const fileInput = this.querySelector('input[type="file"]');
+        fileInput.value = value;
+        fileInput.dispatchEvent(new Event(this.eventKey, { bubbles: true }));
+    }
+
     loadValue() {
         if (!this.value) return;
         const prompt = this.querySelector('.upload-prompt');

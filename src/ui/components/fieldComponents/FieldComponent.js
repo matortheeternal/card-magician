@@ -60,6 +60,7 @@ export default class FieldComponent extends ReactiveComponent {
         this.loadValue();
     }
 
+    inputValue(value) {}
     loadValue() {}
 
     async getChangedValue(event) {
