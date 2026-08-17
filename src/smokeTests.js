@@ -1,4 +1,5 @@
 import { loadScript } from './shared/testHelpers.js';
+import { writeProcessError, writeProcessOutput } from './shared/neutralinoAdapter.js';
 
 const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
 const scripts = [
@@ -44,13 +45,7 @@ function addProcessReporter(suiteName) {
                 status: result.overallStatus
             });
 
-            await Neutralino.app.writeProcessOutput(
-                `CARD_MAGICIAN_TEST_RESULT:${output}\n`
-            );
-
-            const passed = result.overallStatus === 'passed';
-            Neutralino.app.exit(passed ? 0 : 1);
-            window.close();
+            await writeProcessOutput(`CARD_MAGICIAN_TEST_RESULT:${output}\n`);
         }
     });
 }
@@ -59,36 +54,18 @@ export async function prepareSmokeTests() {
     log('startup').info('Preparing smoke test harness');
     verifyTestEnvironment();
     await Neutralino.storage.clear();
-    console.log({
-        module: typeof window.module,
-        exports: typeof window.exports,
-        require: typeof window.require,
-        jasmineRequire: typeof window.jasmineRequire
-    });
-    for (const src of scripts) {
+    for (const src of scripts)
         await loadScript(src);
-        console.log(src, {
-            jasmineRequire: window.jasmineRequire,
-            html: typeof window.jasmineRequire?.html,
-            module: typeof window.module,
-            exports: typeof window.exports,
-            require: typeof window.require
-        });
-    }
 }
 
 export async function reportSmokeTestError(error) {
-    await Neutralino.app.writeProcessError(`${error.stack ?? error}\n`);
+    await writeProcessError(`${error.stack ?? error}\n`);
     const output = JSON.stringify({
         suite: getArgument('--test-suite'),
         status: 'failed',
         error: error.stack ?? error
     });
-    await Neutralino.app.writeProcessOutput(
-        `CARD_MAGICIAN_TEST_RESULT:${output}\n`
-    );
-    Neutralino.app.exit(1);
-    window.close();
+    await writeProcessOutput(`CARD_MAGICIAN_TEST_RESULT:${output}\n`);
 }
 
 export async function runSmokeTests() {
@@ -97,5 +74,6 @@ export async function runSmokeTests() {
     await suite.load();
     addProcessReporter(suite.name);
     await new Promise((resolve) => { setTimeout(resolve); });
-    jasmine.getEnv().execute();
+    await jasmine.getEnv().execute();
+    await Neutralino.app.exit();
 }
