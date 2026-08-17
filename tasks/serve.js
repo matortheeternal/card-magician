@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
 import { build } from './build.js';
 
