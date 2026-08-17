@@ -8,7 +8,7 @@ import {
     maskColorOp,
     maskImageOp
 } from '../graphics/compositeOperations.js';
-import sanitizeHtml from 'sanitize-html';
+import DOMPurify from 'dompurify';
 import { escapeHTML } from '../../shared/htmlUtils.js';
 import { watch } from '../../shared/reactivity.js';
 
@@ -332,14 +332,14 @@ export default class CardMagicianModule {
     }
 
     /**
-     * Sanitizes an input string using sanitize-html.
+     * Sanitizes an input string using DOMPurify.
      *
      * @param {string} str - the string to sanitize
      * @param {object} options - sanitize HTML options
      * @returns {string}
      */
     sanitize(str, options) {
-        return sanitizeHtml(str, options);
+        return DOMPurify.sanitize(str, options);
     }
 
     escapeHTML(str) {
