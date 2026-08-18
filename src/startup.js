@@ -1,6 +1,5 @@
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
-import { runTests } from './tests';
 import imageCache from './domain/graphics/ImageCache.js';
 import {
     createDirectory, exitApp, initApp, mount, setWindowSize
@@ -8,12 +7,8 @@ import {
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
-import { prepareSmokeTests, reportSmokeTestError, runSmokeTests } from './smokeTests.js';
 
 const startupLog = log('startup');
-const hasSmokeTestsArg = NL_ARGS.includes('--run-smoke-tests');
-
-let devState;
 
 async function ensureDirectories() {
     const paths = [
@@ -44,10 +39,11 @@ async function setupNeutralino() {
 }
 
 function setupDevState() {
-    if (hasSmokeTestsArg) return;
+    if (NL_RESMODE === 'bundle' || NL_APPID !== 'cardmagician') return;
     startupLog.info('Development mode detected');
-    devState = document.createElement('dev-state');
+    const devState = document.createElement('dev-state');
     document.body.appendChild(devState);
+    return devState;
 }
 
 function loaded() {
@@ -63,10 +59,6 @@ function loaded() {
 }
 
 async function startApp() {
-    if (NL_RESMODE !== 'bundle') setupDevState();
-    if (NL_ARGS.includes('--run-tests')) return runTests();
-    if (hasSmokeTestsArg) await prepareSmokeTests();
-
     startupLog.debug('Loading games');
     await loadGames();
     startupLog.debug('Setting game to magic');
@@ -82,22 +74,24 @@ async function startApp() {
     startupLog.info('Startup successful, loading UI');
     applyDeviceLayout();
     loaded();
-    if (devState) await devState.requestData();
 }
+
+window.addEventListener('resize', applyDeviceLayout.debounce(200));
+
+window.addEventListener('beforeunload', () => {
+    if (window.suppressExit) return;
+    exitApp();
+});
 
 (async function() {
     try {
-        window.addEventListener('resize', applyDeviceLayout.debounce(200));
-        window.addEventListener('beforeunload', () => {
-            if (window.suppressExit) return;
-            exitApp();
-        });
         await setupNeutralino();
+        const devState = setupDevState();
         await startApp();
-        if (hasSmokeTestsArg) await runSmokeTests();
+        if (devState) await devState.requestData();
+        window.dispatchEvent(new CustomEvent('cm-loaded'));
     } catch (error) {
         startupLog.error('Startup error:', error);
-        if (hasSmokeTestsArg) await reportSmokeTestError(error);
         document.querySelector('cm-loader').showError();
     }
 })();

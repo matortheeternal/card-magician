@@ -1,6 +1,7 @@
 import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
 import path from 'path';
+import { getSourceFiles } from './buildHelpers.js';
 
 const shoelaceIcons = [
     'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square',
@@ -9,12 +10,10 @@ const shoelaceIcons = [
     'arrow-left', 'circle', 'list'
 ];
 
-async function getFiles(dir) {
-    const dirPath = path.join('src', dir);
-    const files = await fs.readdir(dirPath, { recursive: true });
-    return files
-        .filter(file => file.endsWith('.js') && !file.endsWith('.tests.js'))
-        .map(file => `./${path.join(dir, file)}`);
+function isApplicationCode(file) {
+    return file.endsWith('.js')
+        && !file.endsWith('.tests.js')
+        && !file.endsWith('.smoke.js');
 }
 
 async function buildJs({ minify }) {
@@ -23,8 +22,14 @@ async function buildJs({ minify }) {
         './shared/log.js',
         './shared/prototypeExtensions.js',
         './shared/localize.js',
-        ...await getFiles('domain'),
-        ...await getFiles('ui'),
+        ...await getSourceFiles(file => {
+            return file.startsWith('domain/')
+                && isApplicationCode(file);
+        }),
+        ...await getSourceFiles(file => {
+            return file.startsWith('ui/')
+                && isApplicationCode(file);
+        }),
         './startup.js',
     ].map(filePath => `import '${filePath}';`).join('\n');
 

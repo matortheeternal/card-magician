@@ -1,7 +1,6 @@
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import FieldInteractor from './FieldInteractor.js';
 import { getJoinedPath, rmrf } from '../neutralinoAdapter.js';
-import { newProject } from '../../domain/projects/projectManager.js';
 
 /**
  * Waits until the provided asynchronous condition becomes true.
@@ -45,9 +44,8 @@ export async function filesAreEqual(firstPath, secondPath) {
  * Sets multiple fields on the currently selected card through the card form UI.
  *
  * @param {Record<string, *>} fields
- * @returns {Promise<void>}
  */
-export async function setCardFields(fields) {
+export function setCardFields(fields) {
     for (const [field, value] of Object.entries(fields)) {
         const interactor = new FieldInteractor(field);
         interactor.value = value;
@@ -61,7 +59,10 @@ export async function setCardFields(fields) {
  */
 export async function createCard() {
     await executeAction('add-card');
+    return selectedProjectCard;
 }
+
+let testIndex = 0;
 
 /**
  * Creates a new project and sets its filePath to ./temp_test_project/test.cmproj.
@@ -69,10 +70,10 @@ export async function createCard() {
  * @returns {Promise<CardMagicianProject>}
  */
 export async function createTestProject() {
-    const testProjectDir = await getJoinedPath(NL_CWD, 'temp_test_project');
+    const testProjectDir = await getJoinedPath(NL_DATAPATH, `test-${testIndex++}`);
     const projectFilePath = await getJoinedPath(testProjectDir, 'test.cmproj');
     try { await rmrf(testProjectDir); } catch {}
-    await newProject();
+    executeAction('new-project');
     await activeProject.setFilePath(projectFilePath);
     return activeProject;
 }

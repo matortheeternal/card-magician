@@ -49,20 +49,20 @@ const onFilesChange = debounce(function onFilesChange(path) {
 
 console.info('Starting dev server at localhost:3344');
 const server = new WebSocketServer({ port: 3344 });
-let openedSet = null;
+let openedProject = null;
 let selectedCard = null;
 server.on('connection', ws => {
     ws.on('message', async data => {
         const event = JSON.parse(data.toString('utf8'));
         if (event.action === 'rebuild') {
-            openedSet = event.set;
-            selectedCard = event.card;
+            openedProject = event.project;
+            selectedCard = event.editorCard;
             console.log('received rebuild request');
             const buildStatus = await handleRebuild();
             ws.send(JSON.stringify(buildStatus));
         } else if (event.action === 'request data') {
             ws.send(JSON.stringify({
-                'openSet': openedSet,
+                'openProject': openedProject,
                 'selectCard': selectedCard,
             }));
         }

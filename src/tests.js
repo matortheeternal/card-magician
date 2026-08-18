@@ -1,55 +1,57 @@
-import { mount, readDirectory } from './shared/neutralinoAdapter.js';
-import { buildLoadMseFileTests } from './domain/import/mse/loadMseFile.tests.js';
-import { loadScript, loadStyle } from './shared/htmlUtils.js';
+import { findTestFiles } from './shared/testing/findTestFiles.js';
+import { exitApp, mount, writeProcessOutput } from './shared/neutralinoAdapter.js';
+import CustomReporter from './shared/testing/customReporter.js';
 
-const JASMINE_BASE = 'https://cdn.jsdelivr.net/npm/jasmine-core@4.6.0/lib/jasmine-core';
-const scripts = [
-    `${JASMINE_BASE}/jasmine.js`,
-    `${JASMINE_BASE}/jasmine-html.js`,
-    `${JASMINE_BASE}/boot0.js`,
-];
-const jasmineStyle = `${JASMINE_BASE}/jasmine.css`;
+const RESULT_PREFIX = '@TEST_RESULT:';
+const OUTPUT_PREFIX = '@TEST_OUTPUT:';
 
-export async function setupTestHarness() {
-    document.querySelectorAll('main').forEach(el => el.remove());
-    await mount('/tests', NL_PATH + '/tests');
-    await loadStyle(jasmineStyle);
-    for (const src of scripts)
-        await loadScript(src);
-    document.body.style.userSelect = 'auto';
-    return true;
-}
-
-async function findTestFiles(dir) {
-    const files = await readDirectory(dir);
-    const testFiles = [];
-    for (const file of files) {
-        const path = `${dir}/${file.entry}`;
-        if (file.type === 'DIRECTORY') {
-            if (file.entry === '.' || file.entry === '..') continue;
-            testFiles.push(...await findTestFiles(path));
-        } else if (file.entry.endsWith('.tests.js')) {
-            testFiles.push(path);
-        }
-    }
-    return testFiles;
-}
-
-export async function buildModuleTests() {
+async function loadModuleTests() {
     const testFiles = await findTestFiles('modules');
+    await mount('/modules', NL_PATH + '/modules');
     for (const file of testFiles)
         await import(`/${file}`);
 }
 
-export async function runTests() {
-    log('startup').info('--run-tests detected, loading test harness');
-    await setupTestHarness();
-
-    log('startup').info('Running tests');
-    buildLoadMseFileTests();
-    await buildModuleTests();
-
-    await loadScript(`${JASMINE_BASE}/boot1.js`);
-    if (document.readyState === 'complete') window.onload();
+function verifyTestEnvironment() {
+    if (NL_APPID === 'cardmagician.test') return;
+    throw new Error(`Canceling smoke tests with unsupported appId "${NL_APPID}".`);
 }
 
+async function runTests() {
+    log('startup').info('Initializing neutralino');
+    Neutralino.init();
+
+    log('startup').info('Verifying test environment');
+    verifyTestEnvironment();
+
+    log('startup').info('Clearing neutralino storage');
+    await Neutralino.storage.clear();
+
+    log('startup').info('Loading module tests');
+    await loadModuleTests();
+
+    log('startup').info('Executing jasmine tests');
+    await window.executeJasmine();
+}
+
+function print(message) {
+    writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+}
+
+jasmine.getEnv().addReporter(
+    new CustomReporter({ print })
+);
+
+jasmine.getEnv().addReporter({
+    async jasmineDone(result) {
+        const output = JSON.stringify({ status: result.overallStatus });
+        await writeProcessOutput(RESULT_PREFIX + output + '\n');
+        if (!NL_ARGS.includes('--stay-open')) close();
+    }
+});
+
+window.addEventListener('beforeunload', () => {
+    exitApp();
+});
+
+runTests();

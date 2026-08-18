@@ -30,10 +30,10 @@
     "release": "node tasks/release.js",
     "dev": "node tasks/serve.js",
     "smoke": "npm run build && node tasks/smoke.js",
-    "start": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --mode=chrome\"",
+    "start": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload\"",
     "mobile": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --mode=browser\"",
-    "test": "npm run build && concurrently --handle-input -k -n dev,test -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --run-tests --mode=chrome\"",
-    "localize": "npm run build && concurrently --handle-input -k -n dev,localize -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --localize --mode=chrome\"",
+    "test": "npm run build && node tasks/test.js",
+    "localize": "npm run build && concurrently --handle-input -k -n dev,localize -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --localize\"",
     "lint": "npx eslint src modules"
   },
   "dependencies": {
@@ -54,6 +54,7 @@
     "esbuild": "^0.28.1",
     "eslint": "^9.39.2",
     "globals": "^16.5.0",
+    "jasmine": "^7.0.0",
     "ws": "^8.19.0"
   }
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Magician Smoke Tests</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <base href="/">
+</head>
+<body class="sl-theme-dark">
+    <main>
+        <cm-loader></cm-loader>
+    </main>
+
+    <div class="modal-container" style="display: none;"></div>
+
+    <div class="status-container"></div>
+    <div class="rebuild-container"></div>
+
+    <script src="/js/neutralino.js"></script>
+    <script type="module" src="/js/main.js" data-shoelace="/shoelace"></script>
+    <script src="/tests/jasmine/jasmine.js"></script>
+    <script type="module" src="/tests/smoke.js"></script>
+</body>
+</html>
