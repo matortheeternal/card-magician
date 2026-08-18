@@ -9,7 +9,7 @@ export default class Modal extends ReactiveComponent {
 
     constructor() {
         super();
-        this.saveSet = this.saveSet.debounce(500);
+        this.saveProject = this.saveProject.debounce(500);
     }
 
     connectedCallback() {
@@ -48,8 +48,8 @@ export default class Modal extends ReactiveComponent {
         return [];
     }
 
-    saveSet() {
-        executeAction('save-set');
+    saveProject() {
+        executeAction('save-project');
     }
 
     close() {

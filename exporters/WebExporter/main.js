@@ -14,7 +14,7 @@ export default class WebExporter extends CardMagicianExporter {
 
     async *produce() {
         const filePath = `set.json`;
-        const artifact = new WebArtifact(this.activeSet, this.config);
+        const artifact = new WebArtifact(this.activeProject, this.config);
         yield { filePath, artifact };
     }
 

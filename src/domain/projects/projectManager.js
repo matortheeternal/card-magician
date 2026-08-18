@@ -20,13 +20,14 @@ const projectChangedCallbacks = [];
 export async function saveAs() {
     log('user').info('save as');
     const filePath = await saveSingleFileDialog(
-        L`Save set to file`,
+        L`Save project to file`,
         activeProject.filePath || `${activeProject.title || L`Project`}.cmproj`,
         filters
     );
     if (!filePath) return;
     try {
-        log('fs').info('Saving set to:', filePath);
+        log('fs').info('Saving project to:', filePath);
+        await activeProject.setFilePath(filePath);
         await activeProject.saveAll(filePath);
         progress.complete();
     } catch (error) {
@@ -118,10 +119,12 @@ registerAction('change-template', (faceId, newTemplateId) => {
     selectedCard[faceId].template = newTemplateId;
     setActiveCard(selectedCard);
 });
-registerAction('open-set', openProject);
-registerAction('new-set', () => {
-    newProject();
-    setActiveCard(null);
+
+registerAction('open-project', openProject);
+
+registerAction('new-project', async () => {
+    await newProject();
+    await setActiveCard(null);
 });
 
 registerAction('save-project', async () => {

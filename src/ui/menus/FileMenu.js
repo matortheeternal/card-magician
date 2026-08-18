@@ -13,17 +13,22 @@ export default class FileMenu extends ReactiveMenu {
             this.menuItem(
                 L`New`,
                 L`Ctrl+N`,
-                () => executeAction('new-set')
+                () => executeAction('new-project')
             ),
             this.menuItem(
                 L`Open`,
                 L`Ctrl+O`,
-                () => executeAction('open-set')
+                () => executeAction('open-project')
+            ),
+            this.menuItem(
+                L`Save`,
+                L`Ctrl+S`,
+                () => executeAction('save-project')
             ),
             this.menuItem(
                 L`Save as`,
                 L`Ctrl+Shift+S`,
-                () => executeAction('save-set-as')
+                () => executeAction('save-project-as')
             ),
             this.DIVIDER,
             this.desktopMenuItem(

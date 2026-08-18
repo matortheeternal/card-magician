@@ -13,7 +13,7 @@ export default class SetInfoModal extends Modal {
 
     bind() {
         super.bind();
-        this.addEventListener('cm-field-changed', () => this.saveSet());
+        this.addEventListener('cm-field-changed', () => this.saveProject());
     }
 
     get fields() {

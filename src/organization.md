@@ -21,8 +21,8 @@ Code related to handling game modes and game-associated logic.
 ### graphics subfolder
 Code related to graphical operations on images, generally used by cards.
 
-### sets subfolder
-Code related to handling sets of cards.
+### projects subfolder
+Code related to handling of projects.
 
 ### template subfolder
 Code related to handling card templates.

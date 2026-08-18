@@ -15,7 +15,7 @@ export default class ConfigureExportersModal extends Modal {
 
     bind() {
         super.bind();
-        this.on('cm-field-changed', () => this.saveSet());
+        this.on('cm-field-changed', () => this.saveProject());
     }
 
     addExporter() {

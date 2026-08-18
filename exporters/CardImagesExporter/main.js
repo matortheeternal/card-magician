@@ -55,7 +55,7 @@ export default class CardImagesExporter extends CardMagicianExporter {
     }
 
     async prepare() {
-        this.activeSet.imageExportPath = 'dist/images/';
+        this.activeProject.imageExportPath = 'dist/images/';
     }
 
     getFilePath(baseCard, card) {
@@ -85,7 +85,7 @@ export default class CardImagesExporter extends CardMagicianExporter {
     }
 
     getOutputCount() {
-        return this.activeSet.cards.reduce((total, card) => {
+        return this.activeProject.cards.reduce((total, card) => {
             return total + 1 + (Object.hasOwn(card, 'back') ? 1 : 0);
         }, 0);
     }

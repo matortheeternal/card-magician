@@ -25,12 +25,12 @@ export default class SetView extends ReactiveComponent {
             });
         });
 
-        getConfig().onRecentFilesChanged(() => this.renderRecentSets());
+        getConfig().onRecentFilesChanged(() => this.renderRecentProjects());
 
         this.handleEvents('click', {
             openAdvancedSearch: () => log('user').info('Open advanced search.'),
             addCard: () => this.addCard(),
-            openSet: () => openProject()
+            openProject: () => openProject()
         });
         this.handleEvents('keydown', {
             searchInputKeyDown: this.searchInputKeyDown
@@ -69,24 +69,25 @@ export default class SetView extends ReactiveComponent {
         return this.querySelector('.no-content-prompt');
     }
 
-    get recentSetsContainer() {
+    get recentProjectsContainer() {
         return this.querySelector('.recent-projects-container');
     }
 
-    renderRecentSets() {
-        const recentSets = getConfig().recentFiles;
-        toggleDisplay(recentSets.length > 0, this.recentSetsContainer);
-        if (!recentSets.length) return;
+    renderRecentProjects() {
+        const recentProjects = getConfig().recentFiles;
+        toggleDisplay(recentProjects.length > 0, this.recentProjectsContainer);
+        if (!recentProjects.length) return;
 
-        const container = this.recentSetsContainer.querySelector('.buttons-container');
+        const container = this.recentProjectsContainer
+            .querySelector('.buttons-container');
         container.innerHTML = '';
-        recentSets.forEach(set => {
+        recentProjects.forEach(project => {
             const button = document.createElement('sl-button');
             button.variant = 'text';
             button.size = 'small';
-            button.classList.add('recent-set');
-            button.addEventListener('click', () => openProject(set));
-            button.textContent = String(set);
+            button.classList.add('recent-project');
+            button.addEventListener('click', () => openProject(project));
+            button.textContent = String(project);
             container.appendChild(button);
         });
     }
@@ -94,7 +95,7 @@ export default class SetView extends ReactiveComponent {
     render() {
         this.innerHTML = html;
         this.listView.columns = activeGame.columns;
-        this.renderRecentSets();
+        this.renderRecentProjects();
     }
 
     updateCards(project) {
@@ -192,7 +193,7 @@ export default class SetView extends ReactiveComponent {
     }
 
     updateStatus() {
-        log('render').debug('update set status');
+        log('render').debug('update project status');
         const totalCount = activeProject.cards.length;
         const visibleCount = this.listView.rows.length;
         const filterStr = this.searchValue

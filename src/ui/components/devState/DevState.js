@@ -116,7 +116,7 @@ export default class DevState extends ReactiveComponent {
             window.suppressExit = true;
             location.reload();
         }
-        if (msg.openSet) await openProject(msg.openSet);
+        if (msg.openProject) await openProject(msg.openProject);
         if (Number.isInteger(msg.selectCard))
             selectCard(activeProject.cards[msg.selectCard]);
     }

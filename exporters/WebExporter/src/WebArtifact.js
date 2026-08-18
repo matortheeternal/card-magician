@@ -1,9 +1,9 @@
 import { getPropertyWriter } from './propertyWriters.js';
 
 export default class WebArtifact extends ExportArtifact {
-    constructor(activeSet, config) {
+    constructor(activeProject, config) {
         super();
-        this.activeSet = activeSet;
+        this.activeProject = activeProject;
         this.baseUrl = config.baseUrl;
     }
 
@@ -17,7 +17,7 @@ export default class WebArtifact extends ExportArtifact {
     }
 
     get cards() {
-        return this.activeSet.cards.map(card => {
+        return this.activeProject.cards.map(card => {
             const exportedCard = { ...card };
             exportedCard.front = this.exportCardFace(card, 'front');
             if (card.back)
@@ -29,7 +29,7 @@ export default class WebArtifact extends ExportArtifact {
 
     get set() {
         return {
-            ...this.activeSet,
+            ...this.activeProject,
             cards: this.cards,
             baseUrl: this.baseUrl
         }
