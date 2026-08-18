@@ -1,10 +1,7 @@
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
-    createCard,
-    createTestProject,
-    deleteTestProject,
-    eventually,
-    setCardFields
+    createCard, createTestProject, deleteTestProject,
+    eventually, expectCardData, setCardFields
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readFile } from '../shared/neutralinoAdapter.js';
@@ -35,19 +32,19 @@ describe('Persistence', () => {
 
     describe('basic fields', () => {
         it('persists a new card to the filesystem', async () => {
-            await createCard();
+            const card = await createCard();
             setCardFields({ name: 'Test' });
-            const path = await eventually(() => selectedProjectCard.files.get('data'));
+            const path = await eventually(() => card.files.get('data'));
             const exists = await checkFileExists(path);
             expect(exists).toBeTrue();
             expect(path).toMatch(/cards\/Test.yml$/);
         });
 
         it('persists default card data', async () => {
-            await createCard();
+            const card = await createCard();
             setCardFields({ name: 'Test' });
             setCardFields({ name: '' });
-            const path = await eventually(() => selectedProjectCard.files.get('data'));
+            const path = await eventually(() => card.files.get('data'));
             const data = await readFile(path);
             expect(data).toEqual(expectedBlankCardData);
         });
@@ -68,27 +65,27 @@ describe('Persistence', () => {
         });
 
         it('persists changes to multiple fields', async () => {
-            await createCard();
+            const card = await createCard();
             setCardFields({ name: 'Test', manaCost: 'WUBRG' });
-            const path = await eventually(() => selectedProjectCard.files.get('data'));
+            const path = await eventually(() => card.files.get('data'));
             const data = await YAMLSerializer.load(path);
-            expect(data.front?.name).toEqual('Test');
-            expect(String(data.front?.manaCost)).toEqual('WUBRG');
+            expectCardData(data.front,  {
+                name: 'Test',
+                manaCost: 'WUBRG'
+            });
         });
 
         it('persists the final value after multiple changes', async () => {
-            await createCard();
+            const card = await createCard();
             setCardFields({ name: 'Swamp', superType: 'Land' });
             setCardFields({ superType: 'Basic Land', subType: 'Swamp' });
-            const path = await eventually(() => selectedProjectCard.files.get('data'));
+            const path = await eventually(() => card.files.get('data'));
             const data = await YAMLSerializer.load(path);
-            expect(data.front).toEqual(
-                jasmine.objectContaining({
-                    name: 'Swamp',
-                    superType: 'Basic Land',
-                    subType: 'Swamp',
-                })
-            );
+            expectCardData(data.front, {
+                name: 'Swamp',
+                superType: 'Basic Land',
+                subType: 'Swamp',
+            });
         });
 
         it('persists changing fields to empty values', async () => {

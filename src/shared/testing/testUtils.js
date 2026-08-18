@@ -88,3 +88,38 @@ export async function deleteTestProject() {
         throw new Error('Project file is not test.cmproj? Escaping.');
     try { await rmrf(activeProject.folderPath); } catch {}
 }
+
+function normalizeImage(image) {
+    return {
+        width: image.width,
+        height: image.height,
+        cropWidth: image.crop.width,
+        cropHeight: image.crop.height,
+        xOffset: image.crop.xOffset,
+        yOffset: image.crop.yOffset,
+    };
+}
+
+function normalizeCardData(value) {
+    if (Array.isArray(value))
+        return value.map(normalizeCardData);
+    if (value === null || typeof value !== 'object')
+        return value;
+    if (value.constructor?.name === 'ManaCost')
+        return String(value);
+    if (value.constructor?.name === 'ImageFieldValue')
+        return normalizeImage(value);
+
+    return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [
+            key,
+            normalizeCardData(item),
+        ])
+    );
+}
+
+export function expectCardData(actual, expected) {
+    expect(normalizeCardData(actual)).toEqual(
+        jasmine.objectContaining(expected)
+    );
+}
