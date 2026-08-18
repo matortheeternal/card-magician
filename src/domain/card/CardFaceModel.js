@@ -13,17 +13,17 @@ export default class CardFaceModel extends BaseCardModel {
     }
 
     async save() {
-        const cardData = await super.save();
-        for (const subCard of this.subcards)
-            cardData[subCard.id] = await subCard.save();
-        return cardData;
+        const cardFaceData = await super.save();
+        for (const subcard of this.subcards)
+            cardFaceData[subcard.id] = await subcard.save();
+        return cardFaceData;
     }
 
-    async load(cardData) {
-        await super.load(cardData);
+    async load(cardFaceData) {
+        await super.load(cardFaceData);
         for (const subcard of this.subcards) {
-            if (!Object.hasOwn(cardData, subcard.id)) continue;
-            await subcard.load(cardData[subcard.id]);
+            if (!Object.hasOwn(cardFaceData, subcard.id)) continue;
+            await subcard.load(cardFaceData[subcard.id]);
         }
     }
 }

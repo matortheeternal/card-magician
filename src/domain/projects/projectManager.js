@@ -68,12 +68,12 @@ export async function openProject(filePath) {
     await getConfig().addRecentFile(filePath);
 }
 
-export async function saveActiveCard() {
-    log('state').debug('save active card');
-    selectedCard.front = await activeCard.front.save();
-    if (activeCard.back)
-        selectedCard.back = await activeCard.back.save();
-    await selectedCard.save();
+export async function saveCard(editorCard, projectCard) {
+    log('state').debug('save card');
+    projectCard.front = await editorCard.front.save();
+    if (editorCard.back)
+        projectCard.back = await editorCard.back.save();
+    await projectCard.save();
     changed(window.activeProject, 'cards');
 }
 
@@ -86,38 +86,41 @@ export function onActiveProjectChanged(callback) {
     callback(window.activeProject);
 }
 
-export async function setActiveCard(card) {
-    if (window.activeCard?.front) activeCard.front.dispose();
-    if (window.activeCard?.back) activeCard.back.dispose();
-    window.activeCard = card ? await buildCard(card) : null;
-    cardChangedCallbacks.forEach(cb => cb(activeCard));
+export async function setActiveEditorCard(card) {
+    if (window.activeEditorCard?.front) activeEditorCard.front.dispose();
+    if (window.activeEditorCard?.back) activeEditorCard.back.dispose();
+    window.activeEditorCard = card ? await buildCard(card) : null;
+    for (const cb of cardChangedCallbacks)
+        await cb(activeEditorCard);
 }
 
 export async function selectCard(card) {
-    window.selectedCard = card;
-    await setActiveCard(card);
+    window.selectedProjectCard = card;
+    await setActiveEditorCard(card);
 }
 
 export function removeTagFromSet(tag) {
     for (const card of activeProject.cards)
         card.tags?.remove?.(tag.text);
-    changed(activeCard, 'tags');
+    changed(activeEditorCard, 'tags');
 }
 
-registerAction('add-face', faceId => {
+registerAction('add-face', async faceId => {
     log('state').debug('add face', faceId);
-    selectedCard[faceId] = {};
-    setActiveCard(selectedCard);
+    selectedProjectCard[faceId] = {};
+    await setActiveEditorCard(selectedProjectCard);
 });
-registerAction('remove-face', faceId => {
+
+registerAction('remove-face', async faceId => {
     log('state').debug('remove face', faceId);
-    delete selectedCard[faceId];
-    setActiveCard(selectedCard);
+    delete selectedProjectCard[faceId];
+    await setActiveEditorCard(selectedProjectCard);
 });
-registerAction('change-template', (faceId, newTemplateId) => {
+
+registerAction('change-template', async (faceId, newTemplateId) => {
     log('state').debug('change template', faceId, newTemplateId);
-    selectedCard[faceId].template = newTemplateId;
-    setActiveCard(selectedCard);
+    selectedProjectCard[faceId].template = newTemplateId;
+    await setActiveEditorCard(selectedProjectCard);
 });
 
 registerAction('open-project', openProject);

@@ -1,47 +1,55 @@
 import html from './cardForm.html.js';
 import {
     onActiveCardChanged,
-    saveActiveCard
+    saveCard
 } from '../../../domain/projects/projectManager.js';
 import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
 
 const L = localize('card-form');
+const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
+const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 500;
 
 class CardForm extends ReactiveComponent {
-    #card;
+    #editorCard;
 
     constructor() {
         super();
-        this.save = this.save.debounce(300);
+        this.save = this.save.debounce(DEBOUNCE_TIME);
     }
 
     connectedCallback() {
         this.render();
-        this.addEventListener('cm-field-changed', this.save);
-        onActiveCardChanged(card => {
-            this.card = card;
+        this.addEventListener('cm-field-changed', () => {
+            this.save();
+        });
+
+        onActiveCardChanged(async editorCard => {
+            await this.save.flush();
+            this.editorCard = editorCard;
+            this.projectCard = window.selectedProjectCard;
             pushState('card-form');
         });
+
         this.bind();
     }
 
     renderFaceToggleLabels() {
-        this.toggleFrontButton.textContent = Object.hasOwn(this.card, 'front')
+        this.toggleFrontButton.textContent = Object.hasOwn(this.editorCard, 'front')
             ? L`Front`
             : L`Add front face`;
-        this.toggleBackButton.textContent = Object.hasOwn(this.card, 'back')
+        this.toggleBackButton.textContent = Object.hasOwn(this.editorCard, 'back')
             ? L`Back`
             : L`Add back face`;
     }
 
     render() {
-        this.innerHTML = this.card ? html : '';
-        if (this.card) this.renderFaceToggleLabels();
+        this.innerHTML = this.editorCard ? html : '';
+        if (this.editorCard) this.renderFaceToggleLabels();
         this.faceForms.forEach(faceForm => {
             const faceId = faceForm.dataset.faceId;
-            faceForm.face = this.card[faceId];
+            faceForm.face = this.editorCard[faceId];
         });
     }
 
@@ -70,17 +78,17 @@ class CardForm extends ReactiveComponent {
         return this.querySelector('.toggle-face-back');
     }
 
-    set card(value) {
-        this.#card = value;
+    set editorCard(value) {
+        this.#editorCard = value;
         this.render();
     }
 
-    get card() {
-        return this.#card;
+    get editorCard() {
+        return this.#editorCard;
     }
 
     get hasBackFace() {
-        return Object.prototype.hasOwnProperty.call(this.card, 'back');
+        return Object.prototype.hasOwnProperty.call(this.editorCard, 'back');
     }
 
     addBackFace() {
@@ -104,7 +112,7 @@ class CardForm extends ReactiveComponent {
     }
 
     async save() {
-        await saveActiveCard();
+        await saveCard(this.editorCard, this.projectCard);
     }
 }
 

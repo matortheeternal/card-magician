@@ -23,8 +23,8 @@ export default class BaseCardModel {
     async loadField(cardFaceData, field) {
         if (field.override) return field.override;
         if (Object.hasOwn(field, 'load'))
-            return field.load(dataToLoad);
-        return dataToLoad[field.id];
+            return field.load(cardFaceData);
+        return cardFaceData[field.id];
     }
 
     async save() {
@@ -34,11 +34,11 @@ export default class BaseCardModel {
         return cardData;
     }
 
-    async load(cardData) {
-        if (!cardData) return;
+    async load(cardFaceData) {
+        if (!cardFaceData) return;
         for (const field of this.fields.concat(this.options)) {
-            if (!Object.hasOwn(cardData, field.id)) continue;
-            this[field.id] = await this.loadField(cardData, field);
+            if (!Object.hasOwn(cardFaceData, field.id)) continue;
+            this[field.id] = await this.loadField(cardFaceData, field);
         }
     }
 

@@ -10,8 +10,8 @@ import * as progress from '../../ui/systems/progressSystem.js';
 export default class CardMagicianCard {
     #baseName;
 
-    constructor(data = {}) {
-        Object.assign(this, data);
+    constructor(cardData = {}) {
+        Object.assign(this, cardData);
         Object.defineProperty(this, 'files', {
             value: new CardFiles(this, this.fileDefinitions),
             enumerable: false,
@@ -21,9 +21,9 @@ export default class CardMagicianCard {
 
     static async load(filePath) {
         const data = await YAMLSerializer.load(filePath);
-        const card = new this(data);
-        await card.setDataPath(filePath);
-        return card;
+        const projectCard = new this(data);
+        await projectCard.setDataPath(filePath);
+        return projectCard;
     }
 
     async setDataPath(filePath) {

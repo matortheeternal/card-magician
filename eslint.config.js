@@ -28,8 +28,8 @@ export default [
                 // CODEBASE GLOBALS
                 activeGame: 'readonly',
                 activeProject: 'readonly',
-                activeCard: 'readonly',
-                selectedCard: 'readonly',
+                activeEditorCard: 'readonly',
+                selectedProjectCard: 'readonly',
                 localize: 'readonly',
                 log: 'readonly',
                 changed: 'readonly',
