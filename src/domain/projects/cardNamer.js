@@ -15,6 +15,8 @@ function addCardBaseName(card, usedBaseNames) {
 export function updateBaseName(card) {
     const cards = activeProject.cards.slice();
     cards.remove(card);
-    const usedBaseNames = cards.map(card => card.baseName.toLowerCase());
+    const usedBaseNames = cards
+        .filter(card => Boolean(card.baseName))
+        .map(card => card.baseName.toLowerCase());
     addCardBaseName(card, usedBaseNames);
 }
