@@ -89,7 +89,38 @@ describe('Persistence', () => {
         });
 
         it('persists changing fields to empty values', async () => {
-
+            const card = await createCard();
+            setCardFields({
+                name: 'Twinflame Tyrant',
+                manaCost: '3RR',
+                superType: 'Creature',
+                subType: 'Dragon',
+                rulesText: 'Flying\n\nIf a source you control would deal damage to an '
+                    + 'opponent or a permanent an opponent controls, it deals double '
+                    + 'that damage instead.',
+                flavorText: `"Job only paid enough for one head. I'm out."\n`
+                    + `—Peren, veteran mercenary`
+            });
+            await eventually(() => card.files.get('data'));
+            card.files.clear('data');
+            setCardFields({
+                name: '',
+                manaCost: '',
+                superType: '',
+                subType: '',
+                rulesText: '',
+                flavorText: ''
+            });
+            const path = await eventually(() => card.files.get('data'));
+            const data = await YAMLSerializer.load(path);
+            expectCardData(data.front, {
+                name: '',
+                manaCost: '',
+                superType: '',
+                subType: '',
+                rulesText: '',
+                flavorText: null,
+            });
         });
 
         it('persists changes to all fields correctly', async () => {
