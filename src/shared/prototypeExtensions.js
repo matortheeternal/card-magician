@@ -171,16 +171,39 @@ addPrototypeFunction(Array, 'toDictionary', {
 addPrototypeFunction(Function, 'debounce', {
     value: function debounce(delay) {
         let timeout = null;
+        let context = null;
+        let args = null;
         const func = this;
-        return function() {
-            const context = this;
-            const args = arguments;
-            const later = function() {
-                timeout = null;
-                func.apply(context, args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, delay);
+
+        const invoke = function() {
+            timeout = null;
+            func.apply(context, args);
         };
+
+        const debounced = function() {
+            context = this;
+            args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(invoke, delay);
+        };
+
+        Object.defineProperty(debounced, 'cancel', {
+            value: function cancel() {
+                clearTimeout(timeout);
+                timeout = null;
+                context = null;
+                args = null;
+            }
+        });
+
+        Object.defineProperty(debounced, 'flush', {
+            value: function flush() {
+                if (timeout === null) return;
+                clearTimeout(timeout);
+                return invoke();
+            }
+        });
+
+        return debounced;
     }
 });
