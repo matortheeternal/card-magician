@@ -47,16 +47,17 @@ export default class BaseCardModel {
             const mainPath = `/modules/${modulePath}/main.js`;
             log('plugin').debug('Loading module', mainPath);
             const { default: Module } = await import(mainPath);
-            this.modules.push(new Module(this, modulePath));
+            return new Module(this, modulePath);
         } catch (error) {
             log('plugin').error('Failed to load module:', error);
         }
     }
 
-    loadModules(components) {
-        return Promise.all(
+    async loadModules(components) {
+        const modules = await Promise.all(
             components.map(component => this.loadModule(component))
         );
+        this.modules.push(...modules.filter(Boolean));
     }
 
     setupRenderPipeline() {

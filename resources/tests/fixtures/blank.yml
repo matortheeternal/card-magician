@@ -2,6 +2,7 @@ front:
   template: magic/M15/Main
   colors: []
   colorOverride: []
+  faceSymbol: null
   name: ""
   manaCost:
     __type: ManaCost
@@ -16,6 +17,8 @@ front:
     yOffset: 0
   superType: ""
   subType: ""
+  rulesText: ""
+  flavorText: null
   flagLeft: ""
   flagRight: ""
   power: ""
@@ -29,9 +32,6 @@ front:
   language: ""
   legalText: ""
   showFooterOverrides: false
-  faceSymbol: null
-  rulesText: ""
-  flavorText: null
   frame: auto
   artSize: auto
   crownStyle: auto

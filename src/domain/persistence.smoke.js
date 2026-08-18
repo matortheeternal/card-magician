@@ -11,7 +11,7 @@ describe('Persistence', () => {
     let expectedBlankCardData;
 
     beforeAll(async () => {
-        const response = await fetch('/tests/fixtures/Blank.yml');
+        const response = await fetch('/tests/fixtures/blank.yml');
         expectedBlankCardData = await response.text();
     });
 
