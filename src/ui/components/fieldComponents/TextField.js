@@ -27,6 +27,11 @@ export default class TextField extends FieldComponent {
         this.loadValue();
     }
 
+    inputValue(value) {
+        this.textarea.value = value;
+        this.textarea.dispatchEvent(new Event(this.eventKey, { bubbles: true }));
+    }
+
     loadValue() {
         if (!this.textarea) return;
         this.textarea.value = this.value;

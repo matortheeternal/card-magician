@@ -44,12 +44,14 @@ export async function filesAreEqual(firstPath, secondPath) {
  * Sets multiple fields on the currently selected card through the card form UI.
  *
  * @param {Record<string, *>} fields
+ * @param {string} faceKey
  */
-export function setCardFields(fields) {
-    for (const [field, value] of Object.entries(fields)) {
-        const interactor = new FieldInteractor(field);
-        interactor.value = value;
-    }
+export async function setCardFields(fields, faceKey = 'front') {
+    const changes = Object.entries(fields).map(([field, value]) => {
+        const interactor = new FieldInteractor(field, faceKey);
+        return interactor.setValue(value);
+    });
+    return Promise.all(changes);
 }
 
 /**
@@ -122,4 +124,14 @@ export function expectCardData(actual, expected) {
     expect(normalizeCardData(actual)).toEqual(
         jasmine.objectContaining(expected)
     );
+}
+
+export async function toggleFace(face) {
+    const cardForm = document.querySelector('cm-card-form');
+    await cardForm.toggleFace(face);
+}
+
+export async function flushCard() {
+    const cardForm = document.querySelector('cm-card-form');
+    await cardForm.save.flush();
 }

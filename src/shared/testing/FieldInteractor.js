@@ -1,8 +1,9 @@
 import { esc } from '../htmlUtils.js';
 
 export default class FieldInteractor {
-    constructor(fieldId) {
+    constructor(fieldId, faceKey) {
         this.fieldId = fieldId;
+        this.faceKey = faceKey;
     }
 
     /**
@@ -12,7 +13,8 @@ export default class FieldInteractor {
         if (!this._formField?.parentElement)
             this._formField = null;
         return this._formField ||= document.querySelector(
-            `form-field[field-id="${esc(this.fieldId)}"]`
+            `cm-face-form[data-face-id="${esc(this.faceKey)}"] `
+            + `form-field[field-id="${esc(this.fieldId)}"]`
         );
     }
 
@@ -29,8 +31,15 @@ export default class FieldInteractor {
         return this.formField.fieldElement;
     }
 
-    set value(value) {
-        this.fieldElement.inputValue(value);
+    setValue(value) {
+        return new Promise(resolve => {
+            this.fieldElement.addEventListener(
+                'cm-field-changed',
+                resolve,
+                { once: true }
+            );
+            this.fieldElement.inputValue(value);
+        });
     }
 
     get value() {
@@ -39,7 +48,6 @@ export default class FieldInteractor {
 
     clear() {
         this.fieldElement.clear();
-        this.fieldElement.dispatchChangeEvent();
     }
 
     remove() {

@@ -30,8 +30,9 @@ const templateField = () => ({
         id: template.id,
         name: template.label
     })),
-    onChange: (model, newValue) => {
-        executeAction('change-template', model.id, newValue);
+    onChange: async (model, newValue) => {
+        // TODO: flush save
+        await executeAction('change-template', model.id, newValue);
     }
 });
 

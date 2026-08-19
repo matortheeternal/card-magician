@@ -91,19 +91,19 @@ class CardForm extends ReactiveComponent {
         return Object.prototype.hasOwnProperty.call(this.editorCard, 'back');
     }
 
-    addBackFace() {
-        executeAction('add-face', 'back');
+    async addBackFace() {
+        await this.save.flush();
+        await executeAction('add-face', 'back');
     }
 
-    removeBackFace() {
-        executeAction('remove-face', 'back');
+    async removeBackFace() {
+        await this.save.flush();
+        await executeAction('remove-face', 'back');
     }
 
-    toggleFace(faceId) {
-        if (faceId === 'back' && !this.hasBackFace) {
-            this.addBackFace();
-            return;
-        }
+    async toggleFace(faceId) {
+        if (faceId === 'back' && !this.hasBackFace)
+            await this.addBackFace();
         const frontSection = this.querySelector(`div.face-front`);
         const backSection = this.querySelector(`div.face-back`);
         toggleDisplay(faceId === 'front', frontSection, backSection);

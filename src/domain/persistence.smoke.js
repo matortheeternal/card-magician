@@ -1,7 +1,7 @@
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject,
-    eventually, expectCardData, setCardFields
+    expectCardData, flushCard, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readFile } from '../shared/neutralinoAdapter.js';
@@ -30,11 +30,12 @@ describe('Persistence', () => {
         expect(projectFileExists).toBeTrue();
     });
 
-    describe('basic fields', () => {
+    describe('card fields', () => {
         it('persists a new card to the filesystem', async () => {
             const card = await createCard();
-            setCardFields({ name: 'Test' });
-            const path = await eventually(() => card.files.get('data'));
+            await setCardFields({ name: 'Test' });
+            await flushCard();
+            const path = card.files.get('data');
             const exists = await checkFileExists(path);
             expect(exists).toBeTrue();
             expect(path).toMatch(/cards\/Test.yml$/);
@@ -42,32 +43,37 @@ describe('Persistence', () => {
 
         it('persists default card data', async () => {
             const card = await createCard();
-            setCardFields({ name: 'Test' });
-            setCardFields({ name: '' });
-            const path = await eventually(() => card.files.get('data'));
+            await setCardFields({ name: 'Test' });
+            await setCardFields({ name: '' });
+            await flushCard();
+            const path = card.files.get('data');
             const data = await readFile(path);
             expect(data).toEqual(expectedBlankCardData);
         });
 
         it('persists multiple cards', async () => {
             const cardA = await createCard();
-            setCardFields({ name: 'Card A' });
-            const cardB = await createCard();
-            setCardFields({ name: 'Card B' });
-            const pathA = await eventually(() => cardA.files.get('data'));
-            const pathB = await eventually(() => cardB.files.get('data'));
+            await setCardFields({ name: 'Card A' });
+            await flushCard();
+            const pathA = cardA.files.get('data');
             const existsA = await checkFileExists(pathA);
-            const existsB = await checkFileExists(pathB);
             expect(existsA).toBeTrue();
-            expect(existsB).toBeTrue();
             expect(pathA).toMatch(/cards\/Card A.yml$/);
+
+            const cardB = await createCard();
+            await setCardFields({ name: 'Card B' });
+            await flushCard();
+            const pathB = cardB.files.get('data');
+            const existsB = await checkFileExists(pathB);
+            expect(existsB).toBeTrue();
             expect(pathB).toMatch(/cards\/Card B.yml$/);
         });
 
         it('persists changes to multiple fields', async () => {
             const card = await createCard();
-            setCardFields({ name: 'Test', manaCost: 'WUBRG' });
-            const path = await eventually(() => card.files.get('data'));
+            await setCardFields({ name: 'Test', manaCost: 'WUBRG' });
+            await flushCard();
+            const path = card.files.get('data');
             const data = await YAMLSerializer.load(path);
             expectCardData(data.front,  {
                 name: 'Test',
@@ -77,9 +83,10 @@ describe('Persistence', () => {
 
         it('persists the final value after multiple changes', async () => {
             const card = await createCard();
-            setCardFields({ name: 'Swamp', superType: 'Land' });
-            setCardFields({ superType: 'Basic Land', subType: 'Swamp' });
-            const path = await eventually(() => card.files.get('data'));
+            await setCardFields({ name: 'Swamp', superType: 'Land' });
+            await setCardFields({ superType: 'Basic Land', subType: 'Swamp' });
+            await flushCard();
+            const path = card.files.get('data');
             const data = await YAMLSerializer.load(path);
             expectCardData(data.front, {
                 name: 'Swamp',
@@ -90,7 +97,7 @@ describe('Persistence', () => {
 
         it('persists changing fields to empty values', async () => {
             const card = await createCard();
-            setCardFields({
+            await setCardFields({
                 name: 'Twinflame Tyrant',
                 manaCost: '3RR',
                 superType: 'Creature',
@@ -101,9 +108,8 @@ describe('Persistence', () => {
                 flavorText: `"Job only paid enough for one head. I'm out."\n`
                     + `—Peren, veteran mercenary`
             });
-            await eventually(() => card.files.get('data'));
-            card.files.clear('data');
-            setCardFields({
+            await flushCard();
+            await setCardFields({
                 name: '',
                 manaCost: '',
                 superType: '',
@@ -111,7 +117,8 @@ describe('Persistence', () => {
                 rulesText: '',
                 flavorText: ''
             });
-            const path = await eventually(() => card.files.get('data'));
+            await flushCard();
+            const path = card.files.get('data');
             const data = await YAMLSerializer.load(path);
             expectCardData(data.front, {
                 name: '',
@@ -119,18 +126,49 @@ describe('Persistence', () => {
                 superType: '',
                 subType: '',
                 rulesText: '',
-                flavorText: null,
+                flavorText: '',
             });
         });
 
-        it('persists changes to all fields correctly', async () => {
-
-        });
-
         it('persists front and back face fields', async () => {
-
+            const card = await createCard();
+            await setCardFields({ name: 'Sea Gate Restoration' });
+            await toggleFace('back');
+            await setCardFields({ name: 'Sea Gate, Reborn' }, 'back');
+            await flushCard();
+            const path = card.files.get('data');
+            const data = await YAMLSerializer.load(path);
+            expectCardData(data.front, { name: 'Sea Gate Restoration' });
+            expectCardData(data.back, { name: 'Sea Gate, Reborn' });
         });
 
+        it('persists changes correctly when card changes before save', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'Card A' });
+            const cardB = await createCard();
+            await setCardFields({ name: 'Card B' });
+            const cardC = await createCard();
+            await setCardFields({ name: 'Card C' });
+            await flushCard();
+
+            const pathA = cardA.files.get('data');
+            const existsA = await checkFileExists(pathA);
+            expect(existsA).toBeTrue();
+            expect(pathA).toMatch(/cards\/Card A.yml$/);
+
+            const pathB = cardB.files.get('data');
+            const existsB = await checkFileExists(pathB);
+            expect(existsB).toBeTrue();
+            expect(pathB).toMatch(/cards\/Card B.yml$/);
+
+            const pathC = cardC.files.get('data');
+            const existsC = await checkFileExists(pathC);
+            expect(existsC).toBeTrue();
+            expect(pathC).toMatch(/cards\/Card C.yml$/);
+        });
+    });
+
+    describe('card properties', () => {
         it('persists card tags', async () => {
 
         });

@@ -177,7 +177,7 @@ addPrototypeFunction(Function, 'debounce', {
 
         const invoke = function() {
             timeout = null;
-            func.apply(context, args);
+            return func.apply(context, args);
         };
 
         const debounced = function() {
