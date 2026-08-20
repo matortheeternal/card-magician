@@ -1,12 +1,12 @@
 import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
-import { saveAs } from '../projects/projectManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { saveProject } from '../projects/projectManager.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
+const L = localize('export-manager');
 const exporters = [];
 
 export async function loadExporters() {
@@ -105,7 +105,10 @@ export function gatherExporterParams(targetExporterId) {
 }
 
 registerAction('run-exporter', async exporterId => {
-    if (!await saveAs()) return;
+    if (!activeProject.folderPath) {
+        alert(L`Project must be saved before exporting.`);
+        return;
+    }
     openModal('cm-progress-modal', { title: `Exporting...` });
     try {
         progress.setStatus('Preparing cards');

@@ -3,9 +3,8 @@ const mainRarities = [
 ];
 
 export default class TTSArtifact extends ExportArtifact {
-    constructor(activeProject, config) {
+    constructor(config) {
         super();
-        this.activeProject = activeProject;
         this.basePath = config.basePath.endsWith('/')
             ? config.basePath
             : config.basePath + '/';
@@ -19,7 +18,7 @@ export default class TTSArtifact extends ExportArtifact {
     }
 
     *cards() {
-        for (const card of this.activeProject.cards) {
+        for (const card of window.activeProject.cards) {
             const key = this.getCardKey(card);
             yield { key, card };
         }
@@ -74,7 +73,7 @@ export default class TTSArtifact extends ExportArtifact {
 
         return {
             Name: `DeckCustom`,
-            Nickname: `${this.activeProject.setCode} ${rarity} cards`,
+            Nickname: `${window.activeProject.setCode} ${rarity} cards`,
             ContainedObjects,
             DeckIDs,
             CustomDeck,
