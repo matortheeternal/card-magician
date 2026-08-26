@@ -1,7 +1,11 @@
 import {
     isUninitializedCard, isColorless, isMonoColor,
-    isMulticolor, isArtifact, isLand, isBasicLand, isToken, isEmblem, isCreature
+    isMulticolor, isArtifact, isLand, isBasicLand, isCreature
 } from './helpers.js';
+
+const mainRarities = [
+    'common', 'uncommon', 'rare', 'mythic', 'land'
+];
 
 export const numberingRules = [
     card => isUninitializedCard(card) || isColorless(card),
@@ -67,8 +71,8 @@ function cardCodeSort(a, b) {
 function getCardCodeGroup(card) {
     const rarity = card?.front?.rarity || 'common';
     const R = rarity.slice(0, 1).toUpperCase();
-    if (isToken(card) || isEmblem(card)) return `T`;
-    if (isBasicLand(card)) return `B`;
+    if (!mainRarities.includes(rarity)) return R;
+    if (isBasicLand(card)) return `L`;
     if (isLand(card)) return `${R}L`;
     if (isArtifact(card) && !card.front.colors?.length) return `${R}A`;
     if (isColorless(card)) return `${R}C`;
@@ -98,10 +102,11 @@ function applyCardCodes(project) {
 
 function applyCollectorNumbers(project) {
     const groups = Object.groupBy(project.cards, card => {
-        return isToken(card) || isEmblem(card) ? 'tokens' : 'main';
+        const rarity = card.front?.rarity || 'common';
+        return mainRarities.includes(rarity) ? 'extra' : 'main';
     });
     sortAndNumber(project, groups.main);
-    sortAndNumber(project, groups.tokens);
+    sortAndNumber(project, groups.extra);
 }
 
 export function autoNumberCards(project) {
