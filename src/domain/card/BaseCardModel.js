@@ -20,7 +20,8 @@ export default class BaseCardModel {
         return this[field.id];
     }
 
-    async loadField(dataToLoad, field) {
+    async loadField(cardFaceData, field) {
+        if (field.override) return field.override;
         if (Object.hasOwn(field, 'load'))
             return field.load(dataToLoad);
         return dataToLoad[field.id];
@@ -93,9 +94,9 @@ export default class BaseCardModel {
         );
     }
 
-    async initializeModules(parent) {
+    async initializeModules(template, parent) {
         await Promise.all(this.modules.map(module => {
-            return module.init(this);
+            return module.init(this, template);
         }));
         this.loadFields();
         this.loadFields('options');
