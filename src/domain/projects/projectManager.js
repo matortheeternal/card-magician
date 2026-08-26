@@ -35,9 +35,11 @@ export async function saveAs() {
     }
 }
 
-export async function saveProject() {
+export async function saveProject(saveCards = false) {
     if (!activeProject.filePath) return saveAs();
     await activeProject.save();
+    if (saveCards)
+        await activeProject.saveCards(false);
 }
 
 export function setActiveProject(project) {
@@ -121,5 +123,9 @@ registerAction('new-set', () => {
     newProject();
     setActiveCard(null);
 });
-registerAction('save-set', saveProject);
-registerAction('save-set-as', saveAs);
+
+registerAction('save-project', async () => {
+    await saveProject(true);
+});
+
+registerAction('save-project-as', saveAs);

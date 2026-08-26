@@ -6,7 +6,6 @@ import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { checkFileExists, find } from '../../shared/fsUtils.js';
 import { getTags, loadTags } from '../game/tagManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
-import { updateBaseNames } from './cardNamer.js';
 
 export default class CardMagicianProject {
     #filePath = '';
@@ -135,11 +134,11 @@ export default class CardMagicianProject {
         loadTags(projectTags);
     }
 
-    async saveCards() {
+    async saveCards(withImages = true) {
         for (const card of this.cards) {
-            progress.setOperation(`Saving card ${card.baseName}`);
-            await card.saveImages(this.cardsFolderPath, true);
             await card.save(this.cardsFolderPath);
+            if (withImages)
+                await card.saveImages(this.cardsFolderPath, true);
             progress.increment();
         }
     }
@@ -158,10 +157,9 @@ export default class CardMagicianProject {
 
     async saveAll(filePath) {
         progress.setStatus('Preparing cards');
-        updateBaseNames(this.cards);
         progress.setStatus('Saving cards');
         progress.setMax(this.cards.length + 2);
-        await this.saveCards();
+        await this.saveCards(true);
         progress.setStatus('Saving tags');
         await this.saveTags();
         progress.setStatus('Saving project file');

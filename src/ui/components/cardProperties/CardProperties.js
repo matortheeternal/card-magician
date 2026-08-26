@@ -36,9 +36,9 @@ class CardProperties extends HTMLElement {
     }
 
     save() {
-        selectedCard.dirty = true;
-        selectedCard.notes = this.#card.notes;
-        selectedCard.tags = this.#card.tags;
+        selectedProjectCard.notes = this.#card.notes;
+        selectedProjectCard.tags = this.#card.tags;
+        selectedProjectCard.save();
     }
 }
 

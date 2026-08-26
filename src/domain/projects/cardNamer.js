@@ -12,12 +12,6 @@ function addCardBaseName(card, usedBaseNames) {
     card.baseName = name;
 }
 
-export function updateBaseNames(cards) {
-    const baseNames = [];
-    cards.map(card => addCardBaseName(card, baseNames));
-    return baseNames;
-}
-
 export function updateBaseName(card) {
     const cards = activeProject.cards.slice();
     cards.remove(card);
