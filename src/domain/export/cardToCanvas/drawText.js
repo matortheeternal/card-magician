@@ -72,7 +72,11 @@ export function drawText(ctx, textNode, style, rootRect) {
 
     const segments = getTextUnits(textNode);
     for (const { rects, start, end } of segments) {
-        const text = textNode.nodeValue.substring(start, end);
+        let text = textNode.nodeValue.substring(start, end);
+        if (style.textTransform === 'uppercase')
+            text = text.toUpperCase();
+        if (style.textTransform === 'lowercase')
+            text = text.toLowerCase();
         const { x, y } = getMinimumOffset(rects);
         ctx.fillText(text, x - rootRect.left, y - rootRect.top + baseline);
     }
