@@ -1,8 +1,6 @@
 import { loadImage } from '../../shared/imageUtils.js';
 import { readDirectory, writeBinaryFile } from '../../shared/neutralinoAdapter.js';
 
-const REVOKE_DELAY = 500;
-
 export class ImageCache {
     localPath = 'cache/images';
     cache = new Map();
@@ -55,8 +53,8 @@ export class ImageCache {
         const objectUrl = URL.createObjectURL(blob);
         this.objectUrlMap.set(objectUrl, localPath);
         this.cache.set(fullPath, objectUrl);
-        this.saveBlobToDisk(blob, localPath, fullPath).then(() => {
-            setTimeout(() => URL.revokeObjectURL(objectUrl), REVOKE_DELAY);
+        this.saveBlobToDisk(blob, localPath, fullPath).catch(err => {
+            alert(err);
         });
         return objectUrl;
     }
