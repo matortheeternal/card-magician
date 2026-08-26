@@ -1,0 +1,14 @@
+module-container[module="Watermark"] {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        height: 95%;
+    }
+}

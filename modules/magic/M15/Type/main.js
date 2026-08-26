@@ -13,8 +13,30 @@ export default class TypeModule extends CardMagicianModule {
         card.isEmblem = () => /\bemblem\b/i.test(card.superType);
     }
 
+    getImplicitLandSymbols(card) {
+        if (!card.isLand()) return [];
+        const implicitSymbols = [];
+        if (/\bplains\b/i.test(card.subType))
+            implicitSymbols.push({ colors: ['w'] });
+        if (/\bisland\b/i.test(card.subType))
+            implicitSymbols.push({ colors: ['u'] });
+        if (/\bswamp\b/i.test(card.subType))
+            implicitSymbols.push({ colors: ['b'] });
+        if (/\bmountain\b/i.test(card.subType))
+            implicitSymbols.push({ colors: ['r'] });
+        if (/\bforest\b/i.test(card.subType))
+            implicitSymbols.push({ colors: ['g'] });
+        return implicitSymbols;
+    }
+
+    updateType(card) {
+        card.colorIdentity.addColorSource('type', this.getImplicitLandSymbols(card));
+        changed(card, 'colorIdentity');
+        this.requestRender();
+    }
+
     bind(card, watch) {
-        watch(card, ['superType', 'subType'], () => this.requestRender());
+        watch(card, ['superType', 'subType'], () => this.updateType(card));
     }
 
     render(card) {
