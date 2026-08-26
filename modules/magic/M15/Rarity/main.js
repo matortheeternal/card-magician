@@ -1,10 +1,11 @@
 const L = localize('module-M15-rarity');
 
 export default class RarityModule extends CardMagicianModule {
+    async init(parent, template) {
+        this.rarityOverride = template?.rarity;
+    }
+
     getRarityCharacter(card) {
-        if (card.isToken?.()) return 'T';
-        if (card.isEmblem?.()) return 'E';
-        if (card.isPromo?.()) return 'P';
         return card.rarity.slice(0, 1).toUpperCase();
     }
 
@@ -34,8 +35,16 @@ export default class RarityModule extends CardMagicianModule {
                 { id: 'uncommon',   name: L`Uncommon` },
                 { id: 'rare',       name: L`Rare` },
                 { id: 'mythic',     name: L`Mythic Rare` },
-                { id: 'special',     name: L`Special` }
-            ]
+                { id: 'land',       name: L`Basic Land` },
+                { id: 'special',    name: L`Special` },
+                { id: 'token',      name: L`Token` },
+                { id: 'emblem',     name: L`Emblem` },
+                { id: 'ad',         name: L`Ad` },
+                { id: 'helper',     name: L`Helper` },
+                { id: 'xcard',      name: L`Punch-Out` },
+                { id: 'voucher',    name: L`Voucher` },
+            ],
+            override: this.rarityOverride,
         }];
     }
 
