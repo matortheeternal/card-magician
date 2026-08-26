@@ -1,4 +1,5 @@
-import TTSArtifact from './src/TTSArtifact.js';
+import SpawnerArtifact from './src/SpawnerArtifact.js';
+import PackArtifact from './src/PackArtifact.js';
 
 const L = localize('tts-exporter');
 
@@ -9,18 +10,26 @@ export default class TTSExporter extends CardMagicianExporter {
         return [{
             id: 'basePath',
             label: L`Base URL Path`,
-            default: 'https://raw.githubusercontent.com/[username]/[repo]/refs/heads/main/output/CardImagesExporter',
+            default: 'https://raw.githubusercontent.com/[username]/[repo]/refs/heads/main/dist/images',
             hint: L`The base URL where image files will be hosted.`
+        }, {
+            id: 'ttsBasePath',
+            label: L`Base TTS URL Path`,
+            default: 'https://raw.githubusercontent.com/[username]/[repo]/refs/heads/main/dist/tts',
+            hint: L`The base URL where TTS files will be hosted.`
         }];
     }
 
     async *produce() {
-        const filePath = `${this.activeSet.setCode}.json`;
-        const artifact = new TTSArtifact(this.activeSet, this.config);
+        let filePath = `${window.activeProject.setCode}-spawner.json`;
+        let artifact = new SpawnerArtifact(this.config);
+        yield { filePath, artifact };
+        filePath = `pack.json`;
+        artifact = new PackArtifact(this.config);
         yield { filePath, artifact };
     }
 
     getOutputCount() {
-        return 1;
+        return 2;
     }
 }
