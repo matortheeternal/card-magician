@@ -22,6 +22,7 @@ export default class WebArtifact extends ExportArtifact {
             exportedCard.front = this.exportCardFace(card, 'front');
             if (card.back)
                 exportedCard.back = this.exportCardFace(card, 'back');
+            exportedCard.baseName = card.baseName;
             return exportedCard;
         });
     }

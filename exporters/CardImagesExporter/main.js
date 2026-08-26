@@ -51,7 +51,7 @@ export default class CardImagesExporter extends CardMagicianExporter {
     }
 
     get extension() {
-        return this.config.imageType.id;
+        return this.config.imageType;
     }
 
     async prepare() {

@@ -8,7 +8,7 @@ export default class CardImageArtifact extends ExportArtifact {
     }
 
     get imageType() {
-        return `image/${this.config.imageType.id}`;
+        return `image/${this.config.imageType}`;
     }
 
     get imageQuality() {
@@ -30,7 +30,6 @@ export default class CardImageArtifact extends ExportArtifact {
         const filePath = await super.getExportFilePath(folder, fixedPath);
         this.baseCard.imageExports ||= {};
         this.baseCard.imageExports[this.faceKey] = fixedPath;
-        this.baseCard.dirty = true;
         return filePath;
     }
 
