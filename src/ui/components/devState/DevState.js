@@ -76,12 +76,14 @@ export default class DevState extends ReactiveComponent {
     }
 
     async rebuild() {
+        const cardIndex = window.selectedProjectCard
+            ? activeProject.cards.indexOf(window.selectedProjectCard)
+            : -1;
         const msg = {
-            'action': 'rebuild',
-            'set': activeProject.filePath,
-            'card': activeProject.cards.indexOf(selectedCard),
+            action: 'rebuild',
+            project: activeProject.filePath,
+            card: cardIndex
         };
-        console.log(msg);
         this.ws.send(JSON.stringify(msg));
     }
 
