@@ -3,7 +3,7 @@ import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { saveAs } from '../projects/projectManager.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
-import { updateBaseNames } from '../projects/cardNamer.js';
+import { saveProject } from '../projects/projectManager.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
@@ -109,10 +109,12 @@ registerAction('run-exporter', async exporterId => {
     openModal('cm-progress-modal', { title: `Exporting...` });
     try {
         progress.setStatus('Preparing cards');
-        updateBaseNames(activeProject.cards);
         progress.setStatus('Preparing exporters');
         const params = gatherExporterParams(exporterId);
         await runExporters(params);
+        progress.setTitle('Saving cards');
+        for (const card of activeProject.cards)
+            await card.saveData();
         progress.setTitle('Export Complete');
         progress.complete();
     } catch (error) {
