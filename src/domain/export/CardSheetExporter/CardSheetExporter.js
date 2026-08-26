@@ -67,7 +67,7 @@ export default class CardSheetExporter extends CardMagicianExporter {
     get selectedCards() {
         const listView = document.querySelector('cm-list-view');
         const selection = listView.selection;
-        return this.activeSet.cards.filter(card => {
+        return window.activeProject.cards.filter(card => {
             return selection.length === 1 || selection.some(row => {
                 return row.original === card;
             });

@@ -10,7 +10,7 @@ export default class CardSheetPair {
     }
 
     get extension() {
-        return this.config.imageType.id;
+        return this.config.imageType;
     }
 
     get adjacentBackFaces() {
