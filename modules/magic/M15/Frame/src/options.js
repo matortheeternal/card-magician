@@ -15,7 +15,10 @@ function computeCrownStyle(card) {
     if (!card.isLegendary?.()) return 'disabled';
     if (card.isCompanion?.()) return 'companion';
     if (card.isBrawl?.()) return 'brawl';
-    if (card.nyxStyle !== 'disabled') return 'nyx';
+    const nyxStyle = card.nyxStyle === 'auto'
+        ? computeNyxStyle(card)
+        : card.nyxStyle;
+    if (nyxStyle !== 'disabled') return 'nyx';
     return 'standard';
 }
 

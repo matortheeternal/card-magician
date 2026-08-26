@@ -42,7 +42,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     }
 
     render(card) {
-        if (!card.faceSymbol?.imageUrl) return;
+        if (!card.resolvedFaceSymbol?.imageUrl) return;
         const faceSymbolClass = getFaceSymbolClass(card.resolvedFaceSymbol);
         return (
             `<img src="${card.resolvedFaceSymbol.imageUrl}" class="${faceSymbolClass}"/>`

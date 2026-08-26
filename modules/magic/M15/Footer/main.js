@@ -39,6 +39,7 @@ export default class FooterModule extends CardMagicianModule {
             card.illustrator || activeProject.illustrator || ''
         );
 
+        if (!illustrator) return `<div></div>`;
         return (
             `<div class="illustrator-container">
                 <div class="illustrator-brush">${this.brushSvg}</div>
