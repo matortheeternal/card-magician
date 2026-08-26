@@ -16,6 +16,30 @@ export const WhitespaceConverter = {
     }
 };
 
+export const UnderscoreConverter = {
+    match(str) {
+        return str.match(/^_/);
+    },
+    convert(match, { state }) {
+        state.inEmphasis = !state.inEmphasis;
+        return state.inEmphasis
+            ? '<em>' + match[0].slice(1)
+            : match[0].slice(1) + '</em>';
+    }
+};
+
+export const AsteriskConverter = {
+    match(str) {
+        return str.match(/^\*/);
+    },
+    convert(match, { state }) {
+        state.inStrong = !state.inStrong;
+        return state.inStrong
+            ? '<strong>' + match[0].slice(1)
+            : match[0].slice(1) + '</strong>';
+    }
+};
+
 export const ParenthesisConverter = {
     match(str, res, { state }) {
         return state.inItalics
@@ -73,7 +97,7 @@ export const CardNameConverter = {
 
 export const FallbackConverter = {
     match(str) {
-        return str.match(/^[^\s{)”<]+/)
+        return str.match(/^[^\s{)*”<]+/)
             || str.match(/^./);
     },
     convert(match) {
@@ -83,6 +107,8 @@ export const FallbackConverter = {
 
 export default [
     WhitespaceConverter,
+    UnderscoreConverter,
+    AsteriskConverter,
     ParenthesisConverter,
     SymbolConverter,
     LegendNameConverter,
