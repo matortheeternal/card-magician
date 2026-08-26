@@ -2,6 +2,7 @@ import { imageToCanvas, newCanvas } from '../../shared/imageUtils.js';
 import { blendAlgorithms } from './blendAlgorithms.js';
 import Color from './Color.js';
 import ImageOp from './ImageOp.js';
+import PixelSampler from './PixelSampler.js';
 
 function blendImageData(baseData, topData, mode) {
     const func = blendAlgorithms[mode];
@@ -66,60 +67,37 @@ export function linearBlend(img1, img2, x1, y1, x2, y2) {
 }
 
 export function maskBlend(img1, img2, mask) {
-    const { width, height } = img1;
-    if (img2.width !== width
-        || img2.height !== height
-        || mask.width !== width
-        || mask.height !== height)
-        throw new Error('Images must have the same size');
+    const { canvas, ctx, imageData } = imageToCanvas(img1);
+    const d = imageData.data;
 
-    const { imageData: data1 } = imageToCanvas(img1);
-    const { imageData: data2 } = imageToCanvas(img2);
-    const { imageData: maskData } = imageToCanvas(mask);
+    const img2Sampler = new PixelSampler(img1, img2);
+    const maskSampler = new PixelSampler(img1, mask);
 
-    const d1 = data1.data;
-    const d2 = data2.data;
-    const m = maskData.data;
+    for (let i = 0; i < d.length; i += 4) {
+        const d2 = img2Sampler.sample(i);
+        const m = maskSampler.sample(i);
+        const inv = 255 - m[0];
 
-    for (let i = 0; i < d1.length; i += 4) {
-        const maskVal = m[i]; // red channel
-        const inv = 255 - maskVal;
-        d1[i]   = (d1[i]   * maskVal + d2[i]   * inv) / 255;
-        d1[i+1] = (d1[i+1] * maskVal + d2[i+1] * inv) / 255;
-        d1[i+2] = (d1[i+2] * maskVal + d2[i+2] * inv) / 255;
+        d[i]     = (d[i]     * m[0] + d2[0] * inv) / 255;
+        d[i + 1] = (d[i + 1] * m[0] + d2[1] * inv) / 255;
+        d[i + 2] = (d[i + 2] * m[0] + d2[2] * inv) / 255;
     }
 
-    const { canvas, ctx } = newCanvas(width, height);
-    ctx.putImageData(data1, 0, 0);
+    ctx.putImageData(imageData, 0, 0);
     return canvas;
 }
 
 export function maskImage(sourceImg, maskImg) {
-    const { width, height } = sourceImg;
+    const { canvas, ctx, imageData } = imageToCanvas(sourceImg);
+    const data = imageData.data;
+    const maskSampler = new PixelSampler(sourceImg, maskImg);
 
-    const { canvas, ctx, imageData: srcImageData } = imageToCanvas(sourceImg);
-    const { imageData: maskImageData } = imageToCanvas(maskImg);
-
-    const srcData = srcImageData.data;
-    const maskData = maskImageData.data;
-
-    const scaleX = maskImg.width / width;
-    const scaleY = maskImg.height / height;
-
-    for (let i = 0; i < srcData.length; i += 4) {
-        const pixelIndex = i / 4;
-        const srcX = pixelIndex % width;
-        const srcY = Math.floor(pixelIndex / width);
-
-        const maskX = Math.min(Math.round(srcX * scaleX), maskImg.width - 1);
-        const maskY = Math.min(Math.round(srcY * scaleY), maskImg.height - 1);
-
-        const srcAlpha = srcData[i + 3];
-        const maskAlpha = maskData[(maskY * maskImg.width + maskX) * 4];
-        srcData[i + 3] = Math.round(srcAlpha * (maskAlpha / 255));
+    for (let i = 0; i < data.length; i += 4) {
+        const m = maskSampler.sample(i);
+        data[i + 3] = Math.round(data[i + 3] * m[0] / 255);
     }
 
-    ctx.putImageData(srcImageData, 0, 0);
+    ctx.putImageData(imageData, 0, 0);
     return canvas;
 }
 
