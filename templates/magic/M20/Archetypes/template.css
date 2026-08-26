@@ -1,0 +1,43 @@
+:host {
+    background: black;
+
+    > div {
+        padding-top: 10px;
+    }
+}
+
+:host module-container[module="Name"] {
+    font-size: 13px;
+    min-height: 18px;
+    margin: auto;
+    color: white;
+    font-family: "Relay Bold", sans-serif;
+    text-transform: uppercase;
+}
+
+:host module-container[module="Text"] {
+    margin: 4px 0;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background: #3b3b3b;
+    height: 100%;
+
+    .text {
+        padding: 0;
+        font-family: 'Relay', sans-serif;
+        color: white;
+        line-height: initial;
+
+        strong {
+            font-family: 'Relay-Bold', sans-serif;
+            text-transform: uppercase;
+        }
+
+        abbr.sym {
+            line-height: 1.15;
+            height: 0.95em;
+            width: 1.0em;
+            margin-top: 1px;
+        }
+    }
+}
