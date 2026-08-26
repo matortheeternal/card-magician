@@ -35,6 +35,11 @@ const paddingKeys = [
     'paddingTop', 'paddingBottom'
 ];
 
+const borderRadiusKeys = [
+    'borderTopLeftRadius', 'borderTopRightRadius',
+    'borderBottomRightRadius', 'borderBottomLeftRadius'
+];
+
 function parseStylesToFloat(style, keys) {
     return keys.reduce((obj, key) => {
         obj[key] = parseFloat(style[key]);
@@ -110,14 +115,22 @@ async function drawBackgroundImage(ctx, elementRect, rootRect, style) {
 
 export async function drawBackground(ctx, element, style, rootRect) {
     const elementRect = element.getBoundingClientRect();
+    const radius = parseStylesToFloat(style, borderRadiusKeys);
 
     ctx.save();
     ctx.beginPath();
-    ctx.rect(
+    const radii = [
+        radius.borderTopLeftRadius,
+        radius.borderTopRightRadius,
+        radius.borderBottomRightRadius,
+        radius.borderBottomLeftRadius
+    ];
+    ctx.roundRect(
         elementRect.left - rootRect.left,
         elementRect.top - rootRect.top,
         elementRect.width,
-        elementRect.height
+        elementRect.height,
+        radii
     );
     ctx.clip();
     drawBackgroundColor(ctx, style);
