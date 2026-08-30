@@ -27,7 +27,7 @@ export default class EditMenu extends ReactiveMenu {
                 openModal('cm-edit-tags-modal', getTags());
             }),
             this.menuItem(L`Packs`, ``, () => {
-                openModal('cm-edit-packs-modal', getActiveSet());
+                openModal('cm-edit-packs-modal');
             }),
             this.menuItem(L`Preferences`, ``, () => log('user').info('Edit preferences')),
             this.menuItem(L`Localization`, ``, async () => {

@@ -12,6 +12,7 @@ neutralino.js
 # Neutralinojs related files
 .storage
 *.log
+neutralino.test.config.json
 
 # Custom
 node_modules/
@@ -19,6 +20,9 @@ node_modules/
 /resources/js
 /resources/css
 /resources/shoelace
+/resources/tests/
+!/resources/tests/*.html
+!/resources/tests/**/*.yml
 .tmp/
 card.json
 todos.txt

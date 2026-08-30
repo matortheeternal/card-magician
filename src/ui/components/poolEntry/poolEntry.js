@@ -1,8 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import poolEntryFields from './poolEntryFields.js';
-import { getActiveGame } from '../../../domain/game/gameManager.js';
-import { getActiveSet } from '../../../domain/sets/setManager.js';
 
 const L = localize('edit-packs-modal');
 
@@ -37,10 +35,11 @@ export default class PoolEntry extends ReactiveComponent {
     get cardCount() { return this.#cardCount; }
 
     getFilteredCount() {
-        const cards = getActiveSet().cards;
-        const game = getActiveGame();
         try {
-            const results = game.filter(cards, this.model.expression);
+            const results = activeGame.filter(
+                activeProject.cards,
+                this.model.expression
+            );
             return results.length;
         } catch (e) {
             log('user').debug('Search error:', e);

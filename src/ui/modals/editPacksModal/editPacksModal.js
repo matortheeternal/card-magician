@@ -1,6 +1,5 @@
 import { registerModal } from '../modalManager.js';
 import Modal from '../Modal.js';
-import { getActiveGame } from '../../../domain/game/gameManager.js';
 
 const L = localize('edit-packs-modal');
 
@@ -16,7 +15,7 @@ export default class EditPacksModal extends Modal {
     bind() {
         super.bind();
         this.addEventListener('cm-remove-slot', event => {
-            this.data.pack.remove(event.detail);
+            activeProject.pack.remove(event.detail);
         });
     }
 
@@ -32,7 +31,7 @@ export default class EditPacksModal extends Modal {
     }
 
     renderSlots() {
-        for (const slot of this.data.pack) {
+        for (const slot of activeProject.pack) {
             const element = document.createElement('cm-edit-slot');
             element.slot = slot;
             this.slotsContainer.appendChild(element);
@@ -53,10 +52,9 @@ export default class EditPacksModal extends Modal {
     }
 
     addSlot() {
-        const game = getActiveGame();
         const element = document.createElement('cm-edit-slot');
-        element.slot = game.newPackSlot();
-        this.data.pack.push(element.slot);
+        element.slot = activeGame.newPackSlot();
+        activeProject.pack.push(element.slot);
         this.slotsContainer.appendChild(element);
     }
 }
