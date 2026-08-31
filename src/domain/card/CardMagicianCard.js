@@ -82,7 +82,7 @@ export default class CardMagicianCard {
             const filePath = await this.files.getCanonicalPath(key);
             const data = await image.loadImageData();
             await writeBinaryFile(filePath, data);
-            await this.files.set(key, filePath);
+            this.files.set(key, filePath);
             delete image.dirty;
         }
     }

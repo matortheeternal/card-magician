@@ -30,6 +30,12 @@ export default class CardFileDefinition {
 
     /**
      * @abstract
+     * @param filePath
+     */
+    async refresh(filePath) {}
+
+    /**
+     * @abstract
      * @param card
      * @param value
      */

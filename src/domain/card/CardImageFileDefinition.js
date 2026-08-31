@@ -24,6 +24,12 @@ export default class CardImageFileDefinition extends CardFileDefinition {
         if (!field?.imageUrl) return;
         return this.urlToFilePath(field.imageUrl);
     }
+
+    async refresh(filePath) {
+        const url = await this.filePathToUrl(filePath);
+        if (!url) return;
+        await fetch(url, { cache: 'no-cache' });
+    }
 }
 
 window.CardImageFileDefinition = CardImageFileDefinition;
