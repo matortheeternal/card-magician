@@ -1,4 +1,3 @@
-// eslint-disable max-lines
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject,

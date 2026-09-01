@@ -114,13 +114,6 @@ export default [
             // Ternaries (disciplined usage)
             'no-nested-ternary': 'error',
 
-            // Size & structure warnings
-            'max-lines': ['warn', {
-                max: 300,
-                skipBlankLines: true,
-                skipComments: true
-            }],
-
             'max-len': ['warn', {
                 code: 90,
                 ignoreComments: false,
@@ -132,6 +125,20 @@ export default [
             'constructor-super': 'error',
             'no-useless-constructor': 'warn',
             'class-methods-use-this': 'off'
+        }
+    },
+
+    {
+        files: ['src/**/*.js', 'modules/**/*.js'],
+        ignores: ['src/**/*.smoke.js'],
+
+        rules: {
+            // Size & structure warnings
+            'max-lines': ['warn', {
+                max: 300,
+                skipBlankLines: true,
+                skipComments: true
+            }],
         }
     },
 

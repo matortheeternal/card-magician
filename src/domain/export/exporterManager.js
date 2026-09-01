@@ -2,7 +2,6 @@ import { readDirectory } from '../../shared/neutralinoAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
-import { saveProject } from '../projects/projectManager.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
