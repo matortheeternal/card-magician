@@ -47,7 +47,11 @@ export default class ImageField extends FieldComponent {
     bind() {
         super.bind();
         this.handleEvents('click', {
-            clearImage: this.clearImage,
+            clearImage: event => {
+                event.stopPropagation();
+                this.clear();
+                return true;
+            },
             selectImage: this.selectImage,
             cropImage: this.cropImage,
         });
@@ -83,7 +87,9 @@ export default class ImageField extends FieldComponent {
 
     inputValue(value) {
         const fileInput = this.querySelector('input[type="file"]');
-        fileInput.value = value;
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(value);
+        fileInput.files = dataTransfer.files;
         fileInput.dispatchEvent(new Event(this.eventKey, { bubbles: true }));
     }
 
@@ -114,11 +120,9 @@ export default class ImageField extends FieldComponent {
         return true;
     }
 
-    clearImage(event) {
-        event.stopPropagation();
+    clear() {
         this.value = new ImageFieldValue();
         emit(this, 'cm-field-changed');
-        return true;
     }
 
     cropImage(event) {

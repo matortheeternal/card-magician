@@ -29,6 +29,27 @@ export async function eventually(predicate, {
     throw new Error(`Condition not met within ${timeout}ms`);
 }
 
+async function hashFile(file) {
+    const buffer = await file.arrayBuffer();
+    const digest = await crypto.subtle.digest('SHA-256', buffer);
+
+    return Array.from(
+        new Uint8Array(digest),
+        byte => byte.toString(16).padStart(2, '0'),
+    ).join('');
+}
+
+export async function expectFilesToMatch(actual, expected) {
+    expect(actual.size).withContext('File sizes differ').toBe(expected.size);
+    if (actual.size !== expected.size) return;
+
+    const [actualHash, expectedHash] = await Promise.all([
+        hashFile(actual),
+        hashFile(expected),
+    ]);
+    expect(actualHash).withContext('File contents differ').toBe(expectedHash);
+}
+
 /**
  * Sets multiple fields on the currently selected card through the card form UI.
  *

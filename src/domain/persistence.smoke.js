@@ -1,19 +1,28 @@
+// eslint-disable max-lines
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject,
-    expectCardData, flushCard, flushCardProperties, setCardFields, toggleFace
+    expectCardData,
+    expectFilesToMatch, flushCard, flushCardProperties, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
-import { readFile } from '../shared/neutralinoAdapter.js';
-import { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
+import { readBinaryFile, readFile } from '../shared/neutralinoAdapter.js';
+import FieldInteractor, { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
 
 describe('Persistence', () => {
     let project;
     let expectedBlankCardData;
+    let artImage, artImage2;
 
     beforeAll(async () => {
-        const response = await fetch('/tests/fixtures/blank.yml');
+        let response = await fetch('/tests/fixtures/blank.yml');
         expectedBlankCardData = await response.text();
+        response = await fetch('/tests/fixtures/art.jpg');
+        let blob = await response.blob();
+        artImage = new File([blob], '', { type: 'image/jpg' });
+        response = await fetch('/tests/fixtures/art2.jpg');
+        blob = await response.blob();
+        artImage2 = new File([blob], '', { type: 'image/jpg' });
     });
 
     beforeEach(async () => {
@@ -255,27 +264,85 @@ describe('Persistence', () => {
 
     describe('images', () => {
         it('persists card image files', async () => {
-
+            const card = await createCard();
+            await setCardFields({ artImage });
+            await flushCard();
+            const path = card.files.get('front.artImage');
+            const exists = await checkFileExists(path);
+            expect(exists).toBeTrue();
         });
 
         it('persists front and back image files', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'Garenbrig', artImage });
+            await toggleFace('back');
+            await setCardFields(
+                { name: 'Carver', artImage },
+                { faceKey: 'back' }
+            );
+            await flushCard();
+            const path = card.files.get('front.artImage');
+            const exists = await checkFileExists(path);
+            expect(exists).toBeTrue();
 
+            const path2 = card.files.get('back.artImage');
+            const exists2 = await checkFileExists(path2);
+            expect(exists2).toBeTrue();
         });
 
         it('persists changes to an image', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'Garenbrig', artImage });
+            await flushCard();
+            await setCardFields({ artImage: artImage2 });
+            await flushCard();
 
+            const path = card.files.get('front.artImage');
+            const bytes = await readBinaryFile(path);
+            await expectFilesToMatch(new Blob([bytes]), artImage2);
         });
 
         it('persists image crops', async () => {
-
+            // TODO
         });
 
         it('removes image files when image is removed', async () => {
+            const card = await createCard();
+            const interactor = new FieldInteractor('artImage', { faceKey: 'front' });
+            await interactor.setValue(artImage);
+            await flushCard();
+            const path = card.files.get('front.artImage');
 
+            interactor.clear();
+            await flushCard();
+
+            const exists = await checkFileExists(path);
+            expect(exists).toBeFalse();
+            expect(card.files.has('front.artImage')).toBeFalse();
         });
 
         it('handles naming collisions', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'Garenbrig', artImage });
+            await flushCard();
 
+            const cardB = await createCard();
+            await setCardFields({ name: 'Garenbrig', artImage: artImage2 });
+            await flushCard();
+
+            const pathA = cardA.files.get('front.artImage');
+            const existsA = await checkFileExists(pathA);
+            expect(existsA).toBeTrue();
+            const bytesA = await readBinaryFile(pathA);
+            await expectFilesToMatch(new Blob([bytesA]), artImage);
+
+            const pathB = cardB.files.get('front.artImage');
+            const existsB = await checkFileExists(pathB);
+            expect(existsB).toBeTrue();
+            const bytesB = await readBinaryFile(pathB);
+            await expectFilesToMatch(new Blob([bytesB]), artImage2);
+
+            expect(pathA).not.toEqual(pathB);
         });
     });
 
