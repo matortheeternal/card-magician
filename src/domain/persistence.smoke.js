@@ -200,23 +200,56 @@ describe('Persistence', () => {
 
     describe('file naming', () => {
         it('defaults empty name to "blank"', async () => {
-
+            const card = await createCard();
+            await setCardFields({ name: 'Test' });
+            await setCardFields({ name: '' });
+            await flushCard();
+            const path = card.files.get('data');
+            expect(path).toMatch(/blank.yml$/);
         });
 
         it('sanitizes filenames', async () => {
-
+            const card = await createCard();
+            await setCardFields({ name: '~/.\u0000ssh\\authorized_keys' });
+            await flushCard();
+            const path = card.files.get('data');
+            expect(path).toMatch(/~-.-ssh-authorized_keys.yml$/);
         });
 
         it('sanitizes " - " in filenames', async () => {
-
+            const card = await createCard();
+            await setCardFields({ name: 'test - back' });
+            await flushCard();
+            const path = card.files.get('data');
+            expect(path).toMatch(/test--back.yml$/);
         });
 
         it('handles filename conflicts without changing card names', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'Lightning Bolt' });
+            await flushCard();
+            const cardB = await createCard();
+            await setCardFields({ name: 'Lightning Bolt' });
+            await flushCard();
 
+            const pathA = cardA.files.get('data');
+            expect(pathA).toMatch(/Lightning Bolt.yml$/);
+            const pathB = cardB.files.get('data');
+            expect(pathB).toMatch(/Lightning Bolt-2.yml$/);
         });
 
         it('is case insensitive when handling naming conflicts', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'Lightning Bolt' });
+            await flushCard();
+            const cardB = await createCard();
+            await setCardFields({ name: 'lightning bolt' });
+            await flushCard();
 
+            const pathA = cardA.files.get('data');
+            expect(pathA).toMatch(/Lightning Bolt.yml$/);
+            const pathB = cardB.files.get('data');
+            expect(pathB).toMatch(/lightning bolt-2.yml$/);
         });
     });
 
