@@ -30,17 +30,6 @@ export async function eventually(predicate, {
 }
 
 /**
- * Returns whether two files contain identical binary contents.
- *
- * @param {string} firstPath
- * @param {string} secondPath
- * @returns {Promise<boolean>}
- */
-export async function filesAreEqual(firstPath, secondPath) {
-    // TODO
-}
-
-/**
  * Sets multiple fields on the currently selected card through the card form UI.
  *
  * @param {Record<string, *>} fields

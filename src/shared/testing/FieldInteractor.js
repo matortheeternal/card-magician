@@ -1,7 +1,11 @@
 import { esc } from '../htmlUtils.js';
 
 const formSelectors = [
-    options => `cm-face-form[data-face-id="${esc(options.faceKey)}"]`,
+    ({ faceKey }) => {
+        if (faceKey !== 'front' && faceKey !== 'back')
+            throw new Error(`Unexpected face key option "${faceKey}"`);
+        return `cm-face-form[data-face-id="${esc(faceKey)}"]`;
+    },
     () => `cm-card-properties`,
 ];
 

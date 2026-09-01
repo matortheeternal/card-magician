@@ -49,7 +49,7 @@ describe('Persistence', () => {
             await flushCard();
             const path = card.files.get('data');
             const data = await readFile(path);
-            expect(data).toEqual(expectedBlankCardData);
+            expect(data).toEqualText(expectedBlankCardData);
         });
 
         it('persists multiple cards', async () => {

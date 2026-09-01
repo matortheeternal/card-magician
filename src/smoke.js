@@ -1,3 +1,4 @@
+import './shared/testing/textMatcher.js';
 import { exitApp, writeProcessOutput } from './shared/neutralinoAdapter.js';
 import CustomReporter from './shared/testing/customReporter.js';
 
