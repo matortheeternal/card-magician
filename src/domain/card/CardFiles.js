@@ -21,8 +21,8 @@ export default class CardFiles {
 
     set(key, filePath) {
         const def = this.resolveDefinition(key);
-        def.refresh(filePath);
         this.paths.set(key, filePath);
+        def.refresh(filePath);
         def.setFieldValue(this.card, filePath);
     }
 
@@ -68,7 +68,8 @@ export default class CardFiles {
             const filePath = filesByName.get(filename.toLowerCase())
                 || await def.getLegacyFilePath(this.card);
             if (!filePath) continue;
-            this.set(def.key, filePath);
+            this.paths.set(def.key, filePath);
+            def.setFieldValue(this.card, filePath);
         }
     }
 

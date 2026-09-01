@@ -28,6 +28,7 @@ export default class CardMagicianCard {
 
     async setDataPath(filePath) {
         const { stem } = await getPathParts(filePath);
+        this.files.set('data', filePath);
         this.baseName = stem;
     }
 
