@@ -362,15 +362,50 @@ describe('Persistence', () => {
 
     describe('renaming', () => {
         it('does not rename when name is changed but matches', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'Test:' });
+            await flushCard();
+            const pathBefore = card.files.get('data');
 
+            await setCardFields({ name: 'Test/' });
+            await flushCard();
+            const pathAfter = card.files.get('data');
+
+            expect(pathBefore).toEqual(pathAfter);
         });
 
         it('renames the card file when the card name changes', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'potato' });
+            await flushCard();
+            const pathBefore = card.files.get('data');
 
+            await setCardFields({ name: 'fish' });
+            await flushCard();
+            const pathAfter = card.files.get('data');
+
+            expect(pathBefore).not.toEqual(pathAfter);
+            expect(pathAfter).toMatch(/fish.yml$/);
         });
 
         it('renames to a safe filename when a conflict exists', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'potato' });
+            await flushCard();
+            const pathA = cardA.files.get('data');
 
+            const cardB = await createCard();
+            await setCardFields({ name: 'fish' });
+            await flushCard();
+            const pathBefore = cardB.files.get('data');
+
+            await setCardFields({ name: 'potato' });
+            await flushCard();
+            const pathAfter = cardB.files.get('data');
+
+            expect(pathBefore).not.toEqual(pathAfter);
+            expect(pathA).not.toEqual(pathAfter);
+            expect(pathAfter).toMatch(/potato-2.yml$/);
         });
 
         it('renames card image files when the card name changes', async () => {
