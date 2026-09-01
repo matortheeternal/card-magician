@@ -7,6 +7,7 @@ import {
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readBinaryFile, readFile } from '../shared/neutralinoAdapter.js';
 import FieldInteractor, { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
+import ImageCrop from './card/ImageCrop.js';
 
 describe('Persistence', () => {
     let project;
@@ -302,7 +303,21 @@ describe('Persistence', () => {
         });
 
         it('persists image crops', async () => {
-            // TODO
+            const card = await createCard();
+            const interactor = new FieldInteractor('artImage', { faceKey: 'front' });
+            await interactor.setValue(artImage);
+            const crop = new ImageCrop(600, 400, 13, 26);
+            interactor.fieldElement.setCrop(crop);
+            await flushCard();
+
+            const path = card.files.get('data');
+            const data = await YAMLSerializer.load(path);
+            expectCardData(data.front?.artImage?.crop, {
+                width: 600,
+                height: 400,
+                xOffset: 13,
+                yOffset: 26
+            });
         });
 
         it('removes image files when image is removed', async () => {

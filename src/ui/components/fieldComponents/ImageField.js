@@ -125,16 +125,18 @@ export default class ImageField extends FieldComponent {
         emit(this, 'cm-field-changed');
     }
 
+    setCrop(newValue) {
+        this.value.crop = newValue;
+        changed(this.model, this.field.id);
+        emit(this, 'cm-field-changed');
+    }
+
     cropImage(event) {
         event.stopPropagation();
         openModal('cm-crop-image-modal', {
             value: this.value.clone(),
             aspectRatio: this.field.aspectRatio,
-            callback: (newValue) => {
-                this.value.crop = newValue;
-                changed(this.model, this.field.id);
-                emit(this, 'cm-field-changed');
-            }
+            callback: value => this.setCrop(value)
         });
         return true;
     }
