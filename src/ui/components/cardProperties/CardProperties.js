@@ -1,3 +1,6 @@
+const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
+const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 500;
+
 function buildHTML(card) {
     if (!card) return '';
     return (
@@ -9,6 +12,11 @@ function buildHTML(card) {
 class CardProperties extends HTMLElement {
     #card;
 
+    constructor() {
+        super();
+        this.save = this.save.debounce(DEBOUNCE_TIME);
+    }
+
     connectedCallback() {
         this.setAttribute('data-form-provider', '');
         this.render();
@@ -16,7 +24,9 @@ class CardProperties extends HTMLElement {
     }
 
     bind() {
-        this.addEventListener('cm-field-changed', this.save);
+        this.addEventListener('cm-field-changed', () => {
+            this.save();
+        });
     }
 
     set card(card) {
@@ -35,10 +45,10 @@ class CardProperties extends HTMLElement {
         this.innerHTML = buildHTML(this.#card);
     }
 
-    save() {
+    async save() {
         selectedProjectCard.notes = this.#card.notes;
         selectedProjectCard.tags = this.#card.tags;
-        selectedProjectCard.save();
+        await selectedProjectCard.save();
     }
 }
 

@@ -19,6 +19,7 @@ front:
   subType: ""
   rulesText: ""
   flavorText: null
+  watermark: null
   flagLeft: ""
   flagRight: ""
   power: ""

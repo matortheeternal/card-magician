@@ -117,6 +117,11 @@ export default class TagField extends FieldComponent {
         this.textInput.value = '';
     }
 
+    inputValue(value) {
+        for (const tag of value)
+            this.addTag(tag);
+    }
+
     focusOption() {
         const options = Array.from(this.querySelectorAll('sl-option'));
         for (let i = 0; i < options.length; i++) {

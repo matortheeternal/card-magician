@@ -127,7 +127,7 @@ registerAction('open-project', openProject);
 
 registerAction('new-project', async () => {
     await newProject();
-    await setActiveCard(null);
+    await setActiveEditorCard(null);
 });
 
 registerAction('save-project', async () => {

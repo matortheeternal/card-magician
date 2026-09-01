@@ -1,10 +1,11 @@
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject,
-    expectCardData, flushCard, setCardFields, toggleFace
+    expectCardData, flushCard, flushCardProperties, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readFile } from '../shared/neutralinoAdapter.js';
+import { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
 
 describe('Persistence', () => {
     let project;
@@ -134,7 +135,10 @@ describe('Persistence', () => {
             const card = await createCard();
             await setCardFields({ name: 'Sea Gate Restoration' });
             await toggleFace('back');
-            await setCardFields({ name: 'Sea Gate, Reborn' }, 'back');
+            await setCardFields(
+                { name: 'Sea Gate, Reborn' },
+                { faceKey: 'back' }
+            );
             await flushCard();
             const path = card.files.get('data');
             const data = await YAMLSerializer.load(path);
@@ -170,11 +174,27 @@ describe('Persistence', () => {
 
     describe('card properties', () => {
         it('persists card tags', async () => {
-
+            const card = await createCard();
+            await setCardFields(
+                { tags: ['tag-a', 'tag-b'] },
+                { mode: CARD_PROPERTIES }
+            );
+            await flushCardProperties();
+            const path = card.files.get('data');
+            const data = await YAMLSerializer.load(path);
+            expectCardData(data, { tags: ['tag-a', 'tag-b'] });
         });
 
         it('persists card notes', async () => {
-
+            const card = await createCard();
+            await setCardFields(
+                { notes: 'test\nnotes\n\n123' },
+                { mode: CARD_PROPERTIES }
+            );
+            await flushCardProperties();
+            const path = card.files.get('data');
+            const data = await YAMLSerializer.load(path);
+            expectCardData(data, { notes: 'test\nnotes\n\n123' });
         });
     });
 

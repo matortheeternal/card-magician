@@ -44,11 +44,11 @@ export async function filesAreEqual(firstPath, secondPath) {
  * Sets multiple fields on the currently selected card through the card form UI.
  *
  * @param {Record<string, *>} fields
- * @param {string} faceKey
+ * @param {object} options
  */
-export async function setCardFields(fields, faceKey = 'front') {
+export async function setCardFields(fields, options = { faceKey: 'front' }) {
     const changes = Object.entries(fields).map(([field, value]) => {
-        const interactor = new FieldInteractor(field, faceKey);
+        const interactor = new FieldInteractor(field, options);
         return interactor.setValue(value);
     });
     return Promise.all(changes);
@@ -134,4 +134,9 @@ export async function toggleFace(face) {
 export async function flushCard() {
     const cardForm = document.querySelector('cm-card-form');
     await cardForm.save.flush();
+}
+
+export async function flushCardProperties() {
+    const cardProperties = document.querySelector('cm-card-properties');
+    await cardProperties.save.flush();
 }

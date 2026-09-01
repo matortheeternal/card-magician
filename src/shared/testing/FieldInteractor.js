@@ -1,9 +1,22 @@
 import { esc } from '../htmlUtils.js';
 
+const formSelectors = [
+    options => `cm-face-form[data-face-id="${esc(options.faceKey)}"]`,
+    () => `cm-card-properties`,
+];
+
+export const CARD_FACE_FORM = 0;
+export const CARD_PROPERTIES = 1;
+
 export default class FieldInteractor {
-    constructor(fieldId, faceKey) {
+    constructor(fieldId, options = {}) {
         this.fieldId = fieldId;
-        this.faceKey = faceKey;
+        const getSelector = formSelectors[options.mode] || formSelectors[0];
+        this.formSelector = getSelector?.(options);
+    }
+
+    get fieldSelector() {
+        return `form-field[field-id="${esc(this.fieldId)}"]`;
     }
 
     /**
@@ -13,8 +26,7 @@ export default class FieldInteractor {
         if (!this._formField?.parentElement)
             this._formField = null;
         return this._formField ||= document.querySelector(
-            `cm-face-form[data-face-id="${esc(this.faceKey)}"] `
-            + `form-field[field-id="${esc(this.fieldId)}"]`
+            `${this.formSelector} ${this.fieldSelector}`
         );
     }
 
@@ -27,7 +39,7 @@ export default class FieldInteractor {
      */
     get fieldElement() {
         if (!this.formField?.fieldElement)
-            throw new Error(`Field ${this.fieldId} not found.`);
+            throw new Error(`Field "${this.fieldId}" not found.`);
         return this.formField.fieldElement;
     }
 
@@ -52,7 +64,7 @@ export default class FieldInteractor {
 
     remove() {
         if (!this.formField)
-            throw new Error(`Field ${this.fieldId} does not exist.`);
+            throw new Error(`Field "${this.fieldId}" does not exist.`);
         this.formField.toggleShow(false);
     }
 }
