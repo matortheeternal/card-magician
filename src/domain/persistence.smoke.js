@@ -2,7 +2,7 @@ import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject, eventually,
     expectCardData, expectFilesToMatch, flushCard,
-    flushCardProperties, setCardFields, toggleFace
+    flushCardProperties, selectRow, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readBinaryFile, readFile } from '../shared/neutralinoAdapter.js';
@@ -449,41 +449,145 @@ describe('Persistence', () => {
         });
 
         it('removes the right files when a naming conflict exists', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'red dragon', artImage });
+            await flushCard();
+            const dataPathA = cardA.files.get('data');
+            const imagePathA = cardA.files.get('front.artImage');
+
+            const cardB = await createCard();
+            await setCardFields({ name: 'blue dragon', artImage });
+            await flushCard();
+            await setCardFields({ name: 'red dragon' });
+            await flushCard();
+            const dataPathB = cardB.files.get('data');
+            const imagePathB = cardB.files.get('front.artImage');
+
+            await executeAction('delete-selected-cards');
+            expect(await checkFileExists(dataPathB)).toBeFalse();
+            expect(await checkFileExists(imagePathB)).toBeFalse();
+            expect(await checkFileExists(dataPathA)).toBeTrue();
+            expect(await checkFileExists(imagePathA)).toBeTrue();
+            await executeAction('delete-selected-cards');
+            expect(await checkFileExists(dataPathA)).toBeFalse();
+            expect(await checkFileExists(imagePathA)).toBeFalse();
 
         });
 
         it('works with removing multiple cards at the same time', async () => {
+            const cardA = await createCard();
+            await setCardFields({ name: 'red dragon', artImage });
+            await flushCard();
+            const dataPathA = cardA.files.get('data');
+            const imagePathA = cardA.files.get('front.artImage');
 
+            const cardB = await createCard();
+            await setCardFields({ name: 'blue dragon', artImage });
+            await flushCard();
+            const dataPathB = cardB.files.get('data');
+            const imagePathB = cardB.files.get('front.artImage');
+
+            const listView = document.querySelector('cm-list-view');
+            listView.selection = [0, 1];
+            await executeAction('delete-selected-cards');
+            expect(await checkFileExists(dataPathA)).toBeFalse();
+            expect(await checkFileExists(imagePathA)).toBeFalse();
+            expect(await checkFileExists(dataPathB)).toBeFalse();
+            expect(await checkFileExists(imagePathB)).toBeFalse();
         });
 
-        it('does not rename cards named to avoid collisions', async () => {
-
-        });
-
-        it('does not recreate the card when a save was pending', async () => {
-
+        it('does not create card files when a save was pending', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'green dragon', artImage });
+            await flushCard();
+            const dataPath = card.files.get('data');
+            const imagePath = card.files.get('front.artImage');
+            await setCardFields({ superType: 'creature' });
+            const cardForm = document.querySelector('cm-card-form');
+            const flush = cardForm.save.flush;
+            await executeAction('delete-selected-cards');
+            await flush();
+            expect(await checkFileExists(dataPath)).toBeFalse();
+            expect(await checkFileExists(imagePath)).toBeFalse();
         });
     });
 
     describe('copy/paste', () => {
-        it('creates a new card', async () => {
+        let clipboardText;
 
+        beforeAll(() => {
+            spyOn(navigator.clipboard, 'writeText').and.callFake(async text => {
+                clipboardText = text;
+            });
+
+            spyOn(navigator.clipboard, 'readText').and.callFake(async () => {
+                return clipboardText;
+            });
+        });
+
+        beforeEach(() => {
+            clipboardText = '';
+        });
+
+        it('creates a new card', async () => {
+            await createCard();
+            await setCardFields({ name: 'purple hippo' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
+
+            const path = selectedProjectCard.files.get('data');
+            expect(await checkFileExists(path)).toBeTrue();
+            expect(path).toMatch(/purple hippo-2.yml$/);
         });
 
         it('can create multiple cards', async () => {
+            await createCard();
+            await setCardFields({ name: 'purple hippo' });
+            await createCard();
+            await setCardFields({ name: 'red rooster' });
+            await flushCard();
 
-        });
-
-        it('copies all field values', async () => {
-
+            const listView = document.querySelector('cm-list-view');
+            listView.selection = [0, 1];
+            await executeAction('copy');
+            await executeAction('paste');
+            for (const card of activeProject.cards) {
+                const path = card.files.get('data');
+                expect(await checkFileExists(path)).toBeTrue();
+            }
         });
 
         it('saves image to a new file', async () => {
+            await createCard();
+            await setCardFields({ name: 'cheesestick', artImage });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
 
+            const files = selectedProjectCard.files;
+            expect(files.has('front.artImage')).toBeTrue();
+            const path = files.get('front.artImage');
+            expect(await checkFileExists(path)).toBeTrue();
+            expect(path).toMatch(/cheesestick-2.jpg$/);
         });
 
         it('does not change pasted card when source is changed later', async () => {
+            await createCard();
+            await setCardFields({ name: 'carrot' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
+            const pastedCard = selectedProjectCard;
+            selectRow(0);
+            await eventually(() => pastedCard !== selectedProjectCard);
+            await setCardFields({ superType: 'artifact', subType: 'food' });
+            await flushCard();
 
+            expect(pastedCard.front.superType).toEqual('');
+            expect(pastedCard.front.subType).toEqual('');
+            expect(selectedProjectCard.front.superType).toEqual('artifact');
+            expect(selectedProjectCard.front.subType).toEqual('food');
         });
 
         it('does not change the source card when pasted card is changed', async () => {

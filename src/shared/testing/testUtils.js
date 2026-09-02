@@ -150,3 +150,9 @@ export async function flushCardProperties() {
     const cardProperties = document.querySelector('cm-card-properties');
     await cardProperties.save.flush();
 }
+
+export function selectRow(index) {
+    const rows = document.querySelectorAll('cm-list-view tr');
+    const row = rows[index + 1];
+    row.click();
+}
