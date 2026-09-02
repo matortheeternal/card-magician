@@ -47,9 +47,9 @@ export default class SetView extends ReactiveComponent {
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
         registerAction('paste', () => this.pasteCard());
-        registerAction('cut', () => {
-            this.copyCard();
-            this.deleteSelectedCards();
+        registerAction('cut', async () => {
+            await this.copyCard();
+            await this.deleteSelectedCards();
         });
     }
 

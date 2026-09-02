@@ -7,7 +7,7 @@
 :host > div {
     display: flex;
     flex-direction: column;
-    color: black;
+    color: #222;
     position: relative;
     width: 375px;
     height: 523px;
@@ -45,6 +45,7 @@ auto-fit-line {
     padding: 12px;
     padding-bottom: 2px;
     height: 40px;
+    color: #181818;
 }
 
 .frame-node .header {
@@ -56,18 +57,20 @@ auto-fit-line {
     justify-content: space-between;
     position: relative;
     z-index: 2;
-    padding: 4px 14px;
+    padding: 4px 10px 4px 14px;
     height: 28px;
     align-items: center;
     margin: 1.5px 3px;
 }
 
 div.footer {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: end;
+    align-items: start;
+    height: 25px;
     padding: 0 10px;
-    position: relative;
+    margin-bottom: -5px;
     z-index: 2;
 }
