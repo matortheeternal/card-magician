@@ -1,13 +1,14 @@
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
-    createCard, createTestProject, deleteTestProject,
-    expectCardData,
-    expectFilesToMatch, flushCard, flushCardProperties, setCardFields, toggleFace
+    createCard, createTestProject, deleteTestProject, eventually,
+    expectCardData, expectFilesToMatch, flushCard,
+    flushCardProperties, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readBinaryFile, readFile } from '../shared/neutralinoAdapter.js';
 import FieldInteractor, { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
 import ImageCrop from './card/ImageCrop.js';
+import { executeAction } from '../ui/systems/actionSystem.js';
 
 describe('Persistence', () => {
     let project;
@@ -409,17 +410,42 @@ describe('Persistence', () => {
         });
 
         it('renames card image files when the card name changes', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'potato', artImage });
+            await flushCard();
+            const pathBefore = card.files.get('front.artImage');
 
+            await setCardFields({ name: 'fish' });
+            await flushCard();
+            const pathAfter = card.files.get('front.artImage');
+            expect(pathBefore).not.toEqual(pathAfter);
+            expect(pathAfter).toMatch(/fish.jpg$/);
         });
     });
 
     describe('removal', () => {
         it('removes the card data file when card is deleted', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'red dragon' });
+            await flushCard();
+            const path = card.files.get('data');
+            await executeAction('delete-selected-cards');
 
+            expect(path).toMatch(/red dragon.yml$/);
+            const exists = await checkFileExists(path);
+            expect(exists).toBeFalse();
         });
 
         it('removes the card image files when card is deleted', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'red dragon', artImage });
+            await flushCard();
+            const path = card.files.get('front.artImage');
+            await executeAction('delete-selected-cards');
 
+            expect(path).toMatch(/red dragon.jpg$/);
+            const exists = await checkFileExists(path);
+            expect(exists).toBeFalse();
         });
 
         it('removes the right files when a naming conflict exists', async () => {
