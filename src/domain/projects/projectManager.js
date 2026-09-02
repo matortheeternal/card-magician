@@ -52,7 +52,8 @@ export function setActiveProject(project) {
 export async function newProject() {
     log('user').info('new project');
     await withNewContext(() => {
-        window.activeProject = new activeGame.Project();
+        const project = new activeGame.Project();
+        setActiveProject(project);
     });
 }
 
