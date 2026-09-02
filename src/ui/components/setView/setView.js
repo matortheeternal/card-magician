@@ -107,20 +107,20 @@ export default class SetView extends ReactiveComponent {
         this.updateStatus();
     }
 
-    deleteSelectedCards() {
+    async deleteSelectedCards() {
         log('user').info('delete selected cards');
-        this.listView.selection.forEach(r => {
+        for (const r of this.listView.selection) {
             const index = activeProject.cards.indexOf(r.original);
             if (index === -1) {
                 log('state').warn(`Couldn't find card:`, r.original);
                 return;
             }
-            r.original.deleteFiles();
+            await r.original.deleteFiles();
             activeProject.cards.splice(index, 1);
             changed(activeProject, 'cards');
             this.listView.selection = [index - 1];
             selectCard(activeProject.cards[index - 1]);
-        });
+        }
     }
 
     async addCard() {
