@@ -94,6 +94,11 @@ export async function moveFile(source, destination) {
     return await Neutralino.filesystem.move(source, destination);
 }
 
+export async function copyFile(source, destination) {
+    log('fs').debug('copyFile', source, destination);
+    return await Neutralino.filesystem.copy(source, destination);
+}
+
 export async function createDirectory(path) {
     log('fs').debug('createDirectory', path);
     try {

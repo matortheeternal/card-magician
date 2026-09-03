@@ -1,4 +1,5 @@
 import {
+    copyFile,
     getJoinedPath,
     moveFile,
     rmrf
@@ -50,7 +51,7 @@ export default class CardFiles {
     async getCanonicalPath(key) {
         const def = this.resolveDefinition(key);
         const filename = def.getFilename(this.card);
-        return getJoinedPath(this.cardsFolderPath, filename);
+        return await getJoinedPath(this.cardsFolderPath, filename);
     }
 
     async moveToCanonicalPath(key) {
@@ -85,5 +86,24 @@ export default class CardFiles {
         const def = this.definitions.find(def => def.key === key);
         if (def) return def;
         throw new Error(`Unknown card file definition: ${key}`);
+    }
+
+    copy() {
+        const obj = {};
+        for (const key of this.paths.keys()) {
+            if (key === 'data') continue;
+            obj[key] = this.paths.get(key);
+        }
+        return obj;
+    }
+
+    async paste(files) {
+        for (const [key, value] of Object.entries(files)) {
+            const newPath = await this.getCanonicalPath(key);
+            await copyFile(value, newPath);
+            const def = this.resolveDefinition(key);
+            this.paths.set(key, newPath);
+            def.setFieldValue(this.card, newPath);
+        }
     }
 }

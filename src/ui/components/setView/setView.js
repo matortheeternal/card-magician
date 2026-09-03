@@ -10,6 +10,7 @@ import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
 import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
+import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -139,12 +140,15 @@ export default class SetView extends ReactiveComponent {
     async copyCard() {
         log('user').info('copy card');
         const cards = [];
-        this.listView.selection.forEach(r => {
-            cards.push(r.original);
-        });
+        const files = [];
+        for (const row of this.listView.selection) {
+            const card = row.original;
+            cards.push(card);
+            files.push(card.files.copy());
+        }
 
         const serializer = new JSONSerializer();
-        const text = await serializer.serialize({ cards });
+        const text = await serializer.serialize({ cards, files });
         await navigator.clipboard.writeText(text);
     }
 
@@ -156,17 +160,22 @@ export default class SetView extends ReactiveComponent {
             const clipboard = await serializer.deserialize(clipboardText) || [];
             if (!clipboard?.cards?.length) return;
 
-            let indexToSelect = -1;
-            for (const cardData of clipboard.cards) {
-                const card = new activeGame.Card(cardData);
-                await card.save(true);
-                indexToSelect = activeProject.cards.push(card) - 1;
+            const zipped = clipboard.cards.zip(clipboard.files);
+            for (const [data, files] of zipped) {
+                const card = new activeGame.Card(data);
+                updateBaseName(card);
+                await card.files.paste(files);
+                await card.saveData();
+                activeProject.cards.push(card);
             }
-            if (indexToSelect === -1) return;
             changed(activeProject, 'cards');
-            this.listView.selection = [indexToSelect];
-            const cardToSelect = activeProject.cards[indexToSelect];
-            await selectCard(cardToSelect);
+            const lastCard = activeProject.cards.slice(-1)[0];
+            const index = this.listView.activeRows.findIndex(row => {
+                return row.original === lastCard;
+            });
+            if (index === -1) return;
+            this.listView.selection = [index];
+            await selectCard(lastCard);
         } catch (e) {
             log('user').debug('Paste failed', e);
         }
