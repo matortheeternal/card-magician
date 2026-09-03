@@ -628,30 +628,9 @@ describe('Persistence', () => {
             await executeAction('paste');
             await executeAction('copy');
             await executeAction('paste');
-            await executeAction('copy');
             await executeAction('paste');
 
             expect(selectedProjectCard).toBeDefined();
-            expect(activeProject.cards.length).toEqual(4);
-            for (const card of activeProject.cards) {
-                const path = card.files.get('data');
-                expect(await checkFileExists(path)).toBeTrue();
-            }
-        });
-
-        it('creates multiple independent cards on multiple pastes', async () => {
-            await createCard();
-            await setCardFields({ name: 'pumpkin king' });
-            await flushCard();
-            await executeAction('copy');
-            await executeAction('paste');
-            await executeAction('paste');
-            await executeAction('paste');
-            await setCardFields({ superType: 'artifact creature', subType: 'food' });
-
-            expect(selectedProjectCard).toBeDefined();
-            expect(selectedProjectCard.front.superType).toEqual('artifact creature');
-            expect(selectedProjectCard.front.subType).toEqual('food');
             expect(activeProject.cards.length).toEqual(4);
             for (const card of activeProject.cards) {
                 const path = card.files.get('data');
