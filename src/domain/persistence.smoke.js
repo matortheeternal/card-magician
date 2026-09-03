@@ -573,37 +573,90 @@ describe('Persistence', () => {
         });
 
         it('does not change pasted card when source is changed later', async () => {
-            await createCard();
+            const card = await createCard();
             await setCardFields({ name: 'carrot' });
             await flushCard();
             await executeAction('copy');
             await executeAction('paste');
             const pastedCard = selectedProjectCard;
-            selectRow(0);
-            await eventually(() => pastedCard !== selectedProjectCard);
+
+            await executeAction('select-card', card);
             await setCardFields({ superType: 'artifact', subType: 'food' });
             await flushCard();
 
             expect(pastedCard.front.superType).toEqual('');
             expect(pastedCard.front.subType).toEqual('');
-            expect(selectedProjectCard.front.superType).toEqual('artifact');
-            expect(selectedProjectCard.front.subType).toEqual('food');
+            expect(card.front.superType).toEqual('artifact');
+            expect(card.front.subType).toEqual('food');
         });
 
         it('does not change the source card when pasted card is changed', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'carrot' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
+            const pastedCard = selectedProjectCard;
+            await setCardFields({ superType: 'artifact', subType: 'food' });
+            await flushCard();
 
+            expect(card.front.superType).toEqual('');
+            expect(card.front.subType).toEqual('');
+            expect(pastedCard.front.superType).toEqual('artifact');
+            expect(pastedCard.front.subType).toEqual('food');
         });
 
         it('creates a card after source is removed', async () => {
+            await createCard();
+            await setCardFields({ name: 'carrot' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('delete-selected-cards');
+            await executeAction('paste');
+            expect(selectedProjectCard).toBeDefined();
 
+            const path = selectedProjectCard.files.get('data');
+            expect(path).toMatch(/carrot.yml$/);
+            expect(await checkFileExists(path)).toBeTrue();
         });
 
         it('works with copying a pasted card', async () => {
+            await createCard();
+            await setCardFields({ name: 'pumpkin king' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
+            await executeAction('copy');
+            await executeAction('paste');
+            await executeAction('copy');
+            await executeAction('paste');
 
+            expect(selectedProjectCard).toBeDefined();
+            expect(activeProject.cards.length).toEqual(4);
+            for (const card of activeProject.cards) {
+                const path = card.files.get('data');
+                expect(await checkFileExists(path)).toBeTrue();
+            }
         });
 
         it('creates multiple independent cards on multiple pastes', async () => {
+            await createCard();
+            await setCardFields({ name: 'pumpkin king' });
+            await flushCard();
+            await executeAction('copy');
+            await executeAction('paste');
+            await executeAction('paste');
+            await executeAction('paste');
+            await setCardFields({ superType: 'artifact creature', subType: 'food' });
 
+            expect(selectedProjectCard).toBeDefined();
+            expect(selectedProjectCard.front.superType).toEqual('artifact creature');
+            expect(selectedProjectCard.front.subType).toEqual('food');
+            expect(activeProject.cards.length).toEqual(4);
+            for (const card of activeProject.cards) {
+                const path = card.files.get('data');
+                expect(await checkFileExists(path)).toBeTrue();
+            }
         });
     });
 });

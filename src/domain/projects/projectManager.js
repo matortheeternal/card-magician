@@ -136,3 +136,4 @@ registerAction('save-project', async () => {
 });
 
 registerAction('save-project-as', saveAs);
+registerAction('select-card', selectCard);
