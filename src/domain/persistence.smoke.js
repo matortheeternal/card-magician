@@ -1,8 +1,8 @@
 import { checkFileExists } from '../shared/fsUtils.js';
 import {
-    createCard, createTestProject, deleteTestProject, eventually,
+    createCard, createTestProject, deleteTestProject,
     expectCardData, expectFilesToMatch, flushCard,
-    flushCardProperties, selectRow, setCardFields, toggleFace
+    flushCardProperties, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
 import { readBinaryFile, readFile } from '../shared/neutralinoAdapter.js';
