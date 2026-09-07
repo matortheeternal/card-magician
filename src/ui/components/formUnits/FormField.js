@@ -81,19 +81,16 @@ export default class FormField extends ReactiveComponent {
     generateFieldElement() {
         const Component = resolveFieldComponent(this.field);
         this.fieldElement = document.createElement(Component.tagName);
-        this.fieldElement.field = this.field;
-        this.fieldElement.model = this.model;
-        return this.fieldElement;
-    }
-
-    updateDisplay(show) {
-        toggleDisplay(show, this.fieldElement);
+        this.fieldElement.setModelAndField(this.model, this.field);
+        this.insertBefore(this.fieldElement, this.toggle || null);
     }
 
     render() {
         if (this.error) return this.renderError();
         this.innerHTML = '';
-        this.appendChild(this.generateFieldElement());
+        this.fieldElement = null;
+        this.toggle = null;
+        if (this.show || !this.optional) this.generateFieldElement();
         if (!this.optional) return;
         this.toggle = FormToggle.create(this, this.label);
         this.appendChild(this.toggle);
@@ -104,6 +101,9 @@ export default class FormField extends ReactiveComponent {
         this.model[this.fieldId] = show
             ? getInitialValue(this.field)
             : null;
+        if (!this.fieldElement)
+            this.generateFieldElement();
+        toggleDisplay(show, this.fieldElement);
         changed(this.model, this.fieldId);
         emit(this, 'cm-field-changed');
     }

@@ -14,30 +14,20 @@ export default class FieldComponent extends ReactiveComponent {
         this.on(this.eventKey, event => this.onChange(event));
     }
 
-    watchValue() {
-        if (!this.model || !this.field) return;
-        this.watch('value', this.model, this.field.id, () => this.loadValue());
-    }
-
     get field() {
         return this.#field;
-    }
-
-    set field(newValue) {
-        this.#field = newValue;
-        this.render();
-        this.watch('field', newValue, '', () => this.render());
-        this.watchValue();
     }
 
     get model() {
         return this.#model;
     }
 
-    set model(newValue) {
-        this.#model = newValue;
+    setModelAndField(model, field) {
+        this.#model = model;
+        this.#field = field;
         this.render();
-        this.watchValue();
+        this.watch('field', field, '', () => this.render());
+        this.watch('value', this.model, this.field.id, () => this.loadValue());
     }
 
     /**

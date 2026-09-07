@@ -47,7 +47,7 @@ export default class CardMagicianExporter {
      * @returns {string} - Fully qualified path for the file.
      */
     resolvePath(localPath) {
-        return ['exporters', this.exporterPath, localPath].join('/');
+        return [this.exporterPath, localPath].join('/');
     }
 
     /**
@@ -57,7 +57,7 @@ export default class CardMagicianExporter {
      * @returns {string} - Fully qualified path for the asset.
      */
     resolveAsset(assetPath) {
-        return ['exporters', this.exporterPath, 'assets', assetPath].join('/');
+        return [this.exporterPath, 'assets', assetPath].join('/');
     }
 
     /**
@@ -68,7 +68,7 @@ export default class CardMagicianExporter {
      * @returns {Promise<string>} Resolves with the file's text content.
      */
     async loadFile(localPath) {
-        return loadTextFile(this.resolvePath(localPath));
+        return await loadTextFile(this.resolvePath(localPath));
     }
 
     /**

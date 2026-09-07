@@ -1,9 +1,22 @@
 local manifest = nil
 local cardsById = {}
 local slotCollators = {}
-local savedStateToRestore = ''
 
 -- UTILS --
+function createTransform(rotY, rotZ)
+    return {
+        posX = 0,
+        posY = 0,
+        posZ = 0,
+        rotX = 0,
+        rotY = rotY or 0,
+        rotZ = rotZ or 0,
+        scaleX = 1,
+        scaleY = 1,
+        scaleZ = 1
+    }
+end
+
 function createCustomDeckEntry(card)
     return {
         FaceURL = card.faceUrl,
@@ -20,11 +33,9 @@ end
 
 function copyValues(values)
     local copy = {}
-
     for index, value in ipairs(values) do
         copy[index] = value
     end
-
     return copy
 end
 
@@ -59,14 +70,13 @@ function nextWeightedCard(collator)
     end
 
     local selectedChild = nil
-    local selectedAccumulator = nil
 
     for _, child in ipairs(collator.children) do
         child.accumulator = child.accumulator + child.weight
 
-        if selectedChild == nil or child.accumulator > selectedAccumulator then
+        if not selectedChild
+            or child.accumulator > selectedChild.accumulator then
             selectedChild = child
-            selectedAccumulator = child.accumulator
         end
     end
 
@@ -101,7 +111,7 @@ end
 function createLeafCollator(source)
     return {
         kind = 'leaf',
-        source = copyValues(source),
+        source = source,
         order = shuffledCopy(source),
         cursor = 1
     }
@@ -148,12 +158,10 @@ function createRunsCollator(slot)
     local poolChildren = {}
 
     for _, pool in ipairs(slot.pools) do
-        if pool.size > 0 then
-            table.insert(poolChildren, {
-                weight = pool.weight * pool.size,
-                collator = createRunPoolCollator(pool)
-            })
-        end
+        table.insert(poolChildren, {
+            weight = pool.weight * pool.size,
+            collator = createRunPoolCollator(pool)
+        })
     end
 
     return createWeightedCollator(poolChildren)
@@ -163,7 +171,7 @@ function createSheetCollator(slot)
     local sheet = {}
 
     for _, pool in ipairs(slot.pools) do
-        for copyIndex = 1, pool.weight do
+        for _ = 1, pool.weight do
             appendValues(sheet, pool.cardIds)
         end
     end
@@ -186,20 +194,6 @@ function initializeCollators()
 end
 
 -- SPAWNING --
-function createCardTransform()
-    return {
-        posX = 0,
-        posY = 0,
-        posZ = 0,
-        rotX = 0,
-        rotY = 180,
-        rotZ = 180,
-        scaleX = 1,
-        scaleY = 1,
-        scaleZ = 1
-    }
-end
-
 function createSingleCardData(cardId)
     local card = cardsById[cardId]
 
@@ -210,7 +204,7 @@ function createSingleCardData(cardId)
         CustomDeck = {
             ['1'] = createCustomDeckEntry(card)
         },
-        Transform = createCardTransform()
+        Transform = createTransform(180, 180)
     }
 end
 
@@ -221,7 +215,6 @@ function createDeckData(cardIds, nickname)
 
     for index, cardId in ipairs(cardIds) do
         local ttsCardId = index * 100
-        local deckKey = tostring(index)
         local card = cardsById[cardId]
 
         table.insert(deckIds, ttsCardId)
@@ -229,10 +222,10 @@ function createDeckData(cardIds, nickname)
             CardID = ttsCardId,
             Name = 'Card',
             Nickname = card.nickname,
-            Transform = createCardTransform()
+            Transform = createTransform(180, 180)
         })
 
-        customDeck[deckKey] = createCustomDeckEntry(card)
+        customDeck[tostring(index)] = createCustomDeckEntry(card)
     end
 
     return {
@@ -241,8 +234,15 @@ function createDeckData(cardIds, nickname)
         ContainedObjects = containedObjects,
         DeckIDs = deckIds,
         CustomDeck = customDeck,
-        Transform = createCardTransform()
+        Transform = createTransform(180, 180)
     }
+end
+
+function createCardCollectionData(cardIds, nickname)
+    if #cardIds == 1 then
+        return createSingleCardData(cardIds[1])
+    end
+    return createDeckData(cardIds, nickname)
 end
 
 function spawnCardCollection(cardIds, nickname, position, rotation)
@@ -250,34 +250,11 @@ function spawnCardCollection(cardIds, nickname, position, rotation)
         return
     end
 
-    if #cardIds == 1 then
-        spawnObjectData({
-            data = createSingleCardData(cardIds[1]),
-            position = position,
-            rotation = rotation
-        })
-        return
-    end
-
     spawnObjectData({
-        data = createDeckData(cardIds, nickname),
+        data = createCardCollectionData(cardIds, nickname),
         position = position,
         rotation = rotation
     })
-end
-
-function createBoosterTransform()
-    return {
-        posX = 0,
-        posY = 0,
-        posZ = 0,
-        rotX = 0,
-        rotY = 0,
-        rotZ = 0,
-        scaleX = 1,
-        scaleY = 1,
-        scaleZ = 1
-    }
 end
 
 function createBoosterData()
@@ -288,49 +265,30 @@ function createBoosterData()
         CustomMesh = {
             MeshURL = boosterModelUrl,
             DiffuseURL = boosterTextureUrl,
-            NormalURL = '',
-            ColliderURL = '',
             Convex = true,
             MaterialIndex = 0,
             TypeIndex = 6,
             CustomShader = {
-                SpecularColor = {
-                    r = 1,
-                    g = 1,
-                    b = 1
-                },
+                SpecularColor = {r = 1, g = 1, b = 1},
                 SpecularIntensity = 0.2,
-                SpecularSharpness = 7.0,
+                SpecularSharpness = 7,
                 FresnelStrength = 0.4
-            },
-            CastShadows = true
+            }
         },
-        Bag = {
-            Order = 0
-        },
+        Bag = {Order = 0},
         LuaScript = "function tryObjectEnter(object)\\n"
-        .. "    if object.hasTag('BoosterPack') then\\n"
-        .. "        return false\\n"
-        .. "    end\\n"
-        .. "\\n"
-        .. "    return true\\n"
-        .. "end",
-        Transform = createBoosterTransform()
+            .. "    return not object.hasTag('BoosterPack')\\n"
+            .. "end",
+        Transform = createTransform()
     }
 end
 
 function spawnPackContents(cardIds, position, boosterObject)
-    local nickname = manifest.setCode .. ' Booster Pack'
-    local data = nil
-
-    if #cardIds == 1 then
-        data = createSingleCardData(cardIds[1])
-    else
-        data = createDeckData(cardIds, nickname)
-    end
-
     spawnObjectData({
-        data = data,
+        data = createCardCollectionData(
+            cardIds,
+            manifest.setCode .. ' Booster Pack'
+        ),
         position = {
             x = position.x,
             y = position.y + 2,
@@ -345,7 +303,6 @@ end
 
 function spawnPack(position, rotation)
     local cardIds = createPackCardIds()
-
     if #cardIds == 0 then
         return
     end
@@ -361,14 +318,14 @@ function spawnPack(position, rotation)
 end
 
 function spawnPackNearGenerator()
-    local position = self.positionToWorld({4, 2, 0})
-    local rotation = uprightRotation(self.getRotation())
-    spawnPack(position, rotation)
+    spawnPack(
+        self.positionToWorld({4, 2, 0}),
+        uprightRotation(self.getRotation())
+    )
 end
 
 function dealPacks(requestingPlayerColor)
     local seatedPlayers = getSeatedPlayers()
-
     if #seatedPlayers == 0 then
         printToColor(
             'No seated players found.',
@@ -385,13 +342,13 @@ function dealPacks(requestingPlayerColor)
 
         if player.getHandCount() > 0 then
             local hand = player.getHandTransform()
-            local position = {
+
+            spawnPack({
                 x = hand.position.x + hand.forward.x * 10,
                 y = 2,
                 z = hand.position.z + hand.forward.z * 10
-            }
+            }, uprightRotation(hand.rotation))
 
-            spawnPack(position, uprightRotation(hand.rotation))
             dealt = dealt + 1
         end
     end
@@ -413,14 +370,11 @@ function spawnExtrasNearGenerator(playerColor)
         return
     end
 
-    local position = self.positionToWorld({-4, 2, 0})
-    local rotation = faceDownRotation(self.getRotation())
-
     spawnCardCollection(
         manifest.extras,
         manifest.setCode .. ' Extras',
-        position,
-        rotation
+        self.positionToWorld({-4, 2, 0}),
+        faceDownRotation(self.getRotation())
     )
 end
 
@@ -428,7 +382,7 @@ function createPackCardIds()
     local cardIds = {}
 
     for index, slot in ipairs(manifest.packSlots) do
-        for drawIndex = 1, slot.count do
+        for _ = 1, slot.count do
             local cardId = nextCard(slotCollators[index])
             if cardId ~= nil then
                 table.insert(cardIds, cardId)
@@ -436,32 +390,34 @@ function createPackCardIds()
         end
     end
 
-    shuffle(cardIds)
     return cardIds
 end
 
 -- UI --
-function clickCreatePack(object, playerColor, altClick)
+function createButton(label, clickFunction, z, tooltip)
+    self.createButton({
+        click_function = clickFunction,
+        function_owner = self,
+        label = label,
+        position = {0, 0.65, z},
+        width = 1050,
+        height = 200,
+        font_size = 130,
+        color = {0.15, 0.15, 0.15},
+        font_color = {1, 1, 1},
+        tooltip = tooltip
+    })
+end
+
+function clickCreatePack()
     spawnPackNearGenerator()
 end
 
-function clickDealPacks(object, playerColor, altClick)
+function clickDealPacks(_, playerColor)
     dealPacks(playerColor)
 end
 
-function clickSpawnExtras(object, playerColor, altClick)
-    spawnExtrasNearGenerator(playerColor)
-end
-
-function menuCreatePack(playerColor, position, object)
-    spawnPackNearGenerator()
-end
-
-function menuDealPacks(playerColor, position, object)
-    dealPacks(playerColor)
-end
-
-function menuSpawnExtras(playerColor, position, object)
+function clickSpawnExtras(_, playerColor)
     spawnExtrasNearGenerator(playerColor)
 end
 
@@ -469,64 +425,45 @@ function createUi()
     self.clearButtons()
     self.clearContextMenu()
 
-    self.createButton({
-        click_function = 'clickCreatePack',
-        function_owner = self,
-        label = 'Create Pack',
-        position = {0, 0.65, -0.45},
-        rotation = {0, 0, 0},
-        width = 1050,
-        height = 200,
-        font_size = 130,
-        color = {0.15, 0.15, 0.15},
-        font_color = {1, 1, 1},
-        tooltip = 'Spawn one collated booster pack'
-    })
+    createButton(
+        'Create Pack',
+        'clickCreatePack',
+        -0.45,
+        'Spawn one collated booster pack'
+    )
 
-    self.createButton({
-        click_function = 'clickDealPacks',
-        function_owner = self,
-        label = 'Deal Packs',
-        position = {0, 0.65, 0},
-        rotation = {0, 0, 0},
-        width = 1050,
-        height = 200,
-        font_size = 130,
-        color = {0.15, 0.15, 0.15},
-        font_color = {1, 1, 1},
-        tooltip = 'Spawn one pack in front of each seated player'
-    })
+    createButton(
+        'Deal Packs',
+        'clickDealPacks',
+        0,
+        'Spawn one pack in front of each seated player'
+    )
 
-    self.createButton({
-        click_function = 'clickSpawnExtras',
-        function_owner = self,
-        label = 'Spawn Extras',
-        position = {0, 0.65, 0.45},
-        rotation = {0, 0, 0},
-        width = 1050,
-        height = 200,
-        font_size = 130,
-        color = {0.15, 0.15, 0.15},
-        font_color = {1, 1, 1},
-        tooltip = 'Spawn cards not used by booster generation'
-    })
+    createButton(
+        'Spawn Extras',
+        'clickSpawnExtras',
+        0.45,
+        'Spawn cards not used by booster generation'
+    )
 
-    self.addContextMenuItem('Create Pack', menuCreatePack)
-    self.addContextMenuItem('Deal Packs', menuDealPacks)
-    self.addContextMenuItem('Spawn Extras', menuSpawnExtras)
+    self.addContextMenuItem('Create Pack', function()
+        spawnPackNearGenerator()
+    end)
+
+    self.addContextMenuItem('Deal Packs', function(playerColor)
+        dealPacks(playerColor)
+    end)
+
+    self.addContextMenuItem('Spawn Extras', function(playerColor)
+        spawnExtrasNearGenerator(playerColor)
+    end)
 end
 
 -- INITIALIZATION --
 function preloadAssets()
     local assets = {
-        {
-            name = 'card_back',
-            url = manifest.backUrl
-        },
-        {
-            name = 'booster_texture',
-            url = boosterTextureUrl
-        }
+        {name = 'card_back', url = manifest.backUrl},
+        {name = 'booster_texture', url = boosterTextureUrl}
     }
 
     for _, card in ipairs(manifest.cards) do
@@ -546,31 +483,25 @@ function buildCardIndex()
     end
 end
 
+function reportManifestError(message)
+    broadcastToAll('Failed to load booster manifest: ' .. message, {1, 0.3, 0.3})
+end
+
 function loadManifest()
     WebRequest.get(manifestUrl, function(request)
         if request.is_error then
-            broadcastToAll(
-                'Failed to load booster manifest: ' .. request.error,
-                {1, 0.3, 0.3}
-            )
+            reportManifestError(request.error)
             return
         end
 
         if request.response_code < 200 or request.response_code >= 300 then
-            broadcastToAll(
-                'Failed to load booster manifest: HTTP '
-                .. request.response_code,
-                {1, 0.3, 0.3}
-            )
+            reportManifestError('HTTP ' .. request.response_code)
             return
         end
 
         local ok, decodedManifest = pcall(JSON.decode, request.text)
         if not ok or decodedManifest == nil then
-            broadcastToAll(
-                'Failed to decode booster manifest.',
-                {1, 0.3, 0.3}
-            )
+            reportManifestError('invalid JSON')
             return
         end
 

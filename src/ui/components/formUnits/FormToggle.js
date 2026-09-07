@@ -53,7 +53,6 @@ export default class FormToggle extends ReactiveComponent {
     }
 
     render() {
-        this.target.updateDisplay(this.target.show);
         this.innerHTML = this.target.show
             ? removeButtonHTML(this.label)
             : addButtonHTML(this.label);
