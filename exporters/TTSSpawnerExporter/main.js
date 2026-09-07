@@ -1,9 +1,9 @@
 import SpawnerArtifact from './src/SpawnerArtifact.js';
 import PackArtifact from './src/PackArtifact.js';
 
-const L = localize('tts-exporter');
+const L = localize('tts-spawner-exporter');
 
-export default class TTSExporter extends CardMagicianExporter {
+export default class TTSSpawnerExporter extends CardMagicianExporter {
     saveOutputs = true;
 
     static get options() {
@@ -22,7 +22,8 @@ export default class TTSExporter extends CardMagicianExporter {
 
     async *produce() {
         let filePath = `${window.activeProject.setCode}-spawner.json`;
-        let artifact = new SpawnerArtifact(this.config);
+        const spawnerCode = await this.loadFile('src/spawner.lua');
+        let artifact = new SpawnerArtifact(this.config, spawnerCode);
         yield { filePath, artifact };
         filePath = `pack.json`;
         artifact = new PackArtifact(this.config);

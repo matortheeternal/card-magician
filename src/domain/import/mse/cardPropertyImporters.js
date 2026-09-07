@@ -36,13 +36,13 @@ const colorSymbols = {
 };
 
 const rarity = {
-    'basic land': 'common',
+    'basic land': 'land',
     common: 'common',
     uncommon: 'uncommon',
     rare: 'rare',
     'mythic rare': 'mythic',
     special: 'special',
-    masterpiece: 'mythic',
+    masterpiece: 'special',
 };
 
 export const tokenPropImporters = {

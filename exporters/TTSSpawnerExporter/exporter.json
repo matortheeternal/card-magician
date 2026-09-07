@@ -1,6 +1,6 @@
 {
-  "id": "TTSExporter",
-  "label": "Tabletop Simulator",
+  "id": "TTSSpawnerExporter",
+  "label": "Tabletop Simulator (Spawner)",
   "folder": "tts",
   "description": "Exports a tabletop simulator pack spawner object for the set.",
   "version": "0.0"

@@ -1,11 +1,10 @@
-import createLuaScript from './createLuaScript.js';
-
 export default class SpawnerArtifact extends ExportArtifact {
-    constructor(config) {
+    constructor(config, spawnerCode) {
         super();
         this.ttsBasePath = config.ttsBasePath.endsWith('/')
             ? config.ttsBasePath
             : config.ttsBasePath + '/';
+        this.spawnerCode = spawnerCode;
     }
 
     createTransform() {
@@ -20,6 +19,18 @@ export default class SpawnerArtifact extends ExportArtifact {
             scaleY: 0.3,
             scaleZ: 2.4
         };
+    }
+
+    createLuaScript() {
+        const manifestUrl = JSON.stringify(this.ttsBasePath + 'pack.json');
+        const boosterModelUrl = JSON.stringify(this.ttsBasePath + 'booster.obj');
+        const boosterTextureUrl = JSON.stringify(this.ttsBasePath + 'booster.png');
+        return (
+            `local manifestUrl = ${manifestUrl}
+            local boosterModelUrl = ${boosterModelUrl}
+            local boosterTextureUrl = ${boosterTextureUrl}
+            ${this.spawnerCode}`
+        );
     }
 
     createGeneratorObject() {
@@ -38,16 +49,14 @@ export default class SpawnerArtifact extends ExportArtifact {
             Autoraise: true,
             Sticky: true,
             Tooltip: true,
-            LuaScript: createLuaScript(this.ttsBasePath),
+            LuaScript: this.createLuaScript(),
             LuaScriptState: ''
         };
     }
 
-    get objectStates() {
-        return [this.createGeneratorObject()];
-    }
-
     async toBuffer() {
-        return JSON.stringify({ ObjectStates: this.objectStates });
+        return JSON.stringify({
+            ObjectStates: [this.createGeneratorObject()]
+        });
     }
 }

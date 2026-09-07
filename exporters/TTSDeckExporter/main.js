@@ -1,8 +1,8 @@
 import TTSArtifact from './src/TTSArtifact.js';
 
-const L = localize('tts-exporter');
+const L = localize('tts-deck-exporter');
 
-export default class TTSExporter extends CardMagicianExporter {
+export default class TTSDeckExporter extends CardMagicianExporter {
     saveOutputs = true;
 
     static get options() {
