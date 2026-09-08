@@ -62,6 +62,16 @@
     }
 }
 
+.frame-inverted {
+    .header, .type-line, .text-box {
+        color: white;
+    }
+
+    module-container[module="Text"] {
+        padding-bottom: 10px;
+    }
+}
+
 .text-box {
     position: relative;
 }

@@ -4,6 +4,7 @@ import StandardFrame from './src/StandardFrame.js';
 import ClearFrame from './src/ClearFrame.js';
 import FNMPromoFrame from './src/FNMPromoFrame.js';
 import proxyAutoOptions from './src/proxyAutoOptions.js';
+import InvertedFrame from './src/InvertedFrame.js';
 
 export default class FrameModule extends CardMagicianModule {
     #options = null;
@@ -12,6 +13,7 @@ export default class FrameModule extends CardMagicianModule {
         card.frames = [
             DevoidFrame,
             ClearFrame,
+            InvertedFrame,
             FNMPromoFrame,
             StandardFrame
         ];
