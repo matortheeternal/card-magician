@@ -1,6 +1,6 @@
 module-container[module="Cost"] {
     display: flex;
-    gap: 2px;
+    gap: 1px;
     padding: 4px 2px;
 }
 
@@ -15,4 +15,10 @@ abbr.sym {
     text-align: center;
     line-height: 1;
     overflow: visible;
+
+    &.oversized {
+        height: 23px;
+        width: 22px;
+        margin-top: -1px;
+    }
 }

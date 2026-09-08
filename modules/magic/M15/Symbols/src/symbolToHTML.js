@@ -20,15 +20,19 @@ const imagePathAdapters = [{
 }, {
     match: sym => sym.type === 'genericHybridMana',
     resolve: (sym, size) => `${size}/hybrid2/2${getKey(sym)}.png`,
+    oversized: true,
 }, {
     match: sym => sym.type === 'fiveColorHybridMana',
     resolve: (sym, size) => `${size}/hybrid5/wubrg.png`,
+    oversized: true,
 }, {
     match: sym => sym.type === 'threeColorHybridMana',
     resolve: (sym, size) => `${size}/hybrid3/${getKey(sym)}.png`,
+    oversized: true,
 }, {
     match: sym => sym.type === 'twoColorHybridMana',
     resolve: (sym, size) => `${size}/hybrid2/${getKey(sym)}.png`,
+    oversized: true,
 }, {
     match: sym => sym.type === 'halfMana',
     resolve: (sym, size) => `${size}/half/${getKey(sym)}.png`,
@@ -52,9 +56,12 @@ const imagePathAdapters = [{
     resolve: (sym, size) => `${size}/tap/${getKey(sym)}.png`,
 }];
 
-const symbolAbbr = (imageUrl, text = '') => (
-    `<abbr class="sym" style="background-image: url('${imageUrl}')">${text}</abbr>`
-);
+const symbolAbbr = (imageUrl, text = '', oversized = false) => {
+    const classes = ['sym'];
+    if (oversized) classes.push('oversized');
+    const style = `background-image: url('${imageUrl}')`;
+    return `<abbr class="${classes.join(' ')}" style="${style}">${text}</abbr>`;
+};
 
 const warned = {};
 
@@ -79,5 +86,5 @@ export function symbolToHTML(ctx, sym, size) {
         return circleWithText(ctx, sym, size);
 
     const imagePath = adapter.resolve(sym, size);
-    return symbolAbbr(ctx.resolveAsset(imagePath));
+    return symbolAbbr(ctx.resolveAsset(imagePath), '', adapter.oversized);
 }
