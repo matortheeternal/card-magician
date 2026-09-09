@@ -1,0 +1,22 @@
+.frame-normal {
+    module-container[module="Art"] {
+        z-index: -1;
+        margin: 0;
+        overflow: visible;
+        top: -42px;
+        border: none;
+
+        img, crop-image {
+            height: 124%;
+        }
+    }
+
+    .type-line {
+        margin-bottom: 18px;
+        margin-left: 42px;
+    }
+}
+
+.text-box {
+    position: relative;
+}
