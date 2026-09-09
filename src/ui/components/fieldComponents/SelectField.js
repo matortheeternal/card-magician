@@ -27,6 +27,7 @@ export default class SelectField extends FieldComponent {
               name="${esc(this.field.id)}"
               label="${esc(this.field.label)}"
               value="${esc(this.value)}"
+              hoist
             >${this.renderOptions()}</sl-select>`
         );
     }
