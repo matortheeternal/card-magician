@@ -101,11 +101,3 @@ export function parseMse(text) {
     while (stack.length - 1 > 0) writeLast(stack);
     return root;
 }
-
-export async function loadMseFile(folderPath, filename) {
-    const filePath = await getJoinedPath(folderPath, filename);
-    if (!await checkFileExists(filePath))
-        throw new Error(`MSE file not found at ${filePath}`);
-    const text = await readFile(filePath);
-    return parseMse(text.slice(1));
-}
