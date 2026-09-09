@@ -70,7 +70,7 @@ server.on('connection', ws => {
 });
 
 chokidar
-    .watch(['src', 'modules', 'games/magic/src'], {
+    .watch(['src', 'games/magic/src', 'templates', 'modules', 'exporters'], {
         ignoreInitial: true
     })
     .on('add', onFilesChange)
