@@ -1,7 +1,3 @@
-form-group[group-id="color"] {
-    grid-template-columns: 0.5fr 1fr;
-}
-
 sl-input::part(input) {
     width: 20px;
 }

@@ -1,19 +1,15 @@
 import CardFrame from '../../Frame/src/CardFrame.js';
 import Frame from '../../Frame/src/mixins/Frame.js';
 import Border from '../../Frame/src/mixins/Border.js';
-import Crowns from '../../Frame/src/mixins/Crowns.js';
 import LandSymbol from './mixins/LandSymbol.js';
-import PT from '../../Frame/src/mixins/PT.js';
 
 export default class LandFrame extends CardFrame.with(
     Frame,
     Border,
-    Crowns,
     LandSymbol,
-    PT,
 ) {
-    static matches() {
-        return true;
+    static matches(card) {
+        return card.frame === 'basic';
     }
 
     get artDimensions() {
@@ -33,12 +29,16 @@ export default class LandFrame extends CardFrame.with(
         return '.png';
     }
 
+    get frameSubFolder() {
+        return 'basic';
+    }
+
     get frameFolder() {
-        return this.resolveLandAssetPath('frame/normal');
+        return this.resolveLandAssetPath(`frame/${this.frameSubFolder}`);
     }
 
     get frameId() {
-        return 'normal';
+        return 'basic';
     }
 
     maskFrame(image) {
