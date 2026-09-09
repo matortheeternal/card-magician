@@ -63,9 +63,8 @@ export default {
     casting_cost: (value, cmCardFace) => {
         cmCardFace.manaCost = ManaCost.parse(value);
     },
-    image: async (value, cmCardFace, folderPath) => {
-        const imagePath = await getJoinedPath(folderPath, value);
-        const blob = await loadImageFile(imagePath);
+    image: async (value, cmCardFace, adapter) => {
+        const blob = await adapter.getImage(value);
         cmCardFace.artImage = await ImageFieldValue.fromFile(blob);
     },
     super_type: (value, cmCardFace) => {

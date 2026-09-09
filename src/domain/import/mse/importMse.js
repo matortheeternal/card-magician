@@ -1,11 +1,11 @@
-import { openFolderDialog } from '../../../shared/neutralinoAdapter.js';
+import { openSingleFileDialog } from '../../../shared/neutralinoAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
 import { setActiveProject } from '../../projects/projectManager.js';
-import { loadMseFile } from './loadMseFile.js';
 import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
+import MseFileAdapter from './MseFileAdapter.js';
 
 const L = localize('import-mse');
 
@@ -73,46 +73,45 @@ function importSetInfo(mseInfo, cmSet) {
     }
 }
 
-async function importCard(filename, game, folderPath, mseSet) {
-    const cmCard = game.newCard();
-    const mseCard = await loadMseFile(folderPath, filename);
-    const cardImporter = createImporter(mseSet, mseCard.card, cmCard, folderPath);
+async function importCard(mseSet, mseCard, adapter) {
+    const cmCard = new activeGame.Card();
+    const cardImporter = createImporter(mseSet, mseCard, cmCard, adapter);
     await cardImporter.import();
     return cmCard;
 }
 
-async function importCards(mseSet, cmSet, game, folderPath) {
-    const cardFiles = mseSet.include_file;
-    for (const fileName of cardFiles) {
-        progress.setOperation(fileName);
-        const cmCard = await importCard(fileName, game, folderPath, mseSet);
-        cmSet.cards.push(cmCard);
+async function importCards(mseSet, cmProject, adapter) {
+    for (const mseCard of mseSet.card) {
+        progress.setOperation(mseCard.name);
+        const cmCard = await importCard(mseSet, mseCard, adapter);
+        cmProject.cards.push(cmCard);
         progress.increment();
     }
 }
 
-export async function importMseFolder(folderPath) {
+export async function importMseFile(filePath) {
     const project = new activeGame.Project();
     progress.setStatus(L`Loading MSE set file`);
-    const mseSet = await loadMseFile(folderPath, 'set');
+    const adapter = await MseFileAdapter.load(filePath);
+    const mseSet = await adapter.setInfo();
     if (!verifySet(mseSet)) return;
-    progress.setMax(mseSet.include_file.length);
+    progress.setMax(mseSet.card.length);
     progress.setStatus(L`Loading set info`);
     importSetInfo(mseSet.set_info, project);
     progress.setStatus(L`Importing cards`);
-    await importCards(mseSet, project, activeGame, folderPath);
+    await importCards(mseSet, project, adapter);
     return project;
 }
 
 registerAction('import-mse-set', async () => {
     log('user').info('Import MSE set');
-    const folderPath = await openFolderDialog(L`Import an MSE Set`);
-    if (!folderPath) return;
-    log('state').info('Importing MSE set:', folderPath);
+    const filePath = await openSingleFileDialog(L`Import an MSE Set`);
+    if (!filePath) return;
+    log('state').info('Importing MSE set:', filePath);
     openModal('cm-progress-modal', { title: L`Importing...` });
     try {
         await withNewContext(async () => {
-            const project = await importMseFolder(folderPath);
+            const project = await importMseFile(filePath);
             progress.setTitle(L`Import complete!`);
             progress.complete();
             setActiveProject(project);

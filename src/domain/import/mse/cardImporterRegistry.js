@@ -10,9 +10,9 @@ const cardImporters = [
     M15FallbackImporter
 ];
 
-export function createImporter(mseSet, mseCard, cmCard, folderPath) {
+export function createImporter(mseSet, mseCard, cmCard, adapter) {
     for (const CardImporter of cardImporters) {
         if (CardImporter.match(mseCard, mseSet))
-            return new CardImporter(mseCard, cmCard, mseSet, folderPath);
+            return new CardImporter(mseCard, cmCard, mseSet, adapter);
     }
 }

@@ -17,7 +17,7 @@ export default class MagicProject extends CardMagicianProject {
     }
 
     async loadCard(filePath) {
-        return MagicCard.load(filePath);
+        return await MagicCard.load(filePath);
     }
 
     async afterLoad() {

@@ -33,7 +33,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
         if (!mseFaceEntries) return;
         for (const [key, value] of mseFaceEntries) {
             const propImporter = this.getPropImporter(key);
-            await propImporter?.(value, cmCardFace, this.folderPath);
+            await propImporter?.(value, cmCardFace, this.adapter);
         }
     }
 

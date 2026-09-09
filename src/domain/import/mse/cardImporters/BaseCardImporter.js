@@ -4,11 +4,11 @@ export default class BaseCardImporter {
     static expectedStylesheet = '';
     static expectedVersion = '';
 
-    constructor(mseCard, cmCard, mseSet, folderPath) {
+    constructor(mseCard, cmCard, mseSet, adapter) {
         this.mseCard = mseCard;
         this.mseSet = mseSet;
         this.cmCard = cmCard;
-        this.folderPath = folderPath;
+        this.adapter = adapter;
     }
 
     static checkStylesheet(stylesheetVersion) {
