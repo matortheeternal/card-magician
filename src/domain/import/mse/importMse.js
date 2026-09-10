@@ -12,9 +12,9 @@ const L = localize('import-mse');
 
 const TESTED_MSE_VERSION = '2.0.2';
 const TESTED_MSE_GAME = 'magic';
-const TESTED_MSE_GAME_VERSION = '2024-10-01';
+const TESTED_MSE_GAME_VERSION = '2026-09-06';
 const TESTED_STYLESHEET = 'm15-altered';
-const TESTED_STYLESHEET_VERSION = '2024-09-23';
+const TESTED_STYLESHEET_VERSION = '2026-09-06';
 
 function checkVersion(mseVersion) {
     if (mseVersion !== TESTED_MSE_VERSION)
