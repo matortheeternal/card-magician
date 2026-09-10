@@ -6,6 +6,7 @@ import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
 import MseFileAdapter from './MseFileAdapter.js';
+import { getStructure } from './cardStructureRegistry.js';
 
 const L = localize('import-mse');
 
@@ -80,13 +81,27 @@ async function importCard(mseSet, mseCard, adapter) {
     return cmCard;
 }
 
-async function importCards(mseSet, cmProject, adapter) {
+function addCardsToProject(cardMap, project) {
+    const cardsByUid = new Map(
+        [...cardMap].map(([mseCard, cmCard]) => [mseCard.uid, cmCard])
+    );
+
+    for (const [mseCard, cmCard] of cardMap) {
+        const structure = getStructure(mseCard, cmCard, cardsByUid);
+        const card = structure.makeCard();
+        if (card) project.cards.push(card);
+    }
+}
+
+async function importCards(mseSet, adapter) {
+    const cardMap = new Map();
     for (const mseCard of mseSet.card) {
         progress.setOperation(mseCard.name);
         const cmCard = await importCard(mseSet, mseCard, adapter);
-        cmProject.cards.push(cmCard);
+        cardMap.set(mseCard, cmCard);
         progress.increment();
     }
+    return cardMap;
 }
 
 export async function importMseFile(filePath) {
@@ -99,7 +114,8 @@ export async function importMseFile(filePath) {
     progress.setStatus(L`Loading set info`);
     importSetInfo(mseSet.set_info, project);
     progress.setStatus(L`Importing cards`);
-    await importCards(mseSet, project, adapter);
+    const cardMap = await importCards(mseSet, adapter);
+    addCardsToProject(cardMap, project);
     return project;
 }
 
