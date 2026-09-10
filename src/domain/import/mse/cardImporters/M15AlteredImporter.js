@@ -5,7 +5,7 @@ const baseLevelKeys = ['notes'];
 
 export default class M15AlteredImporter extends BaseCardImporter {
     static expectedStylesheet = 'm15-altered';
-    static expectedVersion = '2024-09-23';
+    static expectedVersion = '2026-09-06';
 
     get template() {
         return this.mseFrames.includes('map') ? 'magic/M15/Map' : 'magic/M15/Main';
