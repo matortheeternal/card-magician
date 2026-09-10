@@ -1,6 +1,4 @@
 import { ActivationCost, ManaCost } from 'mana-scribe';
-import { getJoinedPath } from '../../../shared/neutralinoAdapter.js';
-import { loadImageFile } from '../../../shared/fsUtils.js';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
 
 /**
@@ -44,6 +42,25 @@ const rarity = {
     special: 'special',
     masterpiece: 'special',
 };
+
+const levelKeys = [
+    'level_1_text',
+    'level_2_text',
+    'level_3_text',
+    'level_4_text',
+    'level_5_text',
+    'level_6_text',
+];
+
+export function combineLevelText(mseCard) {
+    const text = [];
+    for (const key of levelKeys) {
+        if (!Object.hasOwn(mseCard, key)) break;
+        const value = stripTags(convertSymbols(mseCard[key]));
+        text.push(value);
+    }
+    return text;
+}
 
 export const tokenPropImporters = {
     casting_cost: (value, cmCardFace) => {
