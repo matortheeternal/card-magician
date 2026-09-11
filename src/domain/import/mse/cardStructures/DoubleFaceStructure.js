@@ -10,6 +10,9 @@ export default class DoubleFaceStructure extends BaseCardStructure {
         if (!backCard)
             throw new Error(`Could not find back face for "${this.mseCard.name}".`);
         this.cmCard.back = backCard.front;
+        this.cmCard.front.faceSymbol ||= 'autodetect';
+        this.cmCard.back.faceSymbol ||= 'autodetect';
+        this.cmCard.back.rarity = this.cmCard.front.rarity;
         return this.cmCard;
     }
 }
