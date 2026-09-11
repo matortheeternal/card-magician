@@ -1,0 +1,9 @@
+cm-add-exporter {
+    sl-menu-item {
+        max-width: 25em;
+    }
+
+    sl-menu-item::part(label) {
+        white-space: normal;
+    }
+}
