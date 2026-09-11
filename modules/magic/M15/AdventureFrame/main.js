@@ -25,7 +25,6 @@ export default class AdventureFrameModule extends FrameModule {
     async updatePages(card) {
         if (!this.activeFrame) return;
         this.pageBackgrounds = await this.activeFrame.buildBackgrounds('pages', card);
-        this.updateCardClasses(card);
         this.requestRender({ render: 'renderPages' });
     }
 
@@ -56,9 +55,11 @@ export default class AdventureFrameModule extends FrameModule {
             type: 'select',
             options: [
                 { id: 'name_and_type', name: L`Name and Type` },
+                { id: 'name_and_type_omen', name: L`Omen Name and Type` },
                 { id: 'name_and_type_flat', name: L`Flat Name and Type` },
-                { id: 'name_flat', name: L`Flat Name` },
                 { id: 'name', name: L`Name` },
+                { id: 'name_omen', name: L`Omen Name` },
+                { id: 'name_flat', name: L`Flat Name` },
                 { id: 'blank', name: L`Blank` },
             ]
         }];
