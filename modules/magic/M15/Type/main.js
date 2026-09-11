@@ -30,8 +30,10 @@ export default class TypeModule extends CardMagicianModule {
     }
 
     updateType(card) {
-        card.colorIdentity.addColorSource('type', this.getImplicitLandSymbols(card));
-        changed(card, 'colorIdentity');
+        if (card.colorIdentity) {
+            card.colorIdentity.addColorSource('type', this.getImplicitLandSymbols(card));
+            changed(card, 'colorIdentity');
+        }
         this.requestRender();
     }
 
