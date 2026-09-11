@@ -49,6 +49,7 @@ export default class Modal extends ReactiveComponent {
     }
 
     saveProject() {
+        if (!activeProject.filePath) return;
         executeAction('save-project');
     }
 
