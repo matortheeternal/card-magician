@@ -46,11 +46,20 @@ export default class SagaText extends TextModule {
               () => this.renderPostHTML(card));
     }
 
+    getTextStyle(card, isPreText = false) {
+        const chopTop = card.chopTop ? `--chop-top: ${card.chopTop}px` : '';
+        const chopBottom = card.chopBottom ? `--chop-bottom: ${card.chopBottom}px` : '';
+        return [
+            isPreText ? chopTop : chopBottom,
+            this.shouldCenter(card) ? 'text-align: center' : '',
+        ].filter(Boolean).join('; ');
+    }
+
     renderPreText(card) {
         return (
             `<auto-fit-text
                ${card.maxFontSize ? `max="${card.maxFontSize}"` : ''}
-               style="${this.getTextStyle(card)}"
+               style="${this.getTextStyle(card, true)}"
            >
                 <div class="pre-text">${this.preHTML}</div>
             </auto-fit-text>`
