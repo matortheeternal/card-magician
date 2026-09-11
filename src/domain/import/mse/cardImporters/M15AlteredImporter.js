@@ -45,6 +45,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
     get frame() {
         if (this.mseFrames.includes('clear')) return 'clear';
         if (this.mseFrames.includes('devoid')) return 'devoid';
+        if (this.mseFrames.includes('inverted')) return 'inverted';
         return 'auto';
     }
 
@@ -58,10 +59,17 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return chopBottom?.length ? chopBottom : '';
     }
 
+    get centerText() {
+        const centerText = this.stylingData?.center_text;
+        if (centerText === 'short text only') return 'short';
+        return centerText || 'never';
+    }
+
     async importOptions(cmCardFace) {
         cmCardFace.frame = this.frame;
         cmCardFace.chopTop = this.chopTop;
         cmCardFace.chopBottom = this.chopBottom;
+        cmCardFace.centerText = this.centerText;
     }
 
     async import() {
