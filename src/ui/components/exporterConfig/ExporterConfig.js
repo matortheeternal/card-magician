@@ -1,6 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { getExporter, loadExporter } from '../../../domain/export/exporterManager.js';
-import { emit } from '../../../shared/htmlUtils.js';
+import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
 import { initializeFields } from '../../systems/fieldSystem.js';
 
 const L = localize('exporter-config');
@@ -43,14 +43,21 @@ export default class ExporterConfig extends ReactiveComponent {
     async render() {
         await loadExporter(this.exporter);
         this.innerHTML = (
-            `<sl-tooltip content="${L`Remove exporter}`}">
+            `<header>
+                <strong>${escapeHTML(this.exporter.label || this.exporterId)}</strong>
+                <br>
+                <small class="text-muted">
+                    ${escapeHTML(this.exporter.description || '')}
+                </small>
+            </header>
+            <sl-tooltip content="${esc(L`Remove exporter`)}">
                 <sl-icon-button
                     class="remove-btn"
                     name="x-lg"
+                    label="${esc(L`Remove exporter`)}"
                     data-click-action="onRemoveClick"></sl-icon-button>
             </sl-tooltip>
-            <div>${this.exporter.label}</div>
-            ${this.exporter.form}`
+            <div class="form">${this.exporter.form}</div>`
         );
     }
 
