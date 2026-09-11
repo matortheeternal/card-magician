@@ -8,6 +8,12 @@ import * as progress from '../../ui/systems/progressSystem.js';
 const L = localize('export-manager');
 const exporters = [];
 
+const NO_EXPORTER_FORM_HTML = (
+    `<div class="exporter-no-options">
+        ${L`This exporter has no settings.`}
+    </div>`
+);
+
 export async function loadExporters() {
     const exporterFolders = await readDirectory('exporters');
     for (const exporterFolder of exporterFolders) {
@@ -20,8 +26,9 @@ export async function loadExporters() {
         const exporter = await loadJson(jsonPath);
         exporter.path = exporterFolder.path;
         const formPath = ['.', exporterFolder.path, 'form.html'].join('/');
-        if (await checkFileExists(jsonPath))
-            exporter.form = await loadTextFile(formPath);
+        exporter.form = await checkFileExists(formPath)
+            ? await loadTextFile(formPath)
+            : NO_EXPORTER_FORM_HTML;
         exporters.push(exporter);
     }
 }
