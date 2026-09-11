@@ -4,6 +4,7 @@ export default class TypeModule extends CardMagicianModule {
     async init(card) {
         card.isLegendary = () => /\blegendary\b/i.test(card.superType);
         card.isLand = () => /\bland\b/i.test(card.superType);
+        card.isCreature = () => /\bcreature\b/i.test(card.superType);
         card.isArtifact = () => /\bartifact\b/i.test(card.superType);
         card.isEnchantment = () => /\benchantment\b/i.test(card.superType);
         card.isVehicle = () => /\bvehicle\b/i.test(card.subType);

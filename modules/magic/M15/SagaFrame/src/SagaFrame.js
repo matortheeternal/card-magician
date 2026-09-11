@@ -60,4 +60,14 @@ export default class SagaFrame extends CardFrame.with(
     get frameFolder() {
         return this.resolveSagaAssetPath(`frame/${this.frameSubfolder}`);
     }
+
+    // --- TRIM MASKS ---
+    get trimMaskFilename() {
+        return this.card.isCreature?.() ? 'creature.png' : 'saga.png';
+    }
+
+    get trimMaskUrl() {
+        const trimMaskPath = `mask/${this.trimMaskFolder}/${this.trimMaskFilename}`;
+        return this.resolveSagaAssetPath(trimMaskPath);
+    }
 }
