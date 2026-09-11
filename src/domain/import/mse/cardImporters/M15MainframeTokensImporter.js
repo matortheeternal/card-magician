@@ -2,7 +2,7 @@ import { tokenPropImporters } from '../cardPropertyImporters.js';
 import M15AlteredImporter from './M15AlteredImporter.js';
 
 export default class M15MainframeTokensImporter extends M15AlteredImporter {
-    static expectedVersion = '2025-01-11';
+    static expectedVersion = '2026-09-06';
     static expectedStylesheet = 'm15-mainframe-tokens';
 
     get frame() {

@@ -12,7 +12,7 @@ export default class MseFileAdapter extends MseProjectAdapter {
     }
 
     async rawSetText() {
-        return this._rawSetText ||= (await this.entries['set'].text()).slice(1);
+        return this._rawSetText ||= (await this.entries['set'].text());
     }
 
     getMimeType(filename) {

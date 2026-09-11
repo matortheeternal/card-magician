@@ -1,7 +1,7 @@
 import M15AlteredImporter from './M15AlteredImporter.js';
 
 export default class M20EmblemImporter extends M15AlteredImporter {
-    static expectedVersion = '2026-09-06';
+    static expectedVersion = '2025-01-11';
     static expectedStylesheet = 'm20-emblems';
 
     get frame() {

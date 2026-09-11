@@ -10,7 +10,7 @@ import { getStructure } from './cardStructureRegistry.js';
 
 const L = localize('import-mse');
 
-const TESTED_MSE_VERSION = '2.0.2';
+const TESTED_MSE_VERSION = '2.6.0';
 const TESTED_MSE_GAME = 'magic';
 const TESTED_MSE_GAME_VERSION = '2026-09-06';
 const TESTED_STYLESHEET = 'm15-altered';
