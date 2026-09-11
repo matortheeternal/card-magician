@@ -99,4 +99,8 @@ export default {
     },
     power: (value, cmCardFace) => cmCardFace.power = value,
     toughness: (value, cmCardFace) => cmCardFace.toughness = value,
+    transformation: (value, cmCardFace) => {
+        // TODO: map actual face symbol selection
+        cmCardFace.faceSymbol = 'autodetect';
+    },
 };
