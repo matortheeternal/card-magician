@@ -25,7 +25,7 @@ export default class TextModule extends CardMagicianModule {
 
         // TODO: probably should use a keyword system instead or be just user-configured
         card.isTransform = function() {
-            return /\bTransform\b/i.test(card.rulesText)
+            return /\bTransform(ed)?\b/i.test(card.rulesText)
                 || /\bDaybound\b/i.test(card.rulesText)
                 || /\bDisturb\b/i.test(card.rulesText)
                 || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
