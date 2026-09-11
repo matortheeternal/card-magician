@@ -18,6 +18,7 @@ export default class AddExporter extends ReactiveComponent {
         this.handleEvents('click', {
             addExporter: event => this.addExporter(event),
         });
+        this.watch('export', activeProject, 'export', () => this.render());
     }
 
     get availableExporters() {

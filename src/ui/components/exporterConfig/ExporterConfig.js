@@ -62,8 +62,7 @@ export default class ExporterConfig extends ReactiveComponent {
     }
 
     onRemoveClick() {
-        delete activeProject.export[this.exporterId];
-        emit(this, 'exporter-removed', { id: this.exporterId });
+        emit(this, 'remove-exporter', { id: this.exporterId });
     }
 }
 

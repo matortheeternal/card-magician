@@ -14,6 +14,7 @@
 @import "ui/modals/modals.css";
 @import "ui/modals/automateModal/automateModal.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
+@import "ui/modals/configureExportersModal/configureExportersModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
 @import "ui/modals/editPacksModal/editPacksModal.css";
 @import "ui/modals/editTagsModal/editTagsModal.css";
