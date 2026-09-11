@@ -49,6 +49,12 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return 'auto';
     }
 
+    get artSize() {
+        if (this.mseFrames.includes('borderless art')) return 'borderless';
+        if (this.mseFrames.includes('frameless art')) return 'frameless';
+        return 'auto';
+    }
+
     get chopTop() {
         const chopTop = this.stylingData?.chop_top;
         return chopTop?.length ? chopTop : '';
@@ -67,6 +73,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
 
     async importOptions(cmCardFace) {
         cmCardFace.frame = this.frame;
+        cmCardFace.artSize = this.artSize;
         cmCardFace.chopTop = this.chopTop;
         cmCardFace.chopBottom = this.chopBottom;
         cmCardFace.centerText = this.centerText;
