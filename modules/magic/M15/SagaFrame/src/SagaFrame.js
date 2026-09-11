@@ -37,8 +37,16 @@ export default class SagaFrame extends CardFrame.with(
     }
 
     // --- FRAME ---
+    get frameSubfolder() {
+        if (this.card.isBackDFC?.())
+            return 'back';
+        if (this.card.hasFaceSymbol?.() || this.card.isFrontDFC?.())
+            return 'front';
+        return 'saga';
+    }
+
     get frameMaskFolder() {
-        return this.resolveSagaAssetPath('mask/frame');
+        return this.resolveSagaAssetPath(`mask/frame`);
     }
 
     get frameMaskFilename() {
@@ -46,10 +54,10 @@ export default class SagaFrame extends CardFrame.with(
     }
 
     get frameBlendMaskFolder() {
-        return this.resolveSagaAssetPath('mask/saga');
+        return this.resolveSagaAssetPath(`mask/${this.frameSubfolder}`);
     }
 
     get frameFolder() {
-        return this.resolveSagaAssetPath('frame/saga');
+        return this.resolveSagaAssetPath(`frame/${this.frameSubfolder}`);
     }
 }

@@ -1,9 +1,19 @@
+module-container[module="SagaFrame"] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
 .bg.frame-bookmark {
-    background-size: 27px 372px;
+    background-size: 27px 365px;
     background-position: 15px 58px;
 }
 
 .bg.frame-bookmark-stripe {
     background-size: 27px 372px;
     background-position: 14px 58px;
+}
+
+.bg.frame-node {
+    height: 63px;
 }
