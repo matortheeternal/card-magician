@@ -60,3 +60,15 @@ main {
     display: flex;
     flex-direction: row;
 }
+
+small {
+    font-size: var(--sl-font-size-small);
+}
+
+.text-emphasis {
+    color: var(--sl-color-neutral-1000);
+}
+
+.text-muted {
+    color: var(--sl-color-neutral-600);
+}
