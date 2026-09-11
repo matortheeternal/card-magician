@@ -5,7 +5,6 @@ cm-exporter-config {
     border: 1px solid var(--sl-input-border-color);
     background: var(--sl-color-neutral-50);
     border-radius: var(--sl-border-radius-medium);
-    margin-bottom: var(--sl-spacing-small);
 
     header small {
         display: block;
@@ -14,7 +13,7 @@ cm-exporter-config {
 
     div.form {
         display: flex;
-        flex-direction: column;"
+        flex-direction: column;
     }
 }
 
