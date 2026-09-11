@@ -104,4 +104,5 @@ export default {
         const lastOption = value.split(', ').pop();
         cmCardFace.faceSymbol = faceSymbolMap[lastOption] || 'autodetect';
     },
+    illustrator: (value, cmCardFace) => cmCardFace.illustrator = value,
 };
