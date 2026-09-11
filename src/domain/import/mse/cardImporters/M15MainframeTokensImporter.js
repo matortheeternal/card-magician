@@ -5,8 +5,14 @@ export default class M15MainframeTokensImporter extends M15AlteredImporter {
     static expectedVersion = '2025-01-11';
     static expectedStylesheet = 'm15-mainframe-tokens';
 
+    get frame() {
+        return 'normal';
+    }
+
     get template() {
-        return this.mseFrames.includes('M20') ? 'magic/M20/Token' : 'magic/M15/Token';
+        return this.mseFrames.includes('M20')
+            ? 'magic/M20/Token'
+            : 'magic/M15/Token';
     }
 
     get otherOptions() {
@@ -15,6 +21,7 @@ export default class M15MainframeTokensImporter extends M15AlteredImporter {
     }
 
     async importOptions(cmCardFace) {
+        await super.importOptions(cmCardFace);
         cmCardFace.otherFrameOptions = {
             tall: this.mseFrames.includes('tall'),
             hideSymbol: this.otherOptions.includes('remove rarity symbol')
