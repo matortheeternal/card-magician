@@ -18,7 +18,7 @@ function convertSymbols(str) {
     const expr = /<sym(?:-auto)?>([^<]+)<\/sym(?:-auto)?>/g;
     return str.replaceAll(expr, (match, g1) => {
         return ActivationCost.parse(g1).toString(true);
-    });
+    }).replaceAll('–', '-');
 }
 
 const colorSymbols = {
