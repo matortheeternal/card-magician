@@ -31,4 +31,9 @@ export default class M15MainframeTokensImporter extends M15AlteredImporter {
     getPropImporter(key) {
         return tokenPropImporters[key] || super.getPropImporter(key);
     }
+
+    async import() {
+        await super.import();
+        this.cmCard.front.rarity = 'token';
+    }
 }

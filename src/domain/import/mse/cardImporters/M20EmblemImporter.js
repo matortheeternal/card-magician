@@ -11,4 +11,9 @@ export default class M20EmblemImporter extends M15AlteredImporter {
     get template() {
         return 'magic/M20/Emblem';
     }
+
+    async import() {
+        await super.import();
+        this.cmCard.front.rarity = 'emblem';
+    }
 }
