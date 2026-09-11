@@ -10,7 +10,7 @@
     left: 48%;
 }
 
-.frame-clear, .frame-borderless {
+.frame-clear, .frame-borderless, .frame-frameless {
     module-container[module="Art"] {
         margin-left: 0;
         margin-right: 0;
@@ -28,6 +28,20 @@
 
     .type-line {
         padding: 0 14px 4px;
+    }
+}
+
+.frame-borderless {
+    .bg.frame-border {
+        display: none;
+    }
+
+    module-container[module="Art"] {
+        crop-image, img {
+            width: 110%;
+            left: -5%;
+            top: -26%;
+        }
     }
 }
 

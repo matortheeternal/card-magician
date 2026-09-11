@@ -22,8 +22,11 @@ const FrameMixin = {
     },
 
     get frameMaskFilename() {
+        // TODO: make this a separate option and use autodetect?
         if (this.card.isStation?.() && this.card.artSize === 'borderless')
             return 'spacecraft.png';
+        if (this.card.artSize === 'borderless' || this.card.artSize === 'frameless')
+            return 'borderless.png';
         return 'standard.png';
     },
 
@@ -42,6 +45,7 @@ const FrameMixin = {
 
     get frameId() {
         if (this.card.artSize === 'borderless') return 'borderless';
+        if (this.card.artSize === 'frameless') return 'frameless';
         return 'standard';
     },
 
