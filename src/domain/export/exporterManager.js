@@ -54,6 +54,16 @@ export function getExporter(id) {
 }
 
 /**
+ * Returns an array of loaded exporters.
+ *
+ * @param {boolean} includeNative
+ * @returns {Array<CardMagicianExporter>}
+ */
+export function getLoadedExporters(includeNative = false) {
+    return exporters.filter(e => !e.native || includeNative);
+}
+
+/**
  * @typedef ExporterParams
  * @property {string} id - The id of the exporter to run.
  * @property {object} config - The configuration options to pass to the exporter.
