@@ -1,5 +1,6 @@
 import { ActivationCost, ManaCost } from 'mana-scribe';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
+import faceSymbolMap from './faceSymbolMap.js';
 
 /**
  * Removes XML tags from the input string, preserving the text in the tags.
@@ -100,7 +101,7 @@ export default {
     power: (value, cmCardFace) => cmCardFace.power = value,
     toughness: (value, cmCardFace) => cmCardFace.toughness = value,
     transformation: (value, cmCardFace) => {
-        // TODO: map actual face symbol selection
-        cmCardFace.faceSymbol = 'autodetect';
+        const lastOption = value.split(', ').pop();
+        cmCardFace.faceSymbol = faceSymbolMap[lastOption] || 'autodetect';
     },
 };
