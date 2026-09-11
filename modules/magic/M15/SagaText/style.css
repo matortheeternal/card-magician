@@ -109,6 +109,12 @@ module-container[module="SagaText"] {
         }
     }
 
+    &:last-of-type {
+        .chapter-icons {
+            margin-bottom: 32px;
+        }
+    }
+
     .chapter-content {
         display: flex;
         flex-direction: column;
