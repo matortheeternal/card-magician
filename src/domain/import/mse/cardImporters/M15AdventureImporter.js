@@ -1,16 +1,17 @@
 import M15AlteredImporter from './M15AlteredImporter.js';
 
 const pageStyleMap = [
-    'name and type omen',
     'name and type',
+    'name and type omen',
     'name and type flat',
-    'name flat',
     'name',
+    'name omen',
+    'name flat',
     'blank'
 ].reduce((obj, value) => ({
-    ...(obj || {}),
+    ...obj,
     [value]: value.replaceAll(' ', '_')
-}));
+}), {});
 
 export default class M15AdventureImporter extends M15AlteredImporter {
     static expectedStylesheet = 'm15-adventure';
@@ -31,7 +32,7 @@ export default class M15AdventureImporter extends M15AlteredImporter {
     }
 
     get isReversed() {
-        return this.mseFrames.includes('reversed');
+        return this.mseFrames.includes('Reversed');
     }
 
     get pageStyle() {
@@ -47,20 +48,18 @@ export default class M15AdventureImporter extends M15AlteredImporter {
         return 'normal';
     }
 
-    async importOptions(cmCardFace) {
-        await super.importOptions(cmCardFace);
-        cmCardFace.pageStyle = this.pageStyle;
-    }
-
     async import() {
         this.cmCard.front.template = this.template;
         const { base, front, adventure } = this.groupedProperties;
         await this.importProps(base, this.cmCard);
         await this.importProps(front, this.cmCard.front);
-        this.cmCard.front.adventure = {};
-        await this.importProps(adventure, this.cmCard.front.adventure);
         await this.importOptions(this.cmCard.front);
+        this.cmCard.front.pageStyle = this.pageStyle;
         activeGame.addComputedProps(this.cmCard.front);
-        activeGame.addComputedProps(this.cmCard.front.adventure);
+
+        const adventureFace = {};
+        this.cmCard.front.adventure = adventureFace;
+        await this.importProps(adventure, adventureFace);
+        activeGame.addComputedProps(adventureFace);
     }
 }
