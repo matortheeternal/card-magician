@@ -13,4 +13,10 @@
     .type-line {
         margin-bottom: 17px;
     }
+
+    module-container[module="PT"][render="renderNotchPT"] {
+        bottom: 82px;
+        left: 29px;
+        right: unset;
+    }
 }
