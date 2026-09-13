@@ -2,6 +2,8 @@ import FrameModule from '../Frame/main.js';
 import SplitFrame from './src/SplitFrame.js';
 
 export default class SplitFrameModule extends FrameModule {
+    static createOptions() { return []; }
+
     async init(card) {
         card.canRotate = true;
         card.frames = [SplitFrame];
@@ -56,5 +58,4 @@ export default class SplitFrameModule extends FrameModule {
         )).join('\n');
     }
 
-    get options() { return []; }
 }

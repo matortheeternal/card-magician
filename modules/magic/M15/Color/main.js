@@ -1,6 +1,29 @@
 const L = localize('module-M15-color');
 
 export default class ColorModule extends CardMagicianModule {
+    static createFields() {
+        return [
+            { id: 'colors', type: 'computed' },
+            {
+                id: 'colorOverride',
+                label: L`Color Override`,
+                type: 'multiselect',
+                options: [
+                    { id: 'w', name: L`White` },
+                    { id: 'u', name: L`Blue` },
+                    { id: 'b', name: L`Black` },
+                    { id: 'r', name: L`Red` },
+                    { id: 'g', name: L`Green` },
+                    { id: 'c', name: L`Colorless` },
+                    { id: 'a', name: L`Artifact` },
+                    { id: 'l', name: L`Land` },
+                    { id: 'h', name: L`Hybrid` },
+                    { id: 'm', name: L`Multicolor` },
+                ]
+            }
+        ];
+    }
+
     async init(card) {
         card.colorIdentity = new activeGame.ColorIdentity();
 
@@ -31,26 +54,4 @@ export default class ColorModule extends CardMagicianModule {
         watch(card, 'colorIdentity', () => this.updateCardColors(card));
     }
 
-    get fields() {
-        return [
-            { id: 'colors', type: 'computed' },
-            {
-                id: 'colorOverride',
-                label: L`Color Override`,
-                type: 'multiselect',
-                options: [
-                    { id: 'w', name: L`White` },
-                    { id: 'u', name: L`Blue` },
-                    { id: 'b', name: L`Black` },
-                    { id: 'r', name: L`Red` },
-                    { id: 'g', name: L`Green` },
-                    { id: 'c', name: L`Colorless` },
-                    { id: 'a', name: L`Artifact` },
-                    { id: 'l', name: L`Land` },
-                    { id: 'h', name: L`Hybrid` },
-                    { id: 'm', name: L`Multicolor` },
-                ]
-            }
-        ];
-    }
 }

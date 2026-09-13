@@ -168,6 +168,8 @@ import { watch } from '../../shared/reactivity.js';
  */
 export default class CardMagicianModule {
     #watchers = [];
+    #fields;
+    #options;
 
     /**
      * @param {CardFace} card - The card face this module is associated with.
@@ -388,20 +390,38 @@ export default class CardMagicianModule {
     async init(card) {}
 
     /**
-     * Returns the card field definitions for this module.
+     * Creates card field definitions for this module without requiring an
+     * instance or card model.
      *
-     * @abstract
      * @returns {Array<Field>}
      */
-    get fields() { return []; }
+    static createFields() { return []; }
 
     /**
-     * Returns the option field definitions for this module.
+     * Returns this module instance's card field definitions.
      *
-     * @abstract
      * @returns {Array<Field>}
      */
-    get options() { return []; }
+    get fields() {
+        return this.#fields ??= this.constructor.createFields();
+    }
+
+    /**
+     * Creates option field definitions for this module without requiring an
+     * instance or card model.
+     *
+     * @returns {Array<Field>}
+     */
+    static createOptions() { return []; }
+
+    /**
+     * Returns this module instance's option field definitions.
+     *
+     * @returns {Array<Field>}
+     */
+    get options() {
+        return this.#options ??= this.constructor.createOptions();
+    }
 
     /**
      * Returns CSS styles to be injected for this module.

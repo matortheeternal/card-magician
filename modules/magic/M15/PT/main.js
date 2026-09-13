@@ -1,6 +1,14 @@
 const L = localize('module-M15-pt');
 
 export default class PTModule extends CardMagicianModule {
+    static createFields() {
+        return [
+            { id: 'power', label: L`Power` },
+            { id: 'toughness', label: L`Toughness` },
+            { id: 'showPT' },
+        ];
+    }
+
     async init(card) {
         card.showPT = Boolean(card.toughness || card.power);
     }
@@ -43,14 +51,6 @@ export default class PTModule extends CardMagicianModule {
         return (
             `<div class="notch-pt-text">${this.escapeHTML(card.notchPtText)}</div>`
         );
-    }
-
-    get fields() {
-        return [
-            { id: 'power', label: L`Power` },
-            { id: 'toughness', label: L`Toughness` },
-            { id: 'showPT' },
-        ];
     }
 
     async styles() {

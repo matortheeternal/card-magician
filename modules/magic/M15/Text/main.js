@@ -6,6 +6,40 @@ import { ListConverter, listExpr } from './src/ListConverter.js';
 const L = localize('module-M15-text');
 
 export default class TextModule extends CardMagicianModule {
+    static createFields() {
+        return [
+            { id: 'rulesText', type: 'code', syntax: 'mtg', label: L`Rules Text` },
+            { id: 'flavorText', type: 'textarea', label: L`Flavor Text`, default: null }
+        ];
+    }
+
+    static createOptions() {
+        return [
+            { id: 'chopTop', label: L`Chop Top` },
+            { id: 'chopBottom', label: L`Chop Bottom` },
+            { id: 'maxFontSize', label: L`Max Font Size` },
+            {
+                id: 'centerText',
+                label: L`Center Text`,
+                type: 'select',
+                options: [
+                    { id: 'never', name: L`Never` },
+                    { id: 'always', name: L`Always` },
+                    { id: 'short', name: L`Short Text` },
+                ]
+            },
+            {
+                id: 'citationStyle',
+                label: L`Citation Style`,
+                type: 'select',
+                options: [
+                    { id: 'italic', name: L`Italic` },
+                    { id: 'normal', name: L`Normal` },
+                ]
+            }
+        ];
+    }
+
     async init(card) {
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
@@ -120,40 +154,6 @@ export default class TextModule extends CardMagicianModule {
                 <div class="flavor-text">${this.flavorHTML}</div>
             </auto-fit-text>`
         );
-    }
-
-    get fields() {
-        return [
-            { id: 'rulesText', type: 'code', syntax: 'mtg', label: L`Rules Text` },
-            { id: 'flavorText', type: 'textarea', label: L`Flavor Text`, default: null }
-        ];
-    }
-
-    get options() {
-        return [
-            { id: 'chopTop', label: L`Chop Top` },
-            { id: 'chopBottom', label: L`Chop Bottom` },
-            { id: 'maxFontSize', label: L`Max Font Size` },
-            {
-                id: 'centerText',
-                label: L`Center Text`,
-                type: 'select',
-                options: [
-                    { id: 'never', name: L`Never` },
-                    { id: 'always', name: L`Always` },
-                    { id: 'short', name: L`Short Text` },
-                ]
-            },
-            {
-                id: 'citationStyle',
-                label: L`Citation Style`,
-                type: 'select',
-                options: [
-                    { id: 'italic', name: L`Italic` },
-                    { id: 'normal', name: L`Normal` },
-                ]
-            }
-        ];
     }
 
     get levelArrowStyles() {

@@ -5,6 +5,16 @@ import Watermark from './src/Watermark.js';
 const L = localize('module-M15-watermark');
 
 export default class WatermarkModule extends CardMagicianModule {
+    static createFields() {
+        return [{
+            id: 'watermark',
+            type: 'nested-menu',
+            label: L`Watermark`,
+            options: makeWatermarkOptions(),
+            default: null
+        }];
+    }
+
     loadImage(opt) {
         opt.imageUrl = this.resolveAsset(opt.imagePath);
     }
@@ -15,14 +25,8 @@ export default class WatermarkModule extends CardMagicianModule {
             .map(opt => this.loadImage(opt));
     }
 
-    async init(card) {
-        this.watermarkField = {
-            id: 'watermark',
-            type: 'nested-menu',
-            label: L`Watermark`,
-            options: makeWatermarkOptions(),
-            default: null
-        };
+    async init() {
+        this.watermarkField = this.fields[0];
         this.loadWatermarkImages(this.watermarkField.options);
     }
 
@@ -53,10 +57,6 @@ export default class WatermarkModule extends CardMagicianModule {
     render(card) {
         if (!this.watermarkImageUrl) return;
         return `<img src="${this.watermarkImageUrl}" />`;
-    }
-
-    get fields() {
-        return [this.watermarkField];
     }
 
     async styles() {

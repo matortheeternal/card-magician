@@ -4,6 +4,16 @@ import { getFaceSymbolClass, resolveOption } from './src/helpers.js';
 const L = localize('module-M15-face-symbol');
 
 export default class FaceSymbolModule extends CardMagicianModule {
+    static createFields() {
+        return [{
+            id: 'faceSymbol',
+            type: 'nested-menu',
+            label: L`Face Symbol`,
+            options: makeSymbolOptions(),
+            default: null
+        }];
+    }
+
     loadImage(opt) {
         opt.imageUrl = this.resolveAsset(opt.imagePath);
     }
@@ -14,14 +24,8 @@ export default class FaceSymbolModule extends CardMagicianModule {
             .map(opt => this.loadImage(opt));
     }
 
-    async init(card) {
-        this.faceSymbolField = {
-            id: 'faceSymbol',
-            type: 'nested-menu',
-            label: L`Face Symbol`,
-            options: makeSymbolOptions(),
-            default: null
-        };
+    async init() {
+        this.faceSymbolField = this.fields[0];
         this.loadFaceSymbolImages(this.faceSymbolField.options);
     }
 
@@ -47,10 +51,6 @@ export default class FaceSymbolModule extends CardMagicianModule {
         return (
             `<img src="${card.resolvedFaceSymbol.imageUrl}" class="${faceSymbolClass}"/>`
         );
-    }
-
-    get fields() {
-        return [this.faceSymbolField];
     }
 
     async styles() {

@@ -1,30 +1,7 @@
 const L = localize('module-M15-rarity');
 
 export default class RarityModule extends CardMagicianModule {
-    async init(parent, template) {
-        this.rarityOverride = template?.rarity;
-    }
-
-    getRarityCharacter(card) {
-        return card.rarity.slice(0, 1).toUpperCase();
-    }
-
-    updateRarity(card) {
-        card.rarityCharacter = this.getRarityCharacter(card);
-        changed(card, 'rarityCharacter');
-        this.requestRender();
-    }
-
-    bind(card, watch) {
-        watch(card, 'rarity', () => this.updateRarity(card));
-    }
-
-    render(card) {
-        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
-        return activeProject.symbol.replaceAll('"set-icon"', `"set-icon ${rarityClass}"`);
-    }
-
-    get fields() {
+    static createFields() {
         return [{
             id: 'rarity',
             type: 'select',
@@ -44,8 +21,31 @@ export default class RarityModule extends CardMagicianModule {
                 { id: 'xcard',      name: L`Punch-Out` },
                 { id: 'voucher',    name: L`Voucher` },
             ],
-            override: this.rarityOverride,
         }];
+    }
+
+    async init(parent, template) {
+        if (template?.rarity !== undefined)
+            this.fields[0].override = template.rarity;
+    }
+
+    getRarityCharacter(card) {
+        return card.rarity.slice(0, 1).toUpperCase();
+    }
+
+    updateRarity(card) {
+        card.rarityCharacter = this.getRarityCharacter(card);
+        changed(card, 'rarityCharacter');
+        this.requestRender();
+    }
+
+    bind(card, watch) {
+        watch(card, 'rarity', () => this.updateRarity(card));
+    }
+
+    render(card) {
+        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
+        return activeProject.symbol.replaceAll('"set-icon"', `"set-icon ${rarityClass}"`);
     }
 
     async styles() {

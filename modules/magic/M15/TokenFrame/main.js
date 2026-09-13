@@ -5,34 +5,18 @@ import ClearTokenFrame from './src/ClearTokenFrame.js';
 const L = localize('module-M15-token-frame');
 
 export default class TokenFrameModule extends FrameModule {
-    async init(card) {
-        await super.init(card);
-        card.isTall = () => card.otherFrameOptions?.tall;
+    static frameOptions = [
+        { id: 'normal', name: L`Normal` },
+        { id: 'clear', name: L`Clear` },
+    ];
 
-        card.frames = [TokenFrame, ClearTokenFrame];
-        this.frameOptions = [
-            { id: 'normal',  name: L`Normal` },
-            { id: 'clear',  name: L`Clear` },
-        ];
-    }
-
-    get cardClasses() {
-        return [
-            `token-${this.activeFrame.frameHeight}`,
-            ...(this.card.otherFrameOptions.hideSymbol
-                ? ['hide-rarity']
-                : []),
-            ...super.cardClasses
-        ];
-    }
-
-    get options() {
+    static createOptions() {
         const allowedOptions = [
             'frame', 'crownStyle', 'nyxStyle',
             'vehicleStyle', 'snowStyle',
             'hybridStyle', 'hybridBlendStyle'
         ];
-        return super.options.filter(opt => {
+        return super.createOptions().filter(opt => {
             return allowedOptions.includes(opt.id);
         }).concat([{
             id: 'otherFrameOptions',
@@ -45,4 +29,22 @@ export default class TokenFrameModule extends FrameModule {
             default: { tall: false }
         }]);
     }
+
+    async init(card) {
+        await super.init(card);
+        card.isTall = () => card.otherFrameOptions?.tall;
+
+        card.frames = [TokenFrame, ClearTokenFrame];
+    }
+
+    get cardClasses() {
+        return [
+            `token-${this.activeFrame.frameHeight}`,
+            ...(this.card.otherFrameOptions.hideSymbol
+                ? ['hide-rarity']
+                : []),
+            ...super.cardClasses
+        ];
+    }
+
 }

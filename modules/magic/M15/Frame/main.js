@@ -7,7 +7,9 @@ import proxyAutoOptions from './src/proxyAutoOptions.js';
 import InvertedFrame from './src/InvertedFrame.js';
 
 export default class FrameModule extends CardMagicianModule {
-    #options = null;
+    static createOptions() {
+        return makeOptions(this.frameOptions);
+    }
 
     async init(card) {
         card.frames = [
@@ -81,7 +83,4 @@ export default class FrameModule extends CardMagicianModule {
         return [await this.loadFile('style.css')];
     }
 
-    get options() {
-        return this.#options ||= makeOptions(this.frameOptions);
-    }
 }

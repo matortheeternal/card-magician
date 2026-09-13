@@ -1,12 +1,16 @@
 const L = localize('module-M15-art');
 
 export default class ArtModule extends CardMagicianModule {
-    async init(card) {
-        this.artImageField = {
+    static createFields() {
+        return [{
             id: 'artImage',
             type: 'image',
             label: L`Art Image`
-        };
+        }];
+    }
+
+    async init(card) {
+        this.artImageField = this.fields[0];
 
         card.setAspectRatio = ({ width, height }) => {
             this.artImageField.aspectRatio = width / height;
@@ -74,10 +78,6 @@ export default class ArtModule extends CardMagicianModule {
                          src="${card.artImage.imageUrl}">
             </crop-image>`
         ) : `<img src="${card.defaultImageUrl}" />`;
-    }
-
-    get fields() {
-        return [this.artImageField];
     }
 
     async styles() {

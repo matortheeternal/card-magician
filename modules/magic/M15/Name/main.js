@@ -1,6 +1,10 @@
 const L = localize('module-M15-name');
 
 export default class NameModule extends CardMagicianModule {
+    static createFields() {
+        return [{ id: 'name', label: L`Name` }];
+    }
+
     async init(card) {
         card.getLegendName = function() {
             if (!card.isLegendary()) return card.name;
@@ -17,10 +21,6 @@ export default class NameModule extends CardMagicianModule {
         return (
             `<auto-fit-line>${this.escapeHTML(card.name)}</auto-fit-line>`
         );
-    }
-
-    get fields() {
-        return [{ id: 'name', label: L`Name` }];
     }
 
     async styles() {

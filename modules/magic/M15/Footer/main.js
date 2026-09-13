@@ -1,12 +1,28 @@
 const L = localize('module-M15-footer');
 
 export default class FooterModule extends CardMagicianModule {
-    async init(card) {
+    static createFields() {
+        return [
+            { id: 'illustrator', label: L`Illustrator` },
+            { id: 'autoCollectorNumber', label: L`Auto Collector Number` },
+            { id: 'collectorNumber', label: L`Collector Number` },
+            { id: 'setCode', label: L`Set Code` },
+            { id: 'language', label: L`Language` },
+            { id: 'legalText', label: L`Legal Text` },
+            { id: 'showFooterOverrides', default: false }
+        ];
+    }
+
+    async init() {
+        const fields = Object.fromEntries(
+            this.fields.map(field => [field.id, field])
+        );
+        fields.illustrator.placeholder = activeProject.illustrator;
+        fields.setCode.placeholder = activeProject.setCode;
+        fields.language.placeholder = activeProject.language;
+        fields.legalText.placeholder = activeProject.legalText;
+        this.collectorNumberField = fields.collectorNumber;
         this.brushSvg = await this.loadFile('assets/art.svg');
-        this.collectorNumberField = {
-            id: 'collectorNumber',
-            label: L`Collector Number`
-        };
     }
 
     updateCollectorNumberPlaceholder(card) {
@@ -74,19 +90,6 @@ export default class FooterModule extends CardMagicianModule {
 
     renderLegal(card) {
         return card.legalText || activeProject.legalText;
-    }
-
-    get fields() {
-        const { illustrator, setCode, language, legalText } = activeProject;
-        return [
-            { id: 'illustrator', label: L`Illustrator`, placeholder: illustrator },
-            { id: 'autoCollectorNumber', label: L`Auto Collector Number` },
-            this.collectorNumberField,
-            { id: 'setCode', label: L`Set Code`, placeholder: setCode },
-            { id: 'language', label: L`Language`, placeholder: language },
-            { id: 'legalText', label: L`Legal Text`, placeholder: legalText },
-            { id: 'showFooterOverrides', default: false }
-        ];
     }
 
     async styles() {

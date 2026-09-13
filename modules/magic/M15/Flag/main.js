@@ -1,6 +1,13 @@
 const L = localize('module-M15-flag');
 
 export default class FlagModule extends CardMagicianModule {
+    static createFields() {
+        return [
+            { id: 'flagLeft', label: L`Flag Left` },
+            { id: 'flagRight', label: L`Flag Right` }
+        ];
+    }
+
     updateFlagStyle(card) {
         const key = card.getCardColorKey();
         const folder = card.id === 'back' ? 'back' : 'front';
@@ -35,13 +42,6 @@ export default class FlagModule extends CardMagicianModule {
                 <div class="flag-right">${this.flagRightHTML}</div>
             </div>`
         );
-    }
-
-    get fields() {
-        return [
-            { id: 'flagLeft', label: L`Flag Left` },
-            { id: 'flagRight', label: L`Flag Right` }
-        ];
     }
 
     async styles() {

@@ -5,6 +5,14 @@ import { ChapterConverter, parseChapters, chapters } from './src/ChapterConverte
 const L = localize('module-M15-sagatext');
 
 export default class SagaText extends TextModule {
+    static createFields() {
+        return [
+            { id: 'preText', type: 'textarea', label: L`Pretext` },
+            { id: 'postText', type: 'textarea', label: L`Post Text` },
+            ...super.createFields()
+        ];
+    }
+
     get structureConverters() {
         return [ChapterConverter];
     }
@@ -94,14 +102,6 @@ export default class SagaText extends TextModule {
                 }`
             );
         }).join('\n');
-    }
-
-    get fields() {
-        return [
-            { id: 'preText', type: 'textarea', label: L`Pretext` },
-            { id: 'postText', type: 'textarea', label: L`Post Text` },
-            ...super.fields
-        ];
     }
 
     async styles() {

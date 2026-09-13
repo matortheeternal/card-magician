@@ -1,6 +1,10 @@
 const L = localize('module-M15-loyalty');
 
 export default class LoyaltyModule extends CardMagicianModule {
+    static createFields() {
+        return [{ id: 'loyalty', label: L`Loyalty` }];
+    }
+
     bind(card, watch) {
         watch(card, ['loyalty'], () => this.requestRender());
     }
@@ -13,10 +17,6 @@ export default class LoyaltyModule extends CardMagicianModule {
                 <div style="position: relative;">${this.escapeHTML(card.loyalty)}</div>
             </div>`
         );
-    }
-
-    get fields() {
-        return [{ id: 'loyalty', label: L`Loyalty` }];
     }
 
     async styles() {

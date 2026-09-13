@@ -4,12 +4,7 @@ import SagaFrame from './src/SagaFrame.js';
 const L = localize('module-M15-saga-frame');
 
 export default class SagaFrameModule extends FrameModule {
-    async init(card) {
-        await super.init(card);
-        card.frames = [SagaFrame];
-    }
-
-    get options() {
+    static createOptions() {
         const parentOptionIds = [
             'crownStyle', 'nyxStyle', 'snowStyle', 'vehicleStyle',
             'ubStyle', 'hybridStyle', 'hybridBlendStyle'
@@ -25,9 +20,15 @@ export default class SagaFrameModule extends FrameModule {
                     { id: 'borderless', name: L`Borderless` },
                 ]
             },
-            ...super.options.filter(
+            ...super.createOptions().filter(
                 opt => parentOptionIds.includes(opt.id)
             ),
         ];
     }
+
+    async init(card) {
+        await super.init(card);
+        card.frames = [SagaFrame];
+    }
+
 }

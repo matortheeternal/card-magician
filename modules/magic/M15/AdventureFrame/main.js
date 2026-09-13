@@ -5,14 +5,32 @@ import AdventureSpotlightFrame from './src/AdventureSpotlightFrame.js';
 const L = localize('module-M15-adventure-frame');
 
 export default class AdventureFrameModule extends FrameModule {
+    static frameOptions = [
+        { id: 'normal',     name: L`Adventure` },
+        { id: 'spotlight',  name: L`Spotlight Adventure` },
+        { id: 'reversed',   name: L`Reversed Adventure` },
+    ];
+
+    static createOptions() {
+        return [...super.createOptions(), {
+            id: 'pageStyle',
+            label: L`Page Style`,
+            type: 'select',
+            options: [
+                { id: 'name_and_type', name: L`Name and Type` },
+                { id: 'name_and_type_omen', name: L`Omen Name and Type` },
+                { id: 'name_and_type_flat', name: L`Flat Name and Type` },
+                { id: 'name', name: L`Name` },
+                { id: 'name_omen', name: L`Omen Name` },
+                { id: 'name_flat', name: L`Flat Name` },
+                { id: 'blank', name: L`Blank` },
+            ]
+        }];
+    }
+
     async init(card) {
         await super.init(card);
         card.frames = [AdventureSpotlightFrame, AdventureFrame];
-        this.frameOptions = [
-            { id: 'normal',     name: L`Adventure` },
-            { id: 'spotlight',  name: L`Spotlight Adventure` },
-            { id: 'reversed',   name: L`Reversed Adventure` },
-        ];
     }
 
     get cardClasses() {
@@ -48,20 +66,4 @@ export default class AdventureFrameModule extends FrameModule {
         )).join('\n');
     }
 
-    get options() {
-        return [...super.options, {
-            id: 'pageStyle',
-            label: L`Page Style`,
-            type: 'select',
-            options: [
-                { id: 'name_and_type', name: L`Name and Type` },
-                { id: 'name_and_type_omen', name: L`Omen Name and Type` },
-                { id: 'name_and_type_flat', name: L`Flat Name and Type` },
-                { id: 'name', name: L`Name` },
-                { id: 'name_omen', name: L`Omen Name` },
-                { id: 'name_flat', name: L`Flat Name` },
-                { id: 'blank', name: L`Blank` },
-            ]
-        }];
-    }
 }

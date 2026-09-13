@@ -1,6 +1,13 @@
 const L = localize('module-M15-face-symbol');
 
 export default class TypeModule extends CardMagicianModule {
+    static createFields() {
+        return [
+            { id: 'superType', label: L`Super Type` },
+            { id: 'subType', label: L`Sub Type` }
+        ];
+    }
+
     async init(card) {
         card.isLegendary = () => /\blegendary\b/i.test(card.superType);
         card.isLand = () => /\bland\b/i.test(card.superType);
@@ -48,13 +55,6 @@ export default class TypeModule extends CardMagicianModule {
         ) : (
             `<auto-fit-line>${card.superType}</auto-fit-line>`
         );
-    }
-
-    get fields() {
-        return [
-            { id: 'superType', label: L`Super Type` },
-            { id: 'subType', label: L`Sub Type` }
-        ];
     }
 
     async styles() {
