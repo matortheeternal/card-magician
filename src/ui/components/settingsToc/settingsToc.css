@@ -1,0 +1,18 @@
+cm-settings-toc {
+    ul {
+        list-style-type: none;
+    }
+
+    li {
+        margin: var(--sl-spacing-x-small) 0;
+    }
+
+    a {
+        color: var(--sl-color-primary-600);
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
