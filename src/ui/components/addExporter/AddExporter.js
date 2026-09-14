@@ -10,7 +10,6 @@ import { initializeFields } from '../../systems/fieldSystem.js';
 const L = localize('add-exporter');
 
 export default class AddExporter extends ReactiveComponent {
-    #model = {};
     error = '';
 
     connectedCallback() {
@@ -28,12 +27,7 @@ export default class AddExporter extends ReactiveComponent {
     }
 
     get model() {
-        return this.#model;
-    }
-
-    set model(value) {
-        this.#model = value;
-        if (this.isConnected) this.render();
+        return this.closest('cm-configure-exporters')?.model;
     }
 
     async addExporter(event) {
