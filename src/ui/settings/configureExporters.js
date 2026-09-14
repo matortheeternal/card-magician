@@ -1,25 +1,32 @@
-import Modal from '../Modal.js';
-import { registerModal } from '../modalManager.js';
-import { esc, toggleDisplay } from '../../../shared/htmlUtils.js';
-import { hasExporter } from '../../../domain/export/exporterManager.js';
+import CardMagicianSettings from './CardMagicianSettings.js';
+import { registerSettings } from './settingsRegistry.js';
+import { hasExporter } from '../../domain/export/exporterManager.js';
+import { esc, toggleDisplay } from '../../shared/htmlUtils.js';
 
-const L = localize('configure-exporters-modal');
+const L = localize('settings');
 
-export default class ConfigureExportersModal extends Modal {
-    static id = 'cm-configure-exporters-modal';
-    title = L`Configure Exporters`;
+export default class ConfigureExporters extends CardMagicianSettings {
+    static id = 'cm-configure-exporters';
+    static parentId = 'cm-project-settings';
+    static label = L`Exporters`;
+    static groupWeight = 640;
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.style.maxWidth = '42em';
+    static createModel() {
+        return activeProject.export;
+    }
+
+    static apply(model) {
+        activeProject.export = model;
+    }
+
+    static async search(query) {
+        return [];
     }
 
     bind() {
         super.bind();
-        this.on('cm-field-changed', () => this.saveProject());
         this.on('exporter-added', event => this.addExporter(event.detail.id));
         this.on('remove-exporter', event => this.removeExporter(event));
-        this.addExporterControl.model = this.data;
     }
 
     get addExporterControl() {
@@ -41,33 +48,31 @@ export default class ConfigureExportersModal extends Modal {
         changed(activeProject, 'export');
         this.updateNoExportersMessage();
         exporterConfig.scrollIntoView({ block: 'nearest' });
-        this.saveProject();
     }
 
     removeExporter(event) {
         const exporterId = event.detail.id;
-        if (!Object.hasOwn(this.data, exporterId)) return;
+        if (!Object.hasOwn(this.model, exporterId)) return;
 
-        delete this.data[exporterId];
+        delete this.model[exporterId];
         changed(activeProject, 'export');
         event.target.remove();
         this.updateNoExportersMessage();
-        this.saveProject();
     }
 
     updateNoExportersMessage() {
-        const showNoExporters = Object.keys(this.data).length === 0;
+        const showNoExporters = Object.keys(this.model).length === 0;
         toggleDisplay(showNoExporters, this.noExportersMessage);
     }
 
-    renderBody() {
-        const configuredExporters = Object.keys(this.data)
+    render() {
+        const configuredExporters = Object.keys(this.model)
             .filter(hasExporter)
             .map(id => (
                 `<cm-exporter-config exporter-id="${esc(id)}"></cm-exporter-config>`
             )).join('');
-        return (
-            `<div class="modal-header">
+        this.innerHTML = (
+            `<div class="header">
                 <p class="text-muted">
                     ${L`Choose which outputs this project can generate.`}
                 </p>
@@ -79,12 +84,6 @@ export default class ConfigureExportersModal extends Modal {
             <section class="configured-exporters">${configuredExporters}</section>`
         );
     }
-
-    renderActions() {
-        return (
-            `<sl-button data-click-action="close">${L`Close`}</sl-button>`
-        );
-    }
 }
 
-registerModal(ConfigureExportersModal);
+registerSettings(ConfigureExporters);
