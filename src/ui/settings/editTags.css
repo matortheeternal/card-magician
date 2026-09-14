@@ -1,0 +1,14 @@
+cm-edit-tags {
+    .tags-container {
+        display: grid;
+        grid-template-columns: auto minmax(auto, 10em) minmax(auto, 10em);
+        gap: var(--sl-spacing-x-small);
+        align-items: end;
+
+        > div {
+            display: contents;
+            font-size: var(--sl-input-font-size-small);
+            color: var(--sl-input-label-color);
+        }
+    }
+}
