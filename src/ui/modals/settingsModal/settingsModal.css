@@ -1,0 +1,48 @@
+cm-settings-modal {
+    margin-top: calc(100vh - 60em);
+
+    .modal {
+        width: 70em;
+        height: 50em;
+        max-width: 95%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-body {
+        padding: 0;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .two-columns {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        min-height: 0;
+
+        .navigation {
+            min-width: 18em;
+            padding: var(--sl-spacing-x-small) 0;
+            border-right: 1px solid var(--sl-input-border-color);
+            overflow-y: auto;
+        }
+
+        .content-container {
+            flex-grow: 1;
+            padding: var(--sl-spacing-large);
+            overflow-y: auto;
+        }
+    }
+
+    .field-group {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--sl-spacing-small);
+    }
+
+    cm-code .codejar-editor {
+        font-size: var(--sl-font-size-small);
+    }
+}
