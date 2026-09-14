@@ -35,6 +35,7 @@ export default [
                 CardMagicianProject: 'readonly',
                 CardMagicianCard: 'readonly',
                 CardMagicianExporter: 'readonly',
+                CardMagicianSettings: 'readonly',
                 CardFileDefinition: 'readonly',
                 CardImageFileDefinition: 'readonly',
                 ReactiveComponent: 'readonly',
