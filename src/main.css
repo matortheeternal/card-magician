@@ -14,12 +14,12 @@
 @import "ui/modals/modals.css";
 @import "ui/modals/automateModal/automateModal.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
-@import "ui/modals/configureExportersModal/configureExportersModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
-@import "ui/modals/editPacksModal/editPacksModal.css";
 @import "ui/modals/progressModal/progressModal.css";
 @import "ui/modals/settingsModal/settingsModal.css";
 @import "ui/settings/editTags.css";
+@import "ui/settings/configureExporters.css";
+@import "ui/settings/editPacks.css";
 @import "ui/components/cardForm/cardForm.css";
 @import "ui/components/editTag/editTag.css";
 @import "ui/components/editSlot/editSlot.css";
