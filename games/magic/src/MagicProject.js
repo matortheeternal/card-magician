@@ -1,4 +1,4 @@
-import setInfoFields from './ui/setInfoModal/setInfoFields.js';
+import setInfoFields from './ui/settings/setInfoFields.js';
 import MagicCard from './MagicCard.js';
 import { autoNumberCards } from './domain/autoNumber.js';
 
