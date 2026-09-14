@@ -17,9 +17,9 @@
 @import "ui/modals/configureExportersModal/configureExportersModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
 @import "ui/modals/editPacksModal/editPacksModal.css";
-@import "ui/modals/editTagsModal/editTagsModal.css";
 @import "ui/modals/progressModal/progressModal.css";
-@import "ui/modals/setInfoModal/setInfoModal.css";
+@import "ui/modals/settingsModal/settingsModal.css";
+@import "ui/settings/editTags.css";
 @import "ui/components/cardForm/cardForm.css";
 @import "ui/components/editTag/editTag.css";
 @import "ui/components/editSlot/editSlot.css";
@@ -36,6 +36,7 @@
 @import "ui/components/displayCard/displayCard.css";
 @import "ui/components/setView/setView.css";
 @import "ui/components/titleBar/titleBar.css";
+@import "ui/components/settingsToc/settingsToc.css";
 @import "ui/components/mobileActions/mobileActions.css";
 
 * {
