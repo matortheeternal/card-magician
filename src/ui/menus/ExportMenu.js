@@ -48,7 +48,7 @@ export default class ExportMenu extends ReactiveMenu {
                 L`Configure Exporters`,
                 L`Ctrl+Shift+E`,
                 () => {
-                    openModal('cm-configure-exporters-modal', activeProject.export);
+                    openModal('cm-settings-modal', 'cm-configure-exporters');
                 }
             ),
         ];
