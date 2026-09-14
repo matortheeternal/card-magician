@@ -15,6 +15,10 @@ export function loadTags(tags) {
     projectTags = tags;
 }
 
+export function saveTags(tags) {
+    projectTags = tags;
+}
+
 export function findOrCreateTag(text) {
     const existingTag = tags.find(tag => tag.text === text)
         || projectTags.find(tag => tag.text === text);
