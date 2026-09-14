@@ -1,21 +1,30 @@
-import { registerModal } from '../modalManager.js';
-import Modal from '../Modal.js';
+import CardMagicianSettings from './CardMagicianSettings.js';
+import { registerSettings } from './settingsRegistry.js';
 
-const L = localize('edit-packs-modal');
+const L = localize('settings');
 
-export default class EditPacksModal extends Modal {
-    static id = 'cm-edit-packs-modal';
-    title = L`Edit Packs`;
+export default class EditPacks extends CardMagicianSettings {
+    static id = 'cm-edit-packs';
+    static parentId = 'cm-project-settings';
+    static label = L`Packs`;
+    static groupWeight = 512;
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.renderSlots();
+    static createModel() {
+        return activeProject.pack;
+    }
+
+    static apply(model) {
+        activeProject.pack = model;
+    }
+
+    static search(query) {
+        return [];
     }
 
     bind() {
         super.bind();
         this.addEventListener('cm-remove-slot', event => {
-            activeProject.pack.remove(event.detail);
+            this.model.remove(event.detail);
         });
     }
 
@@ -31,32 +40,27 @@ export default class EditPacksModal extends Modal {
     }
 
     renderSlots() {
-        for (const slot of activeProject.pack) {
+        for (const slot of this.model) {
             const element = document.createElement('cm-edit-slot');
             element.slot = slot;
             this.slotsContainer.appendChild(element);
         }
     }
 
-    renderBody() {
-        return (
-            `<div class=slots-container></div>`
-        );
-    }
-
-    renderActions() {
-        return (
+    render() {
+        this.innerHTML = (
             `<sl-button data-click-action="addSlot">${L`Add Slot`}</sl-button>
-            <sl-button data-click-action="close">${L`Close`}</sl-button>`
+            <div class=slots-container></div>`
         );
+        this.renderSlots();
     }
 
     addSlot() {
         const element = document.createElement('cm-edit-slot');
         element.slot = activeGame.newPackSlot();
-        activeProject.pack.push(element.slot);
+        this.model.push(element.slot);
         this.slotsContainer.appendChild(element);
     }
 }
 
-registerModal(EditPacksModal);
+registerSettings(EditPacks);

@@ -1,0 +1,7 @@
+cm-edit-packs {
+    .slots-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sl-spacing-small);
+    }
+}
