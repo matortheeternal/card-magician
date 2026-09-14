@@ -6,6 +6,7 @@ import {
 } from '../projects/adapters/adapterRegistry.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 import { registerModal } from '../../ui/modals/modalManager.js';
+import { registerSettings } from '../../ui/settings/settingsRegistry.js';
 import { loadFont } from '../template/dynamicFontLoader.js';
 import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
@@ -129,6 +130,16 @@ export default class CardMagicianGame {
      */
     registerModal(ModalClass) {
         registerModal(ModalClass);
+    }
+
+    /**
+     * Registers a settings tab in the settings modal. Every game should register a
+     * project details settings tab.
+     *
+     * @param {CardMagicianSettings} SettingsClass
+     */
+    registerSettings(SettingsClass) {
+        registerSettings(SettingsClass);
     }
 
     registerLanguage(languageName, language, css) {
