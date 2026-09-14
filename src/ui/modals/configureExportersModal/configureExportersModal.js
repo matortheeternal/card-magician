@@ -61,13 +61,11 @@ export default class ConfigureExportersModal extends Modal {
     }
 
     renderBody() {
-        const configuredExporters = Object.keys(this.data).filter(id => {
-            return hasExporter(id);
-        }).map(id => {
-            return (
+        const configuredExporters = Object.keys(this.data)
+            .filter(hasExporter)
+            .map(id => (
                 `<cm-exporter-config exporter-id="${esc(id)}"></cm-exporter-config>`
-            );
-        }).join('');
+            )).join('');
         return (
             `<div class="modal-header">
                 <p class="text-muted">

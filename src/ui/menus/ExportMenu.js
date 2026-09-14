@@ -25,14 +25,14 @@ export default class ExportMenu extends ReactiveMenu {
     }
 
     get exporterMenuItems() {
-        return Object.keys(activeProject.export).filter(exporterId => {
-            return hasExporter(exporterId);
-        }).map(exporterId => {
-            const exporter = getExporter(exporterId);
-            return this.menuItem(L`Export ${exporter.label}`, ``, () => {
-                executeAction('run-exporter', exporterId);
+        return Object.keys(activeProject.export)
+            .filter(hasExporter)
+            .map(exporterId => {
+                const exporter = getExporter(exporterId);
+                return this.menuItem(L`Export ${exporter.label}`, ``, () => {
+                    executeAction('run-exporter', exporterId);
+                });
             });
-        });
     }
 
     get items() {

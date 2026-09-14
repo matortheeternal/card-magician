@@ -116,6 +116,7 @@ function addDependencyParams(exporterId, set, params) {
 export function gatherExporterParams(targetExporterId) {
     const params = {};
     for (const [id, config] of Object.entries(activeProject.export)) {
+        if (!hasExporter(id)) continue;
         if (targetExporterId !== 'all' && targetExporterId !== id)
             continue;
         addDependencyParams(id, activeProject, params);
