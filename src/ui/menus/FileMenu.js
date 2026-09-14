@@ -1,6 +1,7 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { exitApp } from '../../shared/neutralinoAdapter.js';
+import { openModal } from '../modals/modalManager.js';
 
 const L = localize('title-bar');
 
@@ -29,6 +30,12 @@ export default class FileMenu extends ReactiveMenu {
                 L`Save as`,
                 L`Ctrl+Shift+S`,
                 () => executeAction('save-project-as')
+            ),
+            this.DIVIDER,
+            this.desktopMenuItem(
+                L`Settings`,
+                `Ctrl+Alt+S`,
+                () => openModal('cm-settings-modal')
             ),
             this.DIVIDER,
             this.desktopMenuItem(
