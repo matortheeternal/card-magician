@@ -16,6 +16,9 @@ const WalkerAbilitiesMixin = {
             '--walker-ability-top-bg': `url("${
                 await this.resolveAbilityBorder('top')
             }")`,
+            '--walker-ability-base-bg': `url("${
+                await this.resolveAbilityBorder('base')
+            }")`,
             '--walker-ability-bottom-bg': `url("${
                 await this.resolveAbilityBorder('bottom')
             }")`,

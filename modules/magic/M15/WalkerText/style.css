@@ -4,6 +4,7 @@
     --walker-ability-zero-bg: 'none';
     --walker-ability-top-bg: 'none';
     --walker-ability-bottom-bg: 'none';
+    --walker-ability-base-bg: 'none';
     --walker-ability-middle-offset: 5px;
 }
 
@@ -126,7 +127,7 @@ module-container[module="WalkerText"] {
             top: var(--walker-ability-middle-offset);
             height: calc(100% - 2 * var(--walker-ability-middle-offset));
             width: 300px;
-            background-color: rgba(255, 255, 255, 0.3);
+            background: var(--walker-ability-base-bg);
         }
 
         .border-bottom {
