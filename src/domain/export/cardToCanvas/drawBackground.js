@@ -110,7 +110,35 @@ async function drawBackgroundImage(ctx, elementRect, rootRect, style) {
     const originRect = getOriginRect(elementRect, style);
     const imgSize = getBackgroundSize(img, originRect, style);
     const { x, y } = getBackgroundPosition(rootRect, originRect, imgSize, style);
-    ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+
+    if (!style.backgroundRepeat || style.backgroundRepeat === 'no-repeat') {
+        ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+        return;
+    }
+
+    const pattern = ctx.createPattern(img, style.backgroundRepeat);
+    if (!pattern) {
+        ctx.drawImage(img, x, y, imgSize.width, imgSize.height);
+        return;
+    }
+
+    const matrix = new DOMMatrix();
+    // The pattern origin is (0,0) in the current user coordinate space.
+    // background-position defines the offset of the first tile.
+    // We also need to account for background-size if it's different from the image size.
+    matrix.translateSelf(x, y);
+    if (imgSize.width !== img.width || imgSize.height !== img.height) {
+        matrix.scaleSelf(imgSize.width / img.width, imgSize.height / img.height);
+    }
+    pattern.setTransform(matrix);
+
+    ctx.fillStyle = pattern;
+    ctx.fillRect(
+        originRect.left - rootRect.left,
+        originRect.top - rootRect.top,
+        originRect.width,
+        originRect.height
+    );
 }
 
 export async function drawBackground(ctx, element, style, rootRect) {
