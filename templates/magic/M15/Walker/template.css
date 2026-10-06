@@ -11,6 +11,7 @@
 
 .frame-standard module-container[module="Art"] {
     overflow: visible;
+    margin: 1px 9px;
 
     crop-image {
         display: block;
