@@ -70,10 +70,54 @@ module-container[module="WalkerText"] {
     flex-direction: column;
 
     > div {
-        margin: 6px 0;
+        flex: 1 0 auto;
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &:nth-of-type(odd) {
+            background-image:
+                var(--walker-ability-top-bg),
+                var(--walker-ability-bottom-bg),
+                var(--walker-ability-base-bg);
+            background-position:
+                31px -7px,
+                31px calc(100% + 16px),
+                31px 6px;
+            background-repeat: no-repeat;
+            background-size:
+                300px 13px,
+                300px 20px,
+                300px calc(100% - 10px);
+        }
+
+        &:nth-of-type(even) {
+            margin-top: -6px;
+
+            &:not(:last-of-type) {
+                margin-bottom: -10px;
+            }
+        }
+
+        &:nth-of-type(odd):not(:first-of-type) {
+            padding-top: 6px;
+        }
+
+        &:nth-of-type(odd):not(:last-of-type) {
+            padding-bottom: 4px;
+        }
 
         &:first-of-type {
-            margin-top: 0;
+            padding-top: 8px;
+            background-image:
+                var(--walker-ability-bottom-bg),
+                var(--walker-ability-base-bg);
+            background-position:
+                31px calc(100% + 8px),
+                31px 0;
+            background-size:
+                300px 20px,
+                300px calc(100% - 12px);
 
             .border-top {
                 display: none;
@@ -83,16 +127,9 @@ module-container[module="WalkerText"] {
                 top: 0;
                 height: calc(100% - var(--walker-ability-middle-offset));
             }
-
-            p:first-of-type {
-                padding-top: 8px;
-                margin-top: var(--chop-top);
-            }
         }
 
         &:last-of-type {
-            flex-grow: 1;
-            margin-bottom: 0;
             padding-bottom: 0;
 
             .border-bottom {
@@ -102,15 +139,32 @@ module-container[module="WalkerText"] {
             .middle-bg {
                 height: calc(100% - var(--walker-ability-middle-offset));
             }
+        }
 
-            p:last-of-type {
-                margin-bottom: var(--chop-bottom);
-            }
+        &:last-of-type:nth-of-type(odd) {
+            background-image:
+                var(--walker-ability-top-bg),
+                var(--walker-ability-base-bg);
+            background-position:
+                31px -7px,
+                31px 11px;
+            background-size:
+                300px 18px,
+                300px calc(100% - 13px);
+        }
+
+        &:only-of-type {
+            background-image: var(--walker-ability-base-bg);
+            background-position: 31px 0;
+            background-size: 300px 100%;
         }
     }
 
     .walker-ability-content, .walker-static-ability {
         position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .border-top {
             position: absolute;
@@ -154,6 +208,28 @@ module-container[module="WalkerText"] {
     .walker-static-ability {
         padding-left: 36px;
         padding-right: 7px;
+    }
+
+    .border-top, .middle-bg, .border-bottom {
+        display: none;
+    }
+
+    > .walker-ability:first-of-type > .walker-ability-cost,
+    > .walker-ability:first-of-type > .walker-ability-content {
+        margin-top: var(--chop-top);
+    }
+
+    > .walker-ability:last-of-type > .walker-ability-cost,
+    > .walker-ability:last-of-type > .walker-ability-content {
+        margin-bottom: var(--chop-bottom);
+    }
+
+    > .walker-static-ability:first-of-type > p:first-of-type {
+        margin-top: calc(0.4em + var(--chop-top));
+    }
+
+    > .walker-static-ability:last-of-type > p:last-of-type {
+        margin-bottom: calc(0.4em + var(--chop-bottom));
     }
 }
 
