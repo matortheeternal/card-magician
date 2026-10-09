@@ -26,10 +26,10 @@ export default class SpawnerArtifact extends ExportArtifact {
         const boosterModelUrl = JSON.stringify(this.ttsBasePath + 'booster.obj');
         const boosterTextureUrl = JSON.stringify(this.ttsBasePath + 'booster.png');
         return (
-            `local manifestUrl = ${manifestUrl}
-            local boosterModelUrl = ${boosterModelUrl}
-            local boosterTextureUrl = ${boosterTextureUrl}
-            ${this.spawnerCode}`
+            `local manifestUrl = ${manifestUrl}\n`+
+            `local boosterModelUrl = ${boosterModelUrl}\n`+
+            `local boosterTextureUrl = ${boosterTextureUrl}\n`+
+            `${this.spawnerCode}`
         );
     }
 

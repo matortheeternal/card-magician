@@ -276,8 +276,8 @@ function createBoosterData()
             }
         },
         Bag = {Order = 0},
-        LuaScript = "function tryObjectEnter(object)\\n"
-            .. "    return not object.hasTag('BoosterPack')\\n"
+        LuaScript = "function tryObjectEnter(object) "
+            .. "    return not object.hasTag('BoosterPack') "
             .. "end",
         Transform = createTransform()
     }
