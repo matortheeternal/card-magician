@@ -20,11 +20,11 @@ export default class CardFiles {
         return this.paths.has(key);
     }
 
-    set(key, filePath) {
+    async set(key, filePath) {
         const def = this.resolveDefinition(key);
         this.paths.set(key, filePath);
-        def.refresh(filePath);
-        def.setFieldValue(this.card, filePath);
+        await def.refresh(filePath);
+        await def.setFieldValue(this.card, filePath);
     }
 
     clear(key) {
@@ -60,7 +60,7 @@ export default class CardFiles {
         const newFilePath = await this.getCanonicalPath(key);
         if (newFilePath === oldFilePath) return;
         await moveFile(oldFilePath, newFilePath);
-        this.set(key, newFilePath);
+        await this.set(key, newFilePath);
     }
 
     async load(filesByName) {

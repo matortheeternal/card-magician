@@ -10,6 +10,7 @@ export default class CardImageFileDefinition extends CardFileDefinition {
     async setFieldValue(card, value) {
         const field = this.getField(card);
         if (!field) return;
+        if (field.imageUrl?.startsWith('blob:')) return;
         field.imageUrl = await this.filePathToUrl(value);
     }
 

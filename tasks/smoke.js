@@ -2,7 +2,8 @@ import { createTestConfig, spawnTest } from './dev/testHelpers.js';
 
 const suites = [
     'Startup',
-    'Persistence'
+    'Persistence',
+    'Rendering'
 ];
 
 async function runTests() {

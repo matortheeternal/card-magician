@@ -28,7 +28,7 @@ export default class CardMagicianCard {
 
     async setDataPath(filePath) {
         const { stem } = await getPathParts(filePath);
-        this.files.set('data', filePath);
+        await this.files.set('data', filePath);
         this.baseName = stem;
     }
 
@@ -83,7 +83,7 @@ export default class CardMagicianCard {
             const filePath = await this.files.getCanonicalPath(key);
             const data = await image.loadImageData();
             await writeBinaryFile(filePath, data);
-            this.files.set(key, filePath);
+            await this.files.set(key, filePath);
             delete image.dirty;
         }
     }
@@ -94,7 +94,7 @@ export default class CardMagicianCard {
             `${this.baseName}.yml`
         );
         await YAMLSerializer.save(filePath, this);
-        this.files.set('data', filePath);
+        await this.files.set('data', filePath);
     }
 
     async save(saveAll = false) {
