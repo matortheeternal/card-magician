@@ -180,4 +180,9 @@ export default (frameOptions) => ([{
         { id: 'avoidCoveringDevoid', name: L`Avoid covering devoid` }
     ],
     default: { avoidCoveringDevoid: true }
+}, {
+    id: 'borderColor',
+    type: 'color',
+    label: L`Border Color`,
+    default: null
 }]);

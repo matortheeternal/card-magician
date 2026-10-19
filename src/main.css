@@ -27,6 +27,7 @@
 @import "ui/components/faceForm/faceForm.css";
 @import "ui/components/fieldComponents/checkboxListField.css";
 @import "ui/components/fieldComponents/codeEditorField.css";
+@import "ui/components/fieldComponents/colorField.css";
 @import "ui/components/fieldComponents/imageField.css";
 @import "ui/components/fieldComponents/nestedMenuField.css";
 @import "ui/components/fieldComponents/numberField.css";

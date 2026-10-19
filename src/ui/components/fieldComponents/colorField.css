@@ -1,0 +1,18 @@
+cm-color .field-label {
+    display: inline-block;
+    margin-bottom: var(--sl-spacing-3x-small);
+    font-size: var(--sl-font-size-small);
+    font-weight: var(--sl-font-weight-semibold);
+    color: var(--sl-input-label-color);
+    cursor: default;
+}
+
+cm-color {
+    display: flex;
+    flex-direction: column;
+
+    > sl-color-picker::part(trigger) {
+        border-radius: 0;
+        width: 100px;
+    }
+}

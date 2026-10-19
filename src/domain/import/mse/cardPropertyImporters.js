@@ -70,6 +70,17 @@ export const tokenPropImporters = {
     },
 };
 
+function parseRgbStringToHex(rgbString) {
+    const match = rgbString.match(/\d+/g);
+    if (!match || match.length < 3) {
+        console.warn(`Invalid RGB color format "${rgbString}"`);
+        return null;
+    }
+    return '#' + match.slice(0, 3)
+        .map(x => parseInt(x).toString(16).padStart(2, '0'))
+        .join('');
+}
+
 export default {
     notes: (value, cmCard) => cmCard.notes = stripTags(value),
     card_color: (value, cmCardFace) => {
@@ -106,4 +117,7 @@ export default {
         cmCardFace.faceSymbol = faceSymbolMap[lastOption] || 'autodetect';
     },
     illustrator: (value, cmCardFace) => cmCardFace.illustrator = value,
+    border_color: (value, cmCardFace) => {
+        cmCardFace.borderColor = parseRgbStringToHex(value);
+    },
 };
