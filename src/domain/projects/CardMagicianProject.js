@@ -1,10 +1,10 @@
 import {
     createDirectory,
     getJoinedPath, getParentPath, getPathParts,
-    mount, unmount, writeFile
+    mount, readFile, unmount, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
-import { checkFileExists, find, loadTextFile } from '../../shared/fsUtils.js';
+import { checkFileExists, find } from '../../shared/fsUtils.js';
 import { getTags, loadTags } from '../game/tagManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
@@ -149,7 +149,7 @@ export default class CardMagicianProject {
     async loadSymbol() {
         const fileExists = await checkFileExists(this.symbolPath);
         if (!fileExists) return;
-        this.symbol = await loadTextFile(this.symbolPath);
+        this.symbol = await readFile(this.symbolPath);
     }
 
     async saveCards(withImages = true) {
