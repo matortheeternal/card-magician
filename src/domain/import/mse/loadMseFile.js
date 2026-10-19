@@ -1,6 +1,3 @@
-import { getJoinedPath, readFile } from '../../../shared/neutralinoAdapter.js';
-import { checkFileExists } from '../../../shared/fsUtils.js';
-
 const knownMultilineKeys = [
     /^rule_text(_\d)?$/,
     /^flavor_text(_\d)?$/,
