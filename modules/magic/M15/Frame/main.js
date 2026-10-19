@@ -59,10 +59,11 @@ export default class FrameModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, [
-            'colorIdentity', 'superType', 'subType', 'rulesHTML', 'parent', 'frame',
-            'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle', 'nyxStyle',
-            'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle', 'miracleStyle',
-            'ubStyle', 'meldStyle', 'otherFrameOptions', 'resolvedFaceSymbol'
+            'colorIdentity', 'alias', 'superType', 'subType', 'rulesHTML', 'parent',
+            'frame', 'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle',
+            'nyxStyle', 'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle',
+            'miracleStyle', 'ubStyle', 'meldStyle', 'otherFrameOptions',
+            'resolvedFaceSymbol'
         ], () => this.updateFrame(card));
     }
 

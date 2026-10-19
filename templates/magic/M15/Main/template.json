@@ -11,6 +11,7 @@
     "magic/M15/FaceSymbol",
     "magic/M15/Name",
     "magic/M15/Cost",
+    "magic/M15/Alias",
     "magic/M15/Art",
     "magic/M15/ColorIndicator",
     "magic/M15/Type",

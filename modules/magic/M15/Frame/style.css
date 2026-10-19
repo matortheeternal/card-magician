@@ -7,3 +7,10 @@ module-container[module="Frame"] {
 .bg.frame-node {
     height: 63px;
 }
+
+.bg.frame-alias {
+    height: 22px;
+    width: 296px;
+    top: 58px;
+    left: 39px;
+}

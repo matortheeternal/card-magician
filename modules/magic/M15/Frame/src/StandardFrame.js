@@ -13,6 +13,7 @@ import Levels from './mixins/Levels.js';
 import PT from './mixins/PT.js';
 import LevelPTs from './mixins/LevelPTs.js';
 import NyxTrim from './mixins/NyxTrim.js';
+import Alias from './mixins/Alias.js';
 
 export default class StandardFrame extends CardFrame.with(
     Frame,
@@ -27,6 +28,7 @@ export default class StandardFrame extends CardFrame.with(
     Crowns,
     MiracleTrim,
     Levels,
+    Alias,
     PT,
     LevelPTs,
 ) {

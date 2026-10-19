@@ -11,6 +11,7 @@ import Crowns from './mixins/Crowns.js';
 import MiracleTrim from './mixins/MiracleTrim.js';
 import PT from './mixins/PT.js';
 import NyxTrim from './mixins/NyxTrim.js';
+import Alias from './mixins/Alias.js';
 
 export default class DevoidFrame extends CardFrame.with(
     Frame,
@@ -24,6 +25,7 @@ export default class DevoidFrame extends CardFrame.with(
     Node,
     Crowns,
     MiracleTrim,
+    Alias,
     PT,
 ) {
     static matches(card) {

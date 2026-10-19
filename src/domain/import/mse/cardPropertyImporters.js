@@ -78,6 +78,7 @@ export default {
             .filter(Boolean);
     },
     name: (value, cmCardFace) => cmCardFace.name = value,
+    alias: (value, cmCardFace) => cmCardFace.alias = value,
     casting_cost: (value, cmCardFace) => {
         cmCardFace.manaCost = ManaCost.parse(value);
     },

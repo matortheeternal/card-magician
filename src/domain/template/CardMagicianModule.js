@@ -9,7 +9,7 @@ import {
     maskImageOp
 } from '../graphics/compositeOperations.js';
 import DOMPurify from 'dompurify';
-import { escapeHTML } from '../../shared/htmlUtils.js';
+import { escapeHTML, esc } from '../../shared/htmlUtils.js';
 import { watch } from '../../shared/reactivity.js';
 
 /**
@@ -344,6 +344,10 @@ export default class CardMagicianModule {
 
     escapeHTML(str) {
         return escapeHTML(str);
+    }
+
+    esc(str) {
+        return esc(str);
     }
 
     getCardClientRect(element) {
