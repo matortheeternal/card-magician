@@ -1,10 +1,10 @@
 import {
     createDirectory,
     getJoinedPath, getParentPath, getPathParts,
-    mount, unmount
+    mount, unmount, writeFile
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
-import { checkFileExists, find } from '../../shared/fsUtils.js';
+import { checkFileExists, find, loadTextFile } from '../../shared/fsUtils.js';
 import { getTags, loadTags } from '../game/tagManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
@@ -13,6 +13,7 @@ export default class CardMagicianProject {
     #folderPath = '';
     #cardsFolderPath = '';
     #tagsPath = '';
+    #symbolPath = '';
 
     constructor(data = {}) {
         Object.assign(this, {
@@ -34,6 +35,7 @@ export default class CardMagicianProject {
         await project.setFilePath(filePath);
         await project.loadCards();
         await project.loadCardFiles();
+        await project.loadSymbol();
         await project.loadTags();
         await project.afterLoad();
         return project;
@@ -51,6 +53,13 @@ export default class CardMagicianProject {
      */
     get tagsPath() {
         return this.#tagsPath;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get symbolPath() {
+        return this.#symbolPath;
     }
 
     /**
@@ -86,6 +95,7 @@ export default class CardMagicianProject {
         this.#folderPath = await getParentPath(value);
         this.#cardsFolderPath = await getJoinedPath(this.folderPath, 'cards');
         this.#tagsPath = await getJoinedPath(this.folderPath, 'tags.yml');
+        this.#symbolPath = await getJoinedPath(this.folderPath, 'symbol.svg');
         await createDirectory(this.#folderPath);
         await unmount('/project');
         await mount('/project', this.#folderPath);
@@ -136,6 +146,12 @@ export default class CardMagicianProject {
         loadTags(projectTags);
     }
 
+    async loadSymbol() {
+        const fileExists = await checkFileExists(this.symbolPath);
+        if (!fileExists) return;
+        this.symbol = await loadTextFile(this.symbolPath);
+    }
+
     async saveCards(withImages = true) {
         for (const card of this.cards) {
             await card.save(this.cardsFolderPath);
@@ -151,9 +167,15 @@ export default class CardMagicianProject {
         await YAMLSerializer.save(this.tagsPath, projectTags);
     }
 
+    async saveSymbol() {
+        if (!this.symbol?.length) return;
+        await writeFile(this.symbolPath, this.symbol);
+    }
+
     async save() {
         const data = Object.assign({}, this);
         delete data.cards;
+        delete data.symbol;
         await YAMLSerializer.save(this.filePath, data);
     }
 
@@ -164,6 +186,8 @@ export default class CardMagicianProject {
         await this.saveCards(true);
         progress.setStatus('Saving tags');
         await this.saveTags();
+        progress.setStatus('Saving set symbol');
+        await this.saveSymbol();
         progress.setStatus('Saving project file');
         await this.save();
         progress.increment();
