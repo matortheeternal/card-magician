@@ -1,6 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { onActiveProjectChanged } from '../../domain/projects/projectManager.js';
-import { getExporter } from '../../domain/export/exporterManager.js';
+import { getExporter, hasExporter } from '../../domain/export/exporterManager.js';
 import { watch } from '../../shared/reactivity.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';
@@ -25,7 +25,9 @@ export default class ExportMenu extends ReactiveMenu {
     }
 
     get exporterMenuItems() {
-        return Object.keys(activeProject.export).map(exporterId => {
+        return Object.keys(activeProject.export).filter(exporterId => {
+            return hasExporter(exporterId);
+        }).map(exporterId => {
             const exporter = getExporter(exporterId);
             return this.menuItem(L`Export ${exporter.label}`, ``, () => {
                 executeAction('run-exporter', exporterId);

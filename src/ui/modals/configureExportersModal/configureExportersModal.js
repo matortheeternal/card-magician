@@ -1,6 +1,7 @@
 import Modal from '../Modal.js';
 import { registerModal } from '../modalManager.js';
 import { esc, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { hasExporter } from '../../../domain/export/exporterManager.js';
 
 const L = localize('configure-exporters-modal');
 
@@ -60,7 +61,9 @@ export default class ConfigureExportersModal extends Modal {
     }
 
     renderBody() {
-        const configuredExporters = Object.keys(this.data).map(id => {
+        const configuredExporters = Object.keys(this.data).filter(id => {
+            return hasExporter(id);
+        }).map(id => {
             return (
                 `<cm-exporter-config exporter-id="${esc(id)}"></cm-exporter-config>`
             );

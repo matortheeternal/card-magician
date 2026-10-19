@@ -46,6 +46,10 @@ export async function loadExporter(exporterMetadata) {
     return exporterMetadata.ExporterClass = (await import('/' + mainPath)).default;
 }
 
+export function hasExporter(id) {
+    return exporters.some(exporter => exporter.id === id);
+}
+
 export function getExporter(id) {
     const exporter = exporters.find(exporter => exporter.id === id);
     if (!exporter)
