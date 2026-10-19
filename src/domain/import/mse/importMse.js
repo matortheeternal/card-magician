@@ -7,6 +7,7 @@ import * as progress from '../../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
 import MseFileAdapter from './MseFileAdapter.js';
 import { getStructure } from './cardStructureRegistry.js';
+import convertSetSymbol from './setSymbol/convertSetSymbol.js';
 
 const L = localize('import-mse');
 
@@ -59,18 +60,27 @@ const setInfoImporters = {
     copyright: (value, cmSet) => cmSet.legalText = value,
     set_code: (value, cmSet) => cmSet.setCode = value,
     set_language: (value, cmSet) => cmSet.language = value,
+    symbol: async (value, cmSet, adapter) => {
+        if (!value) return;
+        try {
+            cmSet.symbol = convertSetSymbol(await adapter.entryText(value));
+        } catch (error) {
+            const message = L`Failed to import set symbol "${value}", using default`;
+            log('user').warn(message, error);
+        }
+    },
 };
 
 function isEmptyObject(obj) {
     return obj && typeof obj === 'object' && Object.keys(obj).length === 0;
 }
 
-function importSetInfo(mseInfo, cmSet) {
+async function importSetInfo(mseInfo, cmSet, adapter) {
     for (const key of Object.keys(mseInfo)) {
         progress.setOperation(key);
         const value = mseInfo[key];
         if (isEmptyObject(value)) continue;
-        setInfoImporters[key]?.(value, cmSet);
+        await setInfoImporters[key]?.(value, cmSet, adapter);
     }
 }
 
@@ -112,7 +122,7 @@ export async function importMseFile(filePath) {
     if (!verifySet(mseSet)) return;
     progress.setMax(mseSet.card.length);
     progress.setStatus(L`Loading set info`);
-    importSetInfo(mseSet.set_info, project);
+    await importSetInfo(mseSet.set_info, project, adapter);
     progress.setStatus(L`Importing cards`);
     const cardMap = await importCards(mseSet, adapter);
     addCardsToProject(cardMap, project);

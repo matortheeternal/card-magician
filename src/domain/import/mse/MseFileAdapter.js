@@ -16,6 +16,10 @@ export default class MseFileAdapter extends MseProjectAdapter {
         return this._rawSetText ||= (await this.entries['set'].text());
     }
 
+    async entryText(filename) {
+        return await this.entries[filename].text();
+    }
+
     async getImage(filename) {
         const buffer = await this.entries[filename].arrayBuffer();
         return new Blob([buffer], { type: determineImageType(buffer) });

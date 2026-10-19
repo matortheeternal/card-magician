@@ -13,11 +13,16 @@ function getType(key) {
     return isMultiline ? { type: 'multiline' } : {};
 }
 
+function normalizeKey(key) {
+    return key.trim().replace(/ +/g, '_');
+}
+
 function makeLineObject(match) {
+    const key = normalizeKey(match[2]);
     return {
         depth: match[1].length,
-        key: match[2],
-        ...getType(match[2]),
+        key,
+        ...getType(key),
         value: match[3].slice(1)
     };
 }
@@ -58,7 +63,7 @@ function shouldRollup(parsedLines, depth) {
 function parseMseLines(text) {
     const parsedLines = [];
     for (const line of text.trimEnd().split(/\r?\n/)) {
-        const match = line.match(/^(\t*)([^\s:]+):([^\n]*)$/);
+        const match = line.match(/^(\t*)([^:]+):([^\n]*)$/);
         if (match && !shouldRollup(parsedLines, match[1].length)) {
             parsedLines.push(makeLineObject(match));
             continue;
