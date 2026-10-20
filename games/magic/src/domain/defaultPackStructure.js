@@ -26,7 +26,8 @@ export default () => ([
         }, {
             expression: 'r=m -t:land',
             weight: 1
-        }]
+        }],
+        collation: 'sheet'
     },
     {
         label: 'Land',
@@ -43,6 +44,7 @@ export default () => ([
         }, {
             expression: 't:land r=m',
             weight: 2
-        }]
+        }],
+        collation: 'sheet'
     },
 ]);
