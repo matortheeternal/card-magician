@@ -13,9 +13,7 @@ export default class ExtensionSettings extends CardMagicianSettings {
     }
 
     render() {
-        this.innerHTML = (
-            `<cm-settings-toc></cm-settings-toc>`
-        );
+        this.innerHTML = `Coming soon.`;
     }
 }
 

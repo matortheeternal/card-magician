@@ -1,4 +1,5 @@
 import CardMagicianSettings from './CardMagicianSettings.js';
+import { registerSettings } from './settingsRegistry.js';
 
 const L = localize('settings');
 
@@ -9,6 +10,8 @@ export default class LanguageSettings extends CardMagicianSettings {
     static groupWeight = 1;
 
     render() {
-        this.innerHTML = '';
+        this.innerHTML = 'Coming soon.';
     }
 }
+
+registerSettings(LanguageSettings);
