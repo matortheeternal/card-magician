@@ -11,6 +11,10 @@ module-container[render="renderPT"] {
     z-index: 3;
 }
 
+:host(.back) module-container[render="renderPT"] {
+    color: white;
+}
+
 module-container[render="renderNotchPT"] {
     position: absolute;
     bottom: 64px;
