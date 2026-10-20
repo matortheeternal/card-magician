@@ -3,7 +3,8 @@ import editTagFields from '../components/editTag/editTagFields.js';
 import {
     findTag,
     findOrCreateTag,
-    getTags, deleteTag,
+    getTags,
+    deleteTag,
 } from '../../domain/game/tagManager.js';
 import { registerSettings } from './settingsRegistry.js';
 import { removeTagFromSet } from '../../domain/projects/projectManager.js';
@@ -37,6 +38,7 @@ export default class EditTags extends CardMagicianSettings {
         this.addEventListener('remove-tag', event => {
             removeTagFromSet(event.detail.tag);
             deleteTag(event.detail.tag);
+            this.emit('project-changed');
         });
     }
 
@@ -82,6 +84,7 @@ export default class EditTags extends CardMagicianSettings {
         }
         const tag = findOrCreateTag(text);
         this.renderTag(tag);
+        this.emit('project-changed');
     }
 }
 

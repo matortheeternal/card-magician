@@ -1,4 +1,5 @@
 import ReactiveComponent from '../components/ReactiveComponent.js';
+import { emit } from '../../shared/htmlUtils.js';
 
 export default class CardMagicianSettings extends ReactiveComponent {
     /**
@@ -66,14 +67,14 @@ export default class CardMagicianSettings extends ReactiveComponent {
         this.bind();
     }
 
-    get model() {
-        throw new Error('Not implemented.');
-    }
-
     /**
      * Binds event handlers and reactive watchers.
      */
     bind() {}
+
+    emit(name, detail) {
+        emit(this, name, detail);
+    }
 
     /**
      * Renders the settings.

@@ -23,6 +23,7 @@ export default class EditPacks extends CardMagicianSettings {
         });
         this.addEventListener('cm-remove-slot', event => {
             this.model.remove(event.detail);
+            this.emit('project-changed');
         });
     }
 
@@ -42,7 +43,7 @@ export default class EditPacks extends CardMagicianSettings {
         this.innerHTML = (
             `<div class="header">
                 <p class="text-muted">
-                    ${L`Configure the booster pack structure for this project.`}
+                    ${L`Configure the booster pack structure used in certain exports.`}
                 </p>
                 <sl-button data-click-action="addSlot" variant="primary">
                     <sl-icon slot="prefix" name="plus-lg"></sl-icon>
@@ -59,6 +60,7 @@ export default class EditPacks extends CardMagicianSettings {
         element.slot = activeGame.newPackSlot();
         this.model.push(element.slot);
         this.slotsContainer.appendChild(element);
+        this.emit('project-changed');
     }
 }
 

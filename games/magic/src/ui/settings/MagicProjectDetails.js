@@ -8,19 +8,20 @@ export default class MagicProjectDetails extends CardMagicianSettings {
     static label = L`Details`;
     static groupWeight = 1024;
 
-    #model;
-
     static search(query) {
         return setInfoFields.filter(field => {
             return this.fieldMatches(field, query);
         });
     }
 
+    bind() {
+        this.addEventListener('cm-field-changed', () => {
+            this.emit('project-changed');
+        });
+    }
+
     get model() {
-        return this.#model ||= setInfoFields.reduce((model, field) => ({
-            ...model,
-            [field.id]: activeProject[field.id],
-        }), {});
+        return window.activeProject;
     }
 
     get fields() {

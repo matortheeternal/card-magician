@@ -15,6 +15,7 @@ export default class SettingsModal extends Modal {
     constructor() {
         super();
         this.tabs = getSettingsTabs();
+        this.saveProject = this.saveProject.debounce(500);
     }
 
     connectedCallback() {
@@ -28,6 +29,9 @@ export default class SettingsModal extends Modal {
         super.bind();
         this.addEventListener('sl-selection-change', event => {
             this.activeNavItem = event.detail.selection[0];
+        });
+        this.addEventListener('project-changed', () => {
+            this.saveProject();
         });
     }
 
@@ -120,6 +124,10 @@ export default class SettingsModal extends Modal {
         return (
             `<sl-button data-click-action="close">Close</sl-button>`
         );
+    }
+
+    saveProject() {
+        window.activeProject.save();
     }
 }
 
