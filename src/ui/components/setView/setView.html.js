@@ -19,8 +19,8 @@ export default
         <sl-button size="large" data-click-action="addCard">
             ${L`Add a card`}
         </sl-button>
-        <sl-button size="large" data-click-action="openSet">
-            ${L`Open a set`}
+        <sl-button size="large" data-click-action="openProject">
+            ${L`Open a project`}
         </sl-button>
     </div>
     <div class="recent-projects-container">

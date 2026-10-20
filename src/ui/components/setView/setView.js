@@ -11,6 +11,7 @@ import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
 import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
+import { checkFileExists } from '../../../shared/fsUtils.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -74,23 +75,35 @@ export default class SetView extends ReactiveComponent {
         return this.querySelector('.recent-projects-container');
     }
 
-    renderRecentProjects() {
-        const recentProjects = getConfig().recentFiles;
+    renderRecentProject(container, project) {
+        const button = document.createElement('sl-button');
+        button.variant = 'text';
+        button.size = 'small';
+        button.classList.add('recent-project');
+        button.addEventListener('click', () => openProject(project));
+        button.textContent = String(project);
+        container.appendChild(button);
+    }
+
+    async getRecentProjects() {
+        const projects = [];
+        for (const project of getConfig().recentFiles) {
+            if (await checkFileExists(project))
+                projects.push(project);
+        }
+        return projects;
+    }
+
+    async renderRecentProjects() {
+        const recentProjects = await this.getRecentProjects();
         toggleDisplay(recentProjects.length > 0, this.recentProjectsContainer);
         if (!recentProjects.length) return;
 
         const container = this.recentProjectsContainer
             .querySelector('.buttons-container');
         container.innerHTML = '';
-        recentProjects.forEach(project => {
-            const button = document.createElement('sl-button');
-            button.variant = 'text';
-            button.size = 'small';
-            button.classList.add('recent-project');
-            button.addEventListener('click', () => openProject(project));
-            button.textContent = String(project);
-            container.appendChild(button);
-        });
+        for (const project of recentProjects)
+            this.renderRecentProject(container, project);
     }
 
     render() {
