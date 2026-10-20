@@ -11,6 +11,7 @@ export default class MagicProject extends CardMagicianProject {
             game: 'magic',
             version: SET_FILE_VERSION,
             defaultBackImage: activeGame.resolveAsset('back.png'),
+            pack: [],
             ...info,
             ...data
         });
