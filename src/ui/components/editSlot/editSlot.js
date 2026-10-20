@@ -80,7 +80,7 @@ export default class EditSlot extends ReactiveComponent {
                     </div>
                 </div>
                 <div class="add-pool-entry" data-click-action="addPoolEntry">
-                    ${L`Add Pool Entry`}
+                    <sl-icon name="plus-lg"></sl-icon> ${L`Add Pool Entry`}
                 </div>
             </section>`
         );

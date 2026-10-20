@@ -1,8 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import editTagFields from './editTagFields.js';
-import { deleteTag } from '../../../domain/game/tagManager.js';
-import { removeTagFromSet } from '../../../domain/projects/projectManager.js';
 
 const L = localize('edit-tag');
 
@@ -54,8 +52,7 @@ export default class EditTag extends ReactiveComponent {
         if (!confirm(
             L`Deleting this tag will remove it from all cards in this set. Continue?`
         )) return;
-        removeTagFromSet(this.tag);
-        deleteTag(this.tag);
+        emit(this, 'remove-tag', { tag: this.tag });
         this.remove();
     }
 

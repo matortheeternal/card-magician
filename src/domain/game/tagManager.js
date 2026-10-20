@@ -4,24 +4,24 @@ const tags = [];
 let projectTags = [];
 
 export function getTags() {
-    return projectTags.sort((a, b) => {
+    return projectTags;
+}
+
+export function loadTags(tags) {
+    projectTags = tags.sort((a, b) => {
         if (a.text > b.text) return 1;
         if (a.text < b.text) return -1;
         return 0;
     });
 }
 
-export function loadTags(tags) {
-    projectTags = tags;
-}
-
-export function saveTags(tags) {
-    projectTags = tags;
+export function findTag(text) {
+    return tags.find(tag => tag.text === text)
+        || projectTags.find(tag => tag.text === text);
 }
 
 export function findOrCreateTag(text) {
-    const existingTag = tags.find(tag => tag.text === text)
-        || projectTags.find(tag => tag.text === text);
+    const existingTag = findTag(text);
     if (existingTag) return existingTag;
     const newTag = {
         text,
@@ -32,7 +32,7 @@ export function findOrCreateTag(text) {
 }
 
 export function deleteTag(tag) {
-    projectTags.remove(tag);
+    projectTags = projectTags.filter(t => t.text !== tag.text);
 }
 
 export function searchTags(value, limit = 8) {
