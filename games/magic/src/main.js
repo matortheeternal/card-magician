@@ -12,6 +12,7 @@ import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
+import defaultPackStructure from './domain/defaultPackStructure.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(gamePath) {
@@ -60,7 +61,11 @@ export default class MagicTheGathering extends CardMagicianGame {
         return Object.values(baseCardFields);
     }
 
+    get defaultPackStructure() {
+        return defaultPackStructure();
+    }
+
     newPackSlot() {
-        return { label: 'New Slot', count: 1, pool: [] };
+        return { label: 'New Slot', count: 1, pool: [], collation: 'runs' };
     }
 }

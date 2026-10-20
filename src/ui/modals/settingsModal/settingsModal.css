@@ -20,19 +20,31 @@ cm-settings-modal {
         flex-direction: row;
         flex: 1;
         min-height: 0;
+    }
 
-        .navigation {
-            min-width: 18em;
-            padding: var(--sl-spacing-x-small) 0;
-            border-right: 1px solid var(--sl-input-border-color);
-            overflow-y: auto;
-        }
+    .navigation {
+        min-width: 18em;
+        padding: var(--sl-spacing-x-small) 0;
+        border-right: 1px solid var(--sl-input-border-color);
+        overflow-y: auto;
+    }
 
-        .content-container {
-            flex-grow: 1;
-            padding: var(--sl-spacing-large);
-            padding-top: var(--sl-spacing-small);
-            overflow-y: auto;
+    .content-container {
+        flex-grow: 1;
+        padding: var(--sl-spacing-large);
+        padding-top: var(--sl-spacing-small);
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .no-content-prompt {
+        position: static;
+        height: initial;
+        margin-top: 30%;
+
+        h2 {
+            font-size: var(--sl-font-size-x-large);
+            padding: 0 6em;
         }
     }
 
