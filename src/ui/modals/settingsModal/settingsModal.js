@@ -38,7 +38,6 @@ export default class SettingsModal extends Modal {
     set activeTab(value) {
         this.#activeTab?.remove?.();
         this.#activeTab = value;
-        value.model = value.constructor.createModel();
         if (this.isConnected)
             this.contentContainer.appendChild(value);
         getConfig().set('lastSettingsTab', value.tagName.toLowerCase());
@@ -60,9 +59,7 @@ export default class SettingsModal extends Modal {
                 const tabId = event.target.dataset.pageId;
                 if (tabId) this.selectNavItem(tabId);
             },
-            ok: () => this.ok(),
-            apply: () => this.apply(),
-            cancel: () => this.cancel()
+            close: () => this.close()
         };
     }
 
@@ -114,37 +111,15 @@ export default class SettingsModal extends Modal {
                     <div class="search-bar"></div>
                     <div class="tabs-container"></div>
                 </div>
-                <div class="content-container">
-                    <cm-settings-breadcrumbs></cm-settings-breadcrumbs>
-                </div>
+                <div class="content-container"></div>
             </div>`
         );
     }
 
     renderActions() {
         return (
-            `<sl-button variant="primary" data-click-action="ok">OK</sl-button>
-            <sl-button data-click-action="cancel">Cancel</sl-button>
-            <sl-button
-                data-click-action="apply"
-                ${this.dirty ? '' : 'disabled'}
-            >
-                Apply
-            </sl-button>`
+            `<sl-button data-click-action="close">Close</sl-button>`
         );
-    }
-
-    async ok() {
-        await this.apply();
-        this.close();
-    }
-
-    cancel() {
-        this.close();
-    }
-
-    async apply() {
-        // todo
     }
 }
 

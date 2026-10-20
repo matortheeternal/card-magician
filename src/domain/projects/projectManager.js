@@ -103,7 +103,8 @@ export async function selectCard(card) {
 export function removeTagFromSet(tag) {
     for (const card of activeProject.cards)
         card.tags?.remove?.(tag.text);
-    changed(activeEditorCard, 'tags');
+    if (window.activeEditorCard)
+        changed(window.activeEditorCard, 'tags');
 }
 
 registerAction('add-face', async faceId => {

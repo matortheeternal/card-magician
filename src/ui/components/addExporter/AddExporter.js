@@ -65,7 +65,6 @@ export default class AddExporter extends ReactiveComponent {
                         ${escapeHTML(exporter.description || '')}
                     </small>
                 </div>
-                <sl-icon slot="suffix" name="plus-lg"></sl-icon>
             </sl-menu-item>`
         )).join('');
     }
@@ -79,7 +78,7 @@ export default class AddExporter extends ReactiveComponent {
             `<sl-dropdown placement="bottom-end" hoist>
                 <sl-button
                     slot="trigger"
-                    size="small"
+                    variant="primary"
                     caret
                     ${disabled ? 'disabled' : ''}
                     title="${esc(title)}">

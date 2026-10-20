@@ -1,13 +1,4 @@
 cm-configure-exporters {
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sl-spacing-small);
-        flex-wrap: wrap;
-        margin-bottom: var(--sl-spacing-small);
-    }
-
     .configured-exporters {
         display: flex;
         flex-direction: column;

@@ -31,6 +31,7 @@ cm-settings-modal {
         .content-container {
             flex-grow: 1;
             padding: var(--sl-spacing-large);
+            padding-top: var(--sl-spacing-small);
             overflow-y: auto;
         }
     }
@@ -40,6 +41,15 @@ cm-settings-modal {
         display: grid;
         grid-template-columns: 1fr 1fr;
         column-gap: var(--sl-spacing-small);
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sl-spacing-small);
+        flex-wrap: wrap;
+        margin-bottom: var(--sl-spacing-small);
     }
 
     cm-code .codejar-editor {

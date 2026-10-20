@@ -16,14 +16,6 @@ export default class EditTags extends CardMagicianSettings {
     static label = L`Tags`;
     static groupWeight = 896;
 
-    static createModel() {
-        return getTags();
-    }
-
-    static apply(model) {
-        saveTags(model);
-    }
-
     static search(query) {
         return editTagFields.filter(field => {
             return this.fieldMatches(field, query);
@@ -32,6 +24,10 @@ export default class EditTags extends CardMagicianSettings {
 
     get tagsContainer() {
         return this.querySelector('div.tags-container');
+    }
+
+    get model() {
+        return getTags();
     }
 
     bind() {

@@ -33,26 +33,6 @@ export default class CardMagicianSettings extends ReactiveComponent {
     static groupWeight = 0;
 
     /**
-     * @abstract
-     * @returns {object}
-     */
-    static createModel() {
-        return {};
-    }
-
-    /**
-     * Applies changes to a data model to underlying data structures.
-     * Report changes using changed() to trigger persistence.
-     *
-     * @abstract
-     * @param {object} model
-     * @returns {Promise<void>}
-     */
-    static apply(model) {
-        throw new Error('Not implemented.');
-    }
-
-    /**
      * Returns true if a field or its options match a given query.
      *
      * @param {object} field
@@ -86,14 +66,8 @@ export default class CardMagicianSettings extends ReactiveComponent {
         this.bind();
     }
 
-    #model = null;
     get model() {
-        return this.#model;
-    }
-
-    set model(value) {
-        this.#model = value;
-        if (this.isConnected) this.render();
+        throw new Error('Not implemented.');
     }
 
     /**

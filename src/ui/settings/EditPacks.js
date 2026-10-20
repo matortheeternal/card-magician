@@ -9,30 +9,21 @@ export default class EditPacks extends CardMagicianSettings {
     static label = L`Packs`;
     static groupWeight = 512;
 
-    static createModel() {
-        return activeProject.pack;
-    }
-
-    static apply(model) {
-        activeProject.pack = model;
-    }
-
     static search(query) {
         return [];
     }
 
+    get model() {
+        return activeProject.pack;
+    }
+
     bind() {
-        super.bind();
+        this.handleEvents('click', {
+            addSlot: () => this.addSlot()
+        });
         this.addEventListener('cm-remove-slot', event => {
             this.model.remove(event.detail);
         });
-    }
-
-    get onClickHandlers() {
-        return {
-            ...super.onClickHandlers,
-            addSlot: () => this.addSlot()
-        };
     }
 
     get slotsContainer() {
@@ -49,7 +40,15 @@ export default class EditPacks extends CardMagicianSettings {
 
     render() {
         this.innerHTML = (
-            `<sl-button data-click-action="addSlot">${L`Add Slot`}</sl-button>
+            `<div class="header">
+                <p class="text-muted">
+                    ${L`Configure the booster pack structure for this project.`}
+                </p>
+                <sl-button data-click-action="addSlot" variant="primary">
+                    <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+                    ${L`Add Slot`}
+                </sl-button>
+            </div>
             <div class=slots-container></div>`
         );
         this.renderSlots();
