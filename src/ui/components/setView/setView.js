@@ -14,7 +14,7 @@ import {
     readCardsFromClipboard,
     writeCardsToClipboard
 } from '../../../domain/card/cardClipboard.js';
-import { cardFacesToBlob } from '../../../domain/export/cardImageExporter.js';
+import { cardsToBlob } from '../../../domain/export/cardImageExporter.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 import { checkFileExists } from '../../../shared/fsUtils.js';
 
@@ -161,12 +161,7 @@ export default class SetView extends ReactiveComponent {
                     updateBaseName(card);
             });
 
-            const imageBlob = ready.then(() => {
-                const cardFaces = document.querySelectorAll(
-                    'cm-display-card cm-card-face'
-                );
-                return cardFacesToBlob(cardFaces);
-            });
+            const imageBlob = ready.then(() => cardsToBlob(cards));
             await writeCardsToClipboard(cards, imageBlob, ready);
         } catch (error) {
             log('user').error('Copy failed', error);

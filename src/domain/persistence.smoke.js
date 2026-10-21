@@ -552,6 +552,7 @@ describe('Persistence', () => {
             expect(image.size).toBeGreaterThan(0);
 
             const cardData = await item.getType(CARD_CLIPBOARD_TYPE);
+            expect(cardData.type).toEqual(CARD_CLIPBOARD_TYPE);
             const payload = JSON.parse(await cardData.text());
             expect(payload.cardFiles).toEqual(['purple hippo.yml']);
             const dataPath = await getJoinedPath(
@@ -572,22 +573,46 @@ describe('Persistence', () => {
         it('places both faces next to each other in the rendered image', async () => {
             await createCard();
             await setCardFields({ name: 'front face' });
+            await flushCard();
+            await executeAction('copy');
+            const frontImage = await clipboardItems[0].getType('image/png');
+            const frontBitmap = await createImageBitmap(frontImage);
+
             await toggleFace('back');
             await setCardFields({ name: 'back face' }, { faceKey: 'back' });
             await flushCard();
-
-            const faces = Array.from(document.querySelectorAll(
-                'cm-display-card cm-card-face'
-            ));
-            const expectedWidth = faces.reduce((width, face) => {
-                return width + Math.ceil(face.getBoundingClientRect().width * 2);
-            }, 0);
             await executeAction('copy');
 
             const image = await clipboardItems[0].getType('image/png');
             const bitmap = await createImageBitmap(image);
-            expect(faces.length).toEqual(2);
-            expect(bitmap.width).toEqual(expectedWidth);
+            expect(bitmap.width).toEqual(frontBitmap.width * 2);
+            expect(bitmap.height).toEqual(frontBitmap.height);
+            frontBitmap.close();
+            bitmap.close();
+        });
+
+        it('renders all selected cards in a grid', async () => {
+            await createCard();
+            await setCardFields({ name: 'one' });
+            await flushCard();
+            await executeAction('copy');
+            const singleImage = await clipboardItems[0].getType('image/png');
+            const singleBitmap = await createImageBitmap(singleImage);
+
+            await createCard();
+            await setCardFields({ name: 'two' });
+            await createCard();
+            await setCardFields({ name: 'three' });
+            await flushCard();
+            const listView = document.querySelector('cm-list-view');
+            listView.selection = [0, 1, 2];
+            await executeAction('copy');
+
+            const image = await clipboardItems[0].getType('image/png');
+            const bitmap = await createImageBitmap(image);
+            expect(bitmap.width).toEqual(singleBitmap.width * 2);
+            expect(bitmap.height).toEqual(singleBitmap.height * 2);
+            singleBitmap.close();
             bitmap.close();
         });
 

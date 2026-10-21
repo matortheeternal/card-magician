@@ -1,4 +1,5 @@
 import { cardToCanvas } from './cardToCanvas/cardToCanvas.js';
+import CardSheetPair from './CardSheetExporter/CardSheetPair.js';
 import Stopwatch from '../../shared/Stopwatch.js';
 
 function downloadImage(imageUrl, filename) {
@@ -19,27 +20,28 @@ function canvasToBlob(canvas, type, quality) {
     });
 }
 
-export async function cardFacesToBlob(cardFaces) {
-    window.__EXPORTING__ = true;
-    try {
-        const canvases = [];
-        for (const cardFace of cardFaces)
-            canvases.push(await cardToCanvas(cardFace));
-        if (!canvases.length) throw new Error('No card faces to copy');
+export async function cardsToBlob(cards) {
+    const faceCount = cards.reduce((count, card) => {
+        return count + (card.back ? 2 : 1);
+    }, 0);
+    if (!faceCount) throw new Error('No cards to copy');
 
-        const canvas = document.createElement('canvas');
-        canvas.width = canvases.reduce((width, face) => width + face.width, 0);
-        canvas.height = Math.max(...canvases.map(face => face.height));
-        const context = canvas.getContext('2d');
-        let x = 0;
-        for (const face of canvases) {
-            context.drawImage(face, x, 0);
-            x += face.width;
-        }
-        return await canvasToBlob(canvas, 'image/png');
-    } finally {
-        window.__EXPORTING__ = false;
-    }
+    const columns = Math.ceil(Math.sqrt(faceCount));
+    const sheet = new CardSheetPair({
+        backFaceMode: 'adjacent',
+        backgroundColor: 'white',
+        columns,
+        gap: 0,
+        imageType: 'image/png',
+        leaveLastEmpty: false,
+        quality: 1,
+        rows: Math.ceil(faceCount / columns),
+        scale: 2,
+    }, 1);
+    for (const card of cards)
+        sheet.add(card);
+    const canvas = await sheet.front.capture();
+    return await canvasToBlob(canvas, 'image/png');
 }
 
 export async function saveHTMLAsImage(node, filename) {

@@ -85,7 +85,7 @@ export default class CardSheetArtifact extends ExportArtifact {
         } catch (error) {
             return Promise.reject(error);
         } finally {
-            document.body.removeChild(container.parentElement);
+            container.remove();
             tracker.complete();
         }
     }
@@ -125,7 +125,7 @@ export default class CardSheetArtifact extends ExportArtifact {
     }
 
     cleanup() {
-        document.body.removeChild(this.cardsContainer.parentElement);
+        this.cardsContainer.remove();
     }
 
     async toBuffer() {

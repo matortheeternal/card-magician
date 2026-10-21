@@ -72,7 +72,7 @@ export async function writeCardsToClipboard(cards, imageBlob, ready) {
     try {
         const cardData = snapshotPromise.then(({ payload }) => new Blob(
             [JSON.stringify(payload)],
-            { type: 'application/json' }
+            { type: CARD_CLIPBOARD_TYPE }
         ));
         const item = new ClipboardItem({
             [CARD_CLIPBOARD_TYPE]: cardData,
