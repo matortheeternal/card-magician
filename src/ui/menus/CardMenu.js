@@ -16,6 +16,11 @@ export default class CardsMenu extends ReactiveMenu {
                 L`Delete`,
                 () => executeAction('delete-selected-cards')
             ),
+            this.menuItem(
+                L`Duplicate Cards`,
+                L`Ctrl+D`,
+                () => executeAction('duplicate-selected-cards')
+            ),
             this.menuItem(L`Automate`, L`Ctrl+M`, () => openModal('cm-automate-modal'))
         ];
     }

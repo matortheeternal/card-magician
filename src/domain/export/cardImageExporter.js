@@ -10,6 +10,38 @@ function downloadImage(imageUrl, filename) {
     link.remove();
 }
 
+function canvasToBlob(canvas, type, quality) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+            if (blob) resolve(blob);
+            else reject(new Error(`Failed to encode ${type} image`));
+        }, type, quality);
+    });
+}
+
+export async function cardFacesToBlob(cardFaces) {
+    window.__EXPORTING__ = true;
+    try {
+        const canvases = [];
+        for (const cardFace of cardFaces)
+            canvases.push(await cardToCanvas(cardFace));
+        if (!canvases.length) throw new Error('No card faces to copy');
+
+        const canvas = document.createElement('canvas');
+        canvas.width = canvases.reduce((width, face) => width + face.width, 0);
+        canvas.height = Math.max(...canvases.map(face => face.height));
+        const context = canvas.getContext('2d');
+        let x = 0;
+        for (const face of canvases) {
+            context.drawImage(face, x, 0);
+            x += face.width;
+        }
+        return await canvasToBlob(canvas, 'image/png');
+    } finally {
+        window.__EXPORTING__ = false;
+    }
+}
+
 export async function saveHTMLAsImage(node, filename) {
     try {
         window.__EXPORTING__ = true;
@@ -19,7 +51,6 @@ export async function saveHTMLAsImage(node, filename) {
         stopwatch.lap('cardToCanvas');
 
         const imgURL = canvas.toDataURL('image/jpg', 0.92);
-        window.__EXPORTING__ = false;
         stopwatch.lap('toDataUrl');
 
         downloadImage(imgURL, filename);
@@ -27,5 +58,7 @@ export async function saveHTMLAsImage(node, filename) {
         log('fs').info(`Saved image to ${filename}`);
     } catch (err) {
         log('fs').error('Failed to save image:', err);
+    } finally {
+        window.__EXPORTING__ = false;
     }
 }

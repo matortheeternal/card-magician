@@ -1,5 +1,4 @@
 import {
-    copyFile,
     getJoinedPath,
     moveFile,
     rmrf
@@ -29,6 +28,10 @@ export default class CardFiles {
 
     clear(key) {
         this.paths.delete(key);
+    }
+
+    detach() {
+        this.paths.clear();
     }
 
     get entries() {
@@ -70,7 +73,7 @@ export default class CardFiles {
                 || await def.getLegacyFilePath(this.card);
             if (!filePath) continue;
             this.paths.set(def.key, filePath);
-            def.setFieldValue(this.card, filePath);
+            await def.setFieldValue(this.card, filePath);
         }
     }
 
@@ -88,22 +91,4 @@ export default class CardFiles {
         throw new Error(`Unknown card file definition: ${key}`);
     }
 
-    copy() {
-        const obj = {};
-        for (const key of this.paths.keys()) {
-            if (key === 'data') continue;
-            obj[key] = this.paths.get(key);
-        }
-        return obj;
-    }
-
-    async paste(files) {
-        for (const [key, value] of Object.entries(files)) {
-            const newPath = await this.getCanonicalPath(key);
-            await copyFile(value, newPath);
-            const def = this.resolveDefinition(key);
-            this.paths.set(key, newPath);
-            def.setFieldValue(this.card, newPath);
-        }
-    }
 }

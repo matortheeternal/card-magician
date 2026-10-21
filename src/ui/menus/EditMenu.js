@@ -15,7 +15,6 @@ export default class EditMenu extends ReactiveMenu {
             this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => log('user').info('Redo')),
             this.DIVIDER,
             this.menuItem(L`Find`, L`Ctrl+F`, () => executeAction('toggle-search')),
-            this.menuItem(L`Cut`, L`Ctrl+X`, () => executeAction('cut')),
             this.menuItem(L`Copy`, L`Ctrl+C`, () => executeAction('copy')),
             this.menuItem(L`Paste`, L`Ctrl+V`, () => executeAction('paste')),
             this.DIVIDER,

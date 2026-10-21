@@ -9,7 +9,12 @@ import {
 import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
-import ImageFileValue from '../../../domain/card/ImageFieldValue.js';
+import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
+import {
+    readCardsFromClipboard,
+    writeCardsToClipboard
+} from '../../../domain/card/cardClipboard.js';
+import { cardFacesToBlob } from '../../../domain/export/cardImageExporter.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 import { checkFileExists } from '../../../shared/fsUtils.js';
 
@@ -49,10 +54,7 @@ export default class SetView extends ReactiveComponent {
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
         registerAction('paste', () => this.pasteCard());
-        registerAction('cut', async () => {
-            await this.copyCard();
-            await this.deleteSelectedCards();
-        });
+        registerAction('duplicate-selected-cards', () => this.duplicateCards());
     }
 
     get searchBar() {
@@ -151,34 +153,35 @@ export default class SetView extends ReactiveComponent {
     }
 
     async copyCard() {
-        log('user').info('copy card');
-        const cards = [];
-        const files = [];
-        for (const row of this.listView.selection) {
-            const card = row.original;
-            cards.push(card);
-            files.push(card.files.copy());
-        }
+        try {
+            const cards = this.listView.selection.map(row => row.original);
+            if (!cards.length) return;
+            const ready = this.flushPendingEdits().then(() => {
+                for (const card of cards)
+                    updateBaseName(card);
+            });
 
-        const serializer = new JSONSerializer();
-        const text = await serializer.serialize({ cards, files });
-        await navigator.clipboard.writeText(text);
+            const imageBlob = ready.then(() => {
+                const cardFaces = document.querySelectorAll(
+                    'cm-display-card cm-card-face'
+                );
+                return cardFacesToBlob(cardFaces);
+            });
+            await writeCardsToClipboard(cards, imageBlob, ready);
+        } catch (error) {
+            log('user').error('Copy failed', error);
+        }
     }
 
     async pasteCard() {
         try {
             log('user').info('paste card');
-            const clipboardText = await navigator.clipboard.readText();
-            const serializer = new JSONSerializer();
-            const clipboard = await serializer.deserialize(clipboardText) || [];
-            if (!clipboard?.cards?.length) return;
+            const cards = await readCardsFromClipboard();
+            if (!cards.length) return;
 
-            const zipped = clipboard.cards.zip(clipboard.files);
-            for (const [data, files] of zipped) {
-                const card = new activeGame.Card(data);
+            for (const card of cards) {
                 updateBaseName(card);
-                await card.files.paste(files);
-                await card.saveData();
+                await card.save(true);
                 activeProject.cards.push(card);
             }
             changed(activeProject, 'cards');
@@ -190,8 +193,54 @@ export default class SetView extends ReactiveComponent {
             this.listView.selection = [index];
             await selectCard(lastCard);
         } catch (e) {
-            log('user').debug('Paste failed', e);
+            log('user').error('Paste failed', e);
         }
+    }
+
+    async duplicateCards() {
+        try {
+            await this.flushPendingEdits();
+            const sourceCards = this.listView.selection.map(row => row.original);
+            const serializer = new JSONSerializer();
+            const cards = [];
+
+            for (const sourceCard of sourceCards) {
+                const data = await serializer.deserialize(
+                    await serializer.serialize(sourceCard)
+                );
+                const card = new activeGame.Card(data);
+                const sourceImages = new Map(sourceCard.files.fields);
+                for (const [key, image] of card.files.fields) {
+                    const sourceImage = sourceImages.get(key);
+                    if (!(image instanceof ImageFieldValue)
+                        || !(sourceImage instanceof ImageFieldValue)) continue;
+                    Object.assign(image, sourceImage.clone());
+                    image.dirty = Boolean(image.imageUrl);
+                }
+
+                updateBaseName(card);
+                await card.save(true);
+                activeProject.cards.push(card);
+                cards.push(card);
+            }
+
+            if (!cards.length) return;
+            changed(activeProject, 'cards');
+            const lastCard = cards.at(-1);
+            const index = this.listView.activeRows.findIndex(row => {
+                return row.original === lastCard;
+            });
+            if (index === -1) return;
+            this.listView.selection = [index];
+            await selectCard(lastCard);
+        } catch (error) {
+            log('user').error('Duplicate failed', error);
+        }
+    }
+
+    async flushPendingEdits() {
+        await document.querySelector('cm-card-form')?.save.flush();
+        await document.querySelector('cm-card-properties')?.save.flush();
     }
 
     toggleSearch() {
@@ -210,7 +259,7 @@ export default class SetView extends ReactiveComponent {
                 : cards;
             this.updateStatus();
         } catch (e) {
-            log('user').debug('Search error:', e);
+            log('user').error('Search error:', e);
         }
     }
 
@@ -275,7 +324,7 @@ export default class SetView extends ReactiveComponent {
         for (const file of files) {
             const card = new activeGame.Card();
             // TODO: This need to be cross-game compatible
-            card.front.artImage = await ImageFileValue.fromFile(file);
+            card.front.artImage = await ImageFieldValue.fromFile(file);
             activeProject.cards.push(card);
         }
         changed(activeProject, 'cards');
