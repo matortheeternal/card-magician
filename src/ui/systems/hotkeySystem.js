@@ -68,4 +68,4 @@ function onKeyDown(event) {
     hotkey.action?.(event);
 }
 
-document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keydown', onKeyDown, { capture: true });

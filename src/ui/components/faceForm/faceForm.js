@@ -28,6 +28,24 @@ export default class FaceForm extends ReactiveComponent {
         );
     }
 
+    focusNameField() {
+        const firstField = this.querySelector('form-field[field-id="name"]');
+        if (!firstField) return;
+        const input = firstField.querySelector('sl-input');
+        if (!input) return;
+        input.scrollIntoView();
+        input.focus();
+    }
+
+    focusFirstField() {
+        const firstField = this.querySelector('form-field');
+        if (!firstField) return;
+        const input = firstField.querySelector('sl-input, sl-select, sl-textarea');
+        if (!input) return;
+        input.scrollIntoView(true);
+        input.focus();
+    }
+
     getBaseHTML() {
         if (!this.face) return '';
         if (!this.form || !this.fields)

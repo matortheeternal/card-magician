@@ -6,6 +6,7 @@ import {
 import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { executeAction } from '../../systems/actionSystem.js';
+import { registerHotkey } from '../../systems/hotkeySystem.js';
 
 const L = localize('card-form');
 const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
@@ -35,6 +36,48 @@ class CardForm extends ReactiveComponent {
         this.bind();
     }
 
+    get activeFaceElement() {
+        const frontSection = this.querySelector(`div.face-front`);
+        const backSection = this.querySelector(`div.face-back`);
+        return frontSection.style.display !== 'none' ? frontSection  : backSection;
+    }
+
+    bind() {
+        registerHotkey('Ctrl+;', async () => {
+            const activeFaceElement = this.activeFaceElement;
+            const faceForm = activeFaceElement.querySelector('cm-face-form');
+            const optionsForm = activeFaceElement.querySelector('cm-options-form');
+            const formToFocus = optionsForm.contains(document.activeElement)
+                ? faceForm
+                : optionsForm;
+            if (formToFocus.parentElement.open) {
+                formToFocus.focusFirstField();
+                return;
+            }
+            this.addEventListener(
+                'sl-after-show',
+                () => formToFocus.focusFirstField(),
+                { once: true }
+            );
+            formToFocus.parentElement.show();
+        });
+        registerHotkey('F6', () => {
+            const activeFaceElement = this.activeFaceElement;
+            const faceForm = activeFaceElement.querySelector('cm-face-form');
+            faceForm.focusNameField();
+        });
+        this.handleEvents('click', {
+            toggleFront: () => this.toggleFace('front'),
+            toggleBack: () => this.toggleFace('back'),
+            removeBack: () => this.removeBackFace(),
+            showPreview: () => pushState('preview-card'),
+        });
+        registerState('card-form', {
+            onEnter: () => this.classList.add('open'),
+            onExit: () => this.classList.remove('open'),
+        });
+    }
+
     renderFaceToggleLabels() {
         this.toggleFrontButton.textContent = Object.hasOwn(this.editorCard, 'front')
             ? L`Front`
@@ -50,19 +93,6 @@ class CardForm extends ReactiveComponent {
         this.faceForms.forEach(faceForm => {
             const faceId = faceForm.dataset.faceId;
             faceForm.face = this.editorCard[faceId];
-        });
-    }
-
-    bind() {
-        this.handleEvents('click', {
-            toggleFront: () => this.toggleFace('front'),
-            toggleBack: () => this.toggleFace('back'),
-            removeBack: () => this.removeBackFace(),
-            showPreview: () => pushState('preview-card'),
-        });
-        registerState('card-form', {
-            onEnter: () => this.classList.add('open'),
-            onExit: () => this.classList.remove('open'),
         });
     }
 

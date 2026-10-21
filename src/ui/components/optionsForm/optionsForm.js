@@ -17,6 +17,15 @@ class OptionsForm extends FaceForm {
         return modelKey ? this.face?.[modelKey]?.options : this.face.options;
     }
 
+    focusFirstField() {
+        const firstField = this.querySelector('form-field');
+        if (!firstField) return;
+        const input = firstField.querySelector('sl-input, sl-select, sl-textarea');
+        if (!input) return;
+        input.scrollIntoView(true);
+        input.focus();
+    }
+
     getMissingFormHTML() {
         return (
             `<div class="no-content-prompt">
