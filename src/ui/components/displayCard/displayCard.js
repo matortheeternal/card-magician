@@ -73,7 +73,14 @@ export default class DisplayCard extends ReactiveComponent {
     }
 
     flipCard() {
-        this.querySelector('cm-card').flip();
+        const cardElement = this.querySelector('cm-card');
+        cardElement.flip();
+        const cardIsFlipped = cardElement.classList.contains('flipped');
+        const cardForm = document.querySelector('cm-card-form');
+        const activeFaceId = cardForm.activeFaceId;
+        const displayFaceId = cardIsFlipped ? 'back' : 'front';
+        if (activeFaceId === displayFaceId) return;
+        cardForm.toggleFace(activeFaceId === 'front' ? 'back' : 'front');
     }
 
     rotateCard() {

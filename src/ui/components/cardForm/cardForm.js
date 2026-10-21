@@ -36,6 +36,11 @@ class CardForm extends ReactiveComponent {
         this.bind();
     }
 
+    get activeFaceId() {
+        const frontSection = this.querySelector(`div.face-front`);
+        return frontSection.style.display !== 'none' ? 'front' : 'back';
+    }
+
     get activeFaceElement() {
         const frontSection = this.querySelector(`div.face-front`);
         const backSection = this.querySelector(`div.face-back`);
