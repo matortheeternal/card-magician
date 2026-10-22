@@ -52,7 +52,7 @@ export async function saveHTMLAsImage(node, filename) {
         const canvas = await cardToCanvas(node);
         stopwatch.lap('cardToCanvas');
 
-        const imgURL = canvas.toDataURL('image/jpg', 0.92);
+        const imgURL = canvas.toDataURL('image/png');
         stopwatch.lap('toDataUrl');
 
         downloadImage(imgURL, filename);
