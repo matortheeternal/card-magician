@@ -50,6 +50,14 @@ export default class FNMPromoFrame extends CardFrame.with(
         return 'fnm';
     }
 
+    // --- CROWNS ---
+    get crownMasks() {
+        return [
+            ...super.crownMasks,
+            this.resolveAssetPath('mask/frame/crown_fnm.png')
+        ];
+    }
+
     // --- PT ---
     get ptSubfolder() {
         return 'fnm';

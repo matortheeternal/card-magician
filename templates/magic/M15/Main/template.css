@@ -90,11 +90,7 @@
     .header, .type-line, .text-box,
     module-container[module="PT"] {
         color: white;
-        /*text-shadow: black -0.1em 0.1em;*/
-    }
-
-    .text .flavor-bar {
-        background: none;
+        text-shadow: black -1px 1px;
     }
 }
 

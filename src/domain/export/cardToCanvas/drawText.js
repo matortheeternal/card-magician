@@ -27,10 +27,14 @@ function applyTextShadow(ctx, style) {
     ));
     if (!match) return;
 
+    const transform = ctx.getTransform();
+    const scaleX = transform.a;
+    const scaleY = transform.d;
+    const avgScale = (scaleX + scaleY) / 2;
     ctx.shadowColor = match[1];
-    ctx.shadowOffsetX = parseFloat(match[2]);
-    ctx.shadowOffsetY = parseFloat(match[3]);
-    ctx.shadowBlur = parseFloat(match[4] || '0');
+    ctx.shadowOffsetX = parseFloat(match[2]) * scaleX;
+    ctx.shadowOffsetY = parseFloat(match[3]) * scaleY;
+    ctx.shadowBlur = parseFloat(match[4] || '0') * avgScale;
 }
 
 function applyFontStyle(ctx, style) {
