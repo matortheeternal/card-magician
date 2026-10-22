@@ -33,6 +33,10 @@ export default class FNMPromoFrame extends CardFrame.with(
     }
 
     /* --- FRAME --- */
+    get frameExt() {
+        return '.png';
+    }
+
     get frameSubfolder() {
         return 'fnm';
     }
