@@ -142,7 +142,9 @@ function removeTransforms(transforms, node, rootRect) {
             node.style.transform = 'none';
         }
     }
-    Array.from(node.children).forEach(node => removeTransforms(transforms, node, rootRect));
+    Array.from(node.children).forEach(
+        node => removeTransforms(transforms, node, rootRect)
+    );
 }
 
 function applyTransforms(transforms) {
@@ -156,7 +158,9 @@ export async function cardToCanvas(root, { scale = 2 } = {}) {
     const rootRect = root.getBoundingClientRect();
 
     const transforms = new Map();
-    findAllShadowRoots(root).forEach(node => removeTransforms(transforms, node, rootRect));
+    findAllShadowRoots(root).forEach(
+        node => removeTransforms(transforms, node, rootRect)
+    );
 
     const canvas = document.createElement('canvas');
 
