@@ -2,6 +2,37 @@ function hasText(node) {
     return Boolean(node.nodeValue && node.nodeValue.trim());
 }
 
+function getFirstTextShadow(textShadow) {
+    let depth = 0;
+    for (let i = 0; i < textShadow.length; i++) {
+        if (textShadow[i] === '(') depth++;
+        if (textShadow[i] === ')') depth--;
+        if (textShadow[i] === ',' && depth === 0)
+            return textShadow.slice(0, i);
+    }
+    return textShadow;
+}
+
+function applyTextShadow(ctx, style) {
+    ctx.shadowColor = 'transparent';
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
+
+    if (!style.textShadow || style.textShadow === 'none') return;
+    const number = '(-?(?:\\d+(?:\\.\\d*)?|\\.\\d+))';
+    const shadow = getFirstTextShadow(style.textShadow).trim();
+    const match = shadow.match(new RegExp(
+        `^(.+?)\\s+${number}px\\s+${number}px(?:\\s+${number}px)?$`
+    ));
+    if (!match) return;
+
+    ctx.shadowColor = match[1];
+    ctx.shadowOffsetX = parseFloat(match[2]);
+    ctx.shadowOffsetY = parseFloat(match[3]);
+    ctx.shadowBlur = parseFloat(match[4] || '0');
+}
+
 function applyFontStyle(ctx, style) {
     ctx.fillStyle = style.color;
     ctx.fontKerning = style.fontKerning;
@@ -11,6 +42,7 @@ function applyFontStyle(ctx, style) {
         style.fontSize,
         style.fontFamily
     ].filter(Boolean).join(' ');
+    applyTextShadow(ctx, style);
 }
 
 function segmentGraphemes(text) {
