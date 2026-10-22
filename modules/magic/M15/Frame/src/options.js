@@ -8,6 +8,8 @@ function computeFrame(card) {
 
 function computeArtSize(card) {
     if (card.isStation?.()) return 'borderless';
+    if (card.frame === 'devoid' || card.frame === 'clear')
+        return 'frameless';
     return 'standard';
 }
 
@@ -53,7 +55,7 @@ export default (frameOptions) => ([{
         { id: 'devoid',          name: L`Devoid` },
         { id: 'clear',           name: L`Clear` },
         { id: 'fnm',             name: L`FNM Promo` },
-        { id: 'dka',             name: L`DKA Full Art` },
+        { id: 'extended',        name: L`Extended` },
         { id: 'inverted',        name: L`Inverted` },
         { id: 'planeshifted',    name: L`Planeshifted` },
     ]
@@ -64,10 +66,10 @@ export default (frameOptions) => ([{
     options: [
         { id: 'auto',             name: L`Auto`, compute: computeArtSize },
         { id: 'standard',         name: L`Standard` },
-        { id: 'borderless',       name: L`Borderless` },
-        { id: 'clearBorderless',  name: L`Clear Borderless` },
         { id: 'frameless',        name: L`Frameless` },
-        { id: 'puma',             name: L`PUMA` },
+        { id: 'borderless',       name: L`Borderless` },
+        { id: 'sideBlend',        name: L`Side Blend` },
+        { id: 'topBlend',         name: L`Top Blend` },
     ]
 }, {
     id: 'crownStyle',

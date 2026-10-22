@@ -36,12 +36,10 @@ export default class ClearFrame extends CardFrame.with(
         return `${folder}/x.png`;
     }
 
-    get artDimensions() {
-        return { width: 343, height: 471 };
-    }
-
     /* --- FRAME --- */
     maskFrame(imageUrl) {
+        if (this.card.artSize !== 'frameless')
+            return super.maskFrame(imageUrl);
         const maskUrl = this.resolveAssetPath('mask/frame/clear.png');
         return this.ctx.maskImage(imageUrl, maskUrl);
     }

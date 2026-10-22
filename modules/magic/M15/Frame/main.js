@@ -30,11 +30,13 @@ export default class FrameModule extends CardMagicianModule {
     }
 
     get cardClasses() {
-        const classes = [`color-${this.card.getCardColorKey()}`];
-        const meldStyle = this.card.meldStyle || 'none';
+        const wrapped = proxyAutoOptions(this.card, this.options);
+        const classes = [`color-${wrapped.getCardColorKey()}`];
+        const meldStyle = wrapped.meldStyle || 'none';
         if (meldStyle !== 'none') classes.push(`meld-${meldStyle}`);
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
+        classes.push(`art-${wrapped.artSize}`);
         return classes;
     }
 

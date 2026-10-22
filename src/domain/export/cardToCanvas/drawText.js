@@ -73,7 +73,7 @@ function newTextUnit(textNode, grapheme, range) {
  *              on the same line and in the same text node are treated as a single
  *              drawable unit.
  * @param {Node} textNode
- * @returns {Array<TextUnit>}
+ * @returns {Array<object>}
  */
 function getTextUnits(textNode) {
     const range = document.createRange();

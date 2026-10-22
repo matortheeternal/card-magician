@@ -31,7 +31,11 @@ export default class CardFrame {
     }
 
     get artDimensions() {
-        return { width: 316, height: 223 };
+        if (this.card.artSize === 'frameless')
+            return { width: 343, height: 471 };
+        if (this.card.artSize === 'borderless')
+            return { width: 375, height: 467 };
+        return{ width: 316, height: 223 };
     }
 
     get isLand() {

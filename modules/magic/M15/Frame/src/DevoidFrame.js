@@ -33,7 +33,9 @@ export default class DevoidFrame extends CardFrame.with(
     }
 
     get artDimensions() {
-        return { width: 343, height: 429 };
+        if (this.card.artSize === 'frameless')
+            return { width: 343, height: 429 };
+        return super.artDimensions;
     }
 
     /* --- FRAME --- */
@@ -50,6 +52,8 @@ export default class DevoidFrame extends CardFrame.with(
     }
 
     maskFrame(imageUrl) {
+        if (this.card.artSize !== 'frameless')
+            return super.maskFrame(imageUrl);
         const maskUrl = this.resolveAssetPath('mask/frame/clear.png');
         return this.ctx.maskImage(imageUrl, maskUrl);
     }

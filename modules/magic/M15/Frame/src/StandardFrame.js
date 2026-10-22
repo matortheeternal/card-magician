@@ -36,14 +36,6 @@ export default class StandardFrame extends CardFrame.with(
         return true;
     }
 
-    get artDimensions() {
-        if (this.card.artSize === 'frameless')
-            return { width: 343, height: 471 };
-        if (this.card.artSize === 'borderless')
-            return { width: 375, height: 467 };
-        return{ width: 316, height: 223 };
-    }
-
     /* -- CROWNS -- */
     get isExpanded() {
         return this.card.artSize === 'borderless'

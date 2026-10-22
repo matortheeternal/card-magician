@@ -10,7 +10,7 @@
     left: 48%;
 }
 
-.frame-clear, .frame-borderless, .frame-frameless {
+.art-frameless {
     module-container[module="Art"] {
         margin-left: 0;
         margin-right: 0;
@@ -31,36 +31,42 @@
     }
 }
 
-.frame-borderless {
+.art-borderless {
     .bg.frame-border {
         display: none;
     }
 
-    module-container[module="Art"] {
-        crop-image, img {
-            width: 110%;
-            left: -5%;
-            top: -26%;
-        }
-    }
-}
-
-.frame-devoid {
     module-container[module="Art"] {
         margin-left: 0;
         margin-right: 0;
         margin-bottom: 1.5px;
         overflow: visible;
 
-        crop-image {
+        crop-image, img {
             display: block;
-            height: 185%;
+            height: 210%;
             position: absolute;
-            left: 0;
-            top: 0;
+            width: 110%;
+            left: -5%;
+            top: -26%;
         }
     }
 
+    .type-line {
+        padding: 0 14px 4px;
+    }
+}
+
+.frame-devoid.art-frameless  {
+    module-container[module="Art"] {
+        crop-image {
+            height: 185%;
+            top: 0;
+        }
+    }
+}
+
+.frame-devoid, .frame-clear {
     .type-line {
         padding: 0 14px 4px;
     }
