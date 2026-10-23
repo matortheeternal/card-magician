@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@sigil-sifter/magic": "^1.1.0",
+    "@sigil-sifter/magic": "^1.1.1",
     "@sigil-sifter/magic-cm": "^1.2.0",
-    "mana-scribe": "^2.1.1"
+    "mana-scribe": "^2.4.1",
+    "sigil-sifter": "^1.0.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
