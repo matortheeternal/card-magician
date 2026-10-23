@@ -7,19 +7,13 @@ export default class SymbolsModule extends CardMagicianModule {
         card.symbolsToHTML = this.symbolsToHTML.bind(this);
     }
 
-    parseSymbols(str) {
+    parseSymbols(str, ordered = true) {
         const cost = this.ActivationCost.parse(str);
-        return cost.symbols;
+        return ordered ? cost.orderedSymbols : cost.symbols;
     }
 
     symbolsToHTML(symbols, useTall = false) {
         const size = useTall ? 'tall' : 'flat';
         return symbols.map(sym => symbolToHTML(this, sym, size)).join('');
-    }
-
-    generateSymbols(str, useTall) {
-        if (!str) return '';
-        const symbols = this.parseSymbols(str);
-        return this.symbolsToHTML(symbols, useTall);
     }
 }

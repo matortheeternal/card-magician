@@ -59,7 +59,8 @@ export const SymbolConverter = {
         return str.match(/^([^ {]+)?((?:{[^{}]+})+)([^ {)]+)?/);
     },
     convert(match, { card, outputSymbols }) {
-        const symbols = card.parseSymbols(match[2]);
+        const ordered = card.symbolOrder !== 'custom';
+        const symbols = card.parseSymbols(match[2], ordered);
         outputSymbols.push(...symbols);
         const content = (match[1] || '')
             + card.symbolsToHTML(symbols)
