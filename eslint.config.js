@@ -32,7 +32,7 @@ export default [
                 selectedProjectCard: 'readonly',
                 localize: 'readonly',
                 log: 'readonly',
-                report: 'readonly',
+                createReporter: 'readonly',
                 changed: 'readonly',
                 CardMagicianModule: 'readonly',
                 CardMagicianGame: 'readonly',

@@ -1,6 +1,11 @@
 import { emit } from '../../shared/htmlUtils.js';
 import { morphHTML } from './morphHTML.js';
 
+const report = createReporter({
+    unit: 'RenderScheduler',
+    label: 'Card Part Rendering',
+});
+
 function getModuleContainers(card, module) {
     const selector = `module-container[module="${module.name}"]`;
     const root = card.isSubcard ? card.parent().dom.root : card.dom.root;
@@ -74,7 +79,13 @@ export default class RenderScheduler {
         for (const { card, module, options } of queue) {
             const renderKey = options?.render || 'render';
             const subcardKey = card.isSubcard ? card.id : null;
-            renderModule(card, module, renderKey, subcardKey);
+            try {
+                renderModule(card, module, renderKey, subcardKey);
+            } catch (err) {
+                const key = [subcardKey, module.modulePath, renderKey].join(':');
+                log('render').error(`Error rendering ${key}, ${err?.stack || err}`);
+                report(key, err, [card, module]);
+            }
         }
         this.queue = [];
         this.flushComplete(queue);
