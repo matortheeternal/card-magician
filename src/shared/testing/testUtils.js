@@ -59,6 +59,7 @@ export async function expectFilesToMatch(actual, expected) {
 export async function setCardFields(fields, options = { faceKey: 'front' }) {
     const changes = Object.entries(fields).map(([field, value]) => {
         const interactor = new FieldInteractor(field, options);
+        interactor.addIfMissing();
         return interactor.setValue(value);
     });
     return Promise.all(changes);

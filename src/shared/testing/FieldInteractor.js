@@ -42,6 +42,7 @@ export default class FieldInteractor {
      * @returns {FieldComponent}
      */
     get fieldElement() {
+
         if (!this.formField?.fieldElement)
             throw new Error(`Field "${this.fieldId}" not found.`);
         return this.formField.fieldElement;
@@ -64,6 +65,11 @@ export default class FieldInteractor {
 
     clear() {
         this.fieldElement.clear();
+    }
+
+    addIfMissing() {
+        if (!this.formField?.toggle) return;
+        this.formField.toggleShow(true);
     }
 
     remove() {

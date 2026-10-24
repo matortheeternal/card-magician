@@ -7,6 +7,7 @@ front:
   manaCost:
     __type: ManaCost
     symbols: ""
+  alias: null
   artImage:
     __type: image
     width: 0
@@ -48,6 +49,8 @@ front:
   meldStyle: none
   otherFrameOptions:
     avoidCoveringDevoid: true
+  borderColor: null
+  symbolOrder: standard
   chopTop: ""
   chopBottom: ""
   maxFontSize: ""

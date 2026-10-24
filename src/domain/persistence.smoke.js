@@ -131,7 +131,6 @@ describe('Persistence', () => {
                 superType: '',
                 subType: '',
                 rulesText: '',
-                flavorText: ''
             });
             await flushCard();
             const path = card.files.get('data');
@@ -142,7 +141,6 @@ describe('Persistence', () => {
                 superType: '',
                 subType: '',
                 rulesText: '',
-                flavorText: '',
             });
         });
 

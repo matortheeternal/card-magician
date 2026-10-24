@@ -2,38 +2,38 @@ import { getSettingsTabs, registerSettings } from './settingsRegistry.js';
 
 describe('getSettingsTabs', () => {
     class LaterRoot {
-        static id = 'later-root';
+        static id = 'cm-later-root';
         static parentId = null;
-        static groupWeight = 20;
+        static groupWeight = 0;
     }
 
     class LaterChild {
-        static id = 'later-child';
-        static parentId = 'earlier-root';
-        static groupWeight = 20;
+        static id = 'cm-later-child';
+        static parentId = 'cm-earlier-root';
+        static groupWeight = 0;
     }
 
     class Grandchild {
-        static id = 'grandchild';
-        static parentId = 'earlier-child';
+        static id = 'cm-grandchild';
+        static parentId = 'cm-earlier-child';
         static groupWeight = 10;
     }
 
     class EarlierRoot {
-        static id = 'earlier-root';
+        static id = 'cm-earlier-root';
         static parentId = null;
         static groupWeight = 10;
     }
 
     class Orphan {
-        static id = 'orphan';
-        static parentId = 'missing-parent';
-        static groupWeight = 0;
+        static id = 'cm-orphan';
+        static parentId = 'cm-missing-parent';
+        static groupWeight = 20;
     }
 
     class EarlierChild {
-        static id = 'earlier-child';
-        static parentId = 'earlier-root';
+        static id = 'cm-earlier-child';
+        static parentId = 'cm-earlier-root';
         static groupWeight = 10;
     }
 
