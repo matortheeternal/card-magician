@@ -42,7 +42,7 @@ async function runTests() {
 }
 
 function print(message) {
-    writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
 }
 
 jasmine.getEnv().addReporter(
@@ -53,6 +53,7 @@ jasmine.getEnv().addReporter({
     async jasmineDone(result) {
         const output = JSON.stringify({ status: result.overallStatus });
         await writeProcessOutput(RESULT_PREFIX + output + '\n');
+        await new Promise(resolve => { setTimeout(resolve, 100); });
         if (!NL_ARGS.includes('--stay-open')) close();
     }
 });
@@ -62,6 +63,9 @@ window.addEventListener('beforeunload', () => {
 });
 
 window.addEventListener('cm-loaded', () => {
-    runTests();
+    runTests().catch(err => {
+        console.error(err.stack);
+        exitApp(0);
+    });
 });
 

@@ -1,0 +1,32 @@
+
+when:
+    - event: push
+      branch: master
+    - event: pull_request
+      branch: master
+
+steps:
+    - name: test
+      image: cypress/browsers:node-24.22.1-chrome-156.0.8078.47-1-ff-158.0.1-edge-155.0.4283.62-1
+      backend_options:
+          docker:
+              user: '1000:1000'
+      environment:
+          HOME: /home/node
+          DISPLAY: ':99'
+          CHROME_NO_SANDBOX: 1
+      commands:
+          - id
+          - npm ci
+          - mkdir -p /tmp/.X11-unix
+          - chmod 1777 /tmp/.X11-unix
+          - Xvfb :99 -screen 0 1280x720x24 -nolisten tcp &
+          - sleep 1
+          - xdpyinfo -display :99 >/dev/null
+          - npm install -g --prefix /tmp/neu @neutralinojs/neu@11.8.0
+          - export PATH="/tmp/neu/bin:$PATH"
+          - neu update
+          - test -x bin/neutralino-linux_x64
+          - neu version
+          - timeout 2m npm test
+          - timeout 5m npm run smoke

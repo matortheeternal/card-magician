@@ -1,18 +1,38 @@
 # card-magician
 
-## how to run locally
+Card Magician is a cross-platform application for authoring custom playing cards. It currently supports the creation of custom Magic: the Gathering cards, with support for other games planned.
 
-1. clone the repository with git or a git client.
-2. install dependencies: NodeJS and npm
-3. run `npm i` in project directory
-4. run `npm install -g @neutralinojs/neu`
-5. run `neu update` to install neutralino binaries
-    - optionally: if on Windows, download the [nightly neutralino build](https://github.com/neutralinojs/neutralinojs/releases) binary for 
-      your platform and put it into the build folder. this fixes not being able to drag 
-      the window from the title bar.
-6. run `npm start`
+## features
 
-## linux
+Card Magician currently offers the following features:
 
-note: on some Linux systems you may need to set `export WEBKIT_DISABLE_DMABUF_RENDERER=1`
-to get the application to work correctly.
+- A user extension system for games, templates, card parts, and exporters
+- Saving and loading of projects
+- Autosave after every change
+- Recent projects display
+- Card preview
+- Editing card fields and options through a form
+- Exporting cards as images
+- Exporting project information for use on a website
+- Exporting projects for Tabletop Simulator
+- Pack collation configuration
+- Card filtering with Scryfall syntax
+- Project metadata configuration
+- SVG Set Symbols
+- Support for tagging cards and making design notes
+- 14 templates for creating Magic: the Gathering cards
+- General support for double face cards
+- Automatic detection and manual override support for frame elements such as legend crowns, nyx stars, vehicle trim, snow trim, and miracle trim
+- Interactive image cropping
+- Copying card images directly to your clipboard
+- Sorting cards by name, cost, cmc, type, p/t, color, rarity, or collector number
+- Standard, borderless, and frameless art sizes
+- Standard, devoid, clear, FNM, and inverted frames
+- Easy text-driven modal spells, levelers, sagas, planeswalkers, and spacecraft
+- Localization support
+
+## alpha
+
+Card Magician will be entering into alpha testing starting on November 1, 2026. Initial adopters will be encouraged to provide feedback during this time to guide continued work on the project.
+
+If you are interested in this project, please consider [joining the discord](https://discord.gg/abAeJKNhKt).

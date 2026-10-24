@@ -26,6 +26,7 @@
     "games/magic"
   ],
   "scripts": {
+    "prebuild": "node tasks/installVendor.js",
     "build": "node tasks/build.js",
     "release": "node tasks/release.js",
     "dev": "node tasks/serve.js",
@@ -57,7 +58,7 @@
     "esbuild": "^0.28.1",
     "eslint": "^9.39.2",
     "globals": "^16.5.0",
-    "jasmine": "^7.0.0",
+    "jasmine-core": "7.0.1",
     "ws": "^8.19.0"
   }
 }

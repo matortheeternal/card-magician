@@ -10,6 +10,11 @@ async function runTests() {
 }
 
 createTestConfig();
-runTests().then(failed => {
-    process.exit(failed ? 1 : 0);
-});
+runTests()
+    .then(failed => {
+        process.exit(failed ? 1 : 0);
+    })
+    .catch(err => {
+        console.error(err, err?.stack);
+        process.exit(1);
+    });

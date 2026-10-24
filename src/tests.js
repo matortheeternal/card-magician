@@ -5,6 +5,9 @@ import CustomReporter from './shared/testing/customReporter.js';
 const RESULT_PREFIX = '@TEST_RESULT:';
 const OUTPUT_PREFIX = '@TEST_OUTPUT:';
 
+const env = jasmine.getEnv();
+const urls = new jasmine.HtmlReporterV2Urls();
+
 async function loadModuleTests() {
     const testFiles = await findTestFiles('modules');
     await mount('/modules', NL_PATH + '/modules');
@@ -31,21 +34,22 @@ async function runTests() {
     await loadModuleTests();
 
     log('startup').info('Executing jasmine tests');
-    await window.executeJasmine();
+    await env.execute();
 }
 
 function print(message) {
-    writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
 }
 
-jasmine.getEnv().addReporter(
-    new CustomReporter({ print })
-);
+env.configure(urls.configFromCurrentUrl());
+env.addReporter(new CustomReporter({ print }));
+env.addReporter(new jasmine.HtmlReporterV2({ env, urls }));
 
-jasmine.getEnv().addReporter({
+env.addReporter({
     async jasmineDone(result) {
         const output = JSON.stringify({ status: result.overallStatus });
         await writeProcessOutput(RESULT_PREFIX + output + '\n');
+        await new Promise(resolve => { setTimeout(resolve, 100); });
         if (!NL_ARGS.includes('--stay-open')) close();
     }
 });

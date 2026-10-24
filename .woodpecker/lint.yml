@@ -1,0 +1,18 @@
+when:
+    - event: pull_request
+      path:
+          include:
+              - 'src/**'
+              - 'games/**'
+              - 'modules/**'
+              - 'eslint.config.js'
+              - 'package.json'
+              - 'package-lock.json'
+              - '.woodpecker/lint.yml'
+
+steps:
+    - name: eslint
+      image: node:24-bookworm
+      commands:
+          - npm ci
+          - npm run lint

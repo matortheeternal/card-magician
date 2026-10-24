@@ -16,7 +16,6 @@ export function createTestConfig() {
     fs.writeFileSync(testConfigPath, JSON.stringify(config, null, 2));
 }
 
-
 export function handleOutput(stdout) {
     let result = null;
     for (const line of stdout.split('\n')) {
@@ -31,18 +30,21 @@ export function handleOutput(stdout) {
 }
 
 export function getArgs(url, additionalArgs) {
+    const chromeArgs = ['--auto-open-devtools-for-tabs'];
+    if (process.env.CHROME_NO_SANDBOX === '1') chromeArgs.push('--no-sandbox');
     return [
         'run', '--disable-auto-reload', '--',
         `--config-file=/neutralino.test.config.json`,
         `--url=${url}`,
         ...additionalArgs,
         '--disable-auto-reload',
-        '--chrome-args="--auto-open-devtools-for-tabs"',
+        `--chrome-args="${chromeArgs.join(' ')}"`,
     ];
 }
 
 export function spawnTest(url, additionalArgs = []) {
     const args = getArgs(url, additionalArgs);
+
     return new Promise((resolve, reject) => {
         const child = spawn('neu', args, {
             cwd: root,
@@ -51,15 +53,28 @@ export function spawnTest(url, additionalArgs = []) {
         });
 
         const stdout = createInterface({ input: child.stdout });
+        let receivedResult = false;
+
         stdout.on('line', line => {
             const result = handleOutput(line);
             if (!result) return;
+
+            receivedResult = true;
             resolve(result);
         });
 
+        child.stderr.on('data', chunk => {
+            process.stderr.write(chunk);
+        });
+
         child.on('error', reject);
-        child.on('exit', (code, signal) => {
-            reject(`Test exited. code=${code}, signal=${signal}`)
+
+        child.on('close', (code, signal) => {
+            if (receivedResult) return;
+
+            reject(new Error(
+                `Test exited without result. code=${code}, signal=${signal}`
+            ));
         });
     });
 }

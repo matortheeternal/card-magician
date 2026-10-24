@@ -20,7 +20,8 @@ node_modules/
 /resources/js
 /resources/css
 /resources/shoelace
-/resources/tests/
+/resources/tests/*.js
+/resources/tests/jasmine
 !/resources/tests/*.html
 !/resources/tests/**/*.yml
 .tmp/
