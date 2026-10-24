@@ -18,6 +18,10 @@ const imagePathAdapters = [{
     },
     resolve: (sym, size) => `${size}/phyrexian/${getKey(sym)}.png`
 }, {
+    match: sym => sym.type === 'colorlessHybridMana',
+    resolve: (sym, size) => `${size}/hybrid2/c${getKey(sym)}.png`,
+    oversized: true,
+}, {
     match: sym => sym.type === 'genericHybridMana',
     resolve: (sym, size) => `${size}/hybrid2/2${getKey(sym)}.png`,
     oversized: true,
