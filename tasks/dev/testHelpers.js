@@ -33,7 +33,7 @@ export function handleOutput(stdout) {
 export function getArgs(url, additionalArgs) {
     return [
         'run', '--disable-auto-reload', '--',
-        `--config-file=neutralino.test.config.json`,
+        `--config-file=/neutralino.test.config.json`,
         `--url=${url}`,
         ...additionalArgs,
         '--disable-auto-reload',
