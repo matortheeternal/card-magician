@@ -8,11 +8,14 @@ const CrownMixin = {
     },
 
     get crownSubfolder() {
-        if (this.card.crownStyle === 'brawl') return this.brawlCrownSubfolder;
+        if (this.card.crownStyle === 'brawl')
+            return this.brawlCrownSubfolder;
         return this.card.crownStyle;
     },
 
     get crownFolder() {
+        if (this.card.artSize === 'borderless' || this.card.artSize === 'frameless')
+            return this.resolveAssetPath('element/crown/borderless');
         let subfolder = this.crownSubfolder;
         if (this.card.frame === 'planeshifted' && !subfolder.startsWith('brawl'))
             subfolder = `shifted/${subfolder}`;
