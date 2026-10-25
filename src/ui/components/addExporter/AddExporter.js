@@ -8,6 +8,7 @@ import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
 import { initializeFields } from '../../systems/fieldSystem.js';
 
 const L = localize('add-exporter');
+const report = createReporter({ unit: 'AddExporter', label: 'Exporter Config' });
 
 export default class AddExporter extends ReactiveComponent {
     error = '';
@@ -46,6 +47,7 @@ export default class AddExporter extends ReactiveComponent {
             this.error = '';
             emit(this, 'exporter-added', { id: exporterId });
         } catch (error) {
+            report('addExporter', error, [exporterId, exporter]);
             log('user').error(`Could not add exporter ${exporterId}`, error);
             this.error = L`Could not add ${exporter.label}.`;
         }

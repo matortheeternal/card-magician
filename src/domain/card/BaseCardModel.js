@@ -1,6 +1,8 @@
 import RenderScheduler from '../template/renderScheduler.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
+const report = createReporter({ unit: 'BaseCardModel', label: 'Card' });
+
 export default class BaseCardModel {
     fields = [];
     options = [];
@@ -49,6 +51,7 @@ export default class BaseCardModel {
             const { default: Module } = await import(mainPath);
             return new Module(this, modulePath);
         } catch (error) {
+            report('loadModule', error, [modulePath]);
             log('plugin').error('Failed to load module:', error);
         }
     }

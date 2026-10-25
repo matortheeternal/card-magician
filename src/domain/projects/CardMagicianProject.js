@@ -8,6 +8,8 @@ import { checkFileExists, find } from '../../shared/fsUtils.js';
 import { getTags, loadTags } from '../game/tagManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
+const report = createReporter({ unit: 'CardMagicianProject', label: 'Project' });
+
 export default class CardMagicianProject {
     #filePath = '';
     #folderPath = '';
@@ -116,7 +118,8 @@ export default class CardMagicianProject {
             try {
                 const card = await this.loadCard(filePath);
                 this.cards.push(card);
-            } catch {
+            } catch (error) {
+                report('loadCard', error, [filePath]);
                 log('state').error(`Failed to load card file ${filePath}`);
             }
         }

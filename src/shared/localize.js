@@ -6,6 +6,8 @@ import {
 } from './neutralinoAdapter.js';
 import { checkFileExists } from './fsUtils.js';
 
+const report = createReporter({ unit: 'localize' });
+
 const generateSchema = NL_ARGS.includes('--localize');
 const schemaPromise = loadSchema();
 const localesPromise = loadLocales();
@@ -57,10 +59,15 @@ export async function getAvailableLocales() {
 }
 
 export async function saveLocale(locale) {
-    const locales = await localesPromise;
-    locales[locale.id] = locale.metadata;
-    saveLocaleRegistry();
-    locale.save();
+    try {
+        const locales = await localesPromise;
+        locales[locale.id] = locale.metadata;
+        await saveLocaleRegistry();
+        await locale.save();
+    } catch (error) {
+        report('saveLocale', error, [locale]);
+        log('plugin').error('Error saving locale', error.message);
+    }
 }
 
 export async function setLocalization(localeId) {

@@ -10,6 +10,7 @@ import { getStructure } from './cardStructureRegistry.js';
 import convertSetSymbol from './setSymbol/convertSetSymbol.js';
 
 const L = localize('import-mse');
+const report = createReporter({ unit: 'ImportMSE', label: 'MSE Set Impporter' });
 
 const TESTED_MSE_VERSION = '2.6.0';
 const TESTED_MSE_GAME = 'magic';
@@ -144,6 +145,7 @@ registerAction('import-mse-set', async () => {
         });
     } catch (error) {
         progress.onError(error);
+        report('import-mse-set', error, [filePath]);
         log('user').error('Error importing MSE set', error);
     }
 });

@@ -9,6 +9,7 @@ import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
 
 const startupLog = log('startup');
+const report = createReporter({ unit: 'startup' });
 
 async function ensureDirectories() {
     const paths = [
@@ -92,6 +93,7 @@ window.addEventListener('beforeunload', () => {
         window.dispatchEvent(new CustomEvent('cm-loaded'));
     } catch (error) {
         startupLog.error('Startup error:', error);
+        report('startup', error);
         document.querySelector('cm-loader').showError();
     }
 })();

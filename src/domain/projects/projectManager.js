@@ -9,6 +9,9 @@ import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const L = localize('set-manager');
+const report = createReporter({
+    unit: 'ProjectManager'
+});
 
 const filters = [
     { name: L`Project Files`, extensions: ['cmproj'] },
@@ -32,15 +35,21 @@ export async function saveAs() {
         progress.complete();
     } catch (error) {
         progress.onError(error);
+        report('saveAs', error, [filePath, activeProject]);
         log('state').error(error);
     }
 }
 
 export async function saveProject(saveCards = false) {
     if (!activeProject.filePath) return saveAs();
-    await activeProject.save();
-    if (saveCards)
-        await activeProject.saveCards(false);
+    try {
+        await activeProject.save();
+        if (saveCards)
+            await activeProject.saveCards(false);
+    } catch (error) {
+        report('save', error, [activeProject]);
+        log('state').error(error);
+    }
 }
 
 export function setActiveProject(project) {

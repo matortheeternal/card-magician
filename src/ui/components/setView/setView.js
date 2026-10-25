@@ -18,6 +18,8 @@ import { cardsToBlob } from '../../../domain/export/cardImageExporter.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 import { checkFileExists } from '../../../shared/fsUtils.js';
 
+const report = createReporter({ unit: 'SetView', label: 'Set List View' });
+
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
         this.render();
@@ -164,6 +166,7 @@ export default class SetView extends ReactiveComponent {
             const imageBlob = ready.then(() => cardsToBlob(cards));
             await writeCardsToClipboard(cards, imageBlob, ready);
         } catch (error) {
+            report('copyCard', error, [this.listView.selection]);
             log('user').error('Copy failed', error);
         }
     }
@@ -187,8 +190,9 @@ export default class SetView extends ReactiveComponent {
             if (index === -1) return;
             this.listView.selection = [index];
             await selectCard(lastCard);
-        } catch (e) {
-            log('user').error('Paste failed', e);
+        } catch (error) {
+            report('pasteCard', error, [this.listView.selection]);
+            log('user').error('Paste failed', error);
         }
     }
 
@@ -229,6 +233,7 @@ export default class SetView extends ReactiveComponent {
             this.listView.selection = [index];
             await selectCard(lastCard);
         } catch (error) {
+            report('duplicateCard', error, [this.listView.selection]);
             log('user').error('Duplicate failed', error);
         }
     }
@@ -253,8 +258,8 @@ export default class SetView extends ReactiveComponent {
                 ? activeGame.filter(cards, this.searchValue)
                 : cards;
             this.updateStatus();
-        } catch (e) {
-            log('user').error('Search error:', e);
+        } catch (error) {
+            log('user').debug('Search error:', error);
         }
     }
 

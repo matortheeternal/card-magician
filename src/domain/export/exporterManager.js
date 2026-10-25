@@ -6,6 +6,11 @@ import { openModal } from '../../ui/modals/modalManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 const L = localize('export-manager');
+const report = createReporter({
+    unit: 'ExporterManager',
+    label: 'Export System'
+});
+
 const exporters = [];
 
 const NO_EXPORTER_FORM_HTML = (
@@ -135,6 +140,11 @@ registerAction('run-exporter', async exporterId => {
         progress.setStatus('Preparing cards');
         progress.setStatus('Preparing exporters');
         const params = gatherExporterParams(exporterId);
+        if (Object.keys(params).length === 0) {
+            progress.setTitle('Exporter not found.');
+            progress.onError(new Error(`Could not export ${exporterId}`));
+            return;
+        }
         await runExporters(params);
         progress.setTitle('Saving cards');
         for (const card of activeProject.cards)
@@ -144,6 +154,7 @@ registerAction('run-exporter', async exporterId => {
     } catch (error) {
         progress.setTitle('Export failed');
         progress.onError(error);
+        report('runExport', error, [exporterId, exporters]);
         log('user').error(`Error during export`, error);
     }
 });
