@@ -1,4 +1,4 @@
-# card-magician
+# card-magician ![](https://ci.codeberg.org/api/badges/18228/status.svg)
 
 Card Magician is a cross-platform application for authoring custom playing cards. It currently supports the creation of custom Magic: the Gathering cards, with support for other games planned.
 
