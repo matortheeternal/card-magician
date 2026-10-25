@@ -12,6 +12,7 @@ const jasmineFiles = [
 async function getTests(suffix, includeShared) {
     return [
         ...(includeShared ? [
+            './shared/reporting.js',
             './shared/log.js',
             './shared/prototypeExtensions.js',
             './shared/localize.js',
