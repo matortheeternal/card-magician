@@ -3,6 +3,7 @@ import FileMenu from '../../menus/FileMenu.js';
 import EditMenu from '../../menus/EditMenu.js';
 import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
+import { openUrl } from '../../../shared/neutralinoAdapter.js';
 
 const titleBarMenus = [
     new FileMenu(),
@@ -20,6 +21,11 @@ export default class TitleBar extends ReactiveComponent {
     }
 
     bind() {
+        this.handleEvents('click', {
+            showErrors: () => {},
+            joinDiscord: () => openUrl('https://discord.gg/abAeJKNhKt'),
+            openKofi: () => openUrl('https://ko-fi.com/mator')
+        });
         this.addEventListener('sl-hide', event => this.onMenuHide(event));
         this.addEventListener('sl-show', event => this.onMenuShow(event));
         this.addEventListener('trigger-enter', event => this.onTriggerEnter(event));
@@ -38,7 +44,35 @@ export default class TitleBar extends ReactiveComponent {
     }
 
     render() {
-        this.innerHTML = `<div class="menus-container"></div>`;
+        this.innerHTML = (
+            `<div class="menus-container"></div>
+            <div class="left-container">
+                <sl-button
+                    size="small"
+                    class="errors-button"
+                    data-click-action="showErrors"
+                 >
+                    <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                    No errors
+                </sl-button>
+                <sl-button
+                    size="small"
+                    class="discord-button"
+                    data-click-action="joinDiscord"
+                >
+                    <sl-icon slot="prefix" name="discord"></sl-icon>
+                    Join the Discord!
+                </sl-button>
+                <sl-button
+                    size="small"
+                    class="support-button"
+                    data-click-action="openKofi"
+                >
+                    <sl-icon slot="prefix" name="heart"></sl-icon>
+                    Support this project
+                </sl-button>
+            </div>`
+        );
         this.renderMenus();
     }
 

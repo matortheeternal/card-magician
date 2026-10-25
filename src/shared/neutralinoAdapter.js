@@ -14,6 +14,11 @@ export async function debugLog(level, message, args) {
     return await Neutralino.debug.log(messageWithArgs, type);
 }
 
+export async function openUrl(command) {
+    log('fs').debug('openUrl', command);
+    return await Neutralino.os.open(command);
+}
+
 export async function openSingleFileDialog(label, filters) {
     log('fs').debug('openSingleFileDialog', label, filters);
     const res = await Neutralino.os.showOpenDialog(label, { filters });

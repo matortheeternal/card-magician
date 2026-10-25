@@ -7,38 +7,54 @@ cm-title-bar {
     background: var(--sl-color-neutral-0);
     user-select: none;
     -webkit-user-select: none;
-}
 
-.layout-mobile cm-title-bar {
-    display: none;
-}
+    &.layout-mobile {
+        display: none;
+    }
 
-cm-title-bar sl-button::part(base) {
-    border: none;
-    border-radius: 0;
-}
+    sl-button::part(base) {
+        border: none;
+        border-radius: 0;
+    }
 
-cm-title-bar .draggable {
-    flex: 1;
-}
+    .menus-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
 
-cm-title-bar .menus-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
+    .menu-item {
+        display: flex;
+        justify-content: space-between;
+        padding-right: 0.5em;
 
-cm-title-bar .menu-item {
-    display: flex;
-    justify-content: space-between;
-    padding-right: 0.5em;
-}
+        > div:first-of-type {
+            margin-right: 5em;
+        }
 
-cm-title-bar .menu-item > div:first-of-type {
-    margin-right: 5em;
-}
+        > sl-button::part(base) {
+            background-color: var(--sl-color-primary-50);
+            color: var(--sl-color-primary-700);
+        }
+    }
 
-cm-title-bar .menu-active > sl-button::part(base) {
-    background-color: var(--sl-color-primary-50);
-    color: var(--sl-color-primary-700);
+    sl-icon {
+        font-size: 1.5em;
+
+        &[name="discord"] {
+            color: var(--sl-color-blue-500);
+        }
+
+        &[name="heart"] {
+            color: var(--sl-color-pink-500);
+        }
+    }
+
+    .errors-button sl-icon {
+        color: var(--sl-color-danger-600);
+
+        &[name="check-circle"] {
+            color: var(--sl-color-success-600);
+        }
+    }
 }

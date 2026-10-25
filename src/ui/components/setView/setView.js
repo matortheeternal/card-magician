@@ -196,30 +196,35 @@ export default class SetView extends ReactiveComponent {
         }
     }
 
+    async duplicateCard(sourceCard) {
+        const serializer = new JSONSerializer();
+        const data = await serializer.deserialize(
+            await serializer.serialize(sourceCard)
+        );
+        const card = new activeGame.Card(data);
+        const sourceImages = new Map(sourceCard.files.fields);
+        for (const [key, image] of card.files.fields) {
+            const sourceImage = sourceImages.get(key);
+            if (!(image instanceof ImageFieldValue)
+                || !(sourceImage instanceof ImageFieldValue)) continue;
+            Object.assign(image, sourceImage.clone());
+            image.dirty = Boolean(image.imageUrl);
+        }
+
+        updateBaseName(card);
+        await card.save(true);
+        activeProject.cards.push(card);
+        return card;
+    }
+
     async duplicateCards() {
         try {
             await this.flushPendingEdits();
             const sourceCards = this.listView.selection.map(row => row.original);
-            const serializer = new JSONSerializer();
             const cards = [];
 
             for (const sourceCard of sourceCards) {
-                const data = await serializer.deserialize(
-                    await serializer.serialize(sourceCard)
-                );
-                const card = new activeGame.Card(data);
-                const sourceImages = new Map(sourceCard.files.fields);
-                for (const [key, image] of card.files.fields) {
-                    const sourceImage = sourceImages.get(key);
-                    if (!(image instanceof ImageFieldValue)
-                        || !(sourceImage instanceof ImageFieldValue)) continue;
-                    Object.assign(image, sourceImage.clone());
-                    image.dirty = Boolean(image.imageUrl);
-                }
-
-                updateBaseName(card);
-                await card.save(true);
-                activeProject.cards.push(card);
+                const card = await this.duplicateCard(sourceCard);
                 cards.push(card);
             }
 
