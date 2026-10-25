@@ -15,6 +15,7 @@ steps:
           HOME: /home/node
           DISPLAY: ':99'
           CHROME_NO_SANDBOX: 1
+          CHROME_LOG_LEVEL: 3
       commands:
           - id
           - npm ci

@@ -32,6 +32,7 @@ export function handleOutput(stdout) {
 export function getArgs(url, additionalArgs) {
     const chromeArgs = ['--auto-open-devtools-for-tabs'];
     if (process.env.CHROME_NO_SANDBOX === '1') chromeArgs.push('--no-sandbox');
+    if (process.env.CHROME_LOG_LEVEL) chromeArgs.push(`--log-level=${process.env.CHROME_LOG_LEVEL}`);
     return [
         'run', '--disable-auto-reload', '--',
         `--config-file=/neutralino.test.config.json`,
