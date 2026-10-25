@@ -1,0 +1,32 @@
+cm-errors-dropdown {
+    .dropdown {
+        position: relative;
+        background: var(--sl-color-neutral-0);
+        border: 1px solid var(--sl-color-neutral-300);
+        border-radius: var(--sl-border-radius-small);
+
+        div.actions {
+            display: flex;
+            justify-content: end;
+            flex: 1;
+        }
+    }
+
+    sl-tab-group::part(tabs) {
+        align-items: center;
+    }
+
+    sl-tab::part(base) {
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-medium);
+    }
+
+    sl-tab-panel {
+        position: relative;
+        min-height: 10em;
+        min-width: 24em;
+
+        .no-content-prompt h2 {
+            font-size: var(--sl-font-size-x-large);
+        }
+    }
+}

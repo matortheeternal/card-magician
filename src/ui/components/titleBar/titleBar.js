@@ -5,6 +5,8 @@ import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
 import { openUrl } from '../../../shared/neutralinoAdapter.js';
 
+const L = localize('titleBar');
+
 const titleBarMenus = [
     new FileMenu(),
     new EditMenu(),
@@ -46,22 +48,15 @@ export default class TitleBar extends ReactiveComponent {
     render() {
         this.innerHTML = (
             `<div class="menus-container"></div>
-            <div class="left-container">
-                <sl-button
-                    size="small"
-                    class="errors-button"
-                    data-click-action="showErrors"
-                 >
-                    <sl-icon slot="prefix" name="check-circle"></sl-icon>
-                    No errors
-                </sl-button>
+            <div>
+                <cm-errors-dropdown></cm-errors-dropdown>
                 <sl-button
                     size="small"
                     class="discord-button"
                     data-click-action="joinDiscord"
                 >
                     <sl-icon slot="prefix" name="discord"></sl-icon>
-                    Join the Discord!
+                    ${L`Join the Discord!`}
                 </sl-button>
                 <sl-button
                     size="small"
@@ -69,7 +64,7 @@ export default class TitleBar extends ReactiveComponent {
                     data-click-action="openKofi"
                 >
                     <sl-icon slot="prefix" name="heart"></sl-icon>
-                    Support this project
+                    ${L`Support this project`}
                 </sl-button>
             </div>`
         );
