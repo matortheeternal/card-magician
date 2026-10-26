@@ -2,3 +2,11 @@
 sl-menu-item:not([data-has-submenu])::part(submenu-icon) {
     display: none;
 }
+
+sl-dropdown.menu-active {
+    > sl-button[slot="trigger"]::part(base) {
+        background-color: var(--sl-color-primary-50);
+        border-color: var(--sl-color-primary-300);
+        color: var(--sl-color-primary-700);
+    }
+}
