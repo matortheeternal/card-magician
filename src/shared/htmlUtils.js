@@ -1,7 +1,7 @@
 export const show = el => (el.style.display = '');
 export const hide = el => (el.style.display = 'none');
 
-export function toggleDisplay(show, element, otherElement) {
+export function toggleDisplay(show, element, otherElement = null) {
     element.style.display = show ? '' : 'none';
     if (!otherElement) return;
     otherElement.style.display = show ? 'none' : '';
