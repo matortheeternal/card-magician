@@ -25,3 +25,34 @@ export function subscribe(callback) {
     subscribers.push(callback);
     for (const item of items) callback(item);
 }
+
+const recentErrors = new Set();
+
+const fallbackReport = createReporter({
+    unit: 'Fallback',
+    label: 'Application'
+});
+
+function reportNewErrors(id, error, data) {
+    const fingerprint = safeStringify([id, error, data]);
+    if (recentErrors.has(fingerprint)) {
+        console.error('Fallback error cycle detected:', error);
+        return;
+    }
+    recentErrors.add(fingerprint);
+    setTimeout(() => recentErrors.delete(fingerprint), 2500);
+    fallbackReport(id, error, data);
+}
+
+window.addEventListener('unhandledrejection', event => {
+    reportNewErrors('unhandled-rejection', event.reason, null);
+});
+
+window.addEventListener('error', event => {
+    reportNewErrors('unhandled-error', event.error, {
+        message: event.message,
+        filename: event.filename,
+        line: event.lineno,
+        column: event.colno,
+    });
+});

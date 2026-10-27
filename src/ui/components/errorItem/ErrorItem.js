@@ -25,7 +25,7 @@ export default class ErrorItem extends ReactiveComponent {
 
     render() {
         if (!this.model) return;
-        const label = this.model.context.label || `unit ${this.model.context.unit}`;
+        const label = this.model.context?.label || `unit ${this.model.context?.unit}`;
         this.innerHTML = (
             `<div class="icon-container">
                  <sl-icon name="exclamation-circle"></sl-icon>
@@ -33,7 +33,7 @@ export default class ErrorItem extends ReactiveComponent {
              <div class="error-body">
                  <div>An error occurred in ${label}</div>
                  <div><code>${this.model.id}</code></div>
-                 <div>${this.model.error.message}</div>
+                 <div>${this.model.error?.message}</div>
              </div>
              <div>
                  <sl-icon-button

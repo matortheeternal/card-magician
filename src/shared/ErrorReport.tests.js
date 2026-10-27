@@ -26,4 +26,19 @@ describe('ErrorReport', () => {
         expect(report).toContain('## Errors (0)');
         expect(report).toContain('No errors are currently visible in the application.');
     });
+
+    it('formats arbitrary thrown values', () => {
+        const report = new ErrorReport([{
+            context: { unit: 'Fallback' },
+            id: 'unhandled-error',
+            error: null,
+            data: '{\n  "message": "Script error."\n}',
+            timestamp: new Date('2026-10-26T12:00:00.000Z'),
+        }]).toMarkdown();
+
+        expect(report).toContain([
+            '#### Message', '```', 'null', '```'
+        ].join('\n'));
+        expect(report).toContain('"message": "Script error."');
+    });
 });
