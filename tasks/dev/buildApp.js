@@ -19,9 +19,10 @@ function isApplicationCode(file) {
 async function buildJs({ minify }) {
     const main = [
         '@shoelace-style/shoelace/dist/shoelace.js',
-        './shared/reporting.js',
-        './shared/log.js',
         './shared/prototypeExtensions.js',
+        './shared/reporting.js',
+        './shared/saveErrorsToDisk.js',
+        './shared/log.js',
         './shared/localize.js',
         ...await getSourceFiles(file => {
             return file.startsWith('domain/')

@@ -37,10 +37,6 @@ export default class ErrorItem extends ReactiveComponent {
              </div>
              <div>
                  <sl-icon-button
-                    name="clipboard"
-                    data-click-action="copy"
-                ></sl-icon-button>
-                 <sl-icon-button
                     name="x-lg"
                     data-click-action="clear"
                 ></sl-icon-button>
@@ -50,10 +46,6 @@ export default class ErrorItem extends ReactiveComponent {
 
     clear() {
         emit(this, 'cm-error-clear');
-    }
-
-    copy() {
-        // TODO
     }
 }
 

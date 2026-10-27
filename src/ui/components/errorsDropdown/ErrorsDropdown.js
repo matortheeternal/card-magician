@@ -1,6 +1,7 @@
 import html from './ErrorsDropdown.html.js';
 import { subscribe } from '../../../shared/reporting.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
+import ErrorReport from '../../../shared/ErrorReport.js';
 
 export default class ErrorsDropdown extends ReactiveComponent {
     connectedCallback() {
@@ -11,7 +12,7 @@ export default class ErrorsDropdown extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             clearAll: () => this.clearAll(),
-            copyAll: () => {},
+            copyAll: () => this.copyAll(),
         });
         this.addEventListener('cm-error-clear', event => {
             event.target.remove();
@@ -87,6 +88,13 @@ export default class ErrorsDropdown extends ReactiveComponent {
         if (!activePanel) throw new Error('Could not resolve active panel.');
         const items = activePanel.querySelectorAll('cm-error-item');
         for (const item of items) item.clear();
+    }
+
+    copyAll() {
+        const errors = [...this.querySelectorAll('cm-error-item')]
+            .map(item => item.model)
+            .filter(Boolean);
+        navigator.clipboard.writeText(new ErrorReport(errors).toMarkdown());
     }
 }
 

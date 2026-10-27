@@ -174,6 +174,14 @@ export async function initApp() {
     });
 }
 
+const beforeExitCallbacks = [];
+
+export function beforeExit(callback) {
+    beforeExitCallbacks.push(callback);
+}
+
 export function exitApp(code = 0) {
-    Neutralino.app.exit(code);
+    Promise.all(
+        beforeExitCallbacks.map(cb => cb())
+    ).then(() => Neutralino.app.exit(code));
 }
