@@ -1,7 +1,7 @@
 const L = localize('errors-dropdown');
 
 export default (
-    `<sl-dropdown>
+    `<sl-dropdown skidding="-5" placement="bottom-start">
         <sl-button
             slot="trigger"
             size="small"
@@ -18,12 +18,12 @@ export default (
                 <div slot="nav" class="actions">
                     <sl-button
                         size="small"
-                        data-click-action="clearAll"
-                    >Clear</sl-button>
-                    <sl-button
-                        size="small"
                         data-click-action="copyAll"
                     >Copy</sl-button>
+                    <sl-button
+                        size="small"
+                        data-click-action="clearAll"
+                    >Clear</sl-button>
                 </div>
 
                 <sl-tab-panel name="errors">

@@ -21,9 +21,19 @@ cm-errors-dropdown {
     }
 
     sl-tab-panel {
-        position: relative;
-        min-height: 10em;
-        min-width: 24em;
+        min-width: 23.5em;
+        max-width: 23.5em;
+        max-height: 80vh;
+        overflow-y: auto;
+
+        &::part(base) {
+            padding: 0;
+        }
+
+        .no-content-prompt {
+            position: static;
+            height: 10em;
+        }
 
         .no-content-prompt h2 {
             font-size: var(--sl-font-size-x-large);

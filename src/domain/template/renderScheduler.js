@@ -82,7 +82,11 @@ export default class RenderScheduler {
             try {
                 renderModule(card, module, renderKey, subcardKey);
             } catch (err) {
-                const key = [subcardKey, module.modulePath, renderKey].join(':');
+                const key = [
+                    subcardKey || 'card',
+                    module.modulePath,
+                    renderKey
+                ].join(':');
                 log('render').error(`Error rendering ${key}, ${err?.stack || err}`);
                 report(key, err, [card, module]);
             }

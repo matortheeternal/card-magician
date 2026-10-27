@@ -1,0 +1,30 @@
+cm-error-item {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: var(--sl-spacing-small);
+
+    &:not(:last-of-type) {
+        border-bottom: 1px solid var(--sl-color-neutral-500);
+    }
+
+    > .icon-container {
+        font-size: 30px;
+        color: var(--sl-color-danger-500);
+        align-self: start
+    }
+
+    > .error-body {
+        flex: 1;
+        font-size: var(--sl-font-size-small);
+
+        > div {
+            padding-left: 1em;
+        }
+
+        > div:first-child {
+            margin-bottom: var(--sl-spacing-2x-small);
+            padding-left: 0;
+        }
+    }
+}

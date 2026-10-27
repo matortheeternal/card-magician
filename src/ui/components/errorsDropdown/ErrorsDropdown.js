@@ -10,14 +10,23 @@ export default class ErrorsDropdown extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            clear: () => {},
-            copy: () => {},
-            clearAll: () => {},
+            clearAll: () => this.clearAll(),
             copyAll: () => {},
+        });
+        this.addEventListener('cm-error-clear', event => {
+            event.target.remove();
+            this.toggleContentMessage(this.errorsContainer);
+            this.toggleContentMessage(this.warningsContainer);
+            this.updateTrigger();
         });
         subscribe(errorItem => {
             this.prependError(errorItem);
+            this.updateTrigger();
         });
+    }
+
+    get triggerButton() {
+        return this.querySelector('sl-button[slot="trigger"]');
     }
 
     get errorsContainer() {
@@ -25,7 +34,12 @@ export default class ErrorsDropdown extends ReactiveComponent {
     }
 
     get warningsContainer() {
-        return this.querySelector('sl-tab-panel[name="warning"]');
+        return this.querySelector('sl-tab-panel[name="warnings"]');
+    }
+
+    get errorCount() {
+        const errorItems = this.errorsContainer.querySelectorAll('cm-error-item');
+        return errorItems.length;
     }
 
     toggleContentMessage(container) {
@@ -49,8 +63,30 @@ export default class ErrorsDropdown extends ReactiveComponent {
         this.toggleContentMessage(this.warningsContainer);
     }
 
+    getTriggerText(errorCount) {
+        if (errorCount === 0) return 'No issues';
+        return `${errorCount} issue${errorCount > 1 ? 's' : ''}`;
+    }
+
+    updateTrigger() {
+        const iconNode = this.triggerButton.firstElementChild;
+        const textNode = this.triggerButton.lastChild;
+        const errorCount = this.errorCount;
+        const iconName = errorCount > 0 ? 'exclamation-circle' : 'check-circle';
+        iconNode.setAttribute('name', iconName);
+        textNode.textContent = this.getTriggerText(errorCount);
+    }
+
     render() {
         this.innerHTML = html;
+    }
+
+    clearAll() {
+        const activePanel = [...this.querySelectorAll('sl-tab-panel')]
+            .find(panel => panel.active);
+        if (!activePanel) throw new Error('Could not resolve active panel.');
+        const items = activePanel.querySelectorAll('cm-error-item');
+        for (const item of items) item.clear();
     }
 }
 

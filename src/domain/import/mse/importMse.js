@@ -145,7 +145,7 @@ registerAction('import-mse-set', async () => {
         });
     } catch (error) {
         progress.onError(error);
-        report('import-mse-set', error, [filePath]);
+        report('import', error, [filePath]);
         log('user').error('Error importing MSE set', error);
     }
 });

@@ -154,7 +154,7 @@ class CardForm extends ReactiveComponent {
         try {
             await saveCard(this.editorCard, this.projectCard);
         } catch (error) {
-            report('cardForm:save', error, [this.editorCard, this.projectCard]);
+            report('save', error, [this.editorCard, this.projectCard]);
             log('state').error(error);
         }
     }

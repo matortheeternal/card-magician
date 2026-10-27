@@ -1,6 +1,10 @@
 const serializers = [{
     test: val => val instanceof Error,
-    serialize: val => val.stack
+    serialize: (val, seen, serialize) => serialize({
+        name: val.constructor.name,
+        message: val.message,
+        stack: val.stack
+    })
 }, {
     test: val => typeof val === 'function',
     serialize: val => `[Function ${val.name || 'anonymous'}]`
