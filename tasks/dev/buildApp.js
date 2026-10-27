@@ -20,7 +20,7 @@ async function buildJs({ minify }) {
     const main = [
         './shared/reporting.js',
         './shared/prototypeExtensions.js',
-        './shared/saveErrorsToDisk.js',
+        './shared/reporting/saveErrorsToDisk.js',
         './shared/log.js',
         './shared/localize.js',
         '@shoelace-style/shoelace/dist/shoelace.js',

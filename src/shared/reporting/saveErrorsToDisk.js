@@ -1,7 +1,7 @@
-import { subscribe } from './reporting.js';
+import { subscribe } from '../reporting.js';
 import ErrorReport from './ErrorReport.js';
 import AsyncBatcher from './AsyncBatcher.js';
-import { writeFile, beforeExit } from './neutralinoAdapter.js';
+import { writeFile, beforeExit } from '../neutralinoAdapter.js';
 
 let sequentialId = 0;
 

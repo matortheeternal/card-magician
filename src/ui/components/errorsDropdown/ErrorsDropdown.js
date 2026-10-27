@@ -1,7 +1,7 @@
 import html from './ErrorsDropdown.html.js';
 import { subscribe } from '../../../shared/reporting.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
-import ErrorReport from '../../../shared/ErrorReport.js';
+import ErrorReport from '../../../shared/reporting/ErrorReport.js';
 
 export default class ErrorsDropdown extends ReactiveComponent {
     connectedCallback() {
