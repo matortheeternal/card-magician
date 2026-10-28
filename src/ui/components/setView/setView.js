@@ -259,7 +259,7 @@ export default class SetView extends ReactiveComponent {
     showFilter() {
         show(this.filterBar);
         const input = this.filterBar.querySelector('sl-input');
-        input.focus();
+        setTimeout(() => input.focus());
     }
 
     updateFilter(event) {
