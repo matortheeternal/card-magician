@@ -5,6 +5,7 @@ import CardMagicianCard from '@sigil-sifter/magic-cm/card';
 import { buildColumns } from './ui/listView/columns.js';
 import { autoNumberCards } from './domain/autoNumber.js';
 import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
+import defaultPackStructure from './domain/defaultPackStructure.js';
 import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
 import mtg from './domain/hljsMtg.js';
@@ -12,7 +13,7 @@ import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
-import defaultPackStructure from './domain/defaultPackStructure.js';
+import searchPresets from './ui/buildSearchModal/searchPresets.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(gamePath) {
@@ -21,6 +22,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.ColorIdentity = ColorIdentity;
         this.Project = MagicProject;
         this.Card = MagicCard;
+        this.searchPresets = searchPresets;
     }
 
     async init() {

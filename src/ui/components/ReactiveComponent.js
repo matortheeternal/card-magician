@@ -20,6 +20,16 @@ export default class ReactiveComponent extends HTMLElement {
         this.#eventHandlers.push({ eventName, callback });
     }
 
+    emit(name, detail) {
+        const event = new CustomEvent(name, {
+            detail,
+            bubbles: true,
+            composed: true,
+            cancelable: false
+        });
+        this.dispatchEvent(event);
+    }
+
     handleEvents(eventName, handlers) {
         const attr = `data-${eventName}-action`;
         this.on(eventName, event => {

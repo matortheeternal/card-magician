@@ -1,0 +1,16 @@
+cm-search-group {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    padding: var(--sl-spacing-medium);
+
+    h2 {
+        margin: var(--sl-spacing-small);
+    }
+
+    .options-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-2x-small);
+    }
+}

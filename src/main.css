@@ -13,8 +13,10 @@
 @import "ui/components/errorsDropdown/errorsDropdown.css";
 @import "ui/components/errorItem/errorItem.css";
 @import "ui/components/exporterConfig/exporterConfig.css";
+@import "ui/components/searchGroup/searchGroup.css";
 @import "ui/modals/modals.css";
 @import "ui/modals/automateModal/automateModal.css";
+@import "ui/modals/buildSearchModal/buildSearchModal.css";
 @import "ui/modals/cropImageModal/cropImageModal.css";
 @import "ui/modals/editLocalesModal/editLocalesModal.css";
 @import "ui/modals/progressModal/progressModal.css";

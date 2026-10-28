@@ -17,6 +17,7 @@ import {
 import { cardsToBlob } from '../../../domain/export/cardImageExporter.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 import { checkFileExists } from '../../../shared/fsUtils.js';
+import { openModal } from '../../modals/modalManager.js';
 
 const report = createReporter({ unit: 'SetView', label: 'Set List View' });
 
@@ -37,7 +38,7 @@ export default class SetView extends ReactiveComponent {
         getConfig().onRecentFilesChanged(() => this.renderRecentProjects());
 
         this.handleEvents('click', {
-            openAdvancedSearch: () => log('user').info('Open advanced search.'),
+            buildSearch: () => openModal('cm-build-search-modal'),
             addCard: () => this.addCard(),
             openProject: () => openProject()
         });

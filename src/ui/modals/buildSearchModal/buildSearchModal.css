@@ -1,0 +1,12 @@
+cm-build-search-modal {
+    max-width: 75%;
+
+    .input-container {
+        padding: var(--sl-spacing-x-large) var(--sl-spacing-3x-large);
+    }
+
+    .groups-container {
+        column-count: 4;
+        column-gap: 1em;
+    }
+}
