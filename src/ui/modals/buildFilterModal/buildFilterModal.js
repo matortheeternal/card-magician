@@ -15,6 +15,10 @@ export default class buildFilterModal extends Modal {
 
     bind() {
         super.bind();
+        this.addEventListener('sl-clear', () => {
+            const groups = this.querySelectorAll('cm-filter-group');
+            for (const group of groups) group.clear();
+        });
         this.addEventListener('cm-select-preset', event => {
             const queryParts = event.target.selected;
             const oldQueryParts = event.detail;
@@ -66,7 +70,11 @@ export default class buildFilterModal extends Modal {
     renderBody() {
         return (
             `<div class="input-container">
-                <sl-input size="large"></sl-input>
+                <sl-input
+                    size="large"
+                    placeholder="${L`Select filter presets`}"
+                    clearable
+                ></sl-input>
             </div>
             <div class="groups-container"></div>`
         );

@@ -6,6 +6,7 @@ export default
         autocomplete="off"
         placeholder="${L`Filter cards`}"
         data-keydown-action="filterInputKeyDown"
+        clearable
     ></sl-input>
     <sl-button data-click-action="buildFilter">${L`Build`}</sl-button>
 </div>

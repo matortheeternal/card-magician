@@ -31,14 +31,8 @@ export default class FilterGroup extends ReactiveComponent {
                     this.emit('cm-select-preset', oldSelected);
                     return;
                 }
-                if (!this.model.allowMultiple) {
-                    const buttons = this.querySelectorAll('sl-button[data-query]');
-                    for (const button of buttons) {
-                        button.removeAttribute('outline');
-                        button.removeAttribute('variant');
-                    }
-                    this.selected = [];
-                }
+                if (!this.model.allowMultiple)
+                    this.clear();
                 this.selected.push(event.ctrlKey ? negate(query) : query);
                 event.target.setAttribute('outline', '');
                 const variant = event.ctrlKey ? 'danger' : 'success';
@@ -96,6 +90,15 @@ export default class FilterGroup extends ReactiveComponent {
             `<h2>${this.model.label}</h2>
             <div class="options-container"></div>`
         );
+    }
+
+    clear() {
+        this.selected = [];
+        const buttons = this.querySelectorAll('sl-button[data-query]');
+        for (const button of buttons) {
+            button.removeAttribute('outline');
+            button.removeAttribute('variant');
+        }
     }
 }
 
