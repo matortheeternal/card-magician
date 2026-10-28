@@ -52,6 +52,12 @@ export default class SetView extends ReactiveComponent {
         this.addEventListener('dragover', event => this.onDragOver(event));
         this.addEventListener('drop', event => this.onDrop(event));
 
+        registerAction('search', query => {
+            const input = this.searchBar.querySelector('sl-input');
+            input.value = query;
+            this.searchValue = query;
+            this.updateSearch();
+        });
         registerAction('toggle-search', () => this.toggleSearch());
         registerAction('add-card', () => this.addCard());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());

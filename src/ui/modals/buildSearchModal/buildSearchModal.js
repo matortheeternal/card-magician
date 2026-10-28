@@ -1,4 +1,5 @@
 import { registerModal } from '../modalManager.js';
+import { executeAction } from '../../systems/actionSystem.js';
 
 const L = localize('build-search-modal');
 
@@ -49,8 +50,8 @@ export default class BuildSearchModal extends Modal {
 
     renderActions() {
         return (
-            `<sl-button data-click-action="search">Search with these options</sl-button>
-             <sl-button data-click-action="close">Cancel</sl-button>`
+            `<sl-button data-click-action="search">${L`Search`}</sl-button>
+             <sl-button data-click-action="close">${L`Cancel`}</sl-button>`
         );
     }
 
@@ -72,13 +73,8 @@ export default class BuildSearchModal extends Modal {
     }
 
     search() {
-        const event = new CustomEvent('cm-search', {
-            detail: this.searchQuery,
-            bubbles: true,
-            composed: true,
-            cancelable: false
-        });
-        this.dispatchEvent(event);
+        executeAction('search', this.searchQuery);
+        this.close();
     }
 }
 

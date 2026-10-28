@@ -14,13 +14,23 @@ export default class SearchGroup extends ReactiveComponent {
                 const query = event.target.dataset.query;
                 const oldSelected = this.selected.slice();
                 if (this.selected.includes(query)) {
-                    this.selected = [];
+                    this.selected.remove(query);
+                    event.target.removeAttribute('outline');
+                    event.target.removeAttribute('variant');
                     this.emit('cm-select-preset', oldSelected);
                     return;
                 }
-                if (!this.model.allowMultiple)
+                if (!this.model.allowMultiple) {
+                    const buttons = this.querySelectorAll('sl-button[data-query]');
+                    for (const button of buttons) {
+                        button.removeAttribute('outline');
+                        button.removeAttribute('variant');
+                    }
                     this.selected = [];
+                }
                 this.selected.push(query);
+                event.target.setAttribute('outline', '');
+                event.target.setAttribute('variant', 'success');
                 this.emit('cm-select-preset', oldSelected);
             }
         });
@@ -64,7 +74,6 @@ export default class SearchGroup extends ReactiveComponent {
             btn.setAttribute('data-query', option.q);
             btn.setAttribute('data-click-action', 'selectPreset');
             if (option.hint) btn.setAttribute('title', option.hint);
-            if (option.variant) btn.setAttribute('variant', option.variant);
             this.optionsContainer.append(btn);
         }
     }
