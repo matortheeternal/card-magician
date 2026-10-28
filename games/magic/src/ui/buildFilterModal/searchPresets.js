@@ -1,6 +1,6 @@
 import { getProjectSubtypes, getProjectTags } from './searchHelpers.js';
 
-const L = localize('build-search-modal');
+const L = localize('build-filter-modal');
 
 const colorTypeGroup = {
     label: L`Color Type`,

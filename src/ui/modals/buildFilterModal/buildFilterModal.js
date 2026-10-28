@@ -1,10 +1,10 @@
 import { registerModal } from '../modalManager.js';
 import { executeAction } from '../../systems/actionSystem.js';
 
-const L = localize('build-search-modal');
+const L = localize('build-filter-modal');
 
-export default class BuildSearchModal extends Modal {
-    static id = 'cm-build-search-modal';
+export default class buildFilterModal extends Modal {
+    static id = 'cm-build-filter-modal';
     title = L`Build Search`;
     queryParts = [];
 
@@ -78,4 +78,4 @@ export default class BuildSearchModal extends Modal {
     }
 }
 
-registerModal(BuildSearchModal);
+registerModal(buildFilterModal);

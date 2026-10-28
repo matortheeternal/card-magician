@@ -1,24 +1,3 @@
-export function atomize(str) {
-    let inQuote = false;
-    let current = '';
-    const atoms = [];
-    for (const char of str) {
-        const terminator = inQuote ? '"' : ' ';
-        if (char === terminator) {
-            if (current.length) atoms.push(current);
-            current = '';
-            inQuote = false;
-            continue;
-        }
-        if (char === '"') {
-            inQuote = !inQuote;
-            continue;
-        }
-        current += char;
-    }
-    return atoms;
-}
-
 export function getProjectSubtypes() {
     const subtypes = {};
 

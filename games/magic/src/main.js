@@ -13,7 +13,7 @@ import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
-import searchPresets from './ui/buildSearchModal/searchPresets.js';
+import searchPresets from './ui/buildFilterModal/searchPresets.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(gamePath) {

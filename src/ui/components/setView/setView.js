@@ -38,7 +38,7 @@ export default class SetView extends ReactiveComponent {
         getConfig().onRecentFilesChanged(() => this.renderRecentProjects());
 
         this.handleEvents('click', {
-            buildSearch: () => openModal('cm-build-search-modal'),
+            buildFilter: () => openModal('cm-build-filter-modal'),
             addCard: () => this.addCard(),
             openProject: () => openProject()
         });
@@ -56,9 +56,10 @@ export default class SetView extends ReactiveComponent {
             const input = this.searchBar.querySelector('sl-input');
             input.value = query;
             this.searchValue = query;
+            this.showSearch();
             this.updateSearch();
         });
-        registerAction('toggle-search', () => this.toggleSearch());
+        registerAction('toggle-search', () => this.showSearch());
         registerAction('add-card', () => this.addCard());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
@@ -255,7 +256,7 @@ export default class SetView extends ReactiveComponent {
         await document.querySelector('cm-card-properties')?.save.flush();
     }
 
-    toggleSearch() {
+    showSearch() {
         show(this.searchBar);
         const input = this.searchBar.querySelector('sl-input');
         input.focus();

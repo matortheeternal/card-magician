@@ -7,7 +7,7 @@ export default
         placeholder="${L`Search for cards`}"
         data-keydown-action="searchInputKeyDown"
     ></sl-input>
-    <sl-button data-click-action="buildSearch">${L`Build`}</sl-button>
+    <sl-button data-click-action="buildFilter">${L`Build`}</sl-button>
 </div>
 <cm-list-view
     add-row-label="${L`Click to add a card or press Ctrl+Enter`}"
