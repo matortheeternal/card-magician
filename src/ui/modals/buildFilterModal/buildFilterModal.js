@@ -55,7 +55,10 @@ export default class buildFilterModal extends Modal {
 
     renderActions() {
         return (
-            `<sl-button data-click-action="filter">${L`Filter`}</sl-button>
+            `<sl-button
+                variant="primary"
+                data-click-action="filter"
+            >${L`Apply Filter`}</sl-button>
              <sl-button data-click-action="close">${L`Cancel`}</sl-button>`
         );
     }
