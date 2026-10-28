@@ -13,7 +13,7 @@
 @import "ui/components/errorsDropdown/errorsDropdown.css";
 @import "ui/components/errorItem/errorItem.css";
 @import "ui/components/exporterConfig/exporterConfig.css";
-@import "ui/components/searchGroup/searchGroup.css";
+@import "ui/components/filterGroup/filterGroup.css";
 @import "ui/modals/modals.css";
 @import "ui/modals/automateModal/automateModal.css";
 @import "ui/modals/buildFilterModal/buildFilterModal.css";

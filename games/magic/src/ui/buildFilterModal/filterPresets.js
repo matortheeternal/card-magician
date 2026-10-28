@@ -1,4 +1,4 @@
-import { getProjectSubtypes, getProjectTags } from './searchHelpers.js';
+import { getProjectSubtypes, getProjectTags } from './filterHelpers.js';
 
 const L = localize('build-filter-modal');
 

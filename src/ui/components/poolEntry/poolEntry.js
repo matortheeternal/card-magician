@@ -42,7 +42,7 @@ export default class PoolEntry extends ReactiveComponent {
             );
             return results.length;
         } catch (e) {
-            log('user').debug('Search error:', e);
+            log('user').debug('Filter error:', e);
             return 0;
         }
     }
@@ -69,7 +69,7 @@ export default class PoolEntry extends ReactiveComponent {
 
     render() {
         this.innerHTML = (
-            `<div class="search-container">
+            `<div class="filter-container">
                 <form-field field-id="expression"></form-field>
                 <div class="result-count"></div>
             </div>

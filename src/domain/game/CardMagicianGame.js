@@ -100,8 +100,8 @@ export default class CardMagicianGame {
     }
 
     /**
-     * This function gets called when a user attempts to search a set of cards.
-     * Return an array of cards that match the query. For search engine, consider
+     * This function gets called when a user attempts to filter a set of cards.
+     * Return an array of cards that match the query. For filter engine, consider
      * using sigil-sifter.
      *
      * @param {Array<card>} cards

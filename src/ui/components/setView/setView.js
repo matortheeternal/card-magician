@@ -43,23 +43,23 @@ export default class SetView extends ReactiveComponent {
             openProject: () => openProject()
         });
         this.handleEvents('keydown', {
-            searchInputKeyDown: this.searchInputKeyDown
+            filterInputKeyDown: this.filterInputKeyDown
         });
         this.addEventListener('row-selected', event => this.onRowSelected(event));
-        this.addEventListener('sl-input', this.updateSearch.debounce(200));
+        this.addEventListener('sl-input', this.updateFilter.debounce(200));
         this.addEventListener('add-row-click', event => this.addCard(event));
         this.addEventListener('sort-updated', () => this.updateStatus());
         this.addEventListener('dragover', event => this.onDragOver(event));
         this.addEventListener('drop', event => this.onDrop(event));
 
-        registerAction('search', query => {
-            const input = this.searchBar.querySelector('sl-input');
+        registerAction('filter', query => {
+            const input = this.filterBar.querySelector('sl-input');
             input.value = query;
-            this.searchValue = query;
-            this.showSearch();
-            this.updateSearch();
+            this.filterValue = query;
+            this.showFilter();
+            this.updateFilter();
         });
-        registerAction('toggle-search', () => this.showSearch());
+        registerAction('toggle-filter', () => this.showFilter());
         registerAction('add-card', () => this.addCard());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
         registerAction('copy', () => this.copyCard());
@@ -67,8 +67,8 @@ export default class SetView extends ReactiveComponent {
         registerAction('duplicate-selected-cards', () => this.duplicateCards());
     }
 
-    get searchBar() {
-        return this.querySelector('.search-bar');
+    get filterBar() {
+        return this.querySelector('.filter-bar');
     }
 
     get listView() {
@@ -129,7 +129,7 @@ export default class SetView extends ReactiveComponent {
         const hasCards = Boolean(project.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
-        if (this.searchValue) this.updateSearch();
+        if (this.filterValue) this.updateFilter();
         this.updateStatus();
     }
 
@@ -256,23 +256,23 @@ export default class SetView extends ReactiveComponent {
         await document.querySelector('cm-card-properties')?.save.flush();
     }
 
-    showSearch() {
-        show(this.searchBar);
-        const input = this.searchBar.querySelector('sl-input');
+    showFilter() {
+        show(this.filterBar);
+        const input = this.filterBar.querySelector('sl-input');
         input.focus();
     }
 
-    updateSearch(event) {
-        if (event) this.searchValue = event.target.value;
-        log('user').info('Searching for:', this.searchValue);
+    updateFilter(event) {
+        if (event) this.filterValue = event.target.value;
+        log('user').info('Filtering with:', this.filterValue);
         const cards = activeProject.cards;
         try {
-            this.listView.rows = this.searchValue
-                ? activeGame.filter(cards, this.searchValue)
+            this.listView.rows = this.filterValue
+                ? activeGame.filter(cards, this.filterValue)
                 : cards;
             this.updateStatus();
         } catch (error) {
-            log('user').debug('Search error:', error);
+            log('user').debug('Filter error:', error);
         }
     }
 
@@ -280,7 +280,7 @@ export default class SetView extends ReactiveComponent {
         log('render').debug('update project status');
         const totalCount = activeProject.cards.length;
         const visibleCount = this.listView.rows.length;
-        const filterStr = this.searchValue
+        const filterStr = this.filterValue
             ? `Showing ${visibleCount} / `
             : '';
         const totalCardsStr = `${totalCount} cards`;
@@ -301,12 +301,12 @@ export default class SetView extends ReactiveComponent {
         );
     }
 
-    searchInputKeyDown(event) {
+    filterInputKeyDown(event) {
         if (event.key !== 'Escape') return;
         event.preventDefault();
-        this.searchValue = '';
-        hide(this.searchBar);
-        this.updateSearch();
+        this.filterValue = '';
+        hide(this.filterBar);
+        this.updateFilter();
     }
 
     onRowSelected(event) {

@@ -112,7 +112,7 @@ export default class SettingsModal extends Modal {
         return (
             `<div class="two-columns">
                 <div class="navigation">
-                    <div class="search-bar"></div>
+                    <div class="filter-bar"></div>
                     <div class="tabs-container"></div>
                 </div>
                 <div class="content-container"></div>

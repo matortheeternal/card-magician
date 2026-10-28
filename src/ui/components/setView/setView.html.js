@@ -1,11 +1,11 @@
 const L = localize('set-view');
 
 export default
-`<div class="search-bar" style="display: none">
+`<div class="filter-bar" style="display: none">
     <sl-input
         autocomplete="off"
-        placeholder="${L`Search for cards`}"
-        data-keydown-action="searchInputKeyDown"
+        placeholder="${L`Filter cards`}"
+        data-keydown-action="filterInputKeyDown"
     ></sl-input>
     <sl-button data-click-action="buildFilter">${L`Build`}</sl-button>
 </div>

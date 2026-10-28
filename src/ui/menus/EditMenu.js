@@ -14,7 +14,7 @@ export default class EditMenu extends ReactiveMenu {
             this.menuItem(L`Undo`, L`Ctrl+Z`, () => log('user').info('Undo')),
             this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => log('user').info('Redo')),
             this.DIVIDER,
-            this.menuItem(L`Filter`, L`Ctrl+F`, () => executeAction('toggle-search')),
+            this.menuItem(L`Filter`, L`Ctrl+F`, () => executeAction('toggle-filter')),
             this.menuItem(
                 L`Build filter`,
                 L`Ctrl+Shift+F`,

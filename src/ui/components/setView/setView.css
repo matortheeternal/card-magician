@@ -62,7 +62,7 @@ cm-list-view {
     }
 }
 
-.search-bar {
+.filter-bar {
     display: flex;
     position: relative;
     z-index: 1;

@@ -5,7 +5,7 @@ const L = localize('build-filter-modal');
 
 export default class buildFilterModal extends Modal {
     static id = 'cm-build-filter-modal';
-    title = L`Build Search`;
+    title = L`Build Filter`;
     queryParts = [];
 
     connectedCallback() {
@@ -21,14 +21,14 @@ export default class buildFilterModal extends Modal {
             for (const part of oldQueryParts)
                 this.queryParts.remove(part);
             this.queryParts.push(...queryParts);
-            this.updateSearchInput();
+            this.updateFilterInput();
         });
     }
 
     get onClickHandlers() {
         return {
             ...super.onClickHandlers,
-            search: () => this.search()
+            filter: () => this.filter()
         };
     }
 
@@ -36,28 +36,28 @@ export default class buildFilterModal extends Modal {
         return this.querySelector('.groups-container');
     }
 
-    get searchInput() {
+    get filterInput() {
         return this.querySelector('sl-input');
     }
 
-    get searchQuery() {
-        return this.searchInput.value;
+    get filterQuery() {
+        return this.filterInput.value;
     }
 
-    updateSearchInput() {
-        this.searchInput.value = this.queryParts.join(' ');
+    updateFilterInput() {
+        this.filterInput.value = this.queryParts.join(' ');
     }
 
     renderActions() {
         return (
-            `<sl-button data-click-action="search">${L`Search`}</sl-button>
+            `<sl-button data-click-action="filter">${L`Filter`}</sl-button>
              <sl-button data-click-action="close">${L`Cancel`}</sl-button>`
         );
     }
 
     renderGroups() {
-        for (const group of activeGame.searchPresets) {
-            const el = document.createElement('cm-search-group');
+        for (const group of activeGame.filterPresets) {
+            const el = document.createElement('cm-filter-group');
             el.model = group;
             this.groupsContainer.append(el);
         }
@@ -72,8 +72,8 @@ export default class buildFilterModal extends Modal {
         );
     }
 
-    search() {
-        executeAction('search', this.searchQuery);
+    filter() {
+        executeAction('filter', this.filterQuery);
         this.close();
     }
 }

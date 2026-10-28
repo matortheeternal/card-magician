@@ -1,4 +1,11 @@
-export default class SearchGroup extends ReactiveComponent {
+function negate(query) {
+    const hasSpace = query.includes(' ');
+    const alreadyWrapped = query.startsWith('(') && query.endsWith(')');
+    if (hasSpace && !alreadyWrapped) return `-(${query})`;
+    return '-' + query;
+}
+
+export default class FilterGroup extends ReactiveComponent {
     #model = null;
     selected = [];
 
@@ -13,8 +20,12 @@ export default class SearchGroup extends ReactiveComponent {
             selectPreset: event => {
                 const query = event.target.dataset.query;
                 const oldSelected = this.selected.slice();
-                if (this.selected.includes(query)) {
-                    this.selected.remove(query);
+                if (event.target.hasAttribute('outline')) {
+                    const targetVariant = event.target.getAttribute('variant');
+                    const queryToRemove = targetVariant === 'danger'
+                        ? negate(query)
+                        : query;
+                    this.selected.remove(queryToRemove);
                     event.target.removeAttribute('outline');
                     event.target.removeAttribute('variant');
                     this.emit('cm-select-preset', oldSelected);
@@ -28,9 +39,10 @@ export default class SearchGroup extends ReactiveComponent {
                     }
                     this.selected = [];
                 }
-                this.selected.push(query);
+                this.selected.push(event.ctrlKey ? negate(query) : query);
                 event.target.setAttribute('outline', '');
-                event.target.setAttribute('variant', 'success');
+                const variant = event.ctrlKey ? 'danger' : 'success';
+                event.target.setAttribute('variant', variant);
                 this.emit('cm-select-preset', oldSelected);
             }
         });
@@ -87,4 +99,4 @@ export default class SearchGroup extends ReactiveComponent {
     }
 }
 
-customElements.define('cm-search-group', SearchGroup);
+customElements.define('cm-filter-group', FilterGroup);

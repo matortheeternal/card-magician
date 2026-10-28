@@ -74,7 +74,7 @@ export default class EditSlot extends ReactiveComponent {
             <section>
                 <div class="pool-container">
                     <div class="header-row">
-                        <div>${L`Search Expression`}</div>
+                        <div>${L`Filter Expression`}</div>
                         <div>${L`Weight`}</div>
                         <div></div>
                     </div>

@@ -13,7 +13,7 @@ import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
-import searchPresets from './ui/buildFilterModal/searchPresets.js';
+import filterPresets from './ui/buildFilterModal/filterPresets.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(gamePath) {
@@ -22,7 +22,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.ColorIdentity = ColorIdentity;
         this.Project = MagicProject;
         this.Card = MagicCard;
-        this.searchPresets = searchPresets;
+        this.filterPresets = filterPresets;
     }
 
     async init() {

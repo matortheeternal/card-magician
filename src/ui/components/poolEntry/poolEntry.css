@@ -11,7 +11,7 @@ cm-pool-entry {
         font-size: var(--sl-font-size-large);
     }
 
-    .search-container {
+    .filter-container {
         display: grid;
         grid-template-columns: 5fr 2fr;
         align-items: center;
