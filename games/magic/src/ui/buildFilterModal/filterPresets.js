@@ -181,7 +181,11 @@ const subtypeGroup = {
         return Object.entries(getProjectSubtypes())
             .sort((a, b) => b[1] - a[1])
             .map(([subtype]) => subtype)
-            .filter(subtype => !commonSubtypes.includes(subtype.toLowerCase()));
+            .filter(subtype => !commonSubtypes.includes(subtype.toLowerCase()))
+            .map(subtype => ({
+                label: subtype,
+                q: `t:${subtype.toLowerCase()}`
+            }));
     },
     options: [
         { q: 't:aura',      label: L`Aura`      },
@@ -219,7 +223,10 @@ const tagsGroup = {
     dynamic: () => {
         return Object.entries(getProjectTags())
             .sort((a, b) => b[1] - a[1])
-            .map(([tag]) => tag);
+            .map(([tag]) => ({
+                label: tag,
+                q: `tag:${tag.toLowerCase()}`
+            }));
     },
 };
 

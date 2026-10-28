@@ -31,8 +31,7 @@ export default class FilterGroup extends ReactiveComponent {
                     this.emit('cm-select-preset', oldSelected);
                     return;
                 }
-                if (!this.model.allowMultiple)
-                    this.clear();
+                if (!this.model.allowMultiple) this.clear();
                 this.selected.push(event.ctrlKey ? negate(query) : query);
                 event.target.setAttribute('outline', '');
                 const variant = event.ctrlKey ? 'danger' : 'success';
@@ -57,10 +56,7 @@ export default class FilterGroup extends ReactiveComponent {
     }
 
     get dynamicOptions() {
-        return (this.model?.dynamic?.() || []).map(label => ({
-            q: `t:${label.toLowerCase()}`,
-            label
-        }));
+        return (this.model?.dynamic?.() || []);
     }
 
     get options() {

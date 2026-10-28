@@ -18,6 +18,7 @@ export default class buildFilterModal extends Modal {
         this.addEventListener('sl-clear', () => {
             const groups = this.querySelectorAll('cm-filter-group');
             for (const group of groups) group.clear();
+            this.queryParts = [];
         });
         this.addEventListener('cm-select-preset', event => {
             const queryParts = event.target.selected;
