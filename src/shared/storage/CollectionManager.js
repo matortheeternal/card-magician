@@ -147,8 +147,8 @@ export default class CollectionManager {
      * @returns {void}
      */
     removeFirst(value) {
-        const index = this.collection.indexOf(
-            item => this.options.compare(item, value)
+        const index = this.collection.findIndex(
+            item => this.options.matches(item, value)
         );
         if (index === -1) return;
         this.collection.splice(index, 1);
