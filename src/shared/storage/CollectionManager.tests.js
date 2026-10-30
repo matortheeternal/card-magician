@@ -135,20 +135,20 @@ describe('CollectionManager', () => {
         expect(save).toHaveBeenCalledOnceWith('data/items.yml', [item]);
     });
 
-    it('removes only the first matching item and saves the remainder', async () => {
+    it('removes only the item and saves the remainder', async () => {
         const second = { name: 'same', id: 2 };
         const other = { name: 'other' };
         manager.collection = [{ name: 'same', id: 1 }, other, second];
-        manager.removeFirst('same');
+        manager.remove(manager.collection[0]);
         expect(manager.collection).toEqual([other, second]);
         expect(manager.collection[1]).toBe(second);
         await manager.flush();
         expect(save).toHaveBeenCalledOnceWith('data/items.yml', [other, second]);
     });
 
-    it('does not save when removeFirst finds no match', async () => {
+    it('does not save when remove finds no match', async () => {
         manager.collection = [{ name: 'keep' }];
-        manager.removeFirst('missing');
+        manager.remove({ name: 'missing' });
         await manager.flush();
         expect(manager.collection).toEqual([{ name: 'keep' }]);
         expect(save).not.toHaveBeenCalled();
