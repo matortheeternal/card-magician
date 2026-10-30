@@ -1,3 +1,5 @@
+import DebouncedInvocation from './DebouncedInvocation.js';
+
 function addPrototypeFunction(ctor, name, descriptor) {
     if (typeof ctor !== 'function' || !ctor.prototype)
         throw new TypeError('First argument must be a constructor function');
@@ -171,40 +173,42 @@ addPrototypeFunction(Array, 'toDictionary', {
 addPrototypeFunction(Function, 'debounce', {
     value: function debounce(delay) {
         let timeout = null;
-        let context = null;
-        let args = null;
+        let futureInvocation = null;
+        let tail = Promise.resolve();
         const func = this;
 
-        const invoke = function() {
+        const resolveInvocation = function() {
+            if (!futureInvocation) return Promise.resolve();
+            const activeInvocation = futureInvocation;
+            futureInvocation = null;
             timeout = null;
-            return func.apply(context, args);
+            return tail = tail.catch(() => undefined)
+                .then(() => activeInvocation.execute());
         };
 
         const debounced = function() {
-            return new Promise((resolve, reject) => {
-                context = this;
-                args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    Promise.resolve(invoke()).then(resolve, reject);
-                }, delay);
-            });
+            futureInvocation ||= new DebouncedInvocation(func);
+            futureInvocation.apply(this, arguments);
+            clearTimeout(timeout);
+            timeout = setTimeout(resolveInvocation, delay);
+            return futureInvocation.promise;
         };
 
         Object.defineProperty(debounced, 'cancel', {
             value: function cancel() {
+                if (!futureInvocation) return;
                 clearTimeout(timeout);
                 timeout = null;
-                context = null;
-                args = null;
+                futureInvocation.cancel();
+                futureInvocation = null;
             }
         });
 
         Object.defineProperty(debounced, 'flush', {
             value: function flush() {
-                if (timeout === null) return;
                 clearTimeout(timeout);
-                return invoke();
+                resolveInvocation();
+                return tail;
             }
         });
 
