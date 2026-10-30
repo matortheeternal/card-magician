@@ -178,7 +178,7 @@ addPrototypeFunction(Function, 'debounce', {
         const func = this;
 
         const resolveInvocation = function() {
-            if (!futureInvocation) return Promise.resolve();
+            if (!futureInvocation) return tail;
             const activeInvocation = futureInvocation;
             futureInvocation = null;
             timeout = null;
@@ -207,8 +207,7 @@ addPrototypeFunction(Function, 'debounce', {
         Object.defineProperty(debounced, 'flush', {
             value: function flush() {
                 clearTimeout(timeout);
-                resolveInvocation();
-                return tail;
+                return resolveInvocation();
             }
         });
 
