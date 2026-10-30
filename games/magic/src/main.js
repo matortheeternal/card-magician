@@ -15,6 +15,7 @@ import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
 import MagicSettings from './ui/settings/MagicSettings.js';
+import FaceSymbolSettings from './ui/settings/FaceSymbolSettings.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(metadata) {
@@ -40,6 +41,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         await this.faceSymbolManager.load();
         this.autoNumberCards = autoNumberCards;
         this.registerSettings(MagicSettings);
+        this.registerSettings(FaceSymbolSettings);
         this.registerSettings(MagicProjectDetails);
         this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
         this.setupSearch();

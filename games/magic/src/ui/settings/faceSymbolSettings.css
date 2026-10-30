@@ -1,0 +1,7 @@
+cm-face-symbol-settings {
+    .items-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--sl-spacing-small);
+    }
+}
