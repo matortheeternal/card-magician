@@ -181,10 +181,14 @@ addPrototypeFunction(Function, 'debounce', {
         };
 
         const debounced = function() {
-            context = this;
-            args = arguments;
-            clearTimeout(timeout);
-            timeout = setTimeout(invoke, delay);
+            return new Promise((resolve, reject) => {
+                context = this;
+                args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    Promise.resolve(invoke()).then(resolve, reject);
+                }, delay);
+            });
         };
 
         Object.defineProperty(debounced, 'cancel', {
