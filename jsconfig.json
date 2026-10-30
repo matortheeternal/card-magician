@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true,
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Bundler"
+    },
+    "include": [
+        "src/**/*.js",
+        "games/*/src/**/*.js",
+        "modules/**/*.js",
+        "exporters/**/*.js",
+        "*.d.ts"
+    ],
+    "exclude": ["node_modules", "resources", "dist"]
+}
