@@ -1,0 +1,23 @@
+cm-recent-projects {
+    padding: var(--sl-spacing-medium);
+    text-align: center;
+
+    > h3 {
+        margin-top: 0;
+        margin-bottom: var(--sl-spacing-small);
+        font-size: var(--sl-font-size-large);
+        font-family: var(--sl-font-sans);
+        font-weight: var(--sl-font-weight-normal);
+    }
+
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    sl-button::part(base) {
+        font-size: var(--sl-font-size-medium);
+        padding: var(--sl-spacing-3x-small);
+    }
+}

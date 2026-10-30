@@ -24,8 +24,5 @@ export default
             ${L`Open a project`}
         </sl-button>
     </div>
-    <div class="recent-projects-container">
-        <div>${L`Recent projects`}</div>
-        <div class="buttons-container"></div>
-    </div>
+    <cm-recent-projects></cm-recent-projects>
 </div>`;

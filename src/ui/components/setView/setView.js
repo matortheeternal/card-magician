@@ -1,6 +1,5 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import html from './setView.html.js';
-import { getConfig } from '../../../domain/game/gameManager.js';
 import {
     openProject,
     onActiveProjectChanged,
@@ -16,7 +15,6 @@ import {
 } from '../../../domain/card/cardClipboard.js';
 import { cardsToBlob } from '../../../domain/export/cardImageExporter.js';
 import { updateBaseName } from '../../../domain/projects/cardNamer.js';
-import { checkFileExists } from '../../../shared/fsUtils.js';
 import { openModal } from '../../modals/modalManager.js';
 
 const report = createReporter({ unit: 'SetView', label: 'Set List View' });
@@ -34,8 +32,6 @@ export default class SetView extends ReactiveComponent {
                 this.updateCards(project);
             });
         });
-
-        getConfig().onRecentFilesChanged(() => this.renderRecentProjects());
 
         this.handleEvents('click', {
             buildFilter: () => openModal('cm-build-filter-modal'),
@@ -83,45 +79,9 @@ export default class SetView extends ReactiveComponent {
         return this.querySelector('.no-content-prompt');
     }
 
-    get recentProjectsContainer() {
-        return this.querySelector('.recent-projects-container');
-    }
-
-    renderRecentProject(container, project) {
-        const button = document.createElement('sl-button');
-        button.variant = 'text';
-        button.size = 'small';
-        button.classList.add('recent-project');
-        button.addEventListener('click', () => openProject(project));
-        button.textContent = String(project);
-        container.appendChild(button);
-    }
-
-    async getRecentProjects() {
-        const projects = [];
-        for (const project of getConfig().recentFiles) {
-            if (await checkFileExists(project))
-                projects.push(project);
-        }
-        return projects;
-    }
-
-    async renderRecentProjects() {
-        const recentProjects = await this.getRecentProjects();
-        toggleDisplay(recentProjects.length > 0, this.recentProjectsContainer);
-        if (!recentProjects.length) return;
-
-        const container = this.recentProjectsContainer
-            .querySelector('.buttons-container');
-        container.innerHTML = '';
-        for (const project of recentProjects)
-            this.renderRecentProject(container, project);
-    }
-
     render() {
         this.innerHTML = html;
         this.listView.columns = activeGame.columns;
-        this.renderRecentProjects();
     }
 
     updateCards(project) {
