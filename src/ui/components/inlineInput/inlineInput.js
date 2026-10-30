@@ -31,7 +31,16 @@ export default class InlineInput extends HTMLElement {
     }
 
     connectedCallback() {
-        setTimeout(() => this.updateWidth());
+        this.resizeObserver = new ResizeObserver(() => {
+            cancelAnimationFrame(this.widthFrame); // Prevents loops
+            this.widthFrame = requestAnimationFrame(() => this.updateWidth());
+        });
+        this.resizeObserver.observe(this.mirrorElement);
+    }
+
+    disconnectedCallback() {
+        this.resizeObserver.disconnect();
+        cancelAnimationFrame(this.widthFrame);
     }
 
     updateWidth() {
