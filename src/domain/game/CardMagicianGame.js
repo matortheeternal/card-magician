@@ -13,11 +13,13 @@ import * as styleManager from '../../ui/systems/styleManager.js';
 
 export default class CardMagicianGame {
     /**
-     * @param {string} gamePath - Filesystem path of the game.
+     * @param {object} metadata - Metadata loaded and parsed from game.json.
      */
-    constructor(gamePath) {
-        this.gamePath = gamePath;
-        this.name = gamePath.split('/').pop();
+    constructor(metadata) {
+        this.gamePath = metadata.path;
+        this.id = metadata.id;
+        this.version = metadata.version;
+        this.name = this.gamePath.split('/').pop();
         this.Card = window.CardMagicianCard;
         this.Project = CardMagicianProject;
     }

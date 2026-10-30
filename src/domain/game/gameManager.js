@@ -11,7 +11,7 @@ export async function setGame(gameId) {
     if (!game) throw new Error(`Could not find game "${gameId}"`);
     const mainPath = [game.path, 'main.js'].join('/');
     const { default: Module } = await import('/' + mainPath);
-    window.activeGame = new Module(game.path);
+    window.activeGame = new Module(game);
     await activeGame.init();
     await withNewContext(() => {
         window.activeProject = new activeGame.Project();

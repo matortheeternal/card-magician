@@ -16,8 +16,8 @@ import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
-    constructor(gamePath) {
-        super(gamePath);
+    constructor(metadata) {
+        super(metadata);
         this.ManaScribe = ManaScribe;
         this.ColorIdentity = ColorIdentity;
         this.Project = MagicProject;
