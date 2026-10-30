@@ -5,7 +5,7 @@ import {
 } from '../../../domain/projects/projectManager.js';
 import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
-import { executeAction } from '../../systems/actionSystem.js';
+import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 
 const L = localize('card-form');
@@ -75,6 +75,7 @@ class CardForm extends ReactiveComponent {
             const faceForm = activeFaceElement.querySelector('cm-face-form');
             faceForm.focusNameField();
         });
+        registerAction('cancel-card-save', () => this.save.cancel());
         this.handleEvents('click', {
             toggleFront: () => this.toggleFace('front'),
             toggleBack: () => this.toggleFace('back'),

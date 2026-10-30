@@ -1,3 +1,5 @@
+import { registerAction } from '../../systems/actionSystem.js';
+
 const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
 const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 500;
 
@@ -27,6 +29,7 @@ class CardProperties extends HTMLElement {
         this.addEventListener('cm-field-changed', () => {
             this.save();
         });
+        registerAction('cancel-card-properties-save', () => this.save.cancel());
     }
 
     set card(card) {

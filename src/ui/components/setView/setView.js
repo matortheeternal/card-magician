@@ -6,7 +6,7 @@ import {
     onActiveProjectChanged,
     selectCard,
 } from '../../../domain/projects/projectManager.js';
-import { registerAction } from '../../systems/actionSystem.js';
+import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
@@ -135,6 +135,8 @@ export default class SetView extends ReactiveComponent {
 
     async deleteSelectedCards() {
         log('user').info('delete selected cards');
+        executeAction('cancel-card-save');
+        executeAction('cancel-card-properties-save');
         for (const r of this.listView.selection) {
             const index = activeProject.cards.indexOf(r.original);
             if (index === -1) {
