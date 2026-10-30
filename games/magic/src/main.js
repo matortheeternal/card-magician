@@ -14,6 +14,7 @@ import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
+import MagicSettings from './ui/settings/MagicSettings.js';
 
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(metadata) {
@@ -30,6 +31,7 @@ export default class MagicTheGathering extends CardMagicianGame {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
         this.autoNumberCards = autoNumberCards;
+        this.registerSettings(MagicSettings);
         this.registerSettings(MagicProjectDetails);
         this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
         this.setupSearch();
