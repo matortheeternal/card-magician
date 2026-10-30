@@ -7,6 +7,7 @@ import {
 import { updateBaseName } from '../../domain/projects/cardNamer.js';
 import { cardsToBlob } from '../../domain/export/cardImageExporter.js';
 import JSONSerializer from '../../domain/projects/serializers/JSONSerializer.js';
+import { registerAction } from './actionSystem.js';
 
 const L = localize('clipboard-system');
 const report = createReporter({
@@ -23,7 +24,7 @@ export async function copyCard(listView) {
     try {
         const cards = listView.selection.map(row => row.original);
         if (!cards.length) return;
-        const ready = this.flushPendingEdits().then(() => {
+        const ready = flushPendingEdits().then(() => {
             for (const card of cards)
                 updateBaseName(card);
         });
@@ -107,3 +108,22 @@ export async function duplicateCards(listView) {
         log('user').error('Duplicate failed', error);
     }
 }
+
+function getCardsListView() {
+    return document.querySelector('cm-set-view cm-list-view');
+}
+
+registerAction('copy', () => {
+    const listView = getCardsListView();
+    return copyCard(listView);
+});
+
+registerAction('paste', () => {
+    const listView = getCardsListView();
+    return pasteCard(listView);
+});
+
+registerAction('duplicate-selected-cards', () => {
+    const listView = getCardsListView();
+    return duplicateCards(listView);
+});

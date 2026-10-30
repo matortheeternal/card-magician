@@ -50,9 +50,6 @@ export default class SetView extends ReactiveComponent {
         registerAction('toggle-filter', () => this.showFilter());
         registerAction('add-card', () => this.addCard());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
-        registerAction('copy', () => copyCard(this.listView));
-        registerAction('paste', () => pasteCard(this.listView));
-        registerAction('duplicate-selected-cards', () => duplicateCards(this.listView));
     }
 
     get filterBar() {
