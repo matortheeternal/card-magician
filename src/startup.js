@@ -7,6 +7,7 @@ import {
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
+import { tagManager } from './domain/game/tagManager.js';
 
 const startupLog = log('startup');
 const report = createReporter({ unit: 'startup' });
@@ -70,6 +71,8 @@ async function startApp() {
     await loadExporters();
     startupLog.debug('Loading scripts');
     await loadScripts();
+    startupLog.debug('Loading tags');
+    await tagManager.load();
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');

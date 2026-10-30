@@ -5,7 +5,6 @@ import {
 } from '../../shared/neutralinoAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { checkFileExists, find } from '../../shared/fsUtils.js';
-import { getTags, loadTags } from '../game/tagManager.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 const report = createReporter({ unit: 'CardMagicianProject', label: 'Project' });
@@ -38,7 +37,6 @@ export default class CardMagicianProject {
         await project.loadCards();
         await project.loadCardFiles();
         await project.loadSymbol();
-        await project.loadTags();
         await project.afterLoad();
         return project;
     }
@@ -141,14 +139,6 @@ export default class CardMagicianProject {
             await card.loadFiles(filesByName);
     }
 
-    async loadTags() {
-        const fileExists = await checkFileExists(this.tagsPath);
-        const projectTags = fileExists
-            ? await YAMLSerializer.load(this.tagsPath)
-            : [];
-        loadTags(projectTags);
-    }
-
     async loadSymbol() {
         const fileExists = await checkFileExists(this.symbolPath);
         if (!fileExists) return;
@@ -162,12 +152,6 @@ export default class CardMagicianProject {
                 await card.saveImages(this.cardsFolderPath, true);
             progress.increment();
         }
-    }
-
-    async saveTags() {
-        const projectTags = getTags();
-        if (!projectTags.length) return;
-        await YAMLSerializer.save(this.tagsPath, projectTags);
     }
 
     async saveSymbol() {
@@ -187,8 +171,6 @@ export default class CardMagicianProject {
         progress.setStatus('Saving cards');
         progress.setMax(this.cards.length + 2);
         await this.saveCards(true);
-        progress.setStatus('Saving tags');
-        await this.saveTags();
         progress.setStatus('Saving set symbol');
         await this.saveSymbol();
         progress.setStatus('Saving project file');

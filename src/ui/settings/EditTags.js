@@ -5,6 +5,7 @@ import {
     findOrCreateTag,
     getTags,
     deleteTag,
+    tagManager,
 } from '../../domain/game/tagManager.js';
 import { registerSettings } from './settingsRegistry.js';
 import { removeTagFromSet } from '../../domain/projects/projectManager.js';
@@ -13,7 +14,7 @@ const L = localize('settings');
 
 export default class EditTags extends CardMagicianSettings {
     static id = 'cm-edit-tags';
-    static parentId = 'cm-project-settings';
+    static parentId = 'cm-application-settings';
     static label = L`Tags`;
     static groupWeight = 896;
 
@@ -38,7 +39,7 @@ export default class EditTags extends CardMagicianSettings {
         this.addEventListener('remove-tag', event => {
             removeTagFromSet(event.detail.tag);
             deleteTag(event.detail.tag);
-            this.emit('project-changed');
+            tagManager.scheduleSave();
         });
     }
 
@@ -84,7 +85,7 @@ export default class EditTags extends CardMagicianSettings {
         }
         const tag = findOrCreateTag(text);
         this.renderTag(tag);
-        this.emit('project-changed');
+        tagManager.scheduleSave();
     }
 }
 

@@ -1,43 +1,31 @@
-import fuzzysort from 'fuzzysort';
+import { manageCollection } from '../../shared/storageUtils.js';
+import * as fuzzySort from 'fuzzysort';
 
-const tags = [];
-let projectTags = [];
+export const tagManager = manageCollection({
+    path: () => [NL_DATAPATH, activeGame.id, 'tags.yml'],
+    compare: (tag, text) => tag.text === text,
+    create: text => ({ text, style: 'neutral' })
+});
 
 export function getTags() {
-    return projectTags;
-}
-
-export function loadTags(tags) {
-    projectTags = tags.sort((a, b) => {
-        if (a.text > b.text) return 1;
-        if (a.text < b.text) return -1;
-        return 0;
-    });
+    return tagManager.collection;
 }
 
 export function findTag(text) {
-    return tags.find(tag => tag.text === text)
-        || projectTags.find(tag => tag.text === text);
+    return tagManager.find(text);
 }
 
 export function findOrCreateTag(text) {
-    const existingTag = findTag(text);
-    if (existingTag) return existingTag;
-    const newTag = {
-        text,
-        variant: 'neutral'
-    };
-    projectTags.push(newTag);
-    return newTag;
+    return tagManager.findOrCreate(text);
 }
 
 export function deleteTag(tag) {
-    projectTags = projectTags.filter(t => t.text !== tag.text);
+    return tagManager.removeAll(tag.text);
 }
 
 export function searchTags(value, limit = 8) {
     if (!value.trim().length) return [];
-    return fuzzysort.go(value, tags.concat(projectTags), {
+    return fuzzySort.go(value, tagManager.collection, {
         key: 'text',
         limit
     }).map(r => r.obj);

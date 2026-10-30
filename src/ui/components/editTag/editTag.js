@@ -1,6 +1,7 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
 import editTagFields from './editTagFields.js';
+import { tagManager } from '../../../domain/game/tagManager.js';
 
 const L = localize('edit-tag');
 
@@ -58,7 +59,7 @@ export default class EditTag extends ReactiveComponent {
 
     onChange() {
         this.tagElement.variant = this.model.variant;
-        emit(this, 'cm-tag-changed');
+        tagManager.scheduleSave();
     }
 }
 
