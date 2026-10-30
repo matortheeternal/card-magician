@@ -116,6 +116,21 @@ export default class CollectionManager {
     }
 
     /**
+     * Generates candidates with next(1), next(2), and so on until find() returns
+     * a falsy result. Requires a loaded collection and the next callback.
+     * Does not create an item or reserve the returned value.
+     *
+     * @returns {any} The first candidate without a truthy matching item.
+     */
+    getNextValue() {
+        let tryCount = 1;
+        let value = this.options.next(tryCount);
+        while (this.find(value))
+            value = this.options.next(++tryCount);
+        return value;
+    }
+
+    /**
      * Builds and appends an item using the create callback, then schedules a save.
      *
      * @param {any} [value] - Input passed to the create callback. Null or undefined
