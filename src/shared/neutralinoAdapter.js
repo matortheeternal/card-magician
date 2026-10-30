@@ -6,12 +6,23 @@ const levelToLogType = {
     error: 'ERROR',
 };
 
+async function wrapError(callback) {
+    try {
+        return await callback();
+    } catch (error) {
+        if (error instanceof Error) throw error;
+        throw new Error(`${error.code} ${error.message}`);
+    }
+}
+
 export async function debugLog(level, message, args) {
     const type = levelToLogType[level] ?? 'INFO';
     const messageWithArgs = message + args.map(arg => {
         return `\n${safeStringify(arg)}`;
     }).join('');
-    return await Neutralino.debug.log(messageWithArgs, type);
+    return wrapError(
+        () => Neutralino.debug.log(messageWithArgs, type)
+    );
 }
 
 export async function openUrl(command) {
@@ -21,82 +32,90 @@ export async function openUrl(command) {
 
 export async function openSingleFileDialog(label, filters) {
     log('fs').debug('openSingleFileDialog', label, filters);
-    const res = await Neutralino.os.showOpenDialog(label, { filters });
+    const res = await wrapError(
+        () => Neutralino.os.showOpenDialog(label, { filters })
+    );
     return res?.[0];
 }
 
 export async function openFolderDialog(label) {
     log('fs').debug('openFolderDialog', label);
-    return await Neutralino.os.showFolderDialog(label);
+    return wrapError(() => Neutralino.os.showFolderDialog(label));
 }
 
 export async function saveSingleFileDialog(label, defaultPath, filters) {
     log('fs').debug('saveSingleFileDialog', label, defaultPath, filters);
-    return await Neutralino.os.showSaveDialog(label, { defaultPath, filters });
+    return wrapError(
+        () => Neutralino.os.showSaveDialog(label, { defaultPath, filters })
+    );
 }
 
 export async function getStoredData(key) {
     log('fs').debug('storage.getData', key);
-    return await Neutralino.storage.getData(key);
+    return wrapError(() => Neutralino.storage.getData(key));
 }
 
 export async function storeData(key, value) {
     log('fs').debug('storage.storeData', key, value);
-    return await Neutralino.storage.setData(key, value);
+    return wrapError(() => Neutralino.storage.setData(key, value));
 }
 
 export async function readDirectory(path, options) {
     log('fs').debug('readDirectory', path, options);
-    return await Neutralino.filesystem.readDirectory(path, options);
+    return wrapError(() => Neutralino.filesystem.readDirectory(path, options));
 }
 
 export async function readFile(path) {
     log('fs').debug('readFile', path);
-    return await Neutralino.filesystem.readFile(path);
+    return wrapError(() => Neutralino.filesystem.readFile(path));
 }
 
 export async function writeFile(path, data) {
     log('fs').debug('writeFile', path, `${data.length} bytes`);
-    const { parentPath } = await Neutralino.filesystem.getPathParts(path);
-    await createDirectory(parentPath);
-    await Neutralino.filesystem.writeFile(path, data);
+    return wrapError(async () => {
+        const { parentPath } = await Neutralino.filesystem.getPathParts(path);
+        await createDirectory(parentPath);
+        await Neutralino.filesystem.writeFile(path, data);
+    });
 }
 
 export async function writeBinaryFile(path, data) {
     log('fs').debug('writeBinaryFile', path, `${data.byteLength} bytes`);
-    const { parentPath } = await Neutralino.filesystem.getPathParts(path);
-    await createDirectory(parentPath);
-    await Neutralino.filesystem.writeBinaryFile(path, data);
+    return wrapError(async () => {
+        const { parentPath } = await Neutralino.filesystem.getPathParts(path);
+        await createDirectory(parentPath);
+        await Neutralino.filesystem.writeBinaryFile(path, data);
+    });
 }
 
 export async function readBinaryFile(path) {
     log('fs').debug('readBinaryFile', path);
-    return await Neutralino.filesystem.readBinaryFile(path);
+    return wrapError(() => Neutralino.filesystem.readBinaryFile(path));
 }
 
 export async function getAbsolutePath(path) {
     log('fs').debug('getAbsolutePath', path);
-    return await Neutralino.filesystem.getAbsolutePath(path);
+    return wrapError(() => Neutralino.filesystem.getAbsolutePath(path));
 }
 
 export async function open(path) {
     log('fs').debug('open', path);
-    return await Neutralino.os.open(path);
+    return wrapError(() => Neutralino.os.open(path));
 }
 
 export async function getStats(path) {
     log('fs').debug('getStats', path);
-    return await Neutralino.filesystem.getStats(path);
+    return Neutralino.filesystem.getStats(path);
 }
 
 export async function getJoinedPath(...paths) {
     log('fs').debug('getJoinedPath', paths);
-    return await Neutralino.filesystem.getJoinedPath(...paths);
+    return wrapError(() => Neutralino.filesystem.getJoinedPath(...paths));
 }
 
 export async function moveFile(source, destination) {
     log('fs').debug('moveFile', source, destination);
-    return await Neutralino.filesystem.move(source, destination);
+    return wrapError(() => Neutralino.filesystem.move(source, destination));
 }
 
 export async function copyFile(source, destination) {
@@ -116,7 +135,7 @@ export async function createDirectory(path) {
 
 export async function getPathParts(path) {
     log('fs').debug('getPathParts', path);
-    return await Neutralino.filesystem.getPathParts(path);
+    return wrapError(() => Neutralino.filesystem.getPathParts(path));
 }
 
 export async function getParentPath(path) {
@@ -126,22 +145,24 @@ export async function getParentPath(path) {
 
 export async function rmrf(path) {
     log('fs').debug('remove', path);
-    return await Neutralino.filesystem.remove(path);
+    return wrapError(() => Neutralino.filesystem.remove(path));
 }
 
 export async function getMounts() {
     log('fs').debug('getMounts');
-    return await Neutralino.server.getMounts();
+    return wrapError(() => Neutralino.server.getMounts());
 }
 
 export async function unmount(path) {
     log('fs').debug('unmount', path);
-    const mounts = await Neutralino.server.getMounts();
-    if (!mounts[path]) return;
-    await Neutralino.server.unmount(path);
-    // This protects us from a timing bug which occurs when the code
-    // tries to mount a path after unmounting it.
-    await Neutralino.server.getMounts();
+    return wrapError(async () => {
+        const mounts = await Neutralino.server.getMounts();
+        if (!mounts[path]) return;
+        await Neutralino.server.unmount(path);
+        // This protects us from a timing bug which occurs when the code
+        // tries to mount a path after unmounting it.
+        await Neutralino.server.getMounts();
+    });
 }
 
 export async function mount(path, target) {
@@ -155,15 +176,15 @@ export async function mount(path, target) {
 }
 
 export async function setWindowSize(options) {
-    return await Neutralino.window.setSize(options);
+    return wrapError(() => Neutralino.window.setSize(options));
 }
 
 export function writeProcessOutput(data) {
-    return Neutralino.app.writeProcessOutput(data);
+    return wrapError(() => Neutralino.app.writeProcessOutput(data));
 }
 
 export function writeProcessError(data) {
-    return Neutralino.app.writeProcessError(data);
+    return wrapError(() => Neutralino.app.writeProcessError(data));
 }
 
 export async function initApp() {
