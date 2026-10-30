@@ -37,7 +37,7 @@ function checkStylesheet(mseStylesheet, mseStylesheetVersion) {
         return L`Untested m15-altered stylesheet version ${mseStylesheetVersion}`;
 }
 
-function verifySet(mseSet) {
+async function verifySet(mseSet) {
     progress.setOperation(L`Verifying MSE set file`);
     const versionWarning = checkVersion(mseSet.mse_version);
     const gameWarning = checkGame(mseSet.game, mseSet.game_version);
@@ -47,7 +47,7 @@ function verifySet(mseSet) {
         .map(str => `  ${str}`)
         .join('\n');
     if (!combinedWarning) return true;
-    return confirm(
+    return dialog.confirm(
         L`Warning: This is an experimental feature.
         The provided MSE Set file has the following untested values.
         Imported may fail or be incomplete.`
@@ -120,7 +120,8 @@ export async function importMseFile(filePath) {
     progress.setStatus(L`Loading MSE set file`);
     const adapter = await MseFileAdapter.load(filePath);
     const mseSet = await adapter.setInfo();
-    if (!verifySet(mseSet)) return;
+    if (!await verifySet(mseSet))
+        throw new Error('User cancelled import.');
     progress.setMax(mseSet.card.length);
     progress.setStatus(L`Loading set info`);
     await importSetInfo(mseSet.set_info, project, adapter);

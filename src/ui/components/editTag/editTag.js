@@ -49,10 +49,8 @@ export default class EditTag extends ReactiveComponent {
         );
     }
 
-    onRemoveClick() {
-        if (!confirm(
-            L`Deleting this tag will remove it from all cards in this set. Continue?`
-        )) return;
+    async onRemoveClick() {
+        if (!await dialog.confirm(L`Delete tag "${this.tag.text}"?`)) return;
         emit(this, 'remove-tag', { tag: this.tag });
         this.remove();
     }

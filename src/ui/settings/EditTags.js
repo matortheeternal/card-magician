@@ -76,11 +76,11 @@ export default class EditTags extends CardMagicianSettings {
         this.renderTags();
     }
 
-    addTag() {
-        const text = prompt(L`Enter tag name`);
+    async addTag() {
+        const text = await dialog.prompt(L`Enter tag name`);
         if (!text) return;
         if (findTag(text)) {
-            alert(L`Tag ${text} already exists.`);
+            await dialog.alert(L`Tag ${text} already exists.`);
             return;
         }
         const tag = findOrCreateTag(text);

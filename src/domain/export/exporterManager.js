@@ -132,7 +132,7 @@ export function gatherExporterParams(targetExporterId) {
 
 registerAction('run-exporter', async exporterId => {
     if (!activeProject.folderPath) {
-        alert(L`Project must be saved before exporting.`);
+        await dialog.alert(L`Project must be saved before exporting.`);
         return;
     }
     openModal('cm-progress-modal', { title: `Exporting...` });

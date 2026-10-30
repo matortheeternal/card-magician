@@ -42,7 +42,7 @@ export default class EditFaceSymbol extends window.ReactiveComponent {
     }
 
     async deleteSymbol() {
-        const confirmed = confirm(L`Delete ${this.symbol.name}?`);
+        const confirmed = await dialog.confirm(L`Delete ${this.symbol.name}?`);
         if (!confirmed) return;
         this.emit('delete-symbol', { symbol: this.symbol });
         this.remove();
