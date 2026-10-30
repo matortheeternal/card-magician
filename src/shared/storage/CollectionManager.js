@@ -112,7 +112,7 @@ export default class CollectionManager {
      * @returns {any|undefined} The matching item, if found.
      */
     find(value) {
-        return this.collection.find(item => this.options.compare(item, value));
+        return this.collection.find(item => this.options.matches(item, value));
     }
 
     /**

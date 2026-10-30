@@ -3,7 +3,7 @@ import * as fuzzySort from 'fuzzysort';
 
 export const tagManager = manageCollection({
     path: () => [NL_DATAPATH, activeGame.id, 'tags.yml'],
-    compare: (tag, text) => tag.text === text,
+    matches: (tag, text) => tag.text === text,
     create: text => ({ text, style: 'neutral' })
 });
 
