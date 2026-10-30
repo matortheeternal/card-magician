@@ -1,0 +1,20 @@
+cm-edit-face-symbol {
+    position: relative;
+    border: 1px solid var(--sl-color-neutral-600);
+    border-radius: var(--sl-border-radius-medium);
+    padding: var(--sl-spacing-medium);
+    background: var(--sl-color-neutral-100);
+    box-shadow: var(--sl-shadow-large);
+
+    .delete-item {
+        position: absolute;
+        cursor: pointer;
+        top: 0.5em;
+        right: 0.5em;
+        color: var(--sl-color-danger-600);
+    }
+
+    > form-field:first-of-type {
+        margin-top: 0;
+    }
+}
