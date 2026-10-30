@@ -27,7 +27,7 @@ export async function debugLog(level, message, args) {
 
 export async function openUrl(command) {
     log('fs').debug('openUrl', command);
-    return await Neutralino.os.open(command);
+    return wrapError(() => Neutralino.os.open(command));
 }
 
 export async function openSingleFileDialog(label, filters) {
