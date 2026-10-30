@@ -1,7 +1,7 @@
 import FieldComponent from './FieldComponent.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
-import { emit, toggleDisplay } from '../../../shared/htmlUtils.js';
+import { emit, hide, toggleDisplay } from '../../../shared/htmlUtils.js';
 import { openModal } from '../../modals/modalManager.js';
 import imageFieldHtml from './imageField.html.js';
 
@@ -81,7 +81,10 @@ export default class ImageField extends FieldComponent {
     }
 
     render() {
+        if (!this.field || !this.model) return;
         this.innerHTML = `<label>${this.field.label}</label>\n` + imageFieldHtml;
+        const cropButton = this.querySelector('.crop-btn');
+        if (this.field.disableCrop) hide(cropButton);
         requestAnimationFrame(() => this.loadValue());
     }
 
@@ -132,6 +135,7 @@ export default class ImageField extends FieldComponent {
     }
 
     cropImage(event) {
+        if (this.field.disableCrop) return;
         event.stopPropagation();
         openModal('cm-crop-image-modal', {
             value: this.value.clone(),
