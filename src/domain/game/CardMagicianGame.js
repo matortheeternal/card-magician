@@ -10,6 +10,7 @@ import { registerSettings } from '../../ui/settings/settingsRegistry.js';
 import { loadFont } from '../template/dynamicFontLoader.js';
 import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
+import { manageCollection } from '../../shared/storageUtils.js';
 
 export default class CardMagicianGame {
     /**
@@ -99,6 +100,20 @@ export default class CardMagicianGame {
             ? registerBinaryAdapter
             : registerAdapter;
         register(factory(SerializerAdapter));
+    }
+
+    /**
+     * Creates a manager for a collection persisted as YAML on disk.
+     * Await load() before accessing items. Manager mutations schedule debounced
+     * saves; direct item edits require scheduleSave(). Await flush() to finish
+     * pending writes.
+     *
+     * @param {CollectionOptions} options - Persistence and item callbacks.
+     * @returns {CollectionManager}
+     *   A new manager whose collection has not yet been loaded.
+     */
+    manageCollection(options) {
+        return manageCollection(options);
     }
 
     /**
