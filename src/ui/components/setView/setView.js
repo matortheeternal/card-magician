@@ -7,17 +7,9 @@ import {
 } from '../../../domain/projects/projectManager.js';
 import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
-import JSONSerializer from '../../../domain/projects/serializers/JSONSerializer.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
-import {
-    readCardsFromClipboard,
-    writeCardsToClipboard
-} from '../../../domain/card/cardClipboard.js';
-import { cardsToBlob } from '../../../domain/export/cardImageExporter.js';
-import { updateBaseName } from '../../../domain/projects/cardNamer.js';
 import { openModal } from '../../modals/modalManager.js';
-
-const report = createReporter({ unit: 'SetView', label: 'Set List View' });
+import { copyCard, duplicateCards, pasteCard } from '../../systems/clipboardSystem.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {
@@ -58,9 +50,9 @@ export default class SetView extends ReactiveComponent {
         registerAction('toggle-filter', () => this.showFilter());
         registerAction('add-card', () => this.addCard());
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
-        registerAction('copy', () => this.copyCard());
-        registerAction('paste', () => this.pasteCard());
-        registerAction('duplicate-selected-cards', () => this.duplicateCards());
+        registerAction('copy', () => copyCard(this.listView));
+        registerAction('paste', () => pasteCard(this.listView));
+        registerAction('duplicate-selected-cards', () => duplicateCards(this.listView));
     }
 
     get filterBar() {
@@ -122,100 +114,6 @@ export default class SetView extends ReactiveComponent {
         this.listView.selection = [indexToSelect];
         await selectCard(card);
         this.updateStatus();
-    }
-
-    async copyCard() {
-        try {
-            const cards = this.listView.selection.map(row => row.original);
-            if (!cards.length) return;
-            const ready = this.flushPendingEdits().then(() => {
-                for (const card of cards)
-                    updateBaseName(card);
-            });
-
-            const imageBlob = ready.then(() => cardsToBlob(cards));
-            await writeCardsToClipboard(cards, imageBlob, ready);
-        } catch (error) {
-            report('copyCard', error, [this.listView.selection]);
-            log('user').error('Copy failed', error);
-        }
-    }
-
-    async pasteCard() {
-        try {
-            log('user').info('paste card');
-            const cards = await readCardsFromClipboard();
-            if (!cards.length) return;
-
-            for (const card of cards) {
-                updateBaseName(card);
-                await card.save(true);
-                activeProject.cards.push(card);
-            }
-            changed(activeProject, 'cards');
-            const lastCard = activeProject.cards.slice(-1)[0];
-            const index = this.listView.activeRows.findIndex(row => {
-                return row.original === lastCard;
-            });
-            if (index === -1) return;
-            this.listView.selection = [index];
-            await selectCard(lastCard);
-        } catch (error) {
-            report('pasteCard', error, [this.listView.selection]);
-            log('user').error('Paste failed', error);
-        }
-    }
-
-    async duplicateCard(sourceCard) {
-        const serializer = new JSONSerializer();
-        const data = await serializer.deserialize(
-            await serializer.serialize(sourceCard)
-        );
-        const card = new activeGame.Card(data);
-        const sourceImages = new Map(sourceCard.files.fields);
-        for (const [key, image] of card.files.fields) {
-            const sourceImage = sourceImages.get(key);
-            if (!(image instanceof ImageFieldValue)
-                || !(sourceImage instanceof ImageFieldValue)) continue;
-            Object.assign(image, sourceImage.clone());
-            image.dirty = Boolean(image.imageUrl);
-        }
-
-        updateBaseName(card);
-        await card.save(true);
-        activeProject.cards.push(card);
-        return card;
-    }
-
-    async duplicateCards() {
-        try {
-            await this.flushPendingEdits();
-            const sourceCards = this.listView.selection.map(row => row.original);
-            const cards = [];
-
-            for (const sourceCard of sourceCards) {
-                const card = await this.duplicateCard(sourceCard);
-                cards.push(card);
-            }
-
-            if (!cards.length) return;
-            changed(activeProject, 'cards');
-            const lastCard = cards.at(-1);
-            const index = this.listView.activeRows.findIndex(row => {
-                return row.original === lastCard;
-            });
-            if (index === -1) return;
-            this.listView.selection = [index];
-            await selectCard(lastCard);
-        } catch (error) {
-            report('duplicateCard', error, [this.listView.selection]);
-            log('user').error('Duplicate failed', error);
-        }
-    }
-
-    async flushPendingEdits() {
-        await document.querySelector('cm-card-form')?.save.flush();
-        await document.querySelector('cm-card-properties')?.save.flush();
     }
 
     showFilter() {
