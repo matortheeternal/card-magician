@@ -18,7 +18,6 @@ export async function buildMagic({ minify = false }) {
         target: ['es2020'],
         loader: {
             '.html': 'text',
-            '.css': 'text',
         },
     });
 }
