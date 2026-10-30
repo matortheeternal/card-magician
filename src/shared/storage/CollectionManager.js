@@ -156,15 +156,13 @@ export default class CollectionManager {
     }
 
     /**
-     * Removes the first matching item and schedules a save when an item is removed.
+     * Removes the item if present and schedules a save if an item was removed.
      *
-     * @param {any} value - Lookup value passed to matches.
+     * @param {any} item - Item to remove from the collection.
      * @returns {void}
      */
-    removeFirst(value) {
-        const index = this.collection.findIndex(
-            item => this.options.matches(item, value)
-        );
+    remove(item) {
+        const index = this.collection.indexOf(item);
         if (index === -1) return;
         this.collection.splice(index, 1);
         this.scheduleSave();
