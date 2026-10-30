@@ -56,6 +56,7 @@ function isUserEditing() {
 }
 
 function onKeyDown(event) {
+    if (dialog.isOpen) return;
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
     if (isUserEditing() && hotkey.ignoreWhenEditing) {
