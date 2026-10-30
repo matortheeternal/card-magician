@@ -9,7 +9,6 @@ import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { openModal } from '../../modals/modalManager.js';
-import { copyCard, duplicateCards, pasteCard } from '../../systems/clipboardSystem.js';
 
 export default class SetView extends ReactiveComponent {
     connectedCallback() {

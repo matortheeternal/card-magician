@@ -148,9 +148,8 @@ function removeTransforms(transforms, node, rootRect) {
 }
 
 function applyTransforms(transforms) {
-    for (const [key, val] of transforms) {
+    for (const [key, val] of transforms)
         key.style.transform = val.transform;
-    }
     transforms.clear();
 }
 
