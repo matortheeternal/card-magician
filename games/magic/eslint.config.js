@@ -40,6 +40,7 @@ export default [
                 CardImageFileDefinition: 'readonly',
                 ReactiveComponent: 'readonly',
                 Modal: 'readonly',
+                dialog: 'readonly',
             }
         }
     },

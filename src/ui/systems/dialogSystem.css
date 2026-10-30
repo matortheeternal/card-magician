@@ -1,0 +1,10 @@
+sl-dialog.service-dialog {
+    --sl-z-index-dialog: 1000;
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-font-size-large);
+
+    .dialog-message {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}

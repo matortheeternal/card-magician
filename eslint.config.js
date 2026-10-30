@@ -41,6 +41,7 @@ export default [
                 CardMagicianExporter: 'readonly',
                 ReactiveComponent: 'readonly',
                 Modal: 'readonly',
+                dialog: 'readonly',
             }
         }
     },
