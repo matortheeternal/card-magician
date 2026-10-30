@@ -5,12 +5,41 @@ import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const games = [];
 let appConfig = null;
+let gameStylesheet = null;
+
+/**
+ * Loads a game's optional main.css bundle before its UI is initialized.
+ * Replaces the previous game's stylesheet after the new one finishes loading.
+ *
+ * @param {object} game - Game metadata, including its directory path.
+ * @returns {Promise<void>}
+ */
+async function loadGameStyles(game) {
+    const cssPath = [game.path, 'main.css'].join('/');
+    let stylesheet = null;
+    if (await checkFileExists(cssPath)) {
+        stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = '/' + cssPath;
+        await new Promise((resolve, reject) => {
+            stylesheet.onload = resolve;
+            stylesheet.onerror = () => {
+                stylesheet.remove();
+                reject(new Error(`Failed to load game stylesheet "${cssPath}".`));
+            };
+            document.head.appendChild(stylesheet);
+        });
+    }
+    gameStylesheet?.remove();
+    gameStylesheet = stylesheet;
+}
 
 export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) throw new Error(`Could not find game "${gameId}"`);
     const mainPath = [game.path, 'main.js'].join('/');
     const { default: Module } = await import('/' + mainPath);
+    await loadGameStyles(game);
     window.activeGame = new Module(game);
     await activeGame.init();
     await withNewContext(() => {
