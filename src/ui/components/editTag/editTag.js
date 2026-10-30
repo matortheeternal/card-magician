@@ -30,7 +30,7 @@ export default class EditTag extends ReactiveComponent {
         return this.querySelector('sl-tag');
     }
 
-    async render() {
+    render() {
         this.innerHTML = (
             `<div>
                 <sl-tag size="medium" variant="${this.tag.variant}">
