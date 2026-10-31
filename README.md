@@ -2,6 +2,19 @@
 
 Card Magician is a cross-platform application for authoring custom playing cards. It currently supports the creation of custom Magic: the Gathering cards, with support for other games planned.
 
+## development
+
+Use Node.js 24, then run `npm ci` and `npm start`. `npm ci` installs the pinned
+[Neutralino fork](https://github.com/matortheeternal/neutralinojs/tree/card-magician)
+and JavaScript client automatically; no global `neu` installation or C++ toolchain
+is required. Use `npm run runtime:verify` to check the installed files.
+
+Do not run `neu update`: it downloads upstream binaries. Runtime versions, source
+revision, and SHA-256 checksums are pinned in `neutralino.lock.json`. Builds check
+the pin and restore the fork if installed files differ. See
+[the runtime and shutdown guide](docs/exit-behavior.md) for local fork development,
+CI, and release updates.
+
 ## features
 
 Card Magician currently offers the following features:
