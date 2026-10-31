@@ -4,7 +4,7 @@ import { checkFileExists } from '../fsUtils.js';
 import { executeAction } from '../../ui/systems/actionSystem.js';
 
 const L = localize('collection-manager');
-const DEFAULT_DEBOUNCE_WAIT = 3000;
+const DEFAULT_DEBOUNCE_WAIT = 1000;
 
 const report = createReporter({
     unit: 'CollectionManager',
