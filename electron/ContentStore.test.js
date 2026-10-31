@@ -13,7 +13,7 @@ test('content upgrades preserve edits and custom files', async () => {
     const bundled = file => path.join(source, 'scripts', file);
     const installed = file => path.join(destination, 'scripts', file);
     try {
-        const folders = ['scripts', 'locales'];
+        const folders = ['scripts'];
         for (const folder of folders)
             await fs.mkdir(path.join(source, folder), { recursive: true });
         for (const file of ['unchanged', 'edited', 'removed', 'removed-edited'])

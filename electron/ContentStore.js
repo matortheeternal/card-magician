@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { writeFile } from './atomicFile.js';
 
-const folders = ['scripts', 'locales'];
+const folders = ['scripts'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 function validEntry([name, value]) {

@@ -10,7 +10,7 @@ const output = path.resolve(outputArgument?.slice('--output='.length)
 async function verifyBridge(driver, profile) {
     const denied = await driver.evaluate(`cardMagicianNative.call('notAnOperation', [])`);
     assert.equal(denied.error.code, 'ACCESS_DENIED');
-    const module = await driver.evaluate(`fetch('/games/magic/main.js').then(r => ({
+    const module = await driver.evaluate(`fetch('/extensions/games/magic/main.js').then(r => ({
         status: r.status, type: r.headers.get('content-type')
     }))`);
     assert.equal(module.status, 200);
@@ -24,23 +24,24 @@ async function verifyLoosePlugins(driver, profile) {
     const binary = await fs.realpath(process.env.ELECTRON_SMOKE_BINARY);
     assert.equal(await fs.realpath(paths.plugins), path.dirname(binary),
                  'Plugins must be installed beside the executable.');
-    for (const folder of ['games', 'modules', 'exporters', 'templates']) {
+    for (const folder of ['extensions/games', 'extensions/cardparts', 'extensions/exporters',
+                          'extensions/templates', 'extensions/locales']) {
         assert.ok((await fs.stat(path.join(paths.plugins, folder))).isDirectory());
         await assert.rejects(fs.access(path.join(paths.content, folder)), {
             code: 'ENOENT'
         });
     }
     const name = `${path.basename(profile)}.txt`;
-    const filename = path.join(paths.plugins, 'games', name);
+    const filename = path.join(paths.plugins, 'extensions/games', name);
     const text = 'Loaded directly from the installed plugin folder';
     try {
         await fs.writeFile(filename, text);
         const result = await driver.evaluate(`cardMagicianNative.call('readFile', [
-            ${JSON.stringify(`games/${name}`)}
+            ${JSON.stringify(`extensions/games/${name}`)}
         ])`);
         assert.equal(result.value, text);
         const fetched = await driver.evaluate(`fetch(
-            ${JSON.stringify(`/games/${name}`)}
+            ${JSON.stringify(`/extensions/games/${name}`)}
         ).then(response => response.text())`);
         assert.equal(fetched, text);
     } finally { await fs.rm(filename, { force: true }); }

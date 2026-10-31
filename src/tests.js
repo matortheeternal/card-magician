@@ -11,8 +11,8 @@ const env = jasmine.getEnv();
 const urls = new jasmine.HtmlReporterV2Urls();
 
 async function loadModuleTests() {
-    const testFiles = await findTestFiles('modules');
-    await mount('/modules', appEnvironment.paths.plugins + '/modules');
+    const testFiles = await findTestFiles('extensions/cardparts');
+    await mount('/extensions', appEnvironment.paths.plugins + '/extensions');
     for (const file of testFiles)
         await import(`/${file}`);
 }

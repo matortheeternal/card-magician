@@ -29,14 +29,8 @@ linux:
         - tar.gz
         - deb
     extraFiles: &loosePlugins
-        - from: .tmp/package-plugins/games
-          to: games
-        - from: .tmp/package-plugins/modules
-          to: modules
-        - from: .tmp/package-plugins/exporters
-          to: exporters
-        - from: .tmp/package-plugins/templates
-          to: templates
+        - from: .tmp/package-plugins/extensions
+          to: extensions
 win:
     extraFiles: *loosePlugins
     icon: build/icons/icon.ico
@@ -52,11 +46,5 @@ mac:
         - dmg
         - zip
     extraFiles:
-        - from: .tmp/package-plugins/games
-          to: MacOS/games
-        - from: .tmp/package-plugins/modules
-          to: MacOS/modules
-        - from: .tmp/package-plugins/exporters
-          to: MacOS/exporters
-        - from: .tmp/package-plugins/templates
-          to: MacOS/templates
+        - from: .tmp/package-plugins/extensions
+          to: MacOS/extensions

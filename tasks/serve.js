@@ -67,7 +67,8 @@ server.on('connection', ws => {
 });
 
 chokidar
-    .watch(['src', 'games/magic/src', 'templates', 'modules', 'exporters'], {
+    .watch(['src', 'extensions/games/magic/src', 'extensions/templates',
+            'extensions/cardparts', 'extensions/exporters', 'extensions/locales'], {
         ignoreInitial: true
     })
     .on('add', onFilesChange)

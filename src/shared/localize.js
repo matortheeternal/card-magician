@@ -21,11 +21,11 @@ export async function prepareSchema() {
 }
 
 export async function loadLocales() {
-    const manifestPath = `locales/locales.json`;
+    const manifestPath = `extensions/locales/locales.json`;
     const manifestStr = await readFile(manifestPath);
     const manifest = JSON.parse(manifestStr);
 
-    const dirEntries = await readDirectory('locales');
+    const dirEntries = await readDirectory('extensions/locales');
     const availableFiles = dirEntries
         .filter(e => e.type === 'FILE' && e.entry.endsWith('.yml'))
         .map(e => e.entry.slice(0, -4));
@@ -52,7 +52,7 @@ async function saveLocaleRegistry() {
         return acc;
     }, {});
     const text = JSON.stringify(locales, null, 2);
-    await writeFile('locales/locales.json', text);
+    await writeFile('extensions/locales/locales.json', text);
 }
 
 export async function getAvailableLocales() {
@@ -96,7 +96,7 @@ function buildLocalizationKey(strings, values) {
 const writeSchemaFile = (async function writeSchemaFile() {
     const schema = await schemaPromise;
     const json = JSON.stringify(schema, null, 2);
-    const outputPath = `locales/schema.json`;
+    const outputPath = `extensions/locales/schema.json`;
     log('plugin').log(`Writing localization schema to `, outputPath);
     await writeFile(outputPath, json);
 }).debounce(1000);
@@ -113,7 +113,7 @@ async function updateSchema(namespaceKey, entryKey) {
 
 export async function loadSchema() {
     try {
-        const inputPath = `locales/schema.json`;
+        const inputPath = `extensions/locales/schema.json`;
         if (!await checkFileExists(inputPath)) return {};
         const text = await readFile(inputPath);
         return JSON.parse(text);

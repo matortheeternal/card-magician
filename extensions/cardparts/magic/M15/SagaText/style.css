@@ -1,0 +1,124 @@
+.text-column {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 5;
+    padding: 4px 0 3px 13px;
+    min-height: 0;
+    margin-bottom: 0.5px;
+    overflow: hidden;
+}
+
+module-container[module="SagaText"] {
+    display: flex;
+    min-height: 0;
+    --chop-top: 0px;
+    --chop-bottom: 0px;
+
+    auto-fit-text {
+        font-size: 19px;
+        padding: 5px;
+        line-height: 0.95;
+        font-family: "MPlantin", sans-serif;
+        margin-top: var(--chop-top);
+        margin-bottom: var(--chop-bottom);
+    }
+
+    &:not([render="renderPreText"]) auto-fit-text {
+        padding-top: 0;
+    }
+
+    i {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
+
+    abbr.sym {
+        font-size: 97%;
+        line-height: 0.95;
+        height: 0.9em;
+        width: 0.85em;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1px;
+    }
+
+    p {
+        padding: 0;
+        margin: 6px 0;
+    }
+
+    .pre-text {
+        height: 83px;
+        text-indent: -0.4em;
+        padding-left: 0.4em;
+
+        > div:first-of-type {
+            margin-top: 0;
+        }
+
+        p {
+            padding-bottom: 4px;
+            margin: 0;
+            padding-top: 2px;
+        }
+    }
+
+    q {
+        font-family: "MPlantin-Italic", serif;
+        font-style: normal;
+        font-weight: 300;
+    }
+}
+
+.symbol-block {
+    white-space: nowrap;
+}
+
+.chapter-bar {
+    width: 95%;
+    height: 2px;
+    position: relative;
+    z-index: 1;
+    background-repeat: no-repeat;
+    background-position: -30px -10px;
+    background-size: 190px 24px;
+    margin-left: 9px;
+}
+
+.saga-chapter {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    margin-left: -19px;
+
+    .chapter-icons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 3;
+
+        > div {
+            width: 30px;
+            height: 33.5px;
+            margin: 1px 0;
+            background-size: 100% 100%;
+        }
+    }
+
+    &:last-of-type {
+        .chapter-icons {
+            margin-bottom: 32px;
+        }
+    }
+
+    .chapter-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 5px;
+    }
+}

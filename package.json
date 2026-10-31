@@ -23,7 +23,7 @@
   "author": "mator",
   "type": "module",
   "workspaces": [
-    "games/magic"
+    "extensions/games/magic"
   ],
   "scripts": {
     "prebuild": "node tasks/installVendor.js",
@@ -44,7 +44,7 @@
     "dist:linux": "node tasks/electron/package.js --linux",
     "dist:win": "node tasks/electron/package.js --win --x64",
     "dist:mac": "node tasks/electron/package.js --mac",
-    "lint": "eslint src modules electron tasks"
+    "lint": "eslint src extensions/cardparts electron tasks"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",

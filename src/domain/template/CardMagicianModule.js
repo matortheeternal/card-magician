@@ -219,7 +219,7 @@ export default class CardMagicianModule {
      * @returns {string} - Fully qualified path for the file.
      */
     resolvePath(localPath) {
-        return ['modules', this.modulePath, localPath].join('/');
+        return ['extensions/cardparts', this.modulePath, localPath].join('/');
     }
 
     /**
@@ -229,7 +229,7 @@ export default class CardMagicianModule {
      * @returns {string} - Fully qualified path for the asset.
      */
     resolveAsset(assetPath) {
-        return ['modules', this.modulePath, 'assets', assetPath].join('/');
+        return ['extensions/cardparts', this.modulePath, 'assets', assetPath].join('/');
     }
 
     /**

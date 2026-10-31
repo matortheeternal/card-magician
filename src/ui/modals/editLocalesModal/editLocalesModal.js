@@ -132,7 +132,7 @@ export default class EditLocalesModal extends Modal {
 
     async openLocalesFolder() {
         const localesPath = await getAbsolutePath(
-            appEnvironment.paths.content + '/locales'
+            appEnvironment.paths.plugins + '/extensions/locales'
         );
         open(localesPath);
     }

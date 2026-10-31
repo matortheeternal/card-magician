@@ -29,7 +29,7 @@ module.exports = async function verifyPackage(context) {
     ];
     for (const required of resourcesToCheck)
         assert.ok(entries.includes(required), `Required resource missing: ${required}`);
-    for (const required of ['games/magic/main.js',
-                            'modules/magic/M15/Text/src/textToHTML.js'])
+    for (const required of ['extensions/games/magic/main.js',
+                            'extensions/cardparts/magic/M15/Text/src/textToHTML.js'])
         await fs.access(path.join(pluginRoot, required));
 };

@@ -20,7 +20,7 @@ const NO_EXPORTER_FORM_HTML = (
 );
 
 export async function loadExporters() {
-    const exporterFolders = await readDirectory('exporters');
+    const exporterFolders = await readDirectory('extensions/exporters');
     for (const exporterFolder of exporterFolders) {
         log('startup').debug('Reading exporter:', exporterFolder.path);
         const jsonPath = ['.', exporterFolder.path, 'exporter.json'].join('/');

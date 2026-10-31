@@ -24,10 +24,7 @@ async function setupPlatform() {
     await ensureDirectories();
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
-    await mount('/modules', appEnvironment.paths.plugins + '/modules');
-    await mount('/exporters', appEnvironment.paths.plugins + '/exporters');
-    await mount('/templates', appEnvironment.paths.plugins + '/templates');
-    await mount('/games', appEnvironment.paths.plugins + '/games');
+    await mount('/extensions', appEnvironment.paths.plugins + '/extensions');
     await mount('/cache', appEnvironment.paths.data + '/cache');
     startupLog.debug('Mounts done');
 }

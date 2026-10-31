@@ -54,7 +54,7 @@ export function getConfig() {
 }
 
 export async function loadGames() {
-    const gameFolders = await readDirectory('games');
+    const gameFolders = await readDirectory('extensions/games');
     for (const gameFolder of gameFolders) {
         log('startup').debug('Reading game:', gameFolder.path);
         const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');

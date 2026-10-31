@@ -8,12 +8,12 @@ import { pluginFolders } from '../../electron/pluginFolders.js';
 const stagePath = path.resolve('.tmp/package');
 const pluginStagePath = path.resolve('.tmp/package-plugins');
 const lockPath = path.resolve('.tmp/package.lock');
-const contentFolders = ['scripts', 'locales'];
+const contentFolders = ['scripts'];
 
 function includeFile(sourcePath) {
     const normalizedPath = sourcePath.replaceAll(path.sep, '/');
     return !/(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/.test(normalizedPath)
-        && normalizedPath !== 'games/magic/src'
+        && normalizedPath !== 'extensions/games/magic/src'
         && !/\.(?:map|test\.js|tests\.js|smoke\.js)$/.test(normalizedPath)
         && !/(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/.test(normalizedPath);
 }

@@ -1,8 +1,8 @@
 # Packaging
 
-Application code is bundled into `resources/app.asar`. Games, modules, exporters,
-and templates are installed beside the executable so they can be edited or replaced
-independently. On macOS these folders live in the app's `Contents/MacOS` directory.
+Application code is bundled into `resources/app.asar`. Games, cardparts, exporters, locales,
+and templates are installed in `extensions/` beside the executable so they can be edited or replaced
+independently. On macOS the `extensions/` folder lives in the app's `Contents/MacOS` directory.
 Portable Linux builds use tar.gz so these files remain loose after extraction.
 
 The staging directories separate bundled content from plugins before electron-builder

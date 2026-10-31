@@ -18,7 +18,7 @@ const CURRENT_SCHEMA_VERSION = 1;
  */
 export default class Localization {
     static async load(localeId, metadata = {}) {
-        const filePath = `locales/${localeId}.yml`;
+        const filePath = `extensions/locales/${localeId}.yml`;
         const text = await readFile(filePath);
         return new Localization(localeId, text, metadata);
     }
@@ -103,7 +103,7 @@ export default class Localization {
     }
 
     async save() {
-        const filePath = `locales/${this.id}.yml`;
+        const filePath = `extensions/locales/${this.id}.yml`;
         await writeFile(filePath, this.raw);
     }
 }

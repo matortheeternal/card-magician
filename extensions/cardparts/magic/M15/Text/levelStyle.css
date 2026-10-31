@@ -1,0 +1,146 @@
+:host {
+    --level-1-bg: 'none';
+    --level-2-bg: 'none';
+    --level-3-bg: 'none';
+    --level-1-arrow: 'none';
+    --level-2-arrow: 'none';
+    --level-3-arrow: 'none';
+    --level-1-pt: 'none';
+    --level-2-pt: 'none';
+    --level-3-pt: 'none';
+}
+
+:host:has(.creature-level) {
+    module-container[render="renderPT"] {
+        bottom: 150px;
+    }
+}
+
+module-container[module="Text"]:has(.creature-level) {
+    padding: 8px 5px 6px 0;
+
+    auto-fit-text {
+        padding: 0;
+    }
+
+    .rules-text {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+}
+
+.level-start {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 250px;
+    max-height: 55px;
+    margin-left: 18px;
+    flex: 1;
+}
+
+.creature-level {
+    display: grid;
+    grid-template-columns: 0.8fr 3fr 1fr;
+    position: relative;
+    height: 53px;
+    background-repeat: no-repeat;
+    background-size: 316px;
+    background-position: 13px;
+
+    .level-arrow {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-repeat: no-repeat;
+        background-position: 5px 6px;
+        padding-left: 12px;
+        padding-right: 26px;
+        text-align: center;
+        font-family: "Beleren Bold", serif;
+
+        > div:first-of-type {
+            font-size: 9px;
+        }
+
+        > div:last-of-type {
+            font-size: 16px;
+        }
+    }
+
+    .level-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0.2em 0;
+
+        > p {
+            margin: 0.2em 0;
+        }
+
+        > p first-of-type {
+            margin-top: 0;
+        }
+
+        > p last-of-type {
+            margin-bottom: 0;
+        }
+    }
+
+    .level-stats {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: absolute;
+        right: 0;
+        top: 9px;
+
+        .pt-text {
+            height: 37px;
+            width: 71px;
+            padding-top: 7px;
+        }
+    }
+}
+
+.level-0 {
+    background-image: var(--level-0-bg);
+}
+
+.level-1 {
+    anchor-name: --level-1;
+    background-image: var(--level-1-bg);
+
+    .level-arrow {
+        background-image: var(--level-1-arrow);
+    }
+
+    .pt-text {
+        background-image: var(--level-1-pt);
+    }
+}
+
+.level-2 {
+    background-image: var(--level-2-bg);
+
+    .level-arrow {
+        background-image: var(--level-2-arrow);
+    }
+
+    .pt-text {
+        background-image: var(--level-2-pt);
+    }
+}
+
+.level-3 {
+    background-image: var(--level-3-bg);
+
+    .level-arrow {
+        background-image: var(--level-3-arrow);
+    }
+
+    .pt-text {
+        background-image: var(--level-3-pt);
+    }
+}

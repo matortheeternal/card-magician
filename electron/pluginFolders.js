@@ -1,1 +1,1 @@
-export const pluginFolders = ['games', 'modules', 'exporters', 'templates'];
+export const pluginFolders = ['extensions'];

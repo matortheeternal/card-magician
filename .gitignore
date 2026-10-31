@@ -22,7 +22,7 @@ node_modules/
 card.json
 todos.txt
 cache/
-/games/magic/main.js
-/games/magic/main.js.map
-/games/magic/main.css
-/games/magic/main.css.map
+/extensions/games/magic/main.js
+/extensions/games/magic/main.js.map
+/extensions/games/magic/main.css
+/extensions/games/magic/main.css.map

@@ -18,7 +18,7 @@ export default [
         languageOptions: { sourceType: 'commonjs', globals: globals.node }
     },
     {
-        files: ['src/*.js', 'src/**/*.js', 'modules/**/*.js'],
+        files: ['src/*.js', 'src/**/*.js', 'extensions/cardparts/**/*.js'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -48,7 +48,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         rules: {
             // Correctness & safety
             'no-undef': 'error',
@@ -132,7 +132,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         ignores: ['src/**/*.smoke.js'],
 
         rules: {
@@ -146,7 +146,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         plugins: {
             '@stylistic': stylistic
         },

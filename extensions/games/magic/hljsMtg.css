@@ -1,0 +1,50 @@
+:root {
+    --mtg-block-border: #555;
+}
+
+.language-mtg {
+    .hljs-block {
+        display: block;
+        border: 1px solid var(--mtg-block-border);;
+        color: initial;
+        padding: 3px;
+        margin: 4px 0;
+    }
+
+    .hljs-comment {
+        font-style: italic;
+    }
+
+    .hljs-static-ability {
+        &::before {
+            content: 's';
+            background-color: dodgerblue;
+            font-weight: bold;
+            padding: 0 4px;
+            margin-right: 4px;
+            border-radius: 1em;
+        }
+    }
+
+    .hljs-activated-ability {
+        &::before {
+            content: 'A';
+            background-color: green;
+            font-weight: bold;
+            padding: 0 4px;
+            margin-right: 4px;
+            border-top-left-radius: 1em;
+            border-top-right-radius: 1em;
+        }
+    }
+
+    .hljs-triggered-ability {
+        &::before {
+            content: 'T';
+            background-color: darkred;
+            font-weight: bold;
+            padding: 0 4px;
+            margin-right: 4px;
+        }
+    }
+}

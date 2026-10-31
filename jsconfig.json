@@ -9,9 +9,9 @@
     },
     "include": [
         "src/**/*.js",
-        "games/*/src/**/*.js",
-        "modules/**/*.js",
-        "exporters/**/*.js",
+        "extensions/games/*/src/**/*.js",
+        "extensions/cardparts/**/*.js",
+        "extensions/exporters/**/*.js",
         "*.d.ts"
     ],
     "exclude": ["node_modules", "resources", "dist"]

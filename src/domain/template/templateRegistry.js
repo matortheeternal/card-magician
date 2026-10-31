@@ -26,7 +26,7 @@ function sortTemplates() {
 
 export async function loadTemplates() {
     const templateFolders = await readDirectory(
-        'templates',
+        'extensions/templates',
         { recursive: true }
     );
     for (const folder of templateFolders) {
