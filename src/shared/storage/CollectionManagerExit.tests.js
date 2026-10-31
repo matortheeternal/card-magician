@@ -4,10 +4,14 @@ import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js'
 
 describe('CollectionManager shutdown saves', () => {
     let manager;
+    let status;
     let save;
 
     beforeEach(() => {
         jasmine.clock().install();
+        status = jasmine.createSpy('set-status');
+        spyOn(window.actions, 'get').and.callThrough()
+            .withArgs('set-status').and.returnValue(status);
         spyOn(filesystem, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
@@ -42,10 +46,14 @@ describe('CollectionManager shutdown saves', () => {
         await expectAsync(manager.flush()).toBeRejectedWithError('Disk full');
         await rejected;
         expect(manager.pending).toBeTrue();
+        expect(status.calls.allArgs()).toEqual([['saving'], ['failed']]);
         save.and.resolveTo();
         await manager.flush();
         expect(save.calls.count()).toBe(2);
         expect(manager.pending).toBeFalse();
+        expect(status.calls.allArgs()).toEqual([
+            ['saving'], ['failed'], ['changes'], ['saving'], ['saved']
+        ]);
     });
 
     it('flushes edits queued while another save is running', async () => {

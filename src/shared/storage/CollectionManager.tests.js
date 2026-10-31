@@ -6,6 +6,7 @@ import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js'
 
 describe('CollectionManager', () => {
     let manager;
+    let status;
     let options;
     let save;
     let load;
@@ -13,6 +14,9 @@ describe('CollectionManager', () => {
 
     beforeEach(() => {
         jasmine.clock().install();
+        status = jasmine.createSpy('set-status');
+        spyOn(window.actions, 'get').and.callThrough()
+            .withArgs('set-status').and.returnValue(status);
         options = {
             path: jasmine.createSpy('path').and.returnValue(['data', 'items.yml']),
             matches: (item, value) => item.name === value,
@@ -173,6 +177,7 @@ describe('CollectionManager', () => {
     it('creates, appends, and saves an item from an explicit value', async () => {
         manager.collection = [];
         const item = manager.create('custom');
+        expect(status.calls.allArgs()).toEqual([['changes']]);
         expect(options.create).toHaveBeenCalledOnceWith('custom');
         expect(manager.collection[0]).toBe(item);
         expect(options.next).not.toHaveBeenCalled();
@@ -180,6 +185,7 @@ describe('CollectionManager', () => {
         expect(save).toHaveBeenCalledOnceWith(
             'data/items.yml', [item], { embedImages: true }
         );
+        expect(status.calls.allArgs()).toEqual([['changes'], ['saving'], ['saved']]);
     });
 
     for (const value of [undefined, null]) {
