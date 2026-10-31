@@ -12,6 +12,3 @@ against the executable directory in packaged builds. Other relative paths resolv
 against the application's writable content directory. Mounted paths are browser
 URLs, distinct from native filesystem paths.
 
-The plain `filesystem` service is a seam for domain-unit tests, so they do not spy
-on framework internals. Those tests complement the real filesystem, application,
-and shutdown checks; mocks do not establish persistence or lifecycle correctness.

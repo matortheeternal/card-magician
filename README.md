@@ -8,15 +8,11 @@ Use Node.js 24, then run `npm ci` and `npm start`. The application uses Electron
 with a sandboxed renderer and a small native platform adapter. `npm start` runs the
 rebuild server; `npm run start:app` opens the application without that server.
 
-Run `npm test`, `npm run test:native`, and `npm run smoke` for unit, native filesystem,
-and application integration checks. `npm run smoke:exit:mutations` verifies that the
-shutdown smoke tests fail when required save/close behavior is removed.
+Run `npm test`, `npm run test:native`, and `npm run smoke` for the test suites.
 
 Use `npm run package` for an unpacked application or `npm run dist` for installers
 for the current platform. Explicit targets are `dist:linux`, `dist:win`, and
-`dist:mac`. See [desktop development and packaging](docs/desktop.md) for storage,
-installer targets, signing, CI, and rendering evidence, and
-[shutdown behavior](docs/exit-behavior.md) for persistence guarantees and tests.
+`dist:mac`. See [packaging](tasks/electron/package.md) for the distribution layout.
 
 ## features
 
