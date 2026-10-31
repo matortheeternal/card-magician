@@ -32,11 +32,11 @@ export default class MagicTheGathering extends CardMagicianGame {
             return MakeManaCostAdapter(SerializerAdapter, ManaScribe.ManaCost);
         });
         this.faceSymbolManager = this.manageCollection({
-            path: () => [NL_DATAPATH, activeGame.id, 'faceSymbols.yml'],
+            path: () => [NL_DATAPATH, 'magic', 'faceSymbols.yml'],
             matches: (faceSymbol, name) => faceSymbol.name === name,
             next: tryCount => `Custom Face Symbol`
                 + (tryCount <= 1 ? '' : ` ${tryCount}`),
-            create: name => ({ name, imageUrl: null })
+            create: name => ({ name })
         });
         await this.faceSymbolManager.load();
         this.autoNumberCards = autoNumberCards;

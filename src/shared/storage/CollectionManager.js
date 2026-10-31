@@ -26,6 +26,7 @@ const report = createReporter({
 
 /**
  * Manages an in-memory array backed by a YAML file with debounced writes.
+ * ImageFieldValue images are embedded in the YAML as data URLs.
  * Call load() before using the collection. Direct array or item edits require
  * scheduleSave(). Call flush() to finish pending writes.
  */
@@ -93,7 +94,7 @@ export default class CollectionManager {
      */
     async save() {
         const filePath = await this.path;
-        await YAMLSerializer.save(filePath, this.collection);
+        await YAMLSerializer.save(filePath, this.collection, { embedImages: true });
     }
 
     /**

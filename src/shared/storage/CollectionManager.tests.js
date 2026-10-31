@@ -1,4 +1,6 @@
 import CollectionManager from './CollectionManager.js';
+import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
+import { getImageSize } from '../imageUtils.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 
 describe('CollectionManager', () => {
@@ -27,6 +29,81 @@ describe('CollectionManager', () => {
     afterEach(async () => {
         await manager.flush().catch(() => undefined);
         jasmine.clock().uninstall();
+    });
+
+    it('round trips nested images with embedded bytes', async () => {
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="18"/>';
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const image = new ImageFieldValue(url, 12, 18);
+        image.crop.width = 10;
+        image.crop.height = 15;
+        image.crop.xOffset = 2;
+        image.dirty = true;
+        let yaml;
+        spyOn(Neutralino.filesystem, 'getPathParts')
+            .and.resolveTo({ parentPath: 'data' });
+        spyOn(Neutralino.filesystem, 'createDirectory').and.resolveTo();
+        const write = spyOn(Neutralino.filesystem, 'writeFile')
+            .and.callFake(async (path, text) => { yaml = text; });
+        spyOn(Neutralino.filesystem, 'readFile').and.callFake(async () => yaml);
+        save.and.callThrough();
+        load.and.callThrough();
+        try {
+            manager.collection = [{ name: 'Symbol', front: { image } }];
+            manager.scheduleSave();
+            await manager.flush();
+            expect(write.calls.count()).toBe(1);
+            expect(yaml).toContain('data:image/svg+xml;base64,');
+            expect(yaml).not.toContain('blob:');
+            expect(yaml).not.toContain('dirty:');
+            expect(manager.collection[0].id).toBeUndefined();
+            // The embedded image remains usable after the original URL expires.
+            URL.revokeObjectURL(url);
+            await manager.load();
+            const restored = manager.collection[0].front.image;
+            expect(restored instanceof ImageFieldValue).toBeTrue();
+            expect(restored.crop).toEqual(image.crop);
+            expect(await getImageSize(restored.imageUrl))
+                .toEqual({ width: 12, height: 18 });
+            expect(new Uint8Array(await restored.loadImageData()))
+                .toEqual(new Uint8Array(await blob.arrayBuffer()));
+            // Saving a loaded image preserves its data URL without an extra fetch.
+            const fetchImage = spyOn(window, 'fetch').and.callThrough();
+            manager.collection[0].name = 'Renamed';
+            manager.scheduleSave();
+            await manager.flush();
+            expect(fetchImage).not.toHaveBeenCalled();
+            expect(yaml).toContain('Renamed');
+            restored.imageUrl = null;
+            manager.scheduleSave();
+            await manager.flush();
+            await manager.load();
+            expect(manager.collection[0].front.image.imageUrl).toBeNull();
+            expect(yaml).not.toContain('base64,');
+        } finally {
+            URL.revokeObjectURL(url);
+        }
+    });
+
+    it('keeps normal YAML image serialization as metadata only', async () => {
+        const image = new ImageFieldValue('blob:unavailable', 12, 18);
+        const serializer = new YAMLSerializer();
+        const yaml = await serializer.serialize({ image });
+        expect(yaml).not.toContain('imageUrl:');
+        expect(yaml).toContain('width: 12');
+    });
+
+    it('propagates image embedding failures without writing partial YAML', async () => {
+        save.and.callThrough();
+        const write = spyOn(Neutralino.filesystem, 'writeFile').and.resolveTo();
+        spyOn(window, 'fetch').and.rejectWith(new Error('Image unavailable'));
+        manager.collection = [{ image: new ImageFieldValue('blob:unavailable') }];
+        const pending = manager.save();
+        const rejected = expectAsync(pending).toBeRejectedWithError('Image unavailable');
+        await expectAsync(manager.flush()).toBeRejectedWithError('Image unavailable');
+        await rejected;
+        expect(write).not.toHaveBeenCalled();
     });
 
     it('requires loading or assigning the collection before accessing it', () => {
@@ -98,7 +175,9 @@ describe('CollectionManager', () => {
         expect(manager.collection[0]).toBe(item);
         expect(options.next).not.toHaveBeenCalled();
         await manager.flush();
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', [item]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml', [item], { embedImages: true }
+        );
     });
 
     for (const value of [undefined, null]) {
@@ -132,7 +211,9 @@ describe('CollectionManager', () => {
         expect(manager.collection).toEqual([item]);
         expect(options.create).toHaveBeenCalledOnceWith('new');
         await manager.flush();
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', [item]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml', [item], { embedImages: true }
+        );
     });
 
     it('removes only the item and saves the remainder', async () => {
@@ -143,7 +224,9 @@ describe('CollectionManager', () => {
         expect(manager.collection).toEqual([other, second]);
         expect(manager.collection[1]).toBe(second);
         await manager.flush();
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', [other, second]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml', [other, second], { embedImages: true }
+        );
     });
 
     it('does not save when remove finds no match', async () => {
@@ -159,7 +242,9 @@ describe('CollectionManager', () => {
         manager.removeAll('same');
         expect(manager.collection).toEqual([{ name: 'keep' }]);
         await manager.flush();
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', [{ name: 'keep' }]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml', [{ name: 'keep' }], { embedImages: true }
+        );
     });
 
     it('debounces edits for the default delay and saves the latest state', async () => {
@@ -173,9 +258,14 @@ describe('CollectionManager', () => {
         expect(save).not.toHaveBeenCalled();
         jasmine.clock().tick(1);
         await pending;
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', [
-            { name: 'first' }, { name: 'second' },
-        ]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml',
+            [
+                { name: 'first' },
+                { name: 'second' },
+            ],
+            { embedImages: true }
+        );
     });
 
     it('honors the configured save delay', async () => {
@@ -188,7 +278,9 @@ describe('CollectionManager', () => {
         expect(save).not.toHaveBeenCalled();
         jasmine.clock().tick(1);
         await pending;
-        expect(save).toHaveBeenCalledOnceWith('data/items.yml', []);
+        expect(save).toHaveBeenCalledOnceWith(
+            'data/items.yml', [], { embedImages: true }
+        );
     });
 
     it('flushes pending direct edits immediately using the current path', async () => {
@@ -197,7 +289,9 @@ describe('CollectionManager', () => {
         manager.collection[0].name = 'after';
         options.path.and.returnValue(['other', 'items.yml']);
         await manager.flush();
-        expect(save).toHaveBeenCalledOnceWith('other/items.yml', [{ name: 'after' }]);
+        expect(save).toHaveBeenCalledOnceWith(
+            'other/items.yml', [{ name: 'after' }], { embedImages: true }
+        );
         await manager.flush();
         expect(save.calls.count()).toBe(1);
     });

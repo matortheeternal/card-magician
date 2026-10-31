@@ -61,10 +61,12 @@ export default class Serializer {
      * and then through the specific format encoder.
      *
      * @param {any} value - The object to serialize.
-     * @param {object} options
+     * @param {object} options - Options available to adapters during encoding.
+     * @param {boolean} [options.embedImages=false] - Embed image bytes as data URLs.
      * @returns {Promise<any>} The serialized payload.
      */
     async serialize(value, options = {}) {
+        this.options = options;
         const intermediate = await this.encodeNode(value);
         return this.encode(intermediate, options);
     }
