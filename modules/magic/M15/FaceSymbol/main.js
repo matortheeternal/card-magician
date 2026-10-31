@@ -21,7 +21,7 @@ export default class FaceSymbolModule extends CardMagicianModule {
     loadFaceSymbolImages(options) {
         options.concat(options.flatMap(opt => opt.items || []))
             .filter(opt => Boolean(opt.imagePath))
-            .map(opt => this.loadImage(opt));
+            .forEach(opt => this.loadImage(opt));
     }
 
     async init() {

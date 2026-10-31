@@ -17,6 +17,10 @@ import filterPresets from './ui/buildFilterModal/filterPresets.js';
 import MagicSettings from './ui/settings/MagicSettings.js';
 import FaceSymbolSettings from './ui/settings/FaceSymbolSettings.js';
 
+function randomId() {
+    return Math.random().toString(36).substring(2, 10);
+}
+
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(metadata) {
         super(metadata);
@@ -36,7 +40,7 @@ export default class MagicTheGathering extends CardMagicianGame {
             matches: (faceSymbol, name) => faceSymbol.name === name,
             next: tryCount => `Custom Face Symbol`
                 + (tryCount <= 1 ? '' : ` ${tryCount}`),
-            create: name => ({ name })
+            create: name => ({ id: `custom_${randomId()}`, name })
         });
         await this.faceSymbolManager.load();
         this.autoNumberCards = autoNumberCards;

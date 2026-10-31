@@ -63,8 +63,8 @@ export default class FrameModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, [
-            'colorIdentity', 'alias', 'superType', 'subType', 'rulesHTML', 'parent',
-            'frame', 'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle',
+            'colorIdentity', 'faceSymbol', 'alias', 'superType', 'subType', 'rulesHTML',
+            'parent', 'frame', 'artSize', 'hybridStyle', 'hybridBlendStyle', 'crownStyle',
             'nyxStyle', 'vehicleStyle', 'snowStyle', 'scrollsStyle', 'draftStyle',
             'miracleStyle', 'ubStyle', 'meldStyle', 'otherFrameOptions', 'borderColor',
             'resolvedFaceSymbol'
