@@ -5,46 +5,58 @@ import { spawn } from 'node:child_process';
 import { build } from '../build.js';
 import { pluginFolders } from '../../electron/pluginFolders.js';
 
-const stage = path.resolve('.tmp/package');
-const pluginStage = path.resolve('.tmp/package-plugins');
-const lock = path.resolve('.tmp/package.lock');
+const stagePath = path.resolve('.tmp/package');
+const pluginStagePath = path.resolve('.tmp/package-plugins');
+const lockPath = path.resolve('.tmp/package.lock');
 const contentFolders = ['scripts', 'locales'];
 
-function includeFile(source) {
-    const normalized = source.replaceAll(path.sep, '/');
-    return !/(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/.test(normalized)
-        && normalized !== 'games/magic/src'
-        && !/\.(?:map|tests\.js|smoke\.js)$/.test(normalized)
-        && !/(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/.test(normalized);
+function includeFile(sourcePath) {
+    const normalizedPath = sourcePath.replaceAll(path.sep, '/');
+    return !/(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/.test(normalizedPath)
+        && normalizedPath !== 'games/magic/src'
+        && !/\.(?:map|test\.js|tests\.js|smoke\.js)$/.test(normalizedPath)
+        && !/(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/.test(normalizedPath);
 }
 
 async function stageApplication() {
-    await fs.rm(stage, { recursive: true, force: true });
-    await fs.mkdir(stage, { recursive: true });
-    await fs.rm(pluginStage, { recursive: true, force: true });
-    await fs.mkdir(pluginStage, { recursive: true });
-    for (const folder of pluginFolders) {
-        await fs.cp(folder, path.join(pluginStage, folder), {
-            recursive: true, filter: includeFile
+    for (const directoryPath of [stagePath, pluginStagePath]) {
+        await fs.rm(directoryPath, { recursive: true, force: true });
+        await fs.mkdir(directoryPath, { recursive: true });
+    }
+    const folders = [...pluginFolders, 'electron', 'resources', ...contentFolders];
+    for (const folder of folders) {
+        const destinationPath = pluginFolders.includes(folder)
+            ? pluginStagePath
+            : stagePath;
+        await fs.cp(folder, path.join(destinationPath, folder), {
+            recursive: true,
+            filter: includeFile
         });
     }
-    for (const folder of ['electron', 'resources', ...contentFolders]) {
-        await fs.cp(folder, path.join(stage, folder), { recursive: true,
-            filter: source => includeFile(source) && !source.endsWith('.test.js') });
-    }
-    await fs.copyFile('LICENSE', path.join(stage, 'LICENSE'));
+    await fs.copyFile('LICENSE', path.join(stagePath, 'LICENSE'));
+    await writePackageMetadata();
+}
+
+async function writePackageMetadata() {
     const metadata = JSON.parse(await fs.readFile('package.json', 'utf8'));
-    const { name, version, description, author, license, homepage, main, type }
-        = metadata;
-    await fs.writeFile(path.join(stage, 'package.json'), JSON.stringify({
-        name, version, description, author, license, homepage, main, type,
-        dependencies: {}, desktopName: 'card-magician'
-    }, null, 2));
+    const {
+        name, version, description, author,
+        license, homepage, main, type
+    } = metadata;
+    await fs.writeFile(
+        path.join(stagePath, 'package.json'),
+        JSON.stringify({
+            name, version, description,
+            author, license, homepage, main, type,
+            dependencies: {},
+            desktopName: 'card-magician'
+        }, null, 2)
+    );
 }
 
 async function createInstallers() {
-    const cli = path.resolve('node_modules/electron-builder/cli.js');
-    const args = [cli, '--config', 'electron-builder.yml',
+    const cliPath = path.resolve('node_modules/electron-builder/cli.js');
+    const args = [cliPath, '--config', 'electron-builder.yml',
                   '--publish', 'never', ...process.argv.slice(2)];
     const child = spawn(process.execPath, args, { stdio: 'inherit' });
     const code = await new Promise((resolve, reject) => {
@@ -54,23 +66,21 @@ async function createInstallers() {
     if (code !== 0) throw new Error(`Installer packaging failed (${code}).`);
 }
 
-await fs.mkdir(path.dirname(lock), { recursive: true });
-try {
-    await fs.mkdir(lock);
-} catch (error) {
-    if (error.code === 'EEXIST') {
-        throw new Error('Another installer build is using .tmp/package. '
-            + 'Run builds sequentially.');
+async function acquireLock() {
+    await fs.mkdir(path.dirname(lockPath), { recursive: true });
+    try {
+        await fs.mkdir(lockPath);
+    } catch (error) {
+        if (error.code !== 'EEXIST') throw error;
+        throw new Error(
+            'Another installer build is using .tmp/package. '
+            + 'Run builds sequentially.'
+        );
     }
-    throw error;
+    process.once('exit', () => rmSync(lockPath, { recursive: true, force: true }));
 }
-const cleanupLock = () => rmSync(lock, { recursive: true, force: true });
-process.once('exit', cleanupLock);
-try {
-    await build({ minify: true, tests: false });
-    await stageApplication();
-    await createInstallers();
-} finally {
-    process.removeListener('exit', cleanupLock);
-    await fs.rm(lock, { recursive: true, force: true });
-}
+
+await acquireLock();
+await build({ minify: true, tests: false });
+await stageApplication();
+await createInstallers();
