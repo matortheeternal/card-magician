@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { spawn } from 'child_process';
 import { createInterface } from 'node:readline';
 
@@ -13,6 +14,9 @@ export function createTestConfig() {
     const text = fs.readFileSync(productionConfigPath, 'utf8');
     const config = JSON.parse(text);
     config.applicationId = 'cardmagician.test';
+    const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'card-magician-tests-'));
+    config.modes.chrome.userDataDir = profile;
+    process.once('exit', () => fs.rmSync(profile, { recursive: true, force: true }));
     fs.writeFileSync(testConfigPath, JSON.stringify(config, null, 2));
 }
 
@@ -54,14 +58,11 @@ export function spawnTest(url, additionalArgs = []) {
         });
 
         const stdout = createInterface({ input: child.stdout });
-        let receivedResult = false;
+        let result = null;
 
         stdout.on('line', line => {
-            const result = handleOutput(line);
-            if (!result) return;
-
-            receivedResult = true;
-            resolve(result);
+            const reported = handleOutput(line);
+            if (reported) result = reported;
         });
 
         child.stderr.on('data', chunk => {
@@ -71,8 +72,7 @@ export function spawnTest(url, additionalArgs = []) {
         child.on('error', reject);
 
         child.on('close', (code, signal) => {
-            if (receivedResult) return;
-
+            if (result && code === 0) return resolve(result);
             reject(new Error(
                 `Test exited without result. code=${code}, signal=${signal}`
             ));
