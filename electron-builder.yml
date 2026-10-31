@@ -1,0 +1,43 @@
+appId: org.cardmagician.app
+productName: Card Magician
+executableName: card-magician
+artifactName: '${productName}-${version}-${os}-${arch}.${ext}'
+directories:
+    app: .tmp/package
+    output: dist
+    buildResources: build
+files:
+    - '**/*'
+    - '!**/node_modules/**/*'
+asar: true
+afterPack: tasks/electron/verifyPackage.cjs
+npmRebuild: false
+compression: maximum
+electronLanguages:
+    - en-US
+electronFuses:
+    runAsNode: false
+    enableNodeOptionsEnvironmentVariable: false
+    enableNodeCliInspectArguments: false
+    onlyLoadAppFromAsar: true
+linux:
+    icon: build/icons/icon.png
+    maintainer: Mator <mator@noreply.codeberg.org>
+    syncDesktopName: true
+    category: Graphics
+    target:
+        - AppImage
+        - deb
+win:
+    icon: build/icons/icon.ico
+    target: nsis
+nsis:
+    oneClick: false
+    allowToChangeInstallationDirectory: true
+    deleteAppDataOnUninstall: false
+mac:
+    icon: build/icons/icon.png
+    category: public.app-category.graphics-design
+    target:
+        - dmg
+        - zip

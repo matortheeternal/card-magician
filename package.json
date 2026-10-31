@@ -39,6 +39,11 @@
     "smoke:exit": "npm run build && node tasks/exitSmoke.js",
     "smoke:exit:mutations": "npm run build && node tasks/exitSmokeMutations.js",
     "probe": "npm run build && node tasks/electron/probe.js",
+    "package": "node tasks/electron/package.js --dir",
+    "dist": "node tasks/electron/package.js",
+    "dist:linux": "node tasks/electron/package.js --linux",
+    "dist:win": "node tasks/electron/package.js --win --x64",
+    "dist:mac": "node tasks/electron/package.js --mac",
     "lint": "eslint src modules electron tasks"
   },
   "dependencies": {
@@ -53,12 +58,14 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
+    "@electron/asar": "3.4.1",
     "@stylistic/eslint-plugin": "^5.6.1",
     "@types/jasmine": "^6.0.0",
     "chokidar": "^5.0.0",
     "concurrently": "^9.2.1",
     "diff": "^9.0.0",
     "electron": "45.2.1",
+    "electron-builder": "26.18.0",
     "esbuild": "^0.28.1",
     "eslint": "^9.39.2",
     "globals": "^16.5.0",

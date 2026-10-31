@@ -12,8 +12,11 @@ Run `npm test`, `npm run test:native`, and `npm run smoke` for unit, native file
 and application integration checks. `npm run smoke:exit:mutations` verifies that the
 shutdown smoke tests fail when required save/close behavior is removed.
 
-See [shutdown behavior](docs/exit-behavior.md) for persistence registration and
-integration checks.
+Use `npm run package` for an unpacked application or `npm run dist` for installers
+for the current platform. Explicit targets are `dist:linux`, `dist:win`, and
+`dist:mac`. See [desktop development and packaging](docs/desktop.md) for storage,
+installer targets, signing, CI, and rendering evidence, and
+[shutdown behavior](docs/exit-behavior.md) for persistence guarantees and tests.
 
 ## features
 
