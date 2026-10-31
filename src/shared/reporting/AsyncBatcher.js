@@ -2,6 +2,7 @@ export default class AsyncBatcher {
     #items = [];
     #timer = null;
     #chain = Promise.resolve();
+    #activeCount = 0;
 
     constructor(write, options = {}) {
         this.write = write;
@@ -20,6 +21,10 @@ export default class AsyncBatcher {
             this.#timer = setTimeout(() => this.flush(), this.delay);
     }
 
+    get pending() {
+        return this.#items.length > 0 || this.#activeCount > 0;
+    }
+
     flush() {
         if (this.#timer !== null) {
             clearTimeout(this.#timer);
@@ -29,9 +34,11 @@ export default class AsyncBatcher {
 
         const items = this.#items;
         this.#items = [];
+        this.#activeCount++;
         this.#chain = this.#chain
             .then(() => this.write(items))
-            .catch(error => this.onError(error));
+            .catch(error => this.onError(error))
+            .finally(() => { this.#activeCount--; });
         return this.#chain;
     }
 }

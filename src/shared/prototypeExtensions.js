@@ -175,6 +175,7 @@ addPrototypeFunction(Function, 'debounce', {
         let timeout = null;
         let futureInvocation = null;
         let tail = Promise.resolve();
+        let activeCount = 0;
         const func = this;
 
         const resolveInvocation = function() {
@@ -182,8 +183,10 @@ addPrototypeFunction(Function, 'debounce', {
             const activeInvocation = futureInvocation;
             futureInvocation = null;
             timeout = null;
+            activeCount++;
             return tail = tail.catch(() => undefined)
-                .then(() => activeInvocation.execute());
+                .then(() => activeInvocation.execute())
+                .finally(() => { activeCount--; });
         };
 
         const debounced = function() {
@@ -202,6 +205,10 @@ addPrototypeFunction(Function, 'debounce', {
                 futureInvocation.cancel();
                 futureInvocation = null;
             }
+        });
+
+        Object.defineProperty(debounced, 'pending', {
+            get: () => !!futureInvocation || activeCount > 0
         });
 
         Object.defineProperty(debounced, 'flush', {

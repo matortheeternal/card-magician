@@ -4,6 +4,21 @@ describe('AsyncBatcher', () => {
     beforeEach(() => jasmine.clock().install());
     afterEach(() => jasmine.clock().uninstall());
 
+    it('tracks queued and running batches until they finish', async () => {
+        let finish;
+        const write = () => new Promise(resolve => { finish = resolve; });
+        const batcher = new AsyncBatcher(write);
+        expect(batcher.pending).toBeFalse();
+        batcher.add('item');
+        expect(batcher.pending).toBeTrue();
+        const flushed = batcher.flush();
+        await Promise.resolve();
+        expect(batcher.pending).toBeTrue();
+        finish();
+        await flushed;
+        expect(batcher.pending).toBeFalse();
+    });
+
     it('writes items together after a fixed delay', async () => {
         const write = jasmine.createSpy('write').and.resolveTo();
         const batcher = new AsyncBatcher(write, { delay: 3000 });
