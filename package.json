@@ -33,6 +33,7 @@
     "renameMseAssets": "node tasks/renameMseAssets.js",
     "smoke": "npm run build && node tasks/smoke.js",
     "smoke:exit": "npm run build && node tasks/exitSmoke.js",
+    "smoke:exit:mutations": "npm run build && node tasks/exitSmokeMutations.js",
     "start": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload\"",
     "mobile": "npm run build && concurrently --handle-input -k -n dev,app -c \"gray,green\" \"npm:dev\" \"neu run --disable-auto-reload -- --mode=browser\"",
     "test": "npm run build && node tasks/test.js",
