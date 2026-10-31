@@ -32,6 +32,7 @@ const report = createReporter({
  */
 export default class CollectionManager {
     #collection = null;
+    #saveFailed = false;
 
     /**
      * @param {CollectionOptions} options - Persistence and item callbacks.
@@ -93,8 +94,14 @@ export default class CollectionManager {
      * @returns {Promise<void>} Resolves when the write completes.
      */
     async save() {
-        const filePath = await this.path;
-        await YAMLSerializer.save(filePath, this.collection, { embedImages: true });
+        try {
+            const filePath = await this.path;
+            await YAMLSerializer.save(filePath, this.collection, { embedImages: true });
+            this.#saveFailed = false;
+        } catch (error) {
+            this.#saveFailed = true;
+            throw error;
+        }
     }
 
     /**
@@ -182,13 +189,21 @@ export default class CollectionManager {
         this.scheduleSave();
     }
 
+    /** Whether a write is scheduled, running, or awaiting retry after failure. */
+    get pending() {
+        return this.save.pending || this.#saveFailed;
+    }
+
     /**
      * Immediately starts any scheduled save and waits for pending writes.
-     * Does not schedule a write when none is pending.
+     * Retries a failed save; otherwise does not schedule an additional write.
      *
      * @returns {Promise<void>}
      */
     async flush() {
-        return await this.save.flush();
+        if (this.#saveFailed) this.scheduleSave();
+        await this.save.flush();
+        while (this.save.pending)
+            await this.save.flush();
     }
 }

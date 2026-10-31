@@ -27,6 +27,7 @@ describe('CollectionManager', () => {
     });
 
     afterEach(async () => {
+        save.and.resolveTo();
         await manager.flush().catch(() => undefined);
         jasmine.clock().uninstall();
     });
