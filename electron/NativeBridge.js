@@ -49,6 +49,7 @@ export default class NativeBridge {
         const fileOperations = [
             'readDirectory', 'readFile', 'writeFile', 'readBinaryFile', 'writeBinaryFile',
             'getStats', 'getAbsolutePath', 'getJoinedPath', 'getPathParts',
+            'checkFileExists', 'checkFolderExists',
             'moveFile', 'copyFile', 'createDirectory', 'rmrf'
         ];
         for (const name of fileOperations)

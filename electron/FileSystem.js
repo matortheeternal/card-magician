@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { stat } from 'node:fs';
 import path from 'node:path';
 import { writeFile } from './atomicFile.js';
 import { pluginFolders } from './pluginFolders.js';
@@ -53,6 +54,25 @@ export default class FileSystem {
             isFile: stats.isFile(), isDirectory: stats.isDirectory(), size: stats.size,
             createdAt: stats.birthtimeMs, modifiedAt: stats.mtimeMs
         };
+    }
+
+    checkPath(filename, matches) {
+        const target = this.absolute(filename);
+        return new Promise((resolve, reject) => {
+            stat(target, (error, stats) => {
+                if (!error) return resolve(matches(stats));
+                if (['ENOENT', 'ENOTDIR'].includes(error.code)) return resolve(false);
+                reject(error);
+            });
+        });
+    }
+
+    checkFileExists(filename) {
+        return this.checkPath(filename, stats => stats.isFile());
+    }
+
+    checkFolderExists(filename) {
+        return this.checkPath(filename, stats => stats.isDirectory());
     }
 
     getAbsolutePath(filename) {

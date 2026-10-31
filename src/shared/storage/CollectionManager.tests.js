@@ -9,7 +9,7 @@ describe('CollectionManager', () => {
     let options;
     let save;
     let load;
-    let stats;
+    let fileExists;
 
     beforeEach(() => {
         jasmine.clock().install();
@@ -21,7 +21,7 @@ describe('CollectionManager', () => {
         };
         spyOn(filesystem, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
-        stats = spyOn(filesystem, 'getStats').and.resolveTo({ isFile: true });
+        fileExists = spyOn(filesystem, 'checkFileExists').and.resolveTo(true);
         load = spyOn(YAMLSerializer, 'load').and.resolveTo([{ name: 'loaded' }]);
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
         manager = new CollectionManager(options);
@@ -117,14 +117,14 @@ describe('CollectionManager', () => {
 
     it('loads existing items from the resolved YAML path', async () => {
         await manager.load();
-        expect(stats).toHaveBeenCalledOnceWith('data/items.yml');
+        expect(fileExists).toHaveBeenCalledOnceWith('data/items.yml');
         expect(load).toHaveBeenCalledOnceWith('data/items.yml');
         expect(manager.collection).toEqual([{ name: 'loaded' }]);
         expect(save).not.toHaveBeenCalled();
     });
 
     it('starts an empty collection when the file is missing', async () => {
-        stats.and.rejectWith({ code: 'ENOENT' });
+        fileExists.and.resolveTo(false);
         await manager.load();
         expect(manager.collection).toEqual([]);
         expect(load).not.toHaveBeenCalled();
@@ -134,7 +134,7 @@ describe('CollectionManager', () => {
     it('propagates file access errors without discarding existing items', async () => {
         manager.collection = [{ name: 'unsaved' }];
         const error = new Error('Access denied');
-        stats.and.rejectWith(error);
+        fileExists.and.rejectWith(error);
         await expectAsync(manager.load()).toBeRejectedWith(error);
         expect(manager.collection).toEqual([{ name: 'unsaved' }]);
         expect(load).not.toHaveBeenCalled();

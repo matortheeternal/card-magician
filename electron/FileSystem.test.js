@@ -29,3 +29,20 @@ test('plugins use installed files instead of profile copies', async () => {
         assert.equal(await files.readFile('games-backup/example.txt'), 'profile file');
     } finally { await fs.rm(temp, { recursive: true, force: true }); }
 });
+
+test('existence checks distinguish files, folders, and missing paths', async () => {
+    const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-exists-'));
+    const files = new FileSystem(temp);
+    try {
+        await fs.writeFile(path.join(temp, 'file'), 'contents');
+        await fs.mkdir(path.join(temp, 'folder'));
+        assert.equal(await files.checkFileExists('file'), true);
+        assert.equal(await files.checkFolderExists('folder'), true);
+        assert.equal(await files.checkFileExists('folder'), false);
+        assert.equal(await files.checkFolderExists('file'), false);
+        for (const missing of ['missing', 'missing/child', 'file/child']) {
+            assert.equal(await files.checkFileExists(missing), false);
+            assert.equal(await files.checkFolderExists(missing), false);
+        }
+    } finally { await fs.rm(temp, { recursive: true, force: true }); }
+});

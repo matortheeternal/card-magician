@@ -1,11 +1,13 @@
 import {
     getJoinedPath,
-    getStats,
+    checkFolderExists,
     readBinaryFile,
     readDirectory,
     readFile
 } from './platformAdapter.js';
 import { determineImageType } from './imageUtils.js';
+
+export { checkFileExists, checkFolderExists } from './platformAdapter.js';
 
 /**
  * Loads and parses a JSON file from the given file path.
@@ -15,31 +17,6 @@ import { determineImageType } from './imageUtils.js';
 export async function loadJson(filePath) {
     const text = await readFile(filePath);
     return JSON.parse(text);
-}
-
-/**
- * Returns true if a file exists at the given file path.
- * @param {string} filePath
- * @returns {Promise<boolean>}
- */
-export async function checkFileExists(filePath) {
-    try {
-        const stats = await getStats(filePath);
-        return stats.isFile;
-    } catch (error) {
-        if (['ENOENT', 'ENOTDIR'].includes(error.code)) return false;
-        throw error;
-    }
-}
-
-export async function checkFolderExists(folderPath) {
-    try {
-        const stats = await getStats(folderPath);
-        return !stats.isFile;
-    } catch (error) {
-        if (['ENOENT', 'ENOTDIR'].includes(error.code)) return false;
-        throw error;
-    }
 }
 
 async function getMatchingEntries(folderPath, options) {

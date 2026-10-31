@@ -37,6 +37,8 @@ export const filesystem = {
     readBinaryFile: (...args) => call('readBinaryFile', ...args),
     getAbsolutePath: (...args) => call('getAbsolutePath', ...args),
     getStats: (...args) => call('getStats', ...args),
+    checkFileExists: (...args) => call('checkFileExists', ...args),
+    checkFolderExists: (...args) => call('checkFolderExists', ...args),
     getJoinedPath: (...args) => call('getJoinedPath', ...args),
     getPathParts: (...args) => call('getPathParts', ...args),
     moveFile: (...args) => call('moveFile', ...args),
@@ -55,6 +57,8 @@ export async function readBinaryFile(path) {
 }
 export const getAbsolutePath = (...args) => filesystem.getAbsolutePath(...args);
 export const getStats = (...args) => filesystem.getStats(...args);
+export const checkFileExists = (...args) => filesystem.checkFileExists(...args);
+export const checkFolderExists = (...args) => filesystem.checkFolderExists(...args);
 export const getJoinedPath = (...args) => filesystem.getJoinedPath(...args);
 export const getPathParts = (...args) => filesystem.getPathParts(...args);
 export const moveFile = (...args) => filesystem.moveFile(...args);
