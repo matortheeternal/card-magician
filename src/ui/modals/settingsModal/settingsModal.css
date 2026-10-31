@@ -1,6 +1,4 @@
 cm-settings-modal {
-    margin-top: calc(100vh - 60em);
-
     .modal {
         width: 70em;
         height: 50em;
