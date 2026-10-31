@@ -1,7 +1,7 @@
 import ExitManager from './shared/ExitManager.js';
 import {
-    canDeferClose, onWindowClose, terminateApp
-} from './shared/neutralinoAdapter.js';
+    onWindowClose, terminateApp
+} from './shared/platformAdapter.js';
 import { getActiveModal, openModal } from './ui/modals/modalManager.js';
 import * as progress from './ui/systems/progressSystem.js';
 
@@ -53,16 +53,4 @@ export function exitApp(code = 0) {
 
 export async function setupExitHandling() {
     await onWindowClose(() => { void exitApp().catch(() => {}); });
-    window.addEventListener('beforeunload', event => {
-        if (window.suppressExit || exitManager.closing || canDeferClose()) return;
-        // Browser/mobile fallbacks cannot defer teardown silently. Keep the
-        // unsaved-data guard for runtimes without a native close-request hook.
-        if (exitManager.pending) {
-            event.preventDefault();
-            event.returnValue = true;
-            void flushBeforeExit().catch(error => progress.onError(error));
-            return;
-        }
-        void terminateApp();
-    });
 }

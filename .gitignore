@@ -2,17 +2,11 @@
 .idea
 .lite_workspace.lua
 
-# Neutralinojs binaries and builds
+# Runtime, packages, and local application data
 /bin
 /dist
-
-# Neutralinojs client (minified)
-neutralino.js
-
-# Neutralinojs related files
 .storage
 *.log
-neutralino.test.config.json
 
 # Custom
 node_modules/

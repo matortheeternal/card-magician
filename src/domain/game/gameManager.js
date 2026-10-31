@@ -1,6 +1,6 @@
 import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
 import AppConfig from './appConfig.js';
-import { readDirectory } from '../../shared/neutralinoAdapter.js';
+import { readDirectory } from '../../shared/platformAdapter.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const games = [];

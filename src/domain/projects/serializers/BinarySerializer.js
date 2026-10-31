@@ -1,6 +1,6 @@
 import Serializer from './Serializer.js';
 import { getBinaryAdapters } from '../adapters/adapterRegistry.js';
-import { readBinaryFile, writeBinaryFile } from '../../../shared/neutralinoAdapter.js';
+import { readBinaryFile, writeBinaryFile } from '../../../shared/platformAdapter.js';
 
 /**
  * @abstract

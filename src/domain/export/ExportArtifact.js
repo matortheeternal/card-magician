@@ -1,4 +1,4 @@
-import { getJoinedPath } from '../../shared/neutralinoAdapter.js';
+import { getJoinedPath } from '../../shared/platformAdapter.js';
 
 export default class ExportArtifact {
     /**

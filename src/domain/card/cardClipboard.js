@@ -6,7 +6,7 @@ import {
     getPathParts,
     rmrf,
     writeBinaryFile
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 import { find, loadImageFile } from '../../shared/fsUtils.js';
 import { createURL } from '../../ui/systems/objectUrlSystem.js';
 
@@ -16,7 +16,7 @@ const SNAPSHOT_VERSION = 1;
 let previousSnapshotPath;
 
 async function createSnapshot(cards) {
-    const rootPath = await getJoinedPath(NL_DATAPATH, 'card-clipboard');
+    const rootPath = await getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
     const snapshotPath = await getJoinedPath(rootPath, crypto.randomUUID());
     await createDirectory(rootPath);
     await createDirectory(snapshotPath);
@@ -101,7 +101,7 @@ async function validatePayload(payload) {
     if (payload?.version !== SNAPSHOT_VERSION) return false;
     if (payload.game !== activeProject.game) return false;
     if (!payload.snapshotPath || !Array.isArray(payload.cardFiles)) return false;
-    const rootPath = await getJoinedPath(NL_DATAPATH, 'card-clipboard');
+    const rootPath = await getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
     const { filename, parentPath } = await getPathParts(payload.snapshotPath);
     if (parentPath !== rootPath) return false;
     if (!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(filename))

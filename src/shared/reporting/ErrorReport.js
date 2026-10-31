@@ -23,14 +23,14 @@ export default class ErrorReport {
     }
 
     systemInformation() {
-        const applicationId = globalThis.NL_APPID ?? 'Unavailable';
-        const resourceMode = globalThis.NL_RESMODE ?? 'Unavailable';
-        const neutralinoVersion = globalThis.NL_VERSION ?? 'Unavailable';
+        const applicationId = globalThis.appEnvironment?.id ?? 'Unavailable';
+        const resourceMode = globalThis.appEnvironment?.resourceMode ?? 'Unavailable';
+        const runtimeVersion = globalThis.appEnvironment?.runtimeVersion ?? 'Unavailable';
         const platform = navigator.userAgentData?.platform ?? navigator.platform;
 
         return `## System Information
 - Application ID: ${this.inline(applicationId)}
-- Neutralino version: ${this.inline(neutralinoVersion)}
+- Electron version: ${this.inline(runtimeVersion)}
 - Resource mode: ${this.inline(resourceMode)}
 - Platform: ${this.inline(platform)}
 - Language: ${this.inline(navigator.language)}

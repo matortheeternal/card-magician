@@ -14,7 +14,7 @@ const report = createReporter({
     unit: 'CardForm',
     label: 'Card Editor'
 });
-const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
+const SMOKE_TESTING = appEnvironment.args.includes('--run-smoke-tests');
 const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 500;
 
 class CardForm extends ReactiveComponent {

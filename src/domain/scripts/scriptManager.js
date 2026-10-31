@@ -1,4 +1,4 @@
-import { readDirectory, readFile, writeFile } from '../../shared/neutralinoAdapter.js';
+import { readDirectory, readFile, writeFile } from '../../shared/platformAdapter.js';
 import sanitize from 'sanitize-filename';
 
 const loadedScripts = [];

@@ -2,7 +2,7 @@ import {
     getJoinedPath,
     moveFile,
     rmrf
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 
 export default class CardFiles {
     constructor(card, definitions = {}) {

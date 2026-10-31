@@ -1,5 +1,5 @@
 import { getAdapters } from '../adapters/adapterRegistry.js';
-import { readFile, writeFile } from '../../../shared/neutralinoAdapter.js';
+import { readFile, writeFile } from '../../../shared/platformAdapter.js';
 
 /**
  * Abstract base class for serializers that use type adapters to transform

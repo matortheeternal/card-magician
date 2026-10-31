@@ -12,7 +12,7 @@ export async function buildMagic({ minify = false }) {
         bundle: true,
         outdir: __dirname,
         format: 'esm',
-        sourcemap: true,
+        sourcemap: !minify,
         keepNames: true,
         minify,
         target: ['es2020'],

@@ -9,7 +9,7 @@ import {
     getJoinedPath,
     readBinaryFile,
     readFile
-} from '../shared/neutralinoAdapter.js';
+} from '../shared/platformAdapter.js';
 import FieldInteractor, { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
 import ImageCrop from './card/ImageCrop.js';
 import { executeAction } from '../ui/systems/actionSystem.js';

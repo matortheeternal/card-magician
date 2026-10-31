@@ -1,3 +1,4 @@
+import { filesystem } from '../platformAdapter.js';
 import CollectionManager from './CollectionManager.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import { getImageSize } from '../imageUtils.js';
@@ -18,9 +19,9 @@ describe('CollectionManager', () => {
             create: jasmine.createSpy('create').and.callFake(name => ({ name })),
             next: jasmine.createSpy('next').and.callFake(n => `Item ${n}`),
         };
-        spyOn(Neutralino.filesystem, 'getJoinedPath')
+        spyOn(filesystem, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
-        stats = spyOn(Neutralino.filesystem, 'getStats').and.resolveTo({ isFile: true });
+        stats = spyOn(filesystem, 'getStats').and.resolveTo({ isFile: true });
         load = spyOn(YAMLSerializer, 'load').and.resolveTo([{ name: 'loaded' }]);
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
         manager = new CollectionManager(options);
@@ -42,12 +43,12 @@ describe('CollectionManager', () => {
         image.crop.xOffset = 2;
         image.dirty = true;
         let yaml;
-        spyOn(Neutralino.filesystem, 'getPathParts')
+        spyOn(filesystem, 'getPathParts')
             .and.resolveTo({ parentPath: 'data' });
-        spyOn(Neutralino.filesystem, 'createDirectory').and.resolveTo();
-        const write = spyOn(Neutralino.filesystem, 'writeFile')
+        spyOn(filesystem, 'createDirectory').and.resolveTo();
+        const write = spyOn(filesystem, 'writeFile')
             .and.callFake(async (path, text) => { yaml = text; });
-        spyOn(Neutralino.filesystem, 'readFile').and.callFake(async () => yaml);
+        spyOn(filesystem, 'readFile').and.callFake(async () => yaml);
         save.and.callThrough();
         load.and.callThrough();
         try {
@@ -97,7 +98,7 @@ describe('CollectionManager', () => {
 
     it('propagates image embedding failures without writing partial YAML', async () => {
         save.and.callThrough();
-        const write = spyOn(Neutralino.filesystem, 'writeFile').and.resolveTo();
+        const write = spyOn(filesystem, 'writeFile').and.resolveTo();
         spyOn(window, 'fetch').and.rejectWith(new Error('Image unavailable'));
         manager.collection = [{ image: new ImageFieldValue('blob:unavailable') }];
         const pending = manager.save();
@@ -123,7 +124,7 @@ describe('CollectionManager', () => {
     });
 
     it('starts an empty collection when the file is missing', async () => {
-        stats.and.rejectWith({ code: 'NE_FS_NOPATHE' });
+        stats.and.rejectWith({ code: 'ENOENT' });
         await manager.load();
         expect(manager.collection).toEqual([]);
         expect(load).not.toHaveBeenCalled();

@@ -3,7 +3,6 @@ import chokidar from 'chokidar';
 import { build } from './build.js';
 
 let building = false;
-let dirty = false;
 
 function debounce(func, delay) {
     let timeout = null;
@@ -24,11 +23,10 @@ async function handleRebuild() {
     building = true;
 
     console.log('start build');
-    let start = Date.now();
+    const start = Date.now();
     try {
         await build({ minify: false });
         console.log(`build completed (${Date.now() - start}ms)`);
-        dirty = false;
         return { reload: true };
     } catch(error) {
         console.log(`build failed (${Date.now() - start}ms)`);
@@ -40,7 +38,6 @@ async function handleRebuild() {
 
 const onFilesChange = debounce(function onFilesChange(path) {
     console.info(`change detected, build marked dirty > ${path}`);
-    dirty = true;
     for (const client of server.clients) {
         if (client.readyState === WebSocket.OPEN)
             client.send(JSON.stringify({ dirty: true }));

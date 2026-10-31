@@ -1,4 +1,4 @@
-import { readDirectory } from '../neutralinoAdapter.js';
+import { readDirectory } from '../platformAdapter.js';
 
 export async function findTestFiles(dir) {
     const testFiles = [];

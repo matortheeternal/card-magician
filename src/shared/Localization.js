@@ -1,6 +1,6 @@
 import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
-import { readFile, writeFile } from './neutralinoAdapter.js';
+import { readFile, writeFile } from './platformAdapter.js';
 
 const CURRENT_SCHEMA_VERSION = 1;
 

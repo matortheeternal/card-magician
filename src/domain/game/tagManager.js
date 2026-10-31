@@ -2,7 +2,7 @@ import { manageCollection } from '../../shared/storageUtils.js';
 import * as fuzzySort from 'fuzzysort';
 
 export const tagManager = manageCollection({
-    path: () => [NL_DATAPATH, activeGame.id, 'tags.yml'],
+    path: () => [appEnvironment.paths.data, activeGame.id, 'tags.yml'],
     matches: (tag, text) => tag.text === text,
     create: text => ({ text, variant: 'neutral' })
 });

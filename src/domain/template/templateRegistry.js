@@ -1,5 +1,5 @@
 import { checkFileExists, loadTextFile } from '../../shared/fsUtils.js';
-import { readDirectory } from '../../shared/neutralinoAdapter.js';
+import { readDirectory } from '../../shared/platformAdapter.js';
 
 const templates = [];
 

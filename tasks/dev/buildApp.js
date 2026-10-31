@@ -16,7 +16,7 @@ function isApplicationCode(file) {
         && !file.endsWith('.smoke.js');
 }
 
-async function buildJs({ minify }) {
+async function buildJs({ minify, sourcemap }) {
     const main = [
         './shared/reporting.js',
         './shared/prototypeExtensions.js',
@@ -43,8 +43,9 @@ async function buildJs({ minify }) {
         },
         bundle: true,
         outfile: 'resources/js/main.js',
+        keepNames: true,
         format: 'iife',
-        sourcemap: 'inline',
+        sourcemap,
         sourcesContent: true,
         minify,
         target: ['es2020'],
@@ -76,9 +77,11 @@ async function buildCss({ minify }) {
     });
 }
 
-export async function buildApp({ minify = false } = {}) {
+export async function buildApp({
+    minify = false, sourcemap = minify ? false : 'inline'
+} = {}) {
     console.log('[build] building app');
-    await buildJs({ minify });
+    await buildJs({ minify, sourcemap });
     await buildCss({ minify });
     await copyShoelaceIcons();
 }

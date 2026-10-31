@@ -1,3 +1,4 @@
+import { filesystem } from '../platformAdapter.js';
 import CollectionManager from './CollectionManager.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 
@@ -7,7 +8,7 @@ describe('CollectionManager shutdown saves', () => {
 
     beforeEach(() => {
         jasmine.clock().install();
-        spyOn(Neutralino.filesystem, 'getJoinedPath')
+        spyOn(filesystem, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
         manager = new CollectionManager({ path: () => ['data', 'items.yml'] });

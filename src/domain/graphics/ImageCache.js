@@ -1,5 +1,5 @@
 import { loadImage } from '../../shared/imageUtils.js';
-import { readDirectory, writeBinaryFile } from '../../shared/neutralinoAdapter.js';
+import { readDirectory, writeBinaryFile } from '../../shared/platformAdapter.js';
 
 const report = createReporter({ unit: 'ImageCache' });
 
@@ -63,5 +63,5 @@ export class ImageCache {
     }
 }
 
-const imageCache = new ImageCache(NL_DATAPATH);
+const imageCache = new ImageCache(appEnvironment.paths.data);
 export default imageCache;

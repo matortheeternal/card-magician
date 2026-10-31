@@ -5,7 +5,7 @@ import { buildMagic } from '@card-magician/magic/esbuild.config.js';
 
 export async function build(options = { minify: false }) {
     await buildApp(options);
-    await buildTests(options);
+    if (options.tests !== false) await buildTests(options);
     await buildMagic(options);
 }
 

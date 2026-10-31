@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { root } from './dev/testHelpers.js';
+const root = path.resolve(import.meta.dirname, '..');
 
 const bundlePath = path.join(root, 'resources/js/main.js');
 const original = await fs.readFile(bundlePath, 'utf8');
@@ -23,7 +23,8 @@ const mutations = [
 
 try {
     for (const mutation of mutations) {
-        assert.ok(original.includes(mutation.from), `Mutation target missing: ${mutation.label}`);
+        assert.ok(original.includes(mutation.from),
+                  `Mutation target missing: ${mutation.label}`);
         await fs.writeFile(bundlePath, original.replace(mutation.from, mutation.to));
         const result = await new Promise((resolve, reject) => {
             const child = spawn(process.execPath, ['tasks/exitSmoke.js'], {
@@ -38,7 +39,7 @@ try {
         });
         assert.notEqual(result.code, 0, `Smoke test missed: ${mutation.label}`);
         assert.match(result.output, mutation.expected,
-            `Smoke test failed for an unexpected reason: ${result.output}`);
+                     `Smoke test failed for an unexpected reason: ${result.output}`);
         console.log(`Verified smoke failure: ${mutation.label}`);
     }
 } finally {

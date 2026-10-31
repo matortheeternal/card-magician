@@ -1,19 +1,21 @@
 import { beforeExit } from '../../lifecycle.js';
-import { getJoinedPath, terminateApp } from '../neutralinoAdapter.js';
+import { getJoinedPath, terminateApp } from '../platformAdapter.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import ImageCrop from '../../domain/card/ImageCrop.js';
 
 /** Test-only gate for observing shutdown; filesystem writes remain real. */
 export async function setupExitFixture() {
-    if (!NL_APPID.startsWith('cardmagician.exit.'))
+    if (!appEnvironment.id.startsWith('cardmagician.exit.'))
         throw new Error('Exit smoke tests require an isolated application ID.');
-    const argument = NL_ARGS.find(value => value.startsWith('--exit-test-folder='));
+    const argument = appEnvironment.args.find(value => {
+        return value.startsWith('--exit-test-folder=');
+    });
     if (!argument) throw new Error('Exit smoke tests require a temporary data folder.');
     const folder = argument.slice('--exit-test-folder='.length);
     const manager = activeGame.faceSymbolManager;
     manager.options.path = () => [folder, 'symbols.yml'];
     await manager.load();
-    if (!NL_ARGS.includes('--exit-test-reopen')) {
+    if (!appEnvironment.args.includes('--exit-test-reopen')) {
         manager.collection = [];
         const symbol = manager.create('Exit smoke symbol');
         symbol.image = new ImageFieldValue(
@@ -36,7 +38,7 @@ export async function setupExitFixture() {
         get imageUrl() { return manager.collection[0].image?.imageUrl; },
         release() { released = true; release(); },
         terminate: terminateApp,
-        dataPath: NL_DATAPATH,
+        dataPath: appEnvironment.paths.data,
         filePath: await getJoinedPath(folder, 'symbols.yml')
     };
 }

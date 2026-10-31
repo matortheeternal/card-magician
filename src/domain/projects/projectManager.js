@@ -3,7 +3,7 @@ import { getConfig } from '../game/gameManager.js';
 import {
     openSingleFileDialog,
     saveSingleFileDialog
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';

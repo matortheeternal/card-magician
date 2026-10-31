@@ -1,4 +1,4 @@
-import { readDirectory } from '../../shared/neutralinoAdapter.js';
+import { readDirectory } from '../../shared/platformAdapter.js';
 import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';

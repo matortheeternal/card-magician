@@ -3,8 +3,8 @@ import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import imageCache from './domain/graphics/ImageCache.js';
 import {
-    createDirectory, initApp, mount, setWindowSize
-} from './shared/neutralinoAdapter.js';
+    createDirectory, mount
+} from './shared/platformAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
@@ -15,35 +15,33 @@ const report = createReporter({ unit: 'startup' });
 
 async function ensureDirectories() {
     const paths = [
-        NL_PATH + '/modules',
-        NL_PATH + '/templates',
-        NL_PATH + '/games',
-        NL_DATAPATH + '/cache/images'
+        appEnvironment.paths.content + '/modules',
+        appEnvironment.paths.content + '/templates',
+        appEnvironment.paths.content + '/games',
+        appEnvironment.paths.data + '/cache/images'
     ];
     await Promise.all(paths.map(dirPath => {
         return createDirectory(dirPath).catch(() => {});
     }));
 }
 
-async function setupNeutralino() {
+async function setupPlatform() {
     await setupExitHandling();
-    await initApp();
-    startupLog.debug('Neutralino initialized');
-    await setWindowSize({ resizable: true });
+    startupLog.debug('Platform initialized');
     startupLog.debug('Ensuring directories exist');
     await ensureDirectories();
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
-    await mount('/modules', NL_PATH + '/modules');
-    await mount('/exporters', NL_PATH + '/exporters');
-    await mount('/templates', NL_PATH + '/templates');
-    await mount('/games', NL_PATH + '/games');
-    await mount('/cache', NL_DATAPATH + '/cache');
+    await mount('/modules', appEnvironment.paths.content + '/modules');
+    await mount('/exporters', appEnvironment.paths.content + '/exporters');
+    await mount('/templates', appEnvironment.paths.content + '/templates');
+    await mount('/games', appEnvironment.paths.content + '/games');
+    await mount('/cache', appEnvironment.paths.data + '/cache');
     startupLog.debug('Mounts done');
 }
 
 function setupDevState() {
-    if (NL_RESMODE === 'bundle' || NL_APPID !== 'cardmagician') return;
+    if (!appEnvironment.isDevelopment) return;
     startupLog.info('Development mode detected');
     const devState = document.createElement('dev-state');
     document.body.appendChild(devState);
@@ -87,13 +85,18 @@ window.addEventListener('resize', applyDeviceLayout.debounce(200));
 
 (async function() {
     try {
-        await setupNeutralino();
+        await setupPlatform();
         const devState = setupDevState();
         await startApp();
+        performance.mark('cm-ui-ready');
         if (devState) await devState.requestData();
-        if (NL_ARGS.includes('--test-exit')) {
+        if (appEnvironment.args.includes('--test-exit')) {
             const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
             await setupExitFixture();
+        }
+        if (appEnvironment.args.includes('--test-feasibility')) {
+            const fixture = await import('./shared/testing/feasibilityFixture.js');
+            await fixture.setupFeasibilityFixture();
         }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
     } catch (error) {

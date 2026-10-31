@@ -16,12 +16,7 @@ export default [
             sourceType: 'module',
             globals: {
                 ...globals.browser,
-                // NEUTRALINO GLOBALS
-                Neutralino: 'readonly',
-                NL_PATH: 'readonly',
-                NL_DATAPATH: 'readonly',
-                NL_ARGS: 'readonly',
-                NL_RESMODE: 'readonly',
+                appEnvironment: 'readonly',
                 // CODEBASE GLOBALS
                 activeGame: 'readonly',
                 activeProject: 'readonly',

@@ -2,7 +2,7 @@ import {
     createDirectory,
     getJoinedPath, getParentPath, getPathParts,
     mount, readFile, unmount, writeFile
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { checkFileExists, find } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
@@ -85,7 +85,7 @@ export default class CardMagicianProject {
 
     /**
      * Sets the project's file path and all paths that derive from it. Updates
-     * neutralino filesystem mounts so `/project` resolves to the project folder.
+     * resource mounts so `/project` resolves to the project folder.
      *
      * @param {string} value
      * @returns {Promise<void>}

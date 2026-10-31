@@ -1,4 +1,4 @@
-import { getJoinedPath, getPathParts } from '../../shared/neutralinoAdapter.js';
+import { getJoinedPath, getPathParts } from '../../shared/platformAdapter.js';
 
 export default class CardFileDefinition {
     constructor(key, options = {}) {

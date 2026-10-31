@@ -1,4 +1,4 @@
-import { openSingleFileDialog } from '../../../shared/neutralinoAdapter.js';
+import { openSingleFileDialog } from '../../../shared/platformAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
 import { setActiveProject } from '../../projects/projectManager.js';

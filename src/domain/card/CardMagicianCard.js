@@ -1,6 +1,6 @@
 import {
     getJoinedPath, getPathParts, writeBinaryFile
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 import YAMLSerializer from '../projects/serializers/YAMLSerializer.js';
 import { updateBaseName } from '../projects/cardNamer.js';
 import CardFiles from './CardFiles.js';

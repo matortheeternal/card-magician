@@ -1,7 +1,7 @@
 import { unzip } from 'unzipit';
 import MseProjectAdapter from './MseProjectAdapter.js';
 import { determineImageType } from '../../../shared/imageUtils.js';
-import { readBinaryFile } from '../../../shared/neutralinoAdapter.js';
+import { readBinaryFile } from '../../../shared/platformAdapter.js';
 
 export default class MseFileAdapter extends MseProjectAdapter {
     static async load(filePath) {

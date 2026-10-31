@@ -4,7 +4,7 @@ import {
     readBinaryFile,
     readDirectory,
     readFile
-} from './neutralinoAdapter.js';
+} from './platformAdapter.js';
 import { determineImageType } from './imageUtils.js';
 
 /**
@@ -27,7 +27,7 @@ export async function checkFileExists(filePath) {
         const stats = await getStats(filePath);
         return stats.isFile;
     } catch (error) {
-        if (error.code === 'NE_FS_NOPATHE') return false;
+        if (['ENOENT', 'ENOTDIR'].includes(error.code)) return false;
         throw error;
     }
 }
@@ -37,7 +37,7 @@ export async function checkFolderExists(folderPath) {
         const stats = await getStats(folderPath);
         return !stats.isFile;
     } catch (error) {
-        if (error.code === 'NE_FS_NOPATHE') return false;
+        if (['ENOENT', 'ENOTDIR'].includes(error.code)) return false;
         throw error;
     }
 }

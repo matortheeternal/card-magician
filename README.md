@@ -4,16 +4,16 @@ Card Magician is a cross-platform application for authoring custom playing cards
 
 ## development
 
-Use Node.js 24, then run `npm ci` and `npm start`. `npm ci` installs the pinned
-[Neutralino fork](https://github.com/matortheeternal/neutralinojs/tree/card-magician)
-and JavaScript client automatically; no global `neu` installation or C++ toolchain
-is required. Use `npm run runtime:verify` to check the installed files.
+Use Node.js 24, then run `npm ci` and `npm start`. The application uses Electron,
+with a sandboxed renderer and a small native platform adapter. `npm start` runs the
+rebuild server; `npm run start:app` opens the application without that server.
 
-Do not run `neu update`: it downloads upstream binaries. Runtime versions, source
-revision, and SHA-256 checksums are pinned in `neutralino.lock.json`. Builds check
-the pin and restore the fork if installed files differ. See
-[the runtime and shutdown guide](docs/exit-behavior.md) for local fork development,
-CI, and release updates.
+Run `npm test`, `npm run test:native`, and `npm run smoke` for unit, native filesystem,
+and application integration checks. `npm run smoke:exit:mutations` verifies that the
+shutdown smoke tests fail when required save/close behavior is removed.
+
+See [shutdown behavior](docs/exit-behavior.md) for persistence registration and
+integration checks.
 
 ## features
 

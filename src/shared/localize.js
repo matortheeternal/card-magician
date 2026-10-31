@@ -4,12 +4,12 @@ import {
     readDirectory,
     readFile,
     writeFile
-} from './neutralinoAdapter.js';
+} from './platformAdapter.js';
 import { checkFileExists } from './fsUtils.js';
 
 const report = createReporter({ unit: 'localize' });
 
-const generateSchema = NL_ARGS.includes('--localize');
+const generateSchema = appEnvironment.args.includes('--localize');
 const schemaPromise = loadSchema();
 const localesPromise = loadLocales();
 

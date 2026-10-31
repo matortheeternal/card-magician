@@ -1,7 +1,7 @@
 import {
     writeBinaryFile,
     writeFile
-} from '../../shared/neutralinoAdapter.js';
+} from '../../shared/platformAdapter.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 /**

@@ -1,5 +1,7 @@
 import './shared/testing/textMatcher.js';
-import { writeProcessOutput } from './shared/neutralinoAdapter.js';
+import {
+    writeProcessOutput, clearStoredData
+} from './shared/platformAdapter.js';
 import { exitApp } from './lifecycle.js';
 import CustomReporter from './shared/testing/customReporter.js';
 
@@ -8,7 +10,7 @@ const OUTPUT_PREFIX = '@TEST_OUTPUT:';
 
 function getArgument(name) {
     const prefix = `${name}=`;
-    const argument = NL_ARGS.find(arg => arg.startsWith(prefix));
+    const argument = appEnvironment.args.find(arg => arg.startsWith(prefix));
     return argument?.slice(prefix.length);
 }
 
@@ -23,19 +25,16 @@ function getSuiteId() {
 }
 
 function verifyTestEnvironment() {
-    if (NL_APPID === 'cardmagician.test') return;
-    throw new Error(`Canceling smoke tests with unsupported appId "${NL_APPID}".`);
+    if (appEnvironment.id === 'cardmagician.test') return;
+    throw new Error(`Unsupported test application ID: ${appEnvironment.id}`);
 }
 
 async function runTests() {
-    log('startup').info('Initializing neutralino');
-    Neutralino.init();
-
     log('startup').info('Verifying test environment');
     verifyTestEnvironment();
 
-    log('startup').info('Clearing neutralino storage');
-    await Neutralino.storage.clear();
+    log('startup').info('Clearing application storage');
+    await clearStoredData();
 
     log('startup').info('Executing jasmine tests');
     const suiteId = getSuiteId();
@@ -55,7 +54,7 @@ jasmine.getEnv().addReporter({
         const output = JSON.stringify({ status: result.overallStatus });
         await writeProcessOutput(RESULT_PREFIX + output + '\n');
         await new Promise(resolve => { setTimeout(resolve, 100); });
-        if (!NL_ARGS.includes('--stay-open')) await exitApp();
+        if (!appEnvironment.args.includes('--stay-open')) await exitApp();
     }
 });
 

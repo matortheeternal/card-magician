@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 
 /** Small CDP driver used by the external shutdown smoke tests. */
-export default class ChromeDriver {
+export default class DevToolsDriver {
     #serial = 0;
     #replies = new Map();
 
@@ -25,7 +25,7 @@ export default class ChromeDriver {
         socket.on('close', () => {
             for (const reply of this.#replies.values()) {
                 clearTimeout(reply.timer);
-                reply.reject(new Error('Chrome connection closed.'));
+                reply.reject(new Error('DevTools connection closed.'));
             }
             this.#replies.clear();
         });
@@ -37,7 +37,7 @@ export default class ChromeDriver {
             socket.once('open', resolve);
             socket.once('error', reject);
         });
-        return new ChromeDriver(socket);
+        return new DevToolsDriver(socket);
     }
 
     send(method, params = {}, sessionId) {
@@ -45,18 +45,19 @@ export default class ChromeDriver {
             const id = ++this.#serial;
             const timer = setTimeout(() => {
                 this.#replies.delete(id);
-                reject(new Error(`Chrome command timed out: ${method}`));
+                reject(new Error(`DevTools command timed out: ${method}`));
             }, 10000);
             this.#replies.set(id, { resolve, reject, timer });
-            if (process.env.DEBUG_EXIT) console.log('CDP send', { id, method, params, sessionId });
+            if (process.env.DEBUG_EXIT)
+                console.log('CDP send', { id, method, params, sessionId });
             this.socket.send(JSON.stringify({ id, method, params, sessionId }));
         });
     }
 
-    async attach() {
+    async attach(urlPart = 'cm-app://app/') {
         const { targetInfos } = await this.send('Target.getTargets');
         const target = targetInfos.find(info => info.type === 'page'
-            && info.url.includes('/tests/exit.html'));
+            && info.url.includes(urlPart));
         if (!target) return false;
         const result = await this.send('Target.attachToTarget', {
             targetId: target.targetId, flatten: true

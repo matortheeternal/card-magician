@@ -1,6 +1,6 @@
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import FieldInteractor from './FieldInteractor.js';
-import { getJoinedPath, rmrf } from '../neutralinoAdapter.js';
+import { getJoinedPath, rmrf } from '../platformAdapter.js';
 
 /**
  * Waits until the provided asynchronous condition becomes true.
@@ -83,7 +83,9 @@ let testIndex = 0;
  * @returns {Promise<CardMagicianProject>}
  */
 export async function createTestProject() {
-    const testProjectDir = await getJoinedPath(NL_DATAPATH, `test-${testIndex++}`);
+    const testProjectDir = await getJoinedPath(
+        appEnvironment.paths.data, `test-${testIndex++}`
+    );
     const projectFilePath = await getJoinedPath(testProjectDir, 'test.cmproj');
     try { await rmrf(testProjectDir); } catch {}
     executeAction('new-project');

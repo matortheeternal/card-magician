@@ -10,6 +10,14 @@ import globals from 'globals';
 // - Maintain a zero-noise baseline: lint should be quiet on intentional code
 export default [
     {
+        files: ['electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        languageOptions: { globals: globals.node }
+    },
+    {
+        files: ['electron/**/*.cjs', 'tasks/**/*.cjs'],
+        languageOptions: { sourceType: 'commonjs', globals: globals.node }
+    },
+    {
         files: ['src/*.js', 'src/**/*.js', 'modules/**/*.js'],
         languageOptions: {
             ecmaVersion: 'latest',
@@ -17,14 +25,7 @@ export default [
             globals: {
                 ...globals.browser,
                 ...globals.jasmine,
-                // NEUTRALINO GLOBALS
-                Neutralino: 'readonly',
-                NL_PATH: 'readonly',
-                NL_DATAPATH: 'readonly',
-                NL_ARGS: 'readonly',
-                NL_RESMODE: 'readonly',
-                NL_APPID: 'readonly',
-                NL_CWD: 'readonly',
+                appEnvironment: 'readonly',
                 // CODEBASE GLOBALS
                 activeGame: 'readonly',
                 activeProject: 'readonly',
@@ -47,7 +48,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         rules: {
             // Correctness & safety
             'no-undef': 'error',
@@ -131,7 +132,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         ignores: ['src/**/*.smoke.js'],
 
         rules: {
@@ -145,7 +146,7 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'modules/**/*.js'],
+        files: ['src/**/*.js', 'modules/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         plugins: {
             '@stylistic': stylistic
         },

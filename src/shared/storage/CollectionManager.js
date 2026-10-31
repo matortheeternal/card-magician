@@ -1,4 +1,4 @@
-import { getJoinedPath } from '../neutralinoAdapter.js';
+import { getJoinedPath } from '../platformAdapter.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 import { checkFileExists } from '../fsUtils.js';
 

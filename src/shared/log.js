@@ -1,6 +1,6 @@
-import { debugLog } from './neutralinoAdapter.js';
+import { debugLog } from './platformAdapter.js';
 
-const isDebugMode = NL_ARGS.includes('--debug');
+const isDebugMode = appEnvironment.args.includes('--debug');
 const log = [];
 const loggers = {};
 const logGroups = {};

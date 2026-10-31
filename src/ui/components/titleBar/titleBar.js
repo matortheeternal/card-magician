@@ -3,7 +3,7 @@ import FileMenu from '../../menus/FileMenu.js';
 import EditMenu from '../../menus/EditMenu.js';
 import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
-import { openUrl } from '../../../shared/neutralinoAdapter.js';
+import { openUrl } from '../../../shared/platformAdapter.js';
 
 const L = localize('titleBar');
 

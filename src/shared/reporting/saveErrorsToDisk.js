@@ -1,7 +1,7 @@
 import { subscribe } from '../reporting.js';
 import ErrorReport from './ErrorReport.js';
 import AsyncBatcher from './AsyncBatcher.js';
-import { writeFile } from '../neutralinoAdapter.js';
+import { writeFile } from '../platformAdapter.js';
 import { beforeExit } from '../../lifecycle.js';
 
 let sequentialId = 0;
@@ -11,7 +11,7 @@ async function writeBatch(batch) {
     const text = report.toMarkdown();
     const dateString = new Date().toISOString().replaceAll(':', '-');
     const filename = `errors-${dateString}-${sequentialId++}.md`;
-    const filePath = NL_DATAPATH + '/errors/' + filename;
+    const filePath = appEnvironment.paths.data + '/errors/' + filename;
     await writeFile(filePath, text);
 }
 

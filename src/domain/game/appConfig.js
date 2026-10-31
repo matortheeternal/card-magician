@@ -1,5 +1,5 @@
 import { beforeExit } from '../../lifecycle.js';
-import { getStoredData, storeData } from '../../shared/neutralinoAdapter.js';
+import { getStoredData, storeData } from '../../shared/platformAdapter.js';
 
 const RECENT_FILE_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
