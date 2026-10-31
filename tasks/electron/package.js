@@ -58,7 +58,13 @@ async function createInstallers() {
     const cliPath = path.resolve('node_modules/electron-builder/cli.js');
     const args = [cliPath, '--config', 'electron-builder.yml',
                   '--publish', 'never', ...process.argv.slice(2)];
-    const child = spawn(process.execPath, args, { stdio: 'inherit' });
+    const env = {
+        ...process.env,
+        // The gzip target otherwise uses level 9 even with normal compression.
+        ELECTRON_BUILDER_COMPRESSION_LEVEL:
+            process.env.ELECTRON_BUILDER_COMPRESSION_LEVEL ?? '6'
+    };
+    const child = spawn(process.execPath, args, { stdio: 'inherit', env });
     const code = await new Promise((resolve, reject) => {
         child.once('error', reject);
         child.once('close', resolve);

@@ -12,3 +12,5 @@ frontend dependencies are already bundled and should not be copied again.
 Installer targets and signing options belong in `electron-builder.yml`. Run installer
 builds sequentially because they share staging directories. macOS DMGs require macOS;
 Windows installers can also be built on Linux with Wine.
+
+Compression defaults to level 6. Set `ELECTRON_BUILDER_COMPRESSION_LEVEL` to override it.
