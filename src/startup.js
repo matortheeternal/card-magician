@@ -91,6 +91,10 @@ window.addEventListener('resize', applyDeviceLayout.debounce(200));
         const devState = setupDevState();
         await startApp();
         if (devState) await devState.requestData();
+        if (NL_ARGS.includes('--test-exit')) {
+            const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
+            await setupExitFixture();
+        }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
     } catch (error) {
         startupLog.error('Startup error:', error);

@@ -1,4 +1,5 @@
 import { createTestConfig, spawnTest } from './dev/testHelpers.js';
+import { runExitSmokeTests } from './dev/exitSmoke.js';
 
 const suites = [
     'Startup',
@@ -19,10 +20,14 @@ async function runTests() {
         console.log(`  ${color}${result.status}\x1b[0m`);
         failed ||= suiteFailed;
     }
+    await runExitSmokeTests();
     return failed;
 }
 
 createTestConfig();
 runTests().then(failed => {
     process.exit(failed ? 1 : 0);
+}).catch(error => {
+    console.error(error);
+    process.exitCode = 1;
 });
