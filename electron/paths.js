@@ -22,6 +22,7 @@ export function createEnvironment() {
         resourceMode: app.isPackaged ? 'bundle' : 'directory',
         args: process.argv,
         paths: {
+            plugins: app.isPackaged ? path.dirname(process.execPath) : root,
             content: app.isPackaged ? path.join(profile, 'content') : root,
             data: path.resolve(getArgument('--data-dir', path.join(profile, 'data')))
         }

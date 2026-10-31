@@ -12,7 +12,7 @@ const urls = new jasmine.HtmlReporterV2Urls();
 
 async function loadModuleTests() {
     const testFiles = await findTestFiles('modules');
-    await mount('/modules', appEnvironment.paths.content + '/modules');
+    await mount('/modules', appEnvironment.paths.plugins + '/modules');
     for (const file of testFiles)
         await import(`/${file}`);
 }

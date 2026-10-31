@@ -19,7 +19,7 @@ No native application compiler or separate browser installation is required.
 | `npm run probe` | Save/reopen/export a representative card and capture evidence |
 | `npm run package` | Produce an unpacked application for the host platform |
 | `npm run dist` | Produce installers for the host platform |
-| `npm run dist:linux` | Build AppImage and Debian packages |
+| `npm run dist:linux` | Build portable tar.gz and Debian packages |
 | `npm run dist:win` | Build the Windows x64 NSIS installer |
 | `npm run dist:mac` | Build macOS DMG and ZIP artifacts |
 
@@ -48,12 +48,36 @@ profile. Its `data` folder contains settings, collections, errors, logs, and ima
 cache; `--data-dir=/absolute/path` overrides that folder. Project files and their
 sidecar images retain their existing formats.
 
-Development loads games, modules, templates, exporters, scripts, and locales from
-the checkout. Packaged applications seed writable copies into the profile's
-`content` folder. A content manifest tracks the shipped hashes. On version changes,
-unchanged bundled files are upgraded and obsolete defaults removed; edited files
-and custom files are preserved. Increment the application version when changing
-bundled content. Application binaries and the ASAR archive remain immutable.
+Games, modules, exporters, and templates are installed as loose folders beside
+the executable, while application code remains inside `resources/app.asar`:
+
+```text
+card-magician                 # card-magician.exe on Windows
+resources/app.asar
+games/
+modules/
+exporters/
+templates/
+```
+
+On macOS they sit beside the executable in `Card Magician.app/Contents/MacOS/`;
+application code is in `Contents/Resources/app.asar`. Packaged applications load
+these installed plugin folders directly, including JavaScript and assets. They are
+not copied into the profile. Editing or adding plugins there takes effect on the
+next launch, subject to OS installation-directory permissions. Installer upgrades
+may replace supplied plugin files.
+
+Portable Linux distributions use tar.gz rather than AppImage, keeping the executable
+and plugins separate and editable after extraction. The Debian package installs the
+same executable-adjacent layout in its application directory.
+
+Development loads plugins from the checkout. `appEnvironment.paths.plugins` is the
+plugin root; `paths.content` remains the writable profile content root. Scripts and
+locales ship inside the application archive and are seeded into profile `content`.
+Their manifest tracks shipped hashes so unchanged defaults can be upgraded without
+overwriting edited or custom files. Older profile copies of plugin folders are
+left intact but are no longer loaded. Increment the application version when
+changing bundled scripts or locales.
 
 ## Host architecture
 
@@ -81,17 +105,21 @@ See [shutdown behavior](exit-behavior.md) for persistence registration and failu
 Production builds retain names used by the graphics-operation registry, while
 minifying scripts and CSS and omitting source maps. Packaging uses a staged allowlist
 of application folders, excludes development dependencies and tests, omits unused
-asset directories, and packages application files in ASAR. Browser locales are
+asset directories, and packages application code in ASAR while installing the four
+plugin folders loose. Browser locales are
 limited to `en-US`; application translations are separate. Extend `electronLanguages`
 when additional browser UI localizations are needed.
 
 An after-pack check rejects dependency folders, maps, test files, and missing
-required runtime resources. Packaged fuses disable Node execution mode, Node options,
+required runtime resources. It also rejects plugin folders inside ASAR and verifies
+the loose installation folders. Packaged fuses disable Node execution mode, Node
+options,
 and Node CLI inspection, and require the ASAR archive. Chromium's graphics libraries,
 software rendering fallback, ICU data, and license files are retained.
 
-Local Linux x64 measurements with Electron 45.2.1: approximately 333 MiB installed,
-154 MiB AppImage, and 151 MiB Debian package. The initial feasibility package was
+Local Linux x64 measurements with Electron 45.2.1: approximately 333 MiB installed.
+Portable tar.gz distributions and Debian packages include the loose plugin folders.
+The initial feasibility package was
 about 342 MiB installed and its gzip archive about 177 MiB. Compression formats
 are different, so compare actual download sizes rather than treating those figures
 as an isolated compression benchmark. Chromium and the card assets dominate the
@@ -103,7 +131,7 @@ OptiPNG; no image quality or resolution reductions were applied to card assets.
 The local application passed 72 unit specs, 54 application smoke specs, six native
 shutdown scenarios, native file tests, and both shutdown mutation checks. The compact
 ASAR-packaged Linux application also passed the six shutdown cases and the probe.
-Windows NSIS, Linux AppImage, and Debian installers were generated locally. macOS
+Windows NSIS, Linux portable tar.gz, and Debian installers were generated locally. macOS
 installer generation and native Windows/macOS execution are configured in CI but
 have not been run remotely as part of this local work.
 

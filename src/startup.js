@@ -13,16 +13,8 @@ import { tagManager } from './domain/game/tagManager.js';
 const startupLog = log('startup');
 const report = createReporter({ unit: 'startup' });
 
-async function ensureDirectories() {
-    const paths = [
-        appEnvironment.paths.content + '/modules',
-        appEnvironment.paths.content + '/templates',
-        appEnvironment.paths.content + '/games',
-        appEnvironment.paths.data + '/cache/images'
-    ];
-    await Promise.all(paths.map(dirPath => {
-        return createDirectory(dirPath).catch(() => {});
-    }));
+function ensureDirectories() {
+    return createDirectory(appEnvironment.paths.data + '/cache/images');
 }
 
 async function setupPlatform() {
@@ -32,10 +24,10 @@ async function setupPlatform() {
     await ensureDirectories();
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
-    await mount('/modules', appEnvironment.paths.content + '/modules');
-    await mount('/exporters', appEnvironment.paths.content + '/exporters');
-    await mount('/templates', appEnvironment.paths.content + '/templates');
-    await mount('/games', appEnvironment.paths.content + '/games');
+    await mount('/modules', appEnvironment.paths.plugins + '/modules');
+    await mount('/exporters', appEnvironment.paths.plugins + '/exporters');
+    await mount('/templates', appEnvironment.paths.plugins + '/templates');
+    await mount('/games', appEnvironment.paths.plugins + '/games');
     await mount('/cache', appEnvironment.paths.data + '/cache');
     startupLog.debug('Mounts done');
 }

@@ -6,9 +6,11 @@ The preload bridge also supplies the read-only `appEnvironment` metadata.
 
 Operations are asynchronous and reject with `Error` objects carrying native `code`
 values. Binary reads return `ArrayBuffer`; writes accept binary buffers. Directory
-entries expose `entry`, `path`, and `type`. Relative paths resolve against the
-application's writable content directory. Mounted paths are browser URLs, distinct
-from native filesystem paths.
+entries expose `entry`, `path`, and `type`. Relative plugin paths (`games`, `modules`,
+`exporters`, and `templates`) resolve
+against the executable directory in packaged builds. Other relative paths resolve
+against the application's writable content directory. Mounted paths are browser
+URLs, distinct from native filesystem paths.
 
 The plain `filesystem` service is a seam for domain-unit tests, so they do not spy
 on framework internals. Those tests complement the real filesystem, application,

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { writeFile } from './atomicFile.js';
 
-const folders = ['modules', 'games', 'templates', 'exporters', 'scripts', 'locales'];
+const folders = ['scripts', 'locales'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 function validEntry([name, value]) {
@@ -75,6 +75,7 @@ export default class ContentStore {
 
     async removeObsolete(previous, current) {
         for (const [relative, previousHash] of Object.entries(previous)) {
+            if (!folders.includes(relative.split(/[/\\]/)[0])) continue;
             if (relative in current) continue;
             const existing = await this.readExisting(relative);
             if (existing && hash(existing) === previousHash)

@@ -8,7 +8,7 @@ import { origin } from './ResourceServer.js';
 export default class NativeBridge {
     constructor(window, environment, resources, lifecycle) {
         Object.assign(this, { window, environment, resources, lifecycle });
-        this.files = new FileSystem(environment.paths.content);
+        this.files = new FileSystem(environment.paths.content, environment.paths.plugins);
         this.storage = new Storage(environment.paths.data);
         this.operations = this.createOperations();
     }

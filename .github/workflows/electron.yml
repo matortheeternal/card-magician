@@ -65,7 +65,7 @@ jobs:
               with:
                   name: installers-${{ matrix.platform }}-${{ matrix.arch }}
                   path: |
-                      dist/*.AppImage
+                      dist/*.tar.gz
                       dist/*.deb
                       dist/*.exe
                       dist/*.dmg

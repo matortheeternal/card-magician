@@ -3,12 +3,12 @@ import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { build } from '../build.js';
+import { pluginFolders } from '../../electron/pluginFolders.js';
 
 const stage = path.resolve('.tmp/package');
+const pluginStage = path.resolve('.tmp/package-plugins');
 const lock = path.resolve('.tmp/package.lock');
-const contentFolders = [
-    'modules', 'templates', 'games', 'exporters', 'scripts', 'locales'
-];
+const contentFolders = ['scripts', 'locales'];
 
 function includeFile(source) {
     const normalized = source.replaceAll(path.sep, '/');
@@ -21,6 +21,13 @@ function includeFile(source) {
 async function stageApplication() {
     await fs.rm(stage, { recursive: true, force: true });
     await fs.mkdir(stage, { recursive: true });
+    await fs.rm(pluginStage, { recursive: true, force: true });
+    await fs.mkdir(pluginStage, { recursive: true });
+    for (const folder of pluginFolders) {
+        await fs.cp(folder, path.join(pluginStage, folder), {
+            recursive: true, filter: includeFile
+        });
+    }
     for (const folder of ['electron', 'resources', ...contentFolders]) {
         await fs.cp(folder, path.join(stage, folder), { recursive: true,
             filter: source => includeFile(source) && !source.endsWith('.test.js') });

@@ -10,12 +10,10 @@ test('content upgrades preserve edits and custom files', async () => {
     const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-content-'));
     const source = path.join(temp, 'bundle');
     const destination = path.join(temp, 'content');
-    const bundled = file => path.join(source, 'templates', file);
-    const installed = file => path.join(destination, 'templates', file);
+    const bundled = file => path.join(source, 'scripts', file);
+    const installed = file => path.join(destination, 'scripts', file);
     try {
-        const folders = [
-            'modules', 'games', 'templates', 'exporters', 'scripts', 'locales'
-        ];
+        const folders = ['scripts', 'locales'];
         for (const folder of folders)
             await fs.mkdir(path.join(source, folder), { recursive: true });
         for (const file of ['unchanged', 'edited', 'removed', 'removed-edited'])

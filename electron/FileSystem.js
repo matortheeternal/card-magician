@@ -1,16 +1,21 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { writeFile } from './atomicFile.js';
+import { pluginFolders } from './pluginFolders.js';
 
 export default class FileSystem {
-    constructor(contentPath) {
+    constructor(contentPath, pluginPath = contentPath) {
         this.contentPath = contentPath;
+        this.pluginPath = pluginPath;
     }
 
     absolute(filename) {
         if (typeof filename !== 'string' || !filename)
             throw new TypeError('A nonempty file path is required.');
-        return path.resolve(this.contentPath, filename);
+        const normalized = path.normalize(filename);
+        const folder = normalized.split(path.sep)[0];
+        const base = pluginFolders.includes(folder) ? this.pluginPath : this.contentPath;
+        return path.resolve(base, normalized);
     }
 
     async readDirectory(filename, { recursive = false } = {}) {
