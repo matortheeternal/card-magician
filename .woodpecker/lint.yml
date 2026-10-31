@@ -3,6 +3,8 @@ when:
       path:
           include:
               - 'src/**'
+              - 'electron/**'
+              - 'tasks/**'
               - 'games/**'
               - 'modules/**'
               - 'eslint.config.js'
