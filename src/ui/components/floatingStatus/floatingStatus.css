@@ -1,0 +1,32 @@
+cm-floating-status {
+    position: fixed;
+    bottom: 1em;
+    left: 1em;
+    display: flex;
+    gap: var(--sl-spacing-2x-small);
+    font-size: var(--sl-font-size-medium);
+    padding: var(--sl-spacing-x-small);
+    background: none;
+    border: none;
+    border-radius: var(--sl-border-radius-medium);
+    transition: opacity 500ms ease;
+    opacity: 1;
+
+    &.hidden {
+        opacity: 0;
+    }
+
+    > sl-icon {
+        &[name="circle-fill"] {
+            color: var(--sl-color-warning-600);
+        }
+
+        &[name="exclamation-circle"] {
+            color: var(--sl-color-danger-600);
+        }
+
+        &[name="check-circle"] {
+            color: var(--sl-color-success-600);
+        }
+    }
+}
