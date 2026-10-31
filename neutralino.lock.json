@@ -1,0 +1,31 @@
+{
+  "repository": "matortheeternal/neutralinojs",
+  "tag": "v6.10.0-cm.1",
+  "revision": "7a86f495448d45bf33fbaf1bcf2c84aa6c607723",
+  "binaries": {
+    "neutralino-linux_x64": "7676f1564e37b5d3ff0448601d55ae1b827b8e51ee8dfb99de1b542583c1ef0e",
+    "neutralino-linux_arm64": "af22ea65188754c0755a5961763837894702ce79ee83fc9962030d158bc89362",
+    "neutralino-linux_armhf": "c420f0d2f77eeff3300f19ca2bf6961be5403bfffa0f9d399a835f19543245f8",
+    "neutralino-win_x64.exe": "40a848b158580eeb56e039be7657a6dcc7e330467ef9bb0c20d01d55a4ef1fa1",
+    "neutralino-mac_x64": "73154cca9ff172c3df915c03429fcafcc774261836a725cbf26bfc11303b9ce5",
+    "neutralino-mac_arm64": "cece134ab371983be154fbae3c41ca6ca95d59895e50ac1ffbb3913436e8fd50",
+    "neutralino-mac_universal": "c7cacb68967a434b0bb838059893c0738e7d424f66bb0fd341a6cb7ec6e94b18"
+  },
+  "archive": {
+    "url": "https://github.com/matortheeternal/neutralinojs/releases/download/v6.10.0-cm.1/neutralinojs-v6.10.0-cm.1.zip",
+    "sha256": "5b37c5b1b7289036c1e7e5ab5f0c5d7ecfd0684d4a5e8885f4ffb549decad5c7"
+  },
+  "client": {
+    "version": "6.10.0",
+    "files": {
+      "resources/js/neutralino.js": {
+        "url": "https://github.com/neutralinojs/neutralino.js/releases/download/v6.10.0/neutralino.js",
+        "sha256": "3b435cf313fbb92a7faaf18fb2dec94571903885b506c5ec378612843ddf7351"
+      },
+      "resources/js/neutralino.d.ts": {
+        "url": "https://github.com/neutralinojs/neutralino.js/releases/download/v6.10.0/neutralino.d.ts",
+        "sha256": "9b2cb3f14551c48944ae418b1222fc468f06df0be509dcd0466c67bacda5d820"
+      }
+    }
+  }
+}

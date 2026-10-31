@@ -24,10 +24,7 @@ steps:
           - Xvfb :99 -screen 0 1280x720x24 -nolisten tcp &
           - sleep 1
           - xdpyinfo -display :99 >/dev/null
-          - npm install -g --prefix /tmp/neu @neutralinojs/neu@11.8.0
-          - export PATH="/tmp/neu/bin:$PATH"
-          - neu update
+          - npm run runtime:verify
           - test -x bin/neutralino-linux_x64
-          - neu version
           - timeout 2m npm test
           - timeout 5m npm run smoke
