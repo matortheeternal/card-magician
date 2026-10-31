@@ -187,22 +187,27 @@ export function writeProcessError(data) {
     return wrapError(() => Neutralino.app.writeProcessError(data));
 }
 
+export function terminateApp(code = 0) {
+    return Neutralino.app.exit(code);
+}
+
+export function onWindowClose(callback) {
+    return Neutralino.events.on('windowClose', callback);
+}
+
+export function canDeferClose() {
+    return window.NL_MODE === 'window' || !!window.NL_CHROME_CLOSE_GUARD;
+}
+
+export function reloadApp() {
+    window.NL_CHROME_ALLOW_NAVIGATION = true;
+    window.location.reload();
+}
+
 export async function initApp() {
-    Neutralino.init();
-    await Neutralino.events.on('windowClose', () => Neutralino.app.exit(0));
-    return new Promise((resolve) => {
+    const ready = new Promise(resolve => {
         Neutralino.events.on('ready', () => resolve());
     });
-}
-
-const beforeExitCallbacks = [];
-
-export function beforeExit(callback) {
-    beforeExitCallbacks.push(callback);
-}
-
-export function exitApp(code = 0) {
-    Promise.all(
-        beforeExitCallbacks.map(cb => cb())
-    ).then(() => Neutralino.app.exit(code));
+    Neutralino.init();
+    return ready;
 }

@@ -1,6 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
-import { exitApp } from '../../shared/neutralinoAdapter.js';
+import { exitApp } from '../../lifecycle.js';
 import { openModal } from '../modals/modalManager.js';
 
 const L = localize('title-bar');
@@ -50,7 +50,7 @@ export default class FileMenu extends ReactiveMenu {
             ),
             this.desktopMenuItem(L`Print`, L`Ctrl+P`, () => log('user').info('Print')),
             this.DIVIDER,
-            this.desktopMenuItem(L`Exit`, ``, () => exitApp()),
+            this.desktopMenuItem(L`Exit`, ``, () => exitApp().catch(() => {})),
         ];
     }
 }

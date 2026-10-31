@@ -1,5 +1,6 @@
 import './shared/testing/textMatcher.js';
-import { exitApp, writeProcessOutput } from './shared/neutralinoAdapter.js';
+import { writeProcessOutput } from './shared/neutralinoAdapter.js';
+import { exitApp } from './lifecycle.js';
 import CustomReporter from './shared/testing/customReporter.js';
 
 const RESULT_PREFIX = '@TEST_RESULT:';
@@ -54,18 +55,16 @@ jasmine.getEnv().addReporter({
         const output = JSON.stringify({ status: result.overallStatus });
         await writeProcessOutput(RESULT_PREFIX + output + '\n');
         await new Promise(resolve => { setTimeout(resolve, 100); });
-        if (!NL_ARGS.includes('--stay-open')) close();
+        if (!NL_ARGS.includes('--stay-open')) await exitApp();
     }
 });
 
-window.addEventListener('beforeunload', () => {
-    exitApp();
-});
+
 
 window.addEventListener('cm-loaded', () => {
     runTests().catch(err => {
         console.error(err.stack);
-        exitApp(0);
+        exitApp(1);
     });
 });
 

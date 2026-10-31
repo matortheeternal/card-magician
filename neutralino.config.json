@@ -45,6 +45,7 @@
       "exitProcessOnClose": false
     },
     "chrome": {
+      "exitProcessOnClose": false,
       "width": 1280,
       "height": 720,
       "args": "--user-agent=\"Neutralinojs chrome mode\" --log-level=3"

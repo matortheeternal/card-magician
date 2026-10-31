@@ -1,4 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
+import { flushBeforeExit } from '../../../lifecycle.js';
+import { reloadApp } from '../../../shared/neutralinoAdapter.js';
 import { hide, show } from '../../../shared/htmlUtils.js';
 import {
     openProject,
@@ -113,8 +115,9 @@ export default class DevState extends ReactiveComponent {
         if (this.dirty) this.render();
         if (msg.lastError) this.handleRebuildError(msg.lastError);
         if (msg.reload) {
+            await flushBeforeExit();
             window.suppressExit = true;
-            location.reload();
+            reloadApp();
         }
         if (msg.openProject) await openProject(msg.openProject);
         if (Number.isInteger(msg.selectCard))

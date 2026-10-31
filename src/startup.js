@@ -1,8 +1,9 @@
+import { setupExitHandling } from './lifecycle.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import imageCache from './domain/graphics/ImageCache.js';
 import {
-    createDirectory, exitApp, initApp, mount, setWindowSize
+    createDirectory, initApp, mount, setWindowSize
 } from './shared/neutralinoAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
@@ -25,6 +26,7 @@ async function ensureDirectories() {
 }
 
 async function setupNeutralino() {
+    await setupExitHandling();
     await initApp();
     startupLog.debug('Neutralino initialized');
     await setWindowSize({ resizable: true });
@@ -82,10 +84,6 @@ async function startApp() {
 
 window.addEventListener('resize', applyDeviceLayout.debounce(200));
 
-window.addEventListener('beforeunload', () => {
-    if (window.suppressExit) return;
-    exitApp();
-});
 
 (async function() {
     try {

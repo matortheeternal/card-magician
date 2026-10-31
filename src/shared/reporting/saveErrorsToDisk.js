@@ -1,7 +1,8 @@
 import { subscribe } from '../reporting.js';
 import ErrorReport from './ErrorReport.js';
 import AsyncBatcher from './AsyncBatcher.js';
-import { writeFile, beforeExit } from '../neutralinoAdapter.js';
+import { writeFile } from '../neutralinoAdapter.js';
+import { beforeExit } from '../../lifecycle.js';
 
 let sequentialId = 0;
 
@@ -25,4 +26,4 @@ export default function flushPending() {
 }
 
 subscribe(item => batcher.add(item));
-beforeExit(flushPending);
+beforeExit(flushPending, () => batcher.pending);
