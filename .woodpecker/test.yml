@@ -25,6 +25,7 @@ steps:
           - sleep 1
           - xdpyinfo -display :99 >/dev/null
           - npm run runtime:verify
+          - npm run runtime:test
           - test -x bin/neutralino-linux_x64
           - timeout 2m npm test
           - timeout 5m npm run smoke

@@ -41,7 +41,8 @@
     "lint": "npx eslint src modules",
     "postinstall": "node tasks/installNeutralino.js",
     "runtime:install": "node tasks/installNeutralino.js",
-    "runtime:verify": "node tasks/installNeutralino.js --verify"
+    "runtime:verify": "node tasks/installNeutralino.js --verify",
+    "runtime:test": "node tasks/installNeutralino.js && node --test tasks/runtime/RuntimeInstaller.test.js"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
