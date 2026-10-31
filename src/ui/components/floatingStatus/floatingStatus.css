@@ -1,5 +1,6 @@
 cm-floating-status {
     position: fixed;
+    z-index: 200;
     bottom: 1em;
     left: 1em;
     display: flex;
