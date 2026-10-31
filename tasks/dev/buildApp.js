@@ -69,10 +69,24 @@ async function copyShoelaceIcons() {
 }
 
 async function buildCss({ minify }) {
+    const main = [
+        '@shoelace-style/shoelace/dist/themes/dark.css',
+        'highlight.js/styles/monokai-sublime.min.css',
+        ...(await getSourceFiles(file => {
+            return file.endsWith('.css') && file !== 'main.css';
+        })).sort(),
+        './main.css'
+    ].map(filePath => `@import ${JSON.stringify(filePath)};`).join('\n');
+
     await esbuild.build({
-        entryPoints: ['src/main.css'],
+        stdin: {
+            contents: main,
+            resolveDir: path.join(process.cwd(), 'src'),
+            sourcefile: 'styles.css',
+            loader: 'css'
+        },
         bundle: true,
-        outdir: 'resources/css',
+        outfile: 'resources/css/main.css',
         minify
     });
 }
