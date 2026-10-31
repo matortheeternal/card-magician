@@ -1,3 +1,4 @@
+import { beforeExit } from '../lifecycle.js';
 import Localization from './Localization.js';
 import {
     readDirectory,
@@ -99,6 +100,8 @@ const writeSchemaFile = (async function writeSchemaFile() {
     log('plugin').log(`Writing localization schema to `, outputPath);
     await writeFile(outputPath, json);
 }).debounce(1000);
+
+beforeExit(() => writeSchemaFile.flush(), () => writeSchemaFile.pending);
 
 async function updateSchema(namespaceKey, entryKey) {
     const schema = await schemaPromise;

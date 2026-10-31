@@ -29,6 +29,7 @@ export default class ProgressModal extends Modal {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
         this.#unregister?.();
     }
 

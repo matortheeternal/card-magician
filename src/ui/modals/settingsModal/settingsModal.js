@@ -15,7 +15,6 @@ export default class SettingsModal extends Modal {
     constructor() {
         super();
         this.tabs = getSettingsTabs();
-        this.saveProject = this.saveProject.debounce(500);
     }
 
     connectedCallback() {
@@ -127,7 +126,7 @@ export default class SettingsModal extends Modal {
     }
 
     saveProject() {
-        window.activeProject.save();
+        return window.activeProject.save();
     }
 }
 

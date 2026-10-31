@@ -1,3 +1,4 @@
+import { beforeExit } from '../../lifecycle.js';
 import { getStoredData, storeData } from '../../shared/neutralinoAdapter.js';
 
 const RECENT_FILE_MAX_COUNT = 10;
@@ -6,12 +7,19 @@ const SAVE_DELAY = 200;
 export default class AppConfig {
     #data = {};
     #writeQueued = false;
+    #timer = null;
+    #write = Promise.resolve();
+    #activeWrites = 0;
     #recentFilesChangedCallbacks = [];
     #loadPromise;
 
     constructor(gameId) {
         this.gameId = gameId;
         this.#loadPromise = this.load();
+        beforeExit(async () => {
+            await this.#loadPromise;
+            await this.flush();
+        }, () => this.#writeQueued || this.#activeWrites > 0);
     }
 
     get key() {
@@ -68,14 +76,32 @@ export default class AppConfig {
         if (this.#writeQueued) return;
 
         this.#writeQueued = true;
-        setTimeout(async () => {
-            this.#writeQueued = false;
-            await this.save();
+        this.#timer = setTimeout(() => {
+            void this.save().catch(error => {
+                createReporter({ unit: 'AppConfig' })('save', error);
+            });
         }, SAVE_DELAY);
     }
 
-    async save() {
-        const value = JSON.stringify(this.#data);
-        await storeData(this.key, value);
+    save() {
+        clearTimeout(this.#timer);
+        this.#timer = null;
+        this.#writeQueued = false;
+        this.#activeWrites++;
+        this.#write = this.#write.catch(() => undefined).then(async () => {
+            await storeData(this.key, JSON.stringify(this.#data));
+        }).catch(error => {
+            this.#writeQueued = true;
+            throw error;
+        }).finally(() => { this.#activeWrites--; });
+        return this.#write;
+    }
+
+    async flush() {
+        clearTimeout(this.#timer);
+        this.#timer = null;
+        if (this.#writeQueued) await this.save();
+        await this.#write;
+        while (this.#writeQueued) await this.save();
     }
 }

@@ -1,3 +1,4 @@
+import { registerPendingSave } from '../../../lifecycle.js';
 import { registerAction } from '../../systems/actionSystem.js';
 
 const SMOKE_TESTING = NL_ARGS.includes('--run-smoke-tests');
@@ -20,9 +21,14 @@ class CardProperties extends HTMLElement {
     }
 
     connectedCallback() {
+        this.unregisterExitSave = registerPendingSave(this.save);
         this.setAttribute('data-form-provider', '');
         this.render();
         this.bind();
+    }
+
+    disconnectedCallback() {
+        this.unregisterExitSave?.();
     }
 
     bind() {

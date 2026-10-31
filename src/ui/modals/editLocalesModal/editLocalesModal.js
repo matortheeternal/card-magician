@@ -1,3 +1,4 @@
+import { registerPendingSave } from '../../../lifecycle.js';
 import { registerModal } from '../modalManager.js';
 import Modal from '../Modal.js';
 import { saveLocale } from '../../../shared/localize.js';
@@ -36,12 +37,18 @@ export default class EditLocalesModal extends Modal {
     }
 
     connectedCallback() {
+        this.unregisterLocaleSave = registerPendingSave(this.debouncedSave);
         this.localeField.options = this.data.locales;
         super.connectedCallback();
         this.statsContainer = this.querySelector('.stats');
         Boolean(this.data.selectedLocale)
             ? this.selectLocale(this.data.selectedLocale)
             : this.createNewLocale();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.unregisterLocaleSave?.();
     }
 
     bind() {

@@ -1,3 +1,4 @@
+import { registerPendingSave } from '../../lifecycle.js';
 import { closeModal } from './modalManager.js';
 import ReactiveComponent from '../components/ReactiveComponent.js';
 import { executeAction } from '../systems/actionSystem.js';
@@ -13,10 +14,15 @@ export default class Modal extends ReactiveComponent {
     }
 
     connectedCallback() {
+        this.unregisterExitSave = registerPendingSave(this.saveProject);
         log('render').debug(`Component ${this.constructor.id} connected`);
         this.setAttribute('data-form-provider', '');
         this.render();
         this.bind();
+    }
+
+    disconnectedCallback() {
+        this.unregisterExitSave?.();
     }
 
     bind() {
@@ -50,7 +56,7 @@ export default class Modal extends ReactiveComponent {
 
     saveProject() {
         if (!activeProject.filePath) return;
-        executeAction('save-project');
+        return executeAction('save-project');
     }
 
     close() {

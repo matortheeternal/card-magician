@@ -1,3 +1,4 @@
+import { registerPendingSave } from '../../../lifecycle.js';
 import html from './cardForm.html.js';
 import {
     onActiveCardChanged,
@@ -25,9 +26,10 @@ class CardForm extends ReactiveComponent {
     }
 
     connectedCallback() {
+        this.unregisterExitSave = registerPendingSave(this.save);
         this.render();
         this.addEventListener('cm-field-changed', () => {
-            this.save();
+            this.save().catch(() => {});
         });
 
         onActiveCardChanged(async editorCard => {
@@ -49,6 +51,10 @@ class CardForm extends ReactiveComponent {
         const frontSection = this.querySelector(`div.face-front`);
         const backSection = this.querySelector(`div.face-back`);
         return frontSection.style.display !== 'none' ? frontSection  : backSection;
+    }
+
+    disconnectedCallback() {
+        this.unregisterExitSave?.();
     }
 
     bind() {
@@ -157,6 +163,7 @@ class CardForm extends ReactiveComponent {
         } catch (error) {
             report('save', error, [this.editorCard, this.projectCard]);
             log('state').error(error);
+            throw error;
         }
     }
 }
