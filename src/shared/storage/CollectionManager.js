@@ -1,6 +1,7 @@
 import { getJoinedPath } from '../platformAdapter.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 import { checkFileExists } from '../fsUtils.js';
+import { executeAction } from '../../ui/systems/actionSystem.js';
 
 const L = localize('collection-manager');
 const DEFAULT_DEBOUNCE_WAIT = 3000;
@@ -95,11 +96,14 @@ export default class CollectionManager {
      */
     async save() {
         try {
+            executeAction('set-status', 'saving');
             const filePath = await this.path;
             await YAMLSerializer.save(filePath, this.collection, { embedImages: true });
+            executeAction('set-status', 'saved');
             this.#saveFailed = false;
         } catch (error) {
             this.#saveFailed = true;
+            executeAction('set-status', 'failed');
             throw error;
         }
     }
@@ -110,6 +114,7 @@ export default class CollectionManager {
      * @returns {void}
      */
     scheduleSave() {
+        executeAction('set-status', 'changes');
         this.save().catch(err => report('save', err, [this.collection]));
     }
 

@@ -29,6 +29,7 @@ class CardForm extends ReactiveComponent {
         this.unregisterExitSave = registerPendingSave(this.save);
         this.render();
         this.addEventListener('cm-field-changed', () => {
+            executeAction('set-status', 'changes');
             this.save().catch(() => {});
         });
 
@@ -159,8 +160,11 @@ class CardForm extends ReactiveComponent {
 
     async save() {
         try {
+            executeAction('set-status', 'saving');
             await saveCard(this.editorCard, this.projectCard);
+            executeAction('set-status', 'saved');
         } catch (error) {
+            executeAction('set-status', 'failed');
             report('save', error, [this.editorCard, this.projectCard]);
             log('state').error(error);
             throw error;

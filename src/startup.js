@@ -50,6 +50,8 @@ function loaded() {
     );
     const mobileActions = document.createElement('cm-mobile-actions');
     document.body.append(mobileActions);
+    const floatingStatus = document.createElement('cm-floating-status');
+    document.body.append(floatingStatus);
 }
 
 async function startApp() {
