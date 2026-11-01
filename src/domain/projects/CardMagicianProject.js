@@ -1,5 +1,5 @@
 import {
-    createDirectory,
+    createDirectory, sysopen,
     getJoinedPath, getParentPath, getPathParts,
     mount, readFile, unmount, writeFile
 } from '../../shared/platformAdapter.js';
@@ -157,6 +157,14 @@ export default class CardMagicianProject {
     async saveSymbol() {
         if (!this.symbol?.length) return;
         await writeFile(this.symbolPath, this.symbol);
+    }
+
+    async editSetSymbol() {
+        if (!this.symbolPath) {
+            await dialog.alert('You must save the project first.');
+            return;
+        }
+        await sysopen(this.symbolPath);
     }
 
     async save() {

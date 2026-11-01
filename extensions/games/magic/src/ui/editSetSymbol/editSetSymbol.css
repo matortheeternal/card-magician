@@ -21,4 +21,11 @@ cm-edit-set-symbol {
         height: 4em;
         width: auto;
     }
+
+    > .actions {
+        display: flex;
+        justify-content: end;
+        margin: var(--sl-spacing-x-small) 0;
+        gap: var(--sl-spacing-x-small);
+    }
 }
