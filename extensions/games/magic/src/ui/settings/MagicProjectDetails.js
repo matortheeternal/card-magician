@@ -1,4 +1,5 @@
 import setInfoFields from './setInfoFields.js';
+import '../editSetSymbol/EditSetSymbol.js';
 
 const L = localize('game-magic');
 
@@ -40,7 +41,7 @@ export default class MagicProjectDetails extends CardMagicianSettings {
                 <form-field field-id="collectorNumberFormat"></form-field>
                 <form-field field-id="rarityOrder"></form-field>
             </div>
-            <form-field field-id="symbol"></form-field>`
+            <cm-edit-set-symbol></cm-edit-set-symbol>`
         );
     }
 }

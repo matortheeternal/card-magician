@@ -1,3 +1,4 @@
+import './ui/editSetSymbol/editSetSymbol.css';
 import { renderSetSymbol } from './domain/setSymbol/renderSetSymbol.js';
 import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';

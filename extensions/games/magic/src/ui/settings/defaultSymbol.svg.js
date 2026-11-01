@@ -1,24 +1,21 @@
 export default
-`<svg class="set-icon" viewBox="0 0 100 100" width="24" height="24" role="img">
-    <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop class="g1" offset="0%" stop-color="black"/>
-            <stop class="g2" offset="45%" stop-color="black"/>
-            <stop class="g3" offset="55%" stop-color="black"/>
-            <stop class="g4" offset="100%" stop-color="black"/>
-        </linearGradient>
-    </defs>
-
-    <rect
-        class="outer"
-        x="20"
-        y="20"
-        width="60"
-        height="60"
-        rx="4"
-        ry="4"
-        fill="url(#grad)"
-        stroke="var(--rar-stroke-outer)"
-        stroke-width="5"
-    />
+`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+    <metadata id="set-icon-editor">
+        {
+            "app":"set-icon-editor",
+            "version":1,
+            "layers": [{
+                "name":"Rectangle 1",
+                "shapeType":"rectangle",
+                "mode":"overlap",
+                "compound":false,
+                "pathData":"M32,480v-450h450v450z"
+            }]
+        }
+    </metadata>
+    <g xmlns="http://www.w3.org/2000/svg" id="Rendered geometry" fill="#000000"
+        fill-rule="nonzero" stroke="#ffffff" stroke-width="28" stroke-linecap="butt"
+        stroke-linejoin="round" stroke-miterlimit="10" stroke-dashoffset="0"
+        style="mix-blend-mode: normal"
+    ><path d="M32,480v-450h450v450z"/></g>
 </svg>`;

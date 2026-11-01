@@ -1,0 +1,24 @@
+cm-edit-set-symbol {
+    > label {
+        font-size: var(--sl-font-size-small);
+        margin-top: var(--sl-spacing-x-small);
+        display: block;
+    }
+
+    > .symbols-container {
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid var(--sl-input-border-color);
+        border-radius: var(--sl-input-border-radius-small);
+        padding: var(--sl-spacing-2x-small);
+        margin-top: var(--sl-spacing-3x-small);
+        gap: var(--sl-spacing-small);
+        background: var(--sl-input-background-color);
+    }
+
+    .set-icon {
+        display: block;
+        height: 4em;
+        width: auto;
+    }
+}
