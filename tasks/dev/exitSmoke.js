@@ -48,11 +48,12 @@ async function requestClose(driver, menu) {
 async function closeWithProgress(fixture, folder, menu) {
     const { driver } = fixture;
     await verifyFile(folder, true);
+    const debounceDelay = await driver.evaluate('exitSmoke.debounceDelay');
     await removeImage(driver);
     const requested = Date.now();
     await requestClose(driver, menu);
     await waitFor(() => modalVisible(driver), 'shutdown progress modal', 2000);
-    assert.ok(Date.now() - requested < 3000,
+    assert.ok(Date.now() - requested < debounceDelay,
               'Close was not requested before the debounce.');
     assert.equal(fixture.child.exitCode, null,
                  'The window must stay alive while flushing.');

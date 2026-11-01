@@ -2,6 +2,9 @@ import { beforeExit } from '../../lifecycle.js';
 import { getJoinedPath, terminateApp } from '../platformAdapter.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import ImageCrop from '../../domain/card/ImageCrop.js';
+import CollectionManager from '../storage/CollectionManager.js';
+
+const DEBOUNCE_DELAY = 60_000;
 
 /** Test-only gate for observing shutdown; filesystem writes remain real. */
 export async function setupExitFixture() {
@@ -24,8 +27,11 @@ export async function setupExitFixture() {
                     + 'width="12" height="18"/>'),
             12, 18, new ImageCrop(12, 18)
         );
-        await manager.flush();
     }
+    // Drain setup writes before replacing the debounce. A normal timer must not
+    // satisfy the shutdown assertion when collection flushing is disabled.
+    await manager.flush();
+    manager.save = CollectionManager.prototype.save.debounce(DEBOUNCE_DELAY);
     const editor = document.createElement('cm-edit-face-symbol');
     editor.symbol = manager.collection[0];
     document.querySelector('main').replaceChildren(editor);
@@ -34,6 +40,7 @@ export async function setupExitFixture() {
     const gate = new Promise(resolve => { release = resolve; });
     beforeExit(() => released ? undefined : gate, () => false);
     window.exitSmoke = {
+        debounceDelay: DEBOUNCE_DELAY,
         get pending() { return manager.pending; },
         get imageUrl() { return manager.collection[0].image?.imageUrl; },
         release() { released = true; release(); },
