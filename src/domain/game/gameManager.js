@@ -44,6 +44,7 @@ export async function setGame(gameId) {
         window.activeProject = new activeGame.Project();
     });
     appConfig = new AppConfig(gameId);
+    activeGame.appConfig = appConfig;
     return activeGame;
 }
 

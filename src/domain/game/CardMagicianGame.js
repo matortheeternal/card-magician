@@ -1,3 +1,4 @@
+import * as platform from '../../shared/platformAdapter.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
 import SerializerAdapter from '../projects/adapters/SerializerAdapter.js';
 import {
@@ -23,6 +24,10 @@ export default class CardMagicianGame {
         this.name = this.gamePath.split('/').pop();
         this.Card = window.CardMagicianCard;
         this.Project = CardMagicianProject;
+    }
+
+    get platform() {
+        return platform;
     }
 
     /**
