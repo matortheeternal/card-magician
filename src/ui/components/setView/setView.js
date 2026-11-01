@@ -9,14 +9,20 @@ import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { openModal } from '../../modals/modalManager.js';
+import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
+
+const report = createReporter({ unit: 'SetView' });
 
 export default class SetView extends ReactiveComponent {
+    selectionUpdate = Promise.resolve();
+
     connectedCallback() {
         this.render();
         this.bind();
     }
 
     bind() {
+        this.addEventListener('row-selected', event => this.onRowSelected(event));
         onActiveProjectChanged(project => {
             this.updateCards(project);
             this.watch('cards', project, 'cards', () => {
@@ -32,7 +38,6 @@ export default class SetView extends ReactiveComponent {
         this.handleEvents('keydown', {
             filterInputKeyDown: this.filterInputKeyDown
         });
-        this.addEventListener('row-selected', event => this.onRowSelected(event));
         this.addEventListener('sl-input', this.updateFilter.debounce(200));
         this.addEventListener('add-row-click', event => this.addCard(event));
         this.addEventListener('sort-updated', () => this.updateStatus());
@@ -72,12 +77,21 @@ export default class SetView extends ReactiveComponent {
         this.listView.columns = activeGame.columns;
     }
 
+    getVisibleCards(cards) {
+        if (!this.filterValue) return cards;
+        try {
+            return activeGame.filter(cards, this.filterValue);
+        } catch (error) {
+            log('user').debug('Filter error:', error);
+            return cards;
+        }
+    }
+
     updateCards(project) {
-        this.listView.rows = project.cards || [];
+        this.listView.rows = this.getVisibleCards(project.cards || []);
         const hasCards = Boolean(project.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
-        if (this.filterValue) this.updateFilter();
         this.updateStatus();
     }
 
@@ -94,9 +108,9 @@ export default class SetView extends ReactiveComponent {
             await r.original.deleteFiles();
             activeProject.cards.splice(index, 1);
             changed(activeProject, 'cards');
-            this.listView.selection = [index - 1];
-            selectCard(activeProject.cards[index - 1]);
+
         }
+        await this.flushSelection();
     }
 
     async addCard() {
@@ -104,12 +118,7 @@ export default class SetView extends ReactiveComponent {
         const card = new activeGame.Card();
         activeProject.cards.push(card);
         changed(activeProject, 'cards');
-        const indexToSelect = this.listView.activeRows.findIndex(row => {
-            return row.original === card;
-        });
-        this.listView.selection = [indexToSelect];
-        await selectCard(card);
-        this.updateStatus();
+        await this.flushSelection();
     }
 
     showFilter() {
@@ -121,15 +130,7 @@ export default class SetView extends ReactiveComponent {
     updateFilter(event) {
         if (event) this.filterValue = event.target.value;
         log('user').info('Filtering with:', this.filterValue);
-        const cards = activeProject.cards;
-        try {
-            this.listView.rows = this.filterValue
-                ? activeGame.filter(cards, this.filterValue)
-                : cards;
-            this.updateStatus();
-        } catch (error) {
-            log('user').debug('Filter error:', error);
-        }
+        this.updateCards(activeProject);
     }
 
     updateStatus() {
@@ -165,12 +166,24 @@ export default class SetView extends ReactiveComponent {
         this.updateFilter();
     }
 
+    async flushSelection() {
+        let update;
+        do {
+            update = this.selectionUpdate;
+            await update;
+        } while (update !== this.selectionUpdate);
+    }
+
     onRowSelected(event) {
         event.stopPropagation();
         const { row } = event.detail;
-        log('user').info('Selected card:', row.data.name);
-        selectCard(row.original);
-        this.updateStatus();
+        const card = row?.original || null;
+        this.selectionUpdate = this.selectionUpdate.catch(() => {}).then(async () => {
+            await flushPendingCardSaves();
+            if (window.selectedProjectCard !== card) await selectCard(card);
+            this.updateStatus();
+        });
+        this.selectionUpdate.catch(error => report('selectCard', error, [card]));
     }
 
     canDrop(event) {
@@ -197,9 +210,7 @@ export default class SetView extends ReactiveComponent {
             activeProject.cards.push(card);
         }
         changed(activeProject, 'cards');
-        const indexToSelect = activeProject.cards.length - 1;
-        this.listView.selection = [indexToSelect];
-        await selectCard(activeProject.cards[indexToSelect]);
+        await this.flushSelection();
     }
 }
 

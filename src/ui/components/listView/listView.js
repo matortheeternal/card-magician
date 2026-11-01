@@ -1,6 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { getColumnSelectMode } from './columnSortService.js';
-import { selectRow } from './rowSelectionService.js';
+import { getActiveRow, selectRow, updateRowSelection } from './rowSelectionService.js';
 import { emit, escapeHTML } from '../../../shared/htmlUtils.js';
 
 const L = localize('list-view');
@@ -25,9 +25,16 @@ export default class ListView extends ReactiveComponent {
     }
 
     set rows(newValue) {
+        const previousActive = this.activeRow?.original;
         this.#rows = newValue;
         this.computeRows();
         if (this.#rows && this.#columns) this.render();
+        if (previousActive !== this.activeRow?.original)
+            emit(this, 'row-selected', { row: this.activeRow || null });
+    }
+
+    get activeRow() {
+        return getActiveRow(this.activeRows);
     }
 
     get columns() {
@@ -78,7 +85,10 @@ export default class ListView extends ReactiveComponent {
                 original: row
             };
         });
+        const addedRow = this.activeRows.filter(row => !oldRowMap.has(row.original))
+            .at(-1);
         this.sortRows();
+        updateRowSelection(this.activeRows, oldRowMap, addedRow);
     }
 
     defaultCompare(col, a, b) {
