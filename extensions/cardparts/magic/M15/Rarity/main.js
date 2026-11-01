@@ -41,6 +41,7 @@ export default class RarityModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, 'rarity', () => this.updateRarity(card));
+        watch(activeProject, 'symbol', () => this.requestRender());
     }
 
     render(card) {

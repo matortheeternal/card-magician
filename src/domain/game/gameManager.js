@@ -1,3 +1,4 @@
+import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import AppConfig from './appConfig.js';
 import { readExtensionDirectories } from '../../shared/extensionManager.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
@@ -41,6 +42,7 @@ export async function setGame(gameId) {
     window.activeGame = new Module(game);
     await activeGame.init();
     await withNewContext(() => {
+        clearFileWatchers();
         window.activeProject = new activeGame.Project();
     });
     appConfig = new AppConfig(gameId);

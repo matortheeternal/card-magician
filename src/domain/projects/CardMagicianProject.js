@@ -3,6 +3,7 @@ import {
     getJoinedPath, getParentPath, getPathParts,
     mount, readFile, unmount, writeFile
 } from '../../shared/platformAdapter.js';
+import { clear as clearFileWatchers, watchTextFile } from '../../shared/fileWatcher.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { checkFileExists, find } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
@@ -91,6 +92,7 @@ export default class CardMagicianProject {
      * @returns {Promise<void>}
      */
     async setFilePath(value) {
+        if (window.activeProject === this) clearFileWatchers();
         this.#filePath = value;
         this.#folderPath = await getParentPath(value);
         this.#cardsFolderPath = await getJoinedPath(this.folderPath, 'cards');
@@ -99,6 +101,7 @@ export default class CardMagicianProject {
         await createDirectory(this.#folderPath);
         await unmount('/project');
         await mount('/project', this.#folderPath);
+        if (window.activeProject === this) await this.watchFiles();
     }
 
     /**
@@ -140,9 +143,28 @@ export default class CardMagicianProject {
     }
 
     async loadSymbol() {
-        const fileExists = await checkFileExists(this.symbolPath);
-        if (!fileExists) return;
-        this.symbol = await readFile(this.symbolPath);
+        if (await checkFileExists(this.symbolPath))
+            this.updateSymbol(await readFile(this.symbolPath));
+    }
+
+    updateSymbol(source) {
+        if (source === this.symbol) return;
+        const document = new DOMParser().parseFromString(source, 'image/svg+xml');
+        if (document.querySelector('parsererror')
+            || document.documentElement?.localName !== 'svg') return;
+        this.symbol = source;
+        changed(this, 'symbol');
+    }
+
+    async watchFiles({ initial = false } = {}) {
+        if (!this.symbolPath) return;
+        try {
+            await watchTextFile(this.symbolPath, source => this.updateSymbol(source), {
+                initial
+            });
+        } catch (error) {
+            report('watchSymbol', error, [this.symbolPath]);
+        }
     }
 
     async saveCards(withImages = true) {

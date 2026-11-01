@@ -1,3 +1,4 @@
+import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { getConfig } from '../game/gameManager.js';
 import {
@@ -53,7 +54,9 @@ export async function saveProject(saveCards = false) {
 }
 
 export function setActiveProject(project) {
+    clearFileWatchers();
     window.activeProject = project;
+    void project.watchFiles({ initial: true });
     for (const callback of projectChangedCallbacks)
         callback(activeProject);
 }
