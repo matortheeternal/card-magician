@@ -1,12 +1,15 @@
-import MountedDirectory from './shared/MountedDirectory.js';
-import { checkFolderExists, getJoinedPath } from './shared/platformAdapter.js';
+import MountedDirectory from './MountedDirectory.js';
+import {
+    checkFolderExists, getJoinedPath, openSvgEditor, createDirectory
+} from './platformAdapter.js';
 
-describe('Platform', () => {
+describe('Platform adapter', () => {
     let directory;
 
     beforeAll(async () => {
         directory = new MountedDirectory(appEnvironment.paths.data + '/public',
                                          '/platform-smoke');
+        await createDirectory(directory.filePath);
         await directory.mount();
     });
 
@@ -18,6 +21,15 @@ describe('Platform', () => {
     it('rejects unsupported native operations', async () => {
         const result = await window.cardMagicianNative.call('notAnOperation', []);
         expect(result.error.code).toBe('ACCESS_DENIED');
+    });
+
+    it('dispatches SVG editor launches through the native bridge', async () => {
+        const executable = await getJoinedPath(
+            appEnvironment.paths.data, 'missing-editor', 'set-icon-editor'
+        );
+        const filename = await getJoinedPath(appEnvironment.paths.data, 'symbol.svg');
+        await expectAsync(openSvgEditor(executable, filename))
+            .toBeRejectedWith(jasmine.objectContaining({ code: 'ENOENT' }));
     });
 
     it('reads installed extensions through files and browser URLs', async () => {
