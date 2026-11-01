@@ -25,7 +25,6 @@ export default class HistoryEntry {
     }
 
     /**
-     * @abstract
      * @param {HistoryEntry} entry
      * @returns {HistoryEntry|undefined}
      */
@@ -33,15 +32,17 @@ export default class HistoryEntry {
 
     /**
      * @abstract
+     * @returns Promise<any>
      */
-    revert() {
+    async revert() {
         throw new Error('Not implemented');
     }
 
     /**
      * @abstract
+     * @returns Promise<any>
      */
-    replay() {
+    async replay() {
         throw new Error('Not implemented');
     }
 }

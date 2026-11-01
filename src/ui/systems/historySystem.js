@@ -1,7 +1,8 @@
 import CardFieldChange from './history/CardFieldChange.js';
+import CardListChange from './history/CardListChange.js';
 
 const historyEntryClasses = [
-    CardFieldChange
+    CardFieldChange, CardListChange
 ];
 
 let lock = Promise.resolve();
@@ -36,6 +37,19 @@ export function push(card, event) {
         const previousAction = getPreviousAction();
         const combined = previousAction?.combine(entry);
         if (!combined) past.push(entry);
+    });
+}
+
+/** Apply and record an initial operation under the same lock as undo/redo. */
+export function execute(target, event) {
+    const Entry = findMatchingClass(event);
+    if (!Entry) return;
+    const entry = new Entry(target, event);
+    return withLock(async () => {
+        if (!await entry.replay()) return false;
+        future = [];
+        past.push(entry);
+        return true;
     });
 }
 

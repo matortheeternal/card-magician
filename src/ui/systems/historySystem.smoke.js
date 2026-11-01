@@ -11,7 +11,8 @@ import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js'
 import ImageCrop from '../../domain/card/ImageCrop.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import { retainImage } from '../../domain/card/imageRetention.js';
-import { readBinaryFile } from '../../shared/platformAdapter.js';
+import { checkFileExists } from '../../shared/fsUtils.js';
+import { readBinaryFile, writeBinaryFile } from '../../shared/platformAdapter.js';
 
 function deferred() {
     let resolve;
@@ -316,6 +317,340 @@ describe('History', () => {
         });
     });
 
+    describe('card creation and deletion', () => {
+        let project, list, art;
+
+        function select(cards) {
+            list.selection = list.activeRows.flatMap((row, index) => {
+                return cards.includes(row.original) ? [index] : [];
+            });
+        }
+
+        async function namedCard(name) {
+            const card = await createCard();
+            await setCardFields({ name });
+            await flushCard();
+            return card;
+        }
+
+        beforeAll(async () => {
+            art = new File([await (await fetch('/tests/fixtures/art.jpg')).blob()],
+                           'art.jpg', { type: 'image/jpeg' });
+        });
+
+        beforeEach(async () => {
+            project = await createTestProject();
+            list = document.querySelector('cm-set-view cm-list-view');
+        });
+
+        afterEach(async () => {
+            await flushCard();
+            await history.reset();
+            await deleteTestProject();
+        });
+
+        it('undoes and redoes creating the first card with stable identity', async () => {
+            const card = await createCard();
+            const path = card.files.get('data');
+            await history.undo();
+            expect(project.cards).toEqual([]);
+            expect(selectedProjectCard).toBeNull();
+            expect(activeEditorCard).toBeNull();
+            expect(list.selection).toEqual([]);
+            expect(await checkFileExists(path)).toBeFalse();
+            await history.redo();
+            expect(project.cards).toEqual([card]);
+            expect(selectedProjectCard).toBe(card);
+            expect(list.selection.map(row => row.original)).toEqual([card]);
+            expect(await checkFileExists(card.files.get('data'))).toBeTrue();
+        });
+
+        it('preserves separate creation steps and restores prior selection', async () => {
+            const first = await createCard();
+            const second = await createCard();
+            await history.undo();
+            expect(project.cards).toEqual([first]);
+            expect(selectedProjectCard).toBe(first);
+            await history.undo();
+            expect(project.cards).toEqual([]);
+            await history.redo();
+            await history.redo();
+            expect(project.cards).toEqual([first, second]);
+            expect(selectedProjectCard).toBe(second);
+        });
+
+        it('replays field changes across create undo/redo', async () => {
+            const card = await createCard();
+            await setCardFields({ name: 'Created and edited' });
+            await flushCard();
+            await history.undo();
+            await history.undo();
+            expect(project.cards).toEqual([]);
+            await history.redo();
+            await history.redo();
+            expect(project.cards[0]).toBe(card);
+            expect(activeEditorCard.front.name).toBe('Created and edited');
+        });
+
+        it('undoes a multi-selection delete as one step in project order', async () => {
+            const first = await namedCard('First');
+            const middle = await namedCard('Middle');
+            const last = await namedCard('Last');
+            await history.reset();
+            select([first, last]);
+            await executeAction('delete-selected-cards');
+            expect(project.cards).toEqual([middle]);
+            await history.undo();
+            expect(project.cards).toEqual([first, middle, last]);
+            expect(list.selection.map(row => row.original)).toEqual([last]);
+            expect(selectedProjectCard).toBe(last);
+            await history.redo();
+            expect(project.cards).toEqual([middle]);
+        });
+
+        it('deletes every selected card and restores an empty set', async () => {
+            const first = await namedCard('First');
+            const second = await namedCard('Second');
+            await history.reset();
+            select([first, second]);
+            await executeAction('delete-selected-cards');
+            expect(project.cards).toEqual([]);
+            expect(activeEditorCard).toBeNull();
+            await history.undo();
+            expect(project.cards).toEqual([first, second]);
+        });
+
+        it('uses card identity with sorted and filtered rows', async () => {
+            const first = await namedCard('Zebra');
+            const second = await namedCard('Ant');
+            const third = await namedCard('Zebra two');
+            await history.reset();
+            const column = list.activeColumns.find(col => col.id === 'name');
+            column.sort = { priority: 1, direction: 'asc' };
+            list.sortRows();
+            await executeAction('filter', 'Zebra');
+            select([first, third]);
+            await executeAction('delete-selected-cards');
+            expect(project.cards).toEqual([second]);
+            await history.undo();
+            expect(project.cards).toEqual([first, second, third]);
+            expect(new Set(list.selection.map(row => row.original)))
+                .toEqual(new Set([third]));
+            await executeAction('filter', '');
+            delete column.sort;
+        });
+
+        it('flushes pending text and notes before deleting, without recreating files',
+           async () => {
+               const card = await namedCard('Pending');
+               await history.reset();
+               await setCardFields({ rulesText: 'Keep pending text' });
+               const properties = document.querySelector('cm-card-properties');
+               properties.card.notes = 'Keep pending notes';
+               properties.save();
+               const path = card.files.get('data');
+               await executeAction('delete-selected-cards');
+               await flushCard();
+               expect(await checkFileExists(path)).toBeFalse();
+               await history.undo();
+               expect(activeEditorCard.front.rulesText).toBe('Keep pending text');
+               expect(card.notes).toBe('Keep pending notes');
+           });
+
+        it('restores disk-loaded front/back image bytes after delete and repeated replay',
+           async () => {
+               await namedCard('Loaded images');
+               await setCardFields({ artImage: art });
+               await toggleFace('back');
+               await setCardFields({ artImage: art }, { faceKey: 'back' });
+               await flushCard();
+               await project.save();
+               await executeAction('open-project', project.filePath);
+               project = activeProject;
+               const card = project.cards[0];
+               await executeAction('select-card', card);
+               select([card]);
+               const paths = [...card.files.entries].map(([, path]) => path);
+               await executeAction('delete-selected-cards');
+               for (const path of paths)
+                   expect(await checkFileExists(path)).toBeFalse();
+               for (let replay = 0; replay < 2; replay++) {
+                   await history.undo();
+                   for (const key of ['front.artImage', 'back.artImage']) {
+                       const bytes = await readBinaryFile(card.files.get(key));
+                       await expectFilesToMatch(new File([bytes], ''), art);
+                   }
+                   await history.redo();
+               }
+           });
+
+        it('restores additional tracked files after deletion', async () => {
+            const card = await namedCard('Attachment');
+            card.files.definitions.push(new window.CardFileDefinition('attachment', {
+                suffix: ' - Attachment', extension: '.bin'
+            }));
+            const path = await card.files.getCanonicalPath('attachment');
+            const bytes = new Uint8Array([0, 1, 127, 255]);
+            await writeBinaryFile(path, bytes);
+            await card.files.set('attachment', path);
+            await history.reset();
+            await executeAction('delete-selected-cards');
+            expect(await checkFileExists(path)).toBeFalse();
+            await history.undo();
+            const restored = await readBinaryFile(card.files.get('attachment'));
+            expect(new Uint8Array(restored)).toEqual(bytes);
+        });
+
+        it('ignores an empty deletion without clearing redo', async () => {
+            const card = await createCard();
+            await history.undo();
+            select([]);
+            await executeAction('delete-selected-cards');
+            await history.redo();
+            expect(project.cards).toEqual([card]);
+        });
+
+        it('keeps earlier field history usable after delete/restore', async () => {
+            const card = await namedCard('Before edit');
+            await history.reset();
+            await setCardFields({ name: 'After edit' });
+            await flushCard();
+            await executeAction('delete-selected-cards');
+            await history.undo();
+            expect(project.cards[0]).toBe(card);
+            expect(activeEditorCard.front.name).toBe('After edit');
+            await history.undo();
+            expect(activeEditorCard.front.name).toBe('Before edit');
+            await history.redo();
+            await history.redo();
+            expect(project.cards).toEqual([]);
+        });
+
+        it('serializes concurrent creations in order', async () => {
+            const view = document.querySelector('cm-set-view');
+            const first = new activeGame.Card();
+            const second = new activeGame.Card();
+            await Promise.all([view.createCards([first]), view.createCards([second])]);
+            expect(project.cards).toEqual([first, second]);
+            await history.undo();
+            expect(project.cards).toEqual([first]);
+            expect(selectedProjectCard).toBe(first);
+            await history.undo();
+            expect(project.cards).toEqual([]);
+        });
+
+        it('restores files from earlier cards if a batch deletion fails', async () => {
+            const first = await namedCard('First');
+            const second = await namedCard('Second');
+            const paths = [first.files.get('data'), second.files.get('data')];
+            await history.reset();
+            select([first, second]);
+            const deletion = spyOn(second, 'deleteFiles')
+                .and.rejectWith(new Error('Expected delete failure'));
+            Object.defineProperty(second, 'deleteFiles', { enumerable: false });
+            await expectAsync(executeAction('delete-selected-cards')).toBeRejected();
+            expect(project.cards).toEqual([first, second]);
+            for (const path of paths)
+                expect(await checkFileExists(path)).toBeTrue();
+            await history.undo();
+            expect(project.cards).toEqual([first, second]);
+            deletion.and.callThrough();
+            await executeAction('delete-selected-cards');
+            await history.undo();
+            expect(project.cards).toEqual([first, second]);
+        });
+
+        it('does not record a creation whose save fails and allows retry', async () => {
+            const view = document.querySelector('cm-set-view');
+            const card = new activeGame.Card();
+            const save = spyOn(card, 'save')
+                .and.rejectWith(new Error('Expected create failure'));
+            Object.defineProperty(card, 'save', { enumerable: false });
+            await expectAsync(view.createCards([card])).toBeRejected();
+            expect(project.cards).toEqual([]);
+            await history.undo();
+            expect(project.cards).toEqual([]);
+            save.and.callThrough();
+            await view.createCards([card]);
+            expect(project.cards).toEqual([card]);
+            await history.undo();
+            expect(project.cards).toEqual([]);
+        });
+
+        it('keeps selection when a new card is excluded by the filter', async () => {
+            const kept = await namedCard('Keep');
+            await executeAction('filter', 'Keep');
+            const hidden = new activeGame.Card({ front: { name: 'Hidden' } });
+            await document.querySelector('cm-set-view').createCards([hidden]);
+            expect(list.rows).toEqual([kept]);
+            expect(list.selection.map(row => row.original)).toEqual([kept]);
+            expect(selectedProjectCard).toBe(kept);
+            await history.undo();
+            expect(project.cards).toEqual([kept]);
+            expect(selectedProjectCard).toBe(kept);
+            await executeAction('filter', '');
+        });
+
+        it('drops several images as one creation entry', async () => {
+            const view = document.querySelector('cm-set-view');
+            await view.onDrop({
+                preventDefault() {}, stopPropagation() {},
+                dataTransfer: { items: [art, art].map(file => ({
+                    kind: 'file', type: file.type, getAsFile: () => file
+                })) }
+            });
+            const cards = [...project.cards];
+            expect(cards.length).toBe(2);
+            await history.undo();
+            expect(project.cards).toEqual([]);
+            await history.redo();
+            expect(project.cards).toEqual(cards);
+            for (const card of cards) {
+                const bytes = await readBinaryFile(card.files.get('front.artImage'));
+                await expectFilesToMatch(new File([bytes], ''), art);
+            }
+        });
+
+        it('duplicates a selection as one creation entry', async () => {
+            const first = await namedCard('First');
+            const second = await namedCard('Second');
+            await history.reset();
+            select([first, second]);
+            await executeAction('duplicate-selected-cards');
+            const copies = project.cards.slice(2);
+            expect(copies.length).toBe(2);
+            await history.undo();
+            expect(project.cards).toEqual([first, second]);
+            await history.redo();
+            expect(project.cards).toEqual([first, second, ...copies]);
+        });
+
+        it('pastes several cards as one creation entry', async () => {
+            let clipboard;
+            spyOn(navigator.clipboard, 'write').and.callFake(async items => {
+                clipboard = await Promise.all(items.map(async item => {
+                    const blobs = new Map(await Promise.all(item.types.map(async type => {
+                        return [type, await item.getType(type)];
+                    })));
+                    return { types: item.types, getType: async type => blobs.get(type) };
+                }));
+            });
+            spyOn(navigator.clipboard, 'read').and.callFake(async () => clipboard);
+            const first = await namedCard('First');
+            const second = await namedCard('Second');
+            select([first, second]);
+            await executeAction('copy');
+            await history.reset();
+            await executeAction('paste');
+            const copies = project.cards.slice(2);
+            expect(copies.length).toBe(2);
+            await history.undo();
+            expect(project.cards).toEqual([first, second]);
+            await history.redo();
+            expect(project.cards).toEqual([first, second, ...copies]);
+        });
+    });
+
     describe('forms and persistence', () => {
         let card, art;
 
@@ -419,10 +754,13 @@ describe('History', () => {
         });
 
         it('resolves the current editor after switching away and back', async () => {
+            const other = await createCard();
+            await executeAction('select-card', card);
+            await history.reset();
             await setCardFields({ name: 'Edited first' });
             await flushCard();
             const originalEditor = activeEditorCard;
-            await createCard();
+            await executeAction('select-card', other);
             await executeAction('select-card', card);
             expect(activeEditorCard).not.toBe(originalEditor);
             await history.undo();

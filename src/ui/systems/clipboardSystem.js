@@ -1,4 +1,3 @@
-import { selectCard } from '../../domain/projects/projectManager.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import {
     readCardsFromClipboard,
@@ -7,7 +6,8 @@ import {
 import { updateBaseName } from '../../domain/projects/cardNamer.js';
 import { cardsToBlob } from '../../domain/export/cardImageExporter.js';
 import JSONSerializer from '../../domain/projects/serializers/JSONSerializer.js';
-import { registerAction } from './actionSystem.js';
+import { executeAction, registerAction } from './actionSystem.js';
+import { flushPendingCardEdits } from './cardEditingSystem.js';
 
 const L = localize('clipboard-system');
 const report = createReporter({
@@ -15,16 +15,11 @@ const report = createReporter({
     label: L`Clipboard System`
 });
 
-async function flushPendingEdits() {
-    await document.querySelector('cm-card-form')?.save.flush();
-    await document.querySelector('cm-card-properties')?.save.flush();
-}
-
 export async function copyCard(listView) {
     try {
         const cards = listView.selection.map(row => row.original);
         if (!cards.length) return;
-        const ready = flushPendingEdits().then(() => {
+        const ready = flushPendingCardEdits().then(() => {
             for (const card of cards)
                 updateBaseName(card);
         });
@@ -43,19 +38,7 @@ export async function pasteCard(listView) {
         const cards = await readCardsFromClipboard();
         if (!cards.length) return;
 
-        for (const card of cards) {
-            updateBaseName(card);
-            await card.save(true);
-            activeProject.cards.push(card);
-        }
-        changed(activeProject, 'cards');
-        const lastCard = activeProject.cards.slice(-1)[0];
-        const index = listView.activeRows.findIndex(row => {
-            return row.original === lastCard;
-        });
-        if (index === -1) return;
-        listView.selection = [index];
-        await selectCard(lastCard);
+        await executeAction('create-cards', cards);
     } catch (error) {
         report('pasteCard', error, [listView.selection]);
         log('user').error('Paste failed', error);
@@ -77,15 +60,12 @@ async function duplicateCard(sourceCard) {
         image.dirty = Boolean(image.imageUrl);
     }
 
-    updateBaseName(card);
-    await card.save(true);
-    activeProject.cards.push(card);
     return card;
 }
 
 export async function duplicateCards(listView) {
     try {
-        await flushPendingEdits();
+        await flushPendingCardEdits();
         const sourceCards = listView.selection.map(row => row.original);
         const cards = [];
 
@@ -94,15 +74,7 @@ export async function duplicateCards(listView) {
             cards.push(card);
         }
 
-        if (!cards.length) return;
-        changed(activeProject, 'cards');
-        const lastCard = cards.at(-1);
-        const index = listView.activeRows.findIndex(row => {
-            return row.original === lastCard;
-        });
-        if (index === -1) return;
-        listView.selection = [index];
-        await selectCard(lastCard);
+        if (cards.length) await executeAction('create-cards', cards);
     } catch (error) {
         report('duplicateCard', error, [listView.selection]);
         log('user').error('Duplicate failed', error);

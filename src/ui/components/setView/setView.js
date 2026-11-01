@@ -5,10 +5,11 @@ import {
     onActiveProjectChanged,
     selectCard,
 } from '../../../domain/projects/projectManager.js';
-import { executeAction, registerAction } from '../../systems/actionSystem.js';
+import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { openModal } from '../../modals/modalManager.js';
+import * as history from '../../systems/historySystem.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
 
 const report = createReporter({ unit: 'SetView' });
@@ -53,6 +54,7 @@ export default class SetView extends ReactiveComponent {
         });
         registerAction('toggle-filter', () => this.showFilter());
         registerAction('add-card', () => this.addCard());
+        registerAction('create-cards', cards => this.createCards(cards));
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
     }
 
@@ -97,28 +99,21 @@ export default class SetView extends ReactiveComponent {
 
     async deleteSelectedCards() {
         log('user').info('delete selected cards');
-        executeAction('cancel-card-save');
-        executeAction('cancel-card-properties-save');
-        for (const r of this.listView.selection) {
-            const index = activeProject.cards.indexOf(r.original);
-            if (index === -1) {
-                log('state').warn(`Couldn't find card:`, r.original);
-                return;
-            }
-            await r.original.deleteFiles();
-            activeProject.cards.splice(index, 1);
-            changed(activeProject, 'cards');
+        const cards = this.listView.selection.map(row => row.original);
+        if (!cards.length) return;
+        const event = new CustomEvent('cm-cards-deleted', { detail: { cards } });
+        return history.execute(activeProject, event);
+    }
 
-        }
-        await this.flushSelection();
+    createCards(cards) {
+        if (!cards.length) return;
+        const event = new CustomEvent('cm-cards-created', { detail: { cards } });
+        return history.execute(activeProject, event);
     }
 
     async addCard() {
         log('user').info('Add card');
-        const card = new activeGame.Card();
-        activeProject.cards.push(card);
-        changed(activeProject, 'cards');
-        await this.flushSelection();
+        await this.createCards([new activeGame.Card()]);
     }
 
     showFilter() {
@@ -203,14 +198,14 @@ export default class SetView extends ReactiveComponent {
         const files = Array.from(event.dataTransfer.items).filter(item => {
             return item.kind === 'file' && item.type.startsWith('image');
         }).map(item => item.getAsFile());
+        const cards = [];
         for (const file of files) {
             const card = new activeGame.Card();
-            // TODO: This need to be cross-game compatible
+            // TODO: This needs to be cross-game compatible.
             card.front.artImage = await ImageFieldValue.fromFile(file);
-            activeProject.cards.push(card);
+            cards.push(card);
         }
-        changed(activeProject, 'cards');
-        await this.flushSelection();
+        await this.createCards(cards);
     }
 }
 
