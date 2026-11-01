@@ -15,7 +15,7 @@ export default class LayerGroup {
             height: '100',
             width: '100',
             mask: `url(#${this.id})`,
-            fill: 'url(#grad)'
+            fill: 'black'
         });
         return `<rect ${attributes} />`;
     }
@@ -29,10 +29,7 @@ export default class LayerGroup {
     }
 
     get defsString() {
-        return [
-            ...this.layers.map(layer => layer.defsString),
-            this.createMask(),
-        ].join('\n');
+        return this.createMask();
     }
 
     addLayer(layer) {

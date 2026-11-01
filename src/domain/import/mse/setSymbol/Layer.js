@@ -34,20 +34,12 @@ export default class Layer {
         this.points = parsePoints(point);
     }
 
-    get id() {
-        return `layer-${this.index}`;
-    }
-
     get maskColor() {
         if (this.combine === 'subtract') return 'black';
         return 'white';
     }
 
     get fillMask() {
-        return `<use href="#${this.id}" fill="${this.maskColor}" />`;
-    }
-
-    get defsString() {
         return convertToSVG(this);
     }
 }

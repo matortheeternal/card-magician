@@ -56,5 +56,5 @@ function shapeToPathData(layer) {
 
 export default function convertToSVG(layer) {
     const pathData = shapeToPathData(layer);
-    return `<path id="${layer.id}" d="${pathData}" />`;
+    return `<path fill="${layer.maskColor}" d="${pathData}" />`;
 }
