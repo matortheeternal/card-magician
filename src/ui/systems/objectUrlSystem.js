@@ -1,3 +1,5 @@
+import * as historySystem from './historySystem.js';
+
 let activeContext = null;
 
 export function clear(context) {
@@ -13,6 +15,7 @@ export async function withNewContext(callback) {
     activeContext = { trackedUrls: [] };
     try {
         await callback();
+        historySystem.reset();
     } catch (error) {
         clear(activeContext);
         activeContext = prevContext;

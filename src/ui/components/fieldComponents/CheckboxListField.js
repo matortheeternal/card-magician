@@ -41,8 +41,10 @@ export default class CheckboxListField extends FieldComponent {
     async onChange(e) {
         const optionId = e.target.dataset?.id;
         if (!optionId) return;
-        this.value = { ...this.value, [optionId]: e.target.checked };
-        emit(this, 'cm-field-changed');
+        const oldValue = this.value;
+        const newValue = { ...oldValue, [optionId]: e.target.checked };
+        this.value = newValue;
+        emit(this, 'cm-field-changed', { fieldId: this.fieldId, oldValue, newValue });
     }
 }
 

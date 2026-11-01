@@ -2,9 +2,10 @@ import { executeAction } from './actionSystem.js';
 
 const L = localize('history-system');
 const report = createReporter({ unit: 'HistorySystem', label: L`History` });
+const MERGE_THRESHOLD = 10 * 1000;
 
-const past = [];
-const future = [];
+let past = [];
+let future = [];
 
 function getPreviousAction() {
     return past.length > 0
@@ -14,6 +15,8 @@ function getPreviousAction() {
 
 function canCombine(action, card, event) {
     if (!action) return false;
+    const timeSinceLastAction = Date.now() - action.timestamp;
+    if (timeSinceLastAction > MERGE_THRESHOLD) return false;
     return action.card === card
         && action.fieldId === event.detail.fieldId
         && action.modelKey === event.detail.modelKey
@@ -32,8 +35,15 @@ function create(card, event) {
     return action;
 }
 
+function canUndo(event) {
+    return Boolean(event.detail?.fieldId)
+        && Boolean(event.detail?.faceId);
+}
+
 // TODO: card deletion, card creation
 export function push(card, event) {
+    if (!canUndo(event)) return;
+    future = [];
     const previousAction = getPreviousAction();
     return combine(previousAction, card, event) || create(card, event);
 }
@@ -50,13 +60,13 @@ function updateCard(card, action, value) {
 }
 
 function getSetValueCallback(action) {
-    return value => {
+    return async value => {
         const isSelected = selectedProjectCard === action.card;
         if (isSelected) updateCard(activeEditorCard, action, value);
         updateCard(action.card, action, value);
         try {
             executeAction('set-status', 'saving');
-            action.card.save();
+            await action.card.save();
             executeAction('set-status', 'saved');
         } catch (error) {
             report('setValue', error, [action]);
@@ -65,22 +75,22 @@ function getSetValueCallback(action) {
     };
 }
 
-function revert(action) {
+async function revert(action) {
     const setValue = getSetValueCallback(action);
-    setValue(action.oldValue);
+    await setValue(action.oldValue);
 }
 
-export function undo() {
+export async function undo() {
     const previousAction = getPreviousAction();
     if (!previousAction) return;
-    revert(previousAction);
+    await revert(previousAction);
     past.pop();
     future.push(previousAction);
 }
 
-function apply(action) {
+async function apply(action) {
     const setValue = getSetValueCallback(action);
-    setValue(action.newValue);
+    await setValue(action.newValue);
 }
 
 function getNextAction() {
@@ -89,10 +99,15 @@ function getNextAction() {
         : null;
 }
 
-export function redo() {
+export async function redo() {
     const nextAction = getNextAction();
     if (!nextAction) return;
-    apply(nextAction);
+    await apply(nextAction);
     future.pop();
     past.push(nextAction);
+}
+
+export function reset() {
+    future = [];
+    past = [];
 }

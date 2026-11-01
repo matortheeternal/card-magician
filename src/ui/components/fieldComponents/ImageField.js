@@ -124,8 +124,10 @@ export default class ImageField extends FieldComponent {
     }
 
     clear() {
-        this.value = new ImageFieldValue();
-        emit(this, 'cm-field-changed');
+        const oldValue = this.value;
+        const newValue = new ImageFieldValue();
+        this.value = newValue;
+        emit(this, 'cm-field-changed', { fieldId: this.field.id, oldValue, newValue });
     }
 
     setCrop(newValue) {
@@ -162,8 +164,10 @@ export default class ImageField extends FieldComponent {
         const item = Array.from(event.dataTransfer.items).find(item => {
             return item.kind === 'file' && item.type.startsWith('image');
         });
-        this.value = await ImageFieldValue.fromFile(item.getAsFile());
-        emit(this, 'cm-field-changed');
+        const oldValue = this.value;
+        const newValue = await ImageFieldValue.fromFile(item.getAsFile());
+        this.value = newValue;
+        emit(this, 'cm-field-changed', { fieldId: this.field.id, oldValue, newValue });
     }
 }
 
