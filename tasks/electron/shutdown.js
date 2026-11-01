@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { launch, waitFor } from './fixture.js';
-import { runExitSmokeTests } from '../dev/exitSmoke.js';
+import { releaseAndWaitForExit, runExitSmokeTests } from '../dev/exitSmoke.js';
 
 export async function runShutdownTests(temp) {
     let index = 0;
@@ -28,8 +28,7 @@ async function testApplicationQuit(launchApp, temp) {
         await waitFor(() => fixture.driver.evaluate(
             '!!document.querySelector(\'cm-progress-modal\')'), 'quit progress modal');
         assert.equal(fixture.child.exitCode, null);
-        await fixture.driver.evaluate('exitSmoke.release()');
-        await fixture.stopped();
+        await releaseAndWaitForExit(fixture);
         const saved = await fs.readFile(path.join(folder, 'symbols.yml'), 'utf8');
         assert.ok(!saved.includes('base64,'));
     } finally { await fixture.cleanup(); }

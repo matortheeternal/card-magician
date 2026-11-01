@@ -35,6 +35,16 @@ async function verifyFile(folder, embedded) {
                  'Persisted image bytes are incorrect.');
 }
 
+export async function releaseAndWaitForExit(fixture) {
+    try {
+        await fixture.driver.evaluate('exitSmoke.release()');
+    } catch (error) {
+        // Releasing the shutdown gate can terminate Electron before CDP replies.
+        if (error.message !== 'DevTools connection closed.') throw error;
+    }
+    await fixture.stopped();
+}
+
 async function requestClose(driver, menu) {
     if (!menu) return driver.closePage().catch(() => {});
     await driver.evaluate(`(() => {
@@ -59,8 +69,7 @@ async function closeWithProgress(fixture, folder, menu) {
                  'The window must stay alive while flushing.');
     await waitFor(async () => !(await readSymbols(folder))[0].image.imageUrl,
                   'the cleared image to reach disk before the debounce', 1500);
-    await driver.evaluate('exitSmoke.release()');
-    await fixture.stopped();
+    await releaseAndWaitForExit(fixture);
     await verifyFile(folder, false);
 }
 

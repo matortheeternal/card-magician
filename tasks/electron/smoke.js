@@ -15,7 +15,7 @@ try {
     if (requested && !suites.includes(requested))
         throw new Error(`Unknown smoke suite: ${requested}`);
     for (const suite of requested ? [requested] : suites) {
-        console.log(`Running Electron ${suite}...`);
+        console.log(`Running ${suite}...`);
         const profilePath = path.join(temp, suite);
         if (suite === 'Extensions') await prepareUserExtensions(profilePath);
         const fixture = await launch({ profile: profilePath,
