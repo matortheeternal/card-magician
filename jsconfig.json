@@ -9,10 +9,12 @@
     },
     "include": [
         "src/**/*.js",
+        "src/**/*.d.ts",
+        "electron/**/*.js",
+        "electron/**/*.cjs",
         "extensions/games/*/src/**/*.js",
         "extensions/cardparts/**/*.js",
-        "extensions/exporters/**/*.js",
-        "*.d.ts"
+        "extensions/exporters/**/*.js"
     ],
     "exclude": ["node_modules", "resources", "dist"]
 }

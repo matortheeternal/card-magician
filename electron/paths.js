@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
+/**
+ * @param {string} name
+ * @param {string} fallback
+ * @returns {string}
+ */
 export function getArgument(name, fallback) {
     const prefix = `${name}=`;
     const arg = process.argv.find(value => value.startsWith(prefix));
