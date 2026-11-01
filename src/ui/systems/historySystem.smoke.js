@@ -959,7 +959,10 @@ describe('History', () => {
                const entry = new CardFieldChange(card, event);
                const read = spyOn(window, 'fetch').and.callThrough();
                await entry.prepare();
-               expect(read).toHaveBeenCalledOnceWith(image.imageUrl);
+               const imageReads = read.calls.allArgs().filter(([url]) => {
+                   return url === image.imageUrl;
+               });
+               expect(imageReads).toEqual([[image.imageUrl]]);
                expect(entry.oldValue.imageUrl.startsWith('blob:')).toBeTrue();
                expect(entry.newValue.imageUrl).toBe(entry.oldValue.imageUrl);
                expect(entry.newValue.crop).toEqual(changedImage.crop);
