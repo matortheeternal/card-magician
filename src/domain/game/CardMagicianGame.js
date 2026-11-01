@@ -1,3 +1,4 @@
+import { watchFile } from '../../shared/fileWatcher.js';
 import * as platform from '../../shared/platformAdapter.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
 import SerializerAdapter from '../projects/adapters/SerializerAdapter.js';
@@ -13,6 +14,8 @@ import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
 import { manageCollection } from '../../shared/storageUtils.js';
 
+const gamePlatform = { ...platform, watchFile };
+
 export default class CardMagicianGame {
     /**
      * @param {object} metadata - Metadata loaded and parsed from game.json.
@@ -27,7 +30,7 @@ export default class CardMagicianGame {
     }
 
     get platform() {
-        return platform;
+        return gamePlatform;
     }
 
     /**
