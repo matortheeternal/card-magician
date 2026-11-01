@@ -82,7 +82,7 @@ export async function duplicateCards(listView) {
 }
 
 function getCardsListView() {
-    return document.querySelector('cm-set-view cm-list-view');
+    return document.querySelector('cm-card-list cm-list-view');
 }
 
 registerAction('copy', () => {

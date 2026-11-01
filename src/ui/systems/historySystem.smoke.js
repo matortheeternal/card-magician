@@ -340,7 +340,7 @@ describe('History', () => {
 
         beforeEach(async () => {
             project = await createTestProject();
-            list = document.querySelector('cm-set-view cm-list-view');
+            list = document.querySelector('cm-card-list cm-list-view');
         });
 
         afterEach(async () => {
@@ -527,7 +527,7 @@ describe('History', () => {
         });
 
         it('serializes concurrent creations in order', async () => {
-            const view = document.querySelector('cm-set-view');
+            const view = document.querySelector('cm-card-list');
             const first = new activeGame.Card();
             const second = new activeGame.Card();
             await Promise.all([view.createCards([first]), view.createCards([second])]);
@@ -561,7 +561,7 @@ describe('History', () => {
         });
 
         it('does not record a creation whose save fails and allows retry', async () => {
-            const view = document.querySelector('cm-set-view');
+            const view = document.querySelector('cm-card-list');
             const card = new activeGame.Card();
             const save = spyOn(card, 'save')
                 .and.rejectWith(new Error('Expected create failure'));
@@ -581,7 +581,7 @@ describe('History', () => {
             const kept = await namedCard('Keep');
             await executeAction('filter', 'Keep');
             const hidden = new activeGame.Card({ front: { name: 'Hidden' } });
-            await document.querySelector('cm-set-view').createCards([hidden]);
+            await document.querySelector('cm-card-list').createCards([hidden]);
             expect(list.rows).toEqual([kept]);
             expect(list.selection.map(row => row.original)).toEqual([kept]);
             expect(selectedProjectCard).toBe(kept);
@@ -592,7 +592,7 @@ describe('History', () => {
         });
 
         it('drops several images as one creation entry', async () => {
-            const view = document.querySelector('cm-set-view');
+            const view = document.querySelector('cm-card-list');
             await view.onDrop({
                 preventDefault() {}, stopPropagation() {},
                 dataTransfer: { items: [art, art].map(file => ({

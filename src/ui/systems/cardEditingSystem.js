@@ -6,6 +6,6 @@ export async function flushPendingCardSaves() {
 
 /** Finish selection updates and edits before changing card membership. */
 export async function flushPendingCardEdits() {
-    await document.querySelector('cm-set-view')?.flushSelection();
+    await document.querySelector('cm-card-list')?.flushSelection();
     await flushPendingCardSaves();
 }

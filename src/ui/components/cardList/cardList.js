@@ -1,5 +1,5 @@
 import ReactiveComponent from '../ReactiveComponent.js';
-import html from './setView.html.js';
+import html from './cardList.html.js';
 import {
     openProject,
     onActiveProjectChanged,
@@ -12,9 +12,9 @@ import { openModal } from '../../modals/modalManager.js';
 import * as history from '../../systems/historySystem.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
 
-const report = createReporter({ unit: 'SetView' });
+const report = createReporter({ unit: 'CardList' });
 
-export default class SetView extends ReactiveComponent {
+export default class CardList extends ReactiveComponent {
     selectionUpdate = Promise.resolve();
 
     connectedCallback() {
@@ -209,4 +209,4 @@ export default class SetView extends ReactiveComponent {
     }
 }
 
-customElements.define('cm-set-view', SetView);
+customElements.define('cm-card-list', CardList);

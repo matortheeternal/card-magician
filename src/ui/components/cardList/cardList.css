@@ -1,4 +1,4 @@
-cm-set-view {
+cm-card-list {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -67,7 +67,7 @@ cm-list-view {
     }
 }
 
-cm-set-view .status-bar {
+cm-card-list .status-bar {
     display: flex;
     justify-content: space-between;
     width: 100%;

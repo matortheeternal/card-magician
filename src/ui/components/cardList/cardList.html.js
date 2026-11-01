@@ -1,4 +1,4 @@
-const L = localize('set-view');
+const L = localize('card-list');
 
 export default
 `<div class="filter-bar" style="display: none">

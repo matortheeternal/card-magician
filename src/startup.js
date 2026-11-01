@@ -43,7 +43,7 @@ function loaded() {
     document.body.prepend(titleBar);
     document.querySelector('main').innerHTML = (
         `<cm-display-card class="drawer-left"></cm-display-card>
-         <cm-set-view></cm-set-view>
+         <cm-card-list></cm-card-list>
          <cm-card-form class="drawer-right"></cm-card-form>`
     );
     const mobileActions = document.createElement('cm-mobile-actions');
