@@ -13,6 +13,9 @@ export default class FormField extends ReactiveComponent {
             delete this._field;
             this.render();
         });
+        this.addEventListener('cm-field-changed', event => {
+            event.detail.modelKey = this.modelKey;
+        });
     }
 
     get provider() {
@@ -98,14 +101,14 @@ export default class FormField extends ReactiveComponent {
     }
 
     toggleShow(show) {
-        this.model[this.fieldId] = show
-            ? getInitialValue(this.field)
-            : null;
+        const oldValue = this.model[this.fieldId];
+        const newValue = show ? getInitialValue(this.field) : null;
+        this.model[this.fieldId] = newValue;
         if (!this.fieldElement)
             this.generateFieldElement();
         toggleDisplay(show, this.fieldElement);
         changed(this.model, this.fieldId);
-        emit(this, 'cm-field-changed');
+        emit(this, 'cm-field-changed', { fieldId: this.fieldId, oldValue, newValue });
     }
 }
 

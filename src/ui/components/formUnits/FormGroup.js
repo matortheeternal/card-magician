@@ -76,9 +76,14 @@ export default class FormGroup extends ReactiveComponent {
     }
 
     toggleShow(show) {
+        const oldValue = this.model[this.showKey];
         this.model[this.showKey] = show;
         changed(this.model, this.showKey);
-        emit(this, 'cm-field-changed');
+        emit(this, 'cm-field-changed', {
+            fieldId: this.showKey,
+            oldValue,
+            newValue: show
+        });
     }
 }
 

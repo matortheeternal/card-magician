@@ -2,6 +2,7 @@ import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { openModal } from '../modals/modalManager.js';
 import { getAvailableLocales, prepareSchema } from '../../shared/localize.js';
+import * as historySystem from '../systems/historySystem.js';
 
 const L = localize('title-bar');
 
@@ -11,8 +12,14 @@ export default class EditMenu extends ReactiveMenu {
 
     get items() {
         return [
-            this.menuItem(L`Undo`, L`Ctrl+Z`, () => log('user').info('Undo')),
-            this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => log('user').info('Redo')),
+            this.menuItem(L`Undo`, L`Ctrl+Z`, () => {
+                log('user').info('Undo');
+                historySystem.undo();
+            }),
+            this.menuItem(L`Redo`, L`Ctrl+Shift+Z`, () => {
+                log('user').info('Redo');
+                historySystem.redo();
+            }),
             this.DIVIDER,
             this.menuItem(L`Filter`, L`Ctrl+F`, () => executeAction('toggle-filter')),
             this.menuItem(

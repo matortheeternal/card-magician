@@ -7,6 +7,9 @@ export default class FaceForm extends ReactiveComponent {
 
     connectedCallback() {
         this.setAttribute('data-form-provider', '');
+        this.addEventListener('cm-field-changed', event => {
+            event.detail.faceId = this.dataset.faceId;
+        });
     }
 
     set face(value) {

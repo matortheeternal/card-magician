@@ -60,8 +60,9 @@ export default class FieldComponent extends ReactiveComponent {
     async onChange(event) {
         const newValue = await this.getChangedValue(event);
         if (newValue === this.value) return;
+        const oldValue = this.value;
         this.value = newValue;
         this.field.onChange?.(this.model, newValue);
-        emit(this, 'cm-field-changed');
+        emit(this, 'cm-field-changed', { fieldId: this.field.id, oldValue, newValue });
     }
 }

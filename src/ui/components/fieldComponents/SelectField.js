@@ -26,10 +26,14 @@ export default class SelectField extends FieldComponent {
               size="small"
               name="${esc(this.field.id)}"
               label="${esc(this.field.label)}"
-              value="${esc(this.value)}"
               hoist
             >${this.renderOptions()}</sl-select>`
         );
+        this.loadValue();
+    }
+
+    loadValue() {
+        this.select.value = this.value;
     }
 
     inputValue(value) {

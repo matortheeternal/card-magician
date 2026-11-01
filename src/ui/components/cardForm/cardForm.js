@@ -8,6 +8,7 @@ import { pushState, registerState } from '../../systems/navigationSystem.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { executeAction, registerAction } from '../../systems/actionSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
+import * as historySystem from '../../systems/historySystem.js';
 
 const L = localize('card-form');
 const report = createReporter({
@@ -28,7 +29,8 @@ class CardForm extends ReactiveComponent {
     connectedCallback() {
         this.unregisterExitSave = registerPendingSave(this.save);
         this.render();
-        this.addEventListener('cm-field-changed', () => {
+        this.addEventListener('cm-field-changed', event => {
+            historySystem.push(this.projectCard, event);
             executeAction('set-status', 'changes');
             this.save().catch(() => {});
         });
