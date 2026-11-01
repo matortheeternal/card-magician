@@ -44,8 +44,9 @@ export default class RarityModule extends CardMagicianModule {
     }
 
     render(card) {
-        const rarityClass = `rarity-${card.rarity.toLowerCase()}`;
-        return activeProject.symbol.replaceAll('"set-icon"', `"set-icon ${rarityClass}"`);
+        return activeGame.renderSetSymbol(
+            activeProject.symbol, card.rarity.toLowerCase()
+        );
     }
 
     async styles() {

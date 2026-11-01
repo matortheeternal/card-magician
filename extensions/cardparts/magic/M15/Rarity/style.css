@@ -1,58 +1,13 @@
 module-container[module="Rarity"] {
     display: flex;
     min-width: 22px;
-    min-height: 22px;
-    padding-left: 4px;
-    margin: 2px 0;
-}
-
-.set-icon stop.g1 { stop-color: var(--rar-g1); }
-.set-icon stop.g2 { stop-color: var(--rar-g2); }
-.set-icon stop.g3 { stop-color: var(--rar-g3); }
-.set-icon stop.g4 { stop-color: var(--rar-g4); }
-
-.set-icon .outline {
-    flood-color: var(--rar-stroke-outer);
-}
-
-.set-icon {
+    flex-shrink: 0;
     height: 22px;
-    width: 22px;
-    --rar-g1: black;
-    --rar-g2: black;
-    --rar-g3: black;
-    --rar-g4: black;
-    --rar-stroke-outer: white;
-}
+    padding-left: 4px;
+    margin-bottom: 2px;
 
-.rarity-uncommon.set-icon {
-    --rar-g1: #6c7d8f;
-    --rar-g2: #c0d6e5;
-    --rar-g3: #c0d6e5;
-    --rar-g4: #9ab4c8;
-    --rar-stroke-outer: black;
-}
-
-.rarity-rare.set-icon {
-    --rar-g1: #876c13;
-    --rar-g2: #f6e8a3;
-    --rar-g3: #f6e8a3;
-    --rar-g4: #d7bf55;
-    --rar-stroke-outer: black;
-}
-
-.rarity-mythic.set-icon {
-    --rar-g1: #b02929;
-    --rar-g2: #ffb347;
-    --rar-g3: #ffb347;
-    --rar-g4: #ff8a00;
-    --rar-stroke-outer: black;
-}
-
-.rarity-special.set-icon {
-    --rar-g1: #240f3d;
-    --rar-g2: #a07baa;
-    --rar-g3: #907697;
-    --rar-g4: #1a0a34;
-    --rar-stroke-outer: white;
+    > svg {
+        height: 100%;
+        width: auto;
+    }
 }

@@ -1,3 +1,4 @@
+import { renderSetSymbol } from './domain/setSymbol/renderSetSymbol.js';
 import * as ManaScribe from 'mana-scribe';
 import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
@@ -24,6 +25,7 @@ function randomId() {
 export default class MagicTheGathering extends CardMagicianGame {
     constructor(metadata) {
         super(metadata);
+        this.renderSetSymbol = renderSetSymbol;
         this.ManaScribe = ManaScribe;
         this.ColorIdentity = ColorIdentity;
         this.Project = MagicProject;
