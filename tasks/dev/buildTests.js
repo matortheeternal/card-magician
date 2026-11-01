@@ -12,7 +12,7 @@ const jasmineFiles = [
 ];
 
 async function getTests(suffix, includeShared) {
-    const gameTests = includeShared ? await findGameTests() : [];
+    const gameTests = await findGameTests('extensions/games', suffix);
     return [
         ...(includeShared ? [
             './shared/reporting.js',

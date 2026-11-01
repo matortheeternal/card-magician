@@ -8,7 +8,8 @@ import { prepareUserExtensions, preparePlatformFixtures } from './smokeFixtures.
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
 try {
     const suites = ['Startup', 'Persistence', 'History', 'Rendering',
-                    'Card display', 'Dialogs', 'Platform', 'Extensions'];
+                    'Card display', 'Dialogs', 'Platform', 'Extensions',
+                    'Magic project settings'];
     const requested = process.argv.find(arg => arg.startsWith('--suite='))
         ?.slice('--suite='.length);
     if (requested && !suites.includes(requested))

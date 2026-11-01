@@ -10,7 +10,9 @@ async function readDirectory(directory, options) {
     }
 }
 
-export async function findGameTests(directory = 'extensions/games') {
+export async function findGameTests(
+    directory = 'extensions/games', suffix = '.tests.js'
+) {
     const games = await readDirectory(directory, { withFileTypes: true });
     const tests = [];
     for (const game of games) {
@@ -18,7 +20,7 @@ export async function findGameTests(directory = 'extensions/games') {
         const source = path.join(directory, game.name, 'src');
         const files = await readDirectory(source, { recursive: true });
         for (const file of files) {
-            if (!file.endsWith('.tests.js')) continue;
+            if (!file.endsWith(suffix)) continue;
             tests.push(path.join(source, file).replaceAll('\\', '/'));
         }
     }
