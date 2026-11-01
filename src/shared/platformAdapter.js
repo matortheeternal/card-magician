@@ -19,6 +19,9 @@ export function debugLog(level, message, args) {
 }
 export const openUrl = url => call('openUrl', url);
 export const sysopen = path => call('open', path);
+export const openSvgEditor = (executable, filename) => {
+    return call('openSvgEditor', executable, filename);
+};
 export const openSingleFileDialog = (label, filters) => {
     return call('openSingleFileDialog', label, filters);
 };

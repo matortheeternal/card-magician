@@ -1,6 +1,7 @@
 import { app, dialog, ipcMain, shell } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { launchSvgEditor } from './launchSvgEditor.js';
 import FileSystem from './FileSystem.js';
 import Storage from './Storage.js';
 import { origin } from './ResourceServer.js';
@@ -11,6 +12,7 @@ export default class NativeBridge {
         this.files = new FileSystem(environment.paths.content, environment.paths.plugins);
         this.storage = new Storage(environment.paths.data);
         this.operations = this.createOperations();
+
     }
 
     trusted(event, bootstrap = false) {
@@ -61,6 +63,9 @@ export default class NativeBridge {
             clearStoredData: () => this.storage.clear(),
             openUrl: url => this.openUrl(url),
             open: filename => this.openPath(filename),
+            openSvgEditor: (executable, filename) => {
+                return launchSvgEditor(executable, this.files.absolute(filename));
+            },
             getMounts: () => this.resources.getMounts(),
             mount: (url, target) => {
                 this.resources.mount(url, this.files.absolute(target));
