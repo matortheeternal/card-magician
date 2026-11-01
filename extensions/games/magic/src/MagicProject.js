@@ -18,6 +18,23 @@ export default class MagicProject extends CardMagicianProject {
         });
     }
 
+    async editSetSymbol() {
+        const executable = activeGame.appConfig.get('setIconEditorPath', '');
+        if (!executable) return super.editSetSymbol();
+        if (!this.symbolPath) {
+            await dialog.alert('You must save the project first.');
+            return;
+        }
+        try {
+            await activeGame.platform.openSvgEditor(executable, this.symbolPath);
+        } catch (error) {
+            await dialog.alert(
+                `Could not open Set Icon Editor: ${error.message}. `
+                + 'Check its path in Settings → Magic → Set Icon Editor.'
+            );
+        }
+    }
+
     async loadCard(filePath) {
         return await MagicCard.load(filePath);
     }

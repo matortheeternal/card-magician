@@ -11,7 +11,8 @@ export default class EditSetSymbol extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             edit: () => activeProject.editSetSymbol(),
-            installSIE: () => {}
+            setupSIE: () => this.closest('cm-settings-modal')
+                ?.selectNavItem('cm-set-icon-editor-settings')
         });
         this.watch('symbol', activeProject, 'symbol', () => this.renderSymbols());
     }
@@ -42,9 +43,10 @@ export default class EditSetSymbol extends ReactiveComponent {
                 <sl-button size="small" data-click-action="edit" variant="primary">
                     ${L`Edit`}
                 </sl-button>
-                <sl-button size="small" data-click-action="installSIE">
-                    ${L`Install Set Icon Editor`}
-                </sl-button>
+                ${activeGame.appConfig.get('setIconEditorPath', '') ? '' : `
+                <sl-button size="small" data-click-action="setupSIE">
+                    ${L`Use Set Icon Editor`}
+                </sl-button>`}
             </div>`
         );
         this.renderSymbols();
