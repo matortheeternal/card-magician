@@ -9,6 +9,8 @@ import {
 import FieldInteractor from '../../shared/testing/FieldInteractor.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 import ImageCrop from '../../domain/card/ImageCrop.js';
+import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
+import { retainImage } from '../../domain/card/imageRetention.js';
 import { readBinaryFile } from '../../shared/platformAdapter.js';
 
 function deferred() {
@@ -334,6 +336,63 @@ describe('History', () => {
             await flushCard();
             await history.reset();
             await deleteTestProject();
+        });
+
+        it('retains a disk image independently of its source file', async () => {
+            await setCardFields({ artImage: art });
+            await flushCard();
+            await activeProject.save();
+            await executeAction('open-project', activeProject.filePath);
+            card = activeProject.cards[0];
+            await executeAction('select-card', card);
+            const image = activeEditorCard.front.artImage;
+            const crop = image.crop.clone();
+            expect(image.imageUrl.startsWith('blob:')).toBeFalse();
+            const retained = await retainImage(image);
+            expect(retained).not.toBe(image);
+            expect(retained.crop).not.toBe(image.crop);
+            expect(retained.crop).toEqual(crop);
+            expect(retained.dirty).toBeTrue();
+            const path = card.files.get('front.artImage');
+            new FieldInteractor('artImage', { faceKey: 'front' }).clear();
+            await flushCard();
+            expect(await checkFileExists(path)).toBeFalse();
+            await expectFilesToMatch(new File([await retained.loadImageData()], ''), art);
+        });
+
+        it('shares blob content with independent editable state', async () => {
+            const image = await ImageFieldValue.fromFile(art);
+            const retained = await retainImage(image);
+            expect(retained.imageUrl).toBe(image.imageUrl);
+            retained.crop.xOffset = 13;
+            expect(image.crop.xOffset).toBe(0);
+            await expectFilesToMatch(new File([await retained.loadImageData()], ''), art);
+        });
+
+        it('retains backup bytes after the image URL expires', async () => {
+            const image = new ImageFieldValue('/missing-history-image.jpg');
+            const retained = await retainImage(image, art);
+            expect(image.imageUrl).toBe('/missing-history-image.jpg');
+            await expectFilesToMatch(new File([await retained.loadImageData()], ''), art);
+        });
+
+        it('copies empty and data URL image values without fetching', async () => {
+            const fetchImage = spyOn(window, 'fetch').and.callThrough();
+            const empty = new ImageFieldValue();
+            expect((await retainImage(empty)).imageUrl).toBeNull();
+            const url = 'data:image/png;base64,aGVsbG8=';
+            const image = new ImageFieldValue(url);
+            expect((await retainImage(image)).imageUrl).toBe(url);
+            expect(fetchImage).not.toHaveBeenCalled();
+        });
+
+        it('reports retention failures without changing the source value', async () => {
+            const image = new ImageFieldValue('/missing-history-image.jpg');
+            spyOn(window, 'fetch').and.resolveTo(new Response(null, { status: 404 }));
+            await expectAsync(retainImage(image)).toBeRejectedWithError(
+                'Cannot retain image: /missing-history-image.jpg'
+            );
+            expect(image.imageUrl).toBe('/missing-history-image.jpg');
         });
 
         it('records bubbling field changes and persists undo and redo', async () => {
