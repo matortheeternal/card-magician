@@ -80,6 +80,7 @@ export default class FormGroup extends ReactiveComponent {
         this.model[this.showKey] = show;
         changed(this.model, this.showKey);
         emit(this, 'cm-field-changed', {
+            modelKey: this.modelKey,
             fieldId: this.showKey,
             oldValue,
             newValue: show

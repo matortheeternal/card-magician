@@ -66,9 +66,6 @@ export default class ImageField extends FieldComponent {
     }
 
     set value(newValue) {
-        const oldImageUrl = this.value?.imageUrl;
-        if (oldImageUrl)
-            setTimeout(() => URL.revokeObjectURL(oldImageUrl), 500);
         this.model[this.field.id] = newValue;
         changed(this.model, this.field.id);
     }
@@ -125,15 +122,24 @@ export default class ImageField extends FieldComponent {
 
     clear() {
         const oldValue = this.value;
-        const newValue = new ImageFieldValue();
-        this.value = newValue;
-        emit(this, 'cm-field-changed', { fieldId: this.field.id, oldValue, newValue });
+        this.value = new ImageFieldValue();
+        emit(this, 'cm-field-changed', {
+            fieldId: this.field.id,
+            oldValue,
+            newValue: this.value
+        });
     }
 
     setCrop(newValue) {
+        const oldValue = this.value;
+        this.value = this.value.clone();
         this.value.crop = newValue;
         changed(this.model, this.field.id);
-        emit(this, 'cm-field-changed');
+        emit(this, 'cm-field-changed', {
+            fieldId: this.field.id,
+            oldValue,
+            newValue: this.value
+        });
     }
 
     cropImage(event) {

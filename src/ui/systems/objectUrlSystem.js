@@ -3,19 +3,19 @@ import * as historySystem from './historySystem.js';
 let activeContext = null;
 
 export function clear(context) {
-    const { trackedUrls } = context;
-    const urlsToRevoke = trackedUrls.slice();
-    trackedUrls.splice(0, trackedUrls.length);
-    for (const url of urlsToRevoke)
+    if (!context?.trackedUrls) return;
+    for (const url of context.trackedUrls)
         URL.revokeObjectURL(url);
+    context.trackedUrls = [];
 }
 
 export async function withNewContext(callback) {
     const prevContext = activeContext;
     activeContext = { trackedUrls: [] };
     try {
+        await historySystem.reset();
         await callback();
-        historySystem.reset();
+        clear(prevContext);
     } catch (error) {
         clear(activeContext);
         activeContext = prevContext;

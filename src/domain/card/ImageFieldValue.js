@@ -31,7 +31,6 @@ export default class ImageFieldValue {
     async loadImageData() {
         if (!this.imageUrl) return null;
         return (await fetch(this.imageUrl)).arrayBuffer();
-
     }
 
     async save() {
@@ -50,6 +49,7 @@ export default class ImageFieldValue {
             this.crop.clone()
         );
         clone.scale = this.scale;
+        clone.dirty = true;
         return clone;
     }
 

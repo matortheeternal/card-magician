@@ -1,9 +1,11 @@
 import { executeAction } from './actionSystem.js';
+import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 
 const L = localize('history-system');
 const report = createReporter({ unit: 'HistorySystem', label: L`History` });
 const MERGE_THRESHOLD = 10 * 1000;
 
+let lock = Promise.resolve();
 let past = [];
 let future = [];
 
@@ -13,24 +15,31 @@ function getPreviousAction() {
         : null;
 }
 
-function canCombine(action, card, event) {
+function canCombine(action, card, detail) {
     if (!action) return false;
     const timeSinceLastAction = Date.now() - action.timestamp;
     if (timeSinceLastAction > MERGE_THRESHOLD) return false;
     return action.card === card
-        && action.fieldId === event.detail.fieldId
-        && action.modelKey === event.detail.modelKey
-        && action.faceId === event.detail.faceId;
+        && action.fieldId === detail.fieldId
+        && action.modelKey === detail.modelKey
+        && action.faceId === detail.faceId;
 }
 
-function combine(action, card, event) {
-    if (!canCombine(action, card, event)) return;
-    action.newValue = event.detail.newValue;
+function copyValue(value) {
+    return value instanceof ImageFieldValue
+        ? value.clone()
+        : structuredClone(value);
+}
+
+function combine(action, card, detail) {
+    if (!canCombine(action, card, detail)) return;
+    action.newValue = copyValue(detail.newValue);
+    action.timestamp = Date.now();
     return action;
 }
 
-function create(card, event) {
-    const action = { card, ...event.detail, timestamp: Date.now() };
+function create(card, detail) {
+    const action = { card, ...detail, timestamp: Date.now() };
     past.push(action);
     return action;
 }
@@ -40,12 +49,25 @@ function canUndo(event) {
         && Boolean(event.detail?.faceId);
 }
 
+async function withLock(callback) {
+    const operation = lock.then(callback);
+    lock = operation.catch(() => {});
+    return operation;
+}
+
 // TODO: card deletion, card creation
 export function push(card, event) {
     if (!canUndo(event)) return;
-    future = [];
-    const previousAction = getPreviousAction();
-    return combine(previousAction, card, event) || create(card, event);
+    const detail = {
+        ...event.detail,
+        oldValue: copyValue(event.detail.oldValue),
+        newValue: copyValue(event.detail.newValue),
+    };
+    return withLock(() => {
+        future = [];
+        const previousAction = getPreviousAction();
+        return combine(previousAction, card, detail) || create(card, detail);
+    });
 }
 
 function resolveModel(card, action) {
@@ -55,7 +77,7 @@ function resolveModel(card, action) {
 
 function updateCard(card, action, value) {
     const model = resolveModel(card, action);
-    model[action.fieldId] = value;
+    model[action.fieldId] = copyValue(value);
     changed(model, action.fieldId);
 }
 
@@ -68,29 +90,33 @@ function getSetValueCallback(action) {
             executeAction('set-status', 'saving');
             await action.card.save();
             executeAction('set-status', 'saved');
+            return true;
         } catch (error) {
             report('setValue', error, [action]);
             executeAction('set-status', 'failed');
+            return false;
         }
     };
 }
 
 async function revert(action) {
     const setValue = getSetValueCallback(action);
-    await setValue(action.oldValue);
+    return await setValue(action.oldValue);
 }
 
 export async function undo() {
-    const previousAction = getPreviousAction();
-    if (!previousAction) return;
-    await revert(previousAction);
-    past.pop();
-    future.push(previousAction);
+    await withLock(async () => {
+        const previousAction = getPreviousAction();
+        if (!previousAction) return;
+        if (!await revert(previousAction)) return;
+        past.pop();
+        future.push(previousAction);
+    });
 }
 
 async function apply(action) {
     const setValue = getSetValueCallback(action);
-    await setValue(action.newValue);
+    return await setValue(action.newValue);
 }
 
 function getNextAction() {
@@ -100,14 +126,18 @@ function getNextAction() {
 }
 
 export async function redo() {
-    const nextAction = getNextAction();
-    if (!nextAction) return;
-    await apply(nextAction);
-    future.pop();
-    past.push(nextAction);
+    await withLock(async () => {
+        const nextAction = getNextAction();
+        if (!nextAction) return;
+        if (!await apply(nextAction)) return;
+        future.pop();
+        past.push(nextAction);
+    });
 }
 
-export function reset() {
-    future = [];
-    past = [];
+export async function reset() {
+    await withLock(() => {
+        future = [];
+        past = [];
+    });
 }
