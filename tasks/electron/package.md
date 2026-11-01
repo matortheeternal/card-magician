@@ -3,6 +3,10 @@
 Application code is bundled into `resources/app.asar`. Games, cardparts, exporters, locales,
 and templates are installed in `extensions/` beside the executable so they can be edited or replaced
 independently. On macOS the `extensions/` folder lives in the app's `Contents/MacOS` directory.
+User extensions live in the `extensions/` directory under Electron's configured
+`userData` directory, so `--profile` also isolates extensions. Use
+`--extensions-dir=/absolute/path` to override the user directory.
+
 Portable Linux builds use tar.gz so these files remain loose after extraction.
 
 The staging directories separate bundled content from plugins before electron-builder

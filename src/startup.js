@@ -1,3 +1,4 @@
+import { mountExtensions } from './shared/extensionManager.js';
 import { setupExitHandling } from './lifecycle.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
@@ -24,7 +25,7 @@ async function setupPlatform() {
     await ensureDirectories();
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
-    await mount('/extensions', appEnvironment.paths.plugins + '/extensions');
+    await mountExtensions();
     await mount('/cache', appEnvironment.paths.data + '/cache');
     startupLog.debug('Mounts done');
 }

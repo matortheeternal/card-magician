@@ -1,7 +1,7 @@
 import { beforeExit } from '../lifecycle.js';
 import Localization from './Localization.js';
+import { getExtensionLocations } from './extensionManager.js';
 import {
-    readDirectory,
     readFile,
     writeFile
 } from './platformAdapter.js';
@@ -20,23 +20,27 @@ export async function prepareSchema() {
     return Localization.schema;
 }
 
+async function loadLocaleDirectory(directory) {
+    if (!await directory.exists('locales.json')) return [];
+    const manifest = await directory.readJson('locales.json');
+    const entries = await directory.readDirectory();
+    const availableFiles = entries
+        .filter(entry => entry.type === 'FILE' && entry.entry.endsWith('.yml'))
+        .map(entry => entry.entry.slice(0, -4));
+    return Promise.all(Object.entries(manifest)
+        .filter(([id]) => availableFiles.includes(id))
+        .map(([id, metadata]) => Localization.load(id, metadata, directory)));
+}
+
 export async function loadLocales() {
-    const manifestPath = `extensions/locales/locales.json`;
-    const manifestStr = await readFile(manifestPath);
-    const manifest = JSON.parse(manifestStr);
-
-    const dirEntries = await readDirectory('extensions/locales');
-    const availableFiles = dirEntries
-        .filter(e => e.type === 'FILE' && e.entry.endsWith('.yml'))
-        .map(e => e.entry.slice(0, -4));
-
-    return Promise.all(
-        Object.entries(manifest).filter(([key]) => {
-            return availableFiles.includes(key);
-        }).map(([key, value]) => {
-            return Localization.load(key, value);
-        })
-    );
+    await prepareSchema();
+    const locales = new Map();
+    for (const location of getExtensionLocations()) {
+        const loaded = await loadLocaleDirectory(location.child('locales'));
+        for (const locale of loaded)
+            if (!locales.has(locale.id)) locales.set(locale.id, locale);
+    }
+    return [...locales.values()];
 }
 
 async function saveLocaleRegistry() {
@@ -73,7 +77,8 @@ export async function saveLocale(locale) {
 
 export async function setLocalization(localeId) {
     try {
-        activeLocalization = await Localization.load(localeId);
+        const locale = (await localesPromise).find(locale => locale.id === localeId);
+        activeLocalization = await Localization.load(localeId, {}, locale?.directory);
         return true;
     } catch (e) {
         log('plugin').error('Error loading localization,', e.message);

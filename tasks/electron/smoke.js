@@ -3,12 +3,15 @@ import os from 'node:os';
 import path from 'node:path';
 import { launch } from './fixture.js';
 import { runShutdownTests } from './shutdown.js';
+import { prepareUserExtensions } from './smokeFixtures.js';
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
 try {
-    for (const suite of ['Startup', 'Persistence', 'Rendering', 'Dialogs']) {
+    for (const suite of ['Startup', 'Persistence', 'Rendering', 'Dialogs', 'Extensions']) {
         console.log(`Running Electron ${suite}...`);
-        const fixture = await launch({ profile: path.join(temp, suite),
+        const profilePath = path.join(temp, suite);
+        if (suite === 'Extensions') await prepareUserExtensions(profilePath);
+        const fixture = await launch({ profile: profilePath,
             url: '/tests/smoke.html', id: 'cardmagician.test',
             args: [`--test-suite=${suite}`] });
         try { await fixture.result(); } finally { await fixture.cleanup(); }

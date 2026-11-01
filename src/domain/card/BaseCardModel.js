@@ -1,3 +1,4 @@
+import { findExtension } from '../../shared/extensionManager.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
@@ -46,10 +47,11 @@ export default class BaseCardModel {
 
     async loadModule(modulePath) {
         try {
-            const mainPath = `/extensions/cardparts/${modulePath}/main.js`;
+            const extension = await findExtension(`cardparts/${modulePath}`);
+            const mainPath = extension.url('main.js');
             log('plugin').debug('Loading module', mainPath);
             const { default: Module } = await import(mainPath);
-            return new Module(this, modulePath);
+            return new Module(this, modulePath, extension);
         } catch (error) {
             report('loadModule', error, [modulePath]);
             log('plugin').error('Failed to load module:', error);

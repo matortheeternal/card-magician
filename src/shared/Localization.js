@@ -1,6 +1,6 @@
 import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
-import { readFile, writeFile } from './platformAdapter.js';
+import { getExtensionLocations } from './extensionManager.js';
 
 const CURRENT_SCHEMA_VERSION = 1;
 
@@ -17,10 +17,12 @@ const CURRENT_SCHEMA_VERSION = 1;
  * on localizations directly. If you need to localize a string, use `localize`.
  */
 export default class Localization {
-    static async load(localeId, metadata = {}) {
-        const filePath = `extensions/locales/${localeId}.yml`;
-        const text = await readFile(filePath);
-        return new Localization(localeId, text, metadata);
+    static async load(localeId, metadata = {}, directory) {
+        directory ??= getExtensionLocations().at(-1).child('locales');
+        const text = await directory.readText(`${localeId}.yml`);
+        const locale = new Localization(localeId, text, metadata);
+        locale.directory = directory;
+        return locale;
     }
 
     static get totalKeys() {
@@ -103,7 +105,8 @@ export default class Localization {
     }
 
     async save() {
-        const filePath = `extensions/locales/${this.id}.yml`;
-        await writeFile(filePath, this.raw);
+        const directory = this.directory
+            ?? getExtensionLocations().at(-1).child('locales');
+        await directory.writeText(`${this.id}.yml`, this.raw);
     }
 }

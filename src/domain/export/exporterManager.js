@@ -1,5 +1,4 @@
-import { readDirectory } from '../../shared/platformAdapter.js';
-import { checkFileExists, loadJson, loadTextFile } from '../../shared/fsUtils.js';
+import { readExtensionDirectories } from '../../shared/extensionManager.js';
 import { feedTheDag, walkTheDag } from './exporterDag.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { openModal } from '../../ui/modals/modalManager.js';
@@ -20,20 +19,15 @@ const NO_EXPORTER_FORM_HTML = (
 );
 
 export async function loadExporters() {
-    const exporterFolders = await readDirectory('extensions/exporters');
+    const exporterFolders = await readExtensionDirectories('exporters');
     for (const exporterFolder of exporterFolders) {
-        log('startup').debug('Reading exporter:', exporterFolder.path);
-        const jsonPath = ['.', exporterFolder.path, 'exporter.json'].join('/');
-        if (!await checkFileExists(jsonPath)) {
-            log('startup').debug('No exporter.json found at', jsonPath);
-            continue;
-        }
-        const exporter = await loadJson(jsonPath);
-        exporter.path = exporterFolder.path;
-        const formPath = ['.', exporterFolder.path, 'form.html'].join('/');
-        exporter.form = await checkFileExists(formPath)
-            ? await loadTextFile(formPath)
-            : NO_EXPORTER_FORM_HTML;
+        log('startup').debug('Reading exporter:', exporterFolder.url());
+        if (!await exporterFolder.exists('exporter.json')) continue;
+        const exporter = await exporterFolder.readJson('exporter.json');
+        exporter.path = exporterFolder.url().slice(1);
+        exporter.directory = exporterFolder;
+        exporter.form = await exporterFolder.exists('form.html')
+            ? await exporterFolder.readText('form.html') : NO_EXPORTER_FORM_HTML;
         exporters.push(exporter);
     }
 }
@@ -47,8 +41,8 @@ export async function loadExporter(exporterMetadata) {
     if (exporterMetadata.ExporterClass)
         return exporterMetadata.ExporterClass;
 
-    const mainPath = [exporterMetadata.path, 'main.js'].join('/');
-    return exporterMetadata.ExporterClass = (await import('/' + mainPath)).default;
+    const mainPath = exporterMetadata.directory.url('main.js');
+    return exporterMetadata.ExporterClass = (await import(mainPath)).default;
 }
 
 export function hasExporter(id) {

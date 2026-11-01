@@ -1,13 +1,11 @@
-import { checkFileExists, loadTextFile } from '../../shared/fsUtils.js';
-import { readDirectory } from '../../shared/platformAdapter.js';
+import { readExtensionDirectories } from '../../shared/extensionManager.js';
 
 const templates = [];
 
 async function loadTemplateFile(templateFolder, filename) {
-    const filePath = ['.', templateFolder.path, filename].join('/');
-    if (!await checkFileExists(filePath)) return '';
-    const text = await loadTextFile(filePath);
-    return filePath.endsWith('.json') ? JSON.parse(text) : text;
+    if (!await templateFolder.exists(filename)) return '';
+    return filename.endsWith('.json') ? templateFolder.readJson(filename)
+        : templateFolder.readText(filename);
 }
 
 async function loadTemplateView(templateFolder, baseName) {
@@ -25,8 +23,8 @@ function sortTemplates() {
 }
 
 export async function loadTemplates() {
-    const templateFolders = await readDirectory(
-        'extensions/templates',
+    const templateFolders = await readExtensionDirectories(
+        'templates',
         { recursive: true }
     );
     for (const folder of templateFolders) {
@@ -37,7 +35,7 @@ export async function loadTemplates() {
         template.form = await loadTemplateView(folder, 'form');
         template.options = await loadTemplateView(folder, 'options');
         if (!template.css || !template.html || !template.form.html) {
-            log('plugin').warn(`Incomplete template found at`, folder.path);
+            log('plugin').warn(`Incomplete template found at`, folder.url());
             continue;
         }
         templates.push(template);

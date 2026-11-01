@@ -6,14 +6,17 @@ export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 export function getArgument(name, fallback) {
     const prefix = `${name}=`;
-    return process.argv.find(value => value.startsWith(prefix))?.slice(prefix.length)
-        ?? fallback;
+    const arg = process.argv.find(value => value.startsWith(prefix));
+    return arg?.slice(prefix.length) ?? fallback;
 }
 
 export function createEnvironment() {
     const defaultProfile = path.join(app.getPath('appData'), 'card-magician');
     const profile = path.resolve(getArgument('--profile', defaultProfile));
     app.setPath('userData', profile);
+    const userExtensionsPath = path.resolve(getArgument(
+        '--extensions-dir', path.join(app.getPath('userData'), 'extensions')
+    ));
     return {
         id: getArgument('--app-id', 'cardmagician'),
         version: app.getVersion(),
@@ -22,6 +25,7 @@ export function createEnvironment() {
         resourceMode: app.isPackaged ? 'bundle' : 'directory',
         args: process.argv,
         paths: {
+            userExtensions: userExtensionsPath,
             plugins: app.isPackaged ? path.dirname(process.execPath) : root,
             content: app.isPackaged ? path.join(profile, 'content') : root,
             data: path.resolve(getArgument('--data-dir', path.join(profile, 'data')))

@@ -1,4 +1,4 @@
-import { loadTextFile } from '../../shared/fsUtils.js';
+import { getExtensionLocations } from '../../shared/extensionManager.js';
 import { loadFont } from './dynamicFontLoader.js';
 import {
     combineBlendOp,
@@ -173,11 +173,14 @@ export default class CardMagicianModule {
 
     /**
      * @param {CardFace} card - The card face this module is associated with.
-     * @param {string} modulePath - Filesystem path of the module.
+     * @param {string} modulePath - Module identifier relative to cardparts/.
+     * @param {MountedDirectory} [directory] - Directory containing the module.
      */
-    constructor(card, modulePath) {
+    constructor(card, modulePath, directory) {
         this.card = card;
         this.modulePath = modulePath;
+        this.directory = directory ?? getExtensionLocations().at(-1)
+            .child(`cardparts/${modulePath}`);
         this.name = modulePath.split('/').pop();
     }
 
@@ -219,7 +222,7 @@ export default class CardMagicianModule {
      * @returns {string} - Fully qualified path for the file.
      */
     resolvePath(localPath) {
-        return ['extensions/cardparts', this.modulePath, localPath].join('/');
+        return this.directory.url(localPath);
     }
 
     /**
@@ -229,7 +232,7 @@ export default class CardMagicianModule {
      * @returns {string} - Fully qualified path for the asset.
      */
     resolveAsset(assetPath) {
-        return ['extensions/cardparts', this.modulePath, 'assets', assetPath].join('/');
+        return this.directory.url(`assets/${assetPath}`);
     }
 
     /**
@@ -241,7 +244,7 @@ export default class CardMagicianModule {
      * @returns {Promise<string>} Resolves with the file's text content.
      */
     async loadFile(localPath) {
-        return loadTextFile(this.resolvePath(localPath));
+        return this.directory.readText(localPath);
     }
 
     /**

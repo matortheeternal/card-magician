@@ -1,6 +1,5 @@
-import { checkFileExists, loadJson } from '../../shared/fsUtils.js';
 import AppConfig from './appConfig.js';
-import { readDirectory } from '../../shared/platformAdapter.js';
+import { readExtensionDirectories } from '../../shared/extensionManager.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const games = [];
@@ -15,12 +14,12 @@ let gameStylesheet = null;
  * @returns {Promise<void>}
  */
 async function loadGameStyles(game) {
-    const cssPath = [game.path, 'main.css'].join('/');
+    const cssPath = game.directory.url('main.css');
     let stylesheet = null;
-    if (await checkFileExists(cssPath)) {
+    if (await game.directory.exists('main.css')) {
         stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = '/' + cssPath;
+        stylesheet.href = cssPath;
         await new Promise((resolve, reject) => {
             stylesheet.onload = resolve;
             stylesheet.onerror = () => {
@@ -37,8 +36,7 @@ async function loadGameStyles(game) {
 export async function setGame(gameId) {
     const game = games.find(g => g.id === gameId);
     if (!game) throw new Error(`Could not find game "${gameId}"`);
-    const mainPath = [game.path, 'main.js'].join('/');
-    const { default: Module } = await import('/' + mainPath);
+    const { default: Module } = await import(game.directory.url('main.js'));
     await loadGameStyles(game);
     window.activeGame = new Module(game);
     await activeGame.init();
@@ -54,16 +52,13 @@ export function getConfig() {
 }
 
 export async function loadGames() {
-    const gameFolders = await readDirectory('extensions/games');
+    const gameFolders = await readExtensionDirectories('games');
     for (const gameFolder of gameFolders) {
-        log('startup').debug('Reading game:', gameFolder.path);
-        const jsonPath = ['.', gameFolder.path, 'game.json'].join('/');
-        if (!await checkFileExists(jsonPath)) {
-            log('startup').debug('No game.json found at', jsonPath);
-            continue;
-        }
-        const game = await loadJson(jsonPath);
-        game.path = gameFolder.path;
+        log('startup').debug('Reading game:', gameFolder.url());
+        if (!await gameFolder.exists('game.json')) continue;
+        const game = await gameFolder.readJson('game.json');
+        game.path = gameFolder.url().slice(1);
+        game.directory = gameFolder;
         games.push(game);
     }
 }
