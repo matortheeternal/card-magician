@@ -80,15 +80,10 @@ window.addEventListener('resize', applyDeviceLayout.debounce(200));
         await setupPlatform();
         const devState = setupDevState();
         await startApp();
-        performance.mark('cm-ui-ready');
         if (devState) await devState.requestData();
         if (appEnvironment.args.includes('--test-exit')) {
             const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
             await setupExitFixture();
-        }
-        if (appEnvironment.args.includes('--test-feasibility')) {
-            const fixture = await import('./shared/testing/feasibilityFixture.js');
-            await fixture.setupFeasibilityFixture();
         }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
     } catch (error) {

@@ -118,11 +118,8 @@ export default class NativeBridge {
         const { id, args } = this.environment;
         const exitTest = id.startsWith('cardmagician.exit.')
             && args.includes('--test-exit');
-        const probe = id.startsWith('cardmagician.feasibility.')
-            && args.includes('--test-feasibility');
-        if (!exitTest && !probe) return;
+        if (!exitTest) return;
         operations.testWindowClose = () => { setImmediate(() => this.window.close()); };
         operations.testAppQuit = () => { setImmediate(() => app.quit()); };
-        if (probe) operations.testMetrics = () => app.getAppMetrics();
     }
 }

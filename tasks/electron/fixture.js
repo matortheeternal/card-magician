@@ -99,9 +99,8 @@ class TestApplication {
         this.driver = await DevToolsDriver.connect(endpoint);
         const target = this.url === '/' ? 'cm-app://app/' : this.url;
         await waitFor(() => this.driver.attach(target), 'application page');
-        const exitTest = this.args?.includes('--test-exit');
-        const ready = exitTest ? '!!window.exitSmoke' : '!!window.feasibility';
-        await waitFor(() => this.driver.evaluate(ready), 'application startup');
+        await waitFor(() => this.driver.evaluate('!!window.exitSmoke'),
+                      'application startup');
         assert.equal(await this.driver.evaluate('typeof require'), 'undefined');
         assert.equal(await this.driver.evaluate('typeof process'), 'undefined');
         const { processInfo } = await this.driver.send('SystemInfo.getProcessInfo');

@@ -3,17 +3,22 @@ import os from 'node:os';
 import path from 'node:path';
 import { launch } from './fixture.js';
 import { runShutdownTests } from './shutdown.js';
-import { prepareUserExtensions } from './smokeFixtures.js';
+import { prepareUserExtensions, preparePlatformFixtures } from './smokeFixtures.js';
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
 try {
-    for (const suite of ['Startup', 'Persistence', 'Rendering', 'Dialogs', 'Extensions']) {
+    const suites = ['Startup', 'Persistence', 'Rendering', 'Dialogs',
+                    'Platform', 'Extensions'];
+    for (const suite of suites) {
         console.log(`Running Electron ${suite}...`);
         const profilePath = path.join(temp, suite);
         if (suite === 'Extensions') await prepareUserExtensions(profilePath);
+        if (suite === 'Platform') await preparePlatformFixtures(profilePath);
         const fixture = await launch({ profile: profilePath,
             url: '/tests/smoke.html', id: 'cardmagician.test',
-            args: [`--test-suite=${suite}`] });
+            args: [`--test-suite=${suite}`,
+                   ...(suite === 'Platform' && process.platform !== 'win32'
+                       ? ['--test-symlinks'] : [])] });
         try { await fixture.result(); } finally { await fixture.cleanup(); }
     }
     await runShutdownTests(temp);

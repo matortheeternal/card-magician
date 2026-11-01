@@ -1,8 +1,9 @@
 import {
-    createCard, createTestProject, deleteTestProject, flushCard
+    createCard, createTestProject, deleteTestProject, flushCard, setCardFields
 } from './shared/testing/testUtils.js';
 import FieldInteractor from './shared/testing/FieldInteractor.js';
 import ImageCrop from './domain/card/ImageCrop.js';
+import { executeAction } from './ui/systems/actionSystem.js';
 
 describe('Rendering', () => {
     let artImage, artImage2;
@@ -55,4 +56,20 @@ describe('Rendering', () => {
         const cropImage = cardFace.shadowRoot.querySelector('crop-image');
         expect(cropImage.getAttribute('src')).toBe(currentImageUrl);
     });
+    it('copies a rendered card as a decodable PNG', async () => {
+        await createCard();
+        await setCardFields({ name: 'PNG smoke card', artImage });
+        await flushCard();
+        await navigator.clipboard.writeText('');
+        await executeAction('copy');
+        const items = await navigator.clipboard.read();
+        const item = items.find(item => item.types.includes('image/png'));
+        expect(item).toBeDefined();
+        const blob = await item.getType('image/png');
+        const image = await createImageBitmap(blob);
+        expect(image.width).toBe(750);
+        expect(image.height).toBe(1046);
+        image.close();
+    });
+
 });

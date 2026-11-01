@@ -31,3 +31,13 @@ export async function prepareUserExtensions(profilePath) {
     await fs.writeFile(path.join(extensionsPath, 'user-only.js'),
                        'export default "user extension";');
 }
+
+export async function preparePlatformFixtures(profilePath) {
+    const dataPath = path.join(profilePath, 'data');
+    const publicPath = path.join(dataPath, 'public');
+    const privatePath = path.join(dataPath, 'private.txt');
+    await fs.mkdir(publicPath, { recursive: true });
+    await fs.writeFile(privatePath, 'Private file outside the mount');
+    if (process.platform !== 'win32')
+        await fs.symlink(privatePath, path.join(publicPath, 'escape.txt'));
+}
