@@ -3,7 +3,7 @@ import { esc, escapeHTML, hide, show } from '../../../shared/htmlUtils.js';
 
 const states = {
     changes: {
-        icon: 'circle-fill',
+        icon: 'circle-half',
         message: 'Unsaved changes'
     },
     saving: {

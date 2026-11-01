@@ -18,7 +18,7 @@ cm-floating-status {
     }
 
     > sl-icon {
-        &[name="circle-fill"] {
+        &[name="circle-half"] {
             color: var(--sl-color-warning-600);
         }
 
