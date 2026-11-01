@@ -30,6 +30,7 @@ export default class PTModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, ['toughness', 'power'], () => this.updatePT(card));
+        watch(card, ['showPT'], () => this.requestRender({ render: 'renderPT' }));
         watch(card, ['showNotchPT'],
               () => this.requestRender({ render: 'renderNotchPT' })
         );
