@@ -1,6 +1,7 @@
 import { app, dialog, ipcMain, shell } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { watchFile } from './FileWatcher.js';
 import { launchSvgEditor } from './launchSvgEditor.js';
 import FileSystem from './FileSystem.js';
 import Storage from './Storage.js';
@@ -12,7 +13,12 @@ export default class NativeBridge {
         this.files = new FileSystem(environment.paths.content, environment.paths.plugins);
         this.storage = new Storage(environment.paths.data);
         this.operations = this.createOperations();
-
+        this.fileWatchers = new Map();
+        window.webContents.on('did-start-navigation', (_event, _url, inPlace, main) => {
+            if (main && !inPlace) this.closeFileWatchers();
+        });
+        window.webContents.on('render-process-gone', () => this.closeFileWatchers());
+        window.on('closed', () => this.closeFileWatchers());
     }
 
     trusted(event, bootstrap = false) {
@@ -66,6 +72,8 @@ export default class NativeBridge {
             openSvgEditor: (executable, filename) => {
                 return launchSvgEditor(executable, this.files.absolute(filename));
             },
+            watchFile: (id, filename) => this.watchFile(id, filename),
+            unwatchFile: id => this.unwatchFile(id),
             getMounts: () => this.resources.getMounts(),
             mount: (url, target) => {
                 this.resources.mount(url, this.files.absolute(target));
@@ -78,6 +86,37 @@ export default class NativeBridge {
         });
         this.addTestOperations(operations);
         return operations;
+    }
+
+    async watchFile(id, filename) {
+        if (typeof id !== 'string' || !id || this.fileWatchers.has(id))
+            throw new TypeError('A unique file watch ID is required.');
+        const entry = {};
+        this.fileWatchers.set(id, entry);
+        try {
+            const close = await watchFile(this.files.absolute(filename), event => {
+                if (this.fileWatchers.get(id) !== entry) return;
+                if (!this.window.webContents.isDestroyed()) {
+                    this.window.webContents.send(
+                        'card-magician:file-watch', { id, ...event }
+                    );
+                }
+            });
+            if (this.fileWatchers.get(id) === entry) entry.close = close;
+            else close();
+        } catch (error) {
+            if (this.fileWatchers.get(id) === entry) this.fileWatchers.delete(id);
+            throw error;
+        }
+    }
+
+    unwatchFile(id) {
+        this.fileWatchers.get(id)?.close?.();
+        this.fileWatchers.delete(id);
+    }
+
+    closeFileWatchers() {
+        for (const id of this.fileWatchers.keys()) this.unwatchFile(id);
     }
 
     dialogOperations() {

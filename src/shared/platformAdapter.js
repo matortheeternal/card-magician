@@ -82,3 +82,7 @@ export async function onWindowClose(callback) {
     await call('readyToClose');
 }
 export const reloadApp = () => window.location.reload();
+
+export const startFileWatch = (id, filename) => call('watchFile', id, filename);
+export const stopFileWatch = id => call('unwatchFile', id);
+export const onFileChange = callback => native.onFileChange(callback);
