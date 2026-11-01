@@ -88,7 +88,7 @@ export async function createTestProject() {
     );
     const projectFilePath = await getJoinedPath(testProjectDir, 'test.cmproj');
     try { await rmrf(testProjectDir); } catch {}
-    executeAction('new-project');
+    await executeAction('new-project');
     await activeProject.setFilePath(projectFilePath);
     return activeProject;
 }

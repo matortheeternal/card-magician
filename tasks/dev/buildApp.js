@@ -16,8 +16,8 @@ function isApplicationCode(file) {
         && !file.endsWith('.smoke.js');
 }
 
-async function buildJs({ minify, sourcemap }) {
-    const main = [
+export async function getApplicationEntry() {
+    return [
         './shared/reporting.js',
         './shared/prototypeExtensions.js',
         './shared/reporting/saveErrorsToDisk.js',
@@ -34,10 +34,12 @@ async function buildJs({ minify, sourcemap }) {
         }),
         './startup.js',
     ].map(filePath => `import '${filePath}';`).join('\n');
+}
 
+async function buildJs({ minify, sourcemap }) {
     await esbuild.build({
         stdin: {
-            contents: main,
+            contents: await getApplicationEntry(),
             resolveDir: path.join(process.cwd(), 'src'),
             sourcefile: 'main.js'
         },

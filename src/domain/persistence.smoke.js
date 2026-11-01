@@ -661,7 +661,7 @@ describe('Persistence', () => {
 
         it('copies and pastes an unsaved card with its image', async () => {
             const filePath = project.filePath;
-            executeAction('new-project');
+            await executeAction('new-project');
             await createCard();
             await setCardFields({ name: 'firebird', artImage });
             await executeAction('copy');
@@ -779,7 +779,7 @@ describe('Persistence', () => {
 
         it('persists unsaved cards and images after Save As', async () => {
             const filePath = project.filePath;
-            executeAction('new-project');
+            await executeAction('new-project');
             await createCard();
             await setCardFields({ name: 'phoenix', artImage });
             await executeAction('duplicate-selected-cards');

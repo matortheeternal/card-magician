@@ -9,7 +9,11 @@ const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'))
 try {
     const suites = ['Startup', 'Persistence', 'Rendering', 'Dialogs',
                     'Platform', 'Extensions'];
-    for (const suite of suites) {
+    const requested = process.argv.find(arg => arg.startsWith('--suite='))
+        ?.slice('--suite='.length);
+    if (requested && !suites.includes(requested))
+        throw new Error(`Unknown smoke suite: ${requested}`);
+    for (const suite of requested ? [requested] : suites) {
         console.log(`Running Electron ${suite}...`);
         const profilePath = path.join(temp, suite);
         if (suite === 'Extensions') await prepareUserExtensions(profilePath);
@@ -21,6 +25,6 @@ try {
                        ? ['--test-symlinks'] : [])] });
         try { await fixture.result(); } finally { await fixture.cleanup(); }
     }
-    await runShutdownTests(temp);
+    if (!requested) await runShutdownTests(temp);
     console.log('Smoke tests passed.');
 } finally { await fs.rm(temp, { recursive: true, force: true }); }

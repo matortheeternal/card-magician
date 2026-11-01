@@ -2,6 +2,7 @@ import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
 import path from 'path';
 import { getSourceFiles } from './buildHelpers.js';
+import { getApplicationEntry } from './buildApp.js';
 
 const jasmineFiles = [
     'jasmine.js',
@@ -30,6 +31,7 @@ async function buildJs(filename, bundle, { minify }) {
             sourcefile: `bundle-${filename}`
         },
         bundle: true,
+        keepNames: true,
         outfile: `resources/tests/${filename}`,
         format: 'iife',
         sourcemap: 'inline',
@@ -62,6 +64,8 @@ export async function buildTests({ minify = false } = {}) {
     const testBundle = await getTests('.tests.js', true);
     const smokeBundle = await getTests('.smoke.js', false);
     await buildJs('tests.js', testBundle, { minify });
-    await buildJs('smoke.js', smokeBundle, { minify });
+    // Bundle app and smoke specs together so imports share module instances.
+    const smokeEntry = `${await getApplicationEntry()}\n${smokeBundle}`;
+    await buildJs('smoke.js', smokeEntry, { minify });
     await copyJasmineFiles();
 }
