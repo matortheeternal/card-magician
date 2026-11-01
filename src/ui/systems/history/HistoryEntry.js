@@ -15,23 +15,21 @@ export default class HistoryEntry {
     }
 
     /**
-     * @param {CardMagicianCard} card
-     * @param {Event} event
+     * @param {HistoryEntry} entry
      * @returns {boolean}
      */
-    canCombine(card, event) {
-        const timeSinceLastAction = Date.now() - this.timestamp;
+    canCombine(entry) {
+        const timeSinceLastAction = entry.timestamp - this.timestamp;
         return timeSinceLastAction < MERGE_THRESHOLD
-            && this.constructor.supports(event);
+            && this.constructor === entry.constructor;
     }
 
     /**
      * @abstract
-     * @param {CardMagicianCard} card
-     * @param {object} detail
+     * @param {HistoryEntry} entry
      * @returns {HistoryEntry|undefined}
      */
-    combine(card, detail) {}
+    combine(entry) {}
 
     /**
      * @abstract

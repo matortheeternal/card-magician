@@ -6,7 +6,7 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import electron from 'electron';
 import DevToolsDriver from '../dev/devToolsDriver.js';
-import { handleOutput } from '../dev/testOutput.js';
+import { handleOutput, isTestOutput } from '../dev/testOutput.js';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const pause = ms => new Promise(resolve => { setTimeout(resolve, ms); });
@@ -28,7 +28,7 @@ function alive(pid) {
     }
 }
 
-class TestApplication {
+export class TestApplication {
     output = '';
     processIds = [];
     cleaning = false;
@@ -68,8 +68,9 @@ class TestApplication {
 
     captureOutput() {
         createInterface({ input: this.child.stdout }).on('line', line => {
-            this.output += line + '\n';
-            const reported = handleOutput(line);
+            // Retain diagnostics, not a second copy of the live test report.
+            if (!isTestOutput(line)) this.output += line + '\n';
+            const reported = handleOutput(line, this.writeOutput);
             if (reported) this.testResult = reported;
         });
         this.child.stderr.on('data', data => {

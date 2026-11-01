@@ -258,10 +258,10 @@ describe('CollectionManager', () => {
     it('debounces edits for the default delay and saves the latest state', async () => {
         manager.collection = [];
         manager.create('first');
-        jasmine.clock().tick(2000);
+        jasmine.clock().tick(500);
         manager.create('second');
         const pending = manager.save();
-        jasmine.clock().tick(2999);
+        jasmine.clock().tick(999);
         await Promise.resolve();
         expect(save).not.toHaveBeenCalled();
         jasmine.clock().tick(1);

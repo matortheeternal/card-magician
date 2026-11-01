@@ -25,12 +25,12 @@ export default class CardFieldChange extends HistoryEntry {
         this.newValue = this.copyValue(event.detail.newValue);
     }
 
-    canCombine(card, event) {
-        return super.canCombine(card, event)
-            && this.card === card
-            && this.fieldId === event.detail.fieldId
-            && this.modelKey === event.detail.modelKey
-            && this.faceId === event.detail.faceId;
+    canCombine(entry) {
+        return super.canCombine(entry)
+            && this.card === entry.card
+            && this.fieldId === entry.fieldId
+            && this.modelKey === entry.modelKey
+            && this.faceId === entry.faceId;
     }
 
     copyValue(value) {
@@ -39,10 +39,10 @@ export default class CardFieldChange extends HistoryEntry {
             : structuredClone(value);
     }
 
-    combine(card, event) {
-        if (!this.canCombine(card, event)) return;
-        this.newValue = this.copyValue(event.detail.newValue);
-        this.timestamp = Date.now();
+    combine(entry) {
+        if (!this.canCombine(entry)) return;
+        this.newValue = this.copyValue(entry.newValue);
+        this.timestamp = entry.timestamp;
         return this;
     }
 

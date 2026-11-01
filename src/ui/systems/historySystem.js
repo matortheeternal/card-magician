@@ -14,7 +14,7 @@ function getPreviousAction() {
         : null;
 }
 
-function findMatchingClass(card, event) {
+function findMatchingClass(event) {
     for (const HistoryEntryClass of historyEntryClasses) {
         if (HistoryEntryClass.supports(event))
             return HistoryEntryClass;
@@ -28,13 +28,14 @@ async function withLock(callback) {
 }
 
 export function push(card, event) {
-    const HistoryEntryClass = findMatchingClass(card, event);
+    const HistoryEntryClass = findMatchingClass(event);
     if (!HistoryEntryClass) return;
-    withLock(() => {
+    const entry = new HistoryEntryClass(card, event);
+    return withLock(() => {
         future = [];
         const previousAction = getPreviousAction();
-        const combined = previousAction?.combine(card, event);
-        if (!combined) past.push(new HistoryEntryClass(card, event));
+        const combined = previousAction?.combine(entry);
+        if (!combined) past.push(entry);
     });
 }
 

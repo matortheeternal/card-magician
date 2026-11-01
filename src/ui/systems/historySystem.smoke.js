@@ -1,4 +1,6 @@
 import * as history from './historySystem.js';
+import CardFieldChange from './history/CardFieldChange.js';
+import HistoryEntry from './history/HistoryEntry.js';
 import { executeAction } from './actionSystem.js';
 import {
     createCard, createTestProject, deleteTestProject, flushCard,
@@ -16,9 +18,9 @@ function deferred() {
 }
 
 function record(card, fieldId, oldValue, newValue, extra = {}) {
-    return history.push(card, {
+    return history.push(card, new CustomEvent('cm-field-changed', {
         detail: { faceId: 'front', fieldId, oldValue, newValue, ...extra }
-    });
+    }));
 }
 
 // Real form/persistence coverage plus controlled saves for deterministic races.
@@ -48,6 +50,36 @@ describe('History', () => {
             model[field] = after;
             return record(card, field, before, after, extra);
         }
+
+        it('matches only complete field-change events', () => {
+            const detail = {
+                faceId: 'front', fieldId: 'name', oldValue: undefined, newValue: ''
+            };
+            const event = new CustomEvent('cm-field-changed', { detail });
+            expect(CardFieldChange.supports(event)).toBeTrue();
+            expect(new CardFieldChange(card, event)).toBeInstanceOf(HistoryEntry);
+            expect(CardFieldChange.supports(null)).toBeFalse();
+            expect(CardFieldChange.supports({ detail })).toBeFalse();
+            expect(CardFieldChange.supports(
+                new CustomEvent('cm-template-changed', { detail })
+            )).toBeFalse();
+            for (const key of Object.keys(detail)) {
+                const incomplete = { ...detail };
+                delete incomplete[key];
+                expect(CardFieldChange.supports(new CustomEvent('cm-field-changed', {
+                    detail: incomplete
+                }))).withContext(`Missing ${key}`).toBeFalse();
+            }
+        });
+
+        it('does not combine entries of different classes', () => {
+            const event = new CustomEvent('cm-field-changed', { detail: {
+                faceId: 'front', fieldId: 'name', oldValue: '', newValue: 'A'
+            } });
+            const entry = new CardFieldChange(card, event);
+            class DifferentChange extends CardFieldChange {}
+            expect(entry.combine(new DifferentChange(card, event))).toBeUndefined();
+        });
 
         it('does nothing when both stacks are empty', async () => {
             await history.undo();
