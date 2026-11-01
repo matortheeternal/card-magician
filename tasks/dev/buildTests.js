@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'path';
 import { getSourceFiles } from './buildHelpers.js';
 import { getApplicationEntry } from './buildApp.js';
+import { findGameTests } from './findGameTests.js';
 
 const jasmineFiles = [
     'jasmine.js',
@@ -11,6 +12,7 @@ const jasmineFiles = [
 ];
 
 async function getTests(suffix, includeShared) {
+    const gameTests = includeShared ? await findGameTests() : [];
     return [
         ...(includeShared ? [
             './shared/reporting.js',
@@ -19,6 +21,7 @@ async function getTests(suffix, includeShared) {
             './shared/localize.js',
         ] : []),
         ...await getSourceFiles(file => file.endsWith(suffix)),
+        ...gameTests.map(file => `../${file}`),
         `./${suffix.slice(1)}`
     ].map(filePath => `import '${filePath}';`).join('\n');
 }
