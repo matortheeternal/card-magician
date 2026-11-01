@@ -18,7 +18,7 @@ export function debugLog(level, message, args) {
     return call('debugLog', `[${level}] ${message}\n${details}\n`);
 }
 export const openUrl = url => call('openUrl', url);
-export const open = path => call('open', path);
+export const sysopen = path => call('open', path);
 export const openSingleFileDialog = (label, filters) => {
     return call('openSingleFileDialog', label, filters);
 };
