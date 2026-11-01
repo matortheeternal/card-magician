@@ -28,11 +28,21 @@ async function withLock(callback) {
     return operation;
 }
 
+function withPreparedEntry(entry, callback) {
+    const preparation = entry.prepare();
+    // A read may fail while an earlier history operation is still running.
+    preparation.catch(() => {});
+    return withLock(async () => {
+        await preparation;
+        return callback();
+    });
+}
+
 export function push(card, event) {
     const HistoryEntryClass = findMatchingClass(event);
     if (!HistoryEntryClass) return;
     const entry = new HistoryEntryClass(card, event);
-    return withLock(() => {
+    return withPreparedEntry(entry, () => {
         future = [];
         const previousAction = getPreviousAction();
         const combined = previousAction?.combine(entry);
@@ -45,7 +55,7 @@ export function execute(target, event) {
     const Entry = findMatchingClass(event);
     if (!Entry) return;
     const entry = new Entry(target, event);
-    return withLock(async () => {
+    return withPreparedEntry(entry, async () => {
         if (!await entry.replay()) return false;
         future = [];
         past.push(entry);

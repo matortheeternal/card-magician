@@ -30,7 +30,10 @@ class CardForm extends ReactiveComponent {
         this.unregisterExitSave = registerPendingSave(this.save);
         this.render();
         this.addEventListener('cm-field-changed', event => {
-            historySystem.push(this.projectCard, event);
+            historySystem.push(this.projectCard, event)?.catch(error => {
+                report('history', error, [this.projectCard, event.detail]);
+                executeAction('set-status', 'failed');
+            });
             executeAction('set-status', 'changes');
             this.save().catch(() => {});
         });

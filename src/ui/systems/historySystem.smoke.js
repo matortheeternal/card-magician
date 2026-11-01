@@ -654,6 +654,21 @@ describe('History', () => {
     describe('forms and persistence', () => {
         let card, art;
 
+        async function loadDiskImage() {
+            await setCardFields({ artImage: art });
+            await flushCard();
+            await activeProject.save();
+            await executeAction('open-project', activeProject.filePath);
+            card = activeProject.cards[0];
+            await executeAction('select-card', card);
+            return new FieldInteractor('artImage', { faceKey: 'front' });
+        }
+
+        async function expectImageFile(expected) {
+            const bytes = await readBinaryFile(card.files.get('front.artImage'));
+            await expectFilesToMatch(new File([bytes], ''), expected);
+        }
+
         beforeAll(async () => {
             const response = await fetch('/tests/fixtures/art.jpg');
             art = new File([await response.blob()], 'art.jpg', { type: 'image/jpeg' });
@@ -875,6 +890,98 @@ describe('History', () => {
                expect(activeProject.cards.length).toBe(0);
            });
 
+        it('waits for a slow image read before an immediate save deletes its file',
+           async () => {
+               const field = await loadDiskImage();
+               const url = field.value.imageUrl;
+               const path = card.files.get('front.artImage');
+               const entered = deferred();
+               const finish = deferred();
+               const fetchImage = window.fetch.bind(window);
+               spyOn(window, 'fetch').and.callFake(async (input, ...args) => {
+                   if (input !== url) return fetchImage(input, ...args);
+                   entered.resolve();
+                   await finish.promise;
+                   return fetchImage(input, ...args);
+               });
+               field.clear();
+               await entered.promise;
+               let complete = false;
+               const saving = flushCard().then(() => { complete = true; });
+               try {
+                   expect(await checkFileExists(path)).toBeTrue();
+                   expect(complete).toBeFalse();
+               } finally {
+                   finish.resolve();
+               }
+               await saving;
+               expect(await checkFileExists(path)).toBeFalse();
+               await history.undo();
+               await expectImageFile(art);
+           });
+
+        it('leaves disk content intact after a retention failure and allows retry',
+           async () => {
+               const field = await loadDiskImage();
+               const image = field.value;
+               const url = image.imageUrl;
+               const path = card.files.get('front.artImage');
+               const fetchImage = window.fetch.bind(window);
+               const read = spyOn(window, 'fetch').and.callFake((input, ...args) => {
+                   if (input === url)
+                       return Promise.resolve(new Response(null, { status: 503 }));
+                   return fetchImage(input, ...args);
+               });
+               field.clear();
+               await expectAsync(flushCard()).toBeRejectedWithError(
+                   `Cannot retain image: ${url}`
+               );
+               expect(await checkFileExists(path)).toBeTrue();
+               read.and.callThrough();
+               await record(card, 'artImage', image, new ImageFieldValue());
+               const saving = document.querySelector('cm-card-form').save();
+               await flushCard();
+               await saving;
+               await history.undo();
+               await expectImageFile(art);
+           });
+
+        it('shares one retained source between the old and new crop snapshots',
+           async () => {
+               const field = await loadDiskImage();
+               const image = field.value;
+               const changedImage = image.clone();
+               changedImage.crop = new ImageCrop(100, 120, 3, 4);
+               const event = new CustomEvent('cm-field-changed', { detail: {
+                   faceId: 'front', fieldId: 'artImage',
+                   oldValue: image, newValue: changedImage
+               } });
+               const entry = new CardFieldChange(card, event);
+               const read = spyOn(window, 'fetch').and.callThrough();
+               await entry.prepare();
+               expect(read).toHaveBeenCalledOnceWith(image.imageUrl);
+               expect(entry.oldValue.imageUrl.startsWith('blob:')).toBeTrue();
+               expect(entry.newValue.imageUrl).toBe(entry.oldValue.imageUrl);
+               expect(entry.newValue.crop).toEqual(changedImage.crop);
+               expect(entry.newValue.crop).not.toBe(changedImage.crop);
+           });
+
+        it('preserves the first image when replacement and clearing are merged',
+           async () => {
+               const field = await loadDiskImage();
+               const response = await fetch('/tests/fixtures/art2.jpg');
+               const replacement = new File([await response.blob()], 'replacement.jpg',
+                                            { type: 'image/jpeg' });
+               await field.setValue(replacement);
+               await flushCard();
+               field.clear();
+               await flushCard();
+               await history.undo();
+               await expectImageFile(art);
+               await history.redo();
+               expect(card.files.get('front.artImage')).toBeUndefined();
+           });
+
         it('restores uploaded image bytes after clearing and saving', async () => {
             await setCardFields({ artImage: art });
             await flushCard();
@@ -917,9 +1024,8 @@ describe('History', () => {
             expect({ ...field.value.crop }).toEqual({ ...before });
         });
 
-        // Explicitly deferred features: enable these with their implementations.
+        // Retention regressions plus the remaining deferred template replay case.
         it('restores an image loaded from disk after clear/save/reopen', async () => {
-            pending('Deferred: immutable content retention for disk-backed images');
             await setCardFields({ artImage: art });
             await flushCard();
             await activeProject.save();
@@ -936,7 +1042,6 @@ describe('History', () => {
             await expectFilesToMatch(new File([bytes], ''), art);
         });
         it('preserves historical image content across overwrite and rename', async () => {
-            pending('Deferred: immutable content retention for disk-backed images');
             await setCardFields({ artImage: art });
             await flushCard();
             await activeProject.save();
@@ -952,8 +1057,11 @@ describe('History', () => {
             await flushCard();
             await history.undo();
             await history.undo();
-            const bytes = await readBinaryFile(card.files.get('front.artImage'));
-            await expectFilesToMatch(new File([bytes], ''), art);
+            await expectImageFile(art);
+            await history.redo();
+            await history.redo();
+            expect(card.front.name).toBe('Moved image');
+            await expectImageFile(replacement);
         });
         it('rebuilds the face when replaying a template change', async () => {
             pending('Deferred: template replay');

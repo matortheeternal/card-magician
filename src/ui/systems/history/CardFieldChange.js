@@ -1,5 +1,8 @@
 import HistoryEntry from './HistoryEntry.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
+import {
+    prepareImageRetention, retainImage
+} from '../../../domain/card/imageRetention.js';
 import { executeAction } from '../actionSystem.js';
 
 const report = createReporter({ unit: 'CardFieldChange' });
@@ -23,6 +26,37 @@ export default class CardFieldChange extends HistoryEntry {
         this.fieldId = event.detail.fieldId;
         this.oldValue = this.copyValue(event.detail.oldValue);
         this.newValue = this.copyValue(event.detail.newValue);
+    }
+
+    prepare() {
+        if (!(this.oldValue instanceof ImageFieldValue)
+            && !(this.newValue instanceof ImageFieldValue)) return super.prepare();
+        this.preparation ||= prepareImageRetention(this.card, () => this.retainValues());
+        return this.preparation;
+    }
+
+    retainValue(value) {
+        if (value instanceof ImageFieldValue) return retainImage(value);
+        return Promise.resolve(value);
+    }
+
+    hasSameImageSource() {
+        return this.oldValue instanceof ImageFieldValue
+            && this.newValue instanceof ImageFieldValue
+            && this.oldValue.imageUrl === this.newValue.imageUrl;
+    }
+
+    async retainNewValue(oldValue) {
+        if (!this.hasSameImageSource()) return this.retainValue(this.newValue);
+        const retained = this.newValue.clone();
+        retained.imageUrl = (await oldValue).imageUrl;
+        return retained;
+    }
+
+    async retainValues() {
+        const oldValue = this.retainValue(this.oldValue);
+        const newValue = this.retainNewValue(oldValue);
+        [this.oldValue, this.newValue] = await Promise.all([oldValue, newValue]);
     }
 
     canCombine(entry) {
@@ -74,10 +108,12 @@ export default class CardFieldChange extends HistoryEntry {
     }
 
     async replay() {
+        await this.prepare();
         return await this.setValue(this.newValue);
     }
 
     async revert() {
+        await this.prepare();
         return await this.setValue(this.oldValue);
     }
 }

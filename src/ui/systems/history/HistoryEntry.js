@@ -14,6 +14,9 @@ export default class HistoryEntry {
         this.timestamp = Date.now();
     }
 
+    /** Finish any asynchronous snapshot preparation before recording or replay. */
+    async prepare() {}
+
     /**
      * @param {HistoryEntry} entry
      * @returns {boolean}

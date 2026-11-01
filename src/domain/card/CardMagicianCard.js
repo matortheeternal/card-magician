@@ -5,6 +5,7 @@ import YAMLSerializer from '../projects/serializers/YAMLSerializer.js';
 import { updateBaseName } from '../projects/cardNamer.js';
 import CardFiles from './CardFiles.js';
 import ImageFieldValue from './ImageFieldValue.js';
+import { waitForImageRetention } from './imageRetention.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 export default class CardMagicianCard {
@@ -98,6 +99,7 @@ export default class CardMagicianCard {
     }
 
     async save(saveAll = false) {
+        await waitForImageRetention(this);
         if (!window.activeProject.cardsFolderPath) return;
         updateBaseName(this);
         progress.setOperation(`Saving card ${this.baseName}`);
