@@ -103,9 +103,9 @@ export default class ColorIdentity {
 
 function getTextSymbols(rulesText) {
     const symbols = [];
-    for (const match of rulesText.matchAll(/^{(.+?)}/g)) {
+    for (const match of rulesText.matchAll(/{(.+?)}/g)) {
         const cost = ActivationCost.parse(match[1]);
-        symbols.push(cost.symbols);
+        symbols.push(...cost.symbols);
     }
     return symbols;
 }
