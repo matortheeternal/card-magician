@@ -14,7 +14,7 @@ const L = localize('settings');
 
 export default class EditTags extends CardMagicianSettings {
     static id = 'cm-edit-tags';
-    static parentId = 'cm-application-settings';
+    static parentId = 'cm-magic-settings';
     static label = L`Tags`;
     static groupWeight = 896;
 
@@ -58,7 +58,7 @@ export default class EditTags extends CardMagicianSettings {
         this.innerHTML = (
             `<div class="header">
                 <p class="text-muted">
-                    ${L`Edit tags for use in this project.`}
+                    ${L`Edit tags for use with this game.`}
                 </p>
                 <sl-button data-click-action="addTag" variant="primary">
                     <sl-icon slot="prefix" name="plus-lg"></sl-icon>
