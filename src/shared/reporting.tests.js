@@ -3,13 +3,17 @@ import { subscribe } from './reporting.js';
 describe('reporting', () => {
     it('does not swallow subscriber failures', () => {
         const expected = new Error('Subscriber failed');
-        let enabled = true;
+        let enabled = false;
         subscribe(() => {
             if (enabled) throw expected;
         });
         const report = createReporter({ unit: 'ReportingTest' });
 
-        expect(() => report('subscriber-failure', null, null)).toThrow(expected);
-        enabled = false;
+        enabled = true;
+        try {
+            expect(() => report('subscriber-failure', null, null)).toThrow(expected);
+        } finally {
+            enabled = false;
+        }
     });
 });

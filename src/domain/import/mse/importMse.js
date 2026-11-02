@@ -10,7 +10,7 @@ import { getStructure } from './cardStructureRegistry.js';
 import convertSetSymbol from './setSymbol/convertSetSymbol.js';
 
 const L = localize('import-mse');
-const report = createReporter({ unit: 'ImportMSE', label: 'MSE Set Impporter' });
+const report = createReporter({ unit: 'ImportMSE', label: 'MSE Set Importer' });
 
 const TESTED_MSE_VERSION = '2.6.0';
 const TESTED_MSE_GAME = 'magic';
@@ -85,37 +85,55 @@ async function importSetInfo(mseInfo, cmSet, adapter) {
     }
 }
 
-async function importCard(mseSet, mseCard, adapter) {
-    const cmCard = new activeGame.Card();
-    const cardImporter = createImporter(mseSet, mseCard, cmCard, adapter);
-    await cardImporter.import();
-    return cmCard;
-}
-
-function addCardsToProject(cardMap, project) {
-    const cardsByUid = new Map(
-        [...cardMap].map(([mseCard, cmCard]) => [mseCard.uid, cmCard])
-    );
-
-    for (const [mseCard, cmCard] of cardMap) {
-        const structure = getStructure(mseCard, cmCard, cardsByUid);
-        const card = structure.makeCard();
-        if (card) project.cards.push(card);
+export async function importCard(mseSet, mseCard, adapter, onFailure = () => {}) {
+    try {
+        const cmCard = new activeGame.Card();
+        const importer = createImporter(mseSet, mseCard, cmCard, adapter);
+        await importer.import();
+        return cmCard;
+    } catch (error) {
+        onFailure(error, mseCard.name);
+        return null;
     }
 }
 
-async function importCards(mseSet, adapter) {
+export async function importCards(mseSet, adapter, onFailure = () => {}) {
     const cardMap = new Map();
     for (const mseCard of mseSet.card) {
         progress.setOperation(mseCard.name);
-        const cmCard = await importCard(mseSet, mseCard, adapter);
-        cardMap.set(mseCard, cmCard);
+        const cmCard = await importCard(mseSet, mseCard, adapter, onFailure);
+        if (cmCard) cardMap.set(mseCard, cmCard);
         progress.increment();
     }
     return cardMap;
 }
 
+export function addCardsToProject(cardMap, project, onFailure = () => {}) {
+    const cardsByUid = new Map();
+    for (const [mseCard, cmCard] of cardMap)
+        if (mseCard.uid) cardsByUid.set(mseCard.uid, cmCard);
+
+    for (const [mseCard, cmCard] of cardMap) {
+        try {
+            const structure = getStructure(mseCard, cmCard, cardsByUid);
+            const card = structure.makeCard();
+            if (card) project.cards.push(card);
+        } catch (error) {
+            onFailure(error, mseCard.name);
+        }
+    }
+}
+
+function makeFailureReporter(filePath, failures) {
+    return (error, cardName) => {
+        report('import-card', error, { filePath, cardName });
+        log('user').warn('Skipped MSE card', cardName, error);
+        failures.push({ cardName, error });
+    };
+}
+
 export async function importMseFile(filePath) {
+    const failures = [];
     const project = new activeGame.Project();
     progress.setStatus(L`Loading MSE set file`);
     const adapter = await MseFileAdapter.load(filePath);
@@ -126,9 +144,20 @@ export async function importMseFile(filePath) {
     progress.setStatus(L`Loading set info`);
     await importSetInfo(mseSet.set_info, project, adapter);
     progress.setStatus(L`Importing cards`);
-    const cardMap = await importCards(mseSet, adapter);
-    addCardsToProject(cardMap, project);
-    return project;
+    const reportFailure = makeFailureReporter(filePath, failures);
+    const cardMap = await importCards(mseSet, adapter, reportFailure);
+    addCardsToProject(cardMap, project, reportFailure);
+    if (mseSet.card.length && !project.cards.length)
+        throw new Error(L`No cards could be imported. See the error report for details.`);
+    return [project, failures];
+}
+
+function showPartialStatus(project, failures) {
+    progress.setTitle(L`Import partially complete`);
+    const numCards = project.cards.length;
+    const numFails = failures.length;
+    progress.setStatus(L`Imported ${numCards} cards; ${numFails} cards failed.`);
+    progress.setOperation(L`Skipped entries are listed in the error report.`);
 }
 
 registerAction('import-mse-set', async () => {
@@ -139,10 +168,11 @@ registerAction('import-mse-set', async () => {
     openModal('cm-progress-modal', { title: L`Importing...` });
     try {
         await withNewContext(async () => {
-            const project = await importMseFile(filePath);
+            const [project, failures] = await importMseFile(filePath);
             progress.setTitle(L`Import complete!`);
             progress.complete();
             setActiveProject(project);
+            if (failures.length) showPartialStatus(project, failures);
         });
     } catch (error) {
         progress.onError(error);
