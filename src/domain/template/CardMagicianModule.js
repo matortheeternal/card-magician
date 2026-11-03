@@ -13,155 +13,6 @@ import { escapeHTML, esc } from '../../shared/htmlUtils.js';
 import { watch } from '../../shared/reactivity.js';
 
 /**
- * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
- * Example: "blob:http://localhost/abc123"
- * @typedef {string} BlobURL
- */
-
-/**
- * A color expressed as a hex string.
- * Accepts #RGB, #RRGGBB, or #RRGGBBAA formats.
- * @typedef {string} HexColor
- */
-
-/**
- * Blend modes supported by the blending engine.
- *
- * @typedef {(
- *   "multiply" |
- *   "screen" |
- *   "overlay" |
- *   "softLight" |
- *   "hardLight" |
- *   "colorDodge" |
- *   "colorBurn" |
- *   "linearBurn" |
- *   "difference" |
- *   "exclusion" |
- *   "symmetricOverlay"
- * )} BlendMode
- */
-
-/**
- * A single option in a select-type field.
- *
- * @typedef {object} FieldOption
- * @property {string} id              - Option identifier.
- * @property {string} name            - Human-friendly label.
- * @property {BlobURL} [imageUrl]     - Optional icon to render next to the option.
- * @property {Array<FieldOption>} [items]
- *   Nested submenu items (for group selects).
- * @property {boolean} [separator]
- *   If true, renders a <sl-divider> instead of an option.
- */
-
-/**
- * Value stored in the card model for image-type fields.
- *
- * @typedef {object} ImageFieldValue
- * @property {BlobURL|null} image
- * @property {number} [xOffset]
- * @property {number} [yOffset]
- * @property {number} [width]
- * @property {number} [height]
- */
-
-/**
- * Base properties shared by all field definitions.
- *
- * @typedef {object} BaseField
- * @property {string} id                 - Key under which this field’s value
- *                                         is stored on the card.
- * @property {string} label              - User-facing label.
- * @property {string} [group]            - Optional grouping (creates nested UI groups).
- * @property {string} [default]          - Default value used when card is created.
- */
-
-/**
- * Single-line text input field.
- *
- * @typedef {BaseField & {
- *    type: "input",
- *    inputType?: string
- * }} InputField
- */
-
-/**
- * Multiline text area field.
- *
- * @typedef {BaseField & {
- *    type: "textarea"
- * }} TextareaField
- */
-
-/**
- * Image selection field (with crop parameters, etc.)
- *
- * @typedef {BaseField & {
- *    type: "image",
- *    default?: ImageFieldValue
- * }} ImageField
- */
-
-/**
- * Dropdown select field with nested options.
- *
- * @typedef {BaseField & {
- *    type: "select",
- *    options: Array<FieldOption>,
- *    default: string
- * }} SelectField
- */
-
-/**
- * @typedef {InputField | TextareaField | SelectField | ImageField} Field
- */
-
-/**
- * Reactive card face data model.
- *
- * NOTE:
- *   CardFace is intentionally extensible. Modules may attach arbitrary
- *   additional reactive properties to it, which become visible to other
- *   modules. Only core properties are documented here.
- *
- *
- * @typedef {object} CardFace
- *
- * @property {string} id                             - Face key. e.g. 'front'
- * @property {DOMBuilder} dom
- * @property {DOMBuilder} form
- * @property {Array<Field>} fields
- * @property {Array<CardFace>} subCards              - Nested subcards.
- *
- * @property {function():Promise<object>} save       @internal @private
- * @property {function(object):Promise<void>} load   @internal @private
- *
- * @property {function():CardFace|null} parent       - Resolve parent.
- * @property {function():Array<CardMagicianModule>} modules - Active modules.
- */
-
-/**
- * Options passed to requestRender().
- *
- * @typedef {object} RequestRenderOptions
- *
- * @property {string} [render]
- *    Optional name of the specific render method to invoke.
- *    If omitted, the system will update all `<module-container>` instances
- *    associated with this module.
- *
- * @example
- * // Update containers that have a specific render key:
- * this.requestRender({ render: "renderFaceSymbol" });
- *
- * @example
- * // Default: update all containers associated with this module
- * this.requestRender();
- */
-
-
-/**
  * Base class for Card Magician modules which provides utility
  * functions for loading assets, files, fonts and performing
  * graphical operations.
@@ -197,7 +48,7 @@ export default class CardMagicianModule {
      * have changed via changed().
      *
      * @param {object} obj - The object to watch for changes.
-     * @param {string|array|null} keysArg - The key or keys to watch. Passing null
+     * @param {string|string[]|null} keysArg - The key or keys to watch. Passing null
      * or empty string indicates to watch all properties.
      * @param {function} callback - The callback function to execute when a change
      * is reported.
@@ -207,7 +58,7 @@ export default class CardMagicianModule {
         const unwatch = watch(obj, keysArg, callback);
         this.#watchers.push(unwatch);
         return {
-            remove() {
+            remove: () => {
                 const index = this.#watchers.indexOf(unwatch);
                 this.#watchers.splice(index, 1);
                 unwatch();
@@ -282,7 +133,6 @@ export default class CardMagicianModule {
         return combineBlendOp(imgA, imgB, mode);
     }
 
-
     /**
      * Blends two images using a linear gradient between two points.
      *
@@ -347,6 +197,11 @@ export default class CardMagicianModule {
         return DOMPurify.sanitize(str, options);
     }
 
+    /**
+     * Escapes HTML markup in a string.
+     * @param {string} str
+     * @returns {string}
+     */
     escapeHTML(str) {
         return escapeHTML(str);
     }
@@ -469,3 +324,151 @@ export default class CardMagicianModule {
 }
 
 window.CardMagicianModule = CardMagicianModule;
+
+/**
+ * A blob URL pointing to an in-memory file, produced by URL.createObjectURL().
+ * Example: "blob:http://localhost/abc123"
+ * @typedef {string} BlobURL
+ */
+
+/**
+ * A color expressed as a hex string.
+ * Accepts #RGB, #RRGGBB, or #RRGGBBAA formats.
+ * @typedef {string} HexColor
+ */
+
+/**
+ * Blend modes supported by the blending engine.
+ *
+ * @typedef {(
+ *   "multiply" |
+ *   "screen" |
+ *   "overlay" |
+ *   "softLight" |
+ *   "hardLight" |
+ *   "colorDodge" |
+ *   "colorBurn" |
+ *   "linearBurn" |
+ *   "difference" |
+ *   "exclusion" |
+ *   "symmetricOverlay"
+ * )} BlendMode
+ */
+
+/**
+ * A single option in a select-type field.
+ *
+ * @typedef {object} FieldOption
+ * @property {string} id              - Option identifier.
+ * @property {string} name            - Human-friendly label.
+ * @property {BlobURL} [imageUrl]     - Optional icon to render next to the option.
+ * @property {Array<FieldOption>} [items]
+ *   Nested submenu items (for group selects).
+ * @property {boolean} [separator]
+ *   If true, renders a <sl-divider> instead of an option.
+ */
+
+/**
+ * Value stored in the card model for image-type fields.
+ *
+ * @typedef {object} ImageFieldValue
+ * @property {BlobURL|null} image
+ * @property {number} [xOffset]
+ * @property {number} [yOffset]
+ * @property {number} [width]
+ * @property {number} [height]
+ */
+
+/**
+ * Base properties shared by all field definitions.
+ *
+ * @typedef {object} BaseField
+ * @property {string} id                 - Key under which this field’s value
+ *                                         is stored on the card.
+ * @property {string} label              - User-facing label.
+ * @property {string} [group]            - Optional grouping (creates nested UI groups).
+ * @property {string} [default]          - Default value used when card is created.
+ */
+
+/**
+ * Single-line text input field.
+ *
+ * @typedef {BaseField & {
+ *    type: "input",
+ *    inputType?: string
+ * }} InputField
+ */
+
+/**
+ * Multiline text area field.
+ *
+ * @typedef {BaseField & {
+ *    type: "textarea"
+ * }} TextareaField
+ */
+
+/**
+ * Image selection field (with crop parameters, etc.)
+ *
+ * @typedef {Omit<BaseField, "default"> & {
+ *    type: "image",
+ *    default?: ImageFieldValue
+ * }} ImageField
+ */
+
+/**
+ * Dropdown select field with nested options.
+ *
+ * @typedef {BaseField & {
+ *    type: "select",
+ *    options: Array<FieldOption>,
+ *    default: string
+ * }} SelectField
+ */
+
+/**
+ * @typedef {InputField | TextareaField | SelectField | ImageField} Field
+ */
+
+/**
+ * Reactive card face data model.
+ *
+ * NOTE:
+ *   CardFace is intentionally extensible. Modules may attach arbitrary
+ *   additional reactive properties to it, which become visible to other
+ *   modules. Only core properties are documented here.
+ *
+ *
+ * @typedef {object} CardFace
+ *
+ * @property {string} id                             - Face key. e.g. 'front'
+ * @property {DOMBuilder} dom
+ * @property {DOMBuilder} form
+ * @property {Array<Field>} fields
+ * @property {Array<CardFace>} subCards              - Nested subcards.
+ *
+ * @property {function():Promise<object>} save - Saves the face.
+ * @property {function(object):Promise<void>} load - Loads face data.
+ *
+ * @property {function():CardFace|null} parent       - Resolve parent.
+ * @property {function():Array<CardMagicianModule>} modules - Active modules.
+ */
+
+/**
+ * Options passed to requestRender().
+ *
+ * @typedef {object} RequestRenderOptions
+ *
+ * @property {string} [render]
+ *    Optional name of the specific render method to invoke.
+ *    If omitted, the system will update all `<module-container>` instances
+ *    associated with this module.
+ *
+ * @example
+ * // Update containers that have a specific render key:
+ * this.requestRender({ render: "renderFaceSymbol" });
+ *
+ * @example
+ * // Default: update all containers associated with this module
+ * this.requestRender();
+ */

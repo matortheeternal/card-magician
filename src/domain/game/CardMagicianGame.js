@@ -18,14 +18,17 @@ const gamePlatform = { ...platform, watchFile };
 
 export default class CardMagicianGame {
     /**
-     * @param {object} metadata - Metadata loaded and parsed from game.json.
+     * @param {GameMetadata} metadata - Metadata loaded and parsed from game.json.
      */
     constructor(metadata) {
         this.gamePath = metadata.path;
         this.id = metadata.id;
         this.version = metadata.version;
+        /** @type {string} */
         this.name = this.gamePath.split('/').pop();
+        /** @type {CardMagicianCardConstructor} */
         this.Card = window.CardMagicianCard;
+        /** @type {CardMagicianProjectConstructor} */
         this.Project = CardMagicianProject;
     }
 
@@ -100,7 +103,7 @@ export default class CardMagicianGame {
      * loading and saving set files.
      *
      * @param {function(SerializerAdapter)} factory
-     * @param {boolean=false} asBinaryAdapter
+     * @param {boolean} [asBinaryAdapter=false]
      * @returns {object}
      */
     addSerializerAdapter(factory, asBinaryAdapter = false) {

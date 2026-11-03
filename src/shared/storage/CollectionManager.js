@@ -12,20 +12,6 @@ const report = createReporter({
 });
 
 /**
- * @typedef {object} CollectionOptions
- * @property {function(): string[]} path - Returns YAML file path segments;
- *   evaluated for each load or save.
- * @property {function(any, any): boolean} matches - Tests a stored item against
- *   a lookup value, in that argument order.
- * @property {function(any): any} create - Builds an item from a lookup value.
- * @property {function(number): any} [next] - Generates a candidate lookup value
- *   from a one-based attempt count. Required by getNextValue() and when create()
- *   receives null or undefined. Must eventually produce a value with no match.
- * @property {number} [saveDelay=3000] - Debounce delay in milliseconds.
- *   Falsy values use the default delay.
- */
-
-/**
  * Manages an in-memory array backed by a YAML file with debounced writes.
  * ImageFieldValue images are embedded in the YAML as data URLs.
  * Call load() before using the collection. Direct array or item edits require
@@ -212,3 +198,17 @@ export default class CollectionManager {
             await this.save.flush();
     }
 }
+
+/**
+ * @typedef {object} CollectionOptions
+ * @property {function(): string[]} path - Returns YAML file path segments;
+ *   evaluated for each load or save.
+ * @property {function(any, any): boolean} matches - Tests a stored item against
+ *   a lookup value, in that argument order.
+ * @property {function(any): any} create - Builds an item from a lookup value.
+ * @property {function(number): any} [next] - Generates a candidate lookup value
+ *   from a one-based attempt count. Required by getNextValue() and when create()
+ *   receives null or undefined. Must eventually produce a value with no match.
+ * @property {number} [saveDelay=3000] - Debounce delay in milliseconds.
+ *   Falsy values use the default delay.
+ */

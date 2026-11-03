@@ -21,6 +21,11 @@ export function esc(str) {
     return String(str ?? '').replace(/"/g, '&quot;');
 }
 
+/**
+ * Escapes HTML markup in a string.
+ * @param {string} str
+ * @returns {string}
+ */
 export function escapeHTML(str) {
     return str
         .replace(/&/g, '&amp;')

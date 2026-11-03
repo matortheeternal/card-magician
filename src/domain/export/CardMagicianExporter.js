@@ -1,17 +1,13 @@
 import { loadTextFile } from '../../shared/fsUtils.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
-/**
- * @typedef OutputItem
- *
- * @property {string} filePath
- *  Relative file path to write the artifact to.
- * @property {ExportArtifact} artifact
- *  Artifact object to write to disk.
- */
-
 export default class CardMagicianExporter {
+    /**
+     * @param {ExporterConfig} config - Exporter option values.
+     * @param {ExporterMetadata} metadata - Exporter identity and location.
+     */
     constructor(config, metadata) {
+        /** @type {ExporterConfig} */
         this.config = Object.assign(this.defaultConfig, config || {});
         this.metadata = metadata;
     }
@@ -120,3 +116,12 @@ export default class CardMagicianExporter {
 }
 
 window.CardMagicianExporter = CardMagicianExporter;
+
+/**
+ * @typedef OutputItem
+ *
+ * @property {string} filePath
+ *  Relative file path to write the artifact to.
+ * @property {ExportArtifact} artifact
+ *  Artifact object to write to disk.
+ */
