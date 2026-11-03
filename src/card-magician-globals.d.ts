@@ -1,0 +1,41 @@
+declare global {
+    type Field = import('./card-magician.js').Field;
+    type ExportArtifact = import('./card-magician.js').ExportArtifact;
+    type CollectionOptions = import('./card-magician.js').CollectionOptions;
+    type CollectionManager = import('./card-magician.js').CollectionManager;
+    type GameMetadata = import('./card-magician.js').GameMetadata;
+    type CardMagicianCardConstructor = import('./card-magician.js').CardMagicianCardConstructor;
+    type CardMagicianProjectConstructor = import('./card-magician.js').CardMagicianProjectConstructor;
+    type ExporterConfig = import('./card-magician.js').ExporterConfig;
+    type ExporterMetadata = import('./card-magician.js').ExporterMetadata;
+    type CardMagicianCard = import('./card-magician.js').CardMagicianCard;
+    type card = import('./card-magician.js').card;
+    type Modal = import('./card-magician.js').Modal;
+    type CardMagicianSettings = import('./card-magician.js').CardMagicianSettings;
+    type Serializer = import('./card-magician.js').Serializer;
+    type SerializerAdapter = import('./card-magician.js').SerializerAdapter;
+    type MountedDirectory = import('./card-magician.js').MountedDirectory;
+    type ImageOp = import('./card-magician.js').ImageOp;
+    type DOMBuilder = import('./card-magician.js').DOMBuilder;
+    type Column = import('./card-magician.js').Column;
+    type ReactiveComponent = import('./card-magician.js').ReactiveComponent;
+    var appEnvironment: import('./card-magician.js').AppEnvironment;
+    const activeGame: import('./card-magician.js').CardMagicianGame;
+    const activeProject: import('./card-magician.js').CardMagicianProject;
+    const activeEditorCard: import('./card-magician.js').EditorCard | null;
+    const selectedProjectCard: import('./card-magician.js').CardMagicianCard | null;
+    const localize: import('./card-magician.js').Localize;
+    const log: import('./card-magician.js').Log;
+    const createReporter: import('./card-magician.js').CreateReporter;
+    const changed: import('./card-magician.js').Changed;
+    const dialog: import('./card-magician.js').DialogService;
+    const CardMagicianCard: typeof import('./card-magician.js').CardMagicianCard;
+    const ReactiveComponent: typeof import('./card-magician.js').ReactiveComponent;
+    const Modal: typeof import('./card-magician.js').Modal;
+    const CardMagicianGame: typeof import('./card-magician.js').CardMagicianGame;
+    const CardMagicianProject: typeof import('./card-magician.js').CardMagicianProject;
+    const CardMagicianModule: typeof import('./card-magician.js').CardMagicianModule;
+    const CardMagicianExporter: typeof import('./card-magician.js').CardMagicianExporter;
+}
+
+export {};
