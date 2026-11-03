@@ -2,6 +2,17 @@ import { loadTextFile } from '../../shared/fsUtils.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 export default class CardMagicianExporter {
+
+    /**
+     * Returns the option field definitions for this exporter.
+     *
+     * @abstract
+     * @returns {Array<Field>}
+     */
+    static get options() {
+        return [];
+    }
+
     /**
      * @param {ExporterConfig} config - Exporter option values.
      * @param {ExporterMetadata} metadata - Exporter identity and location.
@@ -68,17 +79,6 @@ export default class CardMagicianExporter {
     }
 
     /**
-     * Returns the option field definitions for this exporter.
-     *
-     * @abstract
-     * @returns {Array<Field>}
-     */
-    get options() {
-        return [];
-    }
-
-    /**
-     * @abstract
      * Invoked once before transforms and manifest access.
      *
      * @returns {Promise<void>}
@@ -86,7 +86,6 @@ export default class CardMagicianExporter {
     async prepare() {}
 
     /**
-     * @abstract
      * Invoked with each artifact output from exporters this exporter depends on.
      *
      * @template {ExportArtifact} T
@@ -96,7 +95,6 @@ export default class CardMagicianExporter {
     async *transform(artifact) {}
 
     /**
-     * @abstract
      * Asynchronously generates outputs to write to disk or pass to later exporters.
      *
      * @yields {Promise<OutputItem>}
