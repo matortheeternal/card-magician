@@ -2,18 +2,6 @@
 
 Card Magician is a cross-platform application for authoring custom playing cards. It currently supports the creation of custom Magic: the Gathering cards, with support for other games planned.
 
-## development
-
-Use Node.js 24, then run `npm ci` and `npm start`. The application uses Electron,
-with a sandboxed renderer and a small native platform adapter. `npm start` runs the
-rebuild server; `npm run start:app` opens the application without that server.
-
-Run `npm test`, `npm run test:native`, and `npm run smoke` for the test suites.
-
-Use `npm run package` for an unpacked application or `npm run dist` for installers
-for the current platform. Explicit targets are `dist:linux`, `dist:win`, and
-`dist:mac`. See [packaging](tasks/electron/package.md) for the distribution layout.
-
 ## features
 
 Card Magician currently offers the following features:
