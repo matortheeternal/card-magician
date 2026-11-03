@@ -28,6 +28,7 @@
   "scripts": {
     "prebuild": "node tasks/installVendor.js",
     "build": "node tasks/build.js",
+    "build:types": "node tasks/buildTypes.js",
     "start": "npm run build && concurrently -k -n dev,app \"npm:dev\" \"electron . --development\"",
     "start:app": "npm run build && electron .",
     "dev": "node tasks/serve.js",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@electron/asar": "3.4.1",
+    "@microsoft/api-extractor": "^7.60.1",
     "@stylistic/eslint-plugin": "^5.6.1",
     "@types/jasmine": "^6.0.0",
     "chokidar": "^5.0.0",
@@ -69,6 +71,7 @@
     "eslint": "^9.39.2",
     "globals": "^16.5.0",
     "jasmine-core": "7.0.1",
+    "typescript": "^7.0.2",
     "ws": "^8.19.0"
   },
   "main": "electron/main.js"
