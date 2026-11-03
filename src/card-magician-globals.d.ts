@@ -1,6 +1,7 @@
 declare global {
     type Field = import('./card-magician.js').Field;
     type ExportArtifact = import('./card-magician.js').ExportArtifact;
+    type OutputItem = import('./card-magician.js').OutputItem;
     type CollectionOptions = import('./card-magician.js').CollectionOptions;
     type CollectionManager = import('./card-magician.js').CollectionManager;
     type GameMetadata = import('./card-magician.js').GameMetadata;

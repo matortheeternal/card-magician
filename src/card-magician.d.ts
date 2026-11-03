@@ -3,6 +3,7 @@ import CardMagicianProjectValue from './domain/projects/CardMagicianProject.js';
 
 export type { Field } from './domain/template/CardMagicianModule.js';
 export type { default as ExportArtifact } from './domain/export/ExportArtifact.js';
+export type { OutputItem } from './domain/export/CardMagicianExporter.js';
 export type { CollectionOptions } from './shared/storage/CollectionManager.js';
 export type { default as CollectionManager } from './shared/storage/CollectionManager.js';
 export type GameMetadata = { path: string; id: string; version: string };

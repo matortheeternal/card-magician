@@ -16,6 +16,14 @@ class Exporter extends CardMagicianExporter {}
 class Widget extends ReactiveComponent {}
 class ExtensionModal extends Modal {}
 
+/**
+ * @param {ExportArtifact} artifact
+ * @returns {OutputItem}
+ */
+function createOutputItem(artifact) {
+    return { filePath: 'cards/example.png', artifact };
+}
+
 const game = new Game({ id: 'example', version: '1.0.0', path: '/games/example' });
 /** @type {string[]} */
 const identity = [game.id, game.version, game.name, game.resolvePath('assets')];
@@ -91,5 +99,5 @@ export {
     Game, Project, Module, Exporter, identity, card, project, imageField, inputField,
     invalidImage, invalidInput, invalidId, invalidEscaped,
     Widget, ExtensionModal, globalCard, activeAsset, localized, alertResult,
-    confirmation, promptResult, dialogIsOpen, invalidPrompt
+    confirmation, promptResult, dialogIsOpen, invalidPrompt, createOutputItem
 };
