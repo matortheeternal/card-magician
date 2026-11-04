@@ -26,3 +26,4 @@ cache/
 /extensions/games/magic/main.js.map
 /extensions/games/magic/main.css
 /extensions/games/magic/main.css.map
+*.cmpkg

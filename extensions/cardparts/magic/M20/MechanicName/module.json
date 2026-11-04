@@ -1,5 +1,5 @@
 {
-  "id": "magic/M15/Name",
-  "description": "Defines the card name field and its corresponding display for M15 Magic: The Gathering Card templates.",
+  "id": "magic/M15/MechanicName",
+  "description": "Defines the card name field and its corresponding display for M20 mechanic card templates.",
   "version": "0.0"
 }
