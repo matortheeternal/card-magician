@@ -1,5 +1,10 @@
 {
   "id": "magic/M20/EmblemArt",
+  "gameId": "magic",
   "description": "Defines the emblem art field and its corresponding display for M20 Magic: The Gathering Card templates.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Art": "^0.1"
+  }
 }

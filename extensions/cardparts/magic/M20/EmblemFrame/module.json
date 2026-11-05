@@ -1,5 +1,10 @@
 {
   "id": "magic/M20/EmblemFrame",
+  "gameId": "magic",
   "description": "Defines the frames for M20 emblem cards.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/TokenFrame": "^0.1"
+  }
 }

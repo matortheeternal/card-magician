@@ -1,8 +1,10 @@
 {
   "id": "magic/M20/MechanicEmblem",
+  "gameId": "magic",
   "label": "M20 Mechanic Emblem",
   "description": "This template is for the Mechanic Emblem Frame.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M20/SpecialEmblemFrame",

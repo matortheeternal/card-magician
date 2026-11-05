@@ -1,5 +1,10 @@
 {
-  "id": "magic/M15/MechanicText",
+  "id": "magic/M20/MechanicText",
+  "gameId": "magic",
   "description": "Defines and renders the mechanics card text field.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Text": "^0.1"
+  }
 }

@@ -1,5 +1,7 @@
 {
   "id": "magic/M15/Text",
+  "gameId": "magic",
   "description": "Defines the card rules text and flavor text fields and their corresponding display.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1"
 }

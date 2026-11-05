@@ -1,8 +1,10 @@
 {
   "id": "magic/M15/Adventure",
+  "gameId": "magic",
   "label": "M15 Adventure",
   "description": "Template for Magic 2015 adventure cards.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/AdventureFrame",

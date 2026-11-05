@@ -1,8 +1,10 @@
 {
   "id": "magic/M15/Token",
+  "gameId": "magic",
   "label": "M15 Token",
   "description": "This template is for the Token Frame.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/TokenFrame",

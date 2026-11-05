@@ -1,5 +1,10 @@
 {
-  "id": "magic/M15/MechanicName",
+  "id": "magic/M20/MechanicName",
+  "gameId": "magic",
   "description": "Defines the card name field and its corresponding display for M20 mechanic card templates.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Name": "^0.1"
+  }
 }

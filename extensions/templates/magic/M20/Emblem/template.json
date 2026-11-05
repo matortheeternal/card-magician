@@ -1,8 +1,10 @@
 {
   "id": "magic/M20/Emblem",
+  "gameId": "magic",
   "label": "M20 Emblem",
   "description": "This template is for the M20 Emblem Frame.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M20/EmblemFrame",

@@ -1,5 +1,7 @@
 {
   "id": "magic/M15/Flag",
+  "gameId": "magic",
   "description": "Defines the M15 double-face-card flag.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1"
 }

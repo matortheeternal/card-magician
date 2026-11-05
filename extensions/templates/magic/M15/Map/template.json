@@ -1,8 +1,10 @@
 {
   "id": "magic/M15/Map",
+  "gameId": "magic",
   "label": "Ixalan Map",
   "description": "This template is for the Ixalan Map Frame.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/MapFrame",

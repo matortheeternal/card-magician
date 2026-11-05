@@ -3,8 +3,9 @@
   "label": "Card Images",
   "folder": "images",
   "description": "Exports the set's cards to individual image files.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "dependencies": {
-    "CardSheetExporter": "^0.0"
+    "CardSheetExporter": "^0.1"
   }
 }

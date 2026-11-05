@@ -1,5 +1,10 @@
 {
   "id": "magic/M15/SplitArt",
+  "gameId": "magic",
   "description": "Renders card art for M15 split cards.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Art": "^0.1"
+  }
 }

@@ -1,5 +1,10 @@
 {
   "id": "magic/M15/ColorIndicator",
+  "gameId": "magic",
   "description": "Defines the card color identity field and its corresponding display for Magic 2015 templates.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Color": "^0.1"
+  }
 }

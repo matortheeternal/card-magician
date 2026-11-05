@@ -1,8 +1,10 @@
 {
   "id": "magic/M15/Main",
+  "gameId": "magic",
   "label": "Magic 2015",
   "description": "Template for representing normal Magic 2015 cards.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/Frame",

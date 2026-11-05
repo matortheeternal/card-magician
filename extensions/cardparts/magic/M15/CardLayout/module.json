@@ -1,5 +1,7 @@
 {
   "id": "magic/M15/CardLayout",
+  "gameId": "magic",
   "description": "Supplies M15 card layout CSS rules.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1"
 }

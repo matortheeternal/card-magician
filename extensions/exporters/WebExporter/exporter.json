@@ -3,5 +3,6 @@
   "label": "Web Exporter",
   "folder": "web",
   "description": "Exports the set as a JSON file for use by cardplace or another website.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1"
 }

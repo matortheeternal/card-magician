@@ -1,5 +1,10 @@
 {
   "id": "magic/M15/LandFrame",
+  "gameId": "magic",
   "description": "Defines the frames for M15 land cards.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Frame": "^0.1"
+  }
 }

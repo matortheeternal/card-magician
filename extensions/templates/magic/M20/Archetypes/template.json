@@ -1,8 +1,10 @@
 {
   "id": "magic/M20/Archetypes",
+  "gameId": "magic",
   "label": "Archetypes",
   "description": "This template is for the M20 Archetypes Frame.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "rarity": "ad",
   "card": [
     "magic/M15/CardLayout",

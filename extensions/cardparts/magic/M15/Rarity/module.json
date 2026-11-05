@@ -1,5 +1,7 @@
 {
   "id": "magic/M15/Rarity",
+  "gameId": "magic",
   "description": "Defines the rarity field and the corresponding set icon.",
-  "version": "0.0"
+  "author": "Mator",
+  "version": "0.1"
 }

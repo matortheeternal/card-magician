@@ -1,8 +1,10 @@
 {
   "id": "magic/M15/Saga",
+  "gameId": "magic",
   "label": "Saga",
   "description": "This template is for M15 Sagas.",
-  "version": "0.0",
+  "author": "Mator",
+  "version": "0.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/SagaFrame",
