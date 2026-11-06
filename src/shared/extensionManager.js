@@ -7,7 +7,6 @@ export function getExtensionLocations() {
     ];
 }
 
-// Each extension belongs to one location; files are never merged between locations.
 export async function findExtension(relativePath) {
     for (const location of getExtensionLocations()) {
         const directory = location.child(relativePath);

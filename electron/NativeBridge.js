@@ -7,6 +7,13 @@ import FileSystem from './FileSystem.js';
 import Storage from './Storage.js';
 import { origin } from './ResourceServer.js';
 
+const fileOperations = [
+    'readDirectory', 'readFile', 'writeFile', 'readBinaryFile', 'writeBinaryFile',
+    'getStats', 'getAbsolutePath', 'getJoinedPath', 'getPathParts',
+    'checkFileExists', 'checkFolderExists',
+    'moveFile', 'copyFile', 'createDirectory', 'rmrf'
+];
+
 export default class NativeBridge {
     constructor(window, environment, resources, lifecycle) {
         Object.assign(this, { window, environment, resources, lifecycle });
@@ -24,13 +31,14 @@ export default class NativeBridge {
     trusted(event, bootstrap = false) {
         if (event.sender !== this.window.webContents
             || event.senderFrame !== event.sender.mainFrame) return false;
-        // Preload metadata is requested before the document URL is committed.
         return bootstrap || event.senderFrame.url.startsWith(`${origin}/`);
     }
 
     start() {
         ipcMain.on('card-magician:metadata', event => {
-            event.returnValue = this.trusted(event, true) ? this.environment : null;
+            event.returnValue = this.trusted(event, true)
+                ? this.environment
+                : null;
         });
         ipcMain.handle('card-magician:native', (event, operation, args) => {
             return this.handle(event, operation, args);
@@ -41,9 +49,8 @@ export default class NativeBridge {
         const valid = this.trusted(event) && Object.hasOwn(this.operations, operation)
             && Array.isArray(args);
         if (!valid) {
-            return { error: {
-                message: 'Invalid native request', code: 'ACCESS_DENIED'
-            } };
+            const error = { message: 'Invalid native request', code: 'ACCESS_DENIED' };
+            return { error };
         }
         try {
             return { value: await this.operations[operation](...args) };
@@ -54,14 +61,9 @@ export default class NativeBridge {
 
     createOperations() {
         const operations = {};
-        const fileOperations = [
-            'readDirectory', 'readFile', 'writeFile', 'readBinaryFile', 'writeBinaryFile',
-            'getStats', 'getAbsolutePath', 'getJoinedPath', 'getPathParts',
-            'checkFileExists', 'checkFolderExists',
-            'moveFile', 'copyFile', 'createDirectory', 'rmrf'
-        ];
         for (const name of fileOperations)
             operations[name] = this.files[name].bind(this.files);
+
         Object.assign(operations, this.dialogOperations(), {
             debugLog: line => this.appendLog(line),
             getStoredData: key => this.storage.get(key),
@@ -84,6 +86,7 @@ export default class NativeBridge {
             readyToClose: () => this.lifecycle.readyToClose(),
             terminateApp: code => this.lifecycle.exit(code)
         });
+
         this.addTestOperations(operations);
         return operations;
     }
