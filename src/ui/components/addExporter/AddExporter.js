@@ -1,6 +1,7 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import {
     getExporter,
+    exporterRegistry,
     getLoadedExporters,
     loadExporter,
 } from '../../../domain/export/exporterManager.js';
@@ -19,6 +20,7 @@ export default class AddExporter extends ReactiveComponent {
             addExporter: event => this.addExporter(event),
         });
         this.watch('export', activeProject, 'export', () => this.render());
+        this.watch('exporters', exporterRegistry, 'exporters', () => this.render());
     }
 
     get availableExporters() {

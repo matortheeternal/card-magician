@@ -1,7 +1,8 @@
-import { getTemplate, getTemplates } from '../template/templateRegistry.js';
-import { executeAction } from '../../ui/systems/actionSystem.js';
+import { getTemplate } from '../template/templateRegistry.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
+
+const L = localize('card-form');
 
 async function buildSubcard(parent, key, template, modulesToLoad, subcardData) {
     const subcard = new SubcardModel(key, parent);
@@ -24,16 +25,8 @@ function buildSubcards(card, template, faceData) {
 
 const templateField = () => ({
     id: 'template',
-    type: 'select',
-    label: 'Template',
-    options: getTemplates().map(template => ({
-        id: template.id,
-        name: template.label
-    })),
-    onChange: async (model, newValue) => {
-        // TODO: flush save
-        await executeAction('change-template', model.id, newValue);
-    }
+    type: 'template',
+    label: L`Template`
 });
 
 function setupTemplate(face, faceData) {
