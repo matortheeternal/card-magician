@@ -50,19 +50,6 @@ export function push(card, event) {
     });
 }
 
-/** Apply and record an initial operation under the same lock as undo/redo. */
-export function execute(target, event) {
-    const Entry = findMatchingClass(event);
-    if (!Entry) return;
-    const entry = new Entry(target, event);
-    return withPreparedEntry(entry, async () => {
-        if (!await entry.replay()) return false;
-        future = [];
-        past.push(entry);
-        return true;
-    });
-}
-
 export async function undo() {
     await withLock(async () => {
         const previousAction = getPreviousAction();
