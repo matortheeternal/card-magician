@@ -25,6 +25,11 @@ linux:
     maintainer: Mator <mator@noreply.codeberg.org>
     syncDesktopName: true
     category: Graphics
+    desktop:
+        entry:
+            Name: Card Magician
+            Comment: Custom card creation and editing
+            Terminal: false
     target:
         - tar.gz
         - deb
@@ -36,6 +41,7 @@ win:
     icon: build/icons/icon.ico
     target: nsis
 nsis:
+    perMachine: true
     oneClick: false
     allowToChangeInstallationDirectory: true
     deleteAppDataOnUninstall: false
@@ -48,3 +54,14 @@ mac:
     extraFiles:
         - from: .tmp/package-plugins/extensions
           to: MacOS/extensions
+fileAssociations:
+    - ext: cmproj
+      name: Card Magician Project
+      rank: Owner
+      role: Editor
+      mimeType: application/x-card-magician-project
+    - ext: cmpkg
+      name: Card Magician Package
+      rank: Owner
+      role: Viewer
+      mimeType: application/x-card-magician-package
