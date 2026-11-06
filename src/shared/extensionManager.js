@@ -1,5 +1,16 @@
 import MountedDirectory from './MountedDirectory.js';
 
+const runtimeExtensions = new Map();
+const resolvedExtensions = new Set();
+
+export function registerRuntimeExtension(relativePath, directory) {
+    runtimeExtensions.set(relativePath, directory);
+}
+
+export function hasResolvedExtension(relativePath) {
+    return runtimeExtensions.has(relativePath) || resolvedExtensions.has(relativePath);
+}
+
 export function getExtensionLocations() {
     return [
         new MountedDirectory(appEnvironment.paths.userExtensions, '/user-extensions'),
@@ -9,9 +20,12 @@ export function getExtensionLocations() {
 
 // Each extension belongs to one location; files are never merged between locations.
 export async function findExtension(relativePath) {
+    if (runtimeExtensions.has(relativePath)) return runtimeExtensions.get(relativePath);
     for (const location of getExtensionLocations()) {
         const directory = location.child(relativePath);
-        if (await directory.existsDirectory()) return directory;
+        if (!await directory.existsDirectory()) continue;
+        resolvedExtensions.add(relativePath);
+        return directory;
     }
     throw new Error(`Extension not found: ${relativePath}`);
 }

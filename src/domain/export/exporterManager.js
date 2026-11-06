@@ -10,7 +10,8 @@ const report = createReporter({
     label: 'Export System'
 });
 
-const exporters = [];
+export const exporterRegistry = { exporters: [] };
+const exporters = exporterRegistry.exporters;
 
 const NO_EXPORTER_FORM_HTML = (
     `<div class="exporter-no-options">
@@ -19,17 +20,29 @@ const NO_EXPORTER_FORM_HTML = (
 );
 
 export async function loadExporters() {
-    const exporterFolders = await readExtensionDirectories('exporters');
-    for (const exporterFolder of exporterFolders) {
-        log('startup').debug('Reading exporter:', exporterFolder.url());
-        if (!await exporterFolder.exists('exporter.json')) continue;
-        const exporter = await exporterFolder.readJson('exporter.json');
-        exporter.path = exporterFolder.url().slice(1);
-        exporter.directory = exporterFolder;
-        exporter.form = await exporterFolder.exists('form.html')
-            ? await exporterFolder.readText('form.html') : NO_EXPORTER_FORM_HTML;
-        exporters.push(exporter);
-    }
+    const exporterFolders = await readExtensionDirectories(
+        'exporters', { recursive: true }
+    );
+    for (const folder of exporterFolders) await registerExporter(folder);
+}
+
+async function readExporterForm(folder) {
+    if (!await folder.exists('form.html')) return NO_EXPORTER_FORM_HTML;
+    return folder.readText('form.html');
+}
+
+export async function registerExporter(folder) {
+    if (!await folder.exists('exporter.json')) return null;
+    const exporter = await folder.readJson('exporter.json');
+    exporter.path = folder.url().slice(1);
+    exporter.directory = folder;
+    exporter.form = await readExporterForm(folder);
+    const index = exporters.findIndex(entry => entry.id === exporter.id);
+    if (index !== -1 && exporters[index].native) return exporters[index];
+    if (index !== -1) exporters.splice(index, 1);
+    exporters.push(exporter);
+    changed(exporterRegistry, 'exporters');
+    return exporter;
 }
 
 export function addNativeExporter(exporter) {
