@@ -24,7 +24,8 @@ describe('Extensions', () => {
     it('loads user extensions alongside distributed cardparts', () => {
         expect(activeGame.gamePath).toBe('user-extensions/games/magic');
         const face = activeEditorCard.front;
-        const templateField = face.fields.find(field => field.id === 'template');
+        const templateField = document.querySelector(
+            'cm-face-form[data-face-id="front"] cm-template-field');
         expect(templateField.options.find(option => option.id === 'magic/M15/Main').name)
             .toBe('User extension smoke template');
         const indicator = face.modules.find(module => {
