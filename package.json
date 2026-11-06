@@ -54,6 +54,7 @@
     "highlight.js": "^11.11.1",
     "notepack.io": "^3.0.1",
     "sanitize-filename": "^1.6.3",
+    "semver": "^7.8.6",
     "unzipit": "^2.0.3",
     "yaml": "^2.8.2"
   },
