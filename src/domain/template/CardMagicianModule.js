@@ -241,7 +241,6 @@ export default class CardMagicianModule {
      * Called once when the module is initialized.
      * Override to load options, assets, or perform setup.
      *
-     * @abstract
      * @param {CardFace} card
      * @returns {Promise<void>|void}
      */
@@ -284,7 +283,6 @@ export default class CardMagicianModule {
     /**
      * Returns CSS styles to be injected for this module.
      *
-     * @abstract
      * @returns {Promise<Array<string>>|Array<string>}
      */
     async styles() { return []; }
@@ -292,7 +290,6 @@ export default class CardMagicianModule {
     /**
      * Sets up reactive effects connecting card state to module behavior.
      *
-     * @abstract
      * @param {CardFace} card
      * @param {(deps:()=>any, fn:()=>Promise<void>|void)=>void} watch
      * @returns {void}
@@ -304,7 +301,6 @@ export default class CardMagicianModule {
      * Output is written into the associated <module-container> specified in the
      * active template.
      *
-     * @abstract
      * @param {CardFace} card
      * @returns {string|undefined}
      */
@@ -316,7 +312,6 @@ export default class CardMagicianModule {
      *
      * This method exists only for documentation and does nothing.
      *
-     * @abstract
      * @param {CardFace} card
      * @returns {string|undefined}
      */
