@@ -10,12 +10,14 @@ import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { openModal } from '../../modals/modalManager.js';
 import * as history from '../../systems/historySystem.js';
+import CardMembershipChange from '../../../domain/projects/CardMembershipChange.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
 
 const report = createReporter({ unit: 'CardList' });
 
 export default class CardList extends ReactiveComponent {
     selectionUpdate = Promise.resolve();
+    membershipUpdate = Promise.resolve();
 
     connectedCallback() {
         this.render();
@@ -23,6 +25,8 @@ export default class CardList extends ReactiveComponent {
     }
 
     bind() {
+        this.on('cm-cards-created', event => this.recordMembershipChange(event));
+        this.on('cm-cards-deleted', event => this.recordMembershipChange(event));
         this.addEventListener('row-selected', event => this.onRowSelected(event));
         onActiveProjectChanged(project => {
             this.updateCards(project);
@@ -101,14 +105,31 @@ export default class CardList extends ReactiveComponent {
         log('user').info('delete selected cards');
         const cards = this.listView.selection.map(row => row.original);
         if (!cards.length) return;
-        const event = new CustomEvent('cm-cards-deleted', { detail: { cards } });
-        return history.execute(activeProject, event);
+        return this.changeCards(cards, false);
     }
 
     createCards(cards) {
         if (!cards.length) return;
-        const event = new CustomEvent('cm-cards-created', { detail: { cards } });
-        return history.execute(activeProject, event);
+        return this.changeCards(cards, true);
+    }
+
+    recordMembershipChange(event) {
+        this.historyUpdate = history.push(event.detail.change.project, event);
+    }
+
+    changeCards(cards, creating) {
+        const change = new CardMembershipChange(activeProject, cards, creating);
+        const operation = this.membershipUpdate.then(() => this.applyCardChange(change));
+        this.membershipUpdate = operation.catch(() => {});
+        return operation;
+    }
+
+    async applyCardChange(change) {
+        await change.replay();
+        const eventName = change.creating ? 'cm-cards-created' : 'cm-cards-deleted';
+        this.emit(eventName, { cards: change.cards, change });
+        await this.historyUpdate;
+        return true;
     }
 
     async addCard() {
