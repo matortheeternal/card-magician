@@ -14,6 +14,10 @@ function parseSvg(svgText) {
     const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
     const svg = doc.documentElement;
     if (svg.localName !== 'svg' || doc.querySelector('parsererror')) return null;
+    if (!svg.namespaceURI) {
+        svg.setAttribute('xmlns', SVG_NS);
+        return parseSvg(new XMLSerializer().serializeToString(svg));
+    }
     return svg;
 }
 
@@ -56,11 +60,11 @@ function rarityPalette(preset) {
 }
 
 function replacePaint(element, paint, color) {
-    const value = element.style.getPropertyValue(paint)
+    const value = element.style?.getPropertyValue(paint)
         || element.getAttribute(paint);
     if (!value || value === 'none' || value === 'inherit') return;
     element.setAttribute(paint, color);
-    element.style.removeProperty(paint);
+    element.style?.removeProperty(paint);
 }
 
 function styleGeometry(svg, gradientId, outline) {

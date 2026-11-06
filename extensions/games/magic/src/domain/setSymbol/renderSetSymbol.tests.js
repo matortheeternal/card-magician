@@ -6,6 +6,26 @@ function parse(markup) {
 }
 
 describe('renderSetSymbol', () => {
+    it('renders SVG input without a namespace declaration', () => {
+        const svg = parse(renderSetSymbol(
+            '<svg viewBox="0 0 20 10"><path fill="black" d="M0 0h20v10H0z"/></svg>'
+        ));
+        expect(svg.querySelector('path').getAttribute('fill')).toContain('url(#');
+        expect(svg.getAttribute('width')).toBe('20');
+    });
+
+    it('renders symbols containing elements without SVG style support', () => {
+        const source = `<svg xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 10"><g xmlns="" fill="black" stroke="white">
+            <path d="M0 0h20v10H0z"/></g></svg>`;
+        const svg = parse(renderSetSymbol(source, 'rare'));
+        const group = svg.querySelector('g');
+        expect(group.style).toBeUndefined();
+        expect(group.getAttribute('fill')).toContain('url(#');
+        expect(group.getAttribute('stroke')).toBe('#000000');
+        expect(svg.getAttribute('width')).toBe('20');
+    });
+
     it('styles editor geometry without requiring classes or embedded stops', () => {
         const svg = parse(renderSetSymbol(wideSymbol, 'rare'));
         expect(svg.classList.contains('rarity-rare')).toBeTrue();
