@@ -1,5 +1,6 @@
 import * as history from './historySystem.js';
 import CardFieldChange from './history/CardFieldChange.js';
+import CardTemplateChange from './history/CardTemplateChange.js';
 import HistoryEntry from './history/HistoryEntry.js';
 import { executeAction } from './actionSystem.js';
 import {
@@ -1027,7 +1028,7 @@ describe('History', () => {
             expect({ ...field.value.crop }).toEqual({ ...before });
         });
 
-        // Retention regressions plus the remaining deferred template replay case.
+        // Retention and template replay regressions.
         it('restores an image loaded from disk after clear/save/reopen', async () => {
             await setCardFields({ artImage: art });
             await flushCard();
@@ -1066,15 +1067,71 @@ describe('History', () => {
             expect(card.front.name).toBe('Moved image');
             await expectImageFile(replacement);
         });
+        async function changeTemplate() {
+            const field = new FieldInteractor('template', { faceKey: 'front' });
+            const next = field.fieldElement.options
+                .find(option => option.id !== field.value).id;
+            await field.fieldElement.onChange({ target: { value: next } });
+            return next;
+        }
+
+        it('flushes unsaved edits before changing templates', async () => {
+            await setCardFields({ name: 'Pending template edit' });
+            const next = await changeTemplate();
+            expect(card.front.name).toBe('Pending template edit');
+            expect(card.front.template).toBe(next);
+            await history.undo();
+            expect(activeEditorCard.front.name).toBe('Pending template edit');
+            await history.undo();
+            expect(activeEditorCard.front.name).toBe('History card');
+        });
+
+        it('does not record unchanged template selections or discard redo', async () => {
+            const next = await changeTemplate();
+            await history.undo();
+            const field = new FieldInteractor('template', { faceKey: 'front' });
+            await field.fieldElement.onChange({ target: { value: field.value } });
+            await history.redo();
+            expect(activeEditorCard.front.template).toBe(next);
+        });
+
+        it('replays template history on its captured card after selection changes',
+           async () => {
+               const other = await createCard();
+               await executeAction('select-card', card);
+               await history.reset();
+               const before = card.front.template;
+               const next = await changeTemplate();
+               await executeAction('select-card', other);
+               const editor = activeEditorCard;
+               await history.undo();
+               expect(card.front.template).toBe(before);
+               expect(activeEditorCard).toBe(editor);
+               await history.redo();
+               expect(card.front.template).toBe(next);
+               expect(activeEditorCard).toBe(editor);
+           });
+
         it('rebuilds the face when replaying a template change', async () => {
-            pending('Deferred: template replay');
             const oldTemplate = activeEditorCard.front.template;
             const template = new FieldInteractor('template', { faceKey: 'front' });
-            const nextTemplate = template.fieldElement.field.options
+            const nextTemplate = template.fieldElement.options
                 .find(option => option.id !== oldTemplate).id;
-            await executeAction('change-template', 'front', nextTemplate);
+            const fieldChanged = jasmine.createSpy('fieldChanged');
+            document.querySelector('cm-card-form').addEventListener(
+                'cm-field-changed', fieldChanged, { once: true });
+            await template.fieldElement.onChange({ target: { value: nextTemplate } });
+            expect(fieldChanged).toHaveBeenCalledTimes(1);
+            const event = fieldChanged.calls.mostRecent().args[0];
+            expect(event.detail).toEqual({
+                faceId: 'front', fieldId: 'template',
+                oldValue: oldTemplate, newValue: nextTemplate
+            });
+            expect(CardTemplateChange.supports(event)).toBeTrue();
+            expect(CardTemplateChange.supports(new CustomEvent('cm-field-changed', {
+                detail: { ...event.detail, fieldId: 'name' }
+            }))).toBeFalse();
             await flushCard();
-            await record(card, 'template', oldTemplate, nextTemplate);
             const changedFace = activeEditorCard.front;
             await history.undo();
             expect(activeEditorCard.front).not.toBe(changedFace);
