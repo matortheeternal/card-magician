@@ -12,3 +12,6 @@ over distributed entries. Cardparts resolve their complete directory before load
 assets and supporting files stay in that directory rather than falling back to the
 installation. User directories use the same category layout as distributed extensions.
 Locales retain their manifest-based discovery through `locales.json`.
+
+For proposed runtime activation behavior, see
+[Extension hotloading](../domain/extensions/hotloading.md).

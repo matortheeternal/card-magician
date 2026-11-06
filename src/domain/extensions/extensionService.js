@@ -4,6 +4,7 @@ import {
 } from '../../shared/platformAdapter.js';
 import { getLoadedExporters } from '../export/exporterManager.js';
 import { registryService } from './registryService.js';
+import { activateExtension } from './activation/activationRegistry.js';
 import {
     normalizeVersion, selectRelease, dependencyRanges
 } from './extensionMetadata.js';
@@ -51,12 +52,29 @@ export async function planInstallation(row, release, installed, catalog) {
     return [...plan.values()];
 }
 
+async function activateInstalledExtension(row, wasInstalled, result) {
+    try {
+        if (await activateExtension(row, wasInstalled)) {
+            result.activated.push(row.id);
+            return;
+        }
+        result.reloadRequired.push(row.id);
+    } catch (error) {
+        result.failures.push({ id: row.id, message: error.message });
+    }
+}
+
 export async function applyInstallation(plan, progress = () => {}) {
+    const { extensions } = await installedExtensions();
+    const previous = new Set(extensions.map(extension => extension.id));
+    const result = { activated: [], reloadRequired: [], failures: [] };
     for (const { row, release } of plan) {
         progress(row.id);
         await installRegistryExtension(row.id, row.type, release.version);
+        await activateInstalledExtension(row, previous.has(row.id), result);
         progress(row.id, true);
     }
+    return result;
 }
 
 export function removalDependents(row, installed) {

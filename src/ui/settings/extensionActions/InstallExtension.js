@@ -27,6 +27,19 @@ export default class InstallExtension extends ExtensionAction {
     }
 
     async apply() {
-        await applyInstallation(this.plan, this.onProgress);
+        this.result = await applyInstallation(this.plan, this.onProgress);
+    }
+
+    get completion() {
+        const messages = [];
+        if (this.result.activated.length)
+            messages.push(L`New extensions are ready to use.`);
+        if (this.result.reloadRequired.length) {
+            const ids = this.result.reloadRequired.join(', ');
+            messages.push(L`Reload Card Magician to apply: ${ids}.`);
+        }
+        for (const { id, message } of this.result.failures)
+            messages.push(L`Installed ${id}, but activation failed: ${message}`);
+        return { message: messages.join('\n'), error: this.result.failures.length > 0 };
     }
 }

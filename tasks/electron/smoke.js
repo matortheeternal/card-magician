@@ -9,6 +9,7 @@ const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'))
 try {
     const suites = ['Startup', 'Persistence', 'History', 'Rendering',
                     'Card display', 'Dialogs', 'Extensions', 'Extensions browser',
+                    'Extension hotloading',
                     'Project files',
                     'Set Icon Editor settings', 'Magic project settings'];
     const requested = process.argv.find(arg => arg.startsWith('--suite='))
