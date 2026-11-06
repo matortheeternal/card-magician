@@ -16,5 +16,9 @@ contextBridge.exposeInMainWorld('cardMagicianNative', {
     onClose: callback => {
         ipcRenderer.removeAllListeners('card-magician:close');
         ipcRenderer.on('card-magician:close', () => callback());
-    }
+    },
+    onOpenFile: callback => {
+        ipcRenderer.on('open-file', (e, filePath) => callback(filePath));
+    },
+    ready: () => ipcRenderer.send('renderer-ready')
 });

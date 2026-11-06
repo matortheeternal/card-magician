@@ -2,6 +2,7 @@ import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
 import { getConfig } from '../game/gameManager.js';
 import {
+    onOpenFile,
     openSingleFileDialog,
     saveSingleFileDialog
 } from '../../shared/platformAdapter.js';
@@ -138,6 +139,10 @@ registerAction('change-template', async (faceId, newTemplateId) => {
 });
 
 registerAction('open-project', openProject);
+onOpenFile(filePath => {
+    if (!filePath.endsWith('.cmproj')) return;
+    void openProject(filePath);
+});
 
 registerAction('new-project', async () => {
     await newProject();

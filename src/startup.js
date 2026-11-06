@@ -3,9 +3,7 @@ import { setupExitHandling } from './lifecycle.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import imageCache from './domain/graphics/ImageCache.js';
-import {
-    createDirectory, mount
-} from './shared/platformAdapter.js';
+import { createDirectory, mount, ready } from './shared/platformAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
@@ -86,6 +84,7 @@ window.addEventListener('resize', applyDeviceLayout.debounce(200));
             await setupExitFixture();
         }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
+        ready();
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);

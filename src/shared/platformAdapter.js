@@ -1,6 +1,5 @@
 import safeStringify from './thePrinter.js';
 
-// The renderer has no Node access. All native work goes through the preload bridge.
 const native = window.cardMagicianNative;
 
 async function call(operation, ...args) {
@@ -86,3 +85,6 @@ export const reloadApp = () => window.location.reload();
 export const startFileWatch = (id, filename) => call('watchFile', id, filename);
 export const stopFileWatch = id => call('unwatchFile', id);
 export const onFileChange = callback => native.onFileChange(callback);
+
+export const ready = () => native.ready();
+export const onOpenFile = callback => native.onOpenFile(callback);

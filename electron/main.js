@@ -6,9 +6,12 @@ import ContentStore from './ContentStore.js';
 import NativeBridge from './NativeBridge.js';
 import ResourceServer, { origin, registerResourceScheme } from './ResourceServer.js';
 import WindowLifecycle from './WindowLifecycle.js';
+import FileOpener from './FileOpener.js';
 
 app.setName('Card Magician');
 const environment = createEnvironment();
+let mainWindow = null;
+let fileOpener = null;
 registerResourceScheme();
 
 function createWindow() {
@@ -54,15 +57,24 @@ async function start() {
     await prepareContent();
     const resources = new ResourceServer(path.join(root, 'resources'));
     resources.start();
-    const window = createWindow();
-    const lifecycle = new WindowLifecycle(window);
-    new NativeBridge(window, environment, resources, lifecycle).start();
-    configureNavigation(window);
-    await window.loadURL(`${origin}${getArgument('--url', '/')}`);
-    if (process.argv.includes('--devtools')) window.webContents.openDevTools();
+    mainWindow = createWindow();
+    fileOpener = new FileOpener(mainWindow);
+    const lifecycle = new WindowLifecycle(mainWindow);
+    const bridge = new NativeBridge(mainWindow, environment, resources, lifecycle);
+    bridge.start();
+    configureNavigation(mainWindow);
+    await mainWindow.loadURL(`${origin}${getArgument('--url', '/')}`);
+    if (process.argv.includes('--devtools'))
+        mainWindow.webContents.openDevTools();
+    if (process.platform !== 'darwin')
+        fileOpener.openFileArgs();
 }
 
-// Awaiting readiness at module scope prevents Electron from completing ESM startup.
+app.on('open-file', (event, filePath) => {
+    event.preventDefault();
+    fileOpener.open(filePath);
+});
+
 app.whenReady().then(start).catch(error => {
     console.error(error);
     dialog.showErrorBox('Unable to start Card Magician', error.message);
