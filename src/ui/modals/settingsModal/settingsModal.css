@@ -29,10 +29,13 @@ cm-settings-modal {
 
     .content-container {
         flex-grow: 1;
-        padding: var(--sl-spacing-large);
-        padding-top: var(--sl-spacing-small);
-        overflow-y: auto;
-        position: relative;
+
+        > * {
+            padding: var(--sl-spacing-large);
+            padding-top: var(--sl-spacing-small);
+            overflow-y: auto;
+            position: relative;
+        }
     }
 
     .no-content-prompt {

@@ -1,0 +1,36 @@
+cm-extension-details {
+    display: block;
+    padding: var(--sl-spacing-medium);
+    border: 1px solid var(--sl-panel-border-color);
+    border-radius: var(--sl-border-radius-medium);
+    overflow-wrap: anywhere;
+    flex: 1;
+    margin: var(--sl-spacing-medium);
+
+    h3 {
+        margin-top: 0;
+    }
+
+    .extension-id {
+        font-size: var(--sl-font-size-small);
+    }
+
+    dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--sl-spacing-small) var(--sl-spacing-medium);
+    }
+
+    dt {
+        color: var(--sl-color-neutral-600);
+    }
+    dd {
+        margin: 0;
+    }
+
+    .extension-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-small);
+    }
+}

@@ -1,0 +1,48 @@
+cm-extension-settings {
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    height: 100%;
+
+    .search-and-filters {
+        padding: var(--sl-spacing-medium);
+    }
+
+    .extension-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: var(--sl-spacing-medium);
+
+        .extension-search {
+            flex: 1 1 15rem;
+        }
+
+        .extension-type {
+            flex: 0 1 10rem;
+        }
+
+        sl-switch {
+            align-self: center;
+            padding-top: 1.5rem;
+        }
+    }
+
+    .extension-browser {
+        display: flex;
+        min-height: 0;
+        flex: 1;
+        border-top: 1px solid var(--sl-input-border-color);
+    }
+
+    .extension-warning {
+        padding: var(--sl-spacing-small);
+        border-left: 3px solid var(--sl-color-warning-500);
+    }
+}
+
+@media (max-width: 700px) {
+    cm-extension-settings .extension-browser {
+        grid-template-columns: 1fr;
+    }
+}
