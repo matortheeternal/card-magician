@@ -18,6 +18,14 @@ export function debugLog(level, message, args) {
     return call('debugLog', `[${level}] ${message}\n${details}\n`);
 }
 export const openUrl = url => call('openUrl', url);
+export const registryRequest = (endpoint, etag) =>
+    call('registryRequest', endpoint, etag);
+export const getInstalledExtensions = () => call('getInstalledExtensions');
+export const installRegistryExtension = (id, type, version) =>
+    call('installRegistryExtension', id, type, version);
+export const uninstallRegistryExtension = (id, type) =>
+    call('uninstallRegistryExtension', id, type);
+
 export const sysopen = path => call('open', path);
 export const openSvgEditor = (executable, filename) => {
     return call('openSvgEditor', executable, filename);

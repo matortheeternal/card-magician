@@ -5,6 +5,7 @@ import { watchFile } from './FileWatcher.js';
 import { launchSvgEditor } from './launchSvgEditor.js';
 import FileSystem from './FileSystem.js';
 import Storage from './Storage.js';
+import ExtensionRegistry from './ExtensionRegistry.js';
 import { origin } from './ResourceServer.js';
 
 export default class NativeBridge {
@@ -12,6 +13,7 @@ export default class NativeBridge {
         Object.assign(this, { window, environment, resources, lifecycle });
         this.files = new FileSystem(environment.paths.content, environment.paths.plugins);
         this.storage = new Storage(environment.paths.data);
+        this.registry = new ExtensionRegistry(environment);
         this.operations = this.createOperations();
         this.fileWatchers = new Map();
         window.webContents.on('did-start-navigation', (_event, _url, inPlace, main) => {
@@ -63,6 +65,11 @@ export default class NativeBridge {
         for (const name of fileOperations)
             operations[name] = this.files[name].bind(this.files);
         Object.assign(operations, this.dialogOperations(), {
+            registryRequest: (endpoint, etag) => this.registry.request(endpoint, etag),
+            getInstalledExtensions: () => this.registry.installed(),
+            installRegistryExtension: (id, type, version) =>
+                this.registry.install(id, type, version),
+            uninstallRegistryExtension: (id, type) => this.registry.uninstall(id, type),
             debugLog: line => this.appendLog(line),
             getStoredData: key => this.storage.get(key),
             storeData: (key, value) => this.storage.set(key, value),

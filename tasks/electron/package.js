@@ -3,6 +3,7 @@ import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { build } from '../build.js';
+import esbuild from 'esbuild';
 import { pluginFolders } from '../../electron/pluginFolders.js';
 
 const stagePath = path.resolve('.tmp/package');
@@ -35,6 +36,12 @@ async function stageApplication() {
     }
     await fs.copyFile('LICENSE', path.join(stagePath, 'LICENSE'));
     await writePackageMetadata();
+    // Native code is shipped without node_modules; bundle its registry dependencies.
+    await esbuild.build({
+        entryPoints: ['electron/ExtensionRegistry.js'],
+        outfile: path.join(stagePath, 'electron/ExtensionRegistry.js'),
+        bundle: true, platform: 'node', format: 'esm', target: 'node24'
+    });
 }
 
 async function writePackageMetadata() {
