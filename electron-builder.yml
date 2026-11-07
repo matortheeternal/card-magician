@@ -1,6 +1,4 @@
 appId: org.cardmagician.app
-productName: Card Magician
-executableName: card-magician
 artifactName: '${productName}-${version}-${os}-${arch}.${ext}'
 directories:
     app: .tmp/package
@@ -10,6 +8,7 @@ files:
     - '**/*'
     - '!**/node_modules/**/*'
     - '!**/extensions/**/*'
+    - '!**/scripts/**/*'
 asar: true
 npmRebuild: false
 compression: normal

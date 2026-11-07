@@ -1,5 +1,6 @@
 extends: ./electron-builder.yml
 productName: card-magician
+executableName: card-magician
 linux:
     icon: build/icons/icon.png
     maintainer: Mator <mator@noreply.codeberg.org>

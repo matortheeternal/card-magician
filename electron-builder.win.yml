@@ -1,4 +1,6 @@
 extends: ./electron-builder.yml
+productName: Card Magician
+executableName: CardMagician
 win:
     icon: build/icons/icon.ico
     target: nsis
