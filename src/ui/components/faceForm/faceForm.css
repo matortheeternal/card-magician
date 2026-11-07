@@ -1,12 +1,39 @@
 cm-face-form, cm-options-form {
     font-family: var(--sl-font-sans);
-}
 
-cm-face-form > div,
-cm-options-form > div {
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    .buttons-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: var(--sl-spacing-small);
+    }
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .no-content-prompt {
+        text-align: center;
+        padding: 1em;
+        font-size: var(--sl-font-size-x-large);
+    }
+
+    cm-code .codejar-editor {
+        font-size: var(--sl-font-size-small);
+    }
+
+    h2 {
+        text-transform: capitalize;
+        border-bottom: 1px solid;
+        font-family: var(--sl-font-sans);
+        zoom: 1.5;
+        margin: 1em 0 0 0;
+        font-size: var(--sl-font-size-x-small);
+        font-weight: normal;
+    }
 }
 
 form-group {
@@ -35,26 +62,8 @@ sl-button.add-btn sl-icon {
     height: 1.6em;
 }
 
-cm-face-form h2,
-cm-options-form h2 {
-    text-transform: capitalize;
-    border-bottom: 1px solid;
-    font-family: var(--sl-font-sans);
-    zoom: 1.5;
-    margin: 1em 0 0 0;
-    font-size: var(--sl-font-size-x-small);
-    font-weight: normal;
-}
-
 sl-input[type="file"]::part(input) {
     padding: var(--sl-spacing-x-small) var(--sl-input-spacing-medium);
-}
-
-cm-face-form .no-content-prompt,
-cm-options-form .no-content-prompt {
-    text-align: center;
-    padding: 1em;
-    font-size: var(--sl-font-size-x-large);
 }
 
 .remove-btn {
@@ -97,16 +106,4 @@ form-group.with-border label {
 
 form-group.three-columns {
     grid-template-columns: 1fr 1fr 1fr;
-}
-
-cm-face-form cm-code .codejar-editor {
-    font-size: var(--sl-font-size-small);
-}
-
-.buttons-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: var(--sl-spacing-small);
 }
