@@ -24,7 +24,8 @@ export default class RecentProjects extends ReactiveComponent {
         button.size = 'small';
         button.classList.add('recent-project');
         button.addEventListener('click', () => openProject(project.filePath));
-        button.textContent = String(project.title);
+        const filename = project.filePath.split(/[\/\\]/).pop();
+        button.textContent = String(project.title || filename);
         this.container.appendChild(button);
     }
 
