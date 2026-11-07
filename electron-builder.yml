@@ -9,6 +9,7 @@ directories:
 files:
     - '**/*'
     - '!**/node_modules/**/*'
+    - '!**/extensions/**/*'
 asar: true
 afterPack: tasks/electron/verifyPackage.cjs
 npmRebuild: false
@@ -33,11 +34,7 @@ linux:
     target:
         - tar.gz
         - deb
-    extraFiles: &loosePlugins
-        - from: .tmp/package-plugins/extensions
-          to: extensions
 win:
-    extraFiles: *loosePlugins
     icon: build/icons/icon.ico
     target: nsis
 nsis:
@@ -51,9 +48,6 @@ mac:
     target:
         - dmg
         - zip
-    extraFiles:
-        - from: .tmp/package-plugins/extensions
-          to: MacOS/extensions
 fileAssociations:
     - ext: cmproj
       name: Card Magician Project
