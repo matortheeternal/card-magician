@@ -28,6 +28,7 @@ export default class CardImagesExporter extends CardMagicianExporter {
             options: [
                 { id: 'jpg', name: L`JPG` },
                 { id: 'png', name: L`PNG` },
+                { id: 'webp', name: L`WEBP` },
             ]
         }, {
             id: 'quality',

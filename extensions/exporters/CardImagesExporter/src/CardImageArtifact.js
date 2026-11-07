@@ -1,3 +1,9 @@
+const MIME_TYPES = {
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+}
+
 export default class CardImageArtifact extends ExportArtifact {
     constructor(baseCard, faceKey, cardCanvas, config) {
         super();
@@ -8,7 +14,7 @@ export default class CardImageArtifact extends ExportArtifact {
     }
 
     get imageType() {
-        return `image/${this.config.imageType}`;
+        return MIME_TYPES[this.config.imageType];
     }
 
     get imageQuality() {
