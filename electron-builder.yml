@@ -32,8 +32,8 @@ linux:
             Comment: Custom card creation and editing
             Terminal: false
     target:
-        - tar.gz
         - deb
+        - rpm
 win:
     icon: build/icons/icon.ico
     target: nsis
@@ -59,3 +59,4 @@ fileAssociations:
       rank: Owner
       role: Viewer
       mimeType: application/x-card-magician-package
+afterAllArtifactBuild: ./tasks/generateAurPackage.js
