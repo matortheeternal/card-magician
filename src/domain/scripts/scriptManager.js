@@ -1,9 +1,15 @@
-import { readDirectory, readFile, writeFile } from '../../shared/platformAdapter.js';
+import {
+    checkFolderExists,
+    readDirectory,
+    readFile,
+    writeFile
+} from '../../shared/platformAdapter.js';
 import sanitize from 'sanitize-filename';
 
 const loadedScripts = [];
 
 export async function loadScripts() {
+    if (!await checkFolderExists('scripts')) return;
     const entries = await readDirectory('scripts');
     for (const { entry, type, path } of entries) {
         if (type !== 'FILE') continue;
