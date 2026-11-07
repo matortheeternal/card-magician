@@ -10,6 +10,10 @@ export default class ReactiveMenu {
         return { label, value: label.toCamelCase(), hotkey, action };
     }
 
+    menuItemGroup(label, items) {
+        return { label, value: label.toCamelCase(), items };
+    }
+
     desktopMenuItem(label, hotkey, action) {
         return {
             desktopOnly: true,

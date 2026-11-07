@@ -1,5 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { emit } from '../../../shared/htmlUtils.js';
+import { watch } from '../../../shared/reactivity.js';
 
 export default class TitleBarMenu extends ReactiveComponent {
     #menu;
@@ -35,6 +36,12 @@ export default class TitleBarMenu extends ReactiveComponent {
         return divider;
     }
 
+    createNestedMenu(parent, menu) {
+        parent.setAttribute('data-has-submenu', '');
+        const menuElement = this.createMenu(parent, menu);
+        menuElement.setAttribute('slot', 'submenu');
+    }
+
     createMenuItem(item) {
         const menuItem = document.createElement('sl-menu-item');
         menuItem.value = item.value;
@@ -42,21 +49,34 @@ export default class TitleBarMenu extends ReactiveComponent {
         menuItem.innerHTML = (
             `<div class="menu-item">
                 <div>${item.label}</div>
-                <div>${item.hotkey}</div>
+                <div>${item.hotkey || ''}</div>
             </div>`
         );
+        if (item.items) this.createNestedMenu(menuItem, item);
         return menuItem;
+    }
+
+    appendChildren(element, items) {
+        items.forEach(item => {
+            const itemElement = item.isDivider
+                ? this.createDivider()
+                : this.createMenuItem(item);
+            element.appendChild(itemElement);
+        });
     }
 
     createMenu(dropdown, menu) {
         const menuElement = document.createElement('sl-menu');
-        menu.items.forEach(item => {
-            const itemElement = item.isDivider
-                ? this.createDivider()
-                : this.createMenuItem(item);
-            menuElement.appendChild(itemElement);
+        const items = menu.items.constructor === Function
+            ? menu.items()
+            : menu.items;
+        watch(items, '', () => {
+            menuElement.replaceChildren();
+            this.appendChildren(menuElement, items);
         });
+        this.appendChildren(menuElement, items);
         dropdown.appendChild(menuElement);
+        return menuElement;
     }
 
     render() {
