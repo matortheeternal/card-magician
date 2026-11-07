@@ -5,8 +5,8 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import electron from 'electron';
-import DevToolsDriver from '../dev/devToolsDriver.js';
-import { handleOutput, isTestOutput } from '../dev/testOutput.js';
+import DevToolsDriver from './devToolsDriver.js';
+import { handleOutput, isTestOutput } from './testOutput.js';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const pause = ms => new Promise(resolve => { setTimeout(resolve, ms); });
@@ -31,7 +31,6 @@ function alive(pid) {
 export class TestApplication {
     output = '';
     processIds = [];
-    cleaning = false;
 
     constructor(options) {
         Object.assign(this, options);
@@ -125,7 +124,6 @@ export class TestApplication {
     }
 
     async cleanup() {
-        this.cleaning = true;
         process.removeListener('SIGINT', this.interrupted);
         process.removeListener('SIGTERM', this.interrupted);
         this.driver?.disconnect();

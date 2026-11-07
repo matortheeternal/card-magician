@@ -10,11 +10,16 @@ export async function prepareUserExtensions(profilePath) {
         'games/magic', 'cardparts/magic/M15/ColorIndicator',
         'templates/magic/M15/Main', 'exporters/WebExporter'
     ]) {
-        await fs.cp(path.join(installedPath, 'extensions', relativePath),
-                    path.join(extensionsPath, relativePath), { recursive: true });
+        await fs.cp(
+            path.join(installedPath, 'extensions', relativePath),
+            path.join(extensionsPath, relativePath),
+            { recursive: true }
+        );
     }
-    const templatePath = path.join(extensionsPath,
-                                   'templates/magic/M15/Main/template.json');
+    const templatePath = path.join(
+        extensionsPath,
+        'templates/magic/M15/Main/template.json'
+    );
     const template = JSON.parse(await fs.readFile(templatePath, 'utf8'));
     template.label = 'User extension smoke template';
     await fs.writeFile(templatePath, JSON.stringify(template));
@@ -28,8 +33,10 @@ export async function prepareUserExtensions(profilePath) {
     await fs.writeFile(path.join(localesPath, 'locales.json'), JSON.stringify({
         smoke: { label: 'User extension smoke locale' }
     }));
-    await fs.writeFile(path.join(extensionsPath, 'user-only.js'),
-                       'export default "user extension";');
+    await fs.writeFile(
+        path.join(extensionsPath, 'user-only.js'),
+        'export default "user extension";'
+    );
 }
 
 export async function preparePlatformFixtures(profilePath) {

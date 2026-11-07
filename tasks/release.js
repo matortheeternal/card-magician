@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { build } from '../build.js';
-import { pluginFolders } from '../../electron/pluginFolders.js';
+import { build } from './build.js';
+import { pluginFolders } from '../electron/pluginFolders.js';
 
 const stagePath = path.resolve('.tmp/package');
 const pluginStagePath = path.resolve('.tmp/package-plugins');

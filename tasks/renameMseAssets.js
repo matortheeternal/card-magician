@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { getRenameStrategy } from './renameStrategyRegistry.js';
-import GitStatusEntry from './GitStatusEntry.js';
+import { getRenameStrategy } from './rename/renameStrategyRegistry.js';
+import GitStatusEntry from './rename/GitStatusEntry.js';
 
 function runGit(args, cwd) {
     return execFileSync('git', args, { cwd, encoding: 'utf8' });

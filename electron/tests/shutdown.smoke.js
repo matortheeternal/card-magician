@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
-import { waitFor } from '../electron/fixture.js';
+import { launch, waitFor } from './TestApplication.js';
 
 async function removeImage(driver) {
     const clicked = await driver.evaluate(`(() => {
@@ -13,8 +13,11 @@ async function removeImage(driver) {
         return true;
     })()`);
     assert.equal(clicked, true, 'The image editor must expose its real clear button.');
-    await waitFor(() => driver.evaluate('exitSmoke.pending'),
-                  'scheduled image removal', 1000);
+    await waitFor(
+        () => driver.evaluate('exitSmoke.pending'),
+        'scheduled image removal',
+        1000
+    );
 }
 
 function modalVisible(driver) {
@@ -31,15 +34,17 @@ async function readSymbols(folder) {
 async function verifyFile(folder, embedded) {
     const data = await readSymbols(folder);
     assert.equal(data[0].name, 'Exit smoke symbol');
-    assert.equal(!!data[0].image.imageUrl, embedded,
-                 'Persisted image bytes are incorrect.');
+    assert.equal(
+        !!data[0].image.imageUrl,
+        embedded,
+        'Persisted image bytes are incorrect.'
+    );
 }
 
-export async function releaseAndWaitForExit(fixture) {
+async function releaseAndWaitForExit(fixture) {
     try {
         await fixture.driver.evaluate('exitSmoke.release()');
     } catch (error) {
-        // Releasing the shutdown gate can terminate Electron before CDP replies.
         if (error.message !== 'DevTools connection closed.') throw error;
     }
     await fixture.stopped();
@@ -62,13 +67,25 @@ async function closeWithProgress(fixture, folder, menu) {
     await removeImage(driver);
     const requested = Date.now();
     await requestClose(driver, menu);
-    await waitFor(() => modalVisible(driver), 'shutdown progress modal', 2000);
-    assert.ok(Date.now() - requested < debounceDelay,
-              'Close was not requested before the debounce.');
-    assert.equal(fixture.child.exitCode, null,
-                 'The window must stay alive while flushing.');
-    await waitFor(async () => !(await readSymbols(folder))[0].image.imageUrl,
-                  'the cleared image to reach disk before the debounce', 1500);
+    await waitFor(
+        () => modalVisible(driver),
+        'shutdown progress modal',
+        2000
+    );
+    assert.ok(
+        Date.now() - requested < debounceDelay,
+        'Close was not requested before the debounce.'
+    );
+    assert.equal(
+        fixture.child.exitCode,
+        null,
+        'The window must stay alive while flushing.'
+    );
+    await waitFor(
+        async () => !(await readSymbols(folder))[0].image.imageUrl,
+        'the cleared image to reach disk before the debounce',
+        1500
+    );
     await releaseAndWaitForExit(fixture);
     await verifyFile(folder, false);
 }
@@ -115,7 +132,7 @@ async function nativeExit(fixture) {
     await fixture.stopped();
 }
 
-export async function runExitSmokeTests({ launchApp }) {
+async function runExitSmokeTests({ launchApp }) {
     const folder = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-symbols-'));
     async function scenario(label, test, reload = false) {
         console.log(`Running Exit: ${label}...`);
@@ -123,16 +140,46 @@ export async function runExitSmokeTests({ launchApp }) {
         try { await test(fixture, folder); } finally { await fixture.cleanup(); }
     }
     try {
-        const selected = process.env.EXIT_SMOKE_CASE;
         for (const menu of [false, true]) {
-            if (selected && selected !== (menu ? 'menu' : 'window')) continue;
             await scenario(menu ? 'File menu' : 'window close', fixture => {
                 return closeWithProgress(fixture, folder, menu);
             });
         }
-        if (selected) return;
         await scenario('reopen persisted collection', reopen, true);
         await scenario('failed write stays open, then retries', failedSave);
         await scenario('direct native exit cleans up browser processes', nativeExit);
     } finally { await fs.rm(folder, { recursive: true, force: true }); }
+}
+
+export async function runShutdownTests(temp) {
+    let index = 0;
+    const launchApp = (folder, reopen = false) => launch({
+        profile: path.join(temp, 'exit-profile'), url: '/',
+        id: `cardmagician.exit.electron${++index}`,
+        args: [
+            '--test-exit',
+            `--exit-test-folder=${folder}`,
+            ...(reopen ? ['--exit-test-reopen'] : [])
+        ]
+    });
+    await runExitSmokeTests({ launchApp, waitFor });
+    if (!process.env.EXIT_SMOKE_CASE) await testApplicationQuit(launchApp, temp);
+}
+
+async function testApplicationQuit(launchApp, temp) {
+    console.log('Running Exit: application quit with pending writes...');
+    const folder = path.join(temp, 'quit-symbols');
+    const fixture = await launchApp(folder);
+    try {
+        await fixture.driver.evaluate(`
+            document.querySelector('cm-edit-face-symbol .clear-btn').click()
+        `);
+        await fixture.driver.evaluate('cardMagicianNative.call(\'testAppQuit\', [])');
+        await waitFor(() => fixture.driver.evaluate(
+            '!!document.querySelector(\'cm-progress-modal\')'), 'quit progress modal');
+        assert.equal(fixture.child.exitCode, null);
+        await releaseAndWaitForExit(fixture);
+        const saved = await fs.readFile(path.join(folder, 'symbols.yml'), 'utf8');
+        assert.ok(!saved.includes('base64,'));
+    } finally { await fixture.cleanup(); }
 }
