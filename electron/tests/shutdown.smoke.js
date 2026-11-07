@@ -153,17 +153,32 @@ async function runExitSmokeTests({ launchApp }) {
 
 export async function runShutdownTests(temp) {
     let index = 0;
-    const launchApp = (folder, reopen = false) => launch({
-        profile: path.join(temp, 'exit-profile'), url: '/',
-        id: `cardmagician.exit.electron${++index}`,
-        args: [
-            '--test-exit',
-            `--exit-test-folder=${folder}`,
-            ...(reopen ? ['--exit-test-reopen'] : [])
-        ]
-    });
-    await runExitSmokeTests({ launchApp, waitFor });
-    if (!process.env.EXIT_SMOKE_CASE) await testApplicationQuit(launchApp, temp);
+    const launchApp = async (folder, reopen = false) => {
+        const fixture = await launch({
+            profile: path.join(temp, 'exit-profile'), url: '/',
+            id: `cardmagician.exit.electron${++index}`,
+            args: [
+                '--test-exit',
+                `--exit-test-folder=${folder}`,
+                ...(reopen ? ['--exit-test-reopen'] : [])
+            ]
+        });
+        try {
+            await waitFor(
+                () => fixture.driver.evaluate('!!window.exitSmoke'),
+                'shutdown fixture startup'
+            );
+            fixture.driver.closePage = () => fixture.driver.evaluate(
+                'cardMagicianNative.call(\'testWindowClose\', [])'
+            );
+            return fixture;
+        } catch (error) {
+            await fixture.cleanup();
+            throw error;
+        }
+    };
+    await runExitSmokeTests({ launchApp });
+    await testApplicationQuit(launchApp, temp);
 }
 
 async function testApplicationQuit(launchApp, temp) {

@@ -15,11 +15,12 @@ const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'))
 try {
     const requested = process.argv
         .find(arg => arg.startsWith('--suite='))
-        ?.slice('--suite='.length) ?? suites;
-    if (requested && !suites.includes(requested))
+        ?.slice('--suite='.length);
+    if (requested !== undefined && !suites.includes(requested))
         throw new Error(`Unknown smoke suite: ${requested}`);
 
-    for (const suite of requested) {
+    const suitesToRun = requested ? [requested] : suites;
+    for (const suite of suitesToRun) {
         console.log(`Running ${suite}...`);
         const profilePath = path.join(temp, suite);
         if (suite === 'Extensions')

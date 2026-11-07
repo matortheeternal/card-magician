@@ -99,14 +99,10 @@ export class TestApplication {
         this.driver = await DevToolsDriver.connect(endpoint);
         const target = this.url === '/' ? 'cm-app://app/' : this.url;
         await waitFor(() => this.driver.attach(target), 'application page');
-        await waitFor(() => this.driver.evaluate('!!window.exitSmoke'),
-                      'application startup');
         assert.equal(await this.driver.evaluate('typeof require'), 'undefined');
         assert.equal(await this.driver.evaluate('typeof process'), 'undefined');
         const { processInfo } = await this.driver.send('SystemInfo.getProcessInfo');
         this.processIds = processInfo.map(info => info.id);
-        this.driver.closePage = () => this.driver.evaluate(
-            'cardMagicianNative.call(\'testWindowClose\', [])');
     }
 
     async stopped() {
