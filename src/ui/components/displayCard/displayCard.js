@@ -92,10 +92,11 @@ export default class DisplayCard extends ReactiveComponent {
     }
 
     exportCardImage() {
-        const card = this.querySelector('cm-card');
-        const cardFaces = card.querySelectorAll(`cm-card-face`);
+        const cardElement = this.querySelector('cm-card');
+        const cardFaces = cardElement.querySelectorAll(`cm-card-face`);
         cardFaces.forEach((cardFace, index) => {
-            saveHTMLAsImage(cardFace, `card${index}.png`);
+            const filename = `${selectedProjectCard.baseName} - ${index}.png`;
+            saveHTMLAsImage(cardFace, filename);
         });
     }
 }
