@@ -1,0 +1,7 @@
+extends: ./electron-builder.yml
+mac:
+    icon: build/icons/icon.png
+    category: public.app-category.graphics-design
+    target:
+        - dmg
+        - zip

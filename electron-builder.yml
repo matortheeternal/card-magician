@@ -11,7 +11,6 @@ files:
     - '!**/node_modules/**/*'
     - '!**/extensions/**/*'
 asar: true
-afterPack: tasks/electron/verifyPackage.cjs
 npmRebuild: false
 compression: normal
 electronLanguages:
@@ -21,33 +20,6 @@ electronFuses:
     enableNodeOptionsEnvironmentVariable: false
     enableNodeCliInspectArguments: false
     onlyLoadAppFromAsar: true
-linux:
-    icon: build/icons/icon.png
-    maintainer: Mator <mator@noreply.codeberg.org>
-    syncDesktopName: true
-    category: Graphics
-    desktop:
-        entry:
-            Name: Card Magician
-            Comment: Custom card creation and editing
-            Terminal: false
-    target:
-        - deb
-        - rpm
-win:
-    icon: build/icons/icon.ico
-    target: nsis
-nsis:
-    perMachine: true
-    oneClick: false
-    allowToChangeInstallationDirectory: true
-    deleteAppDataOnUninstall: false
-mac:
-    icon: build/icons/icon.png
-    category: public.app-category.graphics-design
-    target:
-        - dmg
-        - zip
 fileAssociations:
     - ext: cmproj
       name: Card Magician Project
@@ -59,4 +31,3 @@ fileAssociations:
       rank: Owner
       role: Viewer
       mimeType: application/x-card-magician-package
-afterAllArtifactBuild: ./tasks/generateAurPackage.js

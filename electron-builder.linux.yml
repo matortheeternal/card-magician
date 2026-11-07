@@ -1,0 +1,20 @@
+extends: ./electron-builder.yml
+productName: card-magician
+linux:
+    icon: build/icons/icon.png
+    maintainer: Mator <mator@noreply.codeberg.org>
+    syncDesktopName: true
+    category: Graphics
+    desktop:
+        entry:
+            Name: Card Magician
+            Comment: Custom card creation and editing
+            Terminal: false
+    target:
+        - deb
+        - rpm
+deb:
+    packageName: card-magician
+rpm:
+    packageName: card-magician
+afterAllArtifactBuild: ./tasks/generateAurPackage.js

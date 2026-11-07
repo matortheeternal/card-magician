@@ -54,22 +54,44 @@ async function writePackageMetadata() {
     );
 }
 
-async function createInstallers() {
+function getReleasePlatforms(args, host = process.platform) {
+    const supported = ['--linux', '--win', '--mac'];
+    if (args.length === 0) {
+        const defaults = { linux: '--linux', win32: '--win', darwin: '--mac' };
+        if (!Object.hasOwn(defaults, host))
+            throw new Error(`Unsupported release host: ${host}`);
+        return [defaults[host].slice(2)];
+    }
+    for (const arg of args) {
+        if (!supported.includes(arg)) {
+            throw new Error(
+                `Unknown release argument: ${arg}. Use ${supported.join(', ')}.`
+            );
+        }
+    }
+    return [...new Set(args.map(arg => arg.slice(2)))];
+}
+
+async function createInstallers(platforms) {
+    for (const platform of platforms)
+        await createPlatformInstallers(platform);
+}
+
+async function createPlatformInstallers(platform) {
     const cliPath = path.resolve('node_modules/electron-builder/cli.js');
-    const args = [cliPath, '--config', 'electron-builder.yml',
-                  '--publish', 'never', ...process.argv.slice(2)];
+    const args = [cliPath, '--config', `electron-builder.${platform}.yml`,
+                  '--publish', 'never', `--${platform}`];
+    const compressionLevel = process.env.ELECTRON_BUILDER_COMPRESSION_LEVEL ?? '6';
     const env = {
         ...process.env,
-        // The gzip target otherwise uses level 9 even with normal compression.
-        ELECTRON_BUILDER_COMPRESSION_LEVEL:
-            process.env.ELECTRON_BUILDER_COMPRESSION_LEVEL ?? '6'
+        ELECTRON_BUILDER_COMPRESSION_LEVEL: compressionLevel
     };
     const child = spawn(process.execPath, args, { stdio: 'inherit', env });
     const code = await new Promise((resolve, reject) => {
         child.once('error', reject);
         child.once('close', resolve);
     });
-    if (code !== 0) throw new Error(`Installer packaging failed (${code}).`);
+    if (code !== 0) throw new Error(`${platform} installer packaging failed (${code}).`);
 }
 
 async function acquireLock() {
@@ -86,7 +108,8 @@ async function acquireLock() {
     process.once('exit', () => rmSync(lockPath, { recursive: true, force: true }));
 }
 
+const platforms = getReleasePlatforms(process.argv.slice(2));
 await acquireLock();
 await build({ minify: true, tests: false });
 await stageApplication();
-await createInstallers();
+await createInstallers(platforms);
