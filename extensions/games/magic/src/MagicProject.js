@@ -19,7 +19,7 @@ export default class MagicProject extends CardMagicianProject {
     }
 
     async editSetSymbol() {
-        const executable = activeGame.appConfig.get('setIconEditorPath', '');
+        const executable = activeGame.config.get('setIconEditorPath', '');
         if (!executable) return super.editSetSymbol();
         if (!this.symbolPath) {
             await dialog.alert('You must save the project first.');

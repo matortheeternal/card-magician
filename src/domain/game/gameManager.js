@@ -45,13 +45,8 @@ export async function setGame(gameId) {
         clearFileWatchers();
         window.activeProject = new activeGame.Project();
     });
-    appConfig = new AppConfig(gameId);
-    activeGame.appConfig = appConfig;
+    activeGame.config = new AppConfig(gameId);
     return activeGame;
-}
-
-export function getConfig() {
-    return appConfig;
 }
 
 export async function loadGames() {

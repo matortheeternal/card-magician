@@ -7,8 +7,8 @@ describe('Set Icon Editor settings', () => {
     beforeEach(async () => {
         const platform = { ...activeGame.platform };
         spyOnProperty(activeGame, 'platform', 'get').and.returnValue(platform);
-        originalPath = activeGame.appConfig.get('setIconEditorPath', '');
-        await activeGame.appConfig.set('setIconEditorPath', '');
+        originalPath = activeGame.config.get('setIconEditorPath', '');
+        await activeGame.config.set('setIconEditorPath', '');
         modal = document.createElement('cm-settings-modal');
         modal.data = { selectedTabId: 'cm-magic-project-details' };
         document.body.append(modal);
@@ -18,7 +18,7 @@ describe('Set Icon Editor settings', () => {
 
     afterEach(async () => {
         modal.remove();
-        await activeGame.appConfig.set('setIconEditorPath', originalPath);
+        await activeGame.config.set('setIconEditorPath', originalPath);
     });
 
     it('navigates to setup and persists a located executable', async () => {
@@ -32,7 +32,7 @@ describe('Set Icon Editor settings', () => {
         await locate.updateComplete;
         locate.click();
         await eventually(() => settings.querySelector('sl-input').value === filename);
-        await activeGame.appConfig.flush();
+        await activeGame.config.flush();
         const stored = JSON.parse(await getStoredData('appConfig-magic'));
         expect(stored.setIconEditorPath).toBe(filename);
         modal.selectNavItem('cm-magic-project-details');
@@ -43,7 +43,7 @@ describe('Set Icon Editor settings', () => {
         reopened.value = '';
         reopened.dispatchEvent(new CustomEvent('sl-change', { bubbles: true }));
         await eventually(() => {
-            return activeGame.appConfig.get('setIconEditorPath') === '';
+            return activeGame.config.get('setIconEditorPath') === '';
         });
         modal.selectNavItem('cm-magic-project-details');
         expect(modal.querySelector('[data-click-action="setupSIE"]'))
@@ -55,7 +55,7 @@ describe('Set Icon Editor settings', () => {
         const settings = modal.querySelector('cm-set-icon-editor-settings');
         spyOn(activeGame.platform, 'openSingleFileDialog').and.resolveTo(undefined);
         await settings.locate();
-        expect(activeGame.appConfig.get('setIconEditorPath')).toBe('');
+        expect(activeGame.config.get('setIconEditorPath')).toBe('');
         spyOn(activeGame.platform, 'openUrl').and.resolveTo();
         settings.querySelector('[data-click-action="download"]').click();
         expect(activeGame.platform.openUrl).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe('Set Icon Editor settings', () => {
     });
 
     it('launches the configured editor with the project symbol', async () => {
-        await activeGame.appConfig.set('setIconEditorPath', '/apps/editor');
+        await activeGame.config.set('setIconEditorPath', '/apps/editor');
         const project = new activeGame.Project();
         spyOnProperty(project, 'symbolPath', 'get').and.returnValue('/sets/icon.svg');
         spyOn(activeGame.platform, 'openSvgEditor').and.resolveTo();

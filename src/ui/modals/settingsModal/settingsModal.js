@@ -1,7 +1,6 @@
 import Modal from '../Modal.js';
 import { getSettingsTabs } from '../../settings/settingsRegistry.js';
 import { registerModal } from '../modalManager.js';
-import { getConfig } from '../../../domain/game/gameManager.js';
 
 const L = localize('settings-modal');
 
@@ -20,7 +19,7 @@ export default class SettingsModal extends Modal {
     connectedCallback() {
         super.connectedCallback();
         this.renderNav();
-        const defaultTabId = getConfig().get('lastSettingsTab') || this.tabs[0].id;
+        const defaultTabId = activeGame.config.get('lastSettingsTab') || this.tabs[0].id;
         this.selectNavItem(this.data?.selectedTabId || defaultTabId);
     }
 
@@ -43,7 +42,7 @@ export default class SettingsModal extends Modal {
         this.#activeTab = value;
         if (this.isConnected)
             this.contentContainer.appendChild(value);
-        getConfig().set('lastSettingsTab', value.tagName.toLowerCase());
+        activeGame.config.set('lastSettingsTab', value.tagName.toLowerCase());
     }
 
     get activeNavItem() {

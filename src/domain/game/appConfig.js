@@ -1,7 +1,11 @@
 import { beforeExit } from '../../lifecycle.js';
-import { getStoredData, storeData } from '../../shared/platformAdapter.js';
+import {
+    checkFileExists,
+    getStoredData,
+    storeData
+} from '../../shared/platformAdapter.js';
 
-const RECENT_FILE_MAX_COUNT = 10;
+const RECENT_PROJECT_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
 
 export default class AppConfig {
@@ -10,7 +14,7 @@ export default class AppConfig {
     #timer = null;
     #write = Promise.resolve();
     #activeWrites = 0;
-    #recentFilesChangedCallbacks = [];
+    #recentProjectsChangedCallbacks = [];
     #loadPromise;
 
     constructor(gameId) {
@@ -35,9 +39,20 @@ export default class AppConfig {
             this.#data = {};
         }
 
-        if (!Array.isArray(this.#data.recentFiles))
-            this.#data.recentFiles = [];
+        await this.updateRecentProjects();
         this.queueSave();
+    }
+
+    async updateRecentProjects() {
+        const recentProjects = [];
+        const projects = Array.isArray(this.#data.recentProjects)
+            ? this.#data.recentProjects
+            : [];
+        for (const project of projects) {
+            if (await checkFileExists(project.filePath))
+                recentProjects.push(project);
+        }
+        this.#data.recentProjects = recentProjects;
     }
 
     async set(key, value) {
@@ -50,26 +65,30 @@ export default class AppConfig {
         return key in this.#data ? this.#data[key] : fallback;
     }
 
-    get recentFiles() {
-        return this.#data?.recentFiles?.slice() || [];
+    get recentProjects() {
+        return this.#data?.recentProjects?.slice() || [];
     }
 
-    async addRecentFile(filePath) {
+    async addRecentProject() {
         await this.#loadPromise;
 
-        this.#data.recentFiles = [
-            filePath,
-            ...this.#data.recentFiles.filter(f => f !== filePath),
-        ].slice(0, RECENT_FILE_MAX_COUNT);
+        const filePath = activeProject.filePath;
+        const title = activeProject.title;
+        this.#data.recentProjects = [
+            { filePath, title },
+            ...this.#data.recentProjects.filter(
+                proj => proj.filePath !== filePath
+            ),
+        ].slice(0, RECENT_PROJECT_MAX_COUNT);
 
-        for (const callback of this.#recentFilesChangedCallbacks)
-            callback(this.#data.recentFiles);
+        for (const callback of this.#recentProjectsChangedCallbacks)
+            callback(this.#data.recentProjects);
 
         this.queueSave();
     }
 
-    onRecentFilesChanged(callback) {
-        this.#recentFilesChangedCallbacks.push(callback);
+    onRecentProjectsChanged(callback) {
+        this.#recentProjectsChangedCallbacks.push(callback);
     }
 
     queueSave() {

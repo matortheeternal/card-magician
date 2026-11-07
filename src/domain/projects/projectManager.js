@@ -1,6 +1,5 @@
 import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
-import { getConfig } from '../game/gameManager.js';
 import {
     onOpenFile,
     openSingleFileDialog,
@@ -79,7 +78,7 @@ export async function openProject(filePath) {
         const project = await activeGame.Project.load(filePath);
         setActiveProject(project);
     });
-    await getConfig().addRecentFile(filePath);
+    await activeGame.config.addRecentProject();
 }
 
 export async function saveCard(editorCard, projectCard) {

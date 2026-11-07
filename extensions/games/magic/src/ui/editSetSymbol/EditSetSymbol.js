@@ -43,7 +43,7 @@ export default class EditSetSymbol extends ReactiveComponent {
                 <sl-button size="small" data-click-action="edit" variant="primary">
                     ${L`Edit`}
                 </sl-button>
-                ${activeGame.appConfig.get('setIconEditorPath', '') ? '' : `
+                ${activeGame.config.get('setIconEditorPath', '') ? '' : `
                 <sl-button size="small" data-click-action="setupSIE">
                     ${L`Use Set Icon Editor`}
                 </sl-button>`}

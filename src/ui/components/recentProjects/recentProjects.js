@@ -1,7 +1,5 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
-import { getConfig } from '../../../domain/game/gameManager.js';
-import { checkFileExists } from '../../../shared/fsUtils.js';
 import { openProject } from '../../../domain/projects/projectManager.js';
 
 const L = localize('recent-projects');
@@ -13,20 +11,11 @@ export default class RecentProjects extends ReactiveComponent {
     }
 
     bind() {
-        getConfig().onRecentFilesChanged(() => this.render());
+        activeGame.config.onRecentProjectsChanged(() => this.render());
     }
 
     get container() {
         return this.querySelector('.buttons-container');
-    }
-
-    async getRecentProjects() {
-        const projects = [];
-        for (const project of getConfig().recentFiles) {
-            if (await checkFileExists(project))
-                projects.push(project);
-        }
-        return projects;
     }
 
     renderRecentProject(project) {
@@ -34,13 +23,13 @@ export default class RecentProjects extends ReactiveComponent {
         button.variant = 'text';
         button.size = 'small';
         button.classList.add('recent-project');
-        button.addEventListener('click', () => openProject(project));
-        button.textContent = String(project);
+        button.addEventListener('click', () => openProject(project.filePath));
+        button.textContent = String(project.title);
         this.container.appendChild(button);
     }
 
     async render() {
-        const recentProjects = await this.getRecentProjects();
+        const recentProjects = activeGame.config.recentProjects;
         toggleDisplay(recentProjects.length > 0, this);
         if (!recentProjects.length) return;
 

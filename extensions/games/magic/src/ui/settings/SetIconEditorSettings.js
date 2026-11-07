@@ -37,7 +37,7 @@ export default class SetIconEditorSettings extends CardMagicianSettings {
             </p>`
         );
         this.querySelector('.editor-path').value
-            = activeGame.appConfig.get('setIconEditorPath', '');
+            = activeGame.config.get('setIconEditorPath', '');
     }
 
     bind() {
@@ -53,7 +53,7 @@ export default class SetIconEditorSettings extends CardMagicianSettings {
 
     async save() {
         const value = this.input.value;
-        await activeGame.appConfig.set('setIconEditorPath', value.trim());
+        await activeGame.config.set('setIconEditorPath', value.trim());
     }
 
     async locate() {
