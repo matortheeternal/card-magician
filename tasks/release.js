@@ -5,6 +5,8 @@ import { spawn } from 'node:child_process';
 import { build } from './build.js';
 import { pluginFolders } from '../electron/pluginFolders.js';
 
+const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
+const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
 const stagePath = path.resolve('.tmp/package');
 const pluginStagePath = path.resolve('.tmp/package-plugins');
 const lockPath = path.resolve('.tmp/package.lock');
@@ -54,21 +56,20 @@ async function writePackageMetadata() {
     );
 }
 
+function checkPlatform(arg) {
+    if (SUPPORTED_PLATFORM_ARGS.includes(arg)) return;
+    throw new Error(`Unknown release argument: ${arg}.`);
+}
+
 function getReleasePlatforms(args, host = process.platform) {
-    const supported = ['--linux', '--win', '--mac'];
     if (args.length === 0) {
         const defaults = { linux: '--linux', win32: '--win', darwin: '--mac' };
         if (!Object.hasOwn(defaults, host))
             throw new Error(`Unsupported release host: ${host}`);
         return [defaults[host].slice(2)];
     }
-    for (const arg of args) {
-        if (!supported.includes(arg)) {
-            throw new Error(
-                `Unknown release argument: ${arg}. Use ${supported.join(', ')}.`
-            );
-        }
-    }
+    for (const arg of args)
+        checkPlatform(arg);
     return [...new Set(args.map(arg => arg.slice(2)))];
 }
 
@@ -81,10 +82,9 @@ async function createPlatformInstallers(platform) {
     const cliPath = path.resolve('node_modules/electron-builder/cli.js');
     const args = [cliPath, '--config', `electron-builder.${platform}.yml`,
                   '--publish', 'never', `--${platform}`];
-    const compressionLevel = process.env.ELECTRON_BUILDER_COMPRESSION_LEVEL ?? '6';
     const env = {
         ...process.env,
-        ELECTRON_BUILDER_COMPRESSION_LEVEL: compressionLevel
+        ELECTRON_BUILDER_COMPRESSION_LEVEL
     };
     const child = spawn(process.execPath, args, { stdio: 'inherit', env });
     const code = await new Promise((resolve, reject) => {
