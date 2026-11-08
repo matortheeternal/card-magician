@@ -49,9 +49,13 @@ export class TestApplication {
         const binary = process.env.ELECTRON_SMOKE_BINARY ?? electron;
         const entry = process.env.ELECTRON_SMOKE_BINARY ? [] : [root];
         const sandbox = process.env.ELECTRON_NO_SANDBOX === '1' ? ['--no-sandbox'] : [];
+        const headless = process.argv.includes('--headless');
+        if (headless && process.platform !== 'linux')
+            throw new Error('--headless currently requires the Linux Ozone backend.');
         const args = [...entry, `--profile=${this.profile}`,
                       `--app-id=${this.id}`, `--url=${this.url}`,
                       '--remote-debugging-port=0',
+                      ...(headless ? ['--ozone-platform=headless'] : []),
                       ...sandbox, ...(this.args ?? [])];
         this.child = spawn(binary, args, {
             cwd: root, detached: process.platform !== 'win32',
