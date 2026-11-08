@@ -34,27 +34,23 @@ body.column-resizing * {
     padding: 6px 4px 3px;
 }
 
-.list-view-table tr td:first-of-type {
-    border-inline-start: 3px solid transparent;
-}
-
 .list-view-table tr.selected {
     background-color: var(--sl-color-neutral-100);
 }
 
 .list-view-table tr.selected td:first-of-type {
-    border-inline-start-color: var(--sl-color-primary-600);
+    box-shadow: inset 3px 0 var(--sl-color-primary-600);
 }
 
 .list-view-table tr.last-selected td:first-of-type {
-    border-inline-start-color: var(--sl-color-primary-800);
+    box-shadow: inset 3px 0 var(--sl-color-primary-800);
 }
 
 .list-view-table thead {
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #080808;
+    background-color: #111;
     border-bottom: 1px solid var(--sl-color-neutral-200);
 }
 
