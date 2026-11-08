@@ -11,7 +11,7 @@
  */
 
 /**
- * Metadata for a filesystem entry. Symbolic links are followed by the host.
+ * Metadata for a filesystem entry. The host follows symbolic links.
  *
  * @typedef {object} FileStats
  * @property {boolean} isFile Whether the target is a regular file.
@@ -48,7 +48,7 @@
 
 /**
  * A JSON-compatible value stored in the current application's persistent storage.
- * Objects and arrays must not contain cycles, functions or undefined values.
+ * Objects and arrays must not contain cycles, functions, or undefined values.
  *
  * @typedef {null | boolean | number | string | StoredDataValue[] |
  *     Object<string, StoredDataValue>} StoredDataValue
@@ -217,7 +217,7 @@ export default class PlatformAdapter {
      * @returns {Promise<StoredDataValue>}
      *   Stored JSON-compatible value or the missing-key fallback.
      * @throws {Error}
-     *   Rejects for an invalid key, unreadable storage or invalid stored JSON.
+     *   Rejects for an invalid key, unreadable storage, or invalid stored JSON.
      */
     getStoredData(key) {
         throw new Error('getStoredData must be implemented');
@@ -232,7 +232,8 @@ export default class PlatformAdapter {
      * @param {string} key Nonempty storage key.
      * @param {StoredDataValue} value JSON-compatible data to persist.
      * @returns {Promise<void>} Resolves after the value is written.
-     * @throws {Error} Rejects for an invalid key, serialization failure or write failure.
+     * @throws {Error}
+     *  Rejects for an invalid key, serialization failure, or write failure.
      */
     storeData(key, value) {
         throw new Error('storeData must be implemented');
@@ -391,7 +392,7 @@ export default class PlatformAdapter {
      *
      * @abstract
      * @param {string} filename Path to parse using host path rules.
-     * @returns {Promise<PathParts>} Directory, basename, stem and final extension.
+     * @returns {Promise<PathParts>} Directory, basename, stem, and final extension.
      * @throws {Error} Rejects if the path is not a string.
      */
     getPathParts(filename) {
@@ -488,7 +489,7 @@ export default class PlatformAdapter {
      *
      * @abstract
      * @param {string} path Single-segment URL prefix such as '/project'.
-     *   May contain letters, digits, underscores and hyphens after the initial slash.
+     *   May contain letters, digits, underscores, and hyphens after the initial slash.
      * @param {string} target Directory path, relative to the content directory if needed.
      * @returns {Promise<void>} Resolves after the mapping is registered.
      * @throws {Error} Rejects for an invalid prefix or target path.
@@ -578,9 +579,9 @@ export default class PlatformAdapter {
     /**
      * Starts watching one file after host metadata changes settle for 250 ms.
      * The parent directory must exist; the file itself may initially be absent.
-     * Reports changes, deletion, recreation and errors without an initial event.
+     * Reports changes, deletion, recreation, and errors without an initial event.
      * Use onFileChange() to receive notifications and filter them by identifier.
-     * Watches are released when the renderer navigates, crashes or closes.
+     * Watches are released when the renderer navigates, crashes, or closes.
      *
      * @abstract
      * @param {string} id Nonempty identifier unique among this renderer's active watches.
