@@ -4,48 +4,62 @@ import { line } from 'd3-shape';
 
 let tooltipId = 0;
 
-export function renderD3Curve(container, { labels, series, type, width, colorSymbol }) {
+export function renderD3Curve(container, {
+    labels, series, type, width, colorSymbol, columnLabel, measureLabel,
+    integer, formatValue, describeValue, title
+}) {
     const height = 320;
     const margin = { top: 20, right: 20, bottom: 48, left: 50 };
     const bottom = height - margin.bottom;
-    const x = scaleBand(labels, [margin.left, width - margin.right]).padding(0.2);
-    const y = scaleLinear([0, Math.max(1, ...series.flatMap(item => item.values))], [bottom, margin.top]).nice();
+    const x = scaleBand(labels.map((_, i) => i),
+                        [margin.left, width - margin.right]).padding(0.2);
+    const values = series.flatMap(item => item.values).filter(value => value !== null);
+    const y = scaleLinear([
+        Math.min(0, ...values), Math.max(1, ...values)
+    ], [bottom, margin.top]).nice();
     const svg = select(container).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
-        .attr('role', 'img').attr('aria-label', 'Card counts by mana value and color');
-    svg.append('title').text('Card counts by mana value and color');
-    for (const tick of y.ticks(6).filter(Number.isInteger)) {
+        .attr('role', 'group').attr('aria-label', title || measureLabel);
+    svg.append('title').text(title || measureLabel);
+    for (const tick of y.ticks(6).filter(value => !integer || Number.isInteger(value))) {
         svg.append('line').attr('class', 'stats-gridline')
             .attr('x1', margin.left).attr('x2', width - margin.right)
             .attr('y1', y(tick)).attr('y2', y(tick));
         svg.append('text').attr('class', 'stats-axis-tick').attr('text-anchor', 'end')
-            .attr('x', margin.left - 10).attr('y', y(tick) + 4).text(tick);
+            .attr('x', margin.left - 10).attr('y', y(tick) + 4).text(formatValue(tick));
     }
-    labels.forEach(label => {
+    labels.forEach((label, i) => {
         svg.append('text').attr('class', 'stats-axis-tick').attr('text-anchor', 'middle')
-            .attr('x', x(label) + x.bandwidth() / 2).attr('y', bottom + 22).text(label);
+            .attr('x', x(i) + x.bandwidth() / 2).attr('y', bottom + 22).text(label);
     });
     svg.append('text').attr('class', 'stats-axis-label').attr('text-anchor', 'middle')
-        .attr('x', (margin.left + width - margin.right) / 2).attr('y', height - 5).text('Mana value (CMC)');
+        .attr('x', (margin.left + width - margin.right) / 2)
+        .attr('y', height - 5).text(columnLabel);
     svg.append('text').attr('class', 'stats-axis-label').attr('transform', 'rotate(-90)')
-        .attr('text-anchor', 'middle').attr('x', -(margin.top + bottom) / 2).attr('y', 13).text('Cards');
+        .attr('text-anchor', 'middle').attr('x', -(margin.top + bottom) / 2)
+        .attr('y', 13).text(measureLabel);
     const subX = scaleBand(series.map(item => item.id), [0, x.bandwidth()]).padding(0.08);
     for (const item of series) {
-        const points = item.values.map((value, i) => ({ label: labels[i], value }));
-        const group = svg.append('g').attr('fill', item.color);
+        const points = item.values.map((value, index) => ({ index, value }));
+        const color = item.color || 'var(--sl-color-primary-600)';
+        const group = svg.append('g').attr('fill', color);
         if (type === 'line') {
-            group.append('path').attr('fill', 'none').attr('stroke', item.color)
+            group.append('path').attr('fill', 'none').attr('stroke', color)
                 .attr('stroke-width', 2)
-                .attr('d', line().x(point => x(point.label) + x.bandwidth() / 2).y(point => y(point.value))(points));
+                .attr('d', line().defined(point => point.value !== null)
+                    .x(point => x(point.index) + x.bandwidth() / 2)
+                    .y(point => y(point.value))(points));
         }
         for (const point of points) {
+            if (point.value === null) continue;
             const mark = type === 'bar'
-                ? group.append('rect').attr('x', x(point.label) + subX(item.id))
-                    .attr('y', y(point.value)).attr('width', subX.bandwidth())
-                    .attr('height', bottom - y(point.value))
-                : group.append('circle').attr('cx', x(point.label) + x.bandwidth() / 2)
+                ? group.append('rect').attr('x', x(point.index) + subX(item.id))
+                    .attr('y', y(Math.max(0, point.value)))
+                    .attr('width', subX.bandwidth())
+                    .attr('height', Math.abs(y(0) - y(point.value)))
+                : group.append('circle').attr('cx', x(point.index) + x.bandwidth() / 2)
                     .attr('cy', y(point.value)).attr('r', 3.5);
-            mark.attr('data-mana-index', labels.indexOf(point.label));
+            mark.attr('data-category-index', point.index);
         }
     }
 
@@ -76,13 +90,13 @@ export function renderD3Curve(container, { labels, series, type, width, colorSym
         guide.attr('visibility', 'hidden');
     };
     const show = index => {
-        heading.textContent = `Mana value ${labels[index]}`;
+        heading.textContent = `${columnLabel} ${labels[index]}`;
         rows.forEach((count, i) => {
             const value = series[i].values[index];
-            count.textContent = `${value} ${value === 1 ? 'card' : 'cards'}`;
+            count.textContent = describeValue(value);
         });
         tooltip.hidden = false;
-        const center = x(labels[index]) + x.bandwidth() / 2;
+        const center = x(index) + x.bandwidth() / 2;
         guide.attr('x1', center).attr('x2', center).attr('visibility', 'visible');
         const bounds = svg.node().getBoundingClientRect();
         const chartBounds = container.getBoundingClientRect();
@@ -94,12 +108,12 @@ export function renderD3Curve(container, { labels, series, type, width, colorSym
         tooltip.style.top = '8px';
     };
     labels.forEach((label, index) => {
-        const center = x(label) + x.bandwidth() / 2;
+        const center = x(index) + x.bandwidth() / 2;
         const left = index === 0 ? margin.left : center - x.step() / 2;
         const right = index === labels.length - 1
             ? width - margin.right : center + x.step() / 2;
-        const description = `Mana value ${label}. ` + series.map(item => (
-            `${item.label}: ${item.values[index]} cards`
+        const description = `${columnLabel} ${label}. ` + series.map(item => (
+            `${item.label}: ${describeValue(item.values[index])}`
         )).join(', ');
         svg.append('rect').attr('class', 'stats-hit-region')
             .attr('x', left).attr('y', margin.top)

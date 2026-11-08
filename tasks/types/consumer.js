@@ -25,6 +25,20 @@ function createOutputItem(artifact) {
 }
 
 const game = new Game({ id: 'example', version: '1.0.0', path: '/games/example' });
+game.statistics.registerDimension('suit', {
+    label: 'Suit', values: card => [card.suit]
+});
+game.statistics.registerReport('suit-rank', {
+    type: 'matrix', rows: 'suit', columns: 'rank', measure: 'card-count'
+});
+game.statistics.registerChartType('example:summary', {
+    shape: 'matrix',
+    create: container => ({
+        render: data => { container.textContent = String(data.total); }
+    })
+});
+// @ts-expect-error Dimension accessors must return arrays of category IDs.
+game.statistics.registerDimension('invalid', { label: 'Invalid', values: () => 3 });
 /** @type {Promise<string>} */
 const platformText = game.platform.readFile('project.cmproj');
 /** @type {Promise<ArrayBuffer>} */

@@ -19,6 +19,7 @@ import filterPresets from './ui/buildFilterModal/filterPresets.js';
 import MagicSettings from './ui/settings/MagicSettings.js';
 import SetIconEditorSettings from './ui/settings/SetIconEditorSettings.js';
 import FaceSymbolSettings from './ui/settings/FaceSymbolSettings.js';
+import { registerStatistics } from './statistics/registerStatistics.js';
 
 function randomId() {
     return Math.random().toString(36).substring(2, 10);
@@ -33,6 +34,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.Project = MagicProject;
         this.Card = MagicCard;
         this.filterPresets = filterPresets;
+        registerStatistics(this);
     }
 
     async init() {
@@ -69,6 +71,8 @@ export default class MagicTheGathering extends CardMagicianGame {
     get columns() {
         return buildColumns();
     }
+
+    get statisticsComponent() { return 'cm-magic-statistics'; }
 
     get defaultTemplateId() {
         return 'magic/M15/Main';

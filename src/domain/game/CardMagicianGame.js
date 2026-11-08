@@ -13,6 +13,7 @@ import { loadFont } from '../template/dynamicFontLoader.js';
 import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
 import { manageCollection } from '../../shared/storageUtils.js';
+import StatisticsRegistry from '../statistics/StatisticsRegistry.js';
 
 // Inherit platform methods without losing them through object spread.
 /** @type {typeof platform & { watchFile: typeof watchFile }} */
@@ -32,6 +33,7 @@ export default class CardMagicianGame {
         this.Card = window.CardMagicianCard;
         /** @type {CardMagicianProjectConstructor} */
         this.Project = CardMagicianProject;
+        this.statistics = new StatisticsRegistry();
     }
 
     get platform() {
@@ -98,6 +100,9 @@ export default class CardMagicianGame {
      * @returns {Array<Column>}
      */
     get columns() { return []; }
+
+    /** Custom element name for the game's default Statistics page. */
+    get statisticsComponent() { return null; }
 
     /**
      * Registers a SerializerAdapter constructed by a passed factory

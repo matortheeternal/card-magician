@@ -93,6 +93,10 @@ export function onActiveCardChanged(callback) {
 export function onActiveProjectChanged(callback) {
     projectChangedCallbacks.push(callback);
     callback(window.activeProject);
+    return () => {
+        const index = projectChangedCallbacks.indexOf(callback);
+        if (index !== -1) projectChangedCallbacks.splice(index, 1);
+    };
 }
 
 export async function setActiveEditorCard(card) {
