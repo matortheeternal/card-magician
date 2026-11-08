@@ -2,8 +2,10 @@ import { registerChartType } from '../../../../domain/statistics/chartTypes.js';
 import { matrixRenderer } from './matrix.js';
 import { renderD3Curve } from './series.js';
 import { categorySymbol } from '../categoryLabel.js';
+import { horizontalBarRenderer } from './horizontalBars.js';
 
 registerChartType('matrix', matrixRenderer);
+registerChartType('horizontal-bar', horizontalBarRenderer);
 for (const [type, label] of [['line', 'Lines'], ['bar', 'Bars']]) {
     registerChartType(type, {
         label, shape: 'series',

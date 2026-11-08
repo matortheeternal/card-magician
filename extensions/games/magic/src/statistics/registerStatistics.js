@@ -1,5 +1,6 @@
 import { COLORS, RARITIES, CARD_TYPES, cardRecord } from './cardRecord.js';
 import './MagicStatistics.js';
+import { addDesignerFields, registerDesignerReports } from './designerReports.js';
 
 function manaCategories(records) {
     const values = new Set([0]);
@@ -18,7 +19,15 @@ function manaCategories(records) {
 
 export function registerStatistics(game) {
     const registry = game.statistics;
-    registry.prepare = card => ({ card, ...cardRecord(card, game) });
+    const cardIds = new WeakMap();
+    let nextId = 0;
+    registry.prepare = card => {
+        if (!cardIds.has(card)) cardIds.set(card, nextId++);
+        return {
+            card, analysisId: cardIds.get(card),
+            ...cardRecord(card, game), ...addDesignerFields(card)
+        };
+    };
     registry.include = record => !record.isAuxiliary && RARITIES.includes(record.rarity);
     registry.registerDimension('color', {
         label: 'Color', values: record => [record.color],
@@ -64,4 +73,5 @@ export function registerStatistics(game) {
         toggleSeries: true,
         filterToggle: { filter: 'nonland', label: 'Include lands' }
     });
+    registerDesignerReports(registry);
 }

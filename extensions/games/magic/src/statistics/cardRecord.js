@@ -10,7 +10,7 @@ export const COLORS = [
 export const RARITIES = ['common', 'uncommon', 'rare', 'mythic', 'special'];
 export const CARD_TYPES = [
     'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment',
-    'Land', 'Planeswalker', 'Battle', 'Kindred', 'Other'
+    'Land', 'Planeswalker', 'Other'
 ];
 
 function tryParseCost(game, cost) {

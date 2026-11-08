@@ -36,7 +36,7 @@ export function createMatrix(data, { totals = true, title } = {}) {
         const row = table.createTFoot().insertRow();
         const heading = document.createElement('th');
         heading.scope = 'row';
-        heading.textContent = 'Total';
+        heading.textContent = data.integer ? 'Total' : 'Overall';
         row.appendChild(heading);
         for (const value of [...data.columnTotals, data.total])
             row.insertCell().textContent = data.formatValue(value);

@@ -26,6 +26,9 @@
  * @property {string} [x]
  * @property {string} [series]
  * @property {string} [measure]
+ * @property {string[]} [measures] Measures offered in the chart's selector.
+ * @property {'ascending'|'descending'} [sortRows] Sort by the row's aggregate value.
+ * @property {number} [limitRows] Display the first N sorted rows; totals retain all rows.
  * @property {string[]} [filters]
  * @property {string[]} [types] Compatible chart types offered as a switch.
  * @property {boolean} [toggleSeries]

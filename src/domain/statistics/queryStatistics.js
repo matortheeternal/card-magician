@@ -82,19 +82,38 @@ export function queryStatistics(records, registry, definition, shape) {
         return value;
     };
     const cells = groups.map(row => row.map(reduce));
+    const rowTotals = rowGroups.map(reduce);
+    let order = rows.categories.map((_, i) => i);
+    if (definition.sortRows) {
+        if (!['ascending', 'descending'].includes(definition.sortRows))
+            throw new Error('Row sort must be ascending or descending');
+        order.sort((a, b) => {
+            if (rowTotals[a] === null) return rowTotals[b] === null ? 0 : 1;
+            if (rowTotals[b] === null) return -1;
+            const difference = rowTotals[a] - rowTotals[b];
+            return (definition.sortRows === 'ascending' ? difference : -difference)
+                || rows.categories[a].label.localeCompare(rows.categories[b].label);
+        });
+    }
+    if (definition.limitRows !== undefined) {
+        if (!Number.isInteger(definition.limitRows) || definition.limitRows < 1)
+            throw new Error('Row limit must be a positive integer');
+        order = order.slice(0, definition.limitRows);
+    }
     const formatValue = measure.format || (value => value === null ? '—' : String(value));
     return {
-        rows: rows.categories, columns: columns.categories, cells,
+        rows: order.map(i => rows.categories[i]), columns: columns.categories,
+        cells: order.map(i => cells[i]),
         rowLabel: rowDimension.label, columnLabel: columnDimension.label,
         measureLabel: measure.label, integer: Boolean(measure.integer),
-        rowTotals: rowGroups.map(reduce), columnTotals: columnGroups.map(reduce),
+        rowTotals: order.map(i => rowTotals[i]), columnTotals: columnGroups.map(reduce),
         total: reduce(included), cardCount: included.length,
         excludedCount: scoped.length - included.length,
         scopeCount: scoped.length, formatValue,
         describeValue: measure.describe || formatValue,
         labels: columns.categories.map(category => category.label),
-        series: rows.categories.map((category, i) => ({
-            ...category, values: cells[i]
+        series: order.map(i => ({
+            ...rows.categories[i], values: cells[i]
         }))
     };
 }

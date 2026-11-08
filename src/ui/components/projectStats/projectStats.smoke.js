@@ -29,7 +29,7 @@ describe('Statistics', () => {
         stats = document.querySelector('cm-project-stats');
         curve = stats.querySelector('cm-chart[report="mana-curve"]');
         tabs.show('statistics');
-        await eventually(() => stats.querySelector('.stats-chart svg'));
+        await eventually(() => curve.querySelector('.stats-chart svg'));
     });
 
     afterEach(async () => {
@@ -76,8 +76,10 @@ describe('Statistics', () => {
     });
 
     it('renders both matrices and accessible color symbols', async () => {
-        expect(stats.querySelectorAll('.stats-render.stats-matrix tbody tr').length)
-            .toBe(14);
+        expect(stats.querySelector('[report="color-rarity"]')
+            .querySelectorAll('tbody tr').length).toBe(7);
+        expect(stats.querySelector('[report="color-type"]')
+            .querySelectorAll('tbody tr').length).toBe(7);
         const symbol = stats.querySelector('.stats-render.stats-matrix sl-tooltip');
         expect(symbol.content).toBe('White');
         expect(symbol.querySelector('img').getAttribute('aria-label')).toBe('White');
@@ -89,23 +91,23 @@ describe('Statistics', () => {
 
     it('switches D3 between lines and grouped bars and hides colors', async () => {
         curve.querySelector('[data-series="1"]').click();
-        await eventually(() => stats.querySelectorAll('.stats-chart path').length === 6);
+        await eventually(() => curve.querySelectorAll('.stats-chart path').length === 6);
         expect(curve.querySelector('[data-series="1"]').getAttribute('aria-pressed'))
             .toBe('false');
         stats.querySelector('[data-chart-type="bar"]').click();
-        await eventually(() => stats.querySelectorAll('.stats-chart g rect').length > 0);
-        expect(stats.querySelectorAll('.stats-chart path').length).toBe(0);
-        expect(stats.querySelectorAll('.stats-curve-table tbody tr').length).toBe(6);
+        await eventually(() => curve.querySelectorAll('.stats-chart g rect').length > 0);
+        expect(curve.querySelectorAll('.stats-chart path').length).toBe(0);
+        expect(curve.querySelectorAll('.stats-curve-table tbody tr').length).toBe(6);
     });
 
     it('shows a shared tooltip on hover and keyboard focus in both chart types', async () => {
         const hoverManaTwo = () => {
-            const region = stats.querySelectorAll('.stats-hit-region')[2];
+            const region = curve.querySelectorAll('.stats-hit-region')[2];
             region.dispatchEvent(new PointerEvent('pointerenter'));
             return region;
         };
         let region = hoverManaTwo();
-        let tooltip = stats.querySelector('.stats-chart-tooltip');
+        let tooltip = curve.querySelector('.stats-chart-tooltip');
         expect(tooltip.hidden).toBeFalse();
         expect(tooltip.textContent).toContain('Mana value 2');
         expect(tooltip.querySelectorAll('.stats-tooltip-row').length).toBe(7);
@@ -115,14 +117,14 @@ describe('Statistics', () => {
         region.focus();
         expect(tooltip.hidden).toBeFalse();
         curve.querySelector('[data-series="1"]').click();
-        await eventually(() => stats.querySelectorAll('.stats-tooltip-row').length === 6);
+        await eventually(() => curve.querySelectorAll('.stats-tooltip-row').length === 6);
         stats.querySelector('[data-chart-type="bar"]').click();
-        await eventually(() => stats.querySelectorAll('.stats-chart circle').length === 0);
+        await eventually(() => curve.querySelectorAll('.stats-chart circle').length === 0);
         region = hoverManaTwo();
-        tooltip = stats.querySelector('.stats-chart-tooltip');
+        tooltip = curve.querySelector('.stats-chart-tooltip');
         expect(tooltip.hidden).toBeFalse();
         expect(tooltip.textContent).not.toContain('Blue');
-        stats.querySelector('.stats-chart svg')
+        curve.querySelector('.stats-chart svg')
             .dispatchEvent(new PointerEvent('pointerleave'));
         expect(tooltip.hidden).toBeTrue();
     });
@@ -135,8 +137,8 @@ describe('Statistics', () => {
         checkbox.click();
         await eventually(() => curve.data.cardCount === 5);
         for (const button of curve.querySelectorAll('[data-series]')) button.click();
-        await eventually(() => stats.querySelector('.stats-chart-empty'));
-        expect(stats.querySelector('.stats-chart-empty').textContent)
+        await eventually(() => curve.querySelector('.stats-chart-empty'));
+        expect(curve.querySelector('.stats-chart-empty').textContent)
             .toContain('Select a series');
         activeProject.cards = [];
         changed(activeProject, 'cards');
@@ -155,7 +157,7 @@ describe('Statistics', () => {
         );
         changed(activeProject, 'cards');
         await eventually(() => curve.data.cardCount === 5);
-        for (const chart of stats.querySelectorAll('cm-chart'))
+        for (const chart of stats.querySelectorAll('[report="color-rarity"], [report="color-type"], [report="mana-curve"]'))
             expect(chart.data.cardCount).toBe(5);
         expect(stats.querySelector('.stats-scope').textContent).toBe('');
         expect(curve.querySelector('.stats-description').textContent).toBe('');
@@ -194,6 +196,53 @@ describe('Statistics', () => {
             expect(chart.querySelector('.stats-chart-error').textContent)
                 .toContain('Unknown statistics dimension');
         } finally { chart.remove(); }
+    });
+
+    it('analyzes creature support, text distributions, medians and wordiest cards', async () => {
+        const words = count => Array(count).fill('word').join(' ');
+        activeProject.cards = [
+            makeCard('1G', 'Creature', 'common', {
+                name: 'Twin', subType: 'Elf Scout', rulesText: words(3)
+            }),
+            makeCard('2G', 'Creature', 'common', {
+                name: 'Elder', subType: 'Elf Shaman', rulesText: words(3)
+            }),
+            makeCard('3G', 'Creature', 'common', {
+                name: 'Twin', subType: 'Elf Warrior', rulesText: words(30)
+            }),
+            makeCard('R', 'Instant', 'rare', { name: 'Long spell', rulesText: words(40) }),
+            makeCard('', 'Token Creature', 'common', {
+                name: 'Excluded', subType: 'Dragon', rulesText: words(500)
+            })
+        ];
+        changed(activeProject, 'cards');
+        const wordiest = stats.querySelector('[report="wordiest-cards"]');
+        await eventually(() => wordiest.data?.cells[0]?.[0] === 40);
+        expect(wordiest.data.rows.length).toBe(4);
+        expect(new Set(wordiest.data.rows.map(row => row.id)).size).toBe(4);
+        expect(wordiest.data.rows[0].label).toBe('Long spell');
+        expect(wordiest.data.cells.map(row => row[0])).toEqual([40, 30, 3, 3]);
+        const creatures = stats.querySelector('[report="creature-types"]');
+        expect(creatures.data.rows[0].label).toBe('Elf');
+        expect(creatures.data.rowTotals[0]).toBe(3);
+        expect(creatures.querySelectorAll('.stats-ranking-row').length).toBe(4);
+        creatures.querySelector('[data-chart-type="matrix"]').click();
+        await eventually(() => creatures.querySelector('tbody tr'));
+        expect(creatures.data.total).toBe(3);
+        const commons = stats.querySelector('[report="common-creature-curve"]');
+        expect(commons.data.cardCount).toBe(3);
+        const histogram = stats.querySelector('[report="rules-text-length"]');
+        expect(histogram.data.labels).toEqual(['0', '1–19', '20–39', '40–59']);
+        expect(histogram.data.series[0].values).toEqual([0, 2, 1, 0]);
+        const summary = stats.querySelector('[report="rules-text-by-color"]');
+        expect(summary.data.cells[4][0]).toBe(12);
+        const select = summary.querySelector('[data-measure]');
+        select.value = 'median-words';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        await eventually(() => summary.data.measureLabel === 'Median words');
+        expect(summary.data.cells[4][0]).toBe(3);
+        expect(stats.querySelectorAll('.stats-chart-error:not([hidden])').length)
+            .toBe(0);
     });
 
     it('supports game-scoped renderer registration and disposes renderers', async () => {

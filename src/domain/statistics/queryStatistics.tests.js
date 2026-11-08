@@ -100,4 +100,19 @@ describe('Statistics queries', () => {
             ...definition, measure: 'invalid'
         }, 'matrix')).toThrowError(/non-finite/);
     });
+
+    it('sorts and limits rows without changing distinct totals', () => {
+        const result = queryStatistics(records, registry, {
+            ...definition, sortRows: 'descending', limitRows: 1
+        }, 'matrix');
+        expect(result.rows.map(row => row.id)).toEqual(['a']);
+        expect(result.rowTotals).toEqual([2]);
+        expect(result.cells).toEqual([[2, 1]]);
+        expect(result.series[0].values).toEqual([2, 1]);
+        expect(result.total).toBe(3);
+        expect(result.cardCount).toBe(3);
+        expect(() => queryStatistics(records, registry, {
+            ...definition, limitRows: 0
+        }, 'matrix')).toThrowError(/positive integer/);
+    });
 });

@@ -34,6 +34,7 @@ export default class Chart extends ReactiveComponent {
     resetOptions() {
         this.selectedType = null;
         this.filterChecked = undefined;
+        this.selectedMeasure = null;
         this.hiddenSeries.clear();
         this.requestUpdate();
     }
@@ -49,6 +50,9 @@ export default class Chart extends ReactiveComponent {
                     <div class="stats-legend" role="group"></div>
                     <label class="stats-filter"><input type="checkbox"
                         data-filter-toggle> <span></span></label>
+                    <label class="stats-measure">Measure
+                        <select data-measure aria-label="Measure"></select>
+                    </label>
                 </div>
                 <div class="stats-render"></div>
                 <details class="stats-data"><summary>View chart data</summary>
@@ -68,8 +72,11 @@ export default class Chart extends ReactiveComponent {
             if (type || series) this.requestUpdate();
         });
         this.on('change', event => {
-            if (!event.target.matches('[data-filter-toggle]')) return;
-            this.filterChecked = event.target.checked;
+            if (event.target.matches('[data-filter-toggle]'))
+                this.filterChecked = event.target.checked;
+            else if (event.target.matches('[data-measure]'))
+                this.selectedMeasure = event.target.value;
+            else return;
             this.requestUpdate();
         });
         this.resizeObserver = new ResizeObserver(entries => {
@@ -115,6 +122,7 @@ export default class Chart extends ReactiveComponent {
             ? document.activeElement : null;
         const focusType = focused?.getAttribute('data-chart-type');
         const focusSeries = focused?.getAttribute('data-series');
+        const focusMeasure = focused?.matches('[data-measure]');
         try {
             this.updateChart(context);
             const selector = focusType !== null && focusType !== undefined
@@ -124,6 +132,8 @@ export default class Chart extends ReactiveComponent {
                 this.querySelector(`[data-series="${focusSeries}"]`)
                     ?.focus({ preventScroll: true });
             }
+            if (focusMeasure)
+                this.querySelector('[data-measure]').focus({ preventScroll: true });
             this.querySelector('.stats-chart-error').hidden = true;
         } catch (error) {
             this.disposeRenderer();
@@ -137,6 +147,7 @@ export default class Chart extends ReactiveComponent {
 
     updateChart({ registry, records }) {
         const definition = this.resolveDefinition(registry);
+        definition.measure = this.selectedMeasure || definition.measure;
         const type = this.selectedType || definition.type;
         const renderer = registry.getChartType(type);
         if (!renderer) throw new Error(`Unknown statistics chart type: ${type}`);
@@ -235,8 +246,21 @@ export default class Chart extends ReactiveComponent {
         filter.hidden = !definition.filterToggle;
         filter.querySelector('span').textContent = definition.filterToggle?.label || '';
         filter.querySelector('input').checked = Boolean(this.filterChecked);
+        const measureControl = this.querySelector('.stats-measure');
+        measureControl.hidden = !definition.measures?.length;
+        const select = measureControl.querySelector('select');
+        select.replaceChildren();
+        for (const id of definition.measures || []) {
+            const measure = registry.measures.get(id);
+            if (!measure) throw new Error(`Unknown statistics measure: ${id}`);
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = measure.label;
+            option.selected = id === definition.measure;
+            select.appendChild(option);
+        }
         this.querySelector('.stats-curve-controls').hidden =
-            !definition.filterToggle && !legend.children.length;
+            !definition.filterToggle && !legend.children.length && measureControl.hidden;
     }
 
     disposeRenderer() {

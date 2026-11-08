@@ -114,3 +114,36 @@ cm-chart {
 cm-chart [hidden] { display: none !important; }
 cm-chart .stats-category-swatch { width: 1rem; height: 1rem; border-radius: 50%; }
 cm-chart .stats-chart-error { color: var(--sl-color-danger-600); }
+cm-chart .stats-ranking { max-height: 420px; overflow-y: auto; }
+cm-chart .stats-ranking > sl-tooltip { display: block; }
+cm-chart .stats-ranking-row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) minmax(6rem, 4fr) 3rem;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    font-size: var(--sl-font-size-small);
+}
+cm-chart .stats-ranking-row strong { text-align: end; }
+cm-chart .stats-ranking-row:focus-visible {
+    outline: 2px solid var(--sl-color-primary-500);
+    outline-offset: -2px;
+}
+cm-chart .stats-ranking-track {
+    display: block;
+    position: relative;
+    height: 0.8rem;
+    background: var(--sl-color-neutral-100);
+    border-radius: 3px;
+    overflow: hidden;
+}
+cm-chart .stats-ranking-bar { position: absolute; height: 100%; border-radius: 3px; }
+cm-chart .stats-measure select {
+    font: inherit;
+    margin-inline-start: 0.5rem;
+    padding: 0.35rem;
+    color: var(--sl-color-neutral-900);
+    background: var(--sl-color-neutral-0);
+    border: 1px solid var(--sl-color-neutral-300);
+    border-radius: var(--sl-border-radius-medium);
+}
