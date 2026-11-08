@@ -11,10 +11,20 @@ function localizeFilterToggle(toggle) {
     return { ...toggle, label: localizeStatisticsText(toggle.label) };
 }
 
+function localizeView(view) {
+    return {
+        ...view, label: localizeStatisticsText(view.label),
+        definition: localizeReport(view.definition || {})
+    };
+}
+
 export function localizeReport(definition) {
     const report = structuredClone(definition);
-    report.title = localizeStatisticsText(report.title);
-    report.description = localizeStatisticsText(report.description);
-    report.filterToggle = localizeFilterToggle(report.filterToggle);
+    for (const key of ['title', 'description']) {
+        if (key in report) report[key] = localizeStatisticsText(report[key]);
+    }
+    if (report.filterToggle)
+        report.filterToggle = localizeFilterToggle(report.filterToggle);
+    if (report.views) report.views = report.views.map(localizeView);
     return report;
 }
