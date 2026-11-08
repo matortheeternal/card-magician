@@ -15,7 +15,12 @@ export default [
         languageOptions: { sourceType: 'commonjs', globals: globals.node }
     },
     {
-        files: ['src/*.js', 'src/**/*.js', 'extensions/**/*.js'],
+        files: [
+            'src/*.js',
+            'src/**/*.js',
+            'extensions/cardparts/*.js',
+            'extensions/exporters/*.js'
+        ],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -47,7 +52,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/**/*.js',
+            'extensions/cardparts/*.js',
+            'extensions/exporters/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
@@ -136,7 +142,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/**/*.js',
+            'extensions/cardparts/*.js',
+            'extensions/exporters/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
@@ -155,7 +162,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/**/*.js',
+            'extensions/cardparts/*.js',
+            'extensions/exporters/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
