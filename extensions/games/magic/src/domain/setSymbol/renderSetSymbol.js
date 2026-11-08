@@ -1,8 +1,10 @@
 import DOMPurify from 'dompurify';
-import rarityPresets from './rarityPresets.js';
+import rarityPresets, { RARITY_GRADIENT_OFFSETS } from './rarityPresets.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const OFFSETS = ['0%', '45%', '55%', '100%'];
+const OFFSETS = RARITY_GRADIENT_OFFSETS.map(
+    offset => `${Number((offset * 100).toFixed(6))}%`
+);
 let nextId = 0;
 
 function safeColor(value, fallback) {

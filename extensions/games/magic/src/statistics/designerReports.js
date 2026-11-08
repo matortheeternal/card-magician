@@ -56,7 +56,8 @@ export function registerDesignerReports(registry) {
     registry.registerReport('creature-types', {
         type: 'horizontal-bar', types: ['horizontal-bar', 'matrix'],
         title: 'Creature types', rows: 'creature-type', columns: 'color',
-        measure: 'card-count', filters: ['creatures'], sortRows: 'descending'
+        measure: 'card-count', filters: ['creatures'], sortRows: 'descending',
+        stacked: true
     });
     registry.registerReport('common-creature-curve', {
         type: 'bar', types: ['bar', 'line'], title: 'Common creature curve',

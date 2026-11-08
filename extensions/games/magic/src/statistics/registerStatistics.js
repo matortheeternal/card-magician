@@ -1,6 +1,9 @@
 import { COLORS, RARITIES, CARD_TYPES, cardRecord } from './cardRecord.js';
 import './MagicStatistics.js';
 import { addDesignerFields, registerDesignerReports } from './designerReports.js';
+import rarityPresets, {
+    RARITY_GRADIENT_OFFSETS
+} from '../domain/setSymbol/rarityPresets.js';
 
 function manaCategories(records) {
     const values = new Set([0]);
@@ -40,8 +43,12 @@ export function registerStatistics(game) {
         }))
     });
     registry.registerDimension('rarity', {
-        label: 'Rarity', categories: RARITIES.map(id => ({
-            id, label: id.charAt(0).toUpperCase() + id.slice(1)
+        label: 'Rarity', categories: rarityPresets.map(preset => ({
+            id: preset.id, label: preset.name, color: preset.g2,
+            outline: preset.outline,
+            gradient: RARITY_GRADIENT_OFFSETS.map((offset, i) => ({
+                offset, color: preset[`g${i + 1}`]
+            }))
         })), values: record => [record.rarity]
     });
     registry.registerDimension('card-type', {

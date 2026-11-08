@@ -44,15 +44,18 @@ export default class Chart extends ReactiveComponent {
             <section class="stats-block">
                 <div class="stats-block-header">
                     <div><h2></h2><p class="stats-description"></p></div>
-                    <div class="stats-switch" role="group" aria-label="Chart type"></div>
+                    <div class="stats-header-controls">
+                        <div class="stats-switch" role="group"
+                            aria-label="Chart type"></div>
+                        <label class="stats-measure">Measure
+                            <select data-measure aria-label="Measure"></select>
+                        </label>
+                    </div>
                 </div>
                 <div class="stats-curve-controls">
                     <div class="stats-legend" role="group"></div>
                     <label class="stats-filter"><input type="checkbox"
                         data-filter-toggle> <span></span></label>
-                    <label class="stats-measure">Measure
-                        <select data-measure aria-label="Measure"></select>
-                    </label>
                 </div>
                 <div class="stats-render"></div>
                 <details class="stats-data"><summary>View chart data</summary>
@@ -234,8 +237,13 @@ export default class Chart extends ReactiveComponent {
                 button.setAttribute('aria-label', category.label);
                 button.setAttribute('aria-pressed',
                                     String(!this.hiddenSeries.has(category.id)));
-                if (category.icon) button.appendChild(categorySymbol(category));
-                else button.textContent = category.label;
+                if (category.icon || category.gradient)
+                    button.appendChild(categorySymbol(category));
+                if (!category.icon) {
+                    button.appendChild(
+                        document.createTextNode(category.label)
+                    );
+                }
                 const tooltip = document.createElement('sl-tooltip');
                 tooltip.content = category.label;
                 tooltip.appendChild(button);
@@ -260,7 +268,7 @@ export default class Chart extends ReactiveComponent {
             select.appendChild(option);
         }
         this.querySelector('.stats-curve-controls').hidden =
-            !definition.filterToggle && !legend.children.length && measureControl.hidden;
+            !definition.filterToggle && !legend.children.length;
     }
 
     disposeRenderer() {

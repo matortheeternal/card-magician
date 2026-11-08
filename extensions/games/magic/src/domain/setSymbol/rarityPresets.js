@@ -1,3 +1,5 @@
+export const RARITY_GRADIENT_OFFSETS = [0, 0.45, 0.55, 1];
+
 export default [
     {
         id: 'common',

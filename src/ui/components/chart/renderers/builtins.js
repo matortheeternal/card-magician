@@ -1,7 +1,6 @@
 import { registerChartType } from '../../../../domain/statistics/chartTypes.js';
 import { matrixRenderer } from './matrix.js';
 import { renderD3Curve } from './series.js';
-import { categorySymbol } from '../categoryLabel.js';
 import { horizontalBarRenderer } from './horizontalBars.js';
 
 registerChartType('matrix', matrixRenderer);
@@ -10,15 +9,17 @@ for (const [type, label] of [['line', 'Lines'], ['bar', 'Bars']]) {
     registerChartType(type, {
         label, shape: 'series',
         create(container) {
+            let dispose;
             return {
                 render(data, options) {
+                    dispose?.();
                     container.replaceChildren();
-                    renderD3Curve(container, {
+                    dispose = renderD3Curve(container, {
                         ...data, type, width: options.width,
-                        title: options.definition.title,
-                        colorSymbol: categorySymbol
+                        title: options.definition.title
                     });
-                }
+                },
+                dispose() { dispose?.(); }
             };
         }
     });

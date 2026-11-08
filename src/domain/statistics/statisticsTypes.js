@@ -1,6 +1,12 @@
 /**
  * @typedef {string|number} CategoryId
- * @typedef {{id: CategoryId, label: string, icon?: string, color?: string}} Category
+ * @typedef {object} Category
+ * @property {CategoryId} id
+ * @property {string} label
+ * @property {string} [icon]
+ * @property {string} [color]
+ * @property {string} [outline]
+ * @property {{offset: number, color: string}[]} [gradient] Diagonal paint stops, 0–1.
  * @typedef {object} StatisticsDimension
  * @property {string} label
  * @property {(record: any) => Array<CategoryId|null|undefined>} values
@@ -29,6 +35,7 @@
  * @property {string[]} [measures] Measures offered in the chart's selector.
  * @property {'ascending'|'descending'} [sortRows] Sort by the row's aggregate value.
  * @property {number} [limitRows] Display the first N sorted rows; totals retain all rows.
+ * @property {boolean} [stacked] Stack additive column values in horizontal bars.
  * @property {string[]} [filters]
  * @property {string[]} [types] Compatible chart types offered as a switch.
  * @property {boolean} [toggleSeries]

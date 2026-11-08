@@ -6,7 +6,10 @@ class MagicStatistics extends HTMLElement {
                 <cm-chart report="color-type"></cm-chart>
                 <cm-chart class="stats-curve" report="mana-curve"></cm-chart>
                 <cm-chart class="stats-curve" report="common-creature-curve"></cm-chart>
-                <cm-chart class="stats-curve" report="creature-types"></cm-chart>
+                <cm-chart class="stats-curve" report="creature-types"
+                    style="--chart-matrix-max-height: 420px;
+                        --chart-scroll-padding: var(--sl-spacing-small)">
+                </cm-chart>
                 <cm-chart class="stats-curve" report="rules-text-length"></cm-chart>
                 <cm-chart report="rules-text-by-color"></cm-chart>
                 <cm-chart report="wordiest-cards"></cm-chart>

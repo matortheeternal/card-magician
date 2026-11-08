@@ -1,9 +1,13 @@
+import { categoryBackground } from './categoryPaint.js';
+
 /** A fresh node per use so legends, matrices and tooltips can share metadata. */
 export function categorySymbol(category) {
     if (!category.icon) {
         const swatch = document.createElement('span');
         swatch.className = 'stats-category-swatch';
-        swatch.style.backgroundColor = category.color || 'currentColor';
+        swatch.style.background = categoryBackground(category);
+        if (category.outline)
+            swatch.style.boxShadow = `inset 0 0 0 1px ${category.outline}`;
         swatch.setAttribute('aria-hidden', 'true');
         return swatch;
     }

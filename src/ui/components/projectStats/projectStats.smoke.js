@@ -29,14 +29,14 @@ describe('Statistics', () => {
         stats = document.querySelector('cm-project-stats');
         curve = stats.querySelector('cm-chart[report="mana-curve"]');
         tabs.show('statistics');
+        await new Promise(resolve => {
+            requestAnimationFrame(() => { requestAnimationFrame(resolve); });
+        });
         await eventually(() => curve.querySelector('.stats-chart svg'));
     });
 
     afterEach(async () => {
-        curve.selectedType = null;
-        curve.hiddenSeries.clear();
-        curve.filterChecked = false;
-        curve.requestUpdate();
+        for (const chart of stats.querySelectorAll('cm-chart')) chart.resetOptions();
         await deleteTestProject();
     });
 
@@ -278,5 +278,59 @@ describe('Statistics', () => {
             expect(new StatisticsRegistry().getChartType('test:summary')).toBeUndefined();
         } finally { chart.remove(); }
         expect(dispose).toHaveBeenCalledTimes(1);
+    });
+
+    it('uses rarity gradients and shared tooltips on stacked color bars', async () => {
+        activeProject.cards = [
+            makeCard('1G', 'Creature', 'common', { subType: 'Elf' }),
+            makeCard('W', 'Creature', 'uncommon', { subType: 'Elf' }),
+            makeCard('G', 'Creature', 'common', { subType: 'Elf' }),
+            makeCard('R', 'Instant', 'rare')
+        ];
+        changed(activeProject, 'cards');
+        const creatures = stats.querySelector('[report="creature-types"]');
+        const histogram = stats.querySelector('[report="rules-text-length"]');
+        await eventually(() => creatures.data?.rowTotals[0] === 3
+            && histogram.data?.cardCount === 4);
+        const segments = creatures.querySelectorAll('.stats-ranking-segment');
+        expect(segments.length).toBe(2);
+        expect(parseFloat(segments[0].style.width)).toBeCloseTo(100 / 3);
+        expect(parseFloat(segments[1].style.width)).toBeCloseTo(200 / 3);
+        const row = creatures.querySelector('.stats-ranking-row');
+        row.dispatchEvent(new PointerEvent('pointerenter', {
+            clientX: window.innerWidth - 1, clientY: 200
+        }));
+        const tooltip = creatures.querySelector('.stats-chart-tooltip');
+        expect(tooltip.hidden).toBeFalse();
+        expect(tooltip.textContent).toContain('Elf — 3 cards');
+        expect(tooltip.textContent).toContain('White1 card');
+        expect(tooltip.textContent).toContain('Green2 cards');
+        expect(tooltip.querySelectorAll('.stats-tooltip-row').length).toBe(7);
+        expect(tooltip.getBoundingClientRect().right).toBeLessThanOrEqual(
+            window.innerWidth - 7
+        );
+        row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        expect(tooltip.hidden).toBeTrue();
+        row.focus();
+        expect(tooltip.hidden).toBeFalse();
+        creatures.querySelector('.stats-ranking').dispatchEvent(new Event('scroll'));
+        expect(tooltip.hidden).toBeTrue();
+        expect(histogram.querySelectorAll('linearGradient').length).toBe(5);
+        const gradients = histogram.querySelectorAll('linearGradient');
+        histogram.data.rows.forEach((rarity, i) => {
+            const stops = [...gradients[i].querySelectorAll('stop')];
+            expect(stops.map(stop => stop.getAttribute('stop-color')))
+                .toEqual(rarity.gradient.map(stop => stop.color));
+            expect(stops.map(stop => stop.getAttribute('offset')))
+                .toEqual(['0%', '45%', '55%', '100%']);
+        });
+        histogram.querySelector('.stats-hit-region')
+            .dispatchEvent(new PointerEvent('pointerenter'));
+        const swatches = histogram.querySelectorAll(
+            '.stats-chart-tooltip .stats-category-swatch'
+        );
+        expect(swatches.length).toBe(5);
+        expect(swatches[1].style.background).toContain('linear-gradient');
+        expect(swatches[0].style.boxShadow).toContain('255, 255, 255');
     });
 });
