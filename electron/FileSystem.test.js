@@ -5,20 +5,24 @@ import os from 'node:os';
 import path from 'node:path';
 import FileSystem from './FileSystem.js';
 
-test('relative extension paths use the content root like other relative paths', async () => {
-    const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-paths-'));
-    const content = path.join(temp, 'profile');
-    const external = path.join(temp, 'external-extensions');
-    const files = new FileSystem(content);
-    try {
-        await fs.mkdir(path.join(content, 'extensions'), { recursive: true });
-        await fs.mkdir(external);
-        await fs.writeFile(path.join(content, 'extensions/example.txt'), 'content');
-        await fs.writeFile(path.join(external, 'example.txt'), 'external');
-        assert.equal(await files.readFile('./extensions/example.txt'), 'content');
-        assert.equal(await files.readFile(path.join(external, 'example.txt')), 'external');
-    } finally { await fs.rm(temp, { recursive: true, force: true }); }
-});
+test(
+    'relative extension paths use the content root like other relative paths',
+    async () => {
+        const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-paths-'));
+        const content = path.join(temp, 'profile');
+        const external = path.join(temp, 'external-extensions');
+        const files = new FileSystem(content);
+        try {
+            await fs.mkdir(path.join(content, 'extensions'), { recursive: true });
+            await fs.mkdir(external);
+            await fs.writeFile(path.join(content, 'extensions/example.txt'), 'content');
+            await fs.writeFile(path.join(external, 'example.txt'), 'external');
+            assert.equal(await files.readFile('./extensions/example.txt'), 'content');
+            assert.equal(
+                await files.readFile(path.join(external, 'example.txt')), 'external'
+            );
+        } finally { await fs.rm(temp, { recursive: true, force: true }); }
+    });
 
 test('existence checks distinguish files, folders, and missing paths', async () => {
     const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-exists-'));

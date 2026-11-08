@@ -1,7 +1,8 @@
+const DEVOID_PATTERN = /\bdevoid\b/i;
 const L = localize('module-M15-frame');
 
 function computeFrame(card) {
-    if (/\bdevoid\b/i.test(card.rulesText)) return 'devoid';
+    if (DEVOID_PATTERN.test(card.rulesText)) return 'devoid';
     if (card.isColorless?.() && !card.isArtifact?.()) return 'clear';
     return 'standard';
 }

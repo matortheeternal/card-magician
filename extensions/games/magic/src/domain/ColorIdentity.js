@@ -1,5 +1,8 @@
 import { ActivationCost } from 'mana-scribe';
 
+const MANA_SYMBOL_PATTERN = /{(.+?)}/g;
+const LAND_PATTERN = /\bland\b/i;
+
 const colorNames = {
     w: 'white',
     u: 'blue',
@@ -103,7 +106,7 @@ export default class ColorIdentity {
 
 function getTextSymbols(rulesText) {
     const symbols = [];
-    for (const match of rulesText.matchAll(/{(.+?)}/g)) {
+    for (const match of rulesText.matchAll(MANA_SYMBOL_PATTERN)) {
         const cost = ActivationCost.parse(match[1]);
         symbols.push(...cost.symbols);
     }
@@ -111,7 +114,7 @@ function getTextSymbols(rulesText) {
 }
 
 function isLand(cardFace) {
-    return /\bland\b/i.test(cardFace.superType);
+    return LAND_PATTERN.test(cardFace.superType);
 }
 
 export function getCardFaceColors(cardFace) {

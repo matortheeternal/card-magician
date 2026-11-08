@@ -8,7 +8,9 @@ const L = localize('dialogs');
  * @property {string} [defaultValue] - Initial prompt value.
  */
 
-/** @typedef {undefined | boolean | string | null} DialogResult */
+/**
+ * @typedef {undefined | boolean | string | null} DialogResult
+ */
 
 export default class Dialog {
     confirmed = false;
@@ -22,7 +24,9 @@ export default class Dialog {
         this.options = { ...this.defaultOptions, ...options };
     }
 
-    /** @returns {DialogOptions} Default labels and settings for this dialog type. */
+    /**
+     * @returns {DialogOptions} Default labels and settings for this dialog type.
+     */
     get defaultOptions() {
         return { confirmLabel: L`OK` };
     }
@@ -34,12 +38,16 @@ export default class Dialog {
         return undefined;
     }
 
-    /** @returns {HTMLElement} Control that receives focus when the dialog opens. */
+    /**
+     * @returns {HTMLElement} Control that receives focus when the dialog opens.
+     */
     get autofocusTarget() {
         return this.acceptButton;
     }
 
-    /** @returns {HTMLDivElement} Message content rendered as plain text. */
+    /**
+     * @returns {HTMLDivElement} Message content rendered as plain text.
+     */
     createMessage() {
         const content = document.createElement('div');
         content.className = 'dialog-message';
@@ -47,7 +55,9 @@ export default class Dialog {
         return content;
     }
 
-    /** @returns {HTMLElement} Main dialog content, specialized by subclasses. */
+    /**
+     * @returns {HTMLElement} Main dialog content, specialized by subclasses.
+     */
     createContent() {
         return this.createMessage();
     }
@@ -67,7 +77,9 @@ export default class Dialog {
         return button;
     }
 
-    /** @returns {SlButton[]} Footer buttons in display order. */
+    /**
+     * @returns {SlButton[]} Footer buttons in display order.
+     */
     createActions() {
         this.acceptButton = this.createButton(
             this.options.confirmLabel, () => this.accept(), 'primary'
@@ -75,7 +87,9 @@ export default class Dialog {
         return [this.acceptButton];
     }
 
-    /** @returns {void} Records acceptance and starts closing the dialog. */
+    /**
+     * @returns {void} Records acceptance and starts closing the dialog.
+     */
     accept() {
         this.confirmed = true;
         this.element.hide();
@@ -89,7 +103,9 @@ export default class Dialog {
         if (event.detail.source === 'overlay') event.preventDefault();
     }
 
-    /** @returns {void} Creates the dialog, content, actions, and event bindings. */
+    /**
+     * @returns {void} Creates the dialog, content, actions, and event bindings.
+     */
     render() {
         this.element = document.createElement('sl-dialog');
         this.element.className = 'service-dialog';
@@ -101,7 +117,9 @@ export default class Dialog {
         this.autofocusTarget.setAttribute('autofocus', '');
     }
 
-    /** @returns {Promise<void>} Resolves after this dialog finishes hiding. */
+    /**
+     * @returns {Promise<void>} Resolves after this dialog finishes hiding.
+     */
     waitForClose() {
         return new Promise(resolve => {
             this.element.addEventListener('sl-after-hide', event => {
@@ -119,7 +137,9 @@ export default class Dialog {
         return new Promise(resolve => { setTimeout(resolve, 0); });
     }
 
-    /** @returns {Promise<DialogResult>} Dismissal result after focus restoration. */
+    /**
+     * @returns {Promise<DialogResult>} Dismissal result after focus restoration.
+     */
     async show() {
         this.render();
         const closed = this.waitForClose();

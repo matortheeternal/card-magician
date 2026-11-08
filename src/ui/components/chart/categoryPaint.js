@@ -4,7 +4,9 @@ const percentage = offset => `${Number((offset * 100).toFixed(6))}%`;
 export function categoryBackground(category) {
     if (!category.gradient?.length)
         return category.color || 'var(--sl-color-primary-600)';
-    const stops = category.gradient.map(stop => `${stop.color} ${percentage(stop.offset)}`);
+    const stops = category.gradient.map(stop => (
+        `${stop.color} ${percentage(stop.offset)}`
+    ));
     return `linear-gradient(135deg, ${stops.join(', ')})`;
 }
 

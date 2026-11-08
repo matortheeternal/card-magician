@@ -54,7 +54,9 @@ class CropImage extends HTMLElement {
         this.requestUpdate();
     }
 
-    /** Resolves to true once queued rendering and image-size reads finish. */
+    /**
+     * Resolves to true once queued rendering and image-size reads finish.
+     */
     get updateComplete() {
         return this.waitForUpdate();
     }

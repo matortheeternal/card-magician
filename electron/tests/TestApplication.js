@@ -44,23 +44,36 @@ export class TestApplication {
         return this.child.exitCode !== null || this.child.signalCode;
     }
 
-    async start() {
-        await fs.rm(path.join(this.profile, 'DevToolsActivePort'), { force: true });
+    get extensionArgs() {
+        if (this.extensionsPath === null
+            || this.args?.some(arg => arg.startsWith('--extensions-dir='))) return [];
+        const directory = this.extensionsPath ?? path.join(root, 'extensions');
+        return [`--extensions-dir=${directory}`];
+    }
+
+    get headlessArgs() {
+        if (!process.argv.includes('--headless')) return [];
+        if (process.platform !== 'linux')
+            throw new Error('--headless currently requires the Linux Ozone backend.');
+        return ['--ozone-platform=headless'];
+    }
+
+    get launchConfiguration() {
         const binary = process.env.ELECTRON_SMOKE_BINARY ?? electron;
         const entry = process.env.ELECTRON_SMOKE_BINARY ? [] : [root];
         const sandbox = process.env.ELECTRON_NO_SANDBOX === '1' ? ['--no-sandbox'] : [];
-        const headless = process.argv.includes('--headless');
-        if (headless && process.platform !== 'linux')
-            throw new Error('--headless currently requires the Linux Ozone backend.');
-        const extensionArgs = this.extensionsPath === null
-            || this.args?.some(arg => arg.startsWith('--extensions-dir='))
-            ? [] : [`--extensions-dir=${this.extensionsPath ?? path.join(root, 'extensions')}`];
         const args = [...entry, `--profile=${this.profile}`,
                       `--app-id=${this.id}`, `--url=${this.url}`,
                       '--remote-debugging-port=0',
-                      ...extensionArgs,
-                      ...(headless ? ['--ozone-platform=headless'] : []),
+                      ...this.extensionArgs,
+                      ...this.headlessArgs,
                       ...sandbox, ...(this.args ?? [])];
+        return { binary, args };
+    }
+
+    async start() {
+        await fs.rm(path.join(this.profile, 'DevToolsActivePort'), { force: true });
+        const { binary, args } = this.launchConfiguration;
         this.child = spawn(binary, args, {
             cwd: root, detached: process.platform !== 'win32',
             stdio: ['ignore', 'pipe', 'pipe']
@@ -136,10 +149,11 @@ export class TestApplication {
             const args = ['/pid', String(this.child.pid), '/T', '/F'];
             const killer = spawn('taskkill', args);
             await new Promise(resolve => { killer.once('close', resolve); });
-        } else {
-            try { process.kill(-this.child.pid, 'SIGKILL'); } catch (error) {
-                if (error.code !== 'ESRCH') throw error;
-            }
+            await this.closed;
+            return;
+        }
+        try { process.kill(-this.child.pid, 'SIGKILL'); } catch (error) {
+            if (error.code !== 'ESRCH') throw error;
         }
         await this.closed;
     }

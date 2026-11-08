@@ -14,6 +14,23 @@ test('requires an absolute executable and reports missing executables', async ()
     );
 });
 
+async function readEditorOutput(output) {
+    try {
+        return JSON.parse(await fs.readFile(output, 'utf8'));
+    } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+        return null;
+    }
+}
+
+async function waitForEditorArgs(output) {
+    for (let attempt = 0; attempt < 100; attempt++) {
+        const args = await readEditorOutput(output);
+        if (args !== null) return args;
+        await new Promise(resolve => { setTimeout(resolve, 20); });
+    }
+}
+
 test('passes SVG paths literally and returns while the editor remains open', {
     skip: process.platform === 'win32'
 }, async () => {
@@ -28,16 +45,7 @@ fs.writeFileSync(${JSON.stringify(output)}, JSON.stringify(process.argv.slice(2)
 setTimeout(() => {}, 300);
 `, { mode: 0o755 });
         await launchSvgEditor(executable, filename);
-        let args;
-        for (let attempt = 0; attempt < 100; attempt++) {
-            try {
-                args = JSON.parse(await fs.readFile(output, 'utf8'));
-                break;
-            } catch (error) {
-                if (error.code !== 'ENOENT') throw error;
-                await new Promise(resolve => { setTimeout(resolve, 20); });
-            }
-        }
+        const args = await waitForEditorArgs(output);
         assert.deepEqual(args, [filename]);
     } finally {
         await fs.rm(folder, { recursive: true, force: true });

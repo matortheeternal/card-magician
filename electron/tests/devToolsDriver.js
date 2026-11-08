@@ -15,11 +15,16 @@ export default class DevToolsDriver {
                 if (!reply) return;
                 this.#replies.delete(message.id);
                 clearTimeout(reply.timer);
-                if (message.error) reply.reject(new Error(JSON.stringify(message.error)));
-                else reply.resolve(message.result);
-            } else if (message.method === 'Runtime.exceptionThrown') {
-                this.errors.push(message.params.exceptionDetails);
+                if (message.error) {
+                    reply.reject(new Error(JSON.stringify(message.error)));
+                    return;
+                }
+                reply.resolve(message.result);
+                return;
             }
+            if (message.method === 'Runtime.exceptionThrown')
+                this.errors.push(message.params.exceptionDetails);
+
         });
         socket.on('close', () => {
             for (const reply of this.#replies.values()) {

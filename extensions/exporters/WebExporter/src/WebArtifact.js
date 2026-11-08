@@ -31,7 +31,7 @@ export default class WebArtifact extends ExportArtifact {
             ...window.activeProject,
             cards: this.cards,
             baseUrl: this.baseUrl
-        }
+        };
     }
 
     async toBuffer() {

@@ -46,6 +46,16 @@ async function render(style, width = 100, height = 60) {
 }
 
 describe('drawBackground', () => {
+    it('resolves auto dimensions from the image aspect ratio', async () => {
+        for (const [size, edge] of [['auto auto', 10], ['auto 20px', 20],
+                                    ['30px auto', 30]]) {
+            const style = getStyle(`url("${blueImage}")`, '0px 0px', size);
+            const ctx = await render(style);
+            expect(getPixel(ctx, edge - 1, edge - 1)).toEqual([0, 0, 255, 255]);
+            expect(getPixel(ctx, edge + 1, edge - 1)).toEqual([0, 0, 0, 0]);
+        }
+    });
+
     it('draws the first background image on top', async () => {
         const style = getStyle(
             `url("${blueImage}"), url("${redImage}")`,

@@ -4,6 +4,10 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { build } from './build.js';
 
+const EXCLUDED_DIRECTORY_PATTERN = /(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/;
+const EXCLUDED_EXTENSION_PATTERN = /\.(?:map|test\.js|tests\.js|smoke\.js)$/;
+const EXCLUDED_METADATA_PATTERN = /(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/;
+
 const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
 const stagePath = path.resolve('.tmp/package');
@@ -12,9 +16,9 @@ const contentFolders = ['scripts'];
 
 function includeFile(sourcePath) {
     const normalizedPath = sourcePath.replaceAll(path.sep, '/');
-    return !/(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/.test(normalizedPath)
-        && !/\.(?:map|test\.js|tests\.js|smoke\.js)$/.test(normalizedPath)
-        && !/(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/.test(normalizedPath);
+    return !EXCLUDED_DIRECTORY_PATTERN.test(normalizedPath)
+        && !EXCLUDED_EXTENSION_PATTERN.test(normalizedPath)
+        && !EXCLUDED_METADATA_PATTERN.test(normalizedPath);
 }
 
 async function stageApplication() {

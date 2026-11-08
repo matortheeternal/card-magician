@@ -17,7 +17,8 @@ describe('Statistics queries', () => {
             label: 'Faction', categories: ['a', 'b'], values: record => record.factions
         });
         registry.registerDimension('type', {
-            label: 'Type', categories: ['unit', 'artifact'], values: record => record.types
+            label: 'Type', categories: ['unit', 'artifact'],
+            values: record => record.types
         });
         records = [
             { factions: ['a', 'a', 'b'], types: ['unit', 'artifact'], power: 2 },
@@ -35,7 +36,9 @@ describe('Statistics queries', () => {
     });
 
     it('reduces numeric fields from original records rather than cell aggregates', () => {
-        registry.registerField('power', { label: 'Power', value: record => record.power });
+        registry.registerField('power', {
+            label: 'Power', value: record => record.power
+        });
         registry.registerMeasure('average-power', {
             label: 'Average power', field: 'power',
             reduce: values => values.length
@@ -75,22 +78,25 @@ describe('Statistics queries', () => {
         expect(result.cells).toEqual([[2, 1], [1, 1]]);
     });
 
-    it('supports discovered categories, explicit missing categories and series shapes', () => {
-        registry.registerDimension('cost', {
-            label: 'Cost', values: record => [record.power], compare: (a, b) => a - b
+    it(
+        'supports discovered categories, explicit missing categories and series shapes',
+        () => {
+            registry.registerDimension('cost', {
+                label: 'Cost', values: record => [record.power], compare: (a, b) => a - b
+            });
+            const result = queryStatistics(records, registry, {
+                series: 'faction', x: 'cost', measure: 'card-count'
+            }, 'series');
+            expect(result.columns.map(category => category.id)).toEqual([2, 6]);
+            expect(result.series[0].values).toEqual([1, 1]);
+            registry.registerDimension('missing', {
+                label: 'Missing', values: () => [],
+                categories: ['unknown'], missing: 'unknown'
+            });
+            expect(queryStatistics(records, registry, {
+                ...definition, rows: 'missing'
+            }, 'matrix').total).toBe(3);
         });
-        const result = queryStatistics(records, registry, {
-            series: 'faction', x: 'cost', measure: 'card-count'
-        }, 'series');
-        expect(result.columns.map(category => category.id)).toEqual([2, 6]);
-        expect(result.series[0].values).toEqual([1, 1]);
-        registry.registerDimension('missing', {
-            label: 'Missing', values: () => [], categories: ['unknown'], missing: 'unknown'
-        });
-        expect(queryStatistics(records, registry, {
-            ...definition, rows: 'missing'
-        }, 'matrix').total).toBe(3);
-    });
 
     it('rejects invalid definitions and keeps game registries isolated', () => {
         expect(() => queryStatistics(records, registry, {

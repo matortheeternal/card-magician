@@ -3,6 +3,8 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
+const GIT_URL_PREFIX_PATTERN = /^git\+/;
+const GIT_URL_SUFFIX_PATTERN = /\.git$/;
 
 function shellQuote(value) {
     return `'${String(value).replaceAll('\'', '\'\\\'\'')}'`;
@@ -19,8 +21,8 @@ async function generatePkgbuild(debPath) {
         ? manifest.repository
         : manifest.repository.url;
     const repoUrl = repository
-        .replace(/^git\+/, '')
-        .replace(/\.git$/, '');
+        .replace(GIT_URL_PREFIX_PATTERN, '')
+        .replace(GIT_URL_SUFFIX_PATTERN, '');
     const sha256 = createHash('sha256')
         .update(await readFile(debPath))
         .digest('hex');

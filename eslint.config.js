@@ -1,5 +1,6 @@
-import stylistic from '@stylistic/eslint-plugin'
+import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
+import agentConfig from './tasks/lint/config.js';
 
 export default [
     {
@@ -18,8 +19,8 @@ export default [
         files: [
             'src/*.js',
             'src/**/*.js',
-            'extensions/cardparts/*.js',
-            'extensions/exporters/*.js'
+            'extensions/cardparts/**/*.js',
+            'extensions/exporters/**/*.js'
         ],
         languageOptions: {
             ecmaVersion: 'latest',
@@ -42,6 +43,7 @@ export default [
                 CardMagicianProject: 'readonly',
                 CardMagicianCard: 'readonly',
                 CardMagicianExporter: 'readonly',
+                ExportArtifact: 'readonly',
                 ReactiveComponent: 'readonly',
                 Modal: 'readonly',
                 dialog: 'readonly',
@@ -52,8 +54,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/cardparts/*.js',
-            'extensions/exporters/*.js',
+            'extensions/cardparts/**/*.js',
+            'extensions/exporters/**/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
@@ -142,8 +144,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/cardparts/*.js',
-            'extensions/exporters/*.js',
+            'extensions/cardparts/**/*.js',
+            'extensions/exporters/**/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
@@ -162,8 +164,8 @@ export default [
     {
         files: [
             'src/**/*.js',
-            'extensions/cardparts/*.js',
-            'extensions/exporters/*.js',
+            'extensions/cardparts/**/*.js',
+            'extensions/exporters/**/*.js',
             'electron/**/*.{js,cjs}',
             'tasks/**/*.{js,cjs}'
         ],
@@ -188,5 +190,6 @@ export default [
             // Trailing commas intentionally unconstrained
             '@stylistic/comma-dangle': 'off'
         }
-    }
-]
+    },
+    ...agentConfig
+];

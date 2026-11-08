@@ -33,11 +33,15 @@ function getColorOverride(override) {
     return Array.isArray(override) ? override.join('') : override;
 }
 
-function getColor(cost, override, game) {
+function createColorIdentity(cost, override, game) {
     const identity = new game.ColorIdentity();
     if (cost?.symbols) identity.addColorSource('card', cost.symbols);
     if (override) identity.setOverride(override);
-    const colors = identity.getColors();
+    return identity;
+}
+
+function getColor(cost, override, game) {
+    const colors = createColorIdentity(cost, override, game).getColors();
     if (override?.includes('c')) return 'c';
     if (colors.length > 1 || override?.includes('m')) return 'm';
     return colors[0]?.char || 'c';

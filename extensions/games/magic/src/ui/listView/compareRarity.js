@@ -4,6 +4,7 @@ function getRarity(card, face = 'front') {
     return card.original[face]?.rarity;
 }
 
+// eslint-disable-next-line agent/complexity -- Keep ordered comparator guards explicit.
 function compareRarities(aRarity, bRarity) {
     if (!aRarity && !bRarity) return 0;
     if (!aRarity) return -1;

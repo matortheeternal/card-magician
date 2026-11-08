@@ -34,8 +34,11 @@ export default class CardImagesExporter extends CardMagicianExporter {
             id: 'quality',
             label: L`Image Quality`,
             default: '0.92',
-            hint: L`A number between 0 and 1 indicating the image quality to be used
-                    when creating images using file formats that support lossy compression.`
+            hint: L([
+                'A number between 0 and 1 indicating the image quality to be used\n'
+                + '                    when creating images using file formats that '
+                + 'support lossy compression.'
+            ])
         }, {
             id: 'scale',
             label: L`Scale`,

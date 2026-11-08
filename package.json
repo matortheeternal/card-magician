@@ -34,11 +34,14 @@
     "start:localize": "npm run build && electron . --development --localize",
     "dev": "node tasks/dev.js",
     "renameMseAssets": "node tasks/renameMseAssets.js",
+    "pretest": "npm run test:lint && npm run lint:agent",
     "test": "npm run build && node tasks/test.js",
     "test:native": "node --test electron/*.test.js",
     "smoke": "npm run build && node tasks/smoke.js",
     "release": "node tasks/release.js",
-    "lint": "eslint src extensions electron tasks"
+    "lint": "eslint src extensions/games/magic/src extensions/cardparts extensions/exporters electron tasks eslint.config.js --max-warnings 0",
+    "lint:agent": "npm run lint",
+    "test:lint": "node --test tasks/lint/*.test.js"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",

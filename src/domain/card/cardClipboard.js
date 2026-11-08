@@ -4,13 +4,38 @@ import platform from '../../shared/platformAdapter.js';
 import { find, loadImageFile } from '../../shared/fsUtils.js';
 import { createURL } from '../../ui/systems/objectUrlSystem.js';
 
+const UUID_FILENAME_PATTERN = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+const YAML_EXTENSION_PATTERN = /\.yml$/i;
+
 export const CARD_CLIPBOARD_TYPE = 'web application/x-card-magician-cards';
 
 const SNAPSHOT_VERSION = 1;
 let previousSnapshotPath;
 
+async function saveSnapshotImages(card, snapshotPath) {
+    for (const [key, image] of card.files.fields) {
+        if (!(image instanceof ImageFieldValue) || !image.imageUrl) continue;
+        const definition = card.files.resolveDefinition(key);
+        const imagePath = await platform.getJoinedPath(
+            snapshotPath, definition.getFilename(card)
+        );
+        await platform.writeBinaryFile(imagePath, await image.loadImageData());
+    }
+}
+
+async function restoreSnapshotImages(card) {
+    for (const [key, image] of card.files.fields) {
+        const imagePath = card.files.get(key);
+        if (!(image instanceof ImageFieldValue) || !imagePath) continue;
+        image.imageUrl = createURL(await loadImageFile(imagePath));
+        image.dirty = true;
+    }
+}
+
 async function createSnapshot(cards) {
-    const rootPath = await platform.getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
+    const rootPath = await platform.getJoinedPath(
+        appEnvironment.paths.data, 'card-clipboard'
+    );
     const snapshotPath = await platform.getJoinedPath(rootPath, crypto.randomUUID());
     await platform.createDirectory(rootPath);
     await platform.createDirectory(snapshotPath);
@@ -23,15 +48,7 @@ async function createSnapshot(cards) {
             await YAMLSerializer.save(filePath, card);
             cardFiles.push(filename);
 
-            for (const [key, image] of card.files.fields) {
-                if (!(image instanceof ImageFieldValue) || !image.imageUrl) continue;
-                const definition = card.files.resolveDefinition(key);
-                const imagePath = await platform.getJoinedPath(
-                    snapshotPath,
-                    definition.getFilename(card)
-                );
-                await platform.writeBinaryFile(imagePath, await image.loadImageData());
-            }
+            await saveSnapshotImages(card, snapshotPath);
         }
 
         return {
@@ -91,21 +108,27 @@ async function getClipboardPayload() {
     return JSON.parse(await blob.text());
 }
 
-async function validatePayload(payload) {
+function isCardFilename(filename) {
+    return typeof filename === 'string'
+        && !filename.includes('/')
+        && !filename.includes('\\')
+        && YAML_EXTENSION_PATTERN.test(filename);
+}
+
+function hasValidPayloadShape(payload) {
     if (payload?.version !== SNAPSHOT_VERSION) return false;
     if (payload.game !== activeProject.game) return false;
     if (!payload.snapshotPath || !Array.isArray(payload.cardFiles)) return false;
-    const rootPath = await platform.getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
+    return payload.cardFiles.length > 0 && payload.cardFiles.every(isCardFilename);
+}
+
+async function validatePayload(payload) {
+    if (!hasValidPayloadShape(payload)) return false;
+    const rootPath = await platform.getJoinedPath(
+        appEnvironment.paths.data, 'card-clipboard'
+    );
     const { filename, parentPath } = await platform.getPathParts(payload.snapshotPath);
-    if (parentPath !== rootPath) return false;
-    if (!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(filename))
-        return false;
-    return payload.cardFiles.length > 0 && payload.cardFiles.every(filename => {
-        return typeof filename === 'string'
-            && !filename.includes('/')
-            && !filename.includes('\\')
-            && /\.yml$/i.test(filename);
-    });
+    return parentPath === rootPath && UUID_FILENAME_PATTERN.test(filename);
 }
 
 export async function readCardsFromClipboard() {
@@ -126,12 +149,7 @@ export async function readCardsFromClipboard() {
         const card = await activeProject.loadCard(filePath);
         await card.loadFiles(filesByName);
 
-        for (const [key, image] of card.files.fields) {
-            const imagePath = card.files.get(key);
-            if (!(image instanceof ImageFieldValue) || !imagePath) continue;
-            image.imageUrl = createURL(await loadImageFile(imagePath));
-            image.dirty = true;
-        }
+        await restoreSnapshotImages(card);
         card.files.detach();
         cards.push(card);
     }

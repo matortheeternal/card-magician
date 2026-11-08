@@ -10,12 +10,14 @@ export default class TTSSpawnerExporter extends CardMagicianExporter {
         return [{
             id: 'basePath',
             label: L`Base URL Path`,
-            default: 'https://raw.githubusercontent.com/[username]/[repo]/refs/heads/main/dist/images',
+            default: 'https://raw.githubusercontent.com/[username]/[repo]/'
+                + 'refs/heads/main/dist/images',
             hint: L`The base URL where image files will be hosted.`
         }, {
             id: 'ttsBasePath',
             label: L`Base TTS URL Path`,
-            default: 'https://raw.githubusercontent.com/[username]/[repo]/refs/heads/main/dist/tts',
+            default: 'https://raw.githubusercontent.com/[username]/[repo]/'
+                + 'refs/heads/main/dist/tts',
             hint: L`The base URL where TTS files will be hosted.`
         }];
     }

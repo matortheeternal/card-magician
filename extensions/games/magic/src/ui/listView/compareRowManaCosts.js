@@ -2,6 +2,7 @@ function getManaCost(card, face) {
     return card.original[face]?.manaCost;
 }
 
+// eslint-disable-next-line agent/complexity -- Keep ordered comparator guards explicit.
 function compareManaCostValues(aCost, bCost) {
     if (!aCost && !bCost) return 0;
     if (!aCost) return -1;

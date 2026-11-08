@@ -6,12 +6,13 @@ export async function findTestFiles(dir) {
     const files = await platform.readDirectory(dir);
     for (const file of files) {
         const path = `${dir}/${file.entry}`;
+        if (file.entry === '.' || file.entry === '..') continue;
         if (file.type === 'DIRECTORY') {
-            if (file.entry === '.' || file.entry === '..') continue;
             testFiles.push(...await findTestFiles(path));
-        } else if (file.entry.endsWith('.tests.js')) {
-            testFiles.push(path);
+            continue;
         }
+        if (file.entry.endsWith('.tests.js'))
+            testFiles.push(path);
     }
     return testFiles;
 }

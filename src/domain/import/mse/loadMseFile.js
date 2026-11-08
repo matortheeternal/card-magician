@@ -1,7 +1,13 @@
+const RULE_TEXT_KEY_PATTERN = /^rule_text(_\d)?$/;
+const FLAVOR_TEXT_KEY_PATTERN = /^flavor_text(_\d)?$/;
+const NOTES_KEY_PATTERN = /^notes$/;
+const LINE_SEPARATOR_PATTERN = /\r?\n/;
+const PROPERTY_LINE_PATTERN = /^(\t*)([^:]+):([^\n]*)$/;
+const CONTINUATION_LINE_PATTERN = /^(\t*)([^\n]*)$/;
 const knownMultilineKeys = [
-    /^rule_text(_\d)?$/,
-    /^flavor_text(_\d)?$/,
-    /^notes$/,
+    RULE_TEXT_KEY_PATTERN,
+    FLAVOR_TEXT_KEY_PATTERN,
+    NOTES_KEY_PATTERN,
 ];
 
 function isEmptyObject(obj) {
@@ -62,13 +68,13 @@ function shouldRollup(parsedLines, depth) {
 
 function parseMseLines(text) {
     const parsedLines = [];
-    for (const line of text.trimEnd().split(/\r?\n/)) {
-        const match = line.match(/^(\t*)([^:]+):([^\n]*)$/);
+    for (const line of text.trimEnd().split(LINE_SEPARATOR_PATTERN)) {
+        const match = line.match(PROPERTY_LINE_PATTERN);
         if (match && !shouldRollup(parsedLines, match[1].length)) {
             parsedLines.push(makeLineObject(match));
             continue;
         }
-        const valueMatch = line.match(/^(\t*)([^\n]*)$/);
+        const valueMatch = line.match(CONTINUATION_LINE_PATTERN);
         rollupMultiline(valueMatch[1].length, valueMatch[2], parsedLines);
     }
     return parsedLines;

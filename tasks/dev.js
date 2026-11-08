@@ -57,7 +57,9 @@ server.on('connection', ws => {
             console.log('received rebuild request');
             const buildStatus = await handleRebuild();
             ws.send(JSON.stringify(buildStatus));
-        } else if (event.action === 'request data') {
+            return;
+        }
+        if (event.action === 'request data') {
             ws.send(JSON.stringify({
                 'openProject': openedProject,
                 'selectCard': selectedCard,

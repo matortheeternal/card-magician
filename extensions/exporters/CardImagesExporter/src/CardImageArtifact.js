@@ -2,7 +2,7 @@ const MIME_TYPES = {
     jpg: 'image/jpeg',
     png: 'image/png',
     webp: 'image/webp',
-}
+};
 
 export default class CardImageArtifact extends ExportArtifact {
     constructor(baseCard, faceKey, cardCanvas, config) {

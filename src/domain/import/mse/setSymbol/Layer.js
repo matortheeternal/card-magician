@@ -1,8 +1,10 @@
 import convertToSVG from './svgConverter.js';
 
+const POINT_COORDINATES_PATTERN = /\((-?[0-9.]+),(-?[0-9.]+)\)/;
+
 function parseCoords(str) {
     if (!str) return null;
-    const match = str.match(/\((-?[0-9.]+),(-?[0-9.]+)\)/);
+    const match = str.match(POINT_COORDINATES_PATTERN);
     return {
         x: parseFloat(match[1]) * 100,
         y: parseFloat(match[2]) * 100

@@ -28,7 +28,9 @@ describe('Project files', () => {
            const destinationSymbol = await platform.getJoinedPath(
                activeProject.folderPath, 'relocated', 'symbol.svg'
            );
-           await platform.writeFile(destinationSymbol, source.replace('200 100', '400 100'));
+           await platform.writeFile(
+               destinationSymbol, source.replace('200 100', '400 100')
+           );
            await activeProject.setFilePath(destination);
            expect(activeProject.symbol).toBe(originalSymbol);
            await platform.writeFile(previousPath, source.replace('200 100', '300 100'));

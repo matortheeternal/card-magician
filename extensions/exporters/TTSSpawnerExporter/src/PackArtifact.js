@@ -85,10 +85,11 @@ export default class PackArtifact extends ExportArtifact {
         );
         const weight = Number(pool.weight);
 
-        if (!Number.isInteger(weight) || weight <= 0)
+        if (!Number.isInteger(weight) || weight <= 0) {
             throw new Error(
                 `Pack pool weight must be a positive integer: ${pool.weight}`
             );
+        }
 
         return {
             expression: pool.expression,
@@ -99,15 +100,17 @@ export default class PackArtifact extends ExportArtifact {
 
     createPackSlot(slot) {
         const count = Number(slot.count);
-        if (!Number.isInteger(count) || count < 0)
+        if (!Number.isInteger(count) || count < 0) {
             throw new Error(
                 `Pack slot count must be a non-negative integer: ${slot.count}`
             );
+        }
 
-        if (!['runs', 'sheet'].includes(slot.collation))
+        if (!['runs', 'sheet'].includes(slot.collation)) {
             throw new Error(
                 `Unsupported pack collation "${slot.collation}" for ${slot.label}.`
             );
+        }
 
         const resolvedPools = slot.pool
             .map(pool => this.resolvePool(pool))
@@ -139,6 +142,11 @@ export default class PackArtifact extends ExportArtifact {
         };
     }
 
+    collectPoolCardIds(pools, cardIds) {
+        for (const pool of pools)
+            for (const cardId of pool.cardIds) cardIds.add(cardId);
+    }
+
     createManifest() {
         if (!Array.isArray(window.activeProject.pack))
             throw new Error('The active project has no pack configuration.');
@@ -148,12 +156,9 @@ export default class PackArtifact extends ExportArtifact {
         );
         const boosterCardIds = new Set();
 
-        for (const slot of packSlots) {
-            for (const pool of slot.pools) {
-                for (const cardId of pool.cardIds)
-                    boosterCardIds.add(cardId);
-            }
-        }
+        for (const slot of packSlots)
+            this.collectPoolCardIds(slot.pools, boosterCardIds);
+
 
         const extras = this.cards
             .map((card, index) => ({ card, cardId: index + 1 }))

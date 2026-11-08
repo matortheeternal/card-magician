@@ -1,4 +1,7 @@
 declare global {
+    type DirectoryEntry = import('./card-magician.js').DirectoryEntry;
+    type FileStats = import('./card-magician.js').FileStats;
+    type PathParts = import('./card-magician.js').PathParts;
     type Category = import('./card-magician.js').Category;
     type StatisticsDimension = import('./card-magician.js').StatisticsDimension;
     type StatisticsField = import('./card-magician.js').StatisticsField;

@@ -5,6 +5,8 @@
 const settings = cmTest.openSettings();
 /** @type {Promise<string>} */
 const value = cmTest.eventually(async () => 'ready', { timeout: 100, interval: 5 });
+void settings;
+void value;
 cmTest.click(document.querySelector('button'));
 cmTest.closeSettings();
 

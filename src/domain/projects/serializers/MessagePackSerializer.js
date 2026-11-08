@@ -1,9 +1,11 @@
 import { encode as msgpackEncode, decode as msgpackDecode } from 'notepack.io';
 import BinarySerializer from './BinarySerializer.js';
 
+const MESSAGE_PACK_EXTENSION_PATTERN = /\.msgpack$/i;
+
 export default class MessagePackSerializer extends BinarySerializer {
     static matches(filePath) {
-        return /\.msgpack$/i.test(filePath);
+        return MESSAGE_PACK_EXTENSION_PATTERN.test(filePath);
     }
 
     async encode(value) {

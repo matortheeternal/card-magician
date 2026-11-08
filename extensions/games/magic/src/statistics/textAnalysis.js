@@ -4,7 +4,6 @@ const FORMATTING_PATTERN = /[_*]/g;
 const WORD_PATTERN = /[\p{L}\p{N}]+(?:['’\/-][\p{L}\p{N}]+)*/gu;
 const CREATURE_PATTERN = /\bcreature\b/i;
 const TIME_LORD_PATTERN = /\btime\s+lord\b/gi;
-const WHITESPACE_PATTERN = /\s+/;
 const CAPITALIZATION_PATTERN = /(^|[- ])[a-z]/g;
 const TIME_LORD_TOKEN = 'Time\u0000Lord';
 const WORD_BUCKET_WIDTH = 20;
@@ -27,7 +26,7 @@ export function creatureTypes(face) {
     if (!CREATURE_PATTERN.test(face.superType || '')) return [];
     const types = String(face.subType || '').trim()
         .replace(TIME_LORD_PATTERN, TIME_LORD_TOKEN)
-        .split(WHITESPACE_PATTERN).filter(Boolean)
+        .split(/\s+/).filter(Boolean)
         .map(normalizeCreatureType);
     const results = types.length ? types : ['No creature type'];
     return [...new Set(results)];

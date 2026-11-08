@@ -33,7 +33,7 @@ export async function setupExitFixture() {
     manager.save = CollectionManager.prototype.save.debounce(DEBOUNCE_DELAY);
     const editor = document.createElement('cm-edit-face-symbol');
     editor.symbol = manager.collection[0];
-    document.querySelector('main').replaceChildren(editor);
+    document.querySelector('sl-tab-panel[name="cards"]').replaceChildren(editor);
     let released = false;
     let release;
     const gate = new Promise(resolve => { release = resolve; });

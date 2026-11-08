@@ -113,6 +113,19 @@ async function saveArtifact(exporter, localPath, artifact) {
     await handler.write(filePath, output);
 }
 
+async function saveEnabledOutput(exporter, filePath, artifact) {
+    if (!exporter.saveOutputs) return;
+    await saveArtifact(exporter, filePath, artifact);
+}
+
+async function forwardArtifact(exporter, filePath, artifact, children) {
+    log('export').debug(`Produced artifact "${filePath}"`);
+    progress.setOperation(`Producing ${filePath}`);
+    progress.increment();
+    await saveEnabledOutput(exporter, filePath, artifact);
+    await passArtifactDown(artifact, children);
+}
+
 /**
  *
  * @param {ExportArtifact} sourceArtifact
@@ -124,12 +137,7 @@ async function passArtifactDown(sourceArtifact, targetNodes) {
         log('export').debug(`Passing to "${node.id}"`);
         const exporter = node.value;
         for await (const { filePath, artifact } of exporter.transform(sourceArtifact)) {
-            log('export').debug(`Produced artifact "${filePath}"`);
-            progress.setOperation(`Producing ${filePath}`);
-            progress.increment();
-            if (exporter.saveOutputs)
-                await saveArtifact(exporter, filePath, artifact);
-            await passArtifactDown(artifact, node.children);
+            await forwardArtifact(exporter, filePath, artifact, node.children);
             artifact.cleanup?.();
         }
     }
@@ -145,13 +153,8 @@ export async function walkTheDag(dagFootNodes) {
         progress.setStatus(`Exporting from ${node.id}`);
         log('export').debug(`Walking from "${node.id}"`);
         const exporter = node.value;
-        for await (const { filePath, artifact } of exporter.produce()) {
-            log('export').debug(`Produced artifact "${filePath}"`);
-            progress.setOperation(`Producing ${filePath}`);
-            progress.increment();
-            if (exporter.saveOutputs)
-                await saveArtifact(exporter, filePath, artifact);
-            await passArtifactDown(artifact, node.children);
-        }
+        for await (const { filePath, artifact } of exporter.produce())
+            await forwardArtifact(exporter, filePath, artifact, node.children);
+
     }
 }

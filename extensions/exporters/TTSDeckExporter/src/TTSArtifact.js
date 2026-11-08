@@ -78,7 +78,7 @@ export default class TTSArtifact extends ExportArtifact {
             DeckIDs,
             CustomDeck,
             Transform: this.createTransform(1, index)
-        }
+        };
     }
 
     get objectStates() {

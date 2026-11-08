@@ -102,37 +102,41 @@ describe('Statistics', () => {
         expect(curve.querySelectorAll('.stats-curve-table tbody tr').length).toBe(6);
     });
 
-    it('shows a shared tooltip on hover and keyboard focus in both chart types', async () => {
-        const hoverManaTwo = () => {
-            const region = curve.querySelectorAll('.stats-hit-region')[2];
-            region.dispatchEvent(new PointerEvent('pointerenter'));
-            return region;
-        };
-        const region = hoverManaTwo();
-        let tooltip = curve.querySelector('.stats-chart-tooltip');
-        expect(tooltip.hidden).toBeFalse();
-        expect(tooltip.textContent).toContain('Mana value 2');
-        expect(tooltip.querySelectorAll('.stats-tooltip-row').length).toBe(7);
-        expect(tooltip.textContent).toContain('White1 card');
-        region.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-        expect(tooltip.hidden).toBeTrue();
-        region.focus();
-        expect(tooltip.hidden).toBeFalse();
-        curve.querySelector('[data-series="1"]').click();
-        await eventually(() => curve.querySelectorAll('.stats-tooltip-row').length === 6);
-        stats.querySelector('[data-chart-type="bar"]').click();
-        await eventually(() => {
-            const circles = curve.querySelectorAll('.stats-chart circle');
-            return circles.length === 0;
+    it(
+        'shows a shared tooltip on hover and keyboard focus in both chart types',
+        async () => {
+            const hoverManaTwo = () => {
+                const region = curve.querySelectorAll('.stats-hit-region')[2];
+                region.dispatchEvent(new PointerEvent('pointerenter'));
+                return region;
+            };
+            const region = hoverManaTwo();
+            let tooltip = curve.querySelector('.stats-chart-tooltip');
+            expect(tooltip.hidden).toBeFalse();
+            expect(tooltip.textContent).toContain('Mana value 2');
+            expect(tooltip.querySelectorAll('.stats-tooltip-row').length).toBe(7);
+            expect(tooltip.textContent).toContain('White1 card');
+            region.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+            expect(tooltip.hidden).toBeTrue();
+            region.focus();
+            expect(tooltip.hidden).toBeFalse();
+            curve.querySelector('[data-series="1"]').click();
+            await eventually(
+                () => curve.querySelectorAll('.stats-tooltip-row').length === 6
+            );
+            stats.querySelector('[data-chart-type="bar"]').click();
+            await eventually(() => {
+                const circles = curve.querySelectorAll('.stats-chart circle');
+                return circles.length === 0;
+            });
+            hoverManaTwo();
+            tooltip = curve.querySelector('.stats-chart-tooltip');
+            expect(tooltip.hidden).toBeFalse();
+            expect(tooltip.textContent).not.toContain('Blue');
+            curve.querySelector('.stats-chart svg')
+                .dispatchEvent(new PointerEvent('pointerleave'));
+            expect(tooltip.hidden).toBeTrue();
         });
-        hoverManaTwo();
-        tooltip = curve.querySelector('.stats-chart-tooltip');
-        expect(tooltip.hidden).toBeFalse();
-        expect(tooltip.textContent).not.toContain('Blue');
-        curve.querySelector('.stats-chart svg')
-            .dispatchEvent(new PointerEvent('pointerleave'));
-        expect(tooltip.hidden).toBeTrue();
-    });
 
     it('handles hidden series, land inclusion, and project updates', async () => {
         activeProject.cards.push(makeCard('', 'Land', 'rare'));
@@ -185,81 +189,85 @@ describe('Statistics', () => {
         expect(data.series[3].values.at(-1)).toBe(2);
     });
 
-    it('supports declarative non-Magic charts and visible configuration errors', async () => {
-        const registry = new StatisticsRegistry();
-        registry.registerDimension('faction', {
-            label: 'Faction', values: record => [record.faction]
+    it(
+        'supports declarative non-Magic charts and visible configuration errors',
+        async () => {
+            const registry = new StatisticsRegistry();
+            registry.registerDimension('faction', {
+                label: 'Faction', values: record => [record.faction]
+            });
+            registry.registerDimension('rank', {
+                label: 'Rank', values: record => [record.rank]
+            });
+            const chart = document.createElement('cm-chart');
+            chart.setAttribute('type', 'matrix');
+            chart.setAttribute('rows', 'faction');
+            chart.setAttribute('columns', 'rank');
+            chart.context = {
+                registry, records: [{ faction: 'North', rank: 'Scout' }]
+            };
+            document.body.appendChild(chart);
+            try {
+                await eventually(() => chart.querySelector('tbody td'));
+                expect(chart.querySelector('tbody th').textContent).toBe('North');
+                expect(chart.querySelector('tbody td').textContent).toBe('1');
+                chart.setAttribute('columns', 'unknown');
+                await eventually(() => !chart.querySelector('.stats-chart-error').hidden);
+                expect(chart.querySelector('.stats-chart-error').textContent)
+                    .toContain('Unknown statistics dimension');
+            } finally { chart.remove(); }
         });
-        registry.registerDimension('rank', {
-            label: 'Rank', values: record => [record.rank]
-        });
-        const chart = document.createElement('cm-chart');
-        chart.setAttribute('type', 'matrix');
-        chart.setAttribute('rows', 'faction');
-        chart.setAttribute('columns', 'rank');
-        chart.context = {
-            registry, records: [{ faction: 'North', rank: 'Scout' }]
-        };
-        document.body.appendChild(chart);
-        try {
-            await eventually(() => chart.querySelector('tbody td'));
-            expect(chart.querySelector('tbody th').textContent).toBe('North');
-            expect(chart.querySelector('tbody td').textContent).toBe('1');
-            chart.setAttribute('columns', 'unknown');
-            await eventually(() => !chart.querySelector('.stats-chart-error').hidden);
-            expect(chart.querySelector('.stats-chart-error').textContent)
-                .toContain('Unknown statistics dimension');
-        } finally { chart.remove(); }
-    });
 
-    it('analyzes creature support, text distributions, medians and wordiest cards', async () => {
-        const words = count => Array(count).fill('word').join(' ');
-        activeProject.cards = [
-            makeCard('1G', 'Creature', 'common', {
-                name: 'Twin', subType: 'Elf Scout', rulesText: words(3)
-            }),
-            makeCard('2G', 'Creature', 'common', {
-                name: 'Elder', subType: 'Elf Shaman', rulesText: words(3)
-            }),
-            makeCard('3G', 'Creature', 'common', {
-                name: 'Twin', subType: 'Elf Warrior', rulesText: words(30)
-            }),
-            makeCard('R', 'Instant', 'rare', {
-                name: 'Long spell', rulesText: words(40)
-            }),
-            makeCard('', 'Token Creature', 'token', {
-                name: 'Excluded', subType: 'Dragon', rulesText: words(500)
-            })
-        ];
-        changed(activeProject, 'cards');
-        const wordiest = stats.querySelector('[report="wordiest-cards"]');
-        await eventually(() => wordiest.data?.cells[0]?.[0] === 40);
-        expect(wordiest.data.rows.length).toBe(4);
-        expect(new Set(wordiest.data.rows.map(row => row.id)).size).toBe(4);
-        expect(wordiest.data.rows[0].label).toBe('Long spell');
-        expect(wordiest.data.cells.map(row => row[0])).toEqual([40, 30, 3, 3]);
-        const creatures = stats.querySelector('[report="creature-types"]');
-        expect(creatures.data.rows[0].label).toBe('Elf');
-        expect(creatures.data.rowTotals[0]).toBe(3);
-        expect(creatures.querySelectorAll('.stats-ranking-row').length).toBe(4);
-        creatures.querySelector('[data-chart-type="matrix"]').click();
-        await eventually(() => creatures.querySelector('tbody tr'));
-        expect(creatures.data.total).toBe(3);
-        const commons = stats.querySelector('[report="common-creature-curve"]');
-        expect(commons.data.cardCount).toBe(3);
-        const histogram = stats.querySelector('[report="rules-text-length"]');
-        expect(histogram.data.labels).toEqual(['0', '1–19', '20–39', '40–59']);
-        expect(histogram.data.series[0].values).toEqual([0, 2, 1, 0]);
-        const summary = stats.querySelector('[report="rules-text-by-color"]');
-        expect(summary.data.cells[4][0]).toBe(12);
-        const select = summary.querySelector('[data-measure]');
-        select.value = 'median-words';
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        await eventually(() => summary.data.measureLabel === 'Median words');
-        expect(summary.data.cells[4][0]).toBe(3);
-        expect(stats.querySelectorAll('.stats-chart-error:not([hidden])').length)
-            .toBe(0);
-    });
+    it(
+        'analyzes creature support, text distributions, medians and wordiest cards',
+        async () => {
+            const words = count => Array(count).fill('word').join(' ');
+            activeProject.cards = [
+                makeCard('1G', 'Creature', 'common', {
+                    name: 'Twin', subType: 'Elf Scout', rulesText: words(3)
+                }),
+                makeCard('2G', 'Creature', 'common', {
+                    name: 'Elder', subType: 'Elf Shaman', rulesText: words(3)
+                }),
+                makeCard('3G', 'Creature', 'common', {
+                    name: 'Twin', subType: 'Elf Warrior', rulesText: words(30)
+                }),
+                makeCard('R', 'Instant', 'rare', {
+                    name: 'Long spell', rulesText: words(40)
+                }),
+                makeCard('', 'Token Creature', 'token', {
+                    name: 'Excluded', subType: 'Dragon', rulesText: words(500)
+                })
+            ];
+            changed(activeProject, 'cards');
+            const wordiest = stats.querySelector('[report="wordiest-cards"]');
+            await eventually(() => wordiest.data?.cells[0]?.[0] === 40);
+            expect(wordiest.data.rows.length).toBe(4);
+            expect(new Set(wordiest.data.rows.map(row => row.id)).size).toBe(4);
+            expect(wordiest.data.rows[0].label).toBe('Long spell');
+            expect(wordiest.data.cells.map(row => row[0])).toEqual([40, 30, 3, 3]);
+            const creatures = stats.querySelector('[report="creature-types"]');
+            expect(creatures.data.rows[0].label).toBe('Elf');
+            expect(creatures.data.rowTotals[0]).toBe(3);
+            expect(creatures.querySelectorAll('.stats-ranking-row').length).toBe(4);
+            creatures.querySelector('[data-chart-type="matrix"]').click();
+            await eventually(() => creatures.querySelector('tbody tr'));
+            expect(creatures.data.total).toBe(3);
+            const commons = stats.querySelector('[report="common-creature-curve"]');
+            expect(commons.data.cardCount).toBe(3);
+            const histogram = stats.querySelector('[report="rules-text-length"]');
+            expect(histogram.data.labels).toEqual(['0', '1–19', '20–39', '40–59']);
+            expect(histogram.data.series[0].values).toEqual([0, 2, 1, 0]);
+            const summary = stats.querySelector('[report="rules-text-by-color"]');
+            expect(summary.data.cells[4][0]).toBe(12);
+            const select = summary.querySelector('[data-measure]');
+            select.value = 'median-words';
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+            await eventually(() => summary.data.measureLabel === 'Median words');
+            expect(summary.data.cells[4][0]).toBe(3);
+            expect(stats.querySelectorAll('.stats-chart-error:not([hidden])').length)
+                .toBe(0);
+        });
 
     it('supports game-scoped renderer registration and disposes renderers', async () => {
         const registry = new StatisticsRegistry();
@@ -296,68 +304,81 @@ describe('Statistics', () => {
         expect(dispose).toHaveBeenCalledTimes(1);
     });
 
-    it('localizes JSON reports, category labels, controls and shared tooltips', async () => {
-        const translations = {
-            statistics: {
-                Measure: 'Mesure', 'View chart data': 'Voir les données',
-                Lines: 'Lignes', Bars: 'Barres', Cards: 'Cartes',
-                '%{0} card': '%{0} carte', '%{0} cards': '%{0} cartes'
-            },
-            'game-magic-statistics': {
-                'Color × rarity': 'Couleur × rareté', White: 'Blanc', Blue: 'Bleu',
-                Common: 'Commune', Color: 'Couleur', 'Mana value': 'Valeur de mana',
-                'Mana curve by color': 'Courbe de mana', 'Include lands': 'Inclure les terrains',
-                'Average words': 'Moyenne', 'Median words': 'Médiane'
-            }
-        };
-        const locale = new Localization('statistics-test', JSON.stringify(translations));
-        const load = spyOn(Localization, 'load').and.returnValue(Promise.resolve(locale));
-        const wrapper = document.createElement('div');
-        wrapper.style.cssText = 'position:fixed;left:-10000px;width:800px';
-        try {
-            expect(await setLocalization('statistics-test')).toBeTrue();
-            const game = new activeGame.constructor({
-                path: activeGame.gamePath, id: activeGame.id, version: activeGame.version
-            });
-            const context = {
-                registry: game.statistics,
-                records: activeProject.cards.map(card => game.statistics.prepare(card))
+    it(
+        'localizes JSON reports, category labels, controls and shared tooltips',
+        async () => {
+            const translations = {
+                statistics: {
+                    Measure: 'Mesure', 'View chart data': 'Voir les données',
+                    Lines: 'Lignes', Bars: 'Barres', Cards: 'Cartes',
+                    '%{0} card': '%{0} carte', '%{0} cards': '%{0} cartes'
+                },
+                'game-magic-statistics': {
+                    'Color × rarity': 'Couleur × rareté', White: 'Blanc', Blue: 'Bleu',
+                    Common: 'Commune', Color: 'Couleur', 'Mana value': 'Valeur de mana',
+                    'Mana curve by color': 'Courbe de mana',
+                    'Include lands': 'Inclure les terrains',
+                    'Average words': 'Moyenne', 'Median words': 'Médiane'
+                }
             };
-            const matrix = document.createElement('cm-chart');
-            matrix.setAttribute('report', 'color-rarity');
-            matrix.context = context;
-            const mana = document.createElement('cm-chart');
-            mana.setAttribute('report', 'mana-curve');
-            mana.context = context;
-            wrapper.append(matrix, mana);
-            document.body.appendChild(wrapper);
-            await eventually(() => mana.querySelector('.stats-hit-region'));
-            expect(matrix.controls.title.textContent).toBe('Couleur × rareté');
-            expect(matrix.data.rows[0].id).toBe('w');
-            expect(matrix.data.rows[0].label).toBe('Blanc');
-            expect(matrix.data.columns[0].id).toBe('common');
-            expect(matrix.data.columns[0].label).toBe('Commune');
-            expect(mana.controls.filterLabel.textContent).toBe('Inclure les terrains');
-            expect(mana.controls.typeButtons[0].textContent).toBe('Lignes');
-            expect(mana.dataDetails.textContent).toContain('Voir les données');
-            mana.querySelectorAll('.stats-hit-region')[2]
-                .dispatchEvent(new PointerEvent('pointerenter'));
-            const tooltip = mana.querySelector('.stats-chart-tooltip');
-            expect(tooltip.textContent).toContain('Valeur de mana 2');
-            expect(tooltip.textContent).toContain('Blanc1 carte');
-            expect(tooltip.textContent).toContain('Bleu1 carte');
-            matrix.setAttribute('report', 'rules-text-by-color');
-            await eventually(() => matrix.controls.measureSelect.value === 'average-words');
-            expect(matrix.controls.measureControl.textContent).toContain('Mesure');
-            expect(matrix.controls.measureSelect.options[0].textContent).toBe('Moyenne');
-            expect(game.statistics.reports.get('mana-curve').filterToggle.filter)
-                .toBe('nonland');
-        } finally {
-            wrapper.remove();
-            load.and.returnValue(Promise.resolve({ resolve: () => null }));
-            await setLocalization('default-test-locale');
-        }
-    });
+            const locale = new Localization(
+                'statistics-test', JSON.stringify(translations)
+            );
+            const load = spyOn(Localization, 'load')
+                .and.returnValue(Promise.resolve(locale));
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:fixed;left:-10000px;width:800px';
+            try {
+                expect(await setLocalization('statistics-test')).toBeTrue();
+                const game = new activeGame.constructor({
+                    path: activeGame.gamePath, id: activeGame.id,
+                    version: activeGame.version
+                });
+                const context = {
+                    registry: game.statistics,
+                    records: activeProject.cards.map(card => (
+                        game.statistics.prepare(card)
+                    ))
+                };
+                const matrix = document.createElement('cm-chart');
+                matrix.setAttribute('report', 'color-rarity');
+                matrix.context = context;
+                const mana = document.createElement('cm-chart');
+                mana.setAttribute('report', 'mana-curve');
+                mana.context = context;
+                wrapper.append(matrix, mana);
+                document.body.appendChild(wrapper);
+                await eventually(() => mana.querySelector('.stats-hit-region'));
+                expect(matrix.controls.title.textContent).toBe('Couleur × rareté');
+                expect(matrix.data.rows[0].id).toBe('w');
+                expect(matrix.data.rows[0].label).toBe('Blanc');
+                expect(matrix.data.columns[0].id).toBe('common');
+                expect(matrix.data.columns[0].label).toBe('Commune');
+                expect(mana.controls.filterLabel.textContent)
+                    .toBe('Inclure les terrains');
+                expect(mana.controls.typeButtons[0].textContent).toBe('Lignes');
+                expect(mana.dataDetails.textContent).toContain('Voir les données');
+                mana.querySelectorAll('.stats-hit-region')[2]
+                    .dispatchEvent(new PointerEvent('pointerenter'));
+                const tooltip = mana.querySelector('.stats-chart-tooltip');
+                expect(tooltip.textContent).toContain('Valeur de mana 2');
+                expect(tooltip.textContent).toContain('Blanc1 carte');
+                expect(tooltip.textContent).toContain('Bleu1 carte');
+                matrix.setAttribute('report', 'rules-text-by-color');
+                await eventually(
+                    () => matrix.controls.measureSelect.value === 'average-words'
+                );
+                expect(matrix.controls.measureControl.textContent).toContain('Mesure');
+                expect(matrix.controls.measureSelect.options[0].textContent)
+                    .toBe('Moyenne');
+                expect(game.statistics.reports.get('mana-curve').filterToggle.filter)
+                    .toBe('nonland');
+            } finally {
+                wrapper.remove();
+                load.and.returnValue(Promise.resolve({ resolve: () => null }));
+                await setLocalization('default-test-locale');
+            }
+        });
 
     it('uses rarity gradients and shared tooltips on stacked color bars', async () => {
         activeProject.cards = [

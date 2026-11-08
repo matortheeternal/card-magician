@@ -1,5 +1,8 @@
 import DebouncedInvocation from './DebouncedInvocation.js';
 
+const CAMEL_CASE_BOUNDARY_PATTERN = /([a-z])([A-Z])/g;
+const WORD_SEPARATOR_PATTERN = /[^a-z0-9]+/gi;
+
 function addPrototypeFunction(ctor, name, descriptor) {
     if (typeof ctor !== 'function' || !ctor.prototype)
         throw new TypeError('First argument must be a constructor function');
@@ -31,7 +34,7 @@ function addPrototypeFunction(ctor, name, descriptor) {
  */
 addPrototypeFunction(String, 'separate', {
     value: function separate(separator = ' ') {
-        return this.replace(/([a-z])([A-Z])/g, `$1${separator}$2`);
+        return this.replace(CAMEL_CASE_BOUNDARY_PATTERN, `$1${separator}$2`);
     }
 });
 
@@ -44,7 +47,7 @@ addPrototypeFunction(String, 'separate', {
  * Example: `'modal_back'.normalizeWords()` -> `'modal back'`
  */
 addPrototypeFunction(String, 'normalizeWords', {
-    value: function normalizeWords(sep = /[^a-z0-9]+/gi) {
+    value: function normalizeWords(sep = WORD_SEPARATOR_PATTERN) {
         if (!(sep instanceof RegExp))
             throw new TypeError('separator must be a RegExp');
         return this.toLowerCase().replaceAll(sep, ' ').trim();

@@ -9,8 +9,8 @@ function resolveOption(card, options, id) {
     for (const option of options) {
         if (option.id === id) return option;
         if (!option.items) continue;
-        for (const item of option.items)
-            if (item.id === id) return item;
+        const item = option.items.find(item => item.id === id);
+        if (item) return item;
     }
 }
 

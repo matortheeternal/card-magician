@@ -1,10 +1,13 @@
+const NEGATIVE_COST_PATTERN = /^[−-]/;
+const ABILITY_TEXT_PATTERN = /^([\s\S]+?)(?=[+−-]?(\d+|X):)/;
+const REMAINING_TEXT_PATTERN = /^([\s\S]+?)$/;
 const abilityCardExpr = /^([\s\S]*)$/;
 const abilityExpr = /^([+−-]?(?:\d+|X)): (.+)/;
 
 function getAbilityType(cost) {
     if (/^\+/.test(cost))
         return 'plus';
-    if (/^[−-]/.test(cost))
+    if (NEGATIVE_COST_PATTERN.test(cost))
         return 'minus';
     return 'zero';
 }
@@ -44,7 +47,7 @@ const abilityConverters = [{
         );
     }
 }, {
-    match: str => str.match(/^([\s\S]+?)(?=[+−-]?(\d+|X):)/),
+    match: str => str.match(ABILITY_TEXT_PATTERN),
     convert: (match, convertParagraphs, index) => (
         `<div class="walker-static-ability">
             ${abiltiyBackgroundParts(index)}
@@ -52,7 +55,7 @@ const abilityConverters = [{
         </div>`
     )
 }, {
-    match: str => str.match(/^([\s\S]+?)$/),
+    match: str => str.match(REMAINING_TEXT_PATTERN),
     convert: (match, convertParagraphs, index) => (
         `<div class="walker-static-ability">
             ${abiltiyBackgroundParts(index)}

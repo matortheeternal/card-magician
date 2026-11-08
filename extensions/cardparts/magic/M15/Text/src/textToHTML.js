@@ -1,5 +1,10 @@
 import tokenConverters from './tokenConverters.js';
 
+const FIRST_LINE_PATTERN = /^([^\n]+)/;
+const QUOTED_TEXT_PATTERN = /^["“](.+?)["”]$/;
+const CITATION_PATTERN = /^(--|—)/;
+const LEADING_NEWLINES_PATTERN = /^\n+/;
+
 function makeCitation(content, options) {
     const cssClass = options.card?.citationStyle || 'italic';
     return `<cite class="${cssClass}">${content}</cite>`;
@@ -7,12 +12,12 @@ function makeCitation(content, options) {
 
 const ParagraphConverter = {
     match(str) {
-        return str.match(/^([^\n]+)/);
+        return str.match(FIRST_LINE_PATTERN);
     },
     convert(match, options) {
         const content = convertText(match[1], tokenConverters, options);
-        const useQuoteTag = content.match(/^["“](.+?)["”]$/);
-        const useCiteTag = content.match(/^(--|—)/);
+        const useQuoteTag = content.match(QUOTED_TEXT_PATTERN);
+        const useCiteTag = content.match(CITATION_PATTERN);
         if (useCiteTag) return makeCitation(content, options);
         if (useQuoteTag) return `<q>“${useQuoteTag[1]}”</q>`;
         return `<p>${content}</p>`;
@@ -21,7 +26,7 @@ const ParagraphConverter = {
 
 function chomp(str, match) {
     const res = str.slice(match[0].length);
-    const newlineMatch = res.match(/^\n+/);
+    const newlineMatch = res.match(LEADING_NEWLINES_PATTERN);
     return newlineMatch ? res.slice(newlineMatch[0].length) : res;
 }
 

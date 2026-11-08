@@ -1,13 +1,20 @@
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 
+function firstOption(field) { return field.options?.[0]?.id || null; }
+
+const INITIAL_VALUES = new Map([
+    ['checkboxlist', () => ({})],
+    ['select', firstOption],
+    ['nested-menu', firstOption],
+    ['multiselect', () => []],
+    ['image', () => new ImageFieldValue()]
+]);
+
 export function getInitialValue(field) {
     if (field.override) return field.override;
-    if (field.type === 'checkboxlist') return {};
-    if (field.type === 'select') return field.options?.[0]?.id || null;
-    if (field.type === 'nested-menu') return field.options?.[0]?.id || null;
-    if (field.type === 'multiselect') return [];
-    if (field.type === 'image') return new ImageFieldValue();
-    return '';
+    const createValue = INITIAL_VALUES.get(field.type);
+    if (!createValue) return '';
+    return createValue(field);
 }
 
 export function getDefaultValue(field) {

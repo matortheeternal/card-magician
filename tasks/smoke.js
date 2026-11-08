@@ -13,6 +13,43 @@ const suites = [
 ];
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
+
+const customSuites = {
+    'Extension roots': runExtensionRootTests,
+    'Shutdown': runShutdownTests
+};
+
+function getExtensionsPath(suite, profilePath) {
+    return suite === 'Extensions'
+        ? path.join(profilePath, 'extensions')
+        : undefined;
+}
+
+async function runSuite(suite) {
+    console.log(`Running ${suite}...`);
+    const profilePath = path.join(temp, suite);
+    const customSuite = customSuites[suite];
+    if (customSuite)
+        return await customSuite(profilePath);
+    if (suite === 'Extensions')
+        await prepareUserExtensions(profilePath);
+
+    const extensionsPath = getExtensionsPath(suite, profilePath);
+    const fixture = await launch({
+        profile: profilePath,
+        url: '/tests/smoke.html',
+        id: 'cardmagician.test',
+        extensionsPath,
+        args: [`--test-suite=${suite}`]
+    });
+
+    try {
+        await fixture.result();
+    } finally {
+        await fixture.cleanup();
+    }
+}
+
 try {
     const requested = process.argv
         .find(arg => arg.startsWith('--suite='))
@@ -21,34 +58,8 @@ try {
         throw new Error(`Unknown smoke suite: ${requested}`);
 
     const suitesToRun = requested ? [requested] : suites;
-    for (const suite of suitesToRun) {
-        console.log(`Running ${suite}...`);
-        const profilePath = path.join(temp, suite);
-        if (suite === 'Extension roots') {
-            await runExtensionRootTests(profilePath);
-            continue;
-        }
-        if (suite === 'Extensions')
-            await prepareUserExtensions(profilePath);
-        if (suite === 'Shutdown') {
-            await runShutdownTests(profilePath);
-            continue;
-        }
-
-        const fixture = await launch({
-            profile: profilePath,
-            url: '/tests/smoke.html',
-            id: 'cardmagician.test',
-            extensionsPath: suite === 'Extensions'
-                ? path.join(profilePath, 'extensions') : undefined,
-            args: [`--test-suite=${suite}`]
-        });
-        try {
-            await fixture.result();
-        } finally {
-            await fixture.cleanup();
-        }
-    }
+    for (const suite of suitesToRun)
+        await runSuite(suite);
     console.log('Smoke tests passed.');
 } finally {
     await fs.rm(temp, { recursive: true, force: true });

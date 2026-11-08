@@ -26,7 +26,8 @@ describe('card face colors', () => {
 
     it('uses mana cost rather than ability text for nonlands', () => {
         expect(colors({
-            superType: 'Creature', manaCost: ManaCost.parse('1W'), rulesText: '{T}: Add {G}.'
+            superType: 'Creature', manaCost: ManaCost.parse('1W'),
+            rulesText: '{T}: Add {G}.'
         })).toEqual(['w']);
     });
 });

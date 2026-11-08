@@ -2,6 +2,8 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { openProject } from '../../../domain/projects/projectManager.js';
 
+const PATH_SEPARATOR_PATTERN = /[\/\\]/;
+
 const L = localize('recent-projects');
 
 export default class RecentProjects extends ReactiveComponent {
@@ -24,7 +26,7 @@ export default class RecentProjects extends ReactiveComponent {
         button.size = 'small';
         button.classList.add('recent-project');
         button.addEventListener('click', () => openProject(project.filePath));
-        const filename = project.filePath.split(/[\/\\]/).pop();
+        const filename = project.filePath.split(PATH_SEPARATOR_PATTERN).pop();
         button.textContent = String(project.title || filename);
         this.container.appendChild(button);
     }

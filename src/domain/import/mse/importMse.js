@@ -108,6 +108,11 @@ export async function importCards(mseSet, adapter, onFailure = () => {}) {
     return cardMap;
 }
 
+function addStructuredCard(project, structure) {
+    const card = structure.makeCard();
+    if (card) project.cards.push(card);
+}
+
 export function addCardsToProject(cardMap, project, onFailure = () => {}) {
     const cardsByUid = new Map();
     for (const [mseCard, cmCard] of cardMap)
@@ -116,8 +121,7 @@ export function addCardsToProject(cardMap, project, onFailure = () => {}) {
     for (const [mseCard, cmCard] of cardMap) {
         try {
             const structure = getStructure(mseCard, cmCard, cardsByUid);
-            const card = structure.makeCard();
-            if (card) project.cards.push(card);
+            addStructuredCard(project, structure);
         } catch (error) {
             onFailure(error, mseCard.name);
         }

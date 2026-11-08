@@ -67,7 +67,9 @@ export async function newProject() {
 
 export async function openProject(filePath) {
     log('user').info('Open project');
-    filePath = filePath || await platform.openSingleFileDialog(L`Open a project`, filters);
+    filePath = filePath || await platform.openSingleFileDialog(
+        L`Open a project`, filters
+    );
     if (!filePath) return;
     log('state').info('Opening project:', filePath);
     await withNewContext(async () => {

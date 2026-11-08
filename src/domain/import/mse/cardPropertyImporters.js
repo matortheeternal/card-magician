@@ -2,6 +2,9 @@ import { ActivationCost, ManaCost } from 'mana-scribe';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
 import faceSymbolMap from './faceSymbolMap.js';
 
+const XML_TAG_PATTERN = /<[^>]*>/g;
+const SYMBOL_TAG_PATTERN = /<sym(?:-auto)?>([^<]+)<\/sym(?:-auto)?>/g;
+
 /**
  * Removes XML tags from the input string, preserving the text in the tags.
  *
@@ -10,12 +13,12 @@ import faceSymbolMap from './faceSymbolMap.js';
  */
 function stripTags(str) {
     if (!str) return '';
-    return str.replaceAll(/<[^>]*>/g, '');
+    return str.replaceAll(XML_TAG_PATTERN, '');
 }
 
 function convertSymbols(str) {
     if (!str) return '';
-    const expr = /<sym(?:-auto)?>([^<]+)<\/sym(?:-auto)?>/g;
+    const expr = SYMBOL_TAG_PATTERN;
     return str.replaceAll(expr, (match, g1) => {
         return ActivationCost.parse(g1).toString(true);
     }).replaceAll('–', '-');

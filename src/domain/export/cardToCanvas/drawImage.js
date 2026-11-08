@@ -1,5 +1,15 @@
 import { loadImage } from '../../../shared/imageUtils.js';
 
+function matchingRules(sheet, parent) {
+    let cssText = '';
+    for (const rule of sheet.cssRules) {
+        if (rule.constructor !== CSSStyleRule) continue;
+        if (!parent.querySelector(rule.selectorText)) continue;
+        cssText += rule.cssText + '\n';
+    }
+    return cssText;
+}
+
 function cloneSvg(svgEl) {
     const clone = svgEl.cloneNode(true);
     if (!clone.getAttribute('xmlns'))
@@ -10,17 +20,10 @@ function cloneSvg(svgEl) {
         'style'
     );
 
-    let cssText = '';
     const styleTags = svgEl.getRootNode().querySelectorAll('style');
-    for (const style of styleTags) {
-        for (const rule of style.sheet.cssRules) {
-            if (rule.constructor !== CSSStyleRule) continue;
-            if (svgEl.parentElement.querySelector(rule.selectorText))
-                cssText += rule.cssText + '\n';
-        }
-    }
-
-    styleEl.textContent = cssText;
+    styleEl.textContent = [...styleTags].map(style => (
+        matchingRules(style.sheet, svgEl.parentElement)
+    )).join('');
     clone.insertBefore(styleEl, clone.firstChild);
 
     return clone;

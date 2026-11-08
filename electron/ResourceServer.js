@@ -4,6 +4,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { isInside } from './paths.js';
 
+const MOUNT_URL_PATTERN = /^\/[a-zA-Z0-9_-]+$/;
+
 export const origin = 'cm-app://app';
 
 export function registerResourceScheme() {
@@ -25,7 +27,7 @@ export default class ResourceServer {
     }
 
     mount(url, target) {
-        if (!/^\/[a-zA-Z0-9_-]+$/.test(url)) throw new Error('Invalid mount URL');
+        if (!MOUNT_URL_PATTERN.test(url)) throw new Error('Invalid mount URL');
         this.mounts.set(url, path.resolve(target));
     }
 

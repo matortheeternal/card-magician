@@ -95,14 +95,18 @@ export default class CardFrame {
         return order;
     }
 
+    getHybridColor(card, options) {
+        if (!card.colorIdentity.isHybrid()) return null;
+        if (options.hybridMode === 'colorless') return 'c';
+        if (options.hybridMode === 'multicolor') return 'm';
+        if (options.hybridMode === 'first') return card.colorIdentity.colors[0].char;
+        return null;
+    }
+
     resolveHybridColored(folder, card, options) {
+        const color = this.getHybridColor(card, options);
+        if (color) return this.resolveColorKey(folder, color, options);
         const colors = card.colorIdentity.colors;
-        if (card.colorIdentity.isHybrid() && options.hybridMode === 'colorless')
-            return this.resolveColorKey(folder, 'c', options);
-        if (card.colorIdentity.isHybrid() && options.hybridMode === 'multicolor')
-            return this.resolveColorKey(folder, 'm', options);
-        if (card.colorIdentity.isHybrid() && options.hybridMode === 'first')
-            return this.resolveColorKey(folder, colors[0].char, options);
         const [c1, c2] = this.getHybridOrder(card, colors[0].char, colors[1].char);
         const blendCoords = options.blendCoords || (
             this.card.hybridStyle?.includes('vertical')

@@ -16,9 +16,9 @@ export function binarySearch(min, max, check, maxIt, step = 0.1) {
         if (fits) {
             best = mid;
             low = mid;
-        } else {
-            high = mid;
+            continue;
         }
+        high = mid;
     }
 
     return best;

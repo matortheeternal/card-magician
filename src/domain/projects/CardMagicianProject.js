@@ -4,6 +4,8 @@ import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { find } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
+const YAML_EXTENSION_PATTERN = /.yml$/i;
+
 const report = createReporter({ unit: 'CardMagicianProject', label: 'Project' });
 
 export default class CardMagicianProject {
@@ -110,7 +112,9 @@ export default class CardMagicianProject {
     }
 
     async loadCards() {
-        const files = await find(this.cardsFolderPath, { matching: /.yml$/i });
+        const files = await find(this.cardsFolderPath, {
+            matching: YAML_EXTENSION_PATTERN
+        });
         for (const filePath of files) {
             try {
                 const card = await this.loadCard(filePath);

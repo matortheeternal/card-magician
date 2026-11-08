@@ -68,6 +68,16 @@ export async function watchFile(filename, callback) {
     return stop;
 }
 
+async function readCurrentText(filename, apply, isCurrent) {
+    try {
+        const source = await platform.readFile(filename);
+        if (isCurrent()) apply(source);
+    } catch (error) {
+        if (!['ENOENT', 'ENOTDIR'].includes(error.code))
+            report('read', error, [filename]);
+    }
+}
+
 /**
  * Read changed text files and apply only reads from the current project context.
  * Missing files retain their last value. Read and watcher errors are reported.
@@ -89,14 +99,9 @@ export async function watchTextFile(filename, apply, { initial = false } = {}) {
             report('watch', event.error, [filename]);
             return;
         }
-        try {
-            const source = await platform.readFile(filename);
-            if (active && context === activeContext && revision === currentRevision)
-                apply(source);
-        } catch (error) {
-            if (!['ENOENT', 'ENOTDIR'].includes(error.code))
-                report('read', error, [filename]);
-        }
+        await readCurrentText(filename, apply, () => (
+            active && context === activeContext && revision === currentRevision
+        ));
     };
     const stop = await watchFile(filename, refresh);
     if (initial && context === activeContext) await refresh();

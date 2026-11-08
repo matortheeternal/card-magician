@@ -12,7 +12,9 @@ describe('Set Icon Editor settings', () => {
         for (const ancestor of ancestors) {
             await ancestor.updateComplete;
             if (!ancestor.expanded) {
-                await cmTest.click(ancestor.shadowRoot.querySelector('[part="expand-button"]'));
+                await cmTest.click(
+                    ancestor.shadowRoot.querySelector('[part="expand-button"]')
+                );
                 await cmTest.eventually(() => ancestor.expanded);
             }
         }
@@ -50,9 +52,13 @@ describe('Set Icon Editor settings', () => {
             .and.resolveTo(filename);
         const locate = settings.querySelector('[data-click-action="locate"]');
         await cmTest.click(locate);
-        await cmTest.eventually(() => settings.querySelector('sl-input').value === filename);
+        await cmTest.eventually(
+            () => settings.querySelector('sl-input').value === filename
+        );
         await activeGame.config.flush();
-        const stored = JSON.parse(await activeGame.platform.getStoredData('appConfig-magic'));
+        const stored = JSON.parse(
+            await activeGame.platform.getStoredData('appConfig-magic')
+        );
         expect(stored.setIconEditorPath).toBe(filename);
         await selectTab('cm-magic-project-details');
         expect(modal.querySelector('[data-click-action="setupSIE"]')).toBeNull();
@@ -74,7 +80,9 @@ describe('Set Icon Editor settings', () => {
         const settings = modal.querySelector('cm-set-icon-editor-settings');
         spyOn(activeGame.platform, 'openSingleFileDialog').and.resolveTo(undefined);
         await cmTest.click(settings.querySelector('[data-click-action="locate"]'));
-        await cmTest.eventually(() => activeGame.platform.openSingleFileDialog.calls.count() === 1);
+        await cmTest.eventually(
+            () => activeGame.platform.openSingleFileDialog.calls.count() === 1
+        );
         expect(activeGame.config.get('setIconEditorPath')).toBe('');
         spyOn(activeGame.platform, 'openUrl').and.resolveTo();
         await cmTest.click(settings.querySelector('[data-click-action="download"]'));
@@ -85,17 +93,24 @@ describe('Set Icon Editor settings', () => {
 
     it('launches the configured editor with the project symbol', async () => {
         await activeGame.config.set('setIconEditorPath', '/apps/editor');
-        spyOnProperty(activeProject, 'symbolPath', 'get').and.returnValue('/sets/icon.svg');
+        spyOnProperty(activeProject, 'symbolPath', 'get')
+            .and.returnValue('/sets/icon.svg');
         spyOn(activeGame.platform, 'openSvgEditor').and.resolveTo();
-        await cmTest.click(modal.querySelector('cm-edit-set-symbol [data-click-action="edit"]'));
-        await cmTest.eventually(() => activeGame.platform.openSvgEditor.calls.count() === 1);
+        await cmTest.click(
+            modal.querySelector('cm-edit-set-symbol [data-click-action="edit"]')
+        );
+        await cmTest.eventually(
+            () => activeGame.platform.openSvgEditor.calls.count() === 1
+        );
         expect(activeGame.platform.openSvgEditor)
             .toHaveBeenCalledWith('/apps/editor', '/sets/icon.svg');
         activeGame.platform.openSvgEditor.and.rejectWith(
             new Error('Missing executable')
         );
         spyOn(window.dialog, 'alert').and.resolveTo();
-        await cmTest.click(modal.querySelector('cm-edit-set-symbol [data-click-action="edit"]'));
+        await cmTest.click(
+            modal.querySelector('cm-edit-set-symbol [data-click-action="edit"]')
+        );
         await cmTest.eventually(() => window.dialog.alert.calls.count() === 1);
         expect(window.dialog.alert).toHaveBeenCalledWith(
             jasmine.stringMatching(/Check its path/)

@@ -58,8 +58,8 @@ function resolveOptionAndParent(selectedOption, options) {
     for (const option of options) {
         if (option.id === selectedOption) return [option, null];
         if (!option.items) continue;
-        for (const item of option.items)
-            if (item.id === selectedOption) return [item, option];
+        const item = option.items.find(item => item.id === selectedOption);
+        if (item) return [item, option];
     }
     return [null, null];
 }

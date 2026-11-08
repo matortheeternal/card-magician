@@ -2,6 +2,8 @@ import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
 import { getExtensionDirectory } from './extensionManager.js';
 
+const TEMPLATE_PARAMETER_PATTERN = /%\{(\d+)}/g;
+
 const CURRENT_SCHEMA_VERSION = 1;
 
 export default class Localization {
@@ -25,6 +27,10 @@ export default class Localization {
         this.data = yaml.parse(text) || {};
         this.addMissingKeys();
         this.text = this.stringify();
+        this.applyMetadata(metadata);
+    }
+
+    applyMetadata(metadata) {
         this.label = metadata?.label || 'New Locale';
         this.created = metadata?.created || new Date();
         this.updated = metadata?.updated || undefined;
@@ -49,7 +55,7 @@ export default class Localization {
         const namespace = this.data[namespaceKey];
         const template = namespace?.[key];
         if (!template) return null;
-        return escapeHTML(template.replace(/%\{(\d+)}/g, (_, index) => {
+        return escapeHTML(template.replace(TEMPLATE_PARAMETER_PATTERN, (_, index) => {
             return values[index];
         }));
     }

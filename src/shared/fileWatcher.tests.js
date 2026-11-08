@@ -15,7 +15,9 @@ describe('File watcher', () => {
     let folder;
 
     beforeEach(async () => {
-        folder = await platform.getJoinedPath(appEnvironment.paths.data, crypto.randomUUID());
+        folder = await platform.getJoinedPath(
+            appEnvironment.paths.data, crypto.randomUUID()
+        );
         await platform.createDirectory(folder);
     });
 

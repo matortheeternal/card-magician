@@ -64,10 +64,10 @@ describe('InlineInput layout', () => {
             expect(element.value).toBe(value);
             if (value) {
                 expectFullWidth();
-            } else {
-                expect(element.inputElement.getBoundingClientRect().width)
-                    .toBeGreaterThan(0);
+                continue;
             }
+            expect(element.inputElement.getBoundingClientRect().width)
+                .toBeGreaterThan(0);
         }
     });
 

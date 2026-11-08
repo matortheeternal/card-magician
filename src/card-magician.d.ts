@@ -88,3 +88,4 @@ export type DialogService = {
     confirm(message: string, options?: DialogOptions): Promise<boolean>;
     prompt(message: string, options?: DialogOptions): Promise<string | null>;
 };
+export type { DirectoryEntry, FileStats, PathParts } from './platforms/PlatformAdapter.js';

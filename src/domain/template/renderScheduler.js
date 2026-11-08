@@ -37,6 +37,22 @@ function renderMatches(task, options) {
     return taskRender === optionsRender || taskRender === '*';
 }
 
+function renderTask({ card, module, options }) {
+    const renderKey = options?.render || 'render';
+    const subcardKey = card.isSubcard ? card.id : null;
+    try {
+        renderModule(card, module, renderKey, subcardKey);
+    } catch (err) {
+        const key = [
+            subcardKey || 'card',
+            module.modulePath,
+            renderKey
+        ].join(':');
+        log('render').error(`Error rendering ${key}, ${err?.stack || err}`);
+        report(key, err, [card, module]);
+    }
+}
+
 export default class RenderScheduler {
     static queue = [];
     static scheduled = false;
@@ -76,21 +92,7 @@ export default class RenderScheduler {
             `${task.card.id}:${task.module.name}.${task.options?.render || 'render'}`
         );
         log('render').debug(`Rendering ${queue.length} items:`, prettyRender);
-        for (const { card, module, options } of queue) {
-            const renderKey = options?.render || 'render';
-            const subcardKey = card.isSubcard ? card.id : null;
-            try {
-                renderModule(card, module, renderKey, subcardKey);
-            } catch (err) {
-                const key = [
-                    subcardKey || 'card',
-                    module.modulePath,
-                    renderKey
-                ].join(':');
-                log('render').error(`Error rendering ${key}, ${err?.stack || err}`);
-                report(key, err, [card, module]);
-            }
-        }
+        for (const task of queue) renderTask(task);
         this.queue = [];
         this.flushComplete(queue);
     }

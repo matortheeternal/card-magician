@@ -8,8 +8,12 @@ export default class ChartRenderer {
     }
 
     update(model) {
-        this.chart.viewport.classList.toggle('stats-matrix', model.renderer.shape === 'matrix');
-        this.chart.viewport.classList.toggle('stats-chart', model.renderer.shape === 'series');
+        this.chart.viewport.classList.toggle(
+            'stats-matrix', model.renderer.shape === 'matrix'
+        );
+        this.chart.viewport.classList.toggle(
+            'stats-chart', model.renderer.shape === 'series'
+        );
         this.updateDataTable(model);
         this.updateViewport(model);
     }

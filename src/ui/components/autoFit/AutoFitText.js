@@ -10,10 +10,10 @@ function getTextRects(node, rects) {
         range.setStart(node, 0);
         range.setEnd(node, node.textContent.length);
         rects.push(...range.getClientRects());
-    } else {
-        for (const child of node.childNodes)
-            getTextRects(child, rects);
+        return rects;
     }
+    for (const child of node.childNodes)
+        getTextRects(child, rects);
     return rects;
 }
 
@@ -51,18 +51,15 @@ class AutoFitText extends AutoFit {
         });
     }
 
+    intersectsForbidden(textRect) {
+        return this.forbiddenRects.some(rect => rectsIntersect(textRect, rect));
+    }
+
     textIntersects() {
         if (!this.forbiddenRects.length) return false;
 
         const textRects = getTextRects(this, []);
-        for (const tr of textRects) {
-            for (const fr of this.forbiddenRects) {
-                if (rectsIntersect(tr, fr))
-                    return true;
-            }
-        }
-
-        return false;
+        return textRects.some(textRect => this.intersectsForbidden(textRect));
     }
 
     checkFit(size) {

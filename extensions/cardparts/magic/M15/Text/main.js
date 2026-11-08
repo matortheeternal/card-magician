@@ -3,6 +3,14 @@ import { stationCardExpr, StationConverter } from './src/StationConverter.js';
 import { levelCardExpr, LevelConverter } from './src/LevelConverter.js';
 import { ListConverter, listExpr } from './src/ListConverter.js';
 
+const COMPANION_PATTERN = /^companion\b/i;
+const MIRACLE_PATTERN = /\bmiracle\b/i;
+const MUTATE_PATTERN = /^mutate\b/i;
+const TRANSFORM_PATTERN = /\bTransform(ed)?\b/i;
+const DAYBOUND_PATTERN = /\bDaybound\b/i;
+const DISTURB_PATTERN = /\bDisturb\b/i;
+const MORE_THAN_MEETS_THE_EYE_PATTERN = /\bMore Than Meets the Eye\b/i;
+
 const L = localize('module-M15-text');
 
 export default class TextModule extends CardMagicianModule {
@@ -43,9 +51,9 @@ export default class TextModule extends CardMagicianModule {
     async init(card) {
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
-        card.isCompanion = () => /^companion\b/i.test(card.rulesText);
-        card.isMiracle = () => /\bmiracle\b/i.test(card.rulesText);
-        card.isMutate = () => /^mutate\b/i.test(card.rulesText);
+        card.isCompanion = () => COMPANION_PATTERN.test(card.rulesText);
+        card.isMiracle = () => MIRACLE_PATTERN.test(card.rulesText);
+        card.isMutate = () => MUTATE_PATTERN.test(card.rulesText);
         card.hasLevels = () => levelCardExpr.test(card.rulesText);
         card.isStation = () => stationCardExpr.test(card.rulesText);
         card.hasChoices = () => listExpr.test(card.rulesText);
@@ -59,10 +67,10 @@ export default class TextModule extends CardMagicianModule {
 
         // TODO: probably should use a keyword system instead or be just user-configured
         card.isTransform = function() {
-            return /\bTransform(ed)?\b/i.test(card.rulesText)
-                || /\bDaybound\b/i.test(card.rulesText)
-                || /\bDisturb\b/i.test(card.rulesText)
-                || /\bMore Than Meets the Eye\b/i.test(card.rulesText);
+            return TRANSFORM_PATTERN.test(card.rulesText)
+                || DAYBOUND_PATTERN.test(card.rulesText)
+                || DISTURB_PATTERN.test(card.rulesText)
+                || MORE_THAN_MEETS_THE_EYE_PATTERN.test(card.rulesText);
         };
     }
 

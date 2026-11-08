@@ -1,9 +1,11 @@
 import Serializer from './Serializer.js';
 import YAML from 'yaml';
 
+const YAML_EXTENSION_PATTERN = /\.yml$/i;
+
 export default class YAMLSerializer extends Serializer {
     static matches(filePath) {
-        return /\.yml$/i.test(filePath);
+        return YAML_EXTENSION_PATTERN.test(filePath);
     }
 
     /**

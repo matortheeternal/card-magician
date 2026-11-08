@@ -12,7 +12,8 @@ describe('Platform adapter', () => {
             const implementation = Object.getOwnPropertyDescriptor(
                 Object.getPrototypeOf(platform), name
             );
-            expect(implementation?.value).withContext(name).toEqual(jasmine.any(Function));
+            expect(implementation?.value).withContext(name)
+                .toEqual(jasmine.any(Function));
             expect(Object.hasOwn(platform, name)).withContext(name).toBeFalse();
         }
     });
@@ -44,7 +45,9 @@ describe('Platform adapter', () => {
         const executable = await platform.getJoinedPath(
             appEnvironment.paths.data, 'missing-editor', 'set-icon-editor'
         );
-        const filename = await platform.getJoinedPath(appEnvironment.paths.data, 'symbol.svg');
+        const filename = await platform.getJoinedPath(
+            appEnvironment.paths.data, 'symbol.svg'
+        );
         await expectAsync(platform.openSvgEditor(executable, filename))
             .toBeRejectedWith(jasmine.objectContaining({ code: 'ENOENT' }));
     });

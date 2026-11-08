@@ -1,6 +1,8 @@
 import DOMPurify from 'dompurify';
 import rarityPresets, { RARITY_GRADIENT_OFFSETS } from './rarityPresets.js';
 
+const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const OFFSETS = RARITY_GRADIENT_OFFSETS.map(
     offset => `${Number((offset * 100).toFixed(6))}%`
@@ -8,7 +10,7 @@ const OFFSETS = RARITY_GRADIENT_OFFSETS.map(
 let nextId = 0;
 
 function safeColor(value, fallback) {
-    return /^#[0-9a-f]{6}$/i.test(value ?? '') ? value : fallback;
+    return HEX_COLOR_PATTERN.test(value ?? '') ? value : fallback;
 }
 
 function parseSvg(svgText) {
@@ -34,15 +36,20 @@ function renameIds(svg, prefix) {
     return ids;
 }
 
+function rewriteIdReferences(value, ids) {
+    for (const [oldId, id] of ids) {
+        value = value.replaceAll(`url(#${oldId})`, `url(#${id})`);
+        if (value === `#${oldId}`) value = `#${id}`;
+    }
+    return value;
+}
+
 function updateIdReferences(svg, ids) {
     for (const element of [svg, ...svg.querySelectorAll('*')]) {
         for (const attribute of [...element.attributes]) {
-            let value = attribute.value;
-            for (const [oldId, id] of ids) {
-                value = value.replaceAll(`url(#${oldId})`, `url(#${id})`);
-                if (value === `#${oldId}`) value = `#${id}`;
-            }
-            element.setAttribute(attribute.name, value);
+            element.setAttribute(
+                attribute.name, rewriteIdReferences(attribute.value, ids)
+            );
         }
     }
 }

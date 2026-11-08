@@ -1,5 +1,4 @@
-function isText(n) { return n?.nodeType === Node.TEXT_NODE; }
-function isElem(n) { return n?.nodeType === Node.ELEMENT_NODE; }
+import { NODE_MORPHS } from './nodeMorphs.js';
 
 let mutatedElements = null;
 
@@ -24,34 +23,15 @@ function morphAttributes(oldEl, newEl) {
     }
 }
 
+function morphElement(oldNode, newNode) {
+    morphAttributes(oldNode, newNode);
+    morphChildren(oldNode, newNode);
+}
+
 function morphNode(parent, oldNode, newNode) {
-    if (!oldNode && newNode) {
-        parent.appendChild(newNode.cloneNode(true));
-        markMutated(parent);
-        return;
-    }
-    if (oldNode && !newNode) {
-        parent.removeChild(oldNode);
-        markMutated(parent);
-        return;
-    }
-    if (oldNode.nodeType !== newNode.nodeType
-        || (isElem(oldNode) && oldNode.tagName !== newNode.tagName)) {
-        parent.replaceChild(newNode.cloneNode(true), oldNode);
-        markMutated(parent);
-        return;
-    }
-    if (isText(oldNode) && isText(newNode)) {
-        if (oldNode.textContent !== newNode.textContent) {
-            oldNode.textContent = newNode.textContent;
-            markMutated(oldNode);
-        }
-        return;
-    }
-    if (isElem(oldNode) && isElem(newNode)) {
-        morphAttributes(oldNode, newNode);
-        morphChildren(oldNode, newNode);
-    }
+    const Strategy = NODE_MORPHS.find(strategy => strategy.matches(oldNode, newNode));
+    if (!Strategy) return;
+    new Strategy({ parent, oldNode, newNode, markMutated, morphElement }).apply();
 }
 
 function morphChildren(oldParent, newParent) {

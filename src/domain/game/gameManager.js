@@ -4,7 +4,6 @@ import { readExtensionDirectories } from '../../shared/extensionManager.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
 const games = [];
-let appConfig = null;
 let gameStylesheet = null;
 
 /**

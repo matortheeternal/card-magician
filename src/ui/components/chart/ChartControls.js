@@ -34,8 +34,7 @@ export default class ChartControls extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            selectType: event => this.changeOption('type',
-                                                   event.target.closest('[data-chart-type]').dataset.chartType),
+            selectType: event => this.selectType(event),
             selectSeries: event => this.selectSeries(event)
         });
         this.handleEvents('change', {
@@ -46,6 +45,11 @@ export default class ChartControls extends ReactiveComponent {
 
     changeOption(option, value) {
         this.emit('chart-option-changed', { option, value });
+    }
+
+    selectType(event) {
+        const button = event.target.closest('[data-chart-type]');
+        this.changeOption('type', button.dataset.chartType);
     }
 
     selectSeries(event) {
@@ -94,7 +98,9 @@ export default class ChartControls extends ReactiveComponent {
         button.style.setProperty('--series-color', category.color
             || 'var(--sl-color-primary-600)');
         button.setAttribute('aria-label', category.label);
-        button.setAttribute('aria-pressed', String(!this.model.hiddenSeries.has(category.id)));
+        button.setAttribute(
+            'aria-pressed', String(!this.model.hiddenSeries.has(category.id))
+        );
         button.append(...seriesContent(category));
         const tooltip = document.createElement('sl-tooltip');
         tooltip.content = category.label;

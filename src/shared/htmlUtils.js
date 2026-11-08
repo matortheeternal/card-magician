@@ -50,6 +50,21 @@ export async function waitForImages(node) {
     }));
 }
 
+async function framesAreQuiet(lastMutation, settleFrames) {
+    for (let i = 0; i < settleFrames; i++) {
+        await new Promise(requestAnimationFrame);
+        if (performance.now() - lastMutation() < 50) return false;
+    }
+    return true;
+}
+
+async function waitForQuietFrames(lastMutation, settleFrames, maxWaitMs) {
+    const start = performance.now();
+    while (performance.now() - start <= maxWaitMs)
+        if (await framesAreQuiet(lastMutation, settleFrames)) return;
+
+}
+
 export async function layoutSettled(root, {
     settleFrames = 4,
     maxWaitMs = 2000,
@@ -68,21 +83,7 @@ export async function layoutSettled(root, {
     });
 
     try {
-        const start = performance.now();
-        while (true) {
-            if (performance.now() - start > maxWaitMs) break;
-
-            let stable = true;
-            for (let i = 0; i < settleFrames; i++) {
-                await new Promise(requestAnimationFrame);
-                const mutatedRecently = performance.now() - lastMutation < 50;
-                if (!mutatedRecently) continue;
-                stable = false;
-                break;
-            }
-
-            if (stable) break;
-        }
+        await waitForQuietFrames(() => lastMutation, settleFrames, maxWaitMs);
     } finally {
         observer.disconnect();
     }

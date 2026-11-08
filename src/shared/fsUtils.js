@@ -19,7 +19,9 @@ async function getMatchingEntries(folderPath, options) {
         recursive: false,
     }, options);
     if (!await platform.checkFolderExists(folderPath)) return [];
-    const entries = await platform.readDirectory(folderPath, { recursive: options.recursive });
+    const entries = await platform.readDirectory(folderPath, {
+        recursive: options.recursive
+    });
     return entries.filter(({ entry, type }) => {
         if (!options.files && type === 'FILE') return false;
         if (!options.directories && type === 'DIRECTORY') return false;

@@ -11,18 +11,12 @@ function overlay(a, b) {
 function softLight(a, b) {
     a /= 255;
     b /= 255;
-    let result;
-
-    if (b < 0.5) {
-        result = a - (1 - 2 * b) * a * (1 - a);
-    } else {
-        const d = (a <= 0.25)
-            ? ((16 * a - 12) * a + 4) * a
-            : Math.sqrt(a);
-        result = a + (2 * b - 1) * (d - a);
-    }
-
-    return Math.round(result * 255);
+    if (b < 0.5)
+        return Math.round((a - (1 - 2 * b) * a * (1 - a)) * 255);
+    const d = (a <= 0.25)
+        ? ((16 * a - 12) * a + 4) * a
+        : Math.sqrt(a);
+    return Math.round((a + (2 * b - 1) * (d - a)) * 255);
 }
 
 export const blendAlgorithms = {

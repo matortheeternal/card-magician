@@ -1,3 +1,9 @@
+const ARTIFACT_PATTERN = /\bArtifact\b/i;
+const LAND_PATTERN = /\bLand\b/i;
+const BASIC_LAND_PATTERN = /\bBasic Land\b/i;
+const TOKEN_PATTERN = /\bToken\b/i;
+const EMBLEM_PATTERN = /\bEmblem\b/i;
+const CREATURE_PATTERN = /\bCreature\b/i;
 export function isUninitializedCard(card) {
     return Object.keys(card.front).length < 2;
 }
@@ -14,15 +20,15 @@ export function isMonoColor(card, color) {
 }
 
 export function isArtifact(card) {
-    return /\bArtifact\b/i.test(card.front.superType || '');
+    return ARTIFACT_PATTERN.test(card.front.superType || '');
 }
 
 export function isLand(card) {
-    return /\bLand\b/i.test(card.front.superType || '');
+    return LAND_PATTERN.test(card.front.superType || '');
 }
 
 export function isBasicLand(card) {
-    return /\bBasic Land\b/i.test(card.front.superType || '');
+    return BASIC_LAND_PATTERN.test(card.front.superType || '');
 }
 
 export function isMulticolor(card) {
@@ -32,13 +38,13 @@ export function isMulticolor(card) {
 }
 
 export function isToken(card) {
-    return /\bToken\b/i.test(card.front.superType || '');
+    return TOKEN_PATTERN.test(card.front.superType || '');
 }
 
 export function isEmblem(card) {
-    return /\bEmblem\b/i.test(card.front.superType || '');
+    return EMBLEM_PATTERN.test(card.front.superType || '');
 }
 
 export function isCreature(card) {
-    return /\bCreature\b/i.test(card.front.superType || '');
+    return CREATURE_PATTERN.test(card.front.superType || '');
 }

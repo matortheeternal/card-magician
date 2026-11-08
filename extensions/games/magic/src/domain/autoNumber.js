@@ -68,20 +68,24 @@ function cardCodeSort(a, b) {
     return acmc - bcmc;
 }
 
+function getCardCodeCategory(card) {
+    if (isLand(card)) return 'L';
+    if (isArtifact(card) && !card.front.colors?.length) return 'A';
+    if (isColorless(card)) return 'C';
+    if (isMulticolor(card)) return 'Z';
+    try {
+        return card.front.colors[0].char.toUpperCase();
+    } catch {
+        return '?';
+    }
+}
+
 function getCardCodeGroup(card) {
     const rarity = card?.front?.rarity || 'common';
-    const R = rarity.slice(0, 1).toUpperCase();
-    if (!mainRarities.includes(rarity)) return R;
-    if (isBasicLand(card)) return `L`;
-    if (isLand(card)) return `${R}L`;
-    if (isArtifact(card) && !card.front.colors?.length) return `${R}A`;
-    if (isColorless(card)) return `${R}C`;
-    if (isMulticolor(card)) return `${R}Z`;
-    try {
-        return R + card.front.colors[0].char.toUpperCase();
-    } catch {
-        return `${R}?`;
-    }
+    const prefix = rarity.slice(0, 1).toUpperCase();
+    if (!mainRarities.includes(rarity)) return prefix;
+    if (isBasicLand(card)) return 'L';
+    return prefix + getCardCodeCategory(card);
 }
 
 function assignCardCode(key, card, index) {

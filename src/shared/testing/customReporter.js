@@ -73,33 +73,31 @@ class CustomReporter {
         this.#printNewline();
     }
 
-    specDone(result) {
-        this.specCount++;
-
-        switch (result.status) {
-        case 'pending':
+    #specStatusHandlers = {
+        pending: result => {
             this.#pendingSpecs.push(result);
             this.executableSpecCount++;
             this.#write(this.#colored('yellow', '*'));
-            break;
-
-        case 'notApplicable':
+        },
+        notApplicable: result => {
             this.#notApplicableSpecs.push(result);
             this.executableSpecCount++;
-            break;
-
-        case 'passed':
+        },
+        passed: () => {
             this.executableSpecCount++;
             this.#write(this.#colored('green', '.'));
-            break;
-
-        case 'failed':
+        },
+        failed: result => {
             this.failureCount++;
             this.#failedSpecs.push(result);
             this.executableSpecCount++;
             this.#write(this.#colored('red', 'F'));
-            break;
         }
+    };
+
+    specDone(result) {
+        this.specCount++;
+        this.#specStatusHandlers[result.status]?.(result);
     }
 
     suiteDone(result) {
@@ -112,58 +110,57 @@ class CustomReporter {
     async jasmineDone(result) {
         if (result.failedExpectations)
             this.failureCount += result.failedExpectations.length;
-
         this.#printNewline();
         this.#printNewline();
+        this.#printFailures(result);
+        this.#printPending(result);
+        this.#printNotApplicableSpecs();
+        this.#printResultsSummary();
+        this.#printCompletion(result);
+        await this.#outputQueue;
+    }
 
-        if (this.#failedSpecs.length > 0)
-            this.#write('Failures:');
-
+    #printFailures(result) {
+        if (this.#failedSpecs.length > 0) this.#write('Failures:');
         for (let i = 0; i < this.#failedSpecs.length; i++)
             this.#specFailureDetails(this.#failedSpecs[i], i + 1);
-
         for (const failedSuite of this.#failedSuites)
             this.#suiteFailureDetails(failedSuite);
+        if (result.failedExpectations?.length > 0)
+            this.#suiteFailureDetails({ fullName: 'top suite', ...result });
+    }
 
-        if (result.failedExpectations?.length > 0) {
-            this.#suiteFailureDetails({
-                fullName: 'top suite',
-                ...result,
-            });
-        }
+    #printPending(result) {
+        if (!this.#alwaysListPendingSpecs && result.overallStatus !== 'passed') return;
+        if (this.#pendingSpecs.length > 0) this.#write('Pending:');
+        for (let i = 0; i < this.#pendingSpecs.length; i++)
+            this.#pendingSpecDetails(this.#pendingSpecs[i], i + 1);
+    }
 
-        if (this.#alwaysListPendingSpecs || result.overallStatus === 'passed') {
-            if (this.#pendingSpecs.length > 0)
-                this.#write('Pending:');
+    #printResultsSummary() {
+        if (this.specCount > 0) { this.#printSummary(); return; }
+        this.#write('No specs found');
+    }
 
-            for (let i = 0; i < this.#pendingSpecs.length; i++)
-                this.#pendingSpecDetails(this.#pendingSpecs[i], i + 1);
-        }
-
-        this.#printNotApplicableSpecs();
-
-        if (this.specCount > 0)
-            this.#printSummary();
-        else
-            this.#write('No specs found');
-
+    #printCompletion(result) {
         this.#printNewline();
-
         const seconds = result?.totalTime / 1000 || 0;
         this.#write(`Finished in ${seconds} ${plural('second', seconds)}`);
         this.#printNewline();
+        this.#printIncomplete(result);
+        this.#printSeed(result);
+    }
 
-        if (result?.overallStatus === 'incomplete') {
-            this.#write(`Incomplete: ${result.incompleteReason}`);
-            this.#printNewline();
-        }
+    #printIncomplete(result) {
+        if (result?.overallStatus !== 'incomplete') return;
+        this.#write(`Incomplete: ${result.incompleteReason}`);
+        this.#printNewline();
+    }
 
-        if (result?.order?.random) {
-            this.#write(`Randomized with seed ${result.order.seed}`);
-            this.#printNewline();
-        }
-
-        await this.#outputQueue;
+    #printSeed(result) {
+        if (!result?.order?.random) return;
+        this.#write(`Randomized with seed ${result.order.seed}`);
+        this.#printNewline();
     }
 
     #write(text) {

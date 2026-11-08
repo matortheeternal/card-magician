@@ -38,9 +38,10 @@ describe('Magic statistics card records', () => {
         expect(blank.wordCount).toBe(0);
         expect(blank.creatureTypes).toEqual([]);
         expect(blank.name).toBe('Unnamed card');
-        for (const cmc of [-1, Infinity, NaN])
+        for (const cmc of [-1, Infinity, NaN]) {
             expect(cardRecord({ front: { manaCost: { cmc } } }, game).manaValue)
                 .toBeNull();
+        }
         const invalidGame = {
             ColorIdentity,
             ManaScribe: { ManaCost: { parse() { throw new Error('Invalid cost'); } } }

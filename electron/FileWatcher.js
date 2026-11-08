@@ -30,19 +30,22 @@ export async function watchFile(filename, callback, settleMs = 250) {
         clearTimeout(timer);
         timer = setTimeout(check, settleMs);
     };
+    const acceptSignature = value => {
+        if (!ready || value !== observed) {
+            observed = value;
+            schedule();
+            return;
+        }
+        if (value === previous) return;
+        previous = value;
+        callback({ type: value === null ? 'delete' : 'change', path: filename });
+    };
     const check = async () => {
         const currentRevision = revision;
         try {
             const value = await signature(filename);
             if (closed || currentRevision !== revision) return;
-            if (!ready || value !== observed) {
-                observed = value;
-                schedule();
-                return;
-            }
-            if (value === previous) return;
-            previous = value;
-            callback({ type: value === null ? 'delete' : 'change', path: filename });
+            acceptSignature(value);
         } catch (error) {
             if (!closed) notifyError(error);
         }

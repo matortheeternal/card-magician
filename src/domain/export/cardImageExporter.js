@@ -14,8 +14,11 @@ function downloadImage(imageUrl, filename) {
 function canvasToBlob(canvas, type, quality) {
     return new Promise((resolve, reject) => {
         canvas.toBlob(blob => {
-            if (blob) resolve(blob);
-            else reject(new Error(`Failed to encode ${type} image`));
+            if (!blob) {
+                reject(new Error(`Failed to encode ${type} image`));
+                return;
+            }
+            resolve(blob);
         }, type, quality);
     });
 }

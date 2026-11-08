@@ -105,8 +105,11 @@ export default class NativeBridge {
                     );
                 }
             });
-            if (this.fileWatchers.get(id) === entry) entry.close = close;
-            else close();
+            if (this.fileWatchers.get(id) !== entry) {
+                close();
+                return;
+            }
+            entry.close = close;
         } catch (error) {
             if (this.fileWatchers.get(id) === entry) this.fileWatchers.delete(id);
             throw error;

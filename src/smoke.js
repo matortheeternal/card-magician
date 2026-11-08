@@ -40,7 +40,9 @@ async function runTests() {
 }
 
 function print(message) {
-    return platform.writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return platform.writeProcessOutput(
+        OUTPUT_PREFIX + JSON.stringify({ message }) + '\n'
+    );
 }
 
 jasmine.getEnv().addReporter(
@@ -52,11 +54,9 @@ jasmine.getEnv().addReporter({
         const output = JSON.stringify({ status: result.overallStatus });
         await platform.writeProcessOutput(RESULT_PREFIX + output + '\n');
         await new Promise(resolve => { setTimeout(resolve, 100); });
-        if (!appEnvironment.args.includes('--stay-open')) await exitApp();
+        if (!appEnvironment.args.includes('--stay-open')) exitApp();
     }
 });
-
-
 
 window.addEventListener('cm-loaded', () => {
     runTests().catch(err => {

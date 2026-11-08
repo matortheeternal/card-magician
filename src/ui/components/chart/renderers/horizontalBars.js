@@ -8,8 +8,12 @@ function validateStackedRows(data) {
     for (const [i, cells] of data.cells.entries()) {
         const sum = cells.reduce((total, value) => total + (value || 0), 0);
         if (cells.some(value => value !== null && value < 0)
-            || Math.abs(sum - (data.rowTotals[i] || 0)) > 1e-6)
-            throw new Error(L`Stacked bars require nonnegative column values that sum to each row total.`);
+            || Math.abs(sum - (data.rowTotals[i] || 0)) > 1e-6) {
+            throw new Error(L([
+                'Stacked bars require nonnegative column values that '
+                + 'sum to each row total.'
+            ]));
+        }
     }
 }
 

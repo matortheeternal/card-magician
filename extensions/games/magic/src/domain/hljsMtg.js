@@ -1,11 +1,11 @@
-import { ABILITY_WORDS, CHAPTERS, KEYWORDS, MACROS, TYPES } from './hljsConstants.js';
+import { ABILITY_WORDS, CHAPTERS, KEYWORDS, MACROS } from './hljsConstants.js';
+
+const MANA_SYMBOL_PATTERN = /\{[^}]+}/i;
+const LEVEL_HEADER_PATTERN = /^LEVEL (?:\d+\+|\d+-\d+)\n[^\/\n]+\/[^\/\n]+\n/;
+const NEXT_LEVEL_PATTERN = /(?=^LEVEL)/;
+const STATION_HEADER_PATTERN = /^\d+\+ \| /;
 
 export default function mtg() {
-    const typeRule = {
-        className: 'type',
-        begin: new RegExp(`\\b(${TYPES})( (${TYPES}))?\\b`, 'i')
-    };
-
     const macroRule = {
         className: 'built_in',
         begin: new RegExp(`(?<!\\w)(${MACROS})(?!\\w)`)
@@ -13,7 +13,7 @@ export default function mtg() {
 
     const symbolRule = {
         className: 'symbol',
-        begin: /\{[^}]+}/i
+        begin: MANA_SYMBOL_PATTERN
     };
 
     const abilityWordRule = {
@@ -51,10 +51,10 @@ export default function mtg() {
     }
 
     const levelBlockRule = blockRule(
-        /^LEVEL (?:\d+\+|\d+-\d+)\n[^\/\n]+\/[^\/\n]+\n/,
-        /(?=^LEVEL)/
+        LEVEL_HEADER_PATTERN,
+        NEXT_LEVEL_PATTERN
     );
-    const stationBlockRule = blockRule(/^\d+\+ \| /);
+    const stationBlockRule = blockRule(STATION_HEADER_PATTERN);
     const sagaBlockRule = blockRule(
         new RegExp(`^(${CHAPTERS})(?:, (${CHAPTERS}))* [—-] `)
     );

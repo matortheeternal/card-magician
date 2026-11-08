@@ -1,6 +1,7 @@
+const SECTION_TEXT_PATTERN = /^[\s\S]+?(?=\n\n|$)/;
 export const SectionConverter = {
     match(str) {
-        return str.match(/^[\s\S]+?(?=\n\n|$)/);
+        return str.match(SECTION_TEXT_PATTERN);
     },
     convert(match, { convertParagraphs }) {
         return (

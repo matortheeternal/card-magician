@@ -606,7 +606,9 @@ describe('History', () => {
             await history.redo();
             expect(project.cards).toEqual(cards);
             for (const card of cards) {
-                const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
+                const bytes = await platform.readBinaryFile(
+                    card.files.get('front.artImage')
+                );
                 await expectFilesToMatch(new File([bytes], ''), art);
             }
         });
@@ -666,7 +668,9 @@ describe('History', () => {
         }
 
         async function expectImageFile(expected) {
-            const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
+            const bytes = await platform.readBinaryFile(
+                card.files.get('front.artImage')
+            );
             await expectFilesToMatch(new File([bytes], ''), expected);
         }
 
@@ -1046,7 +1050,9 @@ describe('History', () => {
             await history.undo();
             await executeAction('open-project', projectPath);
             card = activeProject.cards[0];
-            const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
+            const bytes = await platform.readBinaryFile(
+                card.files.get('front.artImage')
+            );
             await expectFilesToMatch(new File([bytes], ''), art);
         });
         it('preserves historical image content across overwrite and rename', async () => {

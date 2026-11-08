@@ -1,35 +1,11 @@
+import CssValueParser from './CssValueParser.js';
 import { loadImage } from '../../../shared/imageUtils.js';
 
+const URL_FUNCTION_PATTERN = /^url\(/i;
+const ZERO_LENGTH_PATTERN = /^[+-]?0(?:\.0+)?$/;
+
 function splitCssValue(css, isSeparator) {
-    const parts = [];
-    let start = 0;
-    let depth = 0;
-    let quote = null;
-
-    for (let i = 0; i < css.length; i++) {
-        const char = css[i];
-        if (quote) {
-            if (char === '\\') i++;
-            else if (char === quote) quote = null;
-            continue;
-        }
-
-        if (char === '"' || char === '\'') {
-            quote = char;
-        } else if (char === '(') {
-            depth++;
-        } else if (char === ')') {
-            depth--;
-        } else if (depth === 0 && isSeparator(char)) {
-            const part = css.slice(start, i).trim();
-            if (part) parts.push(part);
-            start = i + 1;
-        }
-    }
-
-    const part = css.slice(start).trim();
-    if (part) parts.push(part);
-    return parts;
+    return new CssValueParser(css, isSeparator).parse();
 }
 
 function splitCssList(css) {
@@ -42,7 +18,7 @@ function splitCssTokens(css) {
 
 function extractBackgroundUrl(css) {
     css = css.trim();
-    const match = css.match(/^url\(/i);
+    const match = css.match(URL_FUNCTION_PATTERN);
     if (!match || !css.endsWith(')')) return;
 
     let url = css.slice(match[0].length, -1).trim();
@@ -55,7 +31,7 @@ function extractBackgroundUrl(css) {
 
 function parseBackgroundPart(str, parentDimension) {
     str = str.trim();
-    if (/^[+-]?0(?:\.0+)?$/.test(str)) return 0;
+    if (ZERO_LENGTH_PATTERN.test(str)) return 0;
     if (str.endsWith('px')) return parseFloat(str);
     if (str.endsWith('%'))
         return parseFloat(str) * parentDimension / 100;
@@ -72,17 +48,18 @@ function parseBackgroundPart(str, parentDimension) {
     return calc[3] === '+' ? first + second : first - second;
 }
 
+function resolveDimension(value, parentDimension) {
+    if (value === 'auto') return null;
+    return parseBackgroundPart(value, parentDimension);
+}
+
 function getBackgroundSize(img, rect, backgroundSize) {
     const [width = 'auto', height = 'auto'] = splitCssTokens(backgroundSize);
     if (width === 'auto' && height === 'auto')
         return { width: img.width, height: img.height };
 
-    const resolvedWidth = width === 'auto'
-        ? null
-        : parseBackgroundPart(width, rect.width);
-    const resolvedHeight = height === 'auto'
-        ? null
-        : parseBackgroundPart(height, rect.height);
+    const resolvedWidth = resolveDimension(width, rect.width);
+    const resolvedHeight = resolveDimension(height, rect.height);
 
     return {
         width: resolvedWidth ?? resolvedHeight * img.width / img.height,

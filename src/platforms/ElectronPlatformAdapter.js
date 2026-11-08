@@ -58,7 +58,7 @@ export default class ElectronPlatformAdapter extends PlatformAdapter {
     /**
      * @param {string} filename
      * @param {{ recursive?: boolean }} [options]
-     * @returns {Promise<import('./PlatformAdapter.js').DirectoryEntry[]>}
+     * @returns {Promise<DirectoryEntry[]>}
      */
     readDirectory(filename, options = {}) {
         return call('readDirectory', filename, options);
@@ -109,7 +109,7 @@ export default class ElectronPlatformAdapter extends PlatformAdapter {
 
     /**
      * @param {string} filename
-     * @returns {Promise<import('./PlatformAdapter.js').FileStats>}
+     * @returns {Promise<FileStats>}
      */
     getStats(filename) {
         return call('getStats', filename);
@@ -141,7 +141,7 @@ export default class ElectronPlatformAdapter extends PlatformAdapter {
 
     /**
      * @param {string} filename
-     * @returns {Promise<import('./PlatformAdapter.js').PathParts>}
+     * @returns {Promise<PathParts>}
      */
     getPathParts(filename) {
         return call('getPathParts', filename);

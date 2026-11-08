@@ -3,11 +3,13 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { writeFile } from './atomicFile.js';
 
+const PATH_SEPARATOR_PATTERN = /[/\\]/;
+
 const folders = ['scripts'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
 function validEntry([name, value]) {
-    return !path.isAbsolute(name) && !name.split(/[/\\]/).includes('..')
+    return !path.isAbsolute(name) && !name.split(PATH_SEPARATOR_PATTERN).includes('..')
         && typeof value === 'string';
 }
 
@@ -50,23 +52,27 @@ export default class ContentStore {
         return hash(source);
     }
 
+    async installFolder(folder, previousFiles, files) {
+        const entries = await fs.readdir(path.join(this.source, folder), {
+            withFileTypes: true, recursive: true
+        });
+        for (const entry of entries) {
+            if (!entry.isFile()) continue;
+            const filename = path.join(entry.parentPath, entry.name);
+            const relative = path.relative(this.source, filename)
+                .replaceAll(path.sep, '/');
+            const oldHash = previousFiles[relative];
+            files[relative] = await this.installFile(relative, oldHash);
+        }
+    }
+
     async update() {
         const previous = await this.loadManifest();
         if (previous.version === this.version) return;
         const files = {};
-        for (const folder of folders) {
-            const entries = await fs.readdir(path.join(this.source, folder), {
-                withFileTypes: true, recursive: true
-            });
-            for (const entry of entries) {
-                if (!entry.isFile()) continue;
-                const filename = path.join(entry.parentPath, entry.name);
-                const relative = path.relative(this.source, filename)
-                    .replaceAll(path.sep, '/');
-                const oldHash = previous.files[relative];
-                files[relative] = await this.installFile(relative, oldHash);
-            }
-        }
+        for (const folder of folders)
+            await this.installFolder(folder, previous.files, files);
+
         await this.removeObsolete(previous.files, files);
         const manifest = JSON.stringify({ version: this.version, files });
         await writeFile(this.manifestPath, manifest);
@@ -74,7 +80,7 @@ export default class ContentStore {
 
     async removeObsolete(previous, current) {
         for (const [relative, previousHash] of Object.entries(previous)) {
-            if (!folders.includes(relative.split(/[/\\]/)[0])) continue;
+            if (!folders.includes(relative.split(PATH_SEPARATOR_PATTERN)[0])) continue;
             if (relative in current) continue;
             const existing = await this.readExisting(relative);
             if (existing && hash(existing) === previousHash)

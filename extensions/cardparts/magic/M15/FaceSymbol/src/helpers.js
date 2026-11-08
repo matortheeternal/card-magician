@@ -2,8 +2,8 @@ export function findOption(options, id, includeNested = false) {
     for (const option of options) {
         if (option.id === id) return option;
         if (!includeNested || !option.items) continue;
-        for (const subOption of option.items)
-            if (subOption.id === id) return subOption;
+        const subOption = option.items.find(item => item.id === id);
+        if (subOption) return subOption;
     }
 }
 

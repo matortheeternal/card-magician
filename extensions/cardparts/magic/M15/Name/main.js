@@ -1,3 +1,4 @@
+const LEGEND_NAME_PATTERN = /^(.+),|(.+) the/;
 const L = localize('module-M15-name');
 
 export default class NameModule extends CardMagicianModule {
@@ -8,7 +9,7 @@ export default class NameModule extends CardMagicianModule {
     async init(card) {
         card.getLegendName = function() {
             if (!card.isLegendary()) return card.name;
-            const match = card.name.match(/^(.+),|(.+) the/);
+            const match = card.name.match(LEGEND_NAME_PATTERN);
             return match ? match[1] || match[2] : card.name;
         };
     }

@@ -1,7 +1,9 @@
 import BaseRenameStrategy from './BaseRenameStrategy.js';
 
+const COLOR_FILENAME_PATTERN = /^([abcgmruw]l?).+\.(png|jpg)$/;
+
 export default class ColorStrategy extends BaseRenameStrategy {
-    static pattern = /^([abcgmruw]l?).+\.(png|jpg)$/;
+    static pattern = COLOR_FILENAME_PATTERN;
 
     static matches(files) {
         const matchingFiles = super.matches(files);

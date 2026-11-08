@@ -3,38 +3,42 @@ export default class ErrorReport {
         this.errors = Array.from(errors);
     }
 
+    errorsToMarkdown() {
+        if (!this.errors.length)
+            return ['No errors are currently visible in the application.'];
+        return this.errors.map((error, n) => this.errorInformation(error, n + 1));
+    }
+
     toMarkdown() {
         const sections = [
             '# Card Magician Error Report',
             `Generated: ${new Date().toISOString()}`,
-            this.systemInformation(),
+            this.renderSystemInformation(),
             `## Errors (${this.errors.length})`,
         ];
 
-        if (this.errors.length === 0) {
-            sections.push('No errors are currently visible in the application.');
-        } else {
-            sections.push(...this.errors.map((error, index) => {
-                return this.errorInformation(error, index + 1);
-            }));
-        }
-
+        sections.push(...this.errorsToMarkdown());
         return sections.join('\n\n');
     }
 
-    systemInformation() {
-        const applicationId = globalThis.appEnvironment?.id ?? 'Unavailable';
-        const resourceMode = globalThis.appEnvironment?.resourceMode ?? 'Unavailable';
-        const runtimeVersion = globalThis.appEnvironment?.runtimeVersion ?? 'Unavailable';
-        const platform = navigator.userAgentData?.platform ?? navigator.platform;
+    get systemInfo() {
+        return {
+            'Application ID': globalThis.appEnvironment?.id,
+            'Electron version': globalThis.appEnvironment?.runtimeVersion,
+            'Resource mode': globalThis.appEnvironment?.resourceMode,
+            'Platform': navigator.userAgentData?.platform || navigator.platform,
+            'Language': navigator.language,
+            'User agent': navigator.userAgent
+        };
+    }
 
-        return `## System Information
-- Application ID: ${this.inline(applicationId)}
-- Electron version: ${this.inline(runtimeVersion)}
-- Resource mode: ${this.inline(resourceMode)}
-- Platform: ${this.inline(platform)}
-- Language: ${this.inline(navigator.language)}
-- User agent: ${this.inline(navigator.userAgent)}`;
+    renderSystemInformation() {
+        return [
+            `## System Information`,
+            ...Object.entries(this.systemInfo).map(([key, value]) => {
+                return `- ${key}: ${this.inline(value)}`;
+            }),
+        ].join('\n');
     }
 
     errorInformation(error, number) {

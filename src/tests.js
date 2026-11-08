@@ -39,7 +39,9 @@ async function runTests() {
 }
 
 function print(message) {
-    return platform.writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return platform.writeProcessOutput(
+        OUTPUT_PREFIX + JSON.stringify({ message }) + '\n'
+    );
 }
 
 env.configure(urls.configFromCurrentUrl());

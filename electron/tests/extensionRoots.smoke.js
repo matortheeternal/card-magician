@@ -2,6 +2,15 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { launch } from './TestApplication.js';
 
+async function terminateFixture(fixture) {
+    try {
+        await fixture.driver.evaluate('cardMagicianNative.call("terminateApp", [0])');
+    } catch (error) {
+        // Native termination can close CDP before Runtime.evaluate replies.
+        if (error.message !== 'DevTools connection closed.') throw error;
+    }
+}
+
 export async function runExtensionRootTests(profile) {
     const repository = path.resolve(import.meta.dirname, '../..');
     const packaged = Boolean(process.env.ELECTRON_SMOKE_BINARY);
@@ -9,7 +18,8 @@ export async function runExtensionRootTests(profile) {
         { name: 'profile', args: [], expected: path.join(profile, 'extensions') },
         { name: 'development', args: ['--development'],
             expected: path.join(packaged ? profile : repository, 'extensions') },
-        { name: 'override', args: ['--development', '--extensions-dir=.tmp/test extensions'],
+        { name: 'override',
+            args: ['--development', '--extensions-dir=.tmp/test extensions'],
             expected: path.resolve('.tmp/test extensions') }
     ];
     for (const { name, args, expected } of cases) {
@@ -23,15 +33,10 @@ export async function runExtensionRootTests(profile) {
             assert.equal(environment.paths.extensions, expected);
             assert.equal('plugins' in environment.paths, false);
             assert.equal('userExtensions' in environment.paths, false);
-            assert.equal(environment.isDevelopment, !packaged && args.includes('--development'));
-            try {
-                await fixture.driver.evaluate(
-                    'cardMagicianNative.call("terminateApp", [0])'
-                );
-            } catch (error) {
-                // Native termination can close CDP before Runtime.evaluate replies.
-                if (error.message !== 'DevTools connection closed.') throw error;
-            }
+            assert.equal(
+                environment.isDevelopment, !packaged && args.includes('--development')
+            );
+            await terminateFixture(fixture);
             await fixture.stopped();
         } finally {
             await fixture.cleanup();
