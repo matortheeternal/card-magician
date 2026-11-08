@@ -1,6 +1,7 @@
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import FieldInteractor from './FieldInteractor.js';
 import platform from '../platformAdapter.js';
+import RenderScheduler from '../../domain/template/renderScheduler.js';
 
 /**
  * Waits until the provided asynchronous condition becomes true.
@@ -62,7 +63,8 @@ export async function setCardFields(fields, options = { faceKey: 'front' }) {
         interactor.addIfMissing();
         return interactor.setValue(value);
     });
-    return Promise.all(changes);
+    await Promise.all(changes);
+    await waitForCardUpdates();
 }
 
 /**
@@ -72,6 +74,7 @@ export async function setCardFields(fields, options = { faceKey: 'front' }) {
  */
 export async function createCard() {
     await executeAction('add-card');
+    await waitForCardUpdates();
     return selectedProjectCard;
 }
 
@@ -101,6 +104,7 @@ export async function createTestProject() {
 export async function deleteTestProject() {
     if (!activeProject.filePath.endsWith('test.cmproj'))
         throw new Error('Project file is not test.cmproj? Escaping.');
+    await waitForCardUpdates();
     try { await platform.rmrf(activeProject.folderPath); } catch {}
 }
 
@@ -144,9 +148,26 @@ export async function toggleFace(face) {
     await cardForm.toggleFace(face);
 }
 
+/**
+ * Waits for card rendering and crop-image updates.
+ * @returns Promise<void>
+ */
+export async function waitForCardUpdates() {
+    if (RenderScheduler.queue.length) RenderScheduler.flush();
+    const faces = document.querySelectorAll('cm-card-face');
+    const updates = [];
+    for (const face of faces) {
+        for (const image of face.shadowRoot.querySelectorAll('crop-image'))
+            updates.push(image.updateComplete);
+    }
+    await Promise.all(updates);
+}
+
 export async function flushCard() {
     const cardForm = document.querySelector('cm-card-form');
+    await waitForCardUpdates();
     await cardForm.save.flush();
+    await waitForCardUpdates();
 }
 
 export async function flushCardProperties() {

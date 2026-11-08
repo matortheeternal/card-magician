@@ -4,7 +4,7 @@ import HistoryEntry from './history/HistoryEntry.js';
 import { executeAction } from './actionSystem.js';
 import {
     createCard, createTestProject, deleteTestProject, flushCard,
-    setCardFields, toggleFace, expectFilesToMatch
+    setCardFields, toggleFace, expectFilesToMatch, waitForCardUpdates
 } from '../../shared/testing/testUtils.js';
 import FieldInteractor from '../../shared/testing/FieldInteractor.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
@@ -468,6 +468,7 @@ describe('History', () => {
                project = activeProject;
                const card = project.cards[0];
                await executeAction('select-card', card);
+               await waitForCardUpdates();
                select([card]);
                const paths = [...card.files.entries].map(([, path]) => path);
                await executeAction('delete-selected-cards');
@@ -660,6 +661,7 @@ describe('History', () => {
             await executeAction('open-project', activeProject.filePath);
             card = activeProject.cards[0];
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             return new FieldInteractor('artImage', { faceKey: 'front' });
         }
 
@@ -694,6 +696,7 @@ describe('History', () => {
             await executeAction('open-project', activeProject.filePath);
             card = activeProject.cards[0];
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             const image = activeEditorCard.front.artImage;
             const crop = image.crop.clone();
             expect(image.imageUrl.startsWith('blob:')).toBeFalse();
@@ -770,12 +773,14 @@ describe('History', () => {
         it('resolves the current editor after switching away and back', async () => {
             const other = await createCard();
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             await history.reset();
             await setCardFields({ name: 'Edited first' });
             await flushCard();
             const originalEditor = activeEditorCard;
             await executeAction('select-card', other);
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             expect(activeEditorCard).not.toBe(originalEditor);
             await history.undo();
             expect(activeEditorCard.front.name).toBe('History card');
@@ -1035,6 +1040,7 @@ describe('History', () => {
             await executeAction('open-project', projectPath);
             card = activeProject.cards[0];
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             new FieldInteractor('artImage', { faceKey: 'front' }).clear();
             await flushCard();
             await history.undo();
@@ -1050,6 +1056,7 @@ describe('History', () => {
             await executeAction('open-project', activeProject.filePath);
             card = activeProject.cards[0];
             await executeAction('select-card', card);
+            await waitForCardUpdates();
             const response = await fetch('/tests/fixtures/art2.jpg');
             const replacement = new File([await response.blob()], 'replacement.jpg',
                                          { type: 'image/jpeg' });

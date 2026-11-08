@@ -1,6 +1,15 @@
 import { getImageSize } from '../../../shared/imageUtils.js';
 
+const numericAttributes = {
+    'crop-width': '_cropWidth',
+    'crop-height': '_cropHeight',
+    'offset-x': '_offsetX',
+    'offset-y': '_offsetY'
+};
+
 class CropImage extends HTMLElement {
+    _updatePromise = Promise.resolve(true);
+    _loadedSrc = null;
     _src = null;
     _srcWidth = 0;
     _srcHeight = 0;
@@ -35,43 +44,56 @@ class CropImage extends HTMLElement {
 
     attributeChangedCallback(name, oldVal, newVal) {
         if (oldVal === newVal) return;
-        switch (name) {
-        case 'src':
+        if (name === 'src') {
             this._src = newVal;
-            getImageSize(this._src).then(({width, height}) => {
-                this._srcWidth = width;
-                this._srcHeight = height;
-                this.requestUpdate();
-            });
-            break;
-        case 'crop-width':
-            this._cropWidth = parseFloat(newVal) || 1;
-            break;
-        case 'crop-height':
-            this._cropHeight = parseFloat(newVal) || 1;
-            break;
-        case 'offset-x':
-            this._offsetX = parseFloat(newVal) || 0;
-            break;
-        case 'offset-y':
-            this._offsetY = parseFloat(newVal) || 0;
-            break;
+            this.requestUpdate();
+            return;
         }
-
+        this[numericAttributes[name]] = parseFloat(newVal)
+            || (name.startsWith('crop-') ? 1 : 0);
         this.requestUpdate();
+    }
+
+    /** Resolves to true once queued rendering and image-size reads finish. */
+    get updateComplete() {
+        return this.waitForUpdate();
+    }
+
+    async waitForUpdate() {
+        let update;
+        do {
+            update = this._updatePromise;
+            await update;
+        } while (update !== this._updatePromise);
+        return true;
     }
 
     requestUpdate() {
         if (this._pending) return;
         this._pending = true;
-        queueMicrotask(() => {
+        this._updatePromise = this._updatePromise.catch(() => {}).then(async () => {
             this._pending = false;
-            this.update();
+            await this.update();
+            return true;
         });
+        // Consumers observe failures through updateComplete, including in tests.
+        this._updatePromise.catch(() => {});
     }
 
-    update() {
-        if (!this._src || window.__EXPORTING__) return;
+    async update() {
+        if (this._src !== this._loadedSrc) {
+            this._srcWidth = 0;
+            this._srcHeight = 0;
+            this.style.backgroundImage = '';
+            const source = this._src;
+            if (source) {
+                const { width, height } = await getImageSize(source);
+                this._srcWidth = width;
+                this._srcHeight = height;
+            }
+            this._loadedSrc = source;
+        }
+        if (!this._srcWidth || !this._srcHeight || window.__EXPORTING__) return;
         const viewportWidth  = this.clientWidth;
         const viewportHeight = this.clientHeight;
 
