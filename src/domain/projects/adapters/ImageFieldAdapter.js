@@ -1,9 +1,6 @@
 import SerializerAdapter from './SerializerAdapter.js';
 import ImageFieldValue from '../../card/ImageFieldValue.js';
 
-/**
- * Adapter for encoding/decoding image field values.
- */
 export default class ImageFieldAdapter extends SerializerAdapter {
     nodeType = 'image';
 

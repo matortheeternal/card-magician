@@ -10,12 +10,6 @@ const report = createReporter({
     label: L`Data Persistence`
 });
 
-/**
- * Manages an in-memory array backed by a YAML file with debounced writes.
- * ImageFieldValue images are embedded in the YAML as data URLs.
- * Call load() before using the collection. Direct array or item edits require
- * scheduleSave(). Call flush() to finish pending writes.
- */
 export default class CollectionManager {
     #collection = null;
     #saveFailed = false;
@@ -179,7 +173,6 @@ export default class CollectionManager {
         this.scheduleSave();
     }
 
-    /** Whether a write is scheduled, running, or awaiting retry after failure. */
     get pending() {
         return this.save.pending || this.#saveFailed;
     }

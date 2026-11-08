@@ -1,4 +1,3 @@
-/** Flushes registered persistence work before terminating the application. */
 export default class ExitManager {
     #callbacks = [];
     #flushing = null;
@@ -11,7 +10,6 @@ export default class ExitManager {
         this.onStart = onStart;
     }
 
-    /** Register a flush callback and a synchronous pending-work predicate. */
     beforeExit(callback, hasPending = () => true) {
         const entry = { callback, hasPending };
         this.#callbacks.push(entry);

@@ -8,7 +8,6 @@ export async function getSourceFiles(testFileCallback) {
         .map(file => `./${file}`);
 }
 
-/** Resolve the host implementation consistently for application and test builds. */
 export function getPlatformAliases(target = 'electron') {
     const adapters = {
         electron: 'src/platforms/ElectronPlatformAdapter.js'

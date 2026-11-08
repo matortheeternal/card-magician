@@ -67,9 +67,6 @@ export default class CardMagicianSettings extends ReactiveComponent {
         this.bind();
     }
 
-    /**
-     * Binds event handlers and reactive watchers.
-     */
     bind() {}
 
     emit(name, detail) {

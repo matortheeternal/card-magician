@@ -50,7 +50,6 @@ export function push(card, event) {
     });
 }
 
-/** Apply and record an initial operation under the same lock as undo/redo. */
 export function execute(target, event) {
     const Entry = findMatchingClass(event);
     if (!Entry) return;

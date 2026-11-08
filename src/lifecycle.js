@@ -25,7 +25,6 @@ export function beforeExit(callback, hasPending) {
     return exitManager.beforeExit(callback, hasPending);
 }
 
-/** Track a component's debounced writer, including work after it is detached. */
 export function registerPendingSave(save) {
     const flush = async () => {
         await save.flush();

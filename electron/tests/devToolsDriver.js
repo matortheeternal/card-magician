@@ -1,6 +1,5 @@
 import WebSocket from 'ws';
 
-/** Small CDP driver used by the external shutdown smoke tests. */
 export default class DevToolsDriver {
     #serial = 0;
     #replies = new Map();

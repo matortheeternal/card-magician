@@ -1,6 +1,5 @@
 import { app } from 'electron';
 
-/** Hold native close/quit while the renderer flushes its registered saves. */
 export default class WindowLifecycle {
     ready = false;
     requested = false;

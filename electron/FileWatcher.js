@@ -13,10 +13,6 @@ async function signature(filename) {
     }
 }
 
-/**
- * Watch a file in an existing directory across replacement saves.
- * Resolves to a close function once watching is ready; emits no initial event.
- */
 export async function watchFile(filename, callback, settleMs = 250) {
     let closed = false;
     let timer;

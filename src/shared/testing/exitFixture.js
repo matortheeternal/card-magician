@@ -6,7 +6,6 @@ import CollectionManager from '../storage/CollectionManager.js';
 
 const DEBOUNCE_DELAY = 60_000;
 
-/** Test-only gate for observing shutdown; filesystem writes remain real. */
 export async function setupExitFixture() {
     if (!appEnvironment.id.startsWith('cardmagician.exit.'))
         throw new Error('Exit smoke tests require an isolated application ID.');

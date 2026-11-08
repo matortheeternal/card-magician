@@ -1,7 +1,3 @@
-/**
- * Abstract base class for all type adapters used by Serializer.
- * Adapters convert between runtime values and intermediate representation nodes.
- */
 export default class SerializerAdapter {
     /**
      * Unique type identifier stored in the intermediate representation.

@@ -2,7 +2,6 @@ import HistoryEntry from './HistoryEntry.js';
 import CardFileSnapshot from '../../../domain/card/CardFileSnapshot.js';
 import { flushPendingCardEdits } from '../cardEditingSystem.js';
 
-/** A single membership change, including a multi-card delete, paste or drop. */
 export default class CardListChange extends HistoryEntry {
     static supports(event) {
         return ['cm-cards-created', 'cm-cards-deleted'].includes(event?.type)

@@ -11,7 +11,6 @@ function validEntry([name, value]) {
         && typeof value === 'string';
 }
 
-/** Upgrade bundled defaults without overwriting locally edited extension files. */
 export default class ContentStore {
     constructor(source, destination, version) {
         Object.assign(this, { source, destination, version });

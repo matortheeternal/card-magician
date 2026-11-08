@@ -46,7 +46,6 @@ function getPreviousSurvivor(oldRows, active, rowMap) {
     return rowMap.get(survivor?.original);
 }
 
-/** Preserve identity across updates, choosing a new active row when needed. */
 export function updateRowSelection(rows, oldRowMap, addedRow) {
     if (addedRow) return selectSingleRow(rows, addedRow);
     const oldRows = [...oldRowMap.values()];

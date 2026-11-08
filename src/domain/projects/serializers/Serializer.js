@@ -1,11 +1,6 @@
 import { getAdapters } from '../adapters/adapterRegistry.js';
 import platform from '../../../shared/platformAdapter.js';
 
-/**
- * Abstract base class for serializers that use type adapters to transform
- * an arbitrary object graph into an intermediate representation, and then
- * into a final encoded format (JSON, binary, etc.).
- */
 export default class Serializer {
     static matches(filePath) {
         return false;

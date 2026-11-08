@@ -1,8 +1,5 @@
 import SerializerAdapter from './SerializerAdapter.js';
 
-/**
- * Adapter for encoding/decoding object URLs as raw binary data.
- */
 export default class ManaCostAdapter extends SerializerAdapter {
     nodeType = 'ManaCost';
 

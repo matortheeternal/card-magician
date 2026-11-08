@@ -2,7 +2,6 @@ import ImageFieldValue from './ImageFieldValue.js';
 import { retainImage } from './imageRetention.js';
 import platform from '../../shared/platformAdapter.js';
 
-/** File/content backup independent of history grouping and card-list changes. */
 export default class CardFileSnapshot {
     constructor(card) {
         this.card = card;
@@ -47,7 +46,6 @@ export default class CardFileSnapshot {
         await this.card.files.set(file.key, path);
     }
 
-    /** Roll back a failed deletion to the original paths. */
     async restore() {
         this.restoreImages();
         for (const file of this.files.values())
@@ -60,7 +58,6 @@ export default class CardFileSnapshot {
         await this.restoreFile(file, path);
     }
 
-    /** Card.save() regenerates data/images; restore any other tracked files. */
     async restoreAdditionalFiles() {
         for (const file of this.files.values())
             await this.restoreAdditionalFile(file);

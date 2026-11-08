@@ -1,6 +1,8 @@
 import { eventually } from './testUtils.js';
 
-/** Include the mouse events Shoelace uses to distinguish clicks from drags.
+/**
+ * Include the mouse events Shoelace uses to distinguish clicks from drags.
+ *
  * @param {HTMLElement | null} element
  * @return Promise<void>
  */
@@ -16,7 +18,9 @@ async function click(element) {
     element.click();
 }
 
-/** Open Settings through the application's File menu.
+/**
+ * Open Settings through the application's File menu.
+ *
  * @returns {Promise<HTMLElement>}
  */
 async function openSettings() {
@@ -35,7 +39,9 @@ async function openSettings() {
     return modal;
 }
 
-/** Close Settings using its visible Close button, if it is open.
+/**
+ * Close Settings using its visible Close button, if it is open.
+ *
  * @return Promise<void>
  */
 async function closeSettings() {

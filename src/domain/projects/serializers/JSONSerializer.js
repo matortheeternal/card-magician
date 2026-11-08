@@ -1,9 +1,5 @@
 import Serializer from './Serializer.js';
 
-/**
- * Serializer using JSON as the final encoded format.
- * Produces JSON strings and parses them back.
- */
 export default class JSONSerializer extends Serializer {
     static matches() {
         return true;

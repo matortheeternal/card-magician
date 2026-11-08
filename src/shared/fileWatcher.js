@@ -22,7 +22,6 @@ import platform from './platformAdapter.js';
 let activeContext = new Set();
 const report = (...args) => createReporter({ unit: 'FileWatcher' })(...args);
 
-/** Invalidate callbacks and close all watches belonging to the current project. */
 export function clear() {
     const previous = activeContext;
     activeContext = new Set();

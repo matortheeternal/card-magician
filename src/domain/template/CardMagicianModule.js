@@ -12,11 +12,6 @@ import DOMPurify from 'dompurify';
 import { escapeHTML, esc } from '../../shared/htmlUtils.js';
 import { watch } from '../../shared/reactivity.js';
 
-/**
- * Base class for Card Magician modules which provides utility
- * functions for loading assets, files, fonts and performing
- * graphical operations.
- */
 export default class CardMagicianModule {
     #watchers = [];
     #fields;
@@ -35,10 +30,6 @@ export default class CardMagicianModule {
         this.name = modulePath.split('/').pop();
     }
 
-    /**
-     * Invoked when the card this module is associated with is unloaded. Removes
-     * watchers by default. Override it to handle other resources if necessary.
-     */
     dispose() {
         this.#watchers.forEach(unwatch => unwatch());
     }
