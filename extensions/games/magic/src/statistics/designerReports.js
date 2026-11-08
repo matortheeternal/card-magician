@@ -17,7 +17,7 @@ export function registerDesignerReports(registry) {
         compare: (a, b) => a.localeCompare(b)
     });
     registry.registerDimension('word-count', {
-        label: 'Rules-text words', categories: wordCountCategories,
+        label: 'Rules text words', categories: wordCountCategories,
         values: record => [wordCountBucket(record.wordCount)]
     });
     registry.registerDimension('card', {
@@ -31,7 +31,7 @@ export function registerDesignerReports(registry) {
         values: () => ['all']
     });
     registry.registerField('word-count', {
-        label: 'Rules-text words', value: record => record.wordCount
+        label: 'Rules text words', value: record => record.wordCount
     });
     const format = value => value === null ? '—'
         : new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 }).format(value);
@@ -65,12 +65,12 @@ export function registerDesignerReports(registry) {
         toggleSeries: true, filters: ['common-creatures']
     });
     registry.registerReport('rules-text-length', {
-        type: 'bar', title: 'Rules-text length',
+        type: 'bar', title: 'Rules text length',
         x: 'word-count', series: 'rarity', measure: 'card-count', toggleSeries: true,
         description: 'Includes reminder text; excludes mana symbols and formatting.'
     });
     registry.registerReport('rules-text-by-color', {
-        type: 'matrix', title: 'Rules-text length by color and rarity',
+        type: 'matrix', title: 'Rules text length by color and rarity',
         rows: 'color', columns: 'rarity', measure: 'average-words',
         measures: ['average-words', 'median-words']
     });
