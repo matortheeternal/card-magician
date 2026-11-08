@@ -1,13 +1,5 @@
-import {
-    getJoinedPath,
-    checkFolderExists,
-    readBinaryFile,
-    readDirectory,
-    readFile
-} from './platformAdapter.js';
+import platform from './platformAdapter.js';
 import { determineImageType } from './imageUtils.js';
-
-export { checkFileExists, checkFolderExists } from './platformAdapter.js';
 
 /**
  * Loads and parses a JSON file from the given file path.
@@ -15,7 +7,7 @@ export { checkFileExists, checkFolderExists } from './platformAdapter.js';
  * @returns {Promise<any>}
  */
 export async function loadJson(filePath) {
-    const text = await readFile(filePath);
+    const text = await platform.readFile(filePath);
     return JSON.parse(text);
 }
 
@@ -26,8 +18,8 @@ async function getMatchingEntries(folderPath, options) {
         directories: false,
         recursive: false,
     }, options);
-    if (!await checkFolderExists(folderPath)) return [];
-    const entries = await readDirectory(folderPath, { recursive: options.recursive });
+    if (!await platform.checkFolderExists(folderPath)) return [];
+    const entries = await platform.readDirectory(folderPath, { recursive: options.recursive });
     return entries.filter(({ entry, type }) => {
         if (!options.files && type === 'FILE') return false;
         if (!options.directories && type === 'DIRECTORY') return false;
@@ -45,7 +37,7 @@ export async function find(folderPath, options = {}) {
     const entries = await getMatchingEntries(folderPath, options);
     const paths = [];
     for (const { entry } of entries) {
-        const path = await getJoinedPath(folderPath, entry);
+        const path = await platform.getJoinedPath(folderPath, entry);
         paths.push(path);
     }
     return paths;
@@ -86,7 +78,7 @@ export function fnv1a(str) {
  * @returns {Promise<Blob>} - the image file as a blob
  */
 export async function loadImageFile(filePath) {
-    const data = await readBinaryFile(filePath);
+    const data = await platform.readBinaryFile(filePath);
     const type = determineImageType(data);
     return new Blob([data], { type });
 }

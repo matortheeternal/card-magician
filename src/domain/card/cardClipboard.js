@@ -1,12 +1,6 @@
 import ImageFieldValue from './ImageFieldValue.js';
 import YAMLSerializer from '../projects/serializers/YAMLSerializer.js';
-import {
-    createDirectory,
-    getJoinedPath,
-    getPathParts,
-    rmrf,
-    writeBinaryFile
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import { find, loadImageFile } from '../../shared/fsUtils.js';
 import { createURL } from '../../ui/systems/objectUrlSystem.js';
 
@@ -16,27 +10,27 @@ const SNAPSHOT_VERSION = 1;
 let previousSnapshotPath;
 
 async function createSnapshot(cards) {
-    const rootPath = await getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
-    const snapshotPath = await getJoinedPath(rootPath, crypto.randomUUID());
-    await createDirectory(rootPath);
-    await createDirectory(snapshotPath);
+    const rootPath = await platform.getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
+    const snapshotPath = await platform.getJoinedPath(rootPath, crypto.randomUUID());
+    await platform.createDirectory(rootPath);
+    await platform.createDirectory(snapshotPath);
 
     try {
         const cardFiles = [];
         for (const card of cards) {
             const filename = `${card.baseName}.yml`;
-            const filePath = await getJoinedPath(snapshotPath, filename);
+            const filePath = await platform.getJoinedPath(snapshotPath, filename);
             await YAMLSerializer.save(filePath, card);
             cardFiles.push(filename);
 
             for (const [key, image] of card.files.fields) {
                 if (!(image instanceof ImageFieldValue) || !image.imageUrl) continue;
                 const definition = card.files.resolveDefinition(key);
-                const imagePath = await getJoinedPath(
+                const imagePath = await platform.getJoinedPath(
                     snapshotPath,
                     definition.getFilename(card)
                 );
-                await writeBinaryFile(imagePath, await image.loadImageData());
+                await platform.writeBinaryFile(imagePath, await image.loadImageData());
             }
         }
 
@@ -58,7 +52,7 @@ async function createSnapshot(cards) {
 async function cleanupSnapshot(snapshotPath) {
     if (!snapshotPath) return;
     try {
-        await rmrf(snapshotPath);
+        await platform.rmrf(snapshotPath);
     } catch (error) {
         log('fs').warn('Failed to remove card clipboard snapshot', error);
     }
@@ -101,8 +95,8 @@ async function validatePayload(payload) {
     if (payload?.version !== SNAPSHOT_VERSION) return false;
     if (payload.game !== activeProject.game) return false;
     if (!payload.snapshotPath || !Array.isArray(payload.cardFiles)) return false;
-    const rootPath = await getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
-    const { filename, parentPath } = await getPathParts(payload.snapshotPath);
+    const rootPath = await platform.getJoinedPath(appEnvironment.paths.data, 'card-clipboard');
+    const { filename, parentPath } = await platform.getPathParts(payload.snapshotPath);
     if (parentPath !== rootPath) return false;
     if (!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(filename))
         return false;

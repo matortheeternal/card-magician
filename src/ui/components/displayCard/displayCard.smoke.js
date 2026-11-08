@@ -1,4 +1,4 @@
-import { writeFile, rmrf } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 import { watch } from '../../../shared/reactivity.js';
 import {
     createCard, createTestProject, deleteTestProject, eventually, flushCard,
@@ -43,7 +43,7 @@ describe('Card display', () => {
         let changes = 0;
         const unwatch = watch(activeProject, 'symbol', () => { changes++; });
         try {
-            await writeFile(activeProject.symbolPath, source);
+            await platform.writeFile(activeProject.symbolPath, source);
             await eventually(() => activeProject.symbol === source);
             await eventually(() => {
                 const face = document.querySelector('cm-display-card cm-card-face.front');
@@ -58,14 +58,14 @@ describe('Card display', () => {
             await activeProject.saveSymbol();
             await new Promise(resolve => { setTimeout(resolve, 700); });
             expect(changes).toBe(beforeSave);
-            await rmrf(activeProject.symbolPath);
+            await platform.rmrf(activeProject.symbolPath);
             await new Promise(resolve => { setTimeout(resolve, 700); });
             expect(activeProject.symbol).toBe(source);
-            await writeFile(activeProject.symbolPath, '<svg><broken');
+            await platform.writeFile(activeProject.symbolPath, '<svg><broken');
             await new Promise(resolve => { setTimeout(resolve, 700); });
             expect(activeProject.symbol).toBe(source);
             const next = source.replace('100 100', '300 100');
-            await writeFile(activeProject.symbolPath, next);
+            await platform.writeFile(activeProject.symbolPath, next);
             await eventually(() => activeProject.symbol === next);
         } finally {
             unwatch();

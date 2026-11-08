@@ -1,4 +1,4 @@
-import { openSingleFileDialog } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
 import { setActiveProject } from '../../projects/projectManager.js';
@@ -162,7 +162,7 @@ function showPartialStatus(project, failures) {
 
 registerAction('import-mse-set', async () => {
     log('user').info('Import MSE set');
-    const filePath = await openSingleFileDialog(L`Import an MSE Set`);
+    const filePath = await platform.openSingleFileDialog(L`Import an MSE Set`);
     if (!filePath) return;
     log('state').info('Importing MSE set:', filePath);
     openModal('cm-progress-modal', { title: L`Importing...` });

@@ -1,15 +1,32 @@
 import MountedDirectory from './MountedDirectory.js';
-import {
-    checkFolderExists, getJoinedPath, openSvgEditor, createDirectory
-} from './platformAdapter.js';
+import PlatformAdapter from '../platforms/PlatformAdapter.js';
+import platform from './platformAdapter.js';
 
 describe('Platform adapter', () => {
     let directory;
 
+    it('implements every operation in the base contract', () => {
+        expect(platform instanceof PlatformAdapter).toBeTrue();
+        for (const name of Object.getOwnPropertyNames(PlatformAdapter.prototype)) {
+            if (name === 'constructor') continue;
+            const implementation = Object.getOwnPropertyDescriptor(
+                Object.getPrototypeOf(platform), name
+            );
+            expect(implementation?.value).withContext(name).toEqual(jasmine.any(Function));
+            expect(Object.hasOwn(platform, name)).withContext(name).toBeFalse();
+        }
+    });
+
+    it('delegates filesystem helpers through the adapter instance', async () => {
+        spyOn(platform, 'getPathParts')
+            .and.resolveTo({ parentPath: '/parent' });
+        expect(await platform.getParentPath('/parent/file')).toBe('/parent');
+    });
+
     beforeAll(async () => {
         directory = new MountedDirectory(appEnvironment.paths.data + '/public',
                                          '/platform-smoke');
-        await createDirectory(directory.filePath);
+        await platform.createDirectory(directory.filePath);
         await directory.mount();
     });
 
@@ -24,11 +41,11 @@ describe('Platform adapter', () => {
     });
 
     it('dispatches SVG editor launches through the native bridge', async () => {
-        const executable = await getJoinedPath(
+        const executable = await platform.getJoinedPath(
             appEnvironment.paths.data, 'missing-editor', 'set-icon-editor'
         );
-        const filename = await getJoinedPath(appEnvironment.paths.data, 'symbol.svg');
-        await expectAsync(openSvgEditor(executable, filename))
+        const filename = await platform.getJoinedPath(appEnvironment.paths.data, 'symbol.svg');
+        await expectAsync(platform.openSvgEditor(executable, filename))
             .toBeRejectedWith(jasmine.objectContaining({ code: 'ENOENT' }));
     });
 
@@ -47,10 +64,10 @@ describe('Platform adapter', () => {
         for (const category of categories) {
             expect(await extensions.child(category).existsDirectory()).toBeTrue();
             if (appEnvironment.resourceMode === 'bundle') {
-                const contentPath = await getJoinedPath(
+                const contentPath = await platform.getJoinedPath(
                     appEnvironment.paths.content, 'extensions', category
                 );
-                expect(await checkFolderExists(contentPath)).toBeFalse();
+                expect(await platform.checkFolderExists(contentPath)).toBeFalse();
             }
         }
     });

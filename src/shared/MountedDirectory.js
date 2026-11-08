@@ -1,6 +1,4 @@
-import {
-    checkFileExists, checkFolderExists, readDirectory, readFile, writeFile, mount
-} from './platformAdapter.js';
+import platform from './platformAdapter.js';
 
 export default class MountedDirectory {
     constructor(filePath, urlPath) {
@@ -24,19 +22,19 @@ export default class MountedDirectory {
     }
 
     mount() {
-        return mount(this.urlPath, this.filePath);
+        return platform.mount(this.urlPath, this.filePath);
     }
 
     exists(filename) {
-        return checkFileExists(this.resolvePath(filename));
+        return platform.checkFileExists(this.resolvePath(filename));
     }
 
     existsDirectory() {
-        return checkFolderExists(this.filePath);
+        return platform.checkFolderExists(this.filePath);
     }
 
     readText(filename) {
-        return readFile(this.resolvePath(filename));
+        return platform.readFile(this.resolvePath(filename));
     }
 
     async readJson(filename) {
@@ -44,10 +42,10 @@ export default class MountedDirectory {
     }
 
     writeText(filename, text) {
-        return writeFile(this.resolvePath(filename), text);
+        return platform.writeFile(this.resolvePath(filename), text);
     }
 
     readDirectory(options) {
-        return readDirectory(this.filePath, options);
+        return platform.readDirectory(this.filePath, options);
     }
 }

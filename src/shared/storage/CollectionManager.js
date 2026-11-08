@@ -1,6 +1,5 @@
-import { getJoinedPath } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
-import { checkFileExists } from '../fsUtils.js';
 import { executeAction } from '../../ui/systems/actionSystem.js';
 
 const L = localize('collection-manager');
@@ -57,7 +56,7 @@ export default class CollectionManager {
      */
     get path() {
         const pathParts = this.options.path();
-        return getJoinedPath(...pathParts);
+        return platform.getJoinedPath(...pathParts);
     }
 
     /**
@@ -68,7 +67,7 @@ export default class CollectionManager {
      */
     async load() {
         const filePath = await this.path;
-        const exists = await checkFileExists(filePath);
+        const exists = await platform.checkFileExists(filePath);
         this.collection = exists
             ? await YAMLSerializer.load(filePath)
             : [];

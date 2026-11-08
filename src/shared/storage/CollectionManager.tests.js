@@ -1,4 +1,4 @@
-import { filesystem } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 import CollectionManager from './CollectionManager.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import { getImageSize } from '../imageUtils.js';
@@ -23,9 +23,9 @@ describe('CollectionManager', () => {
             create: jasmine.createSpy('create').and.callFake(name => ({ name })),
             next: jasmine.createSpy('next').and.callFake(n => `Item ${n}`),
         };
-        spyOn(filesystem, 'getJoinedPath')
+        spyOn(platform, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
-        fileExists = spyOn(filesystem, 'checkFileExists').and.resolveTo(true);
+        fileExists = spyOn(platform, 'checkFileExists').and.resolveTo(true);
         load = spyOn(YAMLSerializer, 'load').and.resolveTo([{ name: 'loaded' }]);
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
         manager = new CollectionManager(options);
@@ -47,12 +47,12 @@ describe('CollectionManager', () => {
         image.crop.xOffset = 2;
         image.dirty = true;
         let yaml;
-        spyOn(filesystem, 'getPathParts')
+        spyOn(platform, 'getPathParts')
             .and.resolveTo({ parentPath: 'data' });
-        spyOn(filesystem, 'createDirectory').and.resolveTo();
-        const write = spyOn(filesystem, 'writeFile')
+        spyOn(platform, 'createDirectory').and.resolveTo();
+        const write = spyOn(platform, 'writeFile')
             .and.callFake(async (path, text) => { yaml = text; });
-        spyOn(filesystem, 'readFile').and.callFake(async () => yaml);
+        spyOn(platform, 'readFile').and.callFake(async () => yaml);
         save.and.callThrough();
         load.and.callThrough();
         try {
@@ -102,7 +102,7 @@ describe('CollectionManager', () => {
 
     it('propagates image embedding failures without writing partial YAML', async () => {
         save.and.callThrough();
-        const write = spyOn(filesystem, 'writeFile').and.resolveTo();
+        const write = spyOn(platform, 'writeFile').and.resolveTo();
         spyOn(window, 'fetch').and.rejectWith(new Error('Image unavailable'));
         manager.collection = [{ image: new ImageFieldValue('blob:unavailable') }];
         const pending = manager.save();

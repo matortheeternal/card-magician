@@ -1,6 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import { flushBeforeExit } from '../../../lifecycle.js';
-import { reloadApp } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 import { hide, show } from '../../../shared/htmlUtils.js';
 import {
     openProject,
@@ -116,7 +116,7 @@ export default class DevState extends ReactiveComponent {
         if (msg.lastError) this.handleRebuildError(msg.lastError);
         if (msg.reload) {
             await flushBeforeExit();
-            reloadApp();
+            platform.reloadApp();
         }
         if (msg.openProject) await openProject(msg.openProject);
         if (Number.isInteger(msg.selectCard))

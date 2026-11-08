@@ -1,21 +1,16 @@
-import {
-    checkFolderExists,
-    readDirectory,
-    readFile,
-    writeFile
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import sanitize from 'sanitize-filename';
 
 const loadedScripts = [];
 
 export async function loadScripts() {
-    if (!await checkFolderExists('scripts')) return;
-    const entries = await readDirectory('scripts');
+    if (!await platform.checkFolderExists('scripts')) return;
+    const entries = await platform.readDirectory('scripts');
     for (const { entry, type, path } of entries) {
         if (type !== 'FILE') continue;
         loadedScripts.push({
             name: entry,
-            source: await readFile(path, 'utf8')
+            source: await platform.readFile(path, 'utf8')
         });
     }
 }
@@ -42,7 +37,7 @@ function findOrCreateScript(script) {
 export async function saveScript(inputScript) {
     const script = findOrCreateScript(inputScript);
     script.source = inputScript.source;
-    return writeFile(`./scripts/${script.name}`, script.source);
+    return platform.writeFile(`./scripts/${script.name}`, script.source);
 }
 
 function getCards(target) {

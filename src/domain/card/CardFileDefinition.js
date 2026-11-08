@@ -1,4 +1,4 @@
-import { getJoinedPath, getPathParts } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 export default class CardFileDefinition {
     constructor(key, options = {}) {
@@ -16,13 +16,13 @@ export default class CardFileDefinition {
     }
 
     async filePathToUrl(filePath) {
-        const { filename } = await getPathParts(filePath);
+        const { filename } = await platform.getPathParts(filePath);
         return `/project/cards/${encodeURIComponent(filename)}`;
     }
 
     async urlToFilePath(mountedUrl) {
         const filename = mountedUrl.split('/').pop();
-        return getJoinedPath(
+        return platform.getJoinedPath(
             window.activeProject.cardsFolderPath,
             decodeURIComponent(filename)
         );

@@ -1,7 +1,7 @@
 import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
 import path from 'path';
-import { getSourceFiles } from './buildHelpers.js';
+import { getSourceFiles, getPlatformAliases } from './buildHelpers.js';
 
 const shoelaceIcons = [
     'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square',
@@ -36,13 +36,14 @@ export async function getApplicationEntry() {
     ].map(filePath => `import '${filePath}';`).join('\n');
 }
 
-async function buildJs({ minify, sourcemap }) {
+async function buildJs({ minify, sourcemap, target }) {
     await esbuild.build({
         stdin: {
             contents: await getApplicationEntry(),
             resolveDir: path.join(process.cwd(), 'src'),
             sourcefile: 'main.js'
         },
+        alias: getPlatformAliases(target),
         bundle: true,
         outfile: 'resources/js/main.js',
         keepNames: true,
@@ -94,10 +95,10 @@ async function buildCss({ minify }) {
 }
 
 export async function buildApp({
-    minify = false, sourcemap = minify ? false : 'inline'
+    minify = false, sourcemap = minify ? false : 'inline', target = 'electron'
 } = {}) {
     console.log('[build] building app');
-    await buildJs({ minify, sourcemap });
+    await buildJs({ minify, sourcemap, target });
     await buildCss({ minify });
     await copyShoelaceIcons();
 }

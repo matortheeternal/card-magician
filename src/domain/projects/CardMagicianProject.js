@@ -1,11 +1,7 @@
-import {
-    createDirectory, sysopen,
-    getJoinedPath, getParentPath, getPathParts,
-    mount, readFile, unmount, writeFile
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import { clear as clearFileWatchers, watchTextFile } from '../../shared/fileWatcher.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
-import { checkFileExists, find } from '../../shared/fsUtils.js';
+import { find } from '../../shared/fsUtils.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 const report = createReporter({ unit: 'CardMagicianProject', label: 'Project' });
@@ -94,13 +90,13 @@ export default class CardMagicianProject {
     async setFilePath(value) {
         if (window.activeProject === this) clearFileWatchers();
         this.#filePath = value;
-        this.#folderPath = await getParentPath(value);
-        this.#cardsFolderPath = await getJoinedPath(this.folderPath, 'cards');
-        this.#tagsPath = await getJoinedPath(this.folderPath, 'tags.yml');
-        this.#symbolPath = await getJoinedPath(this.folderPath, 'symbol.svg');
-        await createDirectory(this.#folderPath);
-        await unmount('/project');
-        await mount('/project', this.#folderPath);
+        this.#folderPath = await platform.getParentPath(value);
+        this.#cardsFolderPath = await platform.getJoinedPath(this.folderPath, 'cards');
+        this.#tagsPath = await platform.getJoinedPath(this.folderPath, 'tags.yml');
+        this.#symbolPath = await platform.getJoinedPath(this.folderPath, 'symbol.svg');
+        await platform.createDirectory(this.#folderPath);
+        await platform.unmount('/project');
+        await platform.mount('/project', this.#folderPath);
         if (window.activeProject === this) await this.watchFiles();
     }
 
@@ -130,7 +126,7 @@ export default class CardMagicianProject {
         const filePaths = await find(this.cardsFolderPath);
         const filesByName = new Map();
         for (const filePath of filePaths) {
-            const { filename } = await getPathParts(filePath);
+            const { filename } = await platform.getPathParts(filePath);
             filesByName.set(filename.toLowerCase(), filePath);
         }
         return filesByName;
@@ -143,8 +139,8 @@ export default class CardMagicianProject {
     }
 
     async loadSymbol() {
-        if (await checkFileExists(this.symbolPath))
-            this.updateSymbol(await readFile(this.symbolPath));
+        if (await platform.checkFileExists(this.symbolPath))
+            this.updateSymbol(await platform.readFile(this.symbolPath));
     }
 
     updateSymbol(source) {
@@ -178,7 +174,7 @@ export default class CardMagicianProject {
 
     async saveSymbol() {
         if (!this.symbol?.length) return;
-        await writeFile(this.symbolPath, this.symbol);
+        await platform.writeFile(this.symbolPath, this.symbol);
     }
 
     async editSetSymbol() {
@@ -186,7 +182,7 @@ export default class CardMagicianProject {
             await dialog.alert('You must save the project first.');
             return;
         }
-        await sysopen(this.symbolPath);
+        await platform.sysopen(this.symbolPath);
     }
 
     async save() {

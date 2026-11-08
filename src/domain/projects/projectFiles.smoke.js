@@ -1,4 +1,4 @@
-import { writeFile, getJoinedPath } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import {
     createTestProject, deleteTestProject, eventually
 } from '../../shared/testing/testUtils.js';
@@ -17,24 +17,24 @@ describe('Project files', () => {
            const source = old.symbol;
            await old.saveSymbol();
            await createTestProject();
-           await writeFile(old.symbolPath, source.replace('200 100', '100 100'));
+           await platform.writeFile(old.symbolPath, source.replace('200 100', '100 100'));
            await new Promise(resolve => { setTimeout(resolve, 700); });
            expect(old.symbol).toBe(source);
            const previousPath = activeProject.symbolPath;
-           const destination = await getJoinedPath(
+           const destination = await platform.getJoinedPath(
                activeProject.folderPath, 'relocated', 'test.cmproj'
            );
            const originalSymbol = activeProject.symbol;
-           const destinationSymbol = await getJoinedPath(
+           const destinationSymbol = await platform.getJoinedPath(
                activeProject.folderPath, 'relocated', 'symbol.svg'
            );
-           await writeFile(destinationSymbol, source.replace('200 100', '400 100'));
+           await platform.writeFile(destinationSymbol, source.replace('200 100', '400 100'));
            await activeProject.setFilePath(destination);
            expect(activeProject.symbol).toBe(originalSymbol);
-           await writeFile(previousPath, source.replace('200 100', '300 100'));
+           await platform.writeFile(previousPath, source.replace('200 100', '300 100'));
            await new Promise(resolve => { setTimeout(resolve, 700); });
            expect(activeProject.symbol).not.toContain('300 100');
-           await writeFile(activeProject.symbolPath, source);
+           await platform.writeFile(activeProject.symbolPath, source);
            await eventually(() => activeProject.symbol === source);
        });
 

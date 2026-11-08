@@ -1,6 +1,4 @@
-import {
-    getJoinedPath, getPathParts, writeBinaryFile
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import YAMLSerializer from '../projects/serializers/YAMLSerializer.js';
 import { updateBaseName } from '../projects/cardNamer.js';
 import CardFiles from './CardFiles.js';
@@ -28,7 +26,7 @@ export default class CardMagicianCard {
     }
 
     async setDataPath(filePath) {
-        const { stem } = await getPathParts(filePath);
+        const { stem } = await platform.getPathParts(filePath);
         await this.files.set('data', filePath);
         this.baseName = stem;
     }
@@ -83,14 +81,14 @@ export default class CardMagicianCard {
             if (!image?.imageUrl || !image.dirty && !saveAll) continue;
             const filePath = await this.files.getCanonicalPath(key);
             const data = await image.loadImageData();
-            await writeBinaryFile(filePath, data);
+            await platform.writeBinaryFile(filePath, data);
             await this.files.set(key, filePath);
             delete image.dirty;
         }
     }
 
     async saveData() {
-        const filePath = await getJoinedPath(
+        const filePath = await platform.getJoinedPath(
             window.activeProject.cardsFolderPath,
             `${this.baseName}.yml`
         );

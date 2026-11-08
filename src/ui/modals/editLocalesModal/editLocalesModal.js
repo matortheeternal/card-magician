@@ -4,7 +4,7 @@ import Modal from '../Modal.js';
 import { saveLocale } from '../../../shared/localize.js';
 import Localization from '../../../shared/Localization.js';
 import html from './editLocalesModal.html.js';
-import { getAbsolutePath, sysopen } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 
 const L = localize('edit-locales-modal');
 
@@ -131,10 +131,10 @@ export default class EditLocalesModal extends Modal {
     }
 
     async openLocalesFolder() {
-        const localesPath = await getAbsolutePath(
+        const localesPath = await platform.getAbsolutePath(
             appEnvironment.paths.plugins + '/extensions/locales'
         );
-        sysopen(localesPath);
+        platform.sysopen(localesPath);
     }
 
     validate() {

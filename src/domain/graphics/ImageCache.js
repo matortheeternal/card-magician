@@ -1,5 +1,5 @@
 import { loadImage } from '../../shared/imageUtils.js';
-import { readDirectory, writeBinaryFile } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 const report = createReporter({ unit: 'ImageCache' });
 
@@ -23,7 +23,7 @@ export class ImageCache {
     }
 
     async preload() {
-        const entries = await readDirectory(this.cachePath);
+        const entries = await platform.readDirectory(this.cachePath);
         for (const { type, entry } of entries) {
             if (type !== 'FILE') continue;
             const localPath = `${this.localPath}/${entry}`;
@@ -42,7 +42,7 @@ export class ImageCache {
     async saveBlobToDisk(blob, localPath, fullPath) {
         const arrayBuffer = await blob.arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        await writeBinaryFile(fullPath, uint8);
+        await platform.writeBinaryFile(fullPath, uint8);
         this.cache.set(fullPath, localPath);
     }
 

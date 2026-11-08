@@ -1,6 +1,6 @@
 import { executeAction } from '../../ui/systems/actionSystem.js';
 import FieldInteractor from './FieldInteractor.js';
-import { getJoinedPath, rmrf } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 
 /**
  * Waits until the provided asynchronous condition becomes true.
@@ -83,11 +83,11 @@ let testIndex = 0;
  * @returns {Promise<CardMagicianProject>}
  */
 export async function createTestProject() {
-    const testProjectDir = await getJoinedPath(
+    const testProjectDir = await platform.getJoinedPath(
         appEnvironment.paths.data, `test-${testIndex++}`
     );
-    const projectFilePath = await getJoinedPath(testProjectDir, 'test.cmproj');
-    try { await rmrf(testProjectDir); } catch {}
+    const projectFilePath = await platform.getJoinedPath(testProjectDir, 'test.cmproj');
+    try { await platform.rmrf(testProjectDir); } catch {}
     await executeAction('new-project');
     await activeProject.setFilePath(projectFilePath);
     return activeProject;
@@ -101,7 +101,7 @@ export async function createTestProject() {
 export async function deleteTestProject() {
     if (!activeProject.filePath.endsWith('test.cmproj'))
         throw new Error('Project file is not test.cmproj? Escaping.');
-    try { await rmrf(activeProject.folderPath); } catch {}
+    try { await platform.rmrf(activeProject.folderPath); } catch {}
 }
 
 function normalizeImage(image) {

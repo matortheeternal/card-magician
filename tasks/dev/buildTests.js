@@ -1,7 +1,7 @@
 import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
 import path from 'path';
-import { getSourceFiles } from './buildHelpers.js';
+import { getSourceFiles, getPlatformAliases } from './buildHelpers.js';
 import { getApplicationEntry } from './buildApp.js';
 import { findGameTests } from './findGameTests.js';
 
@@ -27,13 +27,14 @@ async function getTests(suffix, includeShared) {
     ].map(filePath => `import '${filePath}';`).join('\n');
 }
 
-async function buildJs(filename, bundle, { minify }) {
+async function buildJs(filename, bundle, { minify, target }) {
     await esbuild.build({
         stdin: {
             contents: bundle,
             resolveDir: path.join(process.cwd(), 'src'),
             sourcefile: `bundle-${filename}`
         },
+        alias: getPlatformAliases(target),
         bundle: true,
         keepNames: true,
         outfile: `resources/tests/${filename}`,
@@ -63,13 +64,13 @@ async function copyJasmineFiles() {
     }));
 }
 
-export async function buildTests({ minify = false } = {}) {
+export async function buildTests({ minify = false, target = 'electron' } = {}) {
     console.log('[build] building tests');
     const testBundle = await getTests('.tests.js', true);
     const smokeBundle = await getTests('.smoke.js', false);
-    await buildJs('tests.js', testBundle, { minify });
+    await buildJs('tests.js', testBundle, { minify, target });
     // Bundle app and smoke specs together so imports share module instances.
     const smokeEntry = `${await getApplicationEntry()}\n${smokeBundle}`;
-    await buildJs('smoke.js', smokeEntry, { minify });
+    await buildJs('smoke.js', smokeEntry, { minify, target });
     await copyJasmineFiles();
 }

@@ -1,4 +1,4 @@
-import { filesystem } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 import CollectionManager from './CollectionManager.js';
 import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js';
 
@@ -12,7 +12,7 @@ describe('CollectionManager shutdown saves', () => {
         status = jasmine.createSpy('set-status');
         spyOn(window.actions, 'get').and.callThrough()
             .withArgs('set-status').and.returnValue(status);
-        spyOn(filesystem, 'getJoinedPath')
+        spyOn(platform, 'getJoinedPath')
             .and.callFake(async (...parts) => parts.join('/'));
         save = spyOn(YAMLSerializer, 'save').and.resolveTo();
         manager = new CollectionManager({ path: () => ['data', 'items.yml'] });

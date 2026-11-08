@@ -1,5 +1,5 @@
 import { getAdapters } from '../adapters/adapterRegistry.js';
-import { readFile, writeFile } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 
 /**
  * Abstract base class for serializers that use type adapters to transform
@@ -14,12 +14,12 @@ export default class Serializer {
     static async save(filePath, data, options = {}) {
         const serializer = new this();
         const text = await serializer.serialize(data, options);
-        await writeFile(filePath, text);
+        await platform.writeFile(filePath, text);
     }
 
     static async load(filePath) {
         const serializer = new this();
-        const text = await readFile(filePath);
+        const text = await platform.readFile(filePath);
         return serializer.deserialize(text);
     }
 

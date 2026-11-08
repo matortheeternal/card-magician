@@ -25,6 +25,16 @@ function createOutputItem(artifact) {
 }
 
 const game = new Game({ id: 'example', version: '1.0.0', path: '/games/example' });
+/** @type {Promise<string>} */
+const platformText = game.platform.readFile('project.cmproj');
+/** @type {Promise<ArrayBuffer>} */
+const platformBytes = game.platform.readBinaryFile('image.png');
+// @ts-expect-error File paths must be strings.
+game.platform.readFile(123);
+// @ts-expect-error Text writes must contain strings.
+game.platform.writeFile('project.cmproj', new Uint8Array());
+// @ts-expect-error Filesystem operations live directly on the adapter.
+game.platform.filesystem;
 /** @type {string[]} */
 const identity = [game.id, game.version, game.name, game.resolvePath('assets')];
 const card = new game.Card();
@@ -96,6 +106,7 @@ exporter.config.outputName.toUpperCase();
 const invalidEscaped = Module.prototype.escapeHTML('label');
 
 export {
+    platformText, platformBytes,
     Game, Project, Module, Exporter, identity, card, project, imageField, inputField,
     invalidImage, invalidInput, invalidId, invalidEscaped,
     Widget, ExtensionModal, globalCard, activeAsset, localized, alertResult,

@@ -1,6 +1,6 @@
 import { readExtensionDirectories } from './shared/extensionManager.js';
 import { getAvailableLocales } from './shared/localize.js';
-import { getJoinedPath, readFile } from './shared/platformAdapter.js';
+import platform from './shared/platformAdapter.js';
 import {
     createCard, createTestProject, deleteTestProject, flushCard, setCardFields
 } from './shared/testing/testUtils.js';
@@ -15,7 +15,7 @@ describe('Extensions', () => {
     afterAll(async () => { await deleteTestProject(); });
 
     it('uses the configured Electron profile for user extensions', async () => {
-        const expectedPath = await getJoinedPath(
+        const expectedPath = await platform.getJoinedPath(
             appEnvironment.paths.data, '..', 'extensions'
         );
         expect(appEnvironment.paths.userExtensions).toBe(expectedPath);
@@ -25,14 +25,18 @@ describe('Extensions', () => {
         expect(activeGame.gamePath).toBe('user-extensions/games/magic');
         const face = activeEditorCard.front;
         const templateField = face.fields.find(field => field.id === 'template');
-        expect(templateField.options.find(option => option.id === 'magic/M15/Main').name)
-            .toBe('User extension smoke template');
+        const option = templateField.options.find(
+            option => option.id === 'magic/M15/Main'
+        );
+        expect(option.name).toBe('User extension smoke template');
         const indicator = face.modules.find(module => {
             return module.modulePath === 'magic/M15/ColorIndicator';
         });
         expect(indicator.directory.url())
             .toBe('/user-extensions/cardparts/magic/M15/ColorIndicator');
-        const text = face.modules.find(module => module.modulePath === 'magic/M15/Text');
+        const text = face.modules.find(
+            module => module.modulePath === 'magic/M15/Text'
+        );
         expect(text.directory.url()).toBe('/extensions/cardparts/magic/M15/Text');
     });
 
@@ -80,9 +84,11 @@ describe('Extensions', () => {
         await flushCard();
         activeProject.export.WebExporter = {};
         await executeAction('run-exporter', 'WebExporter');
-        const outputPath = await getJoinedPath(activeProject.folderPath,
-                                               'dist', 'user-web', 'set.json');
-        const output = JSON.parse(await readFile(outputPath));
+        const outputPath = await platform.getJoinedPath(
+            activeProject.folderPath,
+            'dist', 'user-web', 'set.json'
+        );
+        const output = JSON.parse(await platform.readFile(outputPath));
         expect(output.cards[0].front.name).toBe('User extension export');
         document.querySelector('cm-progress-modal')?.remove();
     });

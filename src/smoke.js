@@ -1,7 +1,5 @@
 import './shared/testing/textMatcher.js';
-import {
-    writeProcessOutput, clearStoredData
-} from './shared/platformAdapter.js';
+import platform from './shared/platformAdapter.js';
 import { exitApp } from './lifecycle.js';
 import CustomReporter from './shared/testing/customReporter.js';
 
@@ -34,7 +32,7 @@ async function runTests() {
     verifyTestEnvironment();
 
     log('startup').info('Clearing application storage');
-    await clearStoredData();
+    await platform.clearStoredData();
 
     log('startup').info('Executing jasmine tests');
     const suiteId = getSuiteId();
@@ -42,7 +40,7 @@ async function runTests() {
 }
 
 function print(message) {
-    return writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return platform.writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
 }
 
 jasmine.getEnv().addReporter(
@@ -52,7 +50,7 @@ jasmine.getEnv().addReporter(
 jasmine.getEnv().addReporter({
     async jasmineDone(result) {
         const output = JSON.stringify({ status: result.overallStatus });
-        await writeProcessOutput(RESULT_PREFIX + output + '\n');
+        await platform.writeProcessOutput(RESULT_PREFIX + output + '\n');
         await new Promise(resolve => { setTimeout(resolve, 100); });
         if (!appEnvironment.args.includes('--stay-open')) await exitApp();
     }

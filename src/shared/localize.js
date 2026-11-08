@@ -1,11 +1,7 @@
 import { beforeExit } from '../lifecycle.js';
 import Localization from './Localization.js';
 import { getExtensionLocations } from './extensionManager.js';
-import {
-    readFile,
-    writeFile
-} from './platformAdapter.js';
-import { checkFileExists } from './fsUtils.js';
+import platform from './platformAdapter.js';
 
 const report = createReporter({ unit: 'localize' });
 
@@ -56,7 +52,7 @@ async function saveLocaleRegistry() {
         return acc;
     }, {});
     const text = JSON.stringify(locales, null, 2);
-    await writeFile('extensions/locales/locales.json', text);
+    await platform.writeFile('extensions/locales/locales.json', text);
 }
 
 export async function getAvailableLocales() {
@@ -103,7 +99,7 @@ const writeSchemaFile = (async function writeSchemaFile() {
     const json = JSON.stringify(schema, null, 2);
     const outputPath = `extensions/locales/schema.json`;
     log('plugin').log(`Writing localization schema to `, outputPath);
-    await writeFile(outputPath, json);
+    await platform.writeFile(outputPath, json);
 }).debounce(1000);
 
 beforeExit(() => writeSchemaFile.flush(), () => writeSchemaFile.pending);
@@ -119,8 +115,8 @@ async function updateSchema(namespaceKey, entryKey) {
 export async function loadSchema() {
     try {
         const inputPath = `extensions/locales/schema.json`;
-        if (!await checkFileExists(inputPath)) return {};
-        const text = await readFile(inputPath);
+        if (!await platform.checkFileExists(inputPath)) return {};
+        const text = await platform.readFile(inputPath);
         return JSON.parse(text);
     } catch (e) {
         log('plugin').error('Error loading localization schema:', e);

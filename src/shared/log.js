@@ -1,4 +1,4 @@
-import { debugLog } from './platformAdapter.js';
+import platform from './platformAdapter.js';
 
 const isDebugMode = appEnvironment.args.includes('--debug');
 const log = [];
@@ -20,7 +20,7 @@ function logMessage(level, groupKey, message, ...args) {
     console[level](`%c[${groupKey}] ${message}`, colorExpr, ...args);
     if (level === 'debug' && !isDebugMode) return;
     log.push({ level, groupKey, message, args, timestamp });
-    debugLog(level, `[${groupKey}] ${message}`, args).catch(() => {});
+    platform.debugLog(level, `[${groupKey}] ${message}`, args).catch(() => {});
 }
 
 window.log = function(groupKey) {

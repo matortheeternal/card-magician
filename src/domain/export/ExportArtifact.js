@@ -1,4 +1,4 @@
-import { getJoinedPath } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 export default class ExportArtifact {
     /**
@@ -21,7 +21,7 @@ export default class ExportArtifact {
      * @returns {string}
      */
     async getExportFilePath(folder, localPath) {
-        return getJoinedPath(
+        return platform.getJoinedPath(
             activeProject.folderPath,
             'dist',
             folder,

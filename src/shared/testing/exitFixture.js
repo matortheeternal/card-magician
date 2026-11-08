@@ -1,5 +1,5 @@
 import { beforeExit } from '../../lifecycle.js';
-import { getJoinedPath, terminateApp } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import ImageCrop from '../../domain/card/ImageCrop.js';
 import CollectionManager from '../storage/CollectionManager.js';
@@ -44,8 +44,8 @@ export async function setupExitFixture() {
         get pending() { return manager.pending; },
         get imageUrl() { return manager.collection[0].image?.imageUrl; },
         release() { released = true; release(); },
-        terminate: terminateApp,
+        terminate: code => platform.terminateApp(code),
         dataPath: appEnvironment.paths.data,
-        filePath: await getJoinedPath(folder, 'symbols.yml')
+        filePath: await platform.getJoinedPath(folder, 'symbols.yml')
     };
 }

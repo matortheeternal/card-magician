@@ -1,11 +1,9 @@
 import ExitManager from './shared/ExitManager.js';
-import {
-    onWindowClose, terminateApp
-} from './shared/platformAdapter.js';
+import platform from './shared/platformAdapter.js';
 import { getActiveModal, openModal } from './ui/modals/modalManager.js';
 import * as progress from './ui/systems/progressSystem.js';
 
-const exitManager = new ExitManager(terminateApp, error => {
+const exitManager = new ExitManager(code => platform.terminateApp(code), error => {
     const bar = getActiveModal()?.querySelector('sl-progress-bar');
     if (bar) bar.indeterminate = false;
     progress.onError(error);
@@ -52,5 +50,5 @@ export function exitApp(code = 0) {
 }
 
 export async function setupExitHandling() {
-    await onWindowClose(() => { void exitApp().catch(() => {}); });
+    await platform.onWindowClose(() => { void exitApp().catch(() => {}); });
 }

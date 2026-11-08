@@ -1,7 +1,7 @@
 import { subscribe } from '../reporting.js';
 import ErrorReport from './ErrorReport.js';
 import AsyncBatcher from './AsyncBatcher.js';
-import { writeFile } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 import { beforeExit } from '../../lifecycle.js';
 
 let sequentialId = 0;
@@ -12,7 +12,7 @@ async function writeBatch(batch) {
     const dateString = new Date().toISOString().replaceAll(':', '-');
     const filename = `errors-${dateString}-${sequentialId++}.md`;
     const filePath = appEnvironment.paths.data + '/errors/' + filename;
-    await writeFile(filePath, text);
+    await platform.writeFile(filePath, text);
 }
 
 const batcher = new AsyncBatcher(writeBatch, {

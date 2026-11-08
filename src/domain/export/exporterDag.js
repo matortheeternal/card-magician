@@ -1,7 +1,4 @@
-import {
-    writeBinaryFile,
-    writeFile
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 /**
@@ -88,10 +85,10 @@ export function feedTheDag(exporters) {
 
 const outputHandlers = [{
     match: output => typeof output === 'string',
-    write: async (filePath, output) => writeFile(filePath, output)
+    write: async (filePath, output) => platform.writeFile(filePath, output)
 }, {
     match: output => output.constructor === Uint8Array,
-    write: async (filePath, output) => writeBinaryFile(filePath, output)
+    write: async (filePath, output) => platform.writeBinaryFile(filePath, output)
 }];
 
 function getHandler(output, exporter) {

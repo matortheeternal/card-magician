@@ -1,10 +1,6 @@
 import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { registerAction } from '../../ui/systems/actionSystem.js';
-import {
-    onOpenFile,
-    openSingleFileDialog,
-    saveSingleFileDialog
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
@@ -23,7 +19,7 @@ const projectChangedCallbacks = [];
 
 export async function saveAs() {
     log('user').info('save as');
-    const filePath = await saveSingleFileDialog(
+    const filePath = await platform.saveSingleFileDialog(
         L`Save project to file`,
         activeProject.filePath || `${activeProject.title || L`Project`}.cmproj`,
         filters
@@ -71,7 +67,7 @@ export async function newProject() {
 
 export async function openProject(filePath) {
     log('user').info('Open project');
-    filePath = filePath || await openSingleFileDialog(L`Open a project`, filters);
+    filePath = filePath || await platform.openSingleFileDialog(L`Open a project`, filters);
     if (!filePath) return;
     log('state').info('Opening project:', filePath);
     await withNewContext(async () => {
@@ -138,7 +134,7 @@ registerAction('change-template', async (faceId, newTemplateId) => {
 });
 
 registerAction('open-project', openProject);
-onOpenFile(filePath => {
+platform.onOpenFile(filePath => {
     if (!filePath.endsWith('.cmproj')) return;
     void openProject(filePath);
 });

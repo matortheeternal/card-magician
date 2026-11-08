@@ -1,9 +1,5 @@
 import { beforeExit } from '../../lifecycle.js';
-import {
-    checkFileExists,
-    getStoredData,
-    storeData
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 const RECENT_PROJECT_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
@@ -32,7 +28,7 @@ export default class AppConfig {
 
     async load() {
         try {
-            const raw = await getStoredData(this.key);
+            const raw = await platform.getStoredData(this.key);
             this.#data = JSON.parse(raw) || {};
         } catch(e) {
             log('startup').info(`Could not load ${this.key}`, e);
@@ -49,7 +45,7 @@ export default class AppConfig {
             ? this.#data.recentProjects
             : [];
         for (const project of projects) {
-            if (await checkFileExists(project.filePath))
+            if (await platform.checkFileExists(project.filePath))
                 recentProjects.push(project);
         }
         this.#data.recentProjects = recentProjects;
@@ -108,7 +104,7 @@ export default class AppConfig {
         this.#writeQueued = false;
         this.#activeWrites++;
         this.#write = this.#write.catch(() => undefined).then(async () => {
-            await storeData(this.key, JSON.stringify(this.#data));
+            await platform.storeData(this.key, JSON.stringify(this.#data));
         }).catch(error => {
             this.#writeQueued = true;
             throw error;

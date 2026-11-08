@@ -1,8 +1,8 @@
-import { readDirectory } from '../platformAdapter.js';
+import platform from '../platformAdapter.js';
 
 export async function findTestFiles(dir) {
     const testFiles = [];
-    const files = await readDirectory(dir);
+    const files = await platform.readDirectory(dir);
     for (const file of files) {
         const path = `${dir}/${file.entry}`;
         if (file.type === 'DIRECTORY') {

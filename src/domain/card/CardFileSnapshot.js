@@ -1,6 +1,6 @@
 import ImageFieldValue from './ImageFieldValue.js';
 import { retainImage } from './imageRetention.js';
-import { readBinaryFile, writeBinaryFile } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 /** File/content backup independent of history grouping and card-list changes. */
 export default class CardFileSnapshot {
@@ -19,7 +19,7 @@ export default class CardFileSnapshot {
 
     async captureFiles() {
         for (const [key, path] of this.card.files.entries) {
-            const blob = new Blob([await readBinaryFile(path)]);
+            const blob = new Blob([await platform.readBinaryFile(path)]);
             this.files.set(key, { key, path, blob });
         }
     }
@@ -43,7 +43,7 @@ export default class CardFileSnapshot {
     }
 
     async restoreFile(file, path) {
-        await writeBinaryFile(path, await file.blob.arrayBuffer());
+        await platform.writeBinaryFile(path, await file.blob.arrayBuffer());
         await this.card.files.set(file.key, path);
     }
 

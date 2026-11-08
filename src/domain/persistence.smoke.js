@@ -1,15 +1,10 @@
-import { checkFileExists } from '../shared/fsUtils.js';
 import {
     createCard, createTestProject, deleteTestProject,
     expectCardData, expectFilesToMatch, flushCard,
     flushCardProperties, setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import YAMLSerializer from './projects/serializers/YAMLSerializer.js';
-import {
-    getJoinedPath,
-    readBinaryFile,
-    readFile
-} from '../shared/platformAdapter.js';
+import platform from '../shared/platformAdapter.js';
 import FieldInteractor, { CARD_PROPERTIES } from '../shared/testing/FieldInteractor.js';
 import ImageCrop from './card/ImageCrop.js';
 import { executeAction } from '../ui/systems/actionSystem.js';
@@ -42,7 +37,7 @@ describe('Persistence', () => {
     it('saves the project file to the filesystem', async () => {
         expect(project.filePath).toMatch(/test.cmproj$/);
         await project.save();
-        const projectFileExists = await checkFileExists(project.filePath);
+        const projectFileExists = await platform.checkFileExists(project.filePath);
         expect(projectFileExists).toBeTrue();
     });
 
@@ -52,7 +47,7 @@ describe('Persistence', () => {
             await setCardFields({ name: 'Test' });
             await flushCard();
             const path = card.files.get('data');
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeTrue();
             expect(path).toMatch(/cards\/Test.yml$/);
         });
@@ -63,7 +58,7 @@ describe('Persistence', () => {
             await setCardFields({ name: '' });
             await flushCard();
             const path = card.files.get('data');
-            const data = await readFile(path);
+            const data = await platform.readFile(path);
             expect(data).toEqualText(expectedBlankCardData);
         });
 
@@ -72,7 +67,7 @@ describe('Persistence', () => {
             await setCardFields({ name: 'Card A' });
             await flushCard();
             const pathA = cardA.files.get('data');
-            const existsA = await checkFileExists(pathA);
+            const existsA = await platform.checkFileExists(pathA);
             expect(existsA).toBeTrue();
             expect(pathA).toMatch(/cards\/Card A.yml$/);
 
@@ -80,7 +75,7 @@ describe('Persistence', () => {
             await setCardFields({ name: 'Card B' });
             await flushCard();
             const pathB = cardB.files.get('data');
-            const existsB = await checkFileExists(pathB);
+            const existsB = await platform.checkFileExists(pathB);
             expect(existsB).toBeTrue();
             expect(pathB).toMatch(/cards\/Card B.yml$/);
         });
@@ -169,17 +164,17 @@ describe('Persistence', () => {
             await flushCard();
 
             const pathA = cardA.files.get('data');
-            const existsA = await checkFileExists(pathA);
+            const existsA = await platform.checkFileExists(pathA);
             expect(existsA).toBeTrue();
             expect(pathA).toMatch(/cards\/Card A.yml$/);
 
             const pathB = cardB.files.get('data');
-            const existsB = await checkFileExists(pathB);
+            const existsB = await platform.checkFileExists(pathB);
             expect(existsB).toBeTrue();
             expect(pathB).toMatch(/cards\/Card B.yml$/);
 
             const pathC = cardC.files.get('data');
-            const existsC = await checkFileExists(pathC);
+            const existsC = await platform.checkFileExists(pathC);
             expect(existsC).toBeTrue();
             expect(pathC).toMatch(/cards\/Card C.yml$/);
         });
@@ -272,7 +267,7 @@ describe('Persistence', () => {
             await setCardFields({ artImage });
             await flushCard();
             const path = card.files.get('front.artImage');
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeTrue();
         });
 
@@ -286,11 +281,11 @@ describe('Persistence', () => {
             );
             await flushCard();
             const path = card.files.get('front.artImage');
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeTrue();
 
             const path2 = card.files.get('back.artImage');
-            const exists2 = await checkFileExists(path2);
+            const exists2 = await platform.checkFileExists(path2);
             expect(exists2).toBeTrue();
         });
 
@@ -302,7 +297,7 @@ describe('Persistence', () => {
             await flushCard();
 
             const path = card.files.get('front.artImage');
-            const bytes = await readBinaryFile(path);
+            const bytes = await platform.readBinaryFile(path);
             await expectFilesToMatch(new Blob([bytes]), artImage2);
         });
 
@@ -334,7 +329,7 @@ describe('Persistence', () => {
             interactor.clear();
             await flushCard();
 
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeFalse();
             expect(card.files.has('front.artImage')).toBeFalse();
         });
@@ -349,15 +344,15 @@ describe('Persistence', () => {
             await flushCard();
 
             const pathA = cardA.files.get('front.artImage');
-            const existsA = await checkFileExists(pathA);
+            const existsA = await platform.checkFileExists(pathA);
             expect(existsA).toBeTrue();
-            const bytesA = await readBinaryFile(pathA);
+            const bytesA = await platform.readBinaryFile(pathA);
             await expectFilesToMatch(new Blob([bytesA]), artImage);
 
             const pathB = cardB.files.get('front.artImage');
-            const existsB = await checkFileExists(pathB);
+            const existsB = await platform.checkFileExists(pathB);
             expect(existsB).toBeTrue();
-            const bytesB = await readBinaryFile(pathB);
+            const bytesB = await platform.readBinaryFile(pathB);
             await expectFilesToMatch(new Blob([bytesB]), artImage2);
 
             expect(pathA).not.toEqual(pathB);
@@ -435,7 +430,7 @@ describe('Persistence', () => {
             await executeAction('delete-selected-cards');
 
             expect(path).toMatch(/red dragon.yml$/);
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeFalse();
         });
 
@@ -447,7 +442,7 @@ describe('Persistence', () => {
             await executeAction('delete-selected-cards');
 
             expect(path).toMatch(/red dragon.jpg$/);
-            const exists = await checkFileExists(path);
+            const exists = await platform.checkFileExists(path);
             expect(exists).toBeFalse();
         });
 
@@ -467,13 +462,13 @@ describe('Persistence', () => {
             const imagePathB = cardB.files.get('front.artImage');
 
             await executeAction('delete-selected-cards');
-            expect(await checkFileExists(dataPathB)).toBeFalse();
-            expect(await checkFileExists(imagePathB)).toBeFalse();
-            expect(await checkFileExists(dataPathA)).toBeTrue();
-            expect(await checkFileExists(imagePathA)).toBeTrue();
+            expect(await platform.checkFileExists(dataPathB)).toBeFalse();
+            expect(await platform.checkFileExists(imagePathB)).toBeFalse();
+            expect(await platform.checkFileExists(dataPathA)).toBeTrue();
+            expect(await platform.checkFileExists(imagePathA)).toBeTrue();
             await executeAction('delete-selected-cards');
-            expect(await checkFileExists(dataPathA)).toBeFalse();
-            expect(await checkFileExists(imagePathA)).toBeFalse();
+            expect(await platform.checkFileExists(dataPathA)).toBeFalse();
+            expect(await platform.checkFileExists(imagePathA)).toBeFalse();
 
         });
 
@@ -493,10 +488,10 @@ describe('Persistence', () => {
             const listView = document.querySelector('cm-list-view');
             listView.selection = [0, 1];
             await executeAction('delete-selected-cards');
-            expect(await checkFileExists(dataPathA)).toBeFalse();
-            expect(await checkFileExists(imagePathA)).toBeFalse();
-            expect(await checkFileExists(dataPathB)).toBeFalse();
-            expect(await checkFileExists(imagePathB)).toBeFalse();
+            expect(await platform.checkFileExists(dataPathA)).toBeFalse();
+            expect(await platform.checkFileExists(imagePathA)).toBeFalse();
+            expect(await platform.checkFileExists(dataPathB)).toBeFalse();
+            expect(await platform.checkFileExists(imagePathB)).toBeFalse();
         });
 
         it('does not create card files when a save was pending', async () => {
@@ -510,8 +505,8 @@ describe('Persistence', () => {
             const flush = cardForm.save.flush;
             await executeAction('delete-selected-cards');
             await flush();
-            expect(await checkFileExists(dataPath)).toBeFalse();
-            expect(await checkFileExists(imagePath)).toBeFalse();
+            expect(await platform.checkFileExists(dataPath)).toBeFalse();
+            expect(await platform.checkFileExists(imagePath)).toBeFalse();
         });
     });
 
@@ -553,18 +548,18 @@ describe('Persistence', () => {
             expect(cardData.type).toEqual(CARD_CLIPBOARD_TYPE);
             const payload = JSON.parse(await cardData.text());
             expect(payload.cardFiles).toEqual(['purple hippo.yml']);
-            const dataPath = await getJoinedPath(
+            const dataPath = await platform.getJoinedPath(
                 payload.snapshotPath,
                 payload.cardFiles[0]
             );
-            const imagePath = await getJoinedPath(
+            const imagePath = await platform.getJoinedPath(
                 payload.snapshotPath,
                 'purple hippo.jpg'
             );
             expect(dataPath).not.toEqual(card.files.get('data'));
-            expect(await checkFileExists(dataPath)).toBeTrue();
-            expect(await checkFileExists(imagePath)).toBeTrue();
-            const bytes = await readBinaryFile(imagePath);
+            expect(await platform.checkFileExists(dataPath)).toBeTrue();
+            expect(await platform.checkFileExists(imagePath)).toBeTrue();
+            const bytes = await platform.readBinaryFile(imagePath);
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
@@ -622,7 +617,7 @@ describe('Persistence', () => {
             await executeAction('paste');
 
             const path = selectedProjectCard.files.get('data');
-            expect(await checkFileExists(path)).toBeTrue();
+            expect(await platform.checkFileExists(path)).toBeTrue();
             expect(path).toMatch(/purple hippo-2.yml$/);
         });
 
@@ -639,7 +634,7 @@ describe('Persistence', () => {
             await executeAction('paste');
             for (const card of activeProject.cards) {
                 const path = card.files.get('data');
-                expect(await checkFileExists(path)).toBeTrue();
+                expect(await platform.checkFileExists(path)).toBeTrue();
             }
         });
 
@@ -653,9 +648,9 @@ describe('Persistence', () => {
             const files = selectedProjectCard.files;
             expect(files.has('front.artImage')).toBeTrue();
             const path = files.get('front.artImage');
-            expect(await checkFileExists(path)).toBeTrue();
+            expect(await platform.checkFileExists(path)).toBeTrue();
             expect(path).toMatch(/cheesestick-2.jpg$/);
-            const bytes = await readBinaryFile(path);
+            const bytes = await platform.readBinaryFile(path);
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
@@ -683,8 +678,8 @@ describe('Persistence', () => {
             });
             expect(new Set(paths).size).toEqual(2);
             for (const path of paths) {
-                expect(await checkFileExists(path)).toBeTrue();
-                const bytes = await readBinaryFile(path);
+                expect(await platform.checkFileExists(path)).toBeTrue();
+                const bytes = await platform.readBinaryFile(path);
                 await expectFilesToMatch(new Blob([bytes]), artImage);
             }
         });
@@ -734,10 +729,10 @@ describe('Persistence', () => {
 
             const path = selectedProjectCard.files.get('data');
             expect(path).toMatch(/carrot.yml$/);
-            expect(await checkFileExists(path)).toBeTrue();
+            expect(await platform.checkFileExists(path)).toBeTrue();
             const imagePath = selectedProjectCard.files.get('front.artImage');
-            expect(await checkFileExists(imagePath)).toBeTrue();
-            const bytes = await readBinaryFile(imagePath);
+            expect(await platform.checkFileExists(imagePath)).toBeTrue();
+            const bytes = await platform.readBinaryFile(imagePath);
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
@@ -755,7 +750,7 @@ describe('Persistence', () => {
             expect(activeProject.cards.length).toEqual(4);
             for (const card of activeProject.cards) {
                 const path = card.files.get('data');
-                expect(await checkFileExists(path)).toBeTrue();
+                expect(await platform.checkFileExists(path)).toBeTrue();
             }
         });
     });
@@ -773,7 +768,7 @@ describe('Persistence', () => {
             const imagePath = duplicate.files.get('front.artImage');
             expect(imagePath).toMatch(/dragon-2.jpg$/);
             expect(imagePath).not.toEqual(source.files.get('front.artImage'));
-            const bytes = await readBinaryFile(imagePath);
+            const bytes = await platform.readBinaryFile(imagePath);
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
@@ -800,7 +795,7 @@ describe('Persistence', () => {
             });
             expect(new Set(paths).size).toEqual(2);
             for (const path of paths)
-                expect(await checkFileExists(path)).toBeTrue();
+                expect(await platform.checkFileExists(path)).toBeTrue();
         });
     });
 });

@@ -1,8 +1,6 @@
 import { mountExtensions } from './shared/extensionManager.js';
 import { findTestFiles } from './shared/testing/findTestFiles.js';
-import {
-    terminateApp, onWindowClose, writeProcessOutput, clearStoredData
-} from './shared/platformAdapter.js';
+import platform from './shared/platformAdapter.js';
 import CustomReporter from './shared/testing/customReporter.js';
 
 const RESULT_PREFIX = '@TEST_RESULT:';
@@ -24,13 +22,13 @@ function verifyTestEnvironment() {
 }
 
 async function runTests() {
-    await onWindowClose(() => terminateApp());
+    await platform.onWindowClose(() => platform.terminateApp());
 
     log('startup').info('Verifying test environment');
     verifyTestEnvironment();
 
     log('startup').info('Clearing application storage');
-    await clearStoredData();
+    await platform.clearStoredData();
 
     log('startup').info('Loading module tests');
     await loadModuleTests();
@@ -40,7 +38,7 @@ async function runTests() {
 }
 
 function print(message) {
-    return writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
+    return platform.writeProcessOutput(OUTPUT_PREFIX + JSON.stringify({ message }) + '\n');
 }
 
 env.configure(urls.configFromCurrentUrl());
@@ -50,9 +48,9 @@ env.addReporter(new jasmine.HtmlReporterV2({ env, urls }));
 env.addReporter({
     async jasmineDone(result) {
         const output = JSON.stringify({ status: result.overallStatus });
-        await writeProcessOutput(RESULT_PREFIX + output + '\n');
+        await platform.writeProcessOutput(RESULT_PREFIX + output + '\n');
         await new Promise(resolve => { setTimeout(resolve, 100); });
-        if (!appEnvironment.args.includes('--stay-open')) terminateApp();
+        if (!appEnvironment.args.includes('--stay-open')) platform.terminateApp();
     }
 });
 

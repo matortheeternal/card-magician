@@ -1,5 +1,5 @@
 import { watchFile } from '../../shared/fileWatcher.js';
-import * as platform from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 import { loadTextFile } from '../../shared/fsUtils.js';
 import SerializerAdapter from '../projects/adapters/SerializerAdapter.js';
 import {
@@ -14,7 +14,9 @@ import hljs from 'highlight.js';
 import * as styleManager from '../../ui/systems/styleManager.js';
 import { manageCollection } from '../../shared/storageUtils.js';
 
-const gamePlatform = { ...platform, watchFile };
+// Inherit platform methods without losing them through object spread.
+/** @type {typeof platform & { watchFile: typeof watchFile }} */
+const gamePlatform = Object.assign(Object.create(platform), { watchFile });
 
 export default class CardMagicianGame {
     /**

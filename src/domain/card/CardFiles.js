@@ -1,8 +1,4 @@
-import {
-    getJoinedPath,
-    moveFile,
-    rmrf
-} from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 export default class CardFiles {
     constructor(card, definitions = {}) {
@@ -54,7 +50,7 @@ export default class CardFiles {
     async getCanonicalPath(key) {
         const def = this.resolveDefinition(key);
         const filename = def.getFilename(this.card);
-        return await getJoinedPath(this.cardsFolderPath, filename);
+        return await platform.getJoinedPath(this.cardsFolderPath, filename);
     }
 
     async moveToCanonicalPath(key) {
@@ -62,7 +58,7 @@ export default class CardFiles {
         if (!oldFilePath) return;
         const newFilePath = await this.getCanonicalPath(key);
         if (newFilePath === oldFilePath) return;
-        await moveFile(oldFilePath, newFilePath);
+        await platform.moveFile(oldFilePath, newFilePath);
         await this.set(key, newFilePath);
     }
 
@@ -80,7 +76,7 @@ export default class CardFiles {
     async remove(key) {
         const def = this.resolveDefinition(key);
         const filePath = this.get(key);
-        if (filePath) await rmrf(filePath);
+        if (filePath) await platform.rmrf(filePath);
         this.paths.delete(key);
         def.clearFieldValue(this.card);
     }

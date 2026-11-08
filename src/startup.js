@@ -3,7 +3,7 @@ import { setupExitHandling } from './lifecycle.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
 import imageCache from './domain/graphics/ImageCache.js';
-import { createDirectory, mount, ready } from './shared/platformAdapter.js';
+import platform from './shared/platformAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
@@ -13,7 +13,7 @@ const startupLog = log('startup');
 const report = createReporter({ unit: 'startup' });
 
 function ensureDirectories() {
-    return createDirectory(appEnvironment.paths.data + '/cache/images');
+    return platform.createDirectory(appEnvironment.paths.data + '/cache/images');
 }
 
 async function setupPlatform() {
@@ -24,7 +24,7 @@ async function setupPlatform() {
     startupLog.debug('Directories created');
     startupLog.debug('Mounting directories');
     await mountExtensions();
-    await mount('/cache', appEnvironment.paths.data + '/cache');
+    await platform.mount('/cache', appEnvironment.paths.data + '/cache');
     startupLog.debug('Mounts done');
 }
 
@@ -84,7 +84,7 @@ window.addEventListener('resize', applyDeviceLayout.debounce(200));
             await setupExitFixture();
         }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
-        ready();
+        platform.ready();
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);

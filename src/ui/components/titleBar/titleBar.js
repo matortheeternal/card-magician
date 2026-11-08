@@ -3,7 +3,7 @@ import FileMenu from '../../menus/FileMenu.js';
 import EditMenu from '../../menus/EditMenu.js';
 import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
-import { openUrl } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 
 const L = localize('titleBar');
 
@@ -25,8 +25,8 @@ export default class TitleBar extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             showErrors: () => {},
-            joinDiscord: () => openUrl('https://discord.gg/abAeJKNhKt'),
-            openKofi: () => openUrl('https://ko-fi.com/mator')
+            joinDiscord: () => platform.openUrl('https://discord.gg/abAeJKNhKt'),
+            openKofi: () => platform.openUrl('https://ko-fi.com/mator')
         });
         this.addEventListener('sl-hide', event => this.onMenuHide(event));
         this.addEventListener('sl-show', event => this.onMenuShow(event));

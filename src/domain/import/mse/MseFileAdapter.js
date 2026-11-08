@@ -1,12 +1,12 @@
 import { unzip } from 'unzipit';
 import MseProjectAdapter from './MseProjectAdapter.js';
 import { determineImageType } from '../../../shared/imageUtils.js';
-import { readBinaryFile } from '../../../shared/platformAdapter.js';
+import platform from '../../../shared/platformAdapter.js';
 
 export default class MseFileAdapter extends MseProjectAdapter {
     static async load(filePath) {
         const adapter = new this();
-        const buffer = await readBinaryFile(filePath);
+        const buffer = await platform.readBinaryFile(filePath);
         const { entries } = await unzip(new Uint8Array(buffer));
         adapter.entries = entries;
         return adapter;

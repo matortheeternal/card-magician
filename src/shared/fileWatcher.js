@@ -1,6 +1,4 @@
-import {
-    startFileWatch, stopFileWatch, onFileChange, readFile
-} from './platformAdapter.js';
+import platform from './platformAdapter.js';
 
 /**
  * @typedef {object} FileWatchError
@@ -44,7 +42,7 @@ export async function watchFile(filename, callback) {
     const context = activeContext;
     const id = crypto.randomUUID();
     let active = true;
-    const removeListener = onFileChange(event => {
+    const removeListener = platform.onFileChange(event => {
         if (!active || context !== activeContext || event.id !== id) return;
         const detail = { ...event };
         delete detail.id;
@@ -57,11 +55,11 @@ export async function watchFile(filename, callback) {
         active = false;
         context.delete(stop);
         removeListener();
-        await stopFileWatch(id);
+        await platform.stopFileWatch(id);
     };
     context.add(stop);
     try {
-        await startFileWatch(id, filename);
+        await platform.startFileWatch(id, filename);
     } catch (error) {
         active = false;
         context.delete(stop);
@@ -93,7 +91,7 @@ export async function watchTextFile(filename, apply, { initial = false } = {}) {
             return;
         }
         try {
-            const source = await readFile(filename);
+            const source = await platform.readFile(filename);
             if (active && context === activeContext && revision === currentRevision)
                 apply(source);
         } catch (error) {

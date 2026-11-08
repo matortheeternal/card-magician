@@ -11,8 +11,7 @@ import YAMLSerializer from '../../domain/projects/serializers/YAMLSerializer.js'
 import ImageCrop from '../../domain/card/ImageCrop.js';
 import ImageFieldValue from '../../domain/card/ImageFieldValue.js';
 import { retainImage } from '../../domain/card/imageRetention.js';
-import { checkFileExists } from '../../shared/fsUtils.js';
-import { readBinaryFile, writeBinaryFile } from '../../shared/platformAdapter.js';
+import platform from '../../shared/platformAdapter.js';
 
 function deferred() {
     let resolve;
@@ -357,12 +356,12 @@ describe('History', () => {
             expect(selectedProjectCard).toBeNull();
             expect(activeEditorCard).toBeNull();
             expect(list.selection).toEqual([]);
-            expect(await checkFileExists(path)).toBeFalse();
+            expect(await platform.checkFileExists(path)).toBeFalse();
             await history.redo();
             expect(project.cards).toEqual([card]);
             expect(selectedProjectCard).toBe(card);
             expect(list.selection.map(row => row.original)).toEqual([card]);
-            expect(await checkFileExists(card.files.get('data'))).toBeTrue();
+            expect(await platform.checkFileExists(card.files.get('data'))).toBeTrue();
         });
 
         it('preserves separate creation steps and restores prior selection', async () => {
@@ -451,7 +450,7 @@ describe('History', () => {
                const path = card.files.get('data');
                await executeAction('delete-selected-cards');
                await flushCard();
-               expect(await checkFileExists(path)).toBeFalse();
+               expect(await platform.checkFileExists(path)).toBeFalse();
                await history.undo();
                expect(activeEditorCard.front.rulesText).toBe('Keep pending text');
                expect(card.notes).toBe('Keep pending notes');
@@ -473,11 +472,11 @@ describe('History', () => {
                const paths = [...card.files.entries].map(([, path]) => path);
                await executeAction('delete-selected-cards');
                for (const path of paths)
-                   expect(await checkFileExists(path)).toBeFalse();
+                   expect(await platform.checkFileExists(path)).toBeFalse();
                for (let replay = 0; replay < 2; replay++) {
                    await history.undo();
                    for (const key of ['front.artImage', 'back.artImage']) {
-                       const bytes = await readBinaryFile(card.files.get(key));
+                       const bytes = await platform.readBinaryFile(card.files.get(key));
                        await expectFilesToMatch(new File([bytes], ''), art);
                    }
                    await history.redo();
@@ -491,13 +490,13 @@ describe('History', () => {
             }));
             const path = await card.files.getCanonicalPath('attachment');
             const bytes = new Uint8Array([0, 1, 127, 255]);
-            await writeBinaryFile(path, bytes);
+            await platform.writeBinaryFile(path, bytes);
             await card.files.set('attachment', path);
             await history.reset();
             await executeAction('delete-selected-cards');
-            expect(await checkFileExists(path)).toBeFalse();
+            expect(await platform.checkFileExists(path)).toBeFalse();
             await history.undo();
-            const restored = await readBinaryFile(card.files.get('attachment'));
+            const restored = await platform.readBinaryFile(card.files.get('attachment'));
             expect(new Uint8Array(restored)).toEqual(bytes);
         });
 
@@ -551,7 +550,7 @@ describe('History', () => {
             await expectAsync(executeAction('delete-selected-cards')).toBeRejected();
             expect(project.cards).toEqual([first, second]);
             for (const path of paths)
-                expect(await checkFileExists(path)).toBeTrue();
+                expect(await platform.checkFileExists(path)).toBeTrue();
             await history.undo();
             expect(project.cards).toEqual([first, second]);
             deletion.and.callThrough();
@@ -606,7 +605,7 @@ describe('History', () => {
             await history.redo();
             expect(project.cards).toEqual(cards);
             for (const card of cards) {
-                const bytes = await readBinaryFile(card.files.get('front.artImage'));
+                const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
                 await expectFilesToMatch(new File([bytes], ''), art);
             }
         });
@@ -665,7 +664,7 @@ describe('History', () => {
         }
 
         async function expectImageFile(expected) {
-            const bytes = await readBinaryFile(card.files.get('front.artImage'));
+            const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
             await expectFilesToMatch(new File([bytes], ''), expected);
         }
 
@@ -706,7 +705,7 @@ describe('History', () => {
             const path = card.files.get('front.artImage');
             new FieldInteractor('artImage', { faceKey: 'front' }).clear();
             await flushCard();
-            expect(await checkFileExists(path)).toBeFalse();
+            expect(await platform.checkFileExists(path)).toBeFalse();
             await expectFilesToMatch(new File([await retained.loadImageData()], ''), art);
         });
 
@@ -909,13 +908,13 @@ describe('History', () => {
                let complete = false;
                const saving = flushCard().then(() => { complete = true; });
                try {
-                   expect(await checkFileExists(path)).toBeTrue();
+                   expect(await platform.checkFileExists(path)).toBeTrue();
                    expect(complete).toBeFalse();
                } finally {
                    finish.resolve();
                }
                await saving;
-               expect(await checkFileExists(path)).toBeFalse();
+               expect(await platform.checkFileExists(path)).toBeFalse();
                await history.undo();
                await expectImageFile(art);
            });
@@ -936,7 +935,7 @@ describe('History', () => {
                await expectAsync(flushCard()).toBeRejectedWithError(
                    `Cannot retain image: ${url}`
                );
-               expect(await checkFileExists(path)).toBeTrue();
+               expect(await platform.checkFileExists(path)).toBeTrue();
                read.and.callThrough();
                await record(card, 'artImage', image, new ImageFieldValue());
                const saving = document.querySelector('cm-card-form').save();
@@ -998,7 +997,7 @@ describe('History', () => {
             expect(imagePath).toBeDefined();
             if (imagePath) {
                 await expectFilesToMatch(
-                    new File([await readBinaryFile(imagePath)], ''), art
+                    new File([await platform.readBinaryFile(imagePath)], ''), art
                 );
             }
             expect(typeof activeEditorCard.front.artImage.clone).toBe('function');
@@ -1041,7 +1040,7 @@ describe('History', () => {
             await history.undo();
             await executeAction('open-project', projectPath);
             card = activeProject.cards[0];
-            const bytes = await readBinaryFile(card.files.get('front.artImage'));
+            const bytes = await platform.readBinaryFile(card.files.get('front.artImage'));
             await expectFilesToMatch(new File([bytes], ''), art);
         });
         it('preserves historical image content across overwrite and rename', async () => {
