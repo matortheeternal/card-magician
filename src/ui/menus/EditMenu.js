@@ -21,14 +21,28 @@ export default class EditMenu extends ReactiveMenu {
                 historySystem.redo();
             }),
             this.DIVIDER,
+            this.menuItem(L`Copy`, L`Ctrl+C`, () => executeAction('copy')),
+            this.menuItem(L`Paste`, L`Ctrl+V`, () => executeAction('paste')),
+            this.DIVIDER,
+            this.menuItem(L`Add Card`, L`Ctrl+Enter`, () => executeAction('add-card')),
+            this.menuItem(
+                L`Delete Cards`,
+                L`Delete`,
+                () => executeAction('delete-selected-cards')
+            ),
+            this.menuItem(
+                L`Duplicate Cards`,
+                L`Ctrl+D`,
+                () => executeAction('duplicate-selected-cards')
+            ),
+            this.menuItem(L`Automate`, L`Ctrl+M`, () => openModal('cm-automate-modal')),
+            this.DIVIDER,
             this.menuItem(L`Filter`, L`Ctrl+F`, () => executeAction('toggle-filter')),
             this.menuItem(
                 L`Build filter`,
                 L`Ctrl+Shift+F`,
                 () => openModal('cm-build-filter-modal')
             ),
-            this.menuItem(L`Copy`, L`Ctrl+C`, () => executeAction('copy')),
-            this.menuItem(L`Paste`, L`Ctrl+V`, () => executeAction('paste')),
             this.DIVIDER,
             this.menuItem(L`Localization`, ``, async () => {
                 await prepareSchema();

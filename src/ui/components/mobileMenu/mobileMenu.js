@@ -1,13 +1,11 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import FileMenu from '../../menus/FileMenu.js';
 import EditMenu from '../../menus/EditMenu.js';
-import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
 
 const menus = [
     new FileMenu(),
     new EditMenu(),
-    new CardsMenu(),
     new ExportMenu(),
 ];
 

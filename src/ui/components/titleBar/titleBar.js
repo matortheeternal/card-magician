@@ -1,7 +1,6 @@
 import ReactiveComponent from '../ReactiveComponent.js';
 import FileMenu from '../../menus/FileMenu.js';
 import EditMenu from '../../menus/EditMenu.js';
-import CardsMenu from '../../menus/CardMenu.js';
 import ExportMenu from '../../menus/ExportMenu.js';
 import platform from '../../../shared/platformAdapter.js';
 
@@ -10,7 +9,6 @@ const L = localize('titleBar');
 const titleBarMenus = [
     new FileMenu(),
     new EditMenu(),
-    new CardsMenu(),
     new ExportMenu(),
 ];
 
@@ -48,7 +46,7 @@ export default class TitleBar extends ReactiveComponent {
     render() {
         this.innerHTML = (
             `<div class="menus-container"></div>
-            <div>
+            <div class="actions-container">
                 <cm-errors-dropdown></cm-errors-dropdown>
                 <sl-button
                     size="small"
