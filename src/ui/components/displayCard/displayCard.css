@@ -16,7 +16,6 @@ cm-display-card {
     padding: var(--sl-spacing-x-small);
     overflow-y: auto;
     min-width: calc(var(--card-width) + 21px);
-    transition: all 350ms ease;
     flex: 0;
     display: flex;
     flex-direction: column;
@@ -35,7 +34,6 @@ cm-display-card .card-viewport {
     position: relative;
     overflow: hidden;
     max-width: 100%;
-    transition: all 350ms ease;
     height: auto;
     aspect-ratio: var(--card-aspect-ratio);
     display: inline-block;
@@ -45,7 +43,6 @@ cm-display-card .card-viewport {
 cm-display-card .card-canvas {
     width: var(--card-width);
     height: var(--card-height);
-    transition: all 350ms ease;
     margin: auto;
     transform-origin: top left;
     will-change: transform;
