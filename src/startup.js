@@ -9,6 +9,7 @@ import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
 import { tagManager } from './domain/game/tagManager.js';
 
+const L = localize('main');
 const startupLog = log('startup');
 const report = createReporter({ unit: 'startup' });
 
@@ -37,12 +38,21 @@ function setupDevState() {
 }
 
 function loaded() {
-    const titleBar = document.createElement('cm-title-bar');
-    document.body.prepend(titleBar);
     document.querySelector('main').innerHTML = (
-        `<cm-display-card class="drawer-left"></cm-display-card>
-         <cm-card-list></cm-card-list>
-         <cm-card-form class="drawer-right"></cm-card-form>`
+        `<cm-title-bar></cm-title-bar>
+        <sl-tab-group id="workspace-tabs">
+            <sl-tab slot="nav" panel="cards">${L`Cards`}</sl-tab>
+            <sl-tab slot="nav" panel="statistics">${L`Statistics`}</sl-tab>
+
+            <sl-tab-panel name="cards">
+                <cm-display-card class="drawer-left"></cm-display-card>
+                 <cm-card-list></cm-card-list>
+                 <cm-card-form class="drawer-right"></cm-card-form>
+            </sl-tab-panel>
+            <sl-tab-panel name="statistics">
+                <cm-statistics></cm-statistics>
+            </sl-tab-panel>
+        </sl-tab-group>`
     );
     const mobileActions = document.createElement('cm-mobile-actions');
     document.body.append(mobileActions);

@@ -1,8 +1,6 @@
 cm-title-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--sl-input-border-color);
+    /* Its children share the workspace grid with the tab group's navigation. */
+    display: contents;
     color: var(--sl-input-label-color);
     background: var(--sl-color-neutral-0);
     user-select: none;
@@ -12,15 +10,28 @@ cm-title-bar {
         display: none;
     }
 
-    sl-button::part(base) {
-        border: none;
-        border-radius: 0;
+    .menus-container,
+    .actions-container {
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--sl-input-border-color);
+        background: var(--sl-color-neutral-0);
+        z-index: 1;
     }
 
     .menus-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        grid-column: 1;
+    }
+
+    .actions-container {
+        grid-column: 3;
+        justify-content: end;
+    }
+
+    sl-button::part(base) {
+        border: none;
+        border-radius: 0;
     }
 
     .menu-item {
