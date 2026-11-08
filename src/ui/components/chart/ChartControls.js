@@ -20,6 +20,8 @@ export default class ChartControls extends ReactiveComponent {
     get title() { return this.querySelector('h2'); }
     get description() { return this.querySelector('.stats-description'); }
     get typeSwitch() { return this.querySelector('.stats-switch'); }
+    get viewSwitch() { return this.querySelector('.stats-views'); }
+    get viewButtons() { return [...this.querySelectorAll('[data-chart-view]')]; }
     get legend() { return this.querySelector('.stats-legend'); }
     get filterControl() { return this.querySelector('.stats-filter'); }
     get filterLabel() { return this.querySelector('.stats-filter span'); }
@@ -35,6 +37,7 @@ export default class ChartControls extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             selectType: event => this.selectType(event),
+            selectView: event => this.selectView(event),
             selectSeries: event => this.selectSeries(event)
         });
         this.handleEvents('change', {
@@ -52,6 +55,11 @@ export default class ChartControls extends ReactiveComponent {
         this.changeOption('type', button.dataset.chartType);
     }
 
+    selectView(event) {
+        const button = event.target.closest('[data-chart-view]');
+        this.changeOption('view', button.dataset.chartView);
+    }
+
     selectSeries(event) {
         const index = Number(event.target.closest('[data-series]').dataset.series);
         this.changeOption('series', this.model.data.rows[index].id);
@@ -63,6 +71,7 @@ export default class ChartControls extends ReactiveComponent {
         this.title.textContent = model.title;
         this.description.textContent = model.definition.description || '';
         this.updateTypeSwitch();
+        this.updateViews();
         this.updateLegend();
         this.updateFilter();
         this.updateMeasure();
@@ -87,7 +96,24 @@ export default class ChartControls extends ReactiveComponent {
     updateTypeSwitch() {
         const buttons = (this.model.definition.types || [])
             .map(id => this.createTypeButton(id));
+        this.typeSwitch.hidden = !buttons.length;
         this.typeSwitch.replaceChildren(...buttons);
+    }
+
+    createViewButton(view) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.chartView = view.id;
+        button.dataset.clickAction = 'selectView';
+        button.textContent = view.label;
+        button.setAttribute('aria-pressed', String(view.id === this.model.viewId));
+        return button;
+    }
+
+    updateViews() {
+        const views = this.model.definition.views || [];
+        this.viewSwitch.hidden = !views.length;
+        this.viewSwitch.replaceChildren(...views.map(view => this.createViewButton(view)));
     }
 
     createSeriesButton(category, index) {
@@ -148,6 +174,8 @@ export default class ChartControls extends ReactiveComponent {
         if (!this.contains(focused)) return null;
         if (focused.hasAttribute('data-chart-type'))
             return { option: 'type', value: focused.dataset.chartType };
+        if (focused.hasAttribute('data-chart-view'))
+            return { option: 'view', value: focused.dataset.chartView };
         if (focused.hasAttribute('data-series'))
             return { option: 'series', value: focused.dataset.series };
         if (focused === this.measureSelect) return { option: 'measure' };
@@ -160,12 +188,15 @@ export default class ChartControls extends ReactiveComponent {
             return this.measureSelect.focus({ preventScroll: true });
         const buttons = this.focusButtons(focus.option);
         buttons.find(button => button.dataset.chartType === focus.value
+            || button.dataset.chartView === focus.value
             || button.dataset.series === focus.value)?.focus({ preventScroll: true });
     }
 
     focusButtons(option) {
-        if (option === 'type') return this.typeButtons;
-        return this.seriesButtons;
+        const buttons = {
+            type: this.typeButtons, view: this.viewButtons, series: this.seriesButtons
+        };
+        return buttons[option] || [];
     }
 }
 

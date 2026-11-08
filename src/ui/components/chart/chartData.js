@@ -13,10 +13,23 @@ function getReport(registry, id) {
     return registry.reports.get(id);
 }
 
+function viewId(definition, selected) {
+    return selected || definition.views?.[0]?.id;
+}
+
+function resolveView(definition, selected) {
+    if (!definition.views?.length) return definition;
+    const id = viewId(definition, selected);
+    const view = definition.views.find(option => option.id === id);
+    if (!view) throw new Error(L`Unknown statistics view: ${id}`);
+    return { ...definition, ...view.definition };
+}
+
 function resolveDefinition(chart, registry) {
-    const definition = {
+    const report = {
         ...getReport(registry, chart.getAttribute('report')), ...chart.definition
     };
+    const definition = resolveView(report, chart.selectedView);
     for (const name of CHART_ATTRIBUTES) {
         if (name === 'report' || !chart.hasAttribute(name)) continue;
         definition[name] = chart.getAttribute(name);
@@ -75,6 +88,7 @@ export function createChartModel(chart) {
     return {
         context: chart.context, definition, type, renderer, data, visibleData,
         title: getTitle(definition, data),
+        viewId: viewId(definition, chart.selectedView),
         emptyMessage: getEmptyMessage(visibleData, renderer.shape),
         hiddenSeries: chart.hiddenSeries, filterChecked: chart.filterChecked
     };

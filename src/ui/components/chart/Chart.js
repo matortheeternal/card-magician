@@ -11,6 +11,7 @@ export default class Chart extends ReactiveComponent {
     optionHandlers = {
         type: value => { this.selectedType = value; },
         measure: value => { this.selectedMeasure = value; },
+        view: value => { this.selectedView = value; },
         filter: value => { this.filterChecked = value; },
         series: value => this.toggleSeries(value)
     };
@@ -84,6 +85,7 @@ export default class Chart extends ReactiveComponent {
     resetOptions() {
         this.selectedType = null;
         this.selectedMeasure = null;
+        this.selectedView = null;
         this.filterChecked = undefined;
         this.hiddenSeries.clear();
         this.requestUpdate();

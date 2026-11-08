@@ -1,4 +1,6 @@
-import { countRulesWords, creatureTypes } from './textAnalysis.js';
+import {
+    countRulesWords, creatureTypes, nonCreatureSubtypes
+} from './textAnalysis.js';
 import { localizeStatisticsText } from './localization.js';
 
 export const COLORS = [
@@ -18,6 +20,8 @@ export const CARD_TYPES = [
 
 const CARD_TYPE_PATTERNS = CARD_TYPES.filter(type => type !== 'Other')
     .map(type => ({ type, pattern: new RegExp(`\\b${type}\\b`, 'i') }));
+const LEGENDARY_PATTERN = /\blegendary\b/i;
+const PERMANENT_PATTERN = /\b(artifact|battle|creature|enchantment|land|planeswalker)\b/i;
 const TRIBAL_PATTERN = /\btribal\b/i;
 
 function parseManaCost(cost, game) {
@@ -76,8 +80,11 @@ export function cardRecord(card, game) {
         types,
         manaValue: getManaValue(cost),
         isLand: types.includes('Land'),
+        isPermanent: PERMANENT_PATTERN.test(face.superType || ''),
+        isLegendary: LEGENDARY_PATTERN.test(face.superType || ''),
         wordCount: countRulesWords(face.rulesText),
         creatureTypes: creatureTypes(face),
+        nonCreatureSubtypes: nonCreatureSubtypes(face),
         name: face.name || localizeStatisticsText('Unnamed card')
     };
 }

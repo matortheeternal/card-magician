@@ -17,7 +17,7 @@ export function countRulesWords(text = '') {
     return (plain.match(WORD_PATTERN) || []).length;
 }
 
-function normalizeCreatureType(type) {
+function normalizeSubtype(type) {
     return type.replace('\u0000', ' ').toLowerCase()
         .replace(CAPITALIZATION_PATTERN, letter => letter.toUpperCase());
 }
@@ -27,9 +27,15 @@ export function creatureTypes(face) {
     const types = String(face.subType || '').trim()
         .replace(TIME_LORD_PATTERN, TIME_LORD_TOKEN)
         .split(/\s+/).filter(Boolean)
-        .map(normalizeCreatureType);
+        .map(normalizeSubtype);
     const results = types.length ? types : ['No creature type'];
     return [...new Set(results)];
+}
+
+export function nonCreatureSubtypes(face) {
+    if (CREATURE_PATTERN.test(face.superType || '')) return [];
+    const types = String(face.subType || '').trim().split(/\s+/).filter(Boolean);
+    return [...new Set(types.map(normalizeSubtype))];
 }
 
 export function median(values) {

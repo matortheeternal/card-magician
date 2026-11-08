@@ -80,10 +80,10 @@ function creatureTypeLabel(type) {
     return type;
 }
 
-function creatureTypeCategories(records) {
-    const types = [...new Set(records.flatMap(record => record.creatureTypes))];
+function subtypeCategories(records, property, label = value => value) {
+    const types = [...new Set(records.flatMap(record => record[property]))];
     types.sort((a, b) => a.localeCompare(b));
-    return types.map(id => ({ id, label: creatureTypeLabel(id) }));
+    return types.map(id => ({ id, label: label(id) }));
 }
 
 function registerDimensions(registry, game) {
@@ -113,9 +113,27 @@ function registerDimensions(registry, game) {
     });
     registry.registerDimension('creature-type', {
         label: L`Creature type`,
-        categories: creatureTypeCategories,
+        categories: records => subtypeCategories(records, 'creatureTypes', creatureTypeLabel),
         values: record => record.creatureTypes,
         compare: (a, b) => a.localeCompare(b)
+    });
+    registry.registerDimension('non-creature-subtype', {
+        label: L`Non-creature subtype`,
+        categories: records => subtypeCategories(records, 'nonCreatureSubtypes'),
+        values: record => record.nonCreatureSubtypes
+    });
+    registry.registerDimension('all-permanents', {
+        label: L`Permanents`,
+        categories: [{ id: 'all', label: L`All permanents` }],
+        values: () => ['all']
+    });
+    registry.registerDimension('legendary-status', {
+        label: L`Legendary status`,
+        categories: [
+            { id: 'legendary', label: L`Legendary` },
+            { id: 'other', label: L`Other permanents` }
+        ],
+        values: record => [record.isLegendary ? 'legendary' : 'other']
     });
     registry.registerDimension('word-count', {
         label: L`Rules text words`,
@@ -158,6 +176,9 @@ function registerMeasures(registry) {
 }
 
 function registerFilters(registry) {
+    registry.registerFilter('permanents', {
+        label: L`Permanent cards`, test: record => record.isPermanent
+    });
     registry.registerFilter('nonland', {
         label: L`Nonland cards`,
         test: record => !record.isLand

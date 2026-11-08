@@ -42,6 +42,9 @@ export type ChartDefinition = {
     columns?: string;
     x?: string;
     series?: string;
+    numerator?: CategoryId;
+    breakdown?: boolean;
+    views?: Array<{ id: string; label: string; definition: Partial<ChartDefinition> }>;
     measure?: string;
     measures?: string[];
     sortRows?: 'ascending' | 'descending';

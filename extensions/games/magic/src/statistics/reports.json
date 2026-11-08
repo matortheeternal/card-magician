@@ -24,10 +24,9 @@
         "series": "color",
         "measure": "card-count",
         "toggleSeries": true,
-        "filterToggle": {
-            "filter": "nonland",
-            "label": "Include lands"
-        }
+        "filters": [
+            "nonland"
+        ]
     },
     "creature-types": {
         "type": "horizontal-bar",
@@ -89,5 +88,55 @@
         "totals": false,
         "sortRows": "descending",
         "limitRows": 10
+    },
+    "legendary-permanents": {
+        "type": "proportion",
+        "title": "Legendary permanents",
+        "description": "Legendary permanents as a share of all permanent cards.",
+        "rows": "all-permanents",
+        "columns": "legendary-status",
+        "measure": "card-count",
+        "numerator": "legendary",
+        "breakdown": false,
+        "filters": [
+            "permanents"
+        ],
+        "views": [
+            {
+                "id": "total",
+                "label": "Total",
+                "definition": {}
+            },
+            {
+                "id": "color",
+                "label": "By color",
+                "definition": {
+                    "rows": "color",
+                    "breakdown": true
+                }
+            },
+            {
+                "id": "rarity",
+                "label": "By rarity",
+                "definition": {
+                    "rows": "rarity",
+                    "breakdown": true
+                }
+            }
+        ]
+    },
+    "non-creature-subtypes": {
+        "type": "horizontal-bar",
+        "types": [
+            "horizontal-bar",
+            "matrix"
+        ],
+        "title": "Non-creature subtypes",
+        "description": "Subtypes on non-creature cards.",
+        "rows": "non-creature-subtype",
+        "columns": "color",
+        "measure": "card-count",
+        "sortRows": "descending",
+        "stacked": true
     }
 }
