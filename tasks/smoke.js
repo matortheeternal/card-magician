@@ -3,11 +3,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { launch } from '../electron/tests/TestApplication.js';
 import { runShutdownTests } from '../electron/tests/shutdown.smoke.js';
+import { runExtensionRootTests } from '../electron/tests/extensionRoots.smoke.js';
 import { prepareUserExtensions } from '../electron/tests/fixtures.js';
 
 const suites = [
     'Startup', 'Shutdown', 'Persistence', 'History', 'Rendering',
-    'Card display', 'Dialogs', 'Modals', 'Extensions', 'Project files',
+    'Card display', 'Dialogs', 'Modals', 'Extension roots', 'Extensions', 'Project files',
     'Set Icon Editor settings', 'Magic project settings'
 ];
 
@@ -23,6 +24,10 @@ try {
     for (const suite of suitesToRun) {
         console.log(`Running ${suite}...`);
         const profilePath = path.join(temp, suite);
+        if (suite === 'Extension roots') {
+            await runExtensionRootTests(profilePath);
+            continue;
+        }
         if (suite === 'Extensions')
             await prepareUserExtensions(profilePath);
         if (suite === 'Shutdown') {
@@ -34,6 +39,8 @@ try {
             profile: profilePath,
             url: '/tests/smoke.html',
             id: 'cardmagician.test',
+            extensionsPath: suite === 'Extensions'
+                ? path.join(profilePath, 'extensions') : undefined,
             args: [`--test-suite=${suite}`]
         });
         try {

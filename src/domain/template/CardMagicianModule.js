@@ -1,4 +1,4 @@
-import { getExtensionLocations } from '../../shared/extensionManager.js';
+import { getExtensionDirectory } from '../../shared/extensionManager.js';
 import { loadFont } from './dynamicFontLoader.js';
 import {
     combineBlendOp,
@@ -25,7 +25,7 @@ export default class CardMagicianModule {
     constructor(card, modulePath, directory) {
         this.card = card;
         this.modulePath = modulePath;
-        this.directory = directory ?? getExtensionLocations().at(-1)
+        this.directory = directory ?? getExtensionDirectory()
             .child(`cardparts/${modulePath}`);
         this.name = modulePath.split('/').pop();
     }

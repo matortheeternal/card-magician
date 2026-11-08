@@ -17,7 +17,7 @@ const fileOperations = [
 export default class NativeBridge {
     constructor(window, environment, resources, lifecycle) {
         Object.assign(this, { window, environment, resources, lifecycle });
-        this.files = new FileSystem(environment.paths.content, environment.paths.plugins);
+        this.files = new FileSystem(environment.paths.content);
         this.storage = new Storage(environment.paths.data);
         this.operations = this.createOperations();
         this.fileWatchers = new Map();

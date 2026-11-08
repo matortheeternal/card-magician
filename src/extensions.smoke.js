@@ -1,4 +1,4 @@
-import { readExtensionDirectories } from './shared/extensionManager.js';
+import { readExtensionDirectories, findExtension } from './shared/extensionManager.js';
 import { getAvailableLocales } from './shared/localize.js';
 import platform from './shared/platformAdapter.js';
 import {
@@ -18,11 +18,11 @@ describe('Extensions', () => {
         const expectedPath = await platform.getJoinedPath(
             appEnvironment.paths.data, '..', 'extensions'
         );
-        expect(appEnvironment.paths.userExtensions).toBe(expectedPath);
+        expect(appEnvironment.paths.extensions).toBe(expectedPath);
     });
 
-    it('loads user extensions alongside distributed cardparts', () => {
-        expect(activeGame.gamePath).toBe('user-extensions/games/magic');
+    it('loads games and cardparts from the configured root', () => {
+        expect(activeGame.gamePath).toBe('extensions/games/magic');
         const face = activeEditorCard.front;
         const templateField = face.fields.find(field => field.id === 'template');
         const option = templateField.options.find(
@@ -33,31 +33,31 @@ describe('Extensions', () => {
             return module.modulePath === 'magic/M15/ColorIndicator';
         });
         expect(indicator.directory.url())
-            .toBe('/user-extensions/cardparts/magic/M15/ColorIndicator');
+            .toBe('/extensions/cardparts/magic/M15/ColorIndicator');
         const text = face.modules.find(
             module => module.modulePath === 'magic/M15/Text'
         );
         expect(text.directory.url()).toBe('/extensions/cardparts/magic/M15/Text');
     });
 
-    it('discovers a matching extension only once', async () => {
+    it('discovers games within the configured root', async () => {
         const games = await readExtensionDirectories('games');
         expect(games.filter(game => game.url().endsWith('/magic')).length).toBe(1);
         const userGame = games.find(game => {
-            return game.url() === '/user-extensions/games/magic';
+            return game.url() === '/extensions/games/magic';
         });
         expect(userGame).toBeDefined();
     });
 
     it('imports user JavaScript and resolves its cardpart assets', async () => {
-        const mainPath = '/user-extensions/user-only.js';
+        const mainPath = '/extensions/user-only.js';
         const module = await import(mainPath);
         expect(module.default).toBe('user extension');
         const indicator = activeEditorCard.front.modules.find(module => {
             return module.modulePath === 'magic/M15/ColorIndicator';
         });
         const imageUrl = indicator.resolveAsset('indicator/a.png');
-        expect(imageUrl).toContain('/user-extensions/');
+        expect(imageUrl).toContain('/extensions/');
         const response = await fetch(imageUrl);
         expect(response.ok).toBeTrue();
         const image = await createImageBitmap(await response.blob());
@@ -65,18 +65,20 @@ describe('Extensions', () => {
         image.close();
     });
 
-    it('keeps the two mounts separate', async () => {
-        const installed = await fetch('/extensions/user-only.js');
-        expect(installed.status).toBe(404);
-        const user = await fetch('/user-extensions/cardparts/magic/M15/Text/main.js');
-        expect(user.status).toBe(404);
+    it('does not fall back to extensions in the development checkout', async () => {
+        await expectAsync(findExtension('exporters/TTSDeckExporter'))
+            .toBeRejectedWithError('Extension not found: exporters/TTSDeckExporter');
+        const response = await fetch('/extensions/exporters/TTSDeckExporter/main.js');
+        expect(response.status).toBe(404);
+        const mounts = await platform.getMounts();
+        expect(Object.hasOwn(mounts, '/user-extensions')).toBeFalse();
     });
 
     it('loads user locales listed in their manifest', async () => {
         const locales = await getAvailableLocales();
         const locale = locales.find(locale => locale.id === 'smoke');
         expect(locale.label).toBe('User extension smoke locale');
-        expect(locale.directory.url()).toBe('/user-extensions/locales');
+        expect(locale.directory.url()).toBe('/extensions/locales');
     });
 
     it('runs the user exporter and writes its output to disk', async () => {

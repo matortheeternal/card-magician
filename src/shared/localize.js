@@ -1,7 +1,6 @@
 import { beforeExit } from '../lifecycle.js';
 import Localization from './Localization.js';
-import { getExtensionLocations } from './extensionManager.js';
-import platform from './platformAdapter.js';
+import { getExtensionDirectory } from './extensionManager.js';
 
 const report = createReporter({ unit: 'localize' });
 
@@ -30,13 +29,7 @@ async function loadLocaleDirectory(directory) {
 
 export async function loadLocales() {
     await prepareSchema();
-    const locales = new Map();
-    for (const location of getExtensionLocations()) {
-        const loaded = await loadLocaleDirectory(location.child('locales'));
-        for (const locale of loaded)
-            if (!locales.has(locale.id)) locales.set(locale.id, locale);
-    }
-    return [...locales.values()];
+    return loadLocaleDirectory(getExtensionDirectory().child('locales'));
 }
 
 async function saveLocaleRegistry() {
@@ -52,7 +45,7 @@ async function saveLocaleRegistry() {
         return acc;
     }, {});
     const text = JSON.stringify(locales, null, 2);
-    await platform.writeFile('extensions/locales/locales.json', text);
+    await getExtensionDirectory().child('locales').writeText('locales.json', text);
 }
 
 export async function getAvailableLocales() {
@@ -97,9 +90,9 @@ function buildLocalizationKey(strings, values) {
 const writeSchemaFile = (async function writeSchemaFile() {
     const schema = await schemaPromise;
     const json = JSON.stringify(schema, null, 2);
-    const outputPath = `extensions/locales/schema.json`;
-    log('plugin').log(`Writing localization schema to `, outputPath);
-    await platform.writeFile(outputPath, json);
+    const directory = getExtensionDirectory().child('locales');
+    log('plugin').log('Writing localization schema to', directory.filePath);
+    await directory.writeText('schema.json', json);
 }).debounce(1000);
 
 beforeExit(() => writeSchemaFile.flush(), () => writeSchemaFile.pending);
@@ -114,9 +107,9 @@ async function updateSchema(namespaceKey, entryKey) {
 
 export async function loadSchema() {
     try {
-        const inputPath = `extensions/locales/schema.json`;
-        if (!await platform.checkFileExists(inputPath)) return {};
-        const text = await platform.readFile(inputPath);
+        const directory = getExtensionDirectory().child('locales');
+        if (!await directory.exists('schema.json')) return {};
+        const text = await directory.readText('schema.json');
         return JSON.parse(text);
     } catch (e) {
         log('plugin').error('Error loading localization schema:', e);

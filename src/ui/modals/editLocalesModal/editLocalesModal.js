@@ -1,3 +1,4 @@
+import { getExtensionDirectory } from '../../../shared/extensionManager.js';
 import { registerPendingSave } from '../../../lifecycle.js';
 import { registerModal } from '../modalManager.js';
 import Modal from '../Modal.js';
@@ -131,10 +132,7 @@ export default class EditLocalesModal extends Modal {
     }
 
     async openLocalesFolder() {
-        const localesPath = await platform.getAbsolutePath(
-            appEnvironment.paths.plugins + '/extensions/locales'
-        );
-        platform.sysopen(localesPath);
+        await platform.sysopen(getExtensionDirectory().child('locales').filePath);
     }
 
     validate() {

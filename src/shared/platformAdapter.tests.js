@@ -51,7 +51,7 @@ describe('Platform adapter', () => {
 
     it('reads installed extensions through files and browser URLs', async () => {
         const extensions = new MountedDirectory(
-            appEnvironment.paths.plugins + '/extensions', '/extensions'
+            appEnvironment.paths.extensions, '/extensions'
         );
         const metadata = await extensions.readJson('games/magic/game.json');
         const response = await fetch(extensions.url('games/magic/game.json'));

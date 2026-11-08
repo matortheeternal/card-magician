@@ -7,29 +7,21 @@ import { build } from './build.js';
 const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
 const stagePath = path.resolve('.tmp/package');
-const pluginStagePath = path.resolve('.tmp/package-plugins');
 const lockPath = path.resolve('.tmp/package.lock');
 const contentFolders = ['scripts'];
 
 function includeFile(sourcePath) {
     const normalizedPath = sourcePath.replaceAll(path.sep, '/');
     return !/(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/.test(normalizedPath)
-        && normalizedPath !== 'extensions/games/magic/src'
         && !/\.(?:map|test\.js|tests\.js|smoke\.js)$/.test(normalizedPath)
         && !/(?:^|\/)(?:package(?:-lock)?\.json|.*config\.js)$/.test(normalizedPath);
 }
 
 async function stageApplication() {
-    for (const directoryPath of [stagePath, pluginStagePath]) {
-        await fs.rm(directoryPath, { recursive: true, force: true });
-        await fs.mkdir(directoryPath, { recursive: true });
-    }
-    const folders = ['extensions', 'electron', 'resources', ...contentFolders];
-    for (const folder of folders) {
-        const destinationPath = folder === 'extensions'
-            ? pluginStagePath
-            : stagePath;
-        await fs.cp(folder, path.join(destinationPath, folder), {
+    await fs.rm(stagePath, { recursive: true, force: true });
+    await fs.mkdir(stagePath, { recursive: true });
+    for (const folder of ['electron', 'resources', ...contentFolders]) {
+        await fs.cp(folder, path.join(stagePath, folder), {
             recursive: true,
             filter: includeFile
         });

@@ -3,19 +3,17 @@ import path from 'node:path';
 
 export async function prepareUserExtensions(profilePath) {
     const extensionsPath = path.join(profilePath, 'extensions');
-    const installedPath = process.env.ELECTRON_SMOKE_BINARY
-        ? path.dirname(await fs.realpath(process.env.ELECTRON_SMOKE_BINARY))
-        : path.resolve(import.meta.dirname, '../..');
-    for (const relativePath of [
-        'games/magic', 'cardparts/magic/M15/ColorIndicator',
-        'templates/magic/M15/Main', 'exporters/WebExporter'
-    ]) {
-        await fs.cp(
-            path.join(installedPath, 'extensions', relativePath),
-            path.join(extensionsPath, relativePath),
-            { recursive: true }
-        );
-    }
+    const source = path.resolve(import.meta.dirname, '../../extensions');
+    await fs.cp(source, extensionsPath, {
+        recursive: true,
+        filter: filename => {
+            const relative = path.relative(source, filename).replaceAll(path.sep, '/');
+            return !relative.split('/').includes('node_modules')
+                && relative !== 'games/magic/src'
+                && !relative.endsWith('.map')
+                && relative !== 'exporters/TTSDeckExporter';
+        }
+    });
     const templatePath = path.join(
         extensionsPath,
         'templates/magic/M15/Main/template.json'
@@ -30,9 +28,10 @@ export async function prepareUserExtensions(profilePath) {
     const localesPath = path.join(extensionsPath, 'locales');
     await fs.mkdir(localesPath, { recursive: true });
     await fs.writeFile(path.join(localesPath, 'smoke.yml'), '{}');
-    await fs.writeFile(path.join(localesPath, 'locales.json'), JSON.stringify({
-        smoke: { label: 'User extension smoke locale' }
-    }));
+    const manifestPath = path.join(localesPath, 'locales.json');
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+    manifest.smoke = { label: 'User extension smoke locale' };
+    await fs.writeFile(manifestPath, JSON.stringify(manifest));
     await fs.writeFile(
         path.join(extensionsPath, 'user-only.js'),
         'export default "user extension";'

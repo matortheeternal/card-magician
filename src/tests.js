@@ -1,4 +1,4 @@
-import { mountExtensions } from './shared/extensionManager.js';
+import { getExtensionDirectory, mountExtensions } from './shared/extensionManager.js';
 import { findTestFiles } from './shared/testing/findTestFiles.js';
 import platform from './shared/platformAdapter.js';
 import CustomReporter from './shared/testing/customReporter.js';
@@ -10,10 +10,11 @@ const env = jasmine.getEnv();
 const urls = new jasmine.HtmlReporterV2Urls();
 
 async function loadModuleTests() {
-    const testFiles = await findTestFiles('extensions/cardparts');
     await mountExtensions();
+    const directory = getExtensionDirectory().child('cardparts');
+    const testFiles = await findTestFiles(directory.filePath);
     for (const file of testFiles)
-        await import(`/${file}`);
+        await import(directory.url(file.slice(directory.filePath.length + 1)));
 }
 
 function verifyTestEnvironment() {

@@ -6,9 +6,9 @@ The preload bridge also supplies the read-only `appEnvironment` metadata.
 
 Operations are asynchronous and reject with `Error` objects carrying native `code`
 values. Binary reads return `ArrayBuffer`; writes accept binary buffers. Directory
-entries expose `entry`, `path`, and `type`. Relative `extensions/` paths resolve
-against the executable directory in packaged builds. Other relative paths resolve
-against the application's writable content directory. Mounted paths are browser
-URLs, distinct from native filesystem paths. Extension discovery in `extensionManager.js`
-keeps `/extensions` and `/user-extensions` separate. `MountedDirectory` translates
-directory-relative operations into filesystem paths or browser URLs.
+entries expose `entry`, `path`, and `type`. Relative filesystem paths resolve
+against the application's content directory, with no extension-specific routing.
+Use `appEnvironment.paths.extensions` or `getExtensionDirectory()` for extension
+files. The single `/extensions` browser mount maps to that selected native root.
+Mounted URLs are distinct from native filesystem paths; `MountedDirectory` keeps
+the two addresses together for directory-relative operations.

@@ -1,14 +1,21 @@
-# Extension locations
+# Extension directory
 
 `extensionManager.js` discovers games, cardparts, exporters, templates, and locales
-in both the installation and the user's extension directory. Each location has a
-browser mount (`/extensions` or `/user-extensions`) and a native filesystem path.
-`MountedDirectory` keeps those addresses together: `url()` is for imports and
-assets, while `readText()`, `readJson()`, `exists()`, and `readDirectory()` operate on
-the corresponding filesystem location. `child()` retains both addresses for a subdirectory.
+in exactly one directory: `appEnvironment.paths.extensions`. The host selects it
+at startup:
 
-Discovery checks user extensions first. Matching relative entries take precedence
-over distributed entries. Cardparts resolve their complete directory before loading;
-assets and supporting files stay in that directory rather than falling back to the
-installation. User directories use the same category layout as distributed extensions.
-Locales retain their manifest-based discovery through `locales.json`.
+- `--development` in an unpackaged app selects the repository's `extensions` folder.
+- Otherwise, the default is `extensions` inside the application's user profile.
+- `--extensions-dir=<path>` overrides either default, including in packaged builds.
+
+There is no fallback, merging, or precedence between directories. Extensions are
+not distributed beside the executable or staged as part of application releases.
+A fresh profile needs game content supplied separately; the current editor startup
+still expects Magic until the game-selection flow is implemented.
+
+`getExtensionDirectory()` returns a `MountedDirectory` with the browser mount
+`/extensions` and the selected native filesystem path. `url()` is for imports and
+assets; `readText()`, `readJson()`, `exists()`, and `readDirectory()` use the native
+path. `child()` retains both addresses for a subdirectory. Localization reads,
+writes, and schema generation use this same root, including during development.
+Locales retain manifest-based discovery through `locales.json`.

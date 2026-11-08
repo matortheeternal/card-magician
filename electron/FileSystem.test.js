@@ -5,24 +5,18 @@ import os from 'node:os';
 import path from 'node:path';
 import FileSystem from './FileSystem.js';
 
-test('plugins use installed files instead of profile copies', async () => {
-    const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-plugins-'));
-    const plugins = path.join(temp, 'installation');
+test('relative extension paths use the content root like other relative paths', async () => {
+    const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-paths-'));
     const content = path.join(temp, 'profile');
-    const files = new FileSystem(content, plugins);
+    const external = path.join(temp, 'external-extensions');
+    const files = new FileSystem(content);
     try {
-        await fs.mkdir(path.join(plugins, 'extensions'), { recursive: true });
         await fs.mkdir(path.join(content, 'extensions'), { recursive: true });
-        const installed = path.join(plugins, 'extensions/example.txt');
-        await fs.writeFile(installed, 'installed');
-        await fs.writeFile(path.join(content, 'extensions/example.txt'), 'stale copy');
-        assert.equal(await files.readFile('./extensions/example.txt'), 'installed');
-        await files.writeFile('extensions/example.txt', 'edited');
-        assert.equal(await fs.readFile(installed, 'utf8'), 'edited');
-        await fs.mkdir(path.join(content, 'games-backup'));
-        const backup = path.join(content, 'games-backup/example.txt');
-        await fs.writeFile(backup, 'profile file');
-        assert.equal(await files.readFile('games-backup/example.txt'), 'profile file');
+        await fs.mkdir(external);
+        await fs.writeFile(path.join(content, 'extensions/example.txt'), 'content');
+        await fs.writeFile(path.join(external, 'example.txt'), 'external');
+        assert.equal(await files.readFile('./extensions/example.txt'), 'content');
+        assert.equal(await files.readFile(path.join(external, 'example.txt')), 'external');
     } finally { await fs.rm(temp, { recursive: true, force: true }); }
 });
 

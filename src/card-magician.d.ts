@@ -42,8 +42,7 @@ export type AppEnvironment = Readonly<{
     resourceMode: 'bundle' | 'directory';
     args: readonly string[];
     paths: Readonly<{
-        userExtensions: string;
-        plugins: string;
+        extensions: string;
         content: string;
         data: string;
     }>;

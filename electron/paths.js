@@ -19,19 +19,19 @@ export function createEnvironment() {
     const defaultProfile = path.join(app.getPath('appData'), 'card-magician');
     const profile = path.resolve(getArgument('--profile', defaultProfile));
     app.setPath('userData', profile);
-    const userExtensionsPath = path.resolve(getArgument(
-        '--extensions-dir', path.join(app.getPath('userData'), 'extensions')
-    ));
+    const isDevelopment = !app.isPackaged && process.argv.includes('--development');
+    const defaultExtensions = isDevelopment
+        ? path.join(root, 'extensions') : path.join(profile, 'extensions');
+    const extensionsPath = path.resolve(getArgument('--extensions-dir', defaultExtensions));
     return {
         id: getArgument('--app-id', 'cardmagician'),
         version: app.getVersion(),
         runtimeVersion: process.versions.electron,
-        isDevelopment: !app.isPackaged && process.argv.includes('--development'),
+        isDevelopment,
         resourceMode: app.isPackaged ? 'bundle' : 'directory',
         args: process.argv,
         paths: {
-            userExtensions: userExtensionsPath,
-            plugins: app.isPackaged ? path.dirname(process.execPath) : root,
+            extensions: extensionsPath,
             content: app.isPackaged ? path.join(profile, 'content') : root,
             data: path.resolve(getArgument('--data-dir', path.join(profile, 'data')))
         }

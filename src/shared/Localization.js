@@ -1,12 +1,12 @@
 import yaml from 'yaml';
 import { escapeHTML } from './htmlUtils.js';
-import { getExtensionLocations } from './extensionManager.js';
+import { getExtensionDirectory } from './extensionManager.js';
 
 const CURRENT_SCHEMA_VERSION = 1;
 
 export default class Localization {
     static async load(localeId, metadata = {}, directory) {
-        directory ??= getExtensionLocations().at(-1).child('locales');
+        directory ??= getExtensionDirectory().child('locales');
         const text = await directory.readText(`${localeId}.yml`);
         const locale = new Localization(localeId, text, metadata);
         locale.directory = directory;
@@ -94,7 +94,7 @@ export default class Localization {
 
     async save() {
         const directory = this.directory
-            ?? getExtensionLocations().at(-1).child('locales');
+            ?? getExtensionDirectory().child('locales');
         await directory.writeText(`${this.id}.yml`, this.raw);
     }
 }

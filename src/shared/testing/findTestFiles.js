@@ -2,6 +2,7 @@ import platform from '../platformAdapter.js';
 
 export async function findTestFiles(dir) {
     const testFiles = [];
+    if (!await platform.checkFolderExists(dir)) return [];
     const files = await platform.readDirectory(dir);
     for (const file of files) {
         const path = `${dir}/${file.entry}`;

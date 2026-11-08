@@ -52,9 +52,13 @@ export class TestApplication {
         const headless = process.argv.includes('--headless');
         if (headless && process.platform !== 'linux')
             throw new Error('--headless currently requires the Linux Ozone backend.');
+        const extensionArgs = this.extensionsPath === null
+            || this.args?.some(arg => arg.startsWith('--extensions-dir='))
+            ? [] : [`--extensions-dir=${this.extensionsPath ?? path.join(root, 'extensions')}`];
         const args = [...entry, `--profile=${this.profile}`,
                       `--app-id=${this.id}`, `--url=${this.url}`,
                       '--remote-debugging-port=0',
+                      ...extensionArgs,
                       ...(headless ? ['--ozone-platform=headless'] : []),
                       ...sandbox, ...(this.args ?? [])];
         this.child = spawn(binary, args, {
