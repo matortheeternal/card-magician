@@ -9,7 +9,7 @@ import { prepareUserExtensions } from '../electron/tests/fixtures.js';
 const suites = [
     'Startup', 'Shutdown', 'Persistence', 'History', 'Rendering',
     'Card display', 'Dialogs', 'Modals', 'Extension roots', 'Extensions', 'Project files',
-    'Set Icon Editor settings', 'Magic project settings'
+    'Set Icon Editor settings', 'Magic project settings', 'Statistics'
 ];
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));

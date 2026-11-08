@@ -50,7 +50,7 @@ function loaded() {
                  <cm-card-form class="drawer-right"></cm-card-form>
             </sl-tab-panel>
             <sl-tab-panel name="statistics">
-                <cm-statistics></cm-statistics>
+                <cm-project-stats></cm-project-stats>
             </sl-tab-panel>
         </sl-tab-group>`
     );
