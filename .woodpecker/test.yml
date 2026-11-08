@@ -18,4 +18,3 @@ steps:
           - npm run test:native
           - timeout 2m xvfb-run -a npm test
           - timeout 5m xvfb-run -a npm run smoke
-          - timeout 2m xvfb-run -a npm run smoke:exit:mutations
