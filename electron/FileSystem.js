@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import { stat } from 'node:fs';
 import path from 'node:path';
 import { writeFile } from './atomicFile.js';
-import { pluginFolders } from './pluginFolders.js';
 
 export default class FileSystem {
     constructor(contentPath, pluginPath = contentPath) {
@@ -15,7 +14,7 @@ export default class FileSystem {
             throw new TypeError('A nonempty file path is required.');
         const normalized = path.normalize(filename);
         const folder = normalized.split(path.sep)[0];
-        const base = pluginFolders.includes(folder) ? this.pluginPath : this.contentPath;
+        const base = folder === 'extensions' ? this.pluginPath : this.contentPath;
         return path.resolve(base, normalized);
     }
 

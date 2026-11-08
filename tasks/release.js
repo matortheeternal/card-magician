@@ -3,7 +3,6 @@ import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { build } from './build.js';
-import { pluginFolders } from '../electron/pluginFolders.js';
 
 const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
@@ -25,9 +24,9 @@ async function stageApplication() {
         await fs.rm(directoryPath, { recursive: true, force: true });
         await fs.mkdir(directoryPath, { recursive: true });
     }
-    const folders = [...pluginFolders, 'electron', 'resources', ...contentFolders];
+    const folders = ['extensions', 'electron', 'resources', ...contentFolders];
     for (const folder of folders) {
-        const destinationPath = pluginFolders.includes(folder)
+        const destinationPath = folder === 'extensions'
             ? pluginStagePath
             : stagePath;
         await fs.cp(folder, path.join(destinationPath, folder), {
