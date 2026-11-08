@@ -40,13 +40,12 @@ export function cardRecord(card, game) {
     if (/\btribal\b/i.test(face.superType || '') && !types.includes('Kindred'))
         types.push('Kindred');
     let rarity = (face.rarity || 'common').toLowerCase();
-    if (rarity === 'mythic rare') rarity = 'mythic';
-    if (rarity === 'basic land') rarity = 'basic';
-    if (rarity === 'land') rarity = 'basic';
     if (!RARITIES.includes(rarity)) rarity = 'unknown';
     const manaValue = cost ? Number(cost.cmc) : 0;
     return {
-        color, rarity, types: types.length ? types : ['Other'],
+        color,
+        rarity,
+        types: types.length ? types : ['Other'],
         isAuxiliary: /\b(token|emblem)\b/i.test(face.superType || '')
             || /\/(Token|Emblem)(\/|$)/i.test(face.template || ''),
         manaValue: Number.isFinite(manaValue) && manaValue >= 0 ? manaValue : null,

@@ -106,7 +106,7 @@ describe('Statistics', () => {
             region.dispatchEvent(new PointerEvent('pointerenter'));
             return region;
         };
-        let region = hoverManaTwo();
+        const region = hoverManaTwo();
         let tooltip = curve.querySelector('.stats-chart-tooltip');
         expect(tooltip.hidden).toBeFalse();
         expect(tooltip.textContent).toContain('Mana value 2');
@@ -119,8 +119,11 @@ describe('Statistics', () => {
         curve.querySelector('[data-series="1"]').click();
         await eventually(() => curve.querySelectorAll('.stats-tooltip-row').length === 6);
         stats.querySelector('[data-chart-type="bar"]').click();
-        await eventually(() => curve.querySelectorAll('.stats-chart circle').length === 0);
-        region = hoverManaTwo();
+        await eventually(() => {
+            const circles = curve.querySelectorAll('.stats-chart circle');
+            return circles.length === 0;
+        });
+        hoverManaTwo();
         tooltip = curve.querySelector('.stats-chart-tooltip');
         expect(tooltip.hidden).toBeFalse();
         expect(tooltip.textContent).not.toContain('Blue');
@@ -157,7 +160,10 @@ describe('Statistics', () => {
         );
         changed(activeProject, 'cards');
         await eventually(() => curve.data.cardCount === 5);
-        for (const chart of stats.querySelectorAll('[report="color-rarity"], [report="color-type"], [report="mana-curve"]'))
+        const charts = stats.querySelectorAll(
+            '[report="color-rarity"], [report="color-type"], [report="mana-curve"]'
+        );
+        for (const chart of charts)
             expect(chart.data.cardCount).toBe(5);
         expect(stats.querySelector('.stats-scope').textContent).toBe('');
         expect(curve.querySelector('.stats-description').textContent).toBe('');
@@ -210,7 +216,9 @@ describe('Statistics', () => {
             makeCard('3G', 'Creature', 'common', {
                 name: 'Twin', subType: 'Elf Warrior', rulesText: words(30)
             }),
-            makeCard('R', 'Instant', 'rare', { name: 'Long spell', rulesText: words(40) }),
+            makeCard('R', 'Instant', 'rare', {
+                name: 'Long spell', rulesText: words(40)
+            }),
             makeCard('', 'Token Creature', 'common', {
                 name: 'Excluded', subType: 'Dragon', rulesText: words(500)
             })
