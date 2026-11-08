@@ -3,11 +3,19 @@ import { matrixRenderer } from './matrix.js';
 import { renderD3Curve } from './series.js';
 import { horizontalBarRenderer } from './horizontalBars.js';
 
+const L = localize('statistics');
+
+function seriesLabel(type) {
+    if (type === 'line') return L`Lines`;
+    return L`Bars`;
+}
+
 registerChartType('matrix', matrixRenderer);
 registerChartType('horizontal-bar', horizontalBarRenderer);
-for (const [type, label] of [['line', 'Lines'], ['bar', 'Bars']]) {
+for (const type of ['line', 'bar']) {
     registerChartType(type, {
-        label, shape: 'series',
+        get label() { return seriesLabel(type); },
+        shape: 'series',
         create(container) {
             let dispose;
             return {

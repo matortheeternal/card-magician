@@ -27,6 +27,8 @@ async function copyEntrypoints() {
     await mkdir(typesFolder, { recursive: true });
     await copyFile(sourcePath, outputPath);
     await copyFile(globalsPath, bridgeOutputPath);
+    await copyFile(path.join(projectFolder, 'src/statistics.d.ts'),
+                   path.join(typesFolder, 'statistics.d.ts'));
 }
 
 function bundleDeclarations() {

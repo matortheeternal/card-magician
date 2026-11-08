@@ -1,18 +1,34 @@
+const SYMBOL_PATTERN = /\{[^{}]*}/g;
+const CARD_NAME_PATTERN = /CARDNAME|LEGENDNAME|~|@/g;
+const FORMATTING_PATTERN = /[_*]/g;
+const WORD_PATTERN = /[\p{L}\p{N}]+(?:['’\/-][\p{L}\p{N}]+)*/gu;
+const CREATURE_PATTERN = /\bcreature\b/i;
+const TIME_LORD_PATTERN = /\btime\s+lord\b/gi;
+const WHITESPACE_PATTERN = /\s+/;
+const CAPITALIZATION_PATTERN = /(^|[- ])[a-z]/g;
+const TIME_LORD_TOKEN = 'Time\u0000Lord';
+const WORD_BUCKET_WIDTH = 20;
+const MAX_WORD_BUCKET = 200;
+
 export function countRulesWords(text = '') {
     const plain = String(text)
-        .replace(/\{[^{}]*}/g, ' ')
-        .replace(/CARDNAME|LEGENDNAME|~|@/g, 'cardname')
-        .replace(/[_*]/g, '');
-    return (plain.match(/[\p{L}\p{N}]+(?:['’\/-][\p{L}\p{N}]+)*/gu) || []).length;
+        .replace(SYMBOL_PATTERN, ' ')
+        .replace(CARD_NAME_PATTERN, 'cardname')
+        .replace(FORMATTING_PATTERN, '');
+    return (plain.match(WORD_PATTERN) || []).length;
+}
+
+function normalizeCreatureType(type) {
+    return type.replace('\u0000', ' ').toLowerCase()
+        .replace(CAPITALIZATION_PATTERN, letter => letter.toUpperCase());
 }
 
 export function creatureTypes(face) {
-    if (!/\bcreature\b/i.test(face.superType || '')) return [];
+    if (!CREATURE_PATTERN.test(face.superType || '')) return [];
     const types = String(face.subType || '').trim()
-        .replace(/\btime\s+lord\b/gi, 'Time\u0000Lord')
-        .split(/\s+/).filter(Boolean)
-        .map(type => type.replace('\u0000', ' ').toLowerCase()
-            .replace(/(^|[- ])[a-z]/g, letter => letter.toUpperCase()));
+        .replace(TIME_LORD_PATTERN, TIME_LORD_TOKEN)
+        .split(WHITESPACE_PATTERN).filter(Boolean)
+        .map(normalizeCreatureType);
     const results = types.length ? types : ['No creature type'];
     return [...new Set(results)];
 }
@@ -38,13 +54,17 @@ export function average(values) {
 
 export function wordCountBucket(value) {
     if (value === 0) return 0;
-    return value < 20 ? 1 : Math.min(200, Math.floor(value / 20) * 20);
+    if (value < WORD_BUCKET_WIDTH) return 1;
+    return Math.min(
+        MAX_WORD_BUCKET,
+        Math.floor(value / WORD_BUCKET_WIDTH) * WORD_BUCKET_WIDTH
+    );
 }
 
 function getWordCountCategoryLabel(id) {
     if (id === 0) return '0';
-    if (id === 200) return '200+';
-    const max = id === 1 ? 19 : id + 19;
+    if (id === MAX_WORD_BUCKET) return `${MAX_WORD_BUCKET}+`;
+    const max = id === 1 ? WORD_BUCKET_WIDTH - 1 : id + WORD_BUCKET_WIDTH - 1;
     return `${id}–${max}`;
 }
 
@@ -54,7 +74,7 @@ export function wordCountCategories(records) {
         max = Math.max(max, wordCountBucket(record.wordCount));
     const values = [0];
     if (max > 0) values.push(1);
-    for (let value = 20; value <= max; value += 20)
+    for (let value = WORD_BUCKET_WIDTH; value <= max; value += WORD_BUCKET_WIDTH)
         values.push(value);
 
     return values.map(id => ({

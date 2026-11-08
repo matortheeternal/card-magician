@@ -34,7 +34,7 @@ export { default as StatisticsRegistry } from './domain/statistics/StatisticsReg
 export type {
     Category, StatisticsDimension, StatisticsField, StatisticsMeasure,
     ChartDefinition, ChartRenderer, ChartRendererInstance, StatisticsContext
-} from './domain/statistics/statisticsTypes.js';
+} from './statistics.js';
 export { default as CardMagicianProject } from './domain/projects/CardMagicianProject.js';
 export { default as CardMagicianModule } from './domain/template/CardMagicianModule.js';
 export { default as CardMagicianExporter } from './domain/export/CardMagicianExporter.js';

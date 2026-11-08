@@ -1,5 +1,12 @@
 import { categoryLabel } from '../categoryLabel.js';
 
+const L = localize('statistics');
+
+function totalLabel(integer) {
+    if (integer) return L`Total`;
+    return L`Overall`;
+}
+
 export function createMatrix(data, { totals = true, title } = {}) {
     const table = document.createElement('table');
     if (title) table.setAttribute('aria-label', title);
@@ -36,7 +43,7 @@ export function createMatrix(data, { totals = true, title } = {}) {
         const row = table.createTFoot().insertRow();
         const heading = document.createElement('th');
         heading.scope = 'row';
-        heading.textContent = data.integer ? 'Total' : 'Overall';
+        heading.textContent = totalLabel(data.integer);
         row.appendChild(heading);
         for (const value of [...data.columnTotals, data.total])
             row.insertCell().textContent = data.formatValue(value);
@@ -45,7 +52,8 @@ export function createMatrix(data, { totals = true, title } = {}) {
 }
 
 export const matrixRenderer = {
-    label: 'Matrix', shape: 'matrix',
+    get label() { return L`Matrix`; },
+    shape: 'matrix',
     create(container) {
         return {
             render(data, options) {

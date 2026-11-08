@@ -1,0 +1,93 @@
+{
+    "color-rarity": {
+        "type": "matrix",
+        "title": "Color × rarity",
+        "rows": "color",
+        "columns": "rarity",
+        "measure": "card-count"
+    },
+    "color-type": {
+        "type": "matrix",
+        "title": "Color × card type",
+        "rows": "color",
+        "columns": "card-type",
+        "measure": "card-count"
+    },
+    "mana-curve": {
+        "type": "line",
+        "types": [
+            "line",
+            "bar"
+        ],
+        "title": "Mana curve by color",
+        "x": "mana-value",
+        "series": "color",
+        "measure": "card-count",
+        "toggleSeries": true,
+        "filterToggle": {
+            "filter": "nonland",
+            "label": "Include lands"
+        }
+    },
+    "creature-types": {
+        "type": "horizontal-bar",
+        "types": [
+            "horizontal-bar",
+            "matrix"
+        ],
+        "title": "Creature subtypes",
+        "rows": "creature-type",
+        "columns": "color",
+        "measure": "card-count",
+        "filters": [
+            "creatures"
+        ],
+        "sortRows": "descending",
+        "stacked": true
+    },
+    "common-creature-curve": {
+        "type": "bar",
+        "types": [
+            "bar",
+            "line"
+        ],
+        "title": "Common creature curve",
+        "x": "mana-value",
+        "series": "color",
+        "measure": "card-count",
+        "toggleSeries": true,
+        "filters": [
+            "common-creatures"
+        ]
+    },
+    "rules-text-length": {
+        "type": "bar",
+        "title": "Rules text length",
+        "x": "word-count",
+        "series": "rarity",
+        "measure": "card-count",
+        "toggleSeries": true,
+        "description": "Includes reminder text; excludes mana symbols and formatting."
+    },
+    "rules-text-by-color": {
+        "type": "matrix",
+        "title": "Rules text length by color and rarity",
+        "rows": "color",
+        "columns": "rarity",
+        "measure": "average-words",
+        "measures": [
+            "average-words",
+            "median-words"
+        ]
+    },
+    "wordiest-cards": {
+        "type": "matrix",
+        "title": "Wordiest cards",
+        "rows": "card",
+        "columns": "all-cards",
+        "measure": "word-count",
+        "totals": false,
+        "sortRows": "descending",
+        "limitRows": 10
+    }
+}

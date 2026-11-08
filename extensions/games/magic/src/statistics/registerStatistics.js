@@ -1,84 +1,189 @@
 import { COLORS, RARITIES, CARD_TYPES, cardRecord } from './cardRecord.js';
 import './MagicStatistics.js';
-import { addDesignerFields, registerDesignerReports } from './designerReports.js';
+import {
+    average, max, median, wordCountBucket, wordCountCategories
+} from './textAnalysis.js';
+import reports from './reports.json';
+import { localizeStatisticsText, localizeReport } from './localization.js';
 import rarityPresets, {
     RARITY_GRADIENT_OFFSETS
 } from '../domain/setSymbol/rarityPresets.js';
+
+const L = localize('game-magic-statistics');
+const MAX_MANA_VALUE = 8;
+const formatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
+const WORD_MEASURES = [
+    ['average-words', 'Average words', average],
+    ['median-words', 'Median words', median],
+    ['word-count', 'Words', max]
+];
 
 function manaCategories(records) {
     const values = new Set([0]);
     let max = 0;
     for (const record of records) {
         if (record.manaValue === null) continue;
-        const value = Math.min(8, record.manaValue);
+        const value = Math.min(MAX_MANA_VALUE, record.manaValue);
         values.add(value);
         max = Math.max(max, value);
     }
     for (let i = 0; i <= max; i++) values.add(i);
     return [...values].sort((a, b) => a - b).map(value => ({
-        id: value, label: value === 8 ? '8+' : String(value)
+        id: value, label: value === MAX_MANA_VALUE ? `${MAX_MANA_VALUE}+` : String(value)
     }));
+}
+
+function getRarityCategories() {
+    return rarityPresets.map(preset => ({
+        id: preset.id,
+        label: localizeStatisticsText(preset.name),
+        color: preset.g2,
+        outline: preset.outline,
+        gradient: RARITY_GRADIENT_OFFSETS.map((offset, i) => ({
+            offset, color: preset[`g${i + 1}`]
+        }))
+    }));
+}
+
+function resolveColorSymbolIcon(game, color) {
+    if (color.id === 'm')
+        return '/' + game.resolveAsset('multicolor.svg');
+    return '/' + game.resolvePath(
+        `../../cardparts/magic/M15/Symbols/assets/flat/single/${color.id}.png`
+    );
+}
+
+function createRecordPreparer(game) {
+    const cardIds = new WeakMap();
+    let nextId = 0;
+    return card => {
+        if (!cardIds.has(card)) cardIds.set(card, nextId++);
+        return {
+            card, analysisId: cardIds.get(card),
+            ...cardRecord(card, game)
+        };
+    };
+}
+
+function formatWords(value) {
+    if (value === null) return '—';
+    return formatter.format(value);
+}
+
+function describeWords(value) {
+    if (value === null) return '—';
+    return L`${formatWords(value)} words`;
+}
+
+function creatureTypeLabel(type) {
+    if (type === 'No creature type') return L`No creature type`;
+    return type;
+}
+
+function creatureTypeCategories(records) {
+    const types = [...new Set(records.flatMap(record => record.creatureTypes))];
+    types.sort((a, b) => a.localeCompare(b));
+    return types.map(id => ({ id, label: creatureTypeLabel(id) }));
+}
+
+function registerDimensions(registry, game) {
+    registry.registerDimension('color', {
+        label: L`Color`, values: record => [record.color],
+        categories: COLORS.map(color => ({
+            ...color,
+            label: localizeStatisticsText(color.label),
+            icon: resolveColorSymbolIcon(game, color)
+        }))
+    });
+    registry.registerDimension('rarity', {
+        label: L`Rarity`,
+        categories: getRarityCategories(),
+        values: record => [record.rarity]
+    });
+    registry.registerDimension('card-type', {
+        label: L`Card type`,
+        categories: CARD_TYPES.map(id => ({ id, label: localizeStatisticsText(id) })),
+        values: record => record.types
+    });
+    registry.registerDimension('mana-value', {
+        label: L`Mana value`,
+        categories: manaCategories,
+        values: record => record.manaValue === null
+            ? [] : [Math.min(MAX_MANA_VALUE, record.manaValue)]
+    });
+    registry.registerDimension('creature-type', {
+        label: L`Creature type`,
+        categories: creatureTypeCategories,
+        values: record => record.creatureTypes,
+        compare: (a, b) => a.localeCompare(b)
+    });
+    registry.registerDimension('word-count', {
+        label: L`Rules text words`,
+        categories: wordCountCategories,
+        values: record => [wordCountBucket(record.wordCount)]
+    });
+    registry.registerDimension('card', {
+        label: L`Card`,
+        values: record => [record.analysisId],
+        categories: records => records.map(record => ({
+            id: record.analysisId, label: record.name
+        }))
+    });
+    registry.registerDimension('all-cards', {
+        label: L`Cards`,
+        categories: [{ id: 'all', label: L`Words` }],
+        values: () => ['all']
+    });
+}
+
+function registerFields(registry) {
+    registry.registerField('mana-value', {
+        label: L`Mana value`,
+        value: record => record.manaValue
+    });
+    registry.registerField('word-count', {
+        label: L`Rules text words`,
+        value: record => record.wordCount
+    });
+}
+
+function registerMeasures(registry) {
+    for (const [id, label, reduce] of WORD_MEASURES) {
+        registry.registerMeasure(id, {
+            label: localizeStatisticsText(label), field: 'word-count', reduce,
+            format: formatWords,
+            describe: describeWords
+        });
+    }
+}
+
+function registerFilters(registry) {
+    registry.registerFilter('nonland', {
+        label: L`Nonland cards`,
+        test: record => !record.isLand
+    });
+    registry.registerFilter('creatures', {
+        label: L`Creature cards`,
+        test: record => record.creatureTypes.length > 0
+    });
+    registry.registerFilter('common-creatures', {
+        label: L`Common creatures`,
+        test: record => record.rarity === 'common' && record.creatureTypes.length > 0
+    });
+}
+
+function registerReports(registry) {
+    for (const [id, definition] of Object.entries(reports))
+        registry.registerReport(id, localizeReport(definition));
 }
 
 export function registerStatistics(game) {
     const registry = game.statistics;
-    const cardIds = new WeakMap();
-    let nextId = 0;
-    registry.prepare = card => {
-        if (!cardIds.has(card)) cardIds.set(card, nextId++);
-        return {
-            card, analysisId: cardIds.get(card),
-            ...cardRecord(card, game), ...addDesignerFields(card)
-        };
-    };
-    registry.include = record => !record.isAuxiliary && RARITIES.includes(record.rarity);
-    registry.registerDimension('color', {
-        label: 'Color', values: record => [record.color],
-        categories: COLORS.map(color => ({
-            ...color,
-            icon: color.id === 'm' ? '/' + game.resolveAsset('multicolor.svg')
-                : '/' + game.resolvePath(
-                    `../../cardparts/magic/M15/Symbols/assets/flat/single/${color.id}.png`
-                )
-        }))
-    });
-    registry.registerDimension('rarity', {
-        label: 'Rarity', categories: rarityPresets.map(preset => ({
-            id: preset.id, label: preset.name, color: preset.g2,
-            outline: preset.outline,
-            gradient: RARITY_GRADIENT_OFFSETS.map((offset, i) => ({
-                offset, color: preset[`g${i + 1}`]
-            }))
-        })), values: record => [record.rarity]
-    });
-    registry.registerDimension('card-type', {
-        label: 'Card type', categories: CARD_TYPES,
-        values: record => record.types
-    });
-    registry.registerDimension('mana-value', {
-        label: 'Mana value', categories: manaCategories,
-        values: record => record.manaValue === null
-            ? [] : [Math.min(8, record.manaValue)]
-    });
-    registry.registerField('mana-value', {
-        label: 'Mana value', value: record => record.manaValue
-    });
-    registry.registerFilter('nonland', {
-        label: 'Nonland cards', test: record => !record.isLand
-    });
-    registry.registerReport('color-rarity', {
-        type: 'matrix', title: 'Color × rarity',
-        rows: 'color', columns: 'rarity', measure: 'card-count'
-    });
-    registry.registerReport('color-type', {
-        type: 'matrix', title: 'Color × card type',
-        rows: 'color', columns: 'card-type', measure: 'card-count'
-    });
-    registry.registerReport('mana-curve', {
-        type: 'line', types: ['line', 'bar'], title: 'Mana curve by color',
-        x: 'mana-value', series: 'color', measure: 'card-count',
-        toggleSeries: true,
-        filterToggle: { filter: 'nonland', label: 'Include lands' }
-    });
-    registerDesignerReports(registry);
+    registry.prepare = createRecordPreparer(game);
+    registry.include = record => RARITIES.includes(record.rarity);
+    registerDimensions(registry, game);
+    registerFields(registry);
+    registerMeasures(registry);
+    registerFilters(registry);
+    registerReports(registry);
 }

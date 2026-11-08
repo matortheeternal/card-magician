@@ -1,6 +1,11 @@
 import StatisticsRegistry from './StatisticsRegistry.js';
 import { queryStatistics } from './queryStatistics.js';
 
+const UNKNOWN_DIMENSION_PATTERN = /Unknown statistics dimension/;
+const DUPLICATE_DEFINITION_PATTERN = /Duplicate/;
+const NONFINITE_VALUE_PATTERN = /non-finite/;
+const POSITIVE_INTEGER_PATTERN = /positive integer/;
+
 describe('Statistics queries', () => {
     let registry;
     let records;
@@ -90,15 +95,15 @@ describe('Statistics queries', () => {
     it('rejects invalid definitions and keeps game registries isolated', () => {
         expect(() => queryStatistics(records, registry, {
             ...definition, columns: 'unknown'
-        }, 'matrix')).toThrowError(/Unknown statistics dimension/);
+        }, 'matrix')).toThrowError(UNKNOWN_DIMENSION_PATTERN);
         expect(() => registry.registerDimension('faction', {
             label: 'Duplicate', values: () => []
-        })).toThrowError(/Duplicate/);
+        })).toThrowError(DUPLICATE_DEFINITION_PATTERN);
         expect(new StatisticsRegistry().dimensions.has('faction')).toBeFalse();
         registry.registerMeasure('invalid', { label: 'Invalid', reduce: () => NaN });
         expect(() => queryStatistics(records, registry, {
             ...definition, measure: 'invalid'
-        }, 'matrix')).toThrowError(/non-finite/);
+        }, 'matrix')).toThrowError(NONFINITE_VALUE_PATTERN);
     });
 
     it('sorts and limits rows without changing distinct totals', () => {
@@ -113,6 +118,6 @@ describe('Statistics queries', () => {
         expect(result.cardCount).toBe(3);
         expect(() => queryStatistics(records, registry, {
             ...definition, limitRows: 0
-        }, 'matrix')).toThrowError(/positive integer/);
+        }, 'matrix')).toThrowError(POSITIVE_INTEGER_PATTERN);
     });
 });

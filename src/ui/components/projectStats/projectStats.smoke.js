@@ -1,5 +1,7 @@
 import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
 import StatisticsRegistry from '../../../domain/statistics/StatisticsRegistry.js';
+import Localization from '../../../shared/Localization.js';
+import { setLocalization } from '../../../shared/localize.js';
 import {
     createTestProject, deleteTestProject, eventually
 } from '../../../shared/testing/testUtils.js';
@@ -149,11 +151,11 @@ describe('Statistics', () => {
         expect(stats.querySelector('.stats-empty').hidden).toBeFalse();
     });
 
-    it('excludes auxiliary cards and unsupported rarities from every chart', async () => {
+    it('uses rarity alone to determine inclusion in every chart', async () => {
         activeProject.cards.push(
-            makeCard('1W', 'Token Creature'),
-            makeCard('', 'Emblem', 'special'),
-            makeCard('2G', 'Creature', 'common', { template: 'magic/M15/Token' }),
+            makeCard('1W', 'Token Creature', 'token'),
+            makeCard('', 'Emblem', 'emblem'),
+            makeCard('2G', 'Creature', 'token', { template: 'magic/M15/Token' }),
             makeCard('3R', 'Creature', 'bonus'),
             makeCard('', 'Basic Land', 'basic'),
             makeCard('2B', 'Creature', 'special')
@@ -168,6 +170,12 @@ describe('Statistics', () => {
         expect(stats.querySelector('.stats-scope').textContent).toBe('');
         expect(curve.querySelector('.stats-description').textContent).toBe('');
         const registry = activeGame.statistics;
+        expect(registry.include(registry.prepare(
+            makeCard('W', 'Token Creature', 'common')
+        ))).toBeTrue();
+        expect(registry.include(registry.prepare(
+            makeCard('', 'Emblem', 'special')
+        ))).toBeTrue();
         const data = queryStatistics([
             registry.prepare(makeCard('8R', 'Creature')),
             registry.prepare(makeCard('7R', 'Creature')),
@@ -219,7 +227,7 @@ describe('Statistics', () => {
             makeCard('R', 'Instant', 'rare', {
                 name: 'Long spell', rulesText: words(40)
             }),
-            makeCard('', 'Token Creature', 'common', {
+            makeCard('', 'Token Creature', 'token', {
                 name: 'Excluded', subType: 'Dragon', rulesText: words(500)
             })
         ];
@@ -286,6 +294,69 @@ describe('Statistics', () => {
             expect(new StatisticsRegistry().getChartType('test:summary')).toBeUndefined();
         } finally { chart.remove(); }
         expect(dispose).toHaveBeenCalledTimes(1);
+    });
+
+    it('localizes JSON reports, category labels, controls and shared tooltips', async () => {
+        const translations = {
+            statistics: {
+                Measure: 'Mesure', 'View chart data': 'Voir les données',
+                Lines: 'Lignes', Bars: 'Barres', Cards: 'Cartes',
+                '%{0} card': '%{0} carte', '%{0} cards': '%{0} cartes'
+            },
+            'game-magic-statistics': {
+                'Color × rarity': 'Couleur × rareté', White: 'Blanc', Blue: 'Bleu',
+                Common: 'Commune', Color: 'Couleur', 'Mana value': 'Valeur de mana',
+                'Mana curve by color': 'Courbe de mana', 'Include lands': 'Inclure les terrains',
+                'Average words': 'Moyenne', 'Median words': 'Médiane'
+            }
+        };
+        const locale = new Localization('statistics-test', JSON.stringify(translations));
+        const load = spyOn(Localization, 'load').and.returnValue(Promise.resolve(locale));
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'position:fixed;left:-10000px;width:800px';
+        try {
+            expect(await setLocalization('statistics-test')).toBeTrue();
+            const game = new activeGame.constructor({
+                path: activeGame.gamePath, id: activeGame.id, version: activeGame.version
+            });
+            const context = {
+                registry: game.statistics,
+                records: activeProject.cards.map(card => game.statistics.prepare(card))
+            };
+            const matrix = document.createElement('cm-chart');
+            matrix.setAttribute('report', 'color-rarity');
+            matrix.context = context;
+            const mana = document.createElement('cm-chart');
+            mana.setAttribute('report', 'mana-curve');
+            mana.context = context;
+            wrapper.append(matrix, mana);
+            document.body.appendChild(wrapper);
+            await eventually(() => mana.querySelector('.stats-hit-region'));
+            expect(matrix.controls.title.textContent).toBe('Couleur × rareté');
+            expect(matrix.data.rows[0].id).toBe('w');
+            expect(matrix.data.rows[0].label).toBe('Blanc');
+            expect(matrix.data.columns[0].id).toBe('common');
+            expect(matrix.data.columns[0].label).toBe('Commune');
+            expect(mana.controls.filterLabel.textContent).toBe('Inclure les terrains');
+            expect(mana.controls.typeButtons[0].textContent).toBe('Lignes');
+            expect(mana.dataDetails.textContent).toContain('Voir les données');
+            mana.querySelectorAll('.stats-hit-region')[2]
+                .dispatchEvent(new PointerEvent('pointerenter'));
+            const tooltip = mana.querySelector('.stats-chart-tooltip');
+            expect(tooltip.textContent).toContain('Valeur de mana 2');
+            expect(tooltip.textContent).toContain('Blanc1 carte');
+            expect(tooltip.textContent).toContain('Bleu1 carte');
+            matrix.setAttribute('report', 'rules-text-by-color');
+            await eventually(() => matrix.controls.measureSelect.value === 'average-words');
+            expect(matrix.controls.measureControl.textContent).toContain('Mesure');
+            expect(matrix.controls.measureSelect.options[0].textContent).toBe('Moyenne');
+            expect(game.statistics.reports.get('mana-curve').filterToggle.filter)
+                .toBe('nonland');
+        } finally {
+            wrapper.remove();
+            load.and.returnValue(Promise.resolve({ resolve: () => null }));
+            await setLocalization('default-test-locale');
+        }
     });
 
     it('uses rarity gradients and shared tooltips on stacked color bars', async () => {

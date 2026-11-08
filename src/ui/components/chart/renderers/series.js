@@ -4,7 +4,55 @@ import { line } from 'd3-shape';
 import { svgCategoryPaint } from '../categoryPaint.js';
 import { createChartTooltip } from '../chartTooltip.js';
 
+const L = localize('statistics');
+
 let nextChart = 0;
+
+function appendLine(group, points, color, { type, x, y }) {
+    if (type !== 'line') return;
+    group.append('path').attr('fill', 'none').attr('stroke', color)
+        .attr('stroke-width', 2)
+        .attr('d', line().defined(point => point.value !== null)
+            .x(point => x(point.index) + x.bandwidth() / 2)
+            .y(point => y(point.value))(points));
+}
+
+function appendMark(group, point, seriesId, { type, x, y, subX }) {
+    if (type === 'bar') {
+        return group.append('rect')
+            .attr('x', x(point.index) + subX(seriesId))
+            .attr('y', y(Math.max(0, point.value)))
+            .attr('width', subX.bandwidth())
+            .attr('height', Math.abs(y(0) - y(point.value)));
+    }
+    return group.append('circle').attr('cx', x(point.index) + x.bandwidth() / 2)
+        .attr('cy', y(point.value)).attr('r', 3.5);
+}
+
+function applyOutline(mark, outline) {
+    if (!outline) return;
+    mark.attr('stroke', outline).attr('stroke-width', 1);
+}
+
+function renderSeries(svg, series, chartId, scales) {
+    for (const [i, item] of series.entries()) {
+        const points = item.values.map((value, index) => ({ index, value }));
+        const color = svgCategoryPaint(svg.node(), item, `stats-${chartId}-paint-${i}`);
+        const group = svg.append('g').attr('fill', color);
+        appendLine(group, points, color, scales);
+        for (const point of points.filter(item => item.value !== null)) {
+            const mark = appendMark(group, point, item.id, scales);
+            mark.attr('data-category-index', point.index);
+            applyOutline(mark, item.outline);
+        }
+    }
+}
+
+function regionBoundary(index, count, x, start, end) {
+    if (index === 0) return start;
+    if (index === count) return end;
+    return x(index) + x.bandwidth() / 2 - x.step() / 2;
+}
 
 export function renderD3Curve(container, {
     labels, series, type, width, columnLabel, measureLabel,
@@ -42,31 +90,7 @@ export function renderD3Curve(container, {
         .attr('text-anchor', 'middle').attr('x', -(margin.top + bottom) / 2)
         .attr('y', 13).text(measureLabel);
     const subX = scaleBand(series.map(item => item.id), [0, x.bandwidth()]).padding(0.08);
-    for (const [i, item] of series.entries()) {
-        const points = item.values.map((value, index) => ({ index, value }));
-        const color = svgCategoryPaint(svg.node(), item, `stats-${chartId}-paint-${i}`);
-        const group = svg.append('g').attr('fill', color);
-        if (type === 'line') {
-            group.append('path').attr('fill', 'none').attr('stroke', color)
-                .attr('stroke-width', 2)
-                .attr('d', line().defined(point => point.value !== null)
-                    .x(point => x(point.index) + x.bandwidth() / 2)
-                    .y(point => y(point.value))(points));
-        }
-        for (const point of points) {
-            if (point.value === null) continue;
-            const mark = type === 'bar'
-                ? group.append('rect').attr('x', x(point.index) + subX(item.id))
-                    .attr('y', y(Math.max(0, point.value)))
-                    .attr('width', subX.bandwidth())
-                    .attr('height', Math.abs(y(0) - y(point.value)))
-                : group.append('circle').attr('cx', x(point.index) + x.bandwidth() / 2)
-                    .attr('cy', y(point.value)).attr('r', 3.5);
-            mark.attr('data-category-index', point.index);
-            if (item.outline)
-                mark.attr('stroke', item.outline).attr('stroke-width', 1);
-        }
-    }
+    renderSeries(svg, series, chartId, { type, x, y, subX });
 
     const tooltip = createChartTooltip(container, series, describeValue);
     const guide = svg.append('line').attr('class', 'stats-hover-guide')
@@ -81,16 +105,16 @@ export function renderD3Curve(container, {
         const bounds = svg.node().getBoundingClientRect();
         const chartBounds = container.getBoundingClientRect();
         const anchor = bounds.left - chartBounds.left + center * bounds.width / width;
-        tooltip.show(`${columnLabel} ${labels[index]}`,
+        tooltip.show(L`${columnLabel} ${labels[index]}`,
                      series.map(item => item.values[index]), anchor);
     };
     labels.forEach((label, index) => {
-        const center = x(index) + x.bandwidth() / 2;
-        const left = index === 0 ? margin.left : center - x.step() / 2;
-        const right = index === labels.length - 1
-            ? width - margin.right : center + x.step() / 2;
-        const description = `${columnLabel} ${label}. ` + series.map(item => (
-            `${item.label}: ${describeValue(item.values[index])}`
+        const left = regionBoundary(index, labels.length, x,
+                                    margin.left, width - margin.right);
+        const right = regionBoundary(index + 1, labels.length, x,
+                                     margin.left, width - margin.right);
+        const description = L`${columnLabel} ${label}` + '. ' + series.map(item => (
+            L`${item.label}: ${describeValue(item.values[index])}`
         )).join(', ');
         svg.append('rect').attr('class', 'stats-hit-region')
             .attr('x', left).attr('y', margin.top)

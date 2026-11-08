@@ -2,14 +2,32 @@ import { categorySymbol } from './categoryLabel.js';
 
 let nextTooltip = 0;
 
-/** Shared tooltip, positioned locally for SVG or in the viewport for scroll lists. */
+function watchScroll(floating, hide, signal) {
+    if (!floating) return;
+    document.addEventListener('scroll', hide, { capture: true, signal });
+}
+
+function tooltipCoordinates(element, container, floating, x, y) {
+    if (!floating) {
+        return {
+            left: Math.max(0, Math.min(container.clientWidth - element.offsetWidth,
+                                       x - element.offsetWidth / 2)),
+            top: y
+        };
+    }
+    return {
+        left: Math.max(8, Math.min(window.innerWidth - element.offsetWidth - 8, x + 12)),
+        top: Math.max(8, Math.min(y + 12, window.innerHeight - element.offsetHeight - 8))
+    };
+}
+
 export function createChartTooltip(container, categories, describeValue, {
     floating = false
 } = {}) {
     const element = document.createElement('div');
     element.id = `stats-chart-tooltip-${++nextTooltip}`;
     element.className = 'stats-chart-tooltip';
-    if (floating) element.classList.add('stats-chart-tooltip-floating');
+    element.classList.toggle('stats-chart-tooltip-floating', floating);
     element.role = 'tooltip';
     element.hidden = true;
     const heading = document.createElement('strong');
@@ -29,8 +47,7 @@ export function createChartTooltip(container, categories, describeValue, {
     container.appendChild(element);
     const hide = () => { element.hidden = true; };
     const abort = new AbortController();
-    if (floating)
-        document.addEventListener('scroll', hide, { capture: true, signal: abort.signal });
+    watchScroll(floating, hide, abort.signal);
     return {
         element,
         hide,
@@ -38,15 +55,7 @@ export function createChartTooltip(container, categories, describeValue, {
             heading.textContent = title;
             rows.forEach((count, i) => { count.textContent = describeValue(values[i]); });
             element.hidden = false;
-            const padding = floating ? 8 : 0;
-            const maxWidth = floating ? window.innerWidth : container.clientWidth;
-            const left = Math.max(padding, Math.min(
-                maxWidth - element.offsetWidth - padding,
-                floating ? x + 12 : x - element.offsetWidth / 2
-            ));
-            const top = floating ? Math.max(8, Math.min(
-                y + 12, window.innerHeight - element.offsetHeight - 8
-            )) : y;
+            const { left, top } = tooltipCoordinates(element, container, floating, x, y);
             element.style.left = `${left}px`;
             element.style.top = `${top}px`;
         },

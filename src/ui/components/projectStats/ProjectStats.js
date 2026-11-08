@@ -3,9 +3,32 @@ import { onActiveProjectChanged } from '../../../domain/projects/projectManager.
 
 const L = localize('project-statistics');
 
-/** Project lifecycle only. The game supplies the page and chart definitions. */
+function cardCountLabel(count) {
+    if (count === 1) return L`${count} card`;
+    return L`${count} cards`;
+}
+
+function createGamePage(game) {
+    if (game?.statisticsComponent)
+        return document.createElement(game.statisticsComponent);
+    const message = document.createElement('p');
+    message.textContent = L`This game does not provide statistics yet.`;
+    return message;
+}
+
 export default class ProjectStats extends ReactiveComponent {
+    get page() { return this.querySelector('.stats-page'); }
+    get scope() { return this.querySelector('.stats-scope'); }
+    get summary() { return this.querySelector('.stats-summary'); }
+    get emptyMessage() { return this.querySelector('.stats-empty'); }
+    get charts() { return this.querySelectorAll('cm-chart'); }
+
     connectedCallback() {
+        this.render();
+        this.bind();
+    }
+
+    render() {
         this.innerHTML = `
             <header class="stats-header">
                 <div><h1>${L`Project statistics`}</h1>
@@ -16,6 +39,9 @@ export default class ProjectStats extends ReactiveComponent {
                 ${L`Add cards or open a project to see statistics.`}
             </p>
             <div class="stats-page"></div>`;
+    }
+
+    bind() {
         this.unsubscribeProject = onActiveProjectChanged(project => {
             this.observeProject(project);
         });
@@ -26,31 +52,30 @@ export default class ProjectStats extends ReactiveComponent {
         this.unsubscribeProject?.();
     }
 
+    updateGame(game) {
+        if (this.game === game) return;
+        this.game = game;
+        this.page.replaceChildren(createGamePage(game));
+        this.scope.textContent = this.page.firstElementChild?.countingPolicy || '';
+        this.scope.hidden = !this.scope.textContent;
+    }
+
     observeProject(project) {
-        const game = window.activeGame;
-        if (this.game !== game) {
-            this.game = game;
-            const page = this.querySelector('.stats-page');
-            page.replaceChildren();
-            if (game?.statisticsComponent)
-                page.appendChild(document.createElement(game.statisticsComponent));
-            else page.textContent = L`This game does not provide statistics yet.`;
-            const scope = this.querySelector('.stats-scope');
-            scope.textContent = page.firstElementChild?.countingPolicy || '';
-            scope.hidden = !scope.textContent;
-        }
-        const refresh = () => {
-            const cards = project?.cards || [];
-            this.context = {
-                registry: game.statistics, project,
-                records: cards.map(card => game.statistics.prepare(card))
-            };
-            this.querySelector('.stats-summary').textContent = `${cards.length} cards`;
-            this.querySelector('.stats-empty').hidden = cards.length > 0;
-            for (const chart of this.querySelectorAll('cm-chart')) chart.requestUpdate();
+        this.project = project;
+        this.updateGame(window.activeGame);
+        this.watch('project-cards', project, 'cards', () => this.refresh());
+        this.refresh();
+    }
+
+    refresh() {
+        const cards = this.project?.cards || [];
+        this.context = {
+            registry: this.game.statistics, project: this.project,
+            records: cards.map(card => this.game.statistics.prepare(card))
         };
-        this.watch('project-cards', project, 'cards', refresh);
-        refresh();
+        this.summary.textContent = cardCountLabel(cards.length);
+        this.emptyMessage.hidden = cards.length > 0;
+        for (const chart of this.charts) chart.requestUpdate();
     }
 }
 

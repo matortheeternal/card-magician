@@ -36,6 +36,19 @@ This means changing localization requires re-rendering the component for strings
 update. The intended implementation associated with changing localization is reloading
 the entire application.
 
+## Text stored in data files
+
+JSON report titles and labels are English localization keys. The statistics game
+module resolves them with `localizeStatisticsText` before registering reports.
+That helper supplies a one-part template to the existing localizer, so a title
+such as `Color × rarity` retains its own stable key. Do not interpolate the title
+as a value in a tagged template: that produces the opaque key `%{0}` for every report.
+
+Keep category and dimension IDs unchanged when translating their display labels.
+This lets legends, matrices, and tooltips share localized presentation without
+changing aggregation. Card-authored names and subtype values are content, not UI
+translation keys.
+
 ## Namespaces
 To localize a file, you invoke the localize function and pass a namespace key. The
 namespace key you use here should be based on the component or file the localization

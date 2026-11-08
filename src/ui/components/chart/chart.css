@@ -140,6 +140,7 @@ cm-chart {
 
 
 cm-chart [hidden] { display: none !important; }
+cm-chart-controls { display: block; }
 cm-chart .stats-category-swatch { width: 1rem; height: 1rem; border-radius: 50%; }
 cm-chart .stats-chart-error { color: var(--sl-color-danger-600); }
 cm-chart .stats-ranking {

@@ -1,6 +1,5 @@
 import { categoryBackground } from './categoryPaint.js';
 
-/** A fresh node per use so legends, matrices and tooltips can share metadata. */
 export function categorySymbol(category) {
     if (!category.icon) {
         const swatch = document.createElement('span');

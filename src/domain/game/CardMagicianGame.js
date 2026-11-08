@@ -101,7 +101,12 @@ export default class CardMagicianGame {
      */
     get columns() { return []; }
 
-    /** Custom element name for the game's default Statistics page. */
+    /**
+     * Custom element name for the game's default Statistics page.
+     *
+     * @returns {string|null}
+     *   Registered custom element name, or null when statistics are not provided.
+     */
     get statisticsComponent() { return null; }
 
     /**

@@ -1,4 +1,13 @@
 declare global {
+    type Category = import('./card-magician.js').Category;
+    type StatisticsDimension = import('./card-magician.js').StatisticsDimension;
+    type StatisticsField = import('./card-magician.js').StatisticsField;
+    type StatisticsMeasure = import('./card-magician.js').StatisticsMeasure;
+    type ChartDefinition = import('./card-magician.js').ChartDefinition;
+    type ChartRenderer = import('./card-magician.js').ChartRenderer;
+    type ChartRendererInstance = import('./card-magician.js').ChartRendererInstance;
+    type StatisticsContext = import('./card-magician.js').StatisticsContext;
+    type StatisticsRegistry = import('./card-magician.js').StatisticsRegistry;
     type Field = import('./card-magician.js').Field;
     type ExportArtifact = import('./card-magician.js').ExportArtifact;
     type OutputItem = import('./card-magician.js').OutputItem;

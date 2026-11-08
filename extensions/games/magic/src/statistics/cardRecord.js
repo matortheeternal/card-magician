@@ -1,3 +1,6 @@
+import { countRulesWords, creatureTypes } from './textAnalysis.js';
+import { localizeStatisticsText } from './localization.js';
+
 export const COLORS = [
     { id: 'w', label: 'White', color: '#e8dca4' },
     { id: 'u', label: 'Blue', color: '#63b5ed' },
@@ -13,7 +16,12 @@ export const CARD_TYPES = [
     'Land', 'Planeswalker', 'Other'
 ];
 
-function tryParseCost(game, cost) {
+const CARD_TYPE_PATTERNS = CARD_TYPES.filter(type => type !== 'Other')
+    .map(type => ({ type, pattern: new RegExp(`\\b${type}\\b`, 'i') }));
+const TRIBAL_PATTERN = /\btribal\b/i;
+
+function parseManaCost(cost, game) {
+    if (typeof cost !== 'string') return cost;
     try {
         return game.ManaScribe.ManaCost.parse(cost);
     } catch {
@@ -21,35 +29,51 @@ function tryParseCost(game, cost) {
     }
 }
 
-export function cardRecord(card, game) {
-    const face = card.front || {};
-    let cost = face.manaCost;
-    if (typeof cost === 'string')
-        cost = tryParseCost(game, cost);
-    const identity = new game.ColorIdentity();
-    if (cost?.symbols) identity.addColorSource('card', cost.symbols);
-    const override = Array.isArray(face.colorOverride)
-        ? face.colorOverride.join('') : face.colorOverride;
-    if (override) identity.setOverride(override);
-    const colors = identity.getColors();
-    let color = colors[0]?.char || 'c';
-    if (colors.length > 1 || override?.includes('m')) color = 'm';
-    if (override?.includes('c')) color = 'c';
-    const types = CARD_TYPES.filter(type => type !== 'Other'
-        && new RegExp(`\\b${type}\\b`, 'i').test(face.superType || ''));
-    if (/\btribal\b/i.test(face.superType || '') && !types.includes('Kindred'))
-        types.push('Kindred');
-    let rarity = (face.rarity || 'common').toLowerCase();
-    if (!RARITIES.includes(rarity)) rarity = 'unknown';
-    const manaValue = cost ? Number(cost.cmc) : 0;
-    return {
-        color,
-        rarity,
-        types: types.length ? types : ['Other'],
-        isAuxiliary: /\b(token|emblem)\b/i.test(face.superType || '')
-            || /\/(Token|Emblem)(\/|$)/i.test(face.template || ''),
-        manaValue: Number.isFinite(manaValue) && manaValue >= 0 ? manaValue : null,
-        isLand: types.includes('Land')
-    };
+function getColorOverride(override) {
+    return Array.isArray(override) ? override.join('') : override;
 }
 
+function getColor(cost, override, game) {
+    const identity = new game.ColorIdentity();
+    if (cost?.symbols) identity.addColorSource('card', cost.symbols);
+    if (override) identity.setOverride(override);
+    const colors = identity.getColors();
+    if (override?.includes('c')) return 'c';
+    if (colors.length > 1 || override?.includes('m')) return 'm';
+    return colors[0]?.char || 'c';
+}
+
+function getCardTypes(superType = '') {
+    const types = CARD_TYPE_PATTERNS
+        .filter(({ pattern }) => pattern.test(superType))
+        .map(({ type }) => type);
+    if (TRIBAL_PATTERN.test(superType) && !types.includes('Kindred'))
+        types.push('Kindred');
+    return types.length ? types : ['Other'];
+}
+
+function getRarity(value) {
+    const rarity = (value || 'common').toLowerCase();
+    return RARITIES.includes(rarity) ? rarity : 'unknown';
+}
+
+function getManaValue(cost) {
+    const value = cost ? Number(cost.cmc) : 0;
+    return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+export function cardRecord(card, game) {
+    const face = card.front || {};
+    const cost = parseManaCost(face.manaCost, game);
+    const types = getCardTypes(face.superType);
+    return {
+        color: getColor(cost, getColorOverride(face.colorOverride), game),
+        rarity: getRarity(face.rarity),
+        types,
+        manaValue: getManaValue(cost),
+        isLand: types.includes('Land'),
+        wordCount: countRulesWords(face.rulesText),
+        creatureTypes: creatureTypes(face),
+        name: face.name || localizeStatisticsText('Unnamed card')
+    };
+}

@@ -1,7 +1,7 @@
 class MagicStatistics extends HTMLElement {
     connectedCallback() {
-        this.innerHTML = `
-            <div class="stats-grid">
+        this.innerHTML = (
+            `<div class="stats-grid">
                 <cm-chart report="color-rarity"></cm-chart>
                 <cm-chart report="color-type"></cm-chart>
                 <cm-chart class="stats-curve" report="mana-curve"></cm-chart>
@@ -13,7 +13,8 @@ class MagicStatistics extends HTMLElement {
                 <cm-chart class="stats-curve" report="rules-text-length"></cm-chart>
                 <cm-chart report="rules-text-by-color"></cm-chart>
                 <cm-chart report="wordiest-cards"></cm-chart>
-            </div>`;
+            </div>`
+        );
     }
 }
 
