@@ -24,7 +24,14 @@ export async function runExtensionRootTests(profile) {
             assert.equal('plugins' in environment.paths, false);
             assert.equal('userExtensions' in environment.paths, false);
             assert.equal(environment.isDevelopment, !packaged && args.includes('--development'));
-            await fixture.driver.evaluate('cardMagicianNative.call("terminateApp", [0])');
+            try {
+                await fixture.driver.evaluate(
+                    'cardMagicianNative.call("terminateApp", [0])'
+                );
+            } catch (error) {
+                // Native termination can close CDP before Runtime.evaluate replies.
+                if (error.message !== 'DevTools connection closed.') throw error;
+            }
             await fixture.stopped();
         } finally {
             await fixture.cleanup();
