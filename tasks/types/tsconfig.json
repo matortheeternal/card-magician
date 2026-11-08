@@ -10,5 +10,5 @@
     "moduleResolution": "NodeNext",
     "types": []
   },
-  "files": ["consumer.js"]
+  "files": ["consumer.js", "testingConsumer.js"]
 }

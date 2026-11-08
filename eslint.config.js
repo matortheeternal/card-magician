@@ -1,14 +1,11 @@
 import stylistic from '@stylistic/eslint-plugin'
 import globals from 'globals';
 
-// ESLint philosophy:
-// - Prioritize correctness and real bugs
-// - Enforce a small, explicit set of structural style rules
-//   (semicolons, quotes, indentation, brace shape)
-// - Avoid formatter-style micromanagement and implicit rewrites
-// - Use warnings where human judgment is expected
-// - Maintain a zero-noise baseline: lint should be quiet on intentional code
 export default [
+    {
+        files: ['src/**/*.tests.js', 'src/**/*.smoke.js'],
+        languageOptions: { globals: { cmTest: 'readonly' } }
+    },
     {
         files: ['electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
         languageOptions: { globals: globals.node }
@@ -18,7 +15,7 @@ export default [
         languageOptions: { sourceType: 'commonjs', globals: globals.node }
     },
     {
-        files: ['src/*.js', 'src/**/*.js', 'extensions/cardparts/**/*.js'],
+        files: ['src/*.js', 'src/**/*.js', 'extensions/**/*.js'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -48,7 +45,12 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: [
+            'src/**/*.js',
+            'extensions/**/*.js',
+            'electron/**/*.{js,cjs}',
+            'tasks/**/*.{js,cjs}'
+        ],
         rules: {
             // Correctness & safety
             'no-undef': 'error',
@@ -132,7 +134,12 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: [
+            'src/**/*.js',
+            'extensions/**/*.js',
+            'electron/**/*.{js,cjs}',
+            'tasks/**/*.{js,cjs}'
+        ],
         ignores: ['src/**/*.smoke.js'],
 
         rules: {
@@ -146,7 +153,12 @@ export default [
     },
 
     {
-        files: ['src/**/*.js', 'extensions/cardparts/**/*.js', 'electron/**/*.{js,cjs}', 'tasks/**/*.{js,cjs}'],
+        files: [
+            'src/**/*.js',
+            'extensions/**/*.js',
+            'electron/**/*.{js,cjs}',
+            'tasks/**/*.{js,cjs}'
+        ],
         plugins: {
             '@stylistic': stylistic
         },

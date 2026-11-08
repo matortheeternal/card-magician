@@ -46,6 +46,8 @@ async function buildTypes() {
     await copyEntrypoints();
     bundleDeclarations();
     await appendGlobalDeclarations();
+    await copyFile(path.join(projectFolder, 'src/card-magician-testing.d.ts'),
+                   path.join(projectFolder, 'dist/card-magician-testing.d.ts'));
     runCompiler('tasks/types/tsconfig.json');
 }
 

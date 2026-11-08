@@ -43,7 +43,7 @@ export default [
     {
         files: ['src/tests/**/*.js', 'src/**/*.tests.js', 'src/**/*.smoke.js'],
         languageOptions: {
-            globals: globals.jasmine
+            globals: { ...globals.jasmine, cmTest: 'readonly' }
         }
     },
 

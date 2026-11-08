@@ -20,6 +20,7 @@ async function getTests(suffix, includeShared) {
             './shared/prototypeExtensions.js',
             './shared/localize.js',
         ] : []),
+        './shared/testing/testApi.js',
         ...await getSourceFiles(file => file.endsWith(suffix)),
         ...gameTests.map(file => `../${file}`),
         `./${suffix.slice(1)}`
