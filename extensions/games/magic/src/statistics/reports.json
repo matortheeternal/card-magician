@@ -20,13 +20,13 @@
             "bar"
         ],
         "title": "Mana curve by color",
-        "x": "mana-value",
-        "series": "color",
         "measure": "card-count",
         "toggleSeries": true,
         "filters": [
             "nonland"
-        ]
+        ],
+        "rows": "color",
+        "columns": "mana-value"
     },
     "creature-types": {
         "type": "horizontal-bar",
@@ -51,22 +51,22 @@
             "line"
         ],
         "title": "Common creature curve",
-        "x": "mana-value",
-        "series": "color",
         "measure": "card-count",
         "toggleSeries": true,
         "filters": [
             "common-creatures"
-        ]
+        ],
+        "rows": "color",
+        "columns": "mana-value"
     },
     "rules-text-length": {
         "type": "bar",
         "title": "Rules text length",
-        "x": "word-count",
-        "series": "rarity",
         "measure": "card-count",
         "toggleSeries": true,
-        "description": "Includes reminder text; excludes mana symbols and formatting."
+        "description": "Includes reminder text; excludes mana symbols and formatting.",
+        "rows": "rarity",
+        "columns": "word-count"
     },
     "rules-text-by-color": {
         "type": "matrix",
@@ -92,7 +92,6 @@
     "legendary-permanents": {
         "type": "proportion",
         "title": "Legendary permanents",
-        "description": "Legendary permanents as a share of all permanent cards.",
         "rows": "all-permanents",
         "columns": "legendary-status",
         "measure": "card-count",
@@ -132,7 +131,6 @@
             "matrix"
         ],
         "title": "Non-creature subtypes",
-        "description": "Subtypes on non-creature cards.",
         "rows": "non-creature-subtype",
         "columns": "color",
         "measure": "card-count",

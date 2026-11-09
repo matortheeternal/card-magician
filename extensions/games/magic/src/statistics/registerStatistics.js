@@ -113,7 +113,9 @@ function registerDimensions(registry, game) {
     });
     registry.registerDimension('creature-type', {
         label: L`Creature type`,
-        categories: records => subtypeCategories(records, 'creatureTypes', creatureTypeLabel),
+        categories: records => subtypeCategories(
+            records, 'creatureTypes', creatureTypeLabel
+        ),
         values: record => record.creatureTypes,
         compare: (a, b) => a.localeCompare(b)
     });
@@ -201,6 +203,7 @@ function registerReports(registry) {
 export function registerStatistics(game) {
     const registry = game.statistics;
     registry.prepare = createRecordPreparer(game);
+    registry.cardForRecord = record => record.card;
     registry.include = record => RARITIES.includes(record.rarity);
     registerDimensions(registry, game);
     registerFields(registry);

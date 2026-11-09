@@ -14,7 +14,8 @@ describe('Magic statistics card records', () => {
         expect(result).toEqual({
             name: 'Elven Scholar', color: 'g', rarity: 'uncommon',
             types: ['Creature', 'Artifact'], manaValue: 2, isLand: false,
-            wordCount: 3, creatureTypes: ['Elf', 'Wizard']
+            wordCount: 3, creatureTypes: ['Elf', 'Wizard'],
+            isPermanent: true, isLegendary: false, nonCreatureSubtypes: []
         });
         expect(face.manaCost).toBe('1G');
     });

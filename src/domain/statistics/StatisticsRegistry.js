@@ -62,6 +62,7 @@ export default class StatisticsRegistry {
      * @type {(card: card) => any}
      */
     prepare = card => card;
+    cardForRecord = record => record;
     /**
      * Determines eligibility before every report's filters are evaluated.
      * Defaults to including every prepared record.

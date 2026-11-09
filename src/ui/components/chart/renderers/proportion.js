@@ -1,3 +1,4 @@
+import { appendSelectionValue, bindChartSelection } from '../chartSelection.js';
 import { categoryLabel } from '../categoryLabel.js';
 
 const L = localize('statistics');
@@ -17,7 +18,7 @@ function numeratorIndex(data, definition) {
     return index;
 }
 
-function createSummary(data, index) {
+function createSummary(data, index, activate) {
     const count = data.columnTotals[index];
     const summary = document.createElement('div');
     summary.className = 'stats-proportion-summary';
@@ -28,6 +29,9 @@ function createSummary(data, index) {
     const detail = document.createElement('span');
     detail.dataset.proportionCount = '';
     detail.textContent = L`${data.formatValue(count)} of ${data.formatValue(data.total)}`;
+    bindChartSelection(value, { column: data.columns[index].id }, activate,
+                       `${data.columns[index].label}: ${value.textContent}`);
+    bindChartSelection(detail, {}, activate, detail.textContent);
     summary.append(value, detail);
     return summary;
 }
@@ -45,7 +49,7 @@ function createHeader(table, data, index) {
     }
 }
 
-function appendRow(body, data, category, rowIndex, columnIndex) {
+function appendRow(body, data, category, rowIndex, columnIndex, activate) {
     const row = body.insertRow();
     const heading = document.createElement('th');
     heading.scope = 'row';
@@ -56,27 +60,45 @@ function appendRow(body, data, category, rowIndex, columnIndex) {
     const values = [
         data.formatValue(count), data.formatValue(total), formatPercentage(count, total)
     ];
-    for (const value of values) row.insertCell().textContent = value;
+    const selections = [
+        { row: category.id, column: data.columns[columnIndex].id },
+        { row: category.id },
+        { row: category.id, column: data.columns[columnIndex].id }
+    ];
+    values.forEach((value, index) => appendSelectionValue(
+        row.insertCell(), value, selections[index], activate, category.label
+    ));
 }
 
-function createBreakdown(data, index) {
+function createBreakdown(data, index, activate) {
     const table = document.createElement('table');
     createHeader(table, data, index);
     const body = table.createTBody();
-    data.rows.forEach((category, row) => appendRow(body, data, category, row, index));
+    data.rows.forEach((category, row) => {
+        appendRow(body, data, category, row, index, activate);
+    });
     return table;
 }
 
 export const proportionRenderer = {
     get label() { return L`Proportion`; },
     shape: 'matrix',
+    validateDefinition(definition) {
+        if (definition.numerator === undefined)
+            throw new Error(L`Proportion requires a numerator category`);
+        if (definition.measure !== 'card-count')
+            throw new Error(L`Proportion requires the card-count measure`);
+    },
+    validateData(data, definition) {
+        numeratorIndex(data, definition);
+    },
     create(container) {
         return {
-            render(data, { definition }) {
+            render(data, { definition, activate }) {
                 const index = numeratorIndex(data, definition);
-                container.replaceChildren(createSummary(data, index));
+                container.replaceChildren(createSummary(data, index, activate));
                 if (definition.breakdown)
-                    container.appendChild(createBreakdown(data, index));
+                    container.appendChild(createBreakdown(data, index, activate));
             }
         };
     }

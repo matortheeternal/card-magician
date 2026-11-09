@@ -1,3 +1,4 @@
+import { appendSelectionValue } from '../chartSelection.js';
 import { categoryLabel } from '../categoryLabel.js';
 
 const L = localize('statistics');
@@ -30,17 +31,20 @@ function cellMaximum(data) {
     return max;
 }
 
-function appendValues(row, values, data, max) {
-    for (const value of values) {
+function appendValues(row, values, data, max, category, activate) {
+    for (const [index, value] of values.entries()) {
         const cell = row.insertCell();
-        cell.textContent = data.formatValue(value);
+        const column = data.columns[index];
+        appendSelectionValue(cell, data.formatValue(value), {
+            row: category.id, column: column.id
+        }, activate, `${category.label}, ${column.label}`);
         cell.style.setProperty('--cell-strength', String(
             0.04 + 0.24 * Math.abs(value || 0) / max
         ));
     }
 }
 
-function appendBody(table, data, totals) {
+function appendBody(table, data, totals, activate) {
     const body = table.createTBody();
     const max = cellMaximum(data);
     data.rows.forEach((category, index) => {
@@ -50,21 +54,31 @@ function appendBody(table, data, totals) {
         heading.setAttribute('aria-label', category.label);
         heading.appendChild(categoryLabel(category));
         row.appendChild(heading);
-        appendValues(row, data.cells[index], data, max);
-        if (totals)
-            row.insertCell().textContent = data.formatValue(data.rowTotals[index]);
+        appendValues(row, data.cells[index], data, max, category, activate);
+        if (totals) {
+            appendSelectionValue(
+                row.insertCell(), data.formatValue(data.rowTotals[index]),
+                { row: category.id }, activate, category.label
+            );
+        }
     });
 }
 
-function appendFooter(table, data, totals) {
+function appendFooter(table, data, totals, activate) {
     if (!totals) return;
     const row = table.createTFoot().insertRow();
     const heading = document.createElement('th');
     heading.scope = 'row';
     heading.textContent = totalLabel(data.integer);
     row.appendChild(heading);
-    for (const value of [...data.columnTotals, data.total])
-        row.insertCell().textContent = data.formatValue(value);
+    for (const [index, column] of data.columns.entries()) {
+        appendSelectionValue(
+            row.insertCell(), data.formatValue(data.columnTotals[index]),
+            { column: column.id }, activate, column.label
+        );
+    }
+    appendSelectionValue(row.insertCell(), data.formatValue(data.total), {},
+                         activate, totalLabel(data.integer));
 }
 
 function createTable(title) {
@@ -73,11 +87,11 @@ function createTable(title) {
     return table;
 }
 
-export function createMatrix(data, { totals = true, title } = {}) {
+export function createMatrix(data, { totals = true, title, activate } = {}) {
     const table = createTable(title);
     appendHeader(table, data, totals);
-    appendBody(table, data, totals);
-    appendFooter(table, data, totals);
+    appendBody(table, data, totals, activate);
+    appendFooter(table, data, totals, activate);
     return table;
 }
 
@@ -87,7 +101,9 @@ export const matrixRenderer = {
     create(container) {
         return {
             render(data, options) {
-                container.replaceChildren(createMatrix(data, options.definition));
+                container.replaceChildren(createMatrix(data, {
+                    ...options.definition, activate: options.activate
+                }));
             }
         };
     }

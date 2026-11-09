@@ -20,9 +20,8 @@ function localizeView(view) {
 
 export function localizeReport(definition) {
     const report = structuredClone(definition);
-    for (const key of ['title', 'description']) {
+    for (const key of ['title', 'description'])
         if (key in report) report[key] = localizeStatisticsText(report[key]);
-    }
     if (report.filterToggle)
         report.filterToggle = localizeFilterToggle(report.filterToggle);
     if (report.views) report.views = report.views.map(localizeView);

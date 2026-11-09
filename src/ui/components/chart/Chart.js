@@ -1,3 +1,4 @@
+import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import { CHART_ATTRIBUTES, createChartModel } from './chartData.js';
 import ChartRenderer from './ChartRenderer.js';
@@ -6,7 +7,7 @@ import './ChartControls.js';
 import './renderers/builtins.js';
 
 export default class Chart extends ReactiveComponent {
-    static observedAttributes = CHART_ATTRIBUTES;
+    static observedAttributes = [...CHART_ATTRIBUTES, 'selectable'];
     hiddenSeries = new Set();
     optionHandlers = {
         type: value => { this.selectedType = value; },
@@ -47,9 +48,13 @@ export default class Chart extends ReactiveComponent {
         this.resizeObserver?.disconnect();
         cancelAnimationFrame(this.frame);
         this.rendererHost?.dispose();
+        this.queryCache = null;
     }
 
-    attributeChangedCallback() { this.resetOptions(); }
+    attributeChangedCallback(name) {
+        if (name === 'selectable') return this.requestUpdate(false);
+        this.resetOptions();
+    }
 
     render() { this.innerHTML = html(); }
 
@@ -63,12 +68,12 @@ export default class Chart extends ReactiveComponent {
         if (entry.contentRect.width === this.renderWidth) return;
         this.renderWidth = entry.contentRect.width;
         this.resizePending = true;
-        this.requestUpdate();
+        this.requestUpdate(false);
     }
 
     onOptionChanged({ option, value }) {
         this.optionHandlers[option]?.(value);
-        this.requestUpdate();
+        this.requestUpdate(false);
     }
 
     onControlChanged(event) {
@@ -88,10 +93,31 @@ export default class Chart extends ReactiveComponent {
         this.selectedView = null;
         this.filterChecked = undefined;
         this.hiddenSeries.clear();
-        this.requestUpdate();
+        this.requestUpdate(false);
     }
 
-    requestUpdate() {
+    queryData(records, registry, query) {
+        const key = JSON.stringify(query);
+        const previous = this.queryCache;
+        if (previous?.records === records && previous.registry === registry
+            && previous.key === key) return previous.data;
+        const data = queryStatistics(records, registry, query);
+        this.queryCache = { records, registry, key, data };
+        return data;
+    }
+
+    activateSelection(selection, data = this.data, context = this.context) {
+        const records = data.getRecords(selection);
+        const cards = [...new Set(records.map(record => (
+            context.registry.cardForRecord(record)
+        )))];
+        this.emit('chart-selection', {
+            selection, records, cards, project: context.project
+        });
+    }
+
+    requestUpdate(invalidateQuery = true) {
+        if (invalidateQuery) this.queryCache = null;
         if (!this.isConnected) return;
         cancelAnimationFrame(this.frame);
         this.frame = requestAnimationFrame(() => this.update());

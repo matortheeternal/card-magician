@@ -1,3 +1,4 @@
+import { bindChartSelection } from '../chartSelection.js';
 import { scaleLinear } from 'd3-scale';
 import { categoryBackground } from '../categoryPaint.js';
 import { createChartTooltip } from '../chartTooltip.js';
@@ -26,14 +27,16 @@ function getSegments(data, index, stacked) {
     let start = 0;
     const segments = data.columns.map((paint, column) => {
         const value = data.cells[index][column] || 0;
-        const segment = { start, end: start + value, paint, stacked: true };
+        const segment = {
+            start, end: start + value, paint, column: paint.id, stacked: true
+        };
         start += value;
         return segment;
     });
     return segments.filter(segment => segment.end > segment.start);
 }
 
-function createBar({ start, end, paint, stacked }, scale) {
+function createBar({ start, end, paint, stacked, column }, scale, row, activate) {
     const bar = document.createElement('span');
     bar.className = 'stats-ranking-bar';
     bar.classList.toggle('stats-ranking-segment', Boolean(stacked));
@@ -41,6 +44,8 @@ function createBar({ start, end, paint, stacked }, scale) {
     bar.style.width = `${Math.abs(scale(end) - scale(start))}%`;
     bar.style.background = categoryBackground(paint);
     if (paint.outline) bar.style.boxShadow = `inset 0 0 0 1px ${paint.outline}`;
+    bindChartSelection(bar, { row: row.id, column }, activate,
+                       `${row.label}, ${paint.label}: ${end - start}`);
     return bar;
 }
 
@@ -54,15 +59,15 @@ function bindTooltip(row, tooltip, title, values) {
     const show = event => tooltip.show(title, values, ...tooltipPosition(event, row));
     row.addEventListener('pointerenter', show);
     row.addEventListener('pointermove', show);
-    row.addEventListener('focus', show);
+    row.addEventListener('focusin', show);
     row.addEventListener('pointerleave', tooltip.hide);
-    row.addEventListener('blur', tooltip.hide);
+    row.addEventListener('focusout', tooltip.hide);
     row.addEventListener('keydown', event => {
         if (event.key === 'Escape') tooltip.hide();
     });
 }
 
-function createRankingRow(data, index, scale, definition, tooltip) {
+function createRankingRow(data, index, scale, definition, tooltip, activate) {
     const category = data.rows[index];
     const total = data.describeValue(data.rowTotals[index]);
     const breakdown = data.columns.map((column, j) => (
@@ -78,17 +83,18 @@ function createRankingRow(data, index, scale, definition, tooltip) {
     label.textContent = category.label;
     const track = document.createElement('span');
     track.className = 'stats-ranking-track';
-    track.setAttribute('aria-hidden', 'true');
     track.append(...getSegments(data, index, definition.stacked)
-        .map(segment => createBar(segment, scale)));
+        .map(segment => createBar(segment, scale, category, activate)));
     const count = document.createElement('strong');
     count.textContent = data.formatValue(data.rowTotals[index]);
     row.append(label, track, count);
+    bindChartSelection(count, { row: category.id }, activate,
+                       `${category.label}: ${total}`);
     bindTooltip(row, tooltip, L`${category.label} — ${total}`, data.cells[index]);
     return row;
 }
 
-function populateRanking(ranking, data, definition, tooltip) {
+function populateRanking(ranking, data, definition, tooltip, activate) {
     if (!data.rows.length) {
         const message = document.createElement('p');
         message.textContent = L`No cards to plot in this scope.`;
@@ -100,18 +106,20 @@ function populateRanking(ranking, data, definition, tooltip) {
         Math.min(0, ...values), Math.max(1, ...values)
     ], [0, 100]);
     ranking.append(...data.rows.map((_, i) => (
-        createRankingRow(data, i, scale, definition, tooltip)
+        createRankingRow(data, i, scale, definition, tooltip, activate)
     )));
 }
 
 export const horizontalBarRenderer = {
     get label() { return L`Bars`; },
     shape: 'matrix',
+    validateData(data, definition) {
+        if (definition.stacked) validateStackedRows(data);
+    },
     create(container) {
         let tooltip;
         return {
-            render(data, { definition }) {
-                if (definition.stacked) validateStackedRows(data);
+            render(data, { definition, activate }) {
                 tooltip?.dispose();
                 const ranking = document.createElement('div');
                 ranking.className = 'stats-ranking';
@@ -119,7 +127,7 @@ export const horizontalBarRenderer = {
                 container.replaceChildren(ranking);
                 tooltip = createChartTooltip(container, data.columns,
                                              data.describeValue, { floating: true });
-                populateRanking(ranking, data, definition, tooltip);
+                populateRanking(ranking, data, definition, tooltip, activate);
             },
             dispose() { tooltip?.dispose(); }
         };

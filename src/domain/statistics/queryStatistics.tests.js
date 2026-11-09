@@ -28,7 +28,7 @@ describe('Statistics queries', () => {
     });
 
     it('deduplicates memberships and computes distinct totals across overlaps', () => {
-        const result = queryStatistics(records, registry, definition, 'matrix');
+        const result = queryStatistics(records, registry, definition);
         expect(result.cells).toEqual([[2, 1], [1, 2]]);
         expect(result.rowTotals).toEqual([2, 2]);
         expect(result.columnTotals).toEqual([2, 2]);
@@ -46,13 +46,13 @@ describe('Statistics queries', () => {
         });
         const result = queryStatistics(records, registry, {
             ...definition, measure: 'average-power'
-        }, 'matrix');
+        });
         expect(result.cells).toEqual([[4, 2], [2, 2]]);
         expect(result.total).toBe(4);
         expect(result.rowTotals).toEqual([4, 2]);
         expect(queryStatistics([], registry, {
             ...definition, measure: 'average-power'
-        }, 'matrix').total).toBeNull();
+        }).total).toBeNull();
     });
 
     it('applies filters and reports records without valid category memberships', () => {
@@ -61,18 +61,18 @@ describe('Statistics queries', () => {
         });
         const filtered = queryStatistics(records, registry, {
             ...definition, filters: ['strong']
-        }, 'matrix');
+        });
         expect(filtered.total).toBe(1);
         const result = queryStatistics([
             ...records, { factions: [], types: ['unit'] }
-        ], registry, definition, 'matrix');
+        ], registry, definition);
         expect(result.excludedCount).toBe(1);
         expect(result.total).toBe(3);
     });
 
     it('applies game eligibility to every query before report filters', () => {
         registry.include = record => record.power !== null;
-        const result = queryStatistics(records, registry, definition, 'matrix');
+        const result = queryStatistics(records, registry, definition);
         expect(result.total).toBe(2);
         expect(result.scopeCount).toBe(2);
         expect(result.cells).toEqual([[2, 1], [1, 1]]);
@@ -86,22 +86,22 @@ describe('Statistics queries', () => {
             });
             const result = queryStatistics(records, registry, {
                 series: 'faction', x: 'cost', measure: 'card-count'
-            }, 'series');
+            });
             expect(result.columns.map(category => category.id)).toEqual([2, 6]);
-            expect(result.series[0].values).toEqual([1, 1]);
+            expect(result.cells[0]).toEqual([1, 1]);
             registry.registerDimension('missing', {
                 label: 'Missing', values: () => [],
                 categories: ['unknown'], missing: 'unknown'
             });
             expect(queryStatistics(records, registry, {
                 ...definition, rows: 'missing'
-            }, 'matrix').total).toBe(3);
+            }).total).toBe(3);
         });
 
     it('rejects invalid definitions and keeps game registries isolated', () => {
         expect(() => queryStatistics(records, registry, {
             ...definition, columns: 'unknown'
-        }, 'matrix')).toThrowError(UNKNOWN_DIMENSION_PATTERN);
+        })).toThrowError(UNKNOWN_DIMENSION_PATTERN);
         expect(() => registry.registerDimension('faction', {
             label: 'Duplicate', values: () => []
         })).toThrowError(DUPLICATE_DEFINITION_PATTERN);
@@ -109,21 +109,65 @@ describe('Statistics queries', () => {
         registry.registerMeasure('invalid', { label: 'Invalid', reduce: () => NaN });
         expect(() => queryStatistics(records, registry, {
             ...definition, measure: 'invalid'
-        }, 'matrix')).toThrowError(NONFINITE_VALUE_PATTERN);
+        })).toThrowError(NONFINITE_VALUE_PATTERN);
     });
 
     it('sorts and limits rows without changing distinct totals', () => {
         const result = queryStatistics(records, registry, {
             ...definition, sortRows: 'descending', limitRows: 1
-        }, 'matrix');
+        });
         expect(result.rows.map(row => row.id)).toEqual(['a']);
         expect(result.rowTotals).toEqual([2]);
         expect(result.cells).toEqual([[2, 1]]);
-        expect(result.series[0].values).toEqual([2, 1]);
+        expect(result.cells[0]).toEqual([2, 1]);
         expect(result.total).toBe(3);
         expect(result.cardCount).toBe(3);
         expect(() => queryStatistics(records, registry, {
             ...definition, limitRows: 0
-        }, 'matrix')).toThrowError(POSITIVE_INTEGER_PATTERN);
+        })).toThrowError(POSITIVE_INTEGER_PATTERN);
     });
+
+    it('retains exact cell and total memberships after sorting and limiting', () => {
+        const result = queryStatistics(records, registry, {
+            ...definition, sortRows: 'descending', limitRows: 1
+        });
+        expect(result.getRecords({ row: 'a', column: 'artifact' })).toEqual([records[0]]);
+        expect(result.getRecords({ row: 'a' })).toEqual(records.slice(0, 2));
+        expect(result.getRecords({ column: 'artifact' }))
+            .toEqual([records[0], records[2]]);
+        expect(result.getRecords()).toEqual(records);
+        result.getRecords().pop();
+        expect(result.getRecords().length).toBe(3);
+        expect(() => result.getRecords({ row: 'unknown' })).toThrowError(/category/);
+    });
+
+    it('keeps group membership when numeric inputs are missing', () => {
+        registry.registerField('power', {
+            label: 'Power', value: record => record.power
+        });
+        registry.registerMeasure('max-power', {
+            label: 'Maximum', field: 'power',
+            reduce: values => values.length ? Math.max(...values) : null
+        });
+        const result = queryStatistics(records, registry, {
+            ...definition, measure: 'max-power'
+        });
+        expect(result.cells[1][1]).toBe(2);
+        expect(result.getRecords({ row: 'b', column: 'artifact' }))
+            .toEqual([records[0], records[2]]);
+    });
+
+    it('uses category IDs rather than labels and accepts numeric zero', () => {
+        registry.registerDimension('numeric', {
+            label: 'Numeric', values: record => [record.power],
+            categories: [{ id: 0, label: 'Same' }, { id: 1, label: 'Same' }]
+        });
+        const input = [{ power: 0 }, { power: 1 }];
+        const result = queryStatistics(input, registry, {
+            rows: 'numeric', columns: 'numeric'
+        });
+        expect(result.getRecords({ row: 0, column: 0 })).toEqual([input[0]]);
+        expect(result.getRecords({ row: 0, column: 1 })).toEqual([]);
+    });
+
 });

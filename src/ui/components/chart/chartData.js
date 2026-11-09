@@ -1,4 +1,7 @@
-import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
+import {
+    normalizeChartInput
+} from '../../../domain/statistics/statisticsQuery.js';
+import { resolveChartDefinition } from '../../../domain/statistics/chartDefinition.js';
 
 export const CHART_ATTRIBUTES = [
     'type', 'rows', 'columns', 'x', 'series', 'measure', 'report'
@@ -13,42 +16,20 @@ function getReport(registry, id) {
     return registry.reports.get(id);
 }
 
-function viewId(definition, selected) {
-    return selected || definition.views?.[0]?.id;
-}
-
-function resolveView(definition, selected) {
-    if (!definition.views?.length) return definition;
-    const id = viewId(definition, selected);
-    const view = definition.views.find(option => option.id === id);
-    if (!view) throw new Error(L`Unknown statistics view: ${id}`);
-    return { ...definition, ...view.definition };
-}
-
-function resolveDefinition(chart, registry) {
-    const report = {
-        ...getReport(registry, chart.getAttribute('report')), ...chart.definition
+function getDefinition(chart, registry) {
+    return {
+        ...normalizeChartInput(getReport(registry, chart.getAttribute('report'))),
+        ...normalizeChartInput(chart.definition)
     };
-    const definition = resolveView(report, chart.selectedView);
+}
+
+function getAttributes(chart) {
+    const attributes = {};
     for (const name of CHART_ATTRIBUTES) {
         if (name === 'report' || !chart.hasAttribute(name)) continue;
-        definition[name] = chart.getAttribute(name);
+        attributes[name] = chart.getAttribute(name);
     }
-    definition.measure = chart.selectedMeasure || definition.measure;
-    return definition;
-}
-
-function resolveFilters(definition, checked) {
-    const filters = [...(definition.filters || [])];
-    if (definition.filterToggle && !checked)
-        filters.push(definition.filterToggle.filter);
-    return filters;
-}
-
-function resolveRenderer(registry, type) {
-    const renderer = registry.getChartType(type);
-    if (!renderer) throw new Error(L`Unknown statistics chart type: ${type}`);
-    return renderer;
+    return attributes;
 }
 
 function getVisibleData(data, hiddenSeries, shape) {
@@ -59,8 +40,7 @@ function getVisibleData(data, hiddenSeries, shape) {
         ...data,
         rows: indices.map(i => data.rows[i]),
         cells: indices.map(i => data.cells[i]),
-        rowTotals: indices.map(i => data.rowTotals[i]),
-        series: indices.map(i => data.series[i])
+        rowTotals: indices.map(i => data.rowTotals[i])
     };
 }
 
@@ -78,17 +58,19 @@ function getTitle(definition, data) {
 
 export function createChartModel(chart) {
     const { registry, records } = chart.context;
-    const definition = resolveDefinition(chart, registry);
-    const type = chart.selectedType || definition.type;
-    const renderer = resolveRenderer(registry, type);
-    const filters = resolveFilters(definition, chart.filterChecked);
-    const data = queryStatistics(records, registry, { ...definition, filters },
-                                 renderer.shape);
+    const resolved = resolveChartDefinition(registry, getDefinition(chart, registry), {
+        type: chart.selectedType, measure: chart.selectedMeasure,
+        view: chart.selectedView, filterChecked: chart.filterChecked,
+        attributes: getAttributes(chart)
+    });
+    const { definition, query, type, renderer, viewId } = resolved;
+    const data = chart.queryData(records, registry, query);
     const visibleData = getVisibleData(data, chart.hiddenSeries, renderer.shape);
+    renderer.validateData?.(visibleData, definition);
     return {
         context: chart.context, definition, type, renderer, data, visibleData,
         title: getTitle(definition, data),
-        viewId: viewId(definition, chart.selectedView),
+        viewId,
         emptyMessage: getEmptyMessage(visibleData, renderer.shape),
         hiddenSeries: chart.hiddenSeries, filterChecked: chart.filterChecked
     };

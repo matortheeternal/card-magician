@@ -25,7 +25,7 @@ for (const type of ['line', 'bar']) {
                     dispose?.();
                     container.replaceChildren();
                     dispose = renderD3Curve(container, {
-                        ...data, type, width: options.width,
+                        ...data, type, width: options.width, activate: options.activate,
                         title: options.definition.title
                     });
                 },

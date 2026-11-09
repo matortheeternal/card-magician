@@ -19,7 +19,7 @@ export default class ChartControls extends ReactiveComponent {
 
     get title() { return this.querySelector('h2'); }
     get description() { return this.querySelector('.stats-description'); }
-    get typeSwitch() { return this.querySelector('.stats-switch'); }
+    get typeSwitch() { return this.querySelector('.stats-switch:not(.stats-views)'); }
     get viewSwitch() { return this.querySelector('.stats-views'); }
     get viewButtons() { return [...this.querySelectorAll('[data-chart-view]')]; }
     get legend() { return this.querySelector('.stats-legend'); }
@@ -82,8 +82,6 @@ export default class ChartControls extends ReactiveComponent {
 
     createTypeButton(id) {
         const renderer = this.model.context.registry.getChartType(id);
-        if (!renderer || renderer.shape !== this.model.renderer.shape)
-            throw new Error(L`Incompatible chart type: ${id}`);
         const button = document.createElement('button');
         button.type = 'button';
         button.dataset.chartType = id;
@@ -113,7 +111,9 @@ export default class ChartControls extends ReactiveComponent {
     updateViews() {
         const views = this.model.definition.views || [];
         this.viewSwitch.hidden = !views.length;
-        this.viewSwitch.replaceChildren(...views.map(view => this.createViewButton(view)));
+        this.viewSwitch.replaceChildren(
+            ...views.map(view => this.createViewButton(view))
+        );
     }
 
     createSeriesButton(category, index) {

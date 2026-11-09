@@ -25,7 +25,8 @@ export default class ChartRenderer {
         }
         this.chart.dataDetails.hidden = false;
         this.chart.dataTable.replaceChildren(createMatrix(model.visibleData, {
-            totals: false, title: model.title
+            totals: false, title: model.title,
+            activate: this.selectionHandler(model)
         }));
     }
 
@@ -35,11 +36,27 @@ export default class ChartRenderer {
         const options = {
             definition: model.definition,
             width: Math.max(360, this.chart.viewport.clientWidth),
-            context: model.context
+            context: model.context,
+            activate: this.selectionHandler(model)
         };
         const created = this.ensureRenderer(model.renderer, model.type);
-        this.draw(model.visibleData, options, created);
+        const presentation = JSON.stringify([
+            model.definition, [...model.hiddenSeries],
+            this.chart.hasAttribute('selectable')
+        ]);
+        const unchanged = this.lastData === model.data
+            && this.lastPresentation === presentation;
+        this.draw(model.visibleData, options, created || !unchanged);
+        this.lastData = model.data;
+        this.lastPresentation = presentation;
         this.chart.resizePending = false;
+    }
+
+    selectionHandler(model) {
+        if (!this.chart.hasAttribute('selectable')) return undefined;
+        return selection => this.chart.activateSelection(
+            selection, model.data, model.context
+        );
     }
 
     ensureRenderer(renderer, type) {

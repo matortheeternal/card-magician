@@ -1,10 +1,10 @@
-const L = localize('statistics');
+import {
+    normalizeStatisticsQuery, validateStatisticsQuery,
+    requireStatisticsDefinition as requireDefinition
+} from './statisticsQuery.js';
+import RecordGroups from './RecordGroups.js';
 
-function requireDefinition(collection, id, kind) {
-    const definition = collection.get(id);
-    if (!definition) throw new Error(L`Unknown statistics ${kind}: ${id}`);
-    return definition;
-}
+const L = localize('statistics');
 
 function normalizeCategory(category) {
     if (typeof category === 'object') return { ...category };
@@ -84,12 +84,6 @@ function createReducer(registry, measure) {
     };
 }
 
-function sortDirection(order) {
-    if (order === 'ascending') return 1;
-    if (order === 'descending') return -1;
-    throw new Error(L`Row sort must be ascending or descending`);
-}
-
 function compareRows(a, b, categories, rowTotals, direction) {
     if (rowTotals[a] === null && rowTotals[b] === null) return 0;
     if (rowTotals[a] === null) return 1;
@@ -101,25 +95,14 @@ function compareRows(a, b, categories, rowTotals, direction) {
 function sortRows(categories, rowTotals, sort) {
     const order = categories.map((_, i) => i);
     if (!sort) return order;
-    const direction = sortDirection(sort);
+    const direction = sort === 'ascending' ? 1 : -1;
     return order.sort((a, b) => compareRows(a, b, categories, rowTotals, direction));
 }
 
-function limitRows(order, limit) {
-    if (limit === undefined) return order;
-    if (!Number.isInteger(limit) || limit < 1)
-        throw new Error(L`Row limit must be a positive integer`);
-    return order.slice(0, limit);
-}
-
-function getRowOrder(categories, rowTotals, definition) {
-    return limitRows(sortRows(categories, rowTotals, definition.sortRows),
-                     definition.limitRows);
-}
-
-function groupingDimensions(definition, shape) {
-    if (shape === 'matrix') return [definition.rows, definition.columns];
-    return [definition.series, definition.x];
+function getRowOrder(categories, rowTotals, query) {
+    const order = sortRows(categories, rowTotals, query.sortRows);
+    if (query.limitRows === undefined) return order;
+    return order.slice(0, query.limitRows);
 }
 
 function formatNumber(value) {
@@ -127,16 +110,17 @@ function formatNumber(value) {
     return String(value);
 }
 
-export function queryStatistics(records, registry, definition, shape) {
-    const [rowId, columnId] = groupingDimensions(definition, shape);
+export function queryStatistics(records, registry, definition) {
+    const query = validateStatisticsQuery(registry, normalizeStatisticsQuery(definition));
+    const { rows: rowId, columns: columnId } = query;
     const rowDimension = requireDefinition(registry.dimensions, rowId, 'dimension');
     const columnDimension = requireDefinition(
         registry.dimensions, columnId, 'dimension'
     );
     const measure = requireDefinition(
-        registry.measures, definition.measure || 'card-count', 'measure'
+        registry.measures, query.measure, 'measure'
     );
-    const filters = (definition.filters || []).map(id => (
+    const filters = query.filters.map(id => (
         requireDefinition(registry.filters, id, 'filter')
     ));
     const scoped = records.filter(record => registry.include(record)
@@ -147,9 +131,11 @@ export function queryStatistics(records, registry, definition, shape) {
     const reduce = createReducer(registry, measure);
     const cells = groups.cells.map(row => row.map(reduce));
     const rowTotals = groups.rows.map(reduce);
-    const order = getRowOrder(rows.categories, rowTotals, definition);
+    const order = getRowOrder(rows.categories, rowTotals, query);
     const formatValue = measure.format || formatNumber;
+    const membership = new RecordGroups(rows.categories, columns.categories, groups);
     return {
+        getRecords: selection => membership.records(selection),
         rows: order.map(i => rows.categories[i]), columns: columns.categories,
         cells: order.map(i => cells[i]),
         rowLabel: rowDimension.label, columnLabel: columnDimension.label,
@@ -158,10 +144,6 @@ export function queryStatistics(records, registry, definition, shape) {
         total: reduce(groups.included), cardCount: groups.included.length,
         excludedCount: scoped.length - groups.included.length,
         scopeCount: scoped.length, formatValue,
-        describeValue: measure.describe || formatValue,
-        labels: columns.categories.map(category => category.label),
-        series: order.map(i => ({
-            ...rows.categories[i], values: cells[i]
-        }))
+        describeValue: measure.describe || formatValue
     };
 }

@@ -33,7 +33,8 @@ export { default as CardMagicianGame } from './domain/game/CardMagicianGame.js';
 export { default as StatisticsRegistry } from './domain/statistics/StatisticsRegistry.js';
 export type {
     Category, StatisticsDimension, StatisticsField, StatisticsMeasure,
-    ChartDefinition, ChartRenderer, ChartRendererInstance, StatisticsContext
+    ChartDefinition, ChartRenderer, ChartRendererInstance, StatisticsContext,
+    StatisticsQuery, StatisticsResult, ChartSelection, ChartRenderOptions
 } from './statistics.js';
 export { default as CardMagicianProject } from './domain/projects/CardMagicianProject.js';
 export { default as CardMagicianModule } from './domain/template/CardMagicianModule.js';

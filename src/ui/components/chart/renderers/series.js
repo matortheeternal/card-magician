@@ -1,3 +1,4 @@
+import { bindChartSelection } from '../chartSelection.js';
 import { select } from 'd3-selection';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
@@ -34,7 +35,7 @@ function applyOutline(mark, outline) {
     mark.attr('stroke', outline).attr('stroke-width', 1);
 }
 
-function renderSeries(svg, series, chartId, scales) {
+function renderSeries(svg, series, chartId, scales, columns, activate, show) {
     for (const [i, item] of series.entries()) {
         const points = item.values.map((value, index) => ({ index, value }));
         const color = svgCategoryPaint(svg.node(), item, `stats-${chartId}-paint-${i}`);
@@ -44,6 +45,15 @@ function renderSeries(svg, series, chartId, scales) {
             const mark = appendMark(group, point, item.id, scales);
             mark.attr('data-category-index', point.index);
             applyOutline(mark, item.outline);
+            bindChartSelection(mark.node(), {
+                row: item.id, column: columns[point.index].id
+            }, activate, `${item.label}, ${columns[point.index].label}: `
+                + scales.formatValue(point.value));
+            mark.on('pointerenter pointermove focus', () => show(point.index))
+                .on('blur', () => svg.dispatch('pointerleave'))
+                .on('keydown', event => {
+                    if (event.key === 'Escape') svg.dispatch('pointerleave');
+                });
         }
     }
 }
@@ -55,9 +65,11 @@ function regionBoundary(index, count, x, start, end) {
 }
 
 export function renderD3Curve(container, {
-    labels, series, type, width, columnLabel, measureLabel,
-    integer, formatValue, describeValue, title
+    rows, columns, cells, type, width, columnLabel, measureLabel,
+    integer, formatValue, describeValue, title, activate
 }) {
+    const labels = columns.map(column => column.label);
+    const series = rows.map((row, i) => ({ ...row, values: cells[i] }));
     const height = 320;
     const margin = { top: 20, right: 20, bottom: 48, left: 50 };
     const bottom = height - margin.bottom;
@@ -90,7 +102,6 @@ export function renderD3Curve(container, {
         .attr('text-anchor', 'middle').attr('x', -(margin.top + bottom) / 2)
         .attr('y', 13).text(measureLabel);
     const subX = scaleBand(series.map(item => item.id), [0, x.bandwidth()]).padding(0.08);
-    renderSeries(svg, series, chartId, { type, x, y, subX });
 
     const tooltip = createChartTooltip(container, series, describeValue);
     const guide = svg.append('line').attr('class', 'stats-hover-guide')
@@ -128,8 +139,12 @@ export function renderD3Curve(container, {
                 if (event.key === 'Escape') hide();
             });
     });
+    renderSeries(svg, series, chartId, {
+        type, x, y, subX, formatValue
+    }, columns, activate, show);
     svg.on('pointerleave', hide).on('pointermove', event => {
-        if (!event.target.classList.contains('stats-hit-region')) hide();
+        if (!event.target.classList.contains('stats-hit-region')
+            && !event.target.hasAttribute('data-chart-selection')) hide();
     });
     return () => tooltip.dispose();
 }

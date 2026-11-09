@@ -34,11 +34,13 @@ describe('Statistics', () => {
         await new Promise(resolve => {
             requestAnimationFrame(() => { requestAnimationFrame(resolve); });
         });
-        await eventually(() => curve.querySelector('.stats-chart svg'));
+        await eventually(() => stats.checkVisibility()
+            && curve.querySelector('.stats-chart svg'));
     });
 
     afterEach(async () => {
-        for (const chart of stats.querySelectorAll('cm-chart')) chart.resetOptions();
+        for (const chart of stats.querySelectorAll('cm-chart'))
+            chart.definition = undefined;
         await deleteTestProject();
     });
 
@@ -58,8 +60,9 @@ describe('Statistics', () => {
         expect(types.cells[0][3]).toBe(1);
         expect(data.columns.length).toBe(5);
         expect(curve.data.cardCount).toBe(4);
-        expect(curve.data.labels).toEqual(['0', '1', '2', '3', '4']);
-        expect(curve.data.series[0].values).toEqual([0, 0, 1, 0, 0]);
+        expect(curve.data.columns.map(column => column.label))
+            .toEqual(['0', '1', '2', '3', '4']);
+        expect(curve.data.cells[0]).toEqual([0, 0, 1, 0, 0]);
     });
 
     it('uses overrides, excludes back faces, and bounds extreme custom costs', () => {
@@ -69,15 +72,16 @@ describe('Statistics', () => {
         const record = registry.prepare(card);
         expect(record.color).toBe('g');
         const definition = registry.reports.get('mana-curve');
-        const data = queryStatistics([record], registry, definition, 'series');
-        expect(data.labels.at(-1)).toBe('8+');
-        expect(data.series[4].values.at(-1)).toBe(1);
-        expect(queryStatistics([], registry, definition, 'series').total).toBe(0);
+        const data = queryStatistics([record], registry, definition);
+        expect(data.columns.at(-1).label).toBe('8+');
+        expect(data.cells[4].at(-1)).toBe(1);
+        expect(queryStatistics([], registry, definition).total).toBe(0);
         expect(queryStatistics([{ ...record, manaValue: null }], registry,
-                               definition, 'series').excludedCount).toBe(1);
+                               definition).excludedCount).toBe(1);
     });
 
     it('renders both matrices and accessible color symbols', async () => {
+        expect(stats.querySelector('[data-chart-selection]')).toBeNull();
         expect(stats.querySelector('[report="color-rarity"]')
             .querySelectorAll('tbody tr').length).toBe(7);
         expect(stats.querySelector('[report="color-type"]')
@@ -118,7 +122,9 @@ describe('Statistics', () => {
             expect(tooltip.textContent).toContain('White1 card');
             region.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
             expect(tooltip.hidden).toBeTrue();
-            region.focus();
+            region.focus({ preventScroll: true });
+            expect(document.activeElement)
+                .withContext('series region focus').toBe(region);
             expect(tooltip.hidden).toBeFalse();
             curve.querySelector('[data-series="1"]').click();
             await eventually(
@@ -138,13 +144,12 @@ describe('Statistics', () => {
             expect(tooltip.hidden).toBeTrue();
         });
 
-    it('handles hidden series, land inclusion, and project updates', async () => {
+    it('handles hidden series and project updates with lands excluded', async () => {
         activeProject.cards.push(makeCard('', 'Land', 'rare'));
         changed(activeProject, 'cards');
         await eventually(() => curve.data.cardCount === 4);
-        const checkbox = curve.querySelector('[data-filter-toggle]');
-        checkbox.click();
-        await eventually(() => curve.data.cardCount === 5);
+        expect(curve.controls.filterControl.hidden).toBeTrue();
+        expect(curve.data.getRecords().some(record => record.isLand)).toBeFalse();
         for (const button of curve.querySelectorAll('[data-series]')) button.click();
         await eventually(() => curve.querySelector('.stats-chart-empty'));
         expect(curve.querySelector('.stats-chart-empty').textContent)
@@ -184,9 +189,9 @@ describe('Statistics', () => {
             registry.prepare(makeCard('8R', 'Creature')),
             registry.prepare(makeCard('7R', 'Creature')),
             registry.prepare(makeCard('6R', 'Creature'))
-        ], registry, registry.reports.get('mana-curve'), 'series');
-        expect(data.labels.at(-1)).toBe('8+');
-        expect(data.series[3].values.at(-1)).toBe(2);
+        ], registry, registry.reports.get('mana-curve'));
+        expect(data.columns.at(-1).label).toBe('8+');
+        expect(data.cells[3].at(-1)).toBe(2);
     });
 
     it(
@@ -256,8 +261,9 @@ describe('Statistics', () => {
             const commons = stats.querySelector('[report="common-creature-curve"]');
             expect(commons.data.cardCount).toBe(3);
             const histogram = stats.querySelector('[report="rules-text-length"]');
-            expect(histogram.data.labels).toEqual(['0', '1–19', '20–39', '40–59']);
-            expect(histogram.data.series[0].values).toEqual([0, 2, 1, 0]);
+            expect(histogram.data.columns.map(column => column.label))
+                .toEqual(['0', '1–19', '20–39', '40–59']);
+            expect(histogram.data.cells[0]).toEqual([0, 2, 1, 0]);
             const summary = stats.querySelector('[report="rules-text-by-color"]');
             expect(summary.data.cells[4][0]).toBe(12);
             const select = summary.querySelector('[data-measure]');
@@ -299,6 +305,11 @@ describe('Statistics', () => {
             expect(calls[0]).toBe('render');
             chart.style.width = '400px';
             await eventually(() => calls.includes('resize'));
+            chart.context.records.push({ group: 'A' });
+            chart.resizePending = true;
+            chart.requestUpdate();
+            await eventually(() => chart.viewport.textContent === 'Count: 2');
+            expect(calls.at(-1)).toBe('render');
             expect(new StatisticsRegistry().getChartType('test:summary')).toBeUndefined();
         } finally { chart.remove(); }
         expect(dispose).toHaveBeenCalledTimes(1);
@@ -317,7 +328,6 @@ describe('Statistics', () => {
                     'Color × rarity': 'Couleur × rareté', White: 'Blanc', Blue: 'Bleu',
                     Common: 'Commune', Color: 'Couleur', 'Mana value': 'Valeur de mana',
                     'Mana curve by color': 'Courbe de mana',
-                    'Include lands': 'Inclure les terrains',
                     'Average words': 'Moyenne', 'Median words': 'Médiane'
                 }
             };
@@ -354,8 +364,7 @@ describe('Statistics', () => {
                 expect(matrix.data.rows[0].label).toBe('Blanc');
                 expect(matrix.data.columns[0].id).toBe('common');
                 expect(matrix.data.columns[0].label).toBe('Commune');
-                expect(mana.controls.filterLabel.textContent)
-                    .toBe('Inclure les terrains');
+                expect(mana.controls.filterControl.hidden).toBeTrue();
                 expect(mana.controls.typeButtons[0].textContent).toBe('Lignes');
                 expect(mana.dataDetails.textContent).toContain('Voir les données');
                 mana.querySelectorAll('.stats-hit-region')[2]
@@ -371,8 +380,8 @@ describe('Statistics', () => {
                 expect(matrix.controls.measureControl.textContent).toContain('Mesure');
                 expect(matrix.controls.measureSelect.options[0].textContent)
                     .toBe('Moyenne');
-                expect(game.statistics.reports.get('mana-curve').filterToggle.filter)
-                    .toBe('nonland');
+                expect(game.statistics.reports.get('mana-curve').filters)
+                    .toEqual(['nonland']);
             } finally {
                 wrapper.remove();
                 load.and.returnValue(Promise.resolve({ resolve: () => null }));
@@ -411,7 +420,8 @@ describe('Statistics', () => {
         );
         row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
         expect(tooltip.hidden).toBeTrue();
-        row.focus();
+        row.focus({ preventScroll: true });
+        expect(document.activeElement).withContext('ranking row focus').toBe(row);
         expect(tooltip.hidden).toBeFalse();
         creatures.querySelector('.stats-ranking').dispatchEvent(new Event('scroll'));
         expect(tooltip.hidden).toBeTrue();
@@ -433,4 +443,74 @@ describe('Statistics', () => {
         expect(swatches[1].style.background).toContain('linear-gradient');
         expect(swatches[0].style.boxShadow).toContain('255, 255, 255');
     });
+
+    it('emits card selections from marks and the filtered fallback table', async () => {
+        curve.setAttribute('selectable', '');
+        await eventually(() => curve.querySelector('circle[data-chart-selection]'));
+        const selections = [];
+        const listener = event => selections.push(event.detail);
+        curve.addEventListener('chart-selection', listener);
+        const mark = curve.querySelector('circle[data-category-index="2"]');
+        mark.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(selections[0].selection).toEqual({ row: 'w', column: 2 });
+        expect(selections[0].cards).toEqual([activeProject.cards[0]]);
+        expect(selections[0].project).toBe(activeProject);
+        curve.querySelector('[data-series="0"]').click();
+        await eventually(() => curve.querySelectorAll('.stats-curve-table tbody tr')
+            .length === 6);
+        const cell = curve.querySelectorAll('.stats-curve-table tbody tr')[0]
+            .querySelectorAll('button')[2];
+        cell.click();
+        expect(selections[1].selection).toEqual({ row: 'u', column: 2 });
+        expect(selections[1].cards).toEqual([activeProject.cards[1]]);
+        curve.removeEventListener('chart-selection', listener);
+    });
+
+    it('reuses queries when resizing, hiding series and changing shape', async () => {
+        const original = curve.data;
+        const dimension = activeGame.statistics.dimensions.get('mana-value');
+        const accessor = spyOn(dimension, 'values')
+            .and.callThrough();
+        curve.onResize({ contentRect: { width: curve.renderWidth + 1 } });
+        curve.onOptionChanged({ option: 'series', value: 'w' });
+        curve.onOptionChanged({ option: 'type', value: 'matrix' });
+        await eventually(() => curve.viewport.querySelector('table'));
+        expect(curve.data).toBe(original);
+        expect(accessor).not.toHaveBeenCalled();
+        curve.onOptionChanged({ option: 'measure', value: 'average-words' });
+        await eventually(() => curve.data !== original);
+        expect(accessor).toHaveBeenCalled();
+    });
+
+    it('selects matrix totals, stacked segments and proportion groups', async () => {
+        const selections = [];
+        const listener = event => selections.push(event.detail);
+        stats.addEventListener('chart-selection', listener);
+        const matrix = stats.querySelector('[report="color-rarity"]');
+        matrix.setAttribute('selectable', '');
+        await eventually(() => matrix.querySelector('tfoot td:last-child button'));
+        matrix.querySelector('tfoot td:last-child button').click();
+        expect(selections[0].cards.length).toBe(4);
+        expect(selections[0].selection).toEqual({});
+        const creatures = stats.querySelector('[report="creature-types"]');
+        creatures.setAttribute('selectable', '');
+        activeProject.cards[0].front.subType = 'Elf';
+        changed(activeProject, 'cards');
+        await eventually(() => creatures.data.rows[0]?.id === 'Elf');
+        creatures.querySelector('.stats-ranking-segment').dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        );
+        expect(selections[1].selection).toEqual({ row: 'Elf', column: 'w' });
+        expect(selections[1].cards).toEqual([activeProject.cards[0]]);
+        const proportion = stats.querySelector('[report="legendary-permanents"]');
+        proportion.setAttribute('selectable', '');
+        await eventually(() => proportion.querySelector('[data-chart-selection]'));
+        proportion.querySelector('[data-proportion-percentage]').dispatchEvent(
+            new KeyboardEvent('keydown', { key: ' ', bubbles: true })
+        );
+        expect(selections[2].selection).toEqual({ column: 'legendary' });
+        expect(selections[2].cards).toEqual([]);
+        stats.removeEventListener('chart-selection', listener);
+    });
+
 });
