@@ -34,23 +34,55 @@ export type StatisticsMeasure = {
     describe?: (value: number | null) => string;
 };
 
-export type ChartDefinition = {
+export type StatisticsQuery = {
+    rows: string;
+    columns: string;
+    measure?: string;
+    filters?: string[];
+    sortRows?: 'ascending' | 'descending';
+    limitRows?: number;
+};
+
+export type ChartSelection = { row?: CategoryId; column?: CategoryId };
+
+export type StatisticsResult = {
+    rows: Category[];
+    columns: Category[];
+    cells: Array<Array<number | null>>;
+    rowTotals: Array<number | null>;
+    columnTotals: Array<number | null>;
+    total: number | null;
+    rowLabel: string;
+    columnLabel: string;
+    measureLabel: string;
+    integer: boolean;
+    cardCount: number;
+    scopeCount: number;
+    excludedCount: number;
+    formatValue: (value: number | null) => string;
+    describeValue: (value: number | null) => string;
+    getRecords: (selection?: ChartSelection) => any[];
+};
+
+export type ChartRenderOptions = {
+    width: number;
+    definition: ChartDefinition;
+    context: StatisticsContext;
+    activate?: (selection: ChartSelection) => void;
+};
+
+export type ChartDefinition = Partial<StatisticsQuery> & {
     type: string;
     title?: string;
     description?: string;
-    rows?: string;
-    columns?: string;
+    // Legacy input aliases for columns and rows.
     x?: string;
     series?: string;
     numerator?: CategoryId;
     breakdown?: boolean;
     views?: Array<{ id: string; label: string; definition: Partial<ChartDefinition> }>;
-    measure?: string;
     measures?: string[];
-    sortRows?: 'ascending' | 'descending';
-    limitRows?: number;
     stacked?: boolean;
-    filters?: string[];
     types?: string[];
     toggleSeries?: boolean;
     totals?: boolean;
@@ -61,11 +93,13 @@ export type ChartRenderer = {
     label?: string;
     shape: 'matrix' | 'series';
     create: (container: HTMLElement) => ChartRendererInstance;
+    validateDefinition?: (definition: ChartDefinition, registry: StatisticsRegistry) => void;
+    validateData?: (data: StatisticsResult, definition: ChartDefinition) => void;
 };
 
 export type ChartRendererInstance = {
-    render: (data: any, options: any) => void;
-    resize?: (data: any, options: any) => void;
+    render: (data: StatisticsResult, options: ChartRenderOptions) => void;
+    resize?: (data: StatisticsResult, options: ChartRenderOptions) => void;
     dispose?: () => void;
 };
 
