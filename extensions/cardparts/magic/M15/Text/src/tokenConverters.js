@@ -66,10 +66,10 @@ export const SymbolConverter = {
     },
     convert(match, { card, outputSymbols }) {
         const ordered = card.symbolOrder !== 'custom';
-        const symbols = card.parseSymbols(match[2], ordered);
+        const symbols = activeGame.parseSymbols(match[2], ordered);
         outputSymbols.push(...symbols);
         const content = (match[1] || '')
-            + card.symbolsToHTML(symbols)
+            + activeGame.symbolsToHTML(symbols)
             + (match[3] || '');
         return `<span class="symbol-block">${content}</span>`;
     }

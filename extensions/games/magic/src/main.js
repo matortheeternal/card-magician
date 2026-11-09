@@ -14,6 +14,7 @@ import mtg from './domain/hljsMtg.js';
 import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
+import MagicSymbols from './domain/symbols/MagicSymbols.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
 import MagicSettings from './ui/settings/MagicSettings.js';
@@ -34,7 +35,20 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.Project = MagicProject;
         this.Card = MagicCard;
         this.filterPresets = filterPresets;
+        this.symbols = new MagicSymbols(this);
         registerStatistics(this);
+    }
+
+    parseSymbols(str, ordered = true) {
+        return this.symbols.parseSymbols(str, ordered);
+    }
+
+    symbolsToHTML(symbols, useTall = false) {
+        return this.symbols.symbolsToHTML(symbols, useTall);
+    }
+
+    resolveColorSymbolIcon(colorId) {
+        return this.symbols.resolveColorSymbolIcon(colorId);
     }
 
     async init() {

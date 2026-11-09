@@ -78,7 +78,7 @@ function noSymbol(sym) {
 }
 
 function circleWithText(ctx, sym, size) {
-    const circleUrl = ctx.resolveAsset(`${size}/circle.png`);
+    const circleUrl = ctx.resolveAsset(`symbols/${size}/circle.png`);
     return symbolAbbr(circleUrl, sym.raw.toUpperCase());
 }
 
@@ -90,5 +90,5 @@ export function symbolToHTML(ctx, sym, size) {
         return circleWithText(ctx, sym, size);
 
     const imagePath = adapter.resolve(sym, size);
-    return symbolAbbr(ctx.resolveAsset(imagePath), '', adapter.oversized);
+    return symbolAbbr(ctx.resolveAsset(`symbols/${imagePath}`), '', adapter.oversized);
 }

@@ -31,7 +31,7 @@ export default class CostModule extends CardMagicianModule {
             : manaCost.orderedSymbols;
         card.colorIdentity.addColorSource('cost', symbols);
         changed(card, 'colorIdentity');
-        this.manaCostHTML = await card.symbolsToHTML(symbols, true);
+        this.manaCostHTML = await activeGame.symbolsToHTML(symbols, true);
         this.requestRender();
     }
 

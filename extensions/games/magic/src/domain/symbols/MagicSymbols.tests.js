@@ -1,0 +1,43 @@
+import MagicSymbols from './MagicSymbols.js';
+
+describe('Magic game symbols', () => {
+    const symbols = new MagicSymbols({
+        resolveAsset: path => `games/magic/assets/${path}`
+    });
+
+    it('preserves authored order when requested and otherwise orders costs', () => {
+        const text = '{G}{2}{W}';
+        expect(symbols.parseSymbols(text, false).map(symbol => symbol.raw))
+            .toEqual(['G', '2', 'W']);
+        expect(symbols.parseSymbols(text).map(symbol => symbol.raw))
+            .toEqual(['2', 'G', 'W']);
+    });
+
+    it('renders cost and ability symbols from game assets in both sizes', () => {
+        const parsed = symbols.parseSymbols('{2}{W/U}{T}{Q}');
+        for (const [useTall, size] of [[false, 'flat'], [true, 'tall']]) {
+            const html = symbols.symbolsToHTML(parsed, useTall);
+            for (const path of ['num/2', 'hybrid2/wu', 'tap/t', 'tap/q'])
+                expect(html).toContain(`games/magic/assets/symbols/${size}/${path}.png`);
+            expect(html).toContain('class="sym oversized"');
+        }
+    });
+
+    it('preserves the circle fallback for single-character symbols', () => {
+        const html = symbols.symbolsToHTML([
+            { type: 'custom', raw: 'a', colors: [] }
+        ]);
+        expect(html).toContain('games/magic/assets/symbols/flat/circle.png');
+        expect(html).toContain('>A</abbr>');
+    });
+
+    it('resolves statistics icons without a cardpart dependency', () => {
+        for (const color of ['w', 'u', 'b', 'r', 'g', 'c']) {
+            expect(symbols.resolveColorSymbolIcon(color)).toBe(
+                `/games/magic/assets/symbols/flat/single/${color}.png`
+            );
+        }
+        expect(symbols.resolveColorSymbolIcon('m'))
+            .toBe('/games/magic/assets/multicolor.svg');
+    });
+});

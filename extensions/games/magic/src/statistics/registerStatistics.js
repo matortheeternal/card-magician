@@ -46,14 +46,6 @@ function getRarityCategories() {
     }));
 }
 
-function resolveColorSymbolIcon(game, color) {
-    if (color.id === 'm')
-        return '/' + game.resolveAsset('multicolor.svg');
-    return '/' + game.resolvePath(
-        `../../cardparts/magic/M15/Symbols/assets/flat/single/${color.id}.png`
-    );
-}
-
 function createRecordPreparer(game) {
     const cardIds = new WeakMap();
     let nextId = 0;
@@ -93,7 +85,7 @@ function registerDimensions(registry, game) {
         categories: COLORS.map(color => ({
             ...color,
             label: localizeStatisticsText(color.label),
-            icon: resolveColorSymbolIcon(game, color)
+            icon: game.resolveColorSymbolIcon(color.id)
         }))
     });
     registry.registerDimension('rarity', {
