@@ -51,11 +51,17 @@ export class TestApplication {
         return [`--extensions-dir=${directory}`];
     }
 
+    get debug() {
+        return process.argv.includes('--debug');
+    }
+
     get headlessArgs() {
-        if (!process.argv.includes('--headless')) return [];
-        if (process.platform !== 'linux')
-            throw new Error('--headless currently requires the Linux Ozone backend.');
-        return ['--ozone-platform=headless'];
+        if (this.debug)
+            return ['--auto-open-devtools-for-tabs'];
+        if (process.platform === 'linux')
+            return ['--ozone-platform=headless'];
+        console.warn('Headless tests require Linux.');
+        return [];
     }
 
     get launchConfiguration() {
@@ -88,7 +94,6 @@ export class TestApplication {
 
     captureOutput() {
         createInterface({ input: this.child.stdout }).on('line', line => {
-            // Retain diagnostics, not a second copy of the live test report.
             if (!isTestOutput(line)) this.output += line + '\n';
             const reported = handleOutput(line, this.writeOutput);
             if (reported) this.testResult = reported;
@@ -135,7 +140,8 @@ export class TestApplication {
     }
 
     async result() {
-        await waitFor(() => this.exited, 'test completion', 120000);
+        const timeout = this.debug ? Infinity : 120000;
+        await waitFor(() => this.exited, 'test completion', timeout);
         await this.stopped();
         assert.equal(this.testResult?.status, 'passed', this.output);
     }
