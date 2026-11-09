@@ -1,5 +1,5 @@
 import { formatPercentage } from '../formatPercentage.js';
-import { appendSelectionValue, bindChartSelection } from '../chartSelection.js';
+import { bindChartSelection } from '../chartSelection.js';
 import { categoryLabel } from '../categoryLabel.js';
 
 const L = localize('statistics');
@@ -52,14 +52,8 @@ function appendRow(body, data, category, rowIndex, columnIndex, activate) {
     const values = [
         data.formatValue(count), data.formatValue(total), formatPercentage(count, total)
     ];
-    const selections = [
-        { row: category.id, column: data.columns[columnIndex].id },
-        { row: category.id },
-        { row: category.id, column: data.columns[columnIndex].id }
-    ];
-    values.forEach((value, index) => appendSelectionValue(
-        row.insertCell(), value, selections[index], activate, category.label
-    ));
+    for (const value of values) row.insertCell().textContent = value;
+    bindChartSelection(row, { row: category.id }, activate, category.label);
 }
 
 function createBreakdown(data, index, activate) {

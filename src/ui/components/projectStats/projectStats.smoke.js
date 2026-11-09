@@ -83,7 +83,7 @@ describe('Statistics', () => {
     });
 
     it('renders both matrices and accessible color symbols', async () => {
-        expect(stats.querySelector('[data-chart-selection]')).toBeNull();
+        expect(stats.querySelector('[data-chart-selection]')).not.toBeNull();
         expect(stats.querySelector('[report="color-rarity"]')
             .querySelectorAll('tbody tr').length).toBe(7);
         expect(stats.querySelector('[report="color-type"]')
@@ -166,7 +166,7 @@ describe('Statistics', () => {
             await eventually(() => curve.viewport.querySelector(selector));
             const mark = curve.viewport.querySelector(selector);
             const tooltip = curve.viewport.querySelector('.stats-chart-tooltip');
-            expect(mark.hasAttribute('data-chart-selection')).toBeFalse();
+            expect(mark.hasAttribute('data-chart-selection')).toBeTrue();
             mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
             expect(tooltip.hidden).withContext(type).toBeFalse();
             expect(tooltip.textContent).toContain('Mana value 2');
@@ -250,8 +250,7 @@ describe('Statistics', () => {
             .some(record => record.card === battle));
         expect(chart.data.total).toBe(4);
         expect(chart.data.columns.map(column => column.id)).toEqual([
-            'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment',
-            'Planeswalker', 'Other'
+            'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment', 'Other'
         ]);
         expect(chart.data.getRecords({ column: 'Other' }).length).toBe(3);
         expect(chart.data.getRecords().some(record => record.isLand)).toBeFalse();
@@ -574,6 +573,212 @@ describe('Statistics', () => {
         expect(swatches[0].style.boxShadow).toContain('255, 255, 255');
     });
 
+    it('scrolls charts and selected cards in separate full-height panes', async () => {
+        activeProject.cards = Array.from({ length: 80 }, (_, index) => (
+            makeCard('W', 'Creature', 'common', { name: `Card ${index}` })
+        ));
+        changed(activeProject, 'cards');
+        const chart = stats.querySelector('[report="color-rarity"]');
+        await eventually(() => chart.data.cardCount === 80);
+        chart.viewport.querySelector('tfoot td:last-child').click();
+        const panel = stats.cardsPanel;
+        const main = stats.scrollRegion;
+        const panelTop = panel.getBoundingClientRect().top;
+        try {
+            expect(main.scrollHeight).toBeGreaterThan(main.clientHeight);
+            expect(panel.list.scrollHeight).toBeGreaterThan(panel.list.clientHeight);
+            expect(panel.clientHeight).toBe(main.clientHeight);
+            expect(getComputedStyle(panel).position).toBe('static');
+            main.scrollTop = 120;
+            expect(main.scrollTop).toBe(120);
+            expect(panel.scrollTop).toBe(0);
+            expect(panel.getBoundingClientRect().top).toBe(panelTop);
+            const headerTop = panel.header.getBoundingClientRect().top;
+            panel.list.scrollTop = 80;
+            expect(panel.list.scrollTop).toBe(80);
+            expect(panel.scrollTop).toBe(0);
+            expect(panel.header.getBoundingClientRect().top).toBe(headerTop);
+            expect(getComputedStyle(panel.header).position).toBe('static');
+            expect(getComputedStyle(panel.header).borderBottomWidth).toBe('1px');
+            expect(panel.list.offsetWidth).toBe(panel.header.offsetWidth);
+            expect(main.scrollTop).toBe(120);
+            expect(stats.scrollHeight).toBe(stats.clientHeight);
+        } finally {
+            main.scrollTop = 0;
+            panel.list.scrollTop = 0;
+        }
+    });
+
+    it('centers the empty selection message and hides the selection header', () => {
+        const panel = stats.cardsPanel;
+        expect(panel.header.hidden).toBeTrue();
+        expect(panel.emptyMessage.checkVisibility()).toBeTrue();
+        expect(panel.emptyMessage.textContent).toBe(
+            'Select a chart row, column, or cell to view its corresponding cards.'
+        );
+        const range = document.createRange();
+        range.selectNodeContents(panel.emptyMessage);
+        const text = range.getBoundingClientRect();
+        const pane = panel.getBoundingClientRect();
+        expect(Math.abs(text.top + text.height / 2 - pane.top - pane.height / 2))
+            .toBeLessThan(2);
+        expect(Math.abs(text.left + text.width / 2 - pane.left - pane.width / 2))
+            .toBeLessThan(2);
+    });
+
+    it('shows selected names and totals safely in the side panel', async () => {
+        const names = ['<b>Chosen card</b>', 'Twin', 'Twin', 'Land', 'Artifact'];
+        activeProject.cards.forEach((card, i) => { card.front.name = names[i]; });
+        changed(activeProject, 'cards');
+        const panel = stats.cardsPanel;
+        expect(panel.emptyMessage.textContent)
+            .toContain('Select a chart row, column, or cell');
+        const matrix = stats.querySelector('[report="color-rarity"]');
+        await eventually(() => matrix.viewport.querySelector('tbody td'));
+        matrix.viewport.querySelector('tbody td').click();
+        expect(panel.source.textContent).toBe('Color × rarity');
+        expect(getComputedStyle(panel.emptyMessage).display).toBe('none');
+        expect(panel.group.textContent).toBe('Cell: White × Common');
+        expect(panel.summary.textContent).toBe('1 card');
+        expect(panel.list.textContent).toBe('<b>Chosen card</b>');
+        expect(panel.list.querySelector('b')).toBeNull();
+        matrix.viewport.querySelector('tfoot td:last-child').click();
+        expect(panel.group.textContent).toBe('All cards');
+        expect(panel.summary.textContent).toBe('4 cards');
+        expect([...panel.list.children].map(item => item.textContent))
+            .toEqual(['<b>Chosen card</b>', 'Twin', 'Twin', 'Artifact']);
+        expect(panel.clearButton.name).toBe('x-lg');
+        expect(panel.clearButton.label).toBe('Clear Selection');
+        expect(panel.clearButton.closest('sl-tooltip').content).toBe('Clear Selection');
+        panel.clearButton.click();
+        expect(panel.list.children.length).toBe(0);
+        expect(panel.clearButton.hidden).toBeTrue();
+        expect(panel.emptyMessage.textContent)
+            .toContain('Select a chart row, column, or cell');
+    });
+
+    it('shows keyboard selections and clears stale project data', async () => {
+        const panel = stats.cardsPanel;
+        await eventually(() => curve.querySelector('circle[data-category-index="2"]'));
+        curve.querySelector('circle[data-category-index="2"]').dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+        );
+        expect(panel.source.textContent).toBe('Mana curve by color');
+        expect(panel.group.textContent).toBe('Cell: White × 2');
+        expect(panel.list.children.length).toBe(1);
+        const proportion = stats.querySelector('[report="legendary-permanents"]');
+        proportion.querySelector('[data-proportion-percentage]').dispatchEvent(
+            new KeyboardEvent('keydown', { key: ' ', bubbles: true })
+        );
+        expect(panel.summary.textContent).toBe('0 cards');
+        expect(panel.list.children.length).toBe(0);
+        expect(panel.clearButton.hidden).toBeFalse();
+        activeProject.cards = [];
+        changed(activeProject, 'cards');
+        expect(panel.emptyMessage.textContent)
+            .toContain('Select a chart row, column, or cell');
+        expect(panel.source.textContent).toBe('');
+        expect(panel.clearButton.hidden).toBeTrue();
+    });
+
+    it('selects entire matrix cells and row and column labels without buttons', () => {
+        const chart = stats.querySelector('[report="color-rarity"]');
+        const activate = spyOn(chart, 'activateSelection').and.callThrough();
+        const row = chart.viewport.querySelector('tbody tr');
+        const cell = row.querySelector('td');
+        expect(chart.viewport.querySelector('button')).toBeNull();
+        expect(cell.getAttribute('tabindex')).toBe('0');
+        expect(cell.getAttribute('role')).toBeNull();
+        cell.click();
+        expect(activate.calls.mostRecent().args[0])
+            .toEqual({ row: 'w', column: 'common' });
+        expect(stats.cardsPanel.summary.textContent).toBe('1 card');
+        row.querySelector('th img').click();
+        expect(activate.calls.mostRecent().args[0]).toEqual({ row: 'w' });
+        expect(stats.cardsPanel.group.textContent).toBe('Row: White');
+        const column = chart.viewport.querySelectorAll('thead th')[1];
+        column.dispatchEvent(new KeyboardEvent('keydown', {
+            key: ' ', bubbles: true
+        }));
+        expect(activate.calls.mostRecent().args[0]).toEqual({ column: 'common' });
+        expect(stats.cardsPanel.group.textContent).toBe('Column: Common');
+        expect(stats.cardsPanel.summary.textContent).toBe('2 cards');
+        chart.viewport.querySelector('thead th').click();
+        expect(activate.calls.mostRecent().args[0]).toEqual({});
+        expect(stats.cardsPanel.summary.textContent).toBe('4 cards');
+        expect(activate.calls.count()).toBe(4);
+    });
+
+    it('selects a distribution row from its label, percentage or keyboard', () => {
+        const chart = stats.querySelector('[report="color-count"]');
+        const activate = spyOn(chart, 'activateSelection').and.callThrough();
+        const row = chart.viewport.querySelectorAll('tbody tr')[1];
+        expect(chart.viewport.querySelector('button')).toBeNull();
+        row.querySelector('th').click();
+        row.querySelector('td:last-child').click();
+        row.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter', bubbles: true
+        }));
+        expect(activate.calls.count()).toBe(3);
+        expect(activate.calls.allArgs().map(args => args[0]))
+            .toEqual([{ row: 1 }, { row: 1 }, { row: 1 }]);
+        expect(stats.cardsPanel.summary.textContent).toBe('2 cards');
+    });
+
+    it('selects whole line and bar segments while retaining specific marks', async () => {
+        const activate = spyOn(curve, 'activateSelection').and.callThrough();
+        for (const [type, tag] of [['line', 'circle'], ['bar', 'rect']]) {
+            curve.querySelector(`[data-chart-type="${type}"]`).click();
+            await eventually(() => curve.viewport.querySelector(`g ${tag}`));
+            const region = curve.viewport.querySelectorAll('.stats-hit-region')[2];
+            region.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            expect(activate.calls.mostRecent().args[0]).toEqual({ column: 2 });
+            expect(stats.cardsPanel.summary.textContent).toBe('2 cards');
+            region.dispatchEvent(new KeyboardEvent('keydown', {
+                key: 'Enter', bubbles: true
+            }));
+            expect(activate.calls.mostRecent().args[0]).toEqual({ column: 2 });
+            const selector = `g ${tag}[data-category-index="2"]`;
+            const mark = curve.viewport.querySelector(selector);
+            mark.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            expect(activate.calls.mostRecent().args[0]).toEqual({ row: 'w', column: 2 });
+            expect(stats.cardsPanel.summary.textContent).toBe('1 card');
+        }
+        expect(activate.calls.count()).toBe(6);
+    });
+
+    it('selects horizontal rows and individual color segments separately', async () => {
+        activeProject.cards[0].front.subType = 'Elf';
+        activeProject.cards[2].front.subType = 'Elf';
+        changed(activeProject, 'cards');
+        const chart = stats.querySelector('[report="creature-types"]');
+        await eventually(() => chart.data.rows[0]?.id === 'Elf');
+        const activate = spyOn(chart, 'activateSelection').and.callThrough();
+        const row = chart.viewport.querySelector('.stats-ranking-row');
+        row.querySelector('span').click();
+        row.querySelector('strong').click();
+        row.querySelector('.stats-ranking-track').click();
+        row.dispatchEvent(new KeyboardEvent('keydown', {
+            key: ' ', bubbles: true
+        }));
+        expect(activate.calls.count()).toBe(4);
+        expect(activate.calls.allArgs().map(args => args[0]))
+            .toEqual(Array(4).fill({ row: 'Elf' }));
+        expect(stats.cardsPanel.summary.textContent).toBe('2 cards');
+        const segment = row.querySelector('.stats-ranking-segment');
+        segment.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(activate.calls.count()).toBe(5);
+        expect(activate.calls.mostRecent().args[0])
+            .toEqual({ row: 'Elf', column: 'w' });
+        expect(stats.cardsPanel.summary.textContent).toBe('1 card');
+        segment.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter', bubbles: true
+        }));
+        expect(activate.calls.count()).toBe(6);
+        expect(activate.calls.mostRecent().args[0])
+            .toEqual({ row: 'Elf', column: 'w' });
+    });
+
     it('emits card selections from marks and the filtered matrix mode', async () => {
         curve.setAttribute('selectable', '');
         await eventually(() => curve.querySelector('circle[data-chart-selection]'));
@@ -589,7 +794,7 @@ describe('Statistics', () => {
         curve.querySelector('[data-chart-type="matrix"]').click();
         await eventually(() => curve.viewport.querySelectorAll('tbody tr').length === 6);
         const cell = curve.viewport.querySelectorAll('tbody tr')[0]
-            .querySelectorAll('button')[2];
+            .querySelectorAll('td')[2];
         cell.click();
         expect(selections[1].selection).toEqual({ row: 'u', column: 2 });
         expect(selections[1].cards).toEqual([activeProject.cards[1]]);
@@ -618,8 +823,8 @@ describe('Statistics', () => {
         stats.addEventListener('chart-selection', listener);
         const matrix = stats.querySelector('[report="color-rarity"]');
         matrix.setAttribute('selectable', '');
-        await eventually(() => matrix.querySelector('tfoot td:last-child button'));
-        matrix.querySelector('tfoot td:last-child button').click();
+        await eventually(() => matrix.querySelector('tfoot td:last-child'));
+        matrix.querySelector('tfoot td:last-child').click();
         expect(selections[0].cards.length).toBe(4);
         expect(selections[0].selection).toEqual({});
         const creatures = stats.querySelector('[report="creature-types"]');
@@ -640,6 +845,13 @@ describe('Statistics', () => {
         );
         expect(selections[2].selection).toEqual({ column: 'legendary' });
         expect(selections[2].cards).toEqual([]);
+        proportion.querySelector('[data-chart-view="color"]').click();
+        await eventually(() => proportion.viewport.querySelector('tbody tr'));
+        const breakdownRow = proportion.viewport.querySelector('tbody tr');
+        expect(breakdownRow.querySelector('button')).toBeNull();
+        breakdownRow.querySelector('td').click();
+        expect(selections[3].selection).toEqual({ row: 'w' });
+        expect(selections[3].cards).toEqual([activeProject.cards[0]]);
         stats.removeEventListener('chart-selection', listener);
     });
 

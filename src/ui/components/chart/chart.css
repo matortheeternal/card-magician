@@ -333,16 +333,6 @@ cm-chart .stats-proportion-summary {
     }
 }
 
-cm-chart td > button[data-chart-selection] {
-    font: inherit;
-    color: inherit;
-    border: 0;
-    border-radius: 0;
-    padding: 0;
-    width: 100%;
-    text-align: inherit;
-}
-
 cm-chart [data-chart-selection] {
     cursor: pointer;
 }

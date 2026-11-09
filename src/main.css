@@ -119,6 +119,10 @@ main > cm-loader {
     overflow: auto;
 }
 
+#workspace-tabs > sl-tab-panel[name="statistics"]::part(base) {
+    overflow: hidden;
+}
+
 #workspace-tabs > sl-tab-panel[name="cards"]::part(base) {
     display: flex;
     flex-direction: row;

@@ -1,4 +1,4 @@
-import { appendSelectionValue } from '../chartSelection.js';
+import { bindChartSelection } from '../chartSelection.js';
 import { categoryLabel } from '../categoryLabel.js';
 import { formatPercentage } from '../formatPercentage.js';
 
@@ -22,11 +22,10 @@ function appendRow(body, data, index, activate) {
     heading.scope = 'row';
     heading.appendChild(categoryLabel(category));
     row.appendChild(heading);
-    const selection = { row: category.id };
-    appendSelectionValue(row.insertCell(), data.formatValue(count), selection,
-                         activate, category.label);
-    appendSelectionValue(row.insertCell(), formatPercentage(count, data.total),
-                         selection, activate, category.label);
+    row.insertCell().textContent = data.formatValue(count);
+    row.insertCell().textContent = formatPercentage(count, data.total);
+    bindChartSelection(row, { row: category.id }, activate,
+                       `${category.label}: ${data.formatValue(count)}`);
 }
 
 function createDistribution(data, activate) {

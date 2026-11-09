@@ -126,7 +126,7 @@ export function renderD3Curve(container, {
         const description = L`${columnLabel} ${label}` + '. ' + series.map(item => (
             L`${item.label}: ${describeValue(item.values[index])}`
         )).join(', ');
-        svg.append('rect').attr('class', 'stats-hit-region')
+        const region = svg.append('rect').attr('class', 'stats-hit-region')
             .attr('x', left).attr('y', margin.top)
             .attr('width', right - left).attr('height', bottom - margin.top)
             .attr('fill', 'transparent').attr('tabindex', 0)
@@ -137,6 +137,8 @@ export function renderD3Curve(container, {
             .on('keydown', event => {
                 if (event.key === 'Escape') hide();
             });
+        bindChartSelection(region.node(), { column: columns[index].id }, activate,
+                           description);
     });
     renderSeries(svg, series, chartId, {
         type, x, y, subX, formatValue

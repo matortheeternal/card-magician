@@ -6,9 +6,13 @@ const L = localize('game-magic-statistics');
 const SINGLE_COLOR_ORDER = new Map(
     ['c', 'w', 'u', 'b', 'r', 'g'].map((id, index) => [id, index])
 );
-const OVERVIEW_TYPE_GROUPS = new Map([['Battle', 'Other'], ['Kindred', 'Other']]);
+const OVERVIEW_TYPE_GROUPS = new Map([
+    ['Planeswalker', 'Other'],
+    ['Battle', 'Other'],
+    ['Kindred', 'Other']
+]);
 const OVERVIEW_TYPES = CARD_TYPES.filter(id => (
-    !['Battle', 'Kindred', 'Land'].includes(id)
+    !['Planeswalker', 'Battle', 'Kindred', 'Land'].includes(id)
 ));
 
 function colorCombinationCategory(id) {
@@ -60,7 +64,7 @@ function colorCountCategories(records) {
 
 function registerColorDimensions(registry) {
     registry.registerDimension('exact-color', {
-        label: L`Exact color combination`,
+        label: L`Exact color`,
         values: record => [exactColor(record)], categories: colorCombinations
     });
     registry.registerDimension('color-count', {

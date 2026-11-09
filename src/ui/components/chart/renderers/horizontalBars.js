@@ -82,7 +82,7 @@ function createRankingRow(data, index, scale, definition, tooltip, activate) {
     const count = document.createElement('strong');
     count.textContent = data.formatValue(data.rowTotals[index]);
     row.append(label, track, count);
-    bindChartSelection(count, { row: category.id }, activate,
+    bindChartSelection(row, { row: category.id }, activate,
                        `${category.label}: ${total}`);
     bindTooltip(row, tooltip, L`${category.label} — ${total}`, data.cells[index]);
     return row;

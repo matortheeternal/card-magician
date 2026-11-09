@@ -43,7 +43,7 @@ export default class ChartRenderer {
         const created = this.ensureRenderer(model.renderer, model.type);
         const presentation = JSON.stringify([
             model.definition, [...model.hiddenSeries], model.expanded,
-            this.chart.hasAttribute('selectable')
+            this.chart.isSelectable
         ]);
         const unchanged = this.lastData === model.data
             && this.lastPresentation === presentation;
@@ -54,7 +54,7 @@ export default class ChartRenderer {
     }
 
     selectionHandler(model) {
-        if (!this.chart.hasAttribute('selectable')) return undefined;
+        if (!this.chart.isSelectable) return undefined;
         return selection => this.chart.activateSelection(
             selection, model.data, model.context
         );

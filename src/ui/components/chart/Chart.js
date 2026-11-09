@@ -1,3 +1,4 @@
+import { chartSelectionLabel } from './chartSelection.js';
 import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import { CHART_ATTRIBUTES, createChartModel } from './chartData.js';
@@ -19,6 +20,9 @@ export default class Chart extends ReactiveComponent {
     };
 
     get workspace() { return this.closest('cm-project-stats'); }
+    get isSelectable() {
+        return this.hasAttribute('selectable') || Boolean(this.workspace);
+    }
     get controls() { return this.querySelector('cm-chart-controls'); }
     get viewport() { return this.querySelector('.stats-render'); }
     get dataDetails() { return this.querySelector('.stats-data'); }
@@ -115,7 +119,9 @@ export default class Chart extends ReactiveComponent {
             context.registry.cardForRecord(record)
         )))];
         this.emit('chart-selection', {
-            selection, records, cards, project: context.project
+            selection, records, cards, project: context.project,
+            title: this.controls.title.textContent,
+            label: chartSelectionLabel(data, selection)
         });
     }
 
