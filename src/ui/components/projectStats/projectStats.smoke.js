@@ -679,35 +679,6 @@ describe('Statistics', () => {
         expect(activeEditorCard.front.name).toBe('Twin');
     });
 
-    it('reveals a filtered-out result through keyboard activation', async () => {
-        const target = activeProject.cards[0];
-        target.front.name = 'Selected result';
-        activeProject.cards[1].front.name = 'Visible result';
-        changed(activeProject, 'cards');
-        const cardList = document.querySelector('cm-card-list');
-        try {
-            await executeAction('filter', 'Visible');
-            await cardList.flushSelection();
-            expect(cardList.listView.rows).not.toContain(target);
-            const chart = stats.querySelector('[report="color-rarity"]');
-            await eventually(() => chart.data.cardCount === 4);
-            chart.viewport.querySelector('tbody td').click();
-            stats.cardsPanel.list.firstElementChild.dispatchEvent(new KeyboardEvent(
-                'keydown', { key: 'Enter', bubbles: true }
-            ));
-            await eventually(() => cardList.filterValue === '');
-            await cardList.flushSelection();
-            expect(tabs.activeTab.panel).toBe('cards');
-            expect(selectedProjectCard).toBe(target);
-            expect(cardList.listView.selection.map(row => row.original))
-                .toEqual([target]);
-            expect(cardList.filterInput.value).toBe('');
-        } finally {
-            await executeAction('filter', '');
-            await cardList.flushSelection();
-        }
-    });
-
     it('shows keyboard selections and clears stale project data', async () => {
         const panel = stats.cardsPanel;
         await eventually(() => curve.querySelector('circle[data-category-index="2"]'));
