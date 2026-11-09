@@ -88,4 +88,17 @@ describe('Magic card dimensions', () => {
         expect(data.getRecords({ row: 'wr' })).toEqual([input[0]]);
     });
 
+    it('orders exact colors before multicolor identities consistently', () => {
+        const input = ['BRG', 'G', 'B', 'RW', '2', 'R', 'U', 'W'].map(manaCost => (
+            cardRecord({ front: { manaCost } }, game)
+        ));
+        input.push(cardRecord({ front: { colorOverride: ['m'] } }, game));
+        const data = queryStatistics(input, registry, {
+            rows: 'exact-color', columns: 'art-credit'
+        });
+        expect(data.rows.map(row => row.id)).toEqual([
+            'c', 'w', 'u', 'b', 'r', 'g', 'wr', 'brg', 'unclassified'
+        ]);
+    });
+
 });

@@ -3,6 +3,9 @@ import { COLORS, CARD_TYPES } from './cardRecord.js';
 import { localizeStatisticsText } from './localization.js';
 
 const L = localize('game-magic-statistics');
+const SINGLE_COLOR_ORDER = new Map(
+    ['c', 'w', 'u', 'b', 'r', 'g'].map((id, index) => [id, index])
+);
 const OVERVIEW_TYPE_GROUPS = new Map([['Battle', 'Other'], ['Kindred', 'Other']]);
 const OVERVIEW_TYPES = CARD_TYPES.filter(id => (
     !['Battle', 'Kindred', 'Land'].includes(id)
@@ -19,9 +22,15 @@ function exactColor(record) {
     return record.colorCombination ?? 'unclassified';
 }
 
+function compareColorCombinations(a, b) {
+    const aOrder = SINGLE_COLOR_ORDER.get(a) ?? SINGLE_COLOR_ORDER.size;
+    const bOrder = SINGLE_COLOR_ORDER.get(b) ?? SINGLE_COLOR_ORDER.size;
+    return aOrder - bOrder || a.length - b.length || a.localeCompare(b);
+}
+
 function colorCombinations(records) {
     const ids = [...new Set(records.map(exactColor))];
-    ids.sort((a, b) => a.length - b.length || a.localeCompare(b));
+    ids.sort(compareColorCombinations);
     return ids.map(colorCombinationCategory);
 }
 
