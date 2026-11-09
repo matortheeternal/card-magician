@@ -82,7 +82,6 @@ export function renderD3Curve(container, {
     const svg = select(container).append('svg')
         .attr('viewBox', `0 0 ${width} ${height}`)
         .attr('role', 'group').attr('aria-label', title || measureLabel);
-    svg.append('title').text(title || measureLabel);
     const chartId = ++nextChart;
     for (const tick of y.ticks(6).filter(value => !integer || Number.isInteger(value))) {
         svg.append('line').attr('class', 'stats-gridline')

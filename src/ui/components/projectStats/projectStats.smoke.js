@@ -97,6 +97,18 @@ describe('Statistics', () => {
             .every(image => image.complete && image.naturalWidth > 0));
     });
 
+    it('switches rules text length between bars and a matrix', async () => {
+        const chart = stats.querySelector('[report="rules-text-length"]');
+        await eventually(() => chart.viewport.querySelector('svg'));
+        expect(chart.dataDetails.hidden).toBeTrue();
+        chart.querySelector('[data-chart-type="matrix"]').click();
+        await eventually(() => chart.viewport.querySelector('table'));
+        expect(chart.dataDetails.hidden).toBeTrue();
+        chart.querySelector('[data-chart-type="bar"]').click();
+        await eventually(() => chart.viewport.querySelector('svg'));
+        expect(chart.dataDetails.hidden).toBeTrue();
+    });
+
     it('switches D3 between lines and grouped bars and hides colors', async () => {
         curve.querySelector('[data-series="1"]').click();
         await eventually(() => curve.querySelectorAll('.stats-chart path').length === 6);
@@ -161,6 +173,8 @@ describe('Statistics', () => {
             mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
             expect(tooltip.hidden).withContext(`${type} repeated movement`).toBeFalse();
             const svg = curve.viewport.querySelector('svg');
+            expect(svg.querySelector('title')).toBeNull();
+            expect(svg.getAttribute('aria-label')).toBe('Mana curve by color');
             svg.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
             expect(tooltip.hidden).toBeTrue();
             mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
@@ -650,8 +664,9 @@ describe('Statistics', () => {
         expect(colors.controls.description.textContent).toBe('');
         expect(shapes.viewport.querySelector('tbody tr td:last-child').textContent)
             .toContain('25');
-        expect(colors.data.rowTotals).toEqual([0, 4, 1, 0, 0, 0, 0]);
-        const monoRow = colors.viewport.querySelectorAll('tbody tr')[1];
+        expect(colors.data.rowTotals).toEqual([4, 1]);
+        expect(colors.data.rows.map(row => row.id)).toEqual([1, 2]);
+        const monoRow = colors.viewport.querySelector('tbody tr');
         expect(monoRow.lastElementChild.textContent).toContain('80');
         shapes.querySelector('[data-chart-view="bodies"]').click();
         await eventually(() => shapes.data.rowLabel === 'Power');
