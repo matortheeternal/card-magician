@@ -30,6 +30,7 @@ export default class ChartControls extends ReactiveComponent {
     get measureSelect() { return this.querySelector('[data-measure]'); }
     get controlsRow() { return this.querySelector('.stats-curve-controls'); }
     get typeButtons() { return [...this.querySelectorAll('[data-chart-type]')]; }
+    get rowLimitButton() { return this.querySelector('[data-row-limit]'); }
     get seriesButtons() { return [...this.querySelectorAll('[data-series]')]; }
 
     render() { this.innerHTML = html(); }
@@ -38,7 +39,8 @@ export default class ChartControls extends ReactiveComponent {
         this.handleEvents('click', {
             selectType: event => this.selectType(event),
             selectView: event => this.selectView(event),
-            selectSeries: event => this.selectSeries(event)
+            selectSeries: event => this.selectSeries(event),
+            toggleRows: () => this.changeOption('rows', !this.model.expanded)
         });
         this.handleEvents('change', {
             filterChanged: () => this.changeOption('filter', this.filterInput.checked),
@@ -62,7 +64,7 @@ export default class ChartControls extends ReactiveComponent {
 
     selectSeries(event) {
         const index = Number(event.target.closest('[data-series]').dataset.series);
-        this.changeOption('series', this.model.data.rows[index].id);
+        this.changeOption('series', this.model.seriesCategories[index].id);
     }
 
     update(model) {
@@ -75,8 +77,9 @@ export default class ChartControls extends ReactiveComponent {
         this.updateLegend();
         this.updateFilter();
         this.updateMeasure();
+        this.updateRowLimit();
         this.controlsRow.hidden = !model.definition.filterToggle
-            && !this.legend.children.length;
+            && !this.legend.children.length && this.rowLimitButton.hidden;
         this.restoreFocus(focus);
     }
 
@@ -135,16 +138,19 @@ export default class ChartControls extends ReactiveComponent {
     }
 
     updateLegend() {
-        const categories = this.visibleCategories();
-        this.legend.setAttribute('aria-label', L`Visible ${this.model.data.rowLabel}`);
+        const categories = this.model.seriesCategories;
+        this.legend.setAttribute('aria-label', L`Visible ${this.model.seriesLabel}`);
         this.legend.replaceChildren(...categories
             .map((category, i) => this.createSeriesButton(category, i)));
     }
 
-    visibleCategories() {
-        if (this.model.renderer.shape !== 'series' || !this.model.definition.toggleSeries)
-            return [];
-        return this.model.data.rows;
+    updateRowLimit() {
+        const { definition, rowCount, expanded } = this.model;
+        const limit = definition.displayLimit;
+        this.rowLimitButton.hidden = !limit || rowCount <= limit;
+        this.rowLimitButton.textContent = expanded
+            ? L`Show top ${limit}` : L`Show all ${rowCount} results`;
+        this.rowLimitButton.setAttribute('aria-expanded', String(Boolean(expanded)));
     }
 
     updateFilter() {
@@ -179,11 +185,14 @@ export default class ChartControls extends ReactiveComponent {
         if (focused.hasAttribute('data-series'))
             return { option: 'series', value: focused.dataset.series };
         if (focused === this.measureSelect) return { option: 'measure' };
+        if (focused === this.rowLimitButton) return { option: 'rows' };
         return null;
     }
 
     restoreFocus(focus) {
         if (!focus) return;
+        if (focus.option === 'rows')
+            return this.rowLimitButton.focus({ preventScroll: true });
         if (focus.option === 'measure')
             return this.measureSelect.focus({ preventScroll: true });
         const buttons = this.focusButtons(focus.option);

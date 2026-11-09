@@ -11,7 +11,17 @@ export function requireChartRenderer(registry, type) {
     return renderer;
 }
 
+function validateDisplayOptions(definition) {
+    if (definition.displayLimit !== undefined
+        && (!Number.isInteger(definition.displayLimit) || definition.displayLimit < 1))
+        throw new Error(L`Display limit must be a positive integer`);
+    if (definition.seriesAxis !== undefined
+        && !['rows', 'columns'].includes(definition.seriesAxis))
+        throw new Error(L`Series axis must be rows or columns`);
+}
+
 function validateOptions(registry, definition) {
+    validateDisplayOptions(definition);
     for (const id of statisticsIdentifiers(definition.measures))
         requireStatisticsDefinition(registry.measures, id, 'measure');
     if (definition.filterToggle) {

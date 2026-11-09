@@ -1,3 +1,5 @@
+import { cardColors } from './cardColors.js';
+import { creatureStats } from './creatureStats.js';
 import {
     countRulesWords, creatureTypes, nonCreatureSubtypes
 } from './textAnalysis.js';
@@ -15,7 +17,7 @@ export const COLORS = [
 export const RARITIES = ['common', 'uncommon', 'rare', 'mythic', 'special'];
 export const CARD_TYPES = [
     'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment',
-    'Land', 'Planeswalker', 'Other'
+    'Land', 'Planeswalker', 'Battle', 'Kindred', 'Other'
 ];
 
 const CARD_TYPE_PATTERNS = CARD_TYPES.filter(type => type !== 'Other')
@@ -37,20 +39,6 @@ function getColorOverride(override) {
     return Array.isArray(override) ? override.join('') : override;
 }
 
-function createColorIdentity(cost, override, game) {
-    const identity = new game.ColorIdentity();
-    if (cost?.symbols) identity.addColorSource('card', cost.symbols);
-    if (override) identity.setOverride(override);
-    return identity;
-}
-
-function getColor(cost, override, game) {
-    const colors = createColorIdentity(cost, override, game).getColors();
-    if (override?.includes('c')) return 'c';
-    if (colors.length > 1 || override?.includes('m')) return 'm';
-    return colors[0]?.char || 'c';
-}
-
 function getCardTypes(superType = '') {
     const types = CARD_TYPE_PATTERNS
         .filter(({ pattern }) => pattern.test(superType))
@@ -70,12 +58,19 @@ function getManaValue(cost) {
     return Number.isFinite(value) && value >= 0 ? value : null;
 }
 
-export function cardRecord(card, game) {
+function hasArtCredit(face, project) {
+    const credit = face.illustrator || project?.illustrator || '';
+    return Boolean(String(credit).trim());
+}
+
+export function cardRecord(card, game, project) {
     const face = card.front || {};
     const cost = parseManaCost(face.manaCost, game);
     const types = getCardTypes(face.superType);
     return {
-        color: getColor(cost, getColorOverride(face.colorOverride), game),
+        ...cardColors(cost, getColorOverride(face.colorOverride), game),
+        ...creatureStats(face, types.includes('Creature')),
+        hasArtCredit: hasArtCredit(face, project),
         rarity: getRarity(face.rarity),
         types,
         manaValue: getManaValue(cost),

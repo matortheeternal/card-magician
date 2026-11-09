@@ -1,3 +1,4 @@
+import { createChartVisibility } from './chartVisibility.js';
 import {
     normalizeChartInput
 } from '../../../domain/statistics/statisticsQuery.js';
@@ -32,22 +33,11 @@ function getAttributes(chart) {
     return attributes;
 }
 
-function getVisibleData(data, hiddenSeries, shape) {
-    if (shape === 'matrix') return data;
-    const indices = data.rows.map((_, i) => i)
-        .filter(i => !hiddenSeries.has(data.rows[i].id));
-    return {
-        ...data,
-        rows: indices.map(i => data.rows[i]),
-        cells: indices.map(i => data.cells[i]),
-        rowTotals: indices.map(i => data.rowTotals[i])
-    };
-}
-
-function getEmptyMessage(data, shape) {
-    if (shape !== 'series') return '';
-    if (!data.rows.length) return L`Select a series to show its data.`;
-    if (!data.cardCount) return L`No cards to plot in this scope.`;
+function getEmptyMessage(data, shape, seriesAxis, toggleSeries) {
+    if (toggleSeries && !data[seriesAxis].length)
+        return L`Select a series to show its data.`;
+    if (!data.cardCount && (shape === 'series' || toggleSeries))
+        return L`No cards to plot in this scope.`;
     return '';
 }
 
@@ -64,14 +54,16 @@ export function createChartModel(chart) {
         attributes: getAttributes(chart)
     });
     const { definition, query, type, renderer, viewId } = resolved;
-    const data = chart.queryData(records, registry, query);
-    const visibleData = getVisibleData(data, chart.hiddenSeries, renderer.shape);
+    const source = chart.queryData(records, registry, query);
+    const visibility = createChartVisibility(chart, source, query, definition);
+    const { data, visibleData, seriesAxis } = visibility;
     renderer.validateData?.(visibleData, definition);
     return {
-        context: chart.context, definition, type, renderer, data, visibleData,
+        context: chart.context, definition, type, renderer, ...visibility,
         title: getTitle(definition, data),
         viewId,
-        emptyMessage: getEmptyMessage(visibleData, renderer.shape),
+        emptyMessage: getEmptyMessage(visibleData, renderer.shape,
+                                      seriesAxis, definition.toggleSeries),
         hiddenSeries: chart.hiddenSeries, filterChecked: chart.filterChecked
     };
 }

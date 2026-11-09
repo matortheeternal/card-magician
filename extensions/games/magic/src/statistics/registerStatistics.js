@@ -1,5 +1,6 @@
 import { COLORS, RARITIES, CARD_TYPES, cardRecord } from './cardRecord.js';
 import './MagicStatistics.js';
+import { registerCardDimensions } from './registerCardDimensions.js';
 import {
     average, max, median, wordCountBucket, wordCountCategories
 } from './textAnalysis.js';
@@ -56,11 +57,11 @@ function resolveColorSymbolIcon(game, color) {
 function createRecordPreparer(game) {
     const cardIds = new WeakMap();
     let nextId = 0;
-    return card => {
+    return (card, project) => {
         if (!cardIds.has(card)) cardIds.set(card, nextId++);
         return {
             card, analysisId: cardIds.get(card),
-            ...cardRecord(card, game)
+            ...cardRecord(card, game, project)
         };
     };
 }
@@ -168,6 +169,11 @@ function registerFields(registry) {
 }
 
 function registerMeasures(registry) {
+    registry.registerMeasure('missing-art-credit', {
+        ...registry.measures.get('card-count'),
+        label: L`Cards without art credit`,
+        reduce: records => records.filter(record => !record.hasArtCredit).length
+    });
     for (const [id, label, reduce] of WORD_MEASURES) {
         registry.registerMeasure(id, {
             label: localizeStatisticsText(label), field: 'word-count', reduce,
@@ -204,8 +210,10 @@ export function registerStatistics(game) {
     const registry = game.statistics;
     registry.prepare = createRecordPreparer(game);
     registry.cardForRecord = record => record.card;
+    registry.projectProperties.push('illustrator');
     registry.include = record => RARITIES.includes(record.rarity);
     registerDimensions(registry, game);
+    registerCardDimensions(registry);
     registerFields(registry);
     registerMeasures(registry);
     registerFilters(registry);

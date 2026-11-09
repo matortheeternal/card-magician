@@ -2,6 +2,7 @@ import { registerChartType } from '../../../../domain/statistics/chartTypes.js';
 import { matrixRenderer } from './matrix.js';
 import { renderD3Curve } from './series.js';
 import { horizontalBarRenderer } from './horizontalBars.js';
+import { distributionRenderer } from './distribution.js';
 import { proportionRenderer } from './proportion.js';
 
 const L = localize('statistics');
@@ -14,6 +15,7 @@ function seriesLabel(type) {
 registerChartType('matrix', matrixRenderer);
 registerChartType('horizontal-bar', horizontalBarRenderer);
 registerChartType('proportion', proportionRenderer);
+registerChartType('distribution', distributionRenderer);
 for (const type of ['line', 'bar']) {
     registerChartType(type, {
         get label() { return seriesLabel(type); },

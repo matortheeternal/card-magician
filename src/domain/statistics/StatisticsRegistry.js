@@ -17,7 +17,7 @@ function describeCardCount(value) {
  * Stores one game's statistics data definitions and custom chart renderers.
  *
  * Every game receives its own registry through CardMagicianGame.statistics.
- * Accessors and filters consume the result of prepare(card). Definitions are
+ * Accessors and filters consume the result of prepare(card, project). Definitions are
  * registered before the Statistics workspace mounts. Identifiers remain stable
  * across locales; display labels must already be localized when registered.
  *
@@ -59,9 +59,11 @@ export default class StatisticsRegistry {
     /**
      * Creates an analysis record from a project card once per project update.
      * Defaults to returning the card unchanged.
-     * @type {(card: card) => any}
+     * @type {(card: card, project?: any) => any}
      */
     prepare = card => card;
+    // Project paths that invalidate prepared records, including game-specific defaults.
+    projectProperties = ['cards'];
     cardForRecord = record => record;
     /**
      * Determines eligibility before every report's filters are evaluated.

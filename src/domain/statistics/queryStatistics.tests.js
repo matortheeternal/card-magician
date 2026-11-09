@@ -217,4 +217,30 @@ describe('Statistics queries', () => {
         expect(result.getRecords({ row: 'a' })).toEqual([records[0], records[1]]);
     });
 
+
+    it('recomputes distinct totals and memberships when columns are excluded', () => {
+        const result = queryStatistics(records, registry, {
+            ...definition, excludedColumns: ['unit']
+        });
+        expect(result.columns.map(column => column.id)).toEqual(['artifact']);
+        expect(result.cells).toEqual([[1], [2]]);
+        expect(result.rowTotals).toEqual([1, 2]);
+        expect(result.columnTotals).toEqual([2]);
+        expect(result.total).toBe(2);
+        expect(result.getRecords({ row: 'a' })).toEqual([records[0]]);
+        expect(result.getRecords()).toEqual([records[0], records[2]]);
+        const empty = queryStatistics(records, registry, {
+            ...definition, excludedColumns: ['unit', 'artifact']
+        });
+        expect(empty.total).toBe(0);
+        expect(empty.getRecords()).toEqual([]);
+    });
+
+    it('rejects duplicate category definitions even if excluded', () => {
+        registry.dimensions.get('type').categories = ['unit', 'unit', 'artifact'];
+        expect(() => queryStatistics(records, registry, {
+            ...definition, excludedColumns: ['unit']
+        })).toThrowError(/Duplicate category/);
+    });
+
 });

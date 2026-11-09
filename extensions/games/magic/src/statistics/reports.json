@@ -4,7 +4,22 @@
         "title": "Color × rarity",
         "rows": "color",
         "columns": "rarity",
-        "measure": "card-count"
+        "measure": "card-count",
+        "views": [
+            {
+                "id": "category",
+                "label": "Color category",
+                "definition": {}
+            },
+            {
+                "id": "exact",
+                "label": "Exact colors",
+                "definition": {
+                    "rows": "exact-color",
+                    "title": "Exact colors × rarity"
+                }
+            }
+        ]
     },
     "color-type": {
         "type": "matrix",
@@ -17,7 +32,8 @@
         "type": "line",
         "types": [
             "line",
-            "bar"
+            "bar",
+            "matrix"
         ],
         "title": "Mana curve by color",
         "measure": "card-count",
@@ -26,7 +42,9 @@
             "nonland"
         ],
         "rows": "color",
-        "columns": "mana-value"
+        "columns": "mana-value",
+        "dataTable": false,
+        "totals": false
     },
     "creature-types": {
         "type": "horizontal-bar",
@@ -42,13 +60,17 @@
             "creatures"
         ],
         "sortRows": "descending",
-        "stacked": true
+        "stacked": true,
+        "toggleSeries": true,
+        "seriesAxis": "columns",
+        "displayLimit": 15
     },
     "common-creature-curve": {
         "type": "bar",
         "types": [
             "bar",
-            "line"
+            "line",
+            "matrix"
         ],
         "title": "Common creature curve",
         "measure": "card-count",
@@ -57,7 +79,9 @@
             "common-creatures"
         ],
         "rows": "color",
-        "columns": "mana-value"
+        "columns": "mana-value",
+        "dataTable": false,
+        "totals": false
     },
     "rules-text-length": {
         "type": "bar",
@@ -135,6 +159,57 @@
         "columns": "color",
         "measure": "card-count",
         "sortRows": "descending",
-        "stacked": true
+        "stacked": true,
+        "toggleSeries": true,
+        "seriesAxis": "columns",
+        "displayLimit": 15
+    },
+    "color-count": {
+        "type": "distribution",
+        "title": "Color count",
+        "rows": "color-count",
+        "columns": "rarity"
+    },
+    "creature-shape": {
+        "type": "distribution",
+        "title": "Creature shape",
+        "rows": "creature-shape",
+        "columns": "color",
+        "filters": [
+            "creatures"
+        ],
+        "views": [
+            {
+                "id": "shape",
+                "label": "Shape",
+                "definition": {}
+            },
+            {
+                "id": "color",
+                "label": "By color",
+                "definition": {
+                    "type": "matrix",
+                    "rows": "color",
+                    "columns": "creature-shape"
+                }
+            },
+            {
+                "id": "bodies",
+                "label": "Power × toughness",
+                "definition": {
+                    "type": "matrix",
+                    "rows": "power",
+                    "columns": "toughness",
+                    "title": "Creature power × toughness"
+                }
+            }
+        ]
+    },
+    "missing-art-credit": {
+        "type": "proportion",
+        "title": "Cards without art credit",
+        "rows": "all-cards",
+        "columns": "art-credit",
+        "numerator": "missing"
     }
 }

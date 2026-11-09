@@ -17,4 +17,6 @@ export default () => `
         <div class="stats-legend" role="group"></div>
         <label class="stats-filter"><input type="checkbox" data-filter-toggle
             data-change-action="filterChanged"> <span></span></label>
+        <button type="button" data-row-limit
+            data-click-action="toggleRows" hidden></button>
     </div>`;

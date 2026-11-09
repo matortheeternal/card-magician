@@ -1,16 +1,8 @@
+import { formatPercentage } from '../formatPercentage.js';
 import { appendSelectionValue, bindChartSelection } from '../chartSelection.js';
 import { categoryLabel } from '../categoryLabel.js';
 
 const L = localize('statistics');
-const percentage = new Intl.NumberFormat(undefined, {
-    style: 'percent', maximumFractionDigits: 1
-});
-
-function formatPercentage(count, total) {
-    if (!total) return '—';
-    return percentage.format(count / total);
-}
-
 function numeratorIndex(data, definition) {
     const index = data.columns.findIndex(column => column.id === definition.numerator);
     if (index < 0)

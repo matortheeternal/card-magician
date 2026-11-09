@@ -19,8 +19,9 @@ export default class ChartRenderer {
     }
 
     updateDataTable(model) {
-        if (model.renderer.shape !== 'series') {
+        if (model.renderer.shape !== 'series' || model.definition.dataTable === false) {
             this.chart.dataDetails.hidden = true;
+            this.chart.dataTable.replaceChildren();
             return;
         }
         this.chart.dataDetails.hidden = false;
@@ -41,7 +42,7 @@ export default class ChartRenderer {
         };
         const created = this.ensureRenderer(model.renderer, model.type);
         const presentation = JSON.stringify([
-            model.definition, [...model.hiddenSeries],
+            model.definition, [...model.hiddenSeries], model.expanded,
             this.chart.hasAttribute('selectable')
         ]);
         const unchanged = this.lastData === model.data

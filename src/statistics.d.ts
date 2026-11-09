@@ -39,6 +39,7 @@ export type StatisticsQuery = {
     columns: string;
     measure?: string;
     filters?: string[];
+    excludedColumns?: CategoryId[];
     sortRows?: 'ascending' | 'descending';
     limitRows?: number;
 };
@@ -85,6 +86,9 @@ export type ChartDefinition = Partial<StatisticsQuery> & {
     stacked?: boolean;
     types?: string[];
     toggleSeries?: boolean;
+    seriesAxis?: 'rows' | 'columns';
+    displayLimit?: number;
+    dataTable?: boolean;
     totals?: boolean;
     filterToggle?: { filter: string; label: string };
 };

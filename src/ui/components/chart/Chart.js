@@ -14,7 +14,8 @@ export default class Chart extends ReactiveComponent {
         measure: value => { this.selectedMeasure = value; },
         view: value => { this.selectedView = value; },
         filter: value => { this.filterChecked = value; },
-        series: value => this.toggleSeries(value)
+        series: value => this.toggleSeries(value),
+        rows: value => { this.showAllRows = value; }
     };
 
     get workspace() { return this.closest('cm-project-stats'); }
@@ -93,16 +94,18 @@ export default class Chart extends ReactiveComponent {
         this.selectedView = null;
         this.filterChecked = undefined;
         this.hiddenSeries.clear();
+        this.showAllRows = false;
         this.requestUpdate(false);
     }
 
-    queryData(records, registry, query) {
+    queryData(records, registry, query, slot = 'source') {
         const key = JSON.stringify(query);
-        const previous = this.queryCache;
+        this.queryCache ||= {};
+        const previous = this.queryCache[slot];
         if (previous?.records === records && previous.registry === registry
             && previous.key === key) return previous.data;
         const data = queryStatistics(records, registry, query);
-        this.queryCache = { records, registry, key, data };
+        this.queryCache[slot] = { records, registry, key, data };
         return data;
     }
 

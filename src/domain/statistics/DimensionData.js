@@ -22,23 +22,30 @@ function getCategories(dimension, records, values) {
     return categories;
 }
 
-function indexCategories(categories, dimension) {
+function indexCategories(categories, dimension, excluded) {
     const indices = new Map();
-    for (const [index, category] of categories.entries()) {
-        if (indices.has(category.id))
+    const seen = new Set();
+    const available = [];
+    for (const category of categories) {
+        if (seen.has(category.id))
             throw new Error(L`Duplicate category in ${dimension.id}: ${category.id}`);
-        indices.set(category.id, index);
+        seen.add(category.id);
+        if (excluded.has(category.id)) continue;
+        indices.set(category.id, available.length);
+        available.push(category);
     }
-    return indices;
+    return { categories: available, indices };
 }
 
 export default class DimensionData {
-    constructor(dimension, records) {
+    constructor(dimension, records, excludedCategories = []) {
         this.definition = dimension;
         const values = records.map(record => recordValues(dimension, record));
         const categories = getCategories(dimension, records, values);
-        this.categories = categories.map(normalizeCategory);
-        this.indices = indexCategories(this.categories, dimension);
+        const indexed = indexCategories(categories.map(normalizeCategory), dimension,
+                                        new Set(excludedCategories));
+        this.categories = indexed.categories;
+        this.indices = indexed.indices;
         this.memberships = values.map(ids => this.membershipIndices(ids));
     }
 

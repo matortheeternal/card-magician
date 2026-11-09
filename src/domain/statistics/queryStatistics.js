@@ -16,7 +16,9 @@ export function queryStatistics(records, registry, definition) {
     const query = validateStatisticsQuery(registry, normalizeStatisticsQuery(definition));
     const scoped = scopeRecords(records, registry, query.filters);
     const rows = new DimensionData(registry.dimensions.get(query.rows), scoped);
-    const columns = new DimensionData(registry.dimensions.get(query.columns), scoped);
+    const columns = new DimensionData(
+        registry.dimensions.get(query.columns), scoped, query.excludedColumns
+    );
     const groups = new RecordGroups(scoped, rows, columns);
     const measure = registry.measures.get(query.measure);
     const aggregates = aggregateStatistics(groups, registry, measure);

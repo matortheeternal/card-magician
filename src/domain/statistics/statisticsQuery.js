@@ -20,12 +20,18 @@ export function statisticsIdentifiers(value) {
     return [...value];
 }
 
+function categoryExclusions(ids = []) {
+    if (!Array.isArray(ids)) throw new Error(L`Excluded categories must be an array`);
+    return [...ids];
+}
+
 export function normalizeStatisticsQuery(definition) {
     return {
         rows: definition.rows ?? definition.series,
         columns: definition.columns ?? definition.x,
         measure: definition.measure || 'card-count',
         filters: statisticsIdentifiers(definition.filters),
+        excludedColumns: categoryExclusions(definition.excludedColumns),
         sortRows: definition.sortRows,
         limitRows: definition.limitRows
     };

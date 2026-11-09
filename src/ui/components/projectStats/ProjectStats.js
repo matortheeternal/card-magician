@@ -63,7 +63,8 @@ export default class ProjectStats extends ReactiveComponent {
     observeProject(project) {
         this.project = project;
         this.updateGame(window.activeGame);
-        this.watch('project-cards', project, 'cards', () => this.refresh());
+        this.watch('project-statistics', project, this.game.statistics.projectProperties,
+                   () => this.refresh());
         this.refresh();
     }
 
@@ -71,7 +72,7 @@ export default class ProjectStats extends ReactiveComponent {
         const cards = this.project?.cards || [];
         this.context = {
             registry: this.game.statistics, project: this.project,
-            records: cards.map(card => this.game.statistics.prepare(card))
+            records: cards.map(card => this.game.statistics.prepare(card, this.project))
         };
         this.summary.textContent = cardCountLabel(cards.length);
         this.emptyMessage.hidden = cards.length > 0;
