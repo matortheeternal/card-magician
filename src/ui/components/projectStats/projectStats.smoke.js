@@ -1,3 +1,4 @@
+import { executeAction } from '../../systems/actionSystem.js';
 import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
 import StatisticsRegistry from '../../../domain/statistics/StatisticsRegistry.js';
 import Localization from '../../../shared/Localization.js';
@@ -655,6 +656,56 @@ describe('Statistics', () => {
         expect(panel.clearButton.hidden).toBeTrue();
         expect(panel.emptyMessage.textContent)
             .toContain('Select a chart row, column, or cell');
+    });
+
+    it('opens the exact card on click even with duplicate names', async () => {
+        activeProject.cards[0].front.name = 'Twin';
+        activeProject.cards[1].front.name = 'Twin';
+        changed(activeProject, 'cards');
+        const chart = stats.querySelector('[report="color-rarity"]');
+        await eventually(() => chart.data.cardCount === 4);
+        chart.viewport.querySelector('tfoot td:last-child').click();
+        const target = activeProject.cards[1];
+        stats.cardsPanel.list.children[1].click();
+        const cardList = document.querySelector('cm-card-list');
+        await cardList.flushSelection();
+        await eventually(() => window.selectedProjectCard === target
+            && activeEditorCard?.front.manaCost.toString()
+                === target.front.manaCost.toString());
+        expect(tabs.activeTab.panel).toBe('cards');
+        expect(cardList.listView.selection.map(row => row.original))
+            .toEqual([target]);
+        expect(cardList.listView.activeRow.original).toBe(target);
+        expect(activeEditorCard.front.name).toBe('Twin');
+    });
+
+    it('reveals a filtered-out result through keyboard activation', async () => {
+        const target = activeProject.cards[0];
+        target.front.name = 'Selected result';
+        activeProject.cards[1].front.name = 'Visible result';
+        changed(activeProject, 'cards');
+        const cardList = document.querySelector('cm-card-list');
+        try {
+            await executeAction('filter', 'Visible');
+            await cardList.flushSelection();
+            expect(cardList.listView.rows).not.toContain(target);
+            const chart = stats.querySelector('[report="color-rarity"]');
+            await eventually(() => chart.data.cardCount === 4);
+            chart.viewport.querySelector('tbody td').click();
+            stats.cardsPanel.list.firstElementChild.dispatchEvent(new KeyboardEvent(
+                'keydown', { key: 'Enter', bubbles: true }
+            ));
+            await eventually(() => cardList.filterValue === '');
+            await cardList.flushSelection();
+            expect(tabs.activeTab.panel).toBe('cards');
+            expect(selectedProjectCard).toBe(target);
+            expect(cardList.listView.selection.map(row => row.original))
+            .toEqual([target]);
+            expect(cardList.filterInput.value).toBe('');
+        } finally {
+            await executeAction('filter', '');
+            await cardList.flushSelection();
+        }
     });
 
     it('shows keyboard selections and clears stale project data', async () => {

@@ -1,8 +1,10 @@
+import { executeAction } from '../../systems/actionSystem.js';
 import './StatisticsCards.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import { onActiveProjectChanged } from '../../../domain/projects/projectManager.js';
 
 const L = localize('project-statistics');
+const report = createReporter({ unit: 'ProjectStats' });
 
 function cardCountLabel(count) {
     if (count === 1) return L`${count} card`;
@@ -18,6 +20,7 @@ function createGamePage(game) {
 }
 
 export default class ProjectStats extends ReactiveComponent {
+    get workspaceTabs() { return document.querySelector('#workspace-tabs'); }
     get scrollRegion() { return this.querySelector('.stats-main'); }
     get page() { return this.querySelector('.stats-page'); }
     get scope() { return this.querySelector('.stats-scope'); }
@@ -49,6 +52,7 @@ export default class ProjectStats extends ReactiveComponent {
 
     bind() {
         this.on('chart-selection', event => this.showSelection(event));
+        this.on('card-activated', event => this.openCard(event));
         this.unsubscribeProject = onActiveProjectChanged(project => {
             this.observeProject(project);
         });
@@ -57,6 +61,15 @@ export default class ProjectStats extends ReactiveComponent {
     showSelection(event) {
         if (event.detail.project !== this.project) return;
         this.cardsPanel.showSelection(event.detail);
+    }
+
+    openCard(event) {
+        if (event.target !== this.cardsPanel) return;
+        const { card } = event.detail;
+        if (!this.project.cards.includes(card)) return;
+        this.workspaceTabs.show('cards');
+        executeAction('reveal-card', card)
+            .catch(error => report('openCard', error, [card]));
     }
 
     disconnectedCallback() {

@@ -33,6 +33,8 @@ export default class ListView extends ReactiveComponent {
             emit(this, 'row-selected', { row: this.activeRow || null });
     }
 
+    get activeRowElement() { return this.tbody.querySelector('tr.last-selected'); }
+
     get activeRow() {
         return getActiveRow(this.activeRows);
     }
@@ -276,6 +278,14 @@ export default class ListView extends ReactiveComponent {
 
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
+    }
+
+    revealRow(original) {
+        const index = this.activeRows.findIndex(row => row.original === original);
+        if (index < 0) return;
+        this.selection = [index];
+        emit(this, 'row-selected', { row: this.activeRow });
+        this.activeRowElement.scrollIntoView({ block: 'nearest' });
     }
 
     onRowClick(event, row) {

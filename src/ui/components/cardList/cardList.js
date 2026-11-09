@@ -54,6 +54,7 @@ export default class CardList extends ReactiveComponent {
         });
         registerAction('toggle-filter', () => this.showFilter());
         registerAction('add-card', () => this.addCard());
+        registerAction('reveal-card', card => this.revealCard(card));
         registerAction('create-cards', cards => this.createCards(cards));
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
     }
@@ -61,6 +62,8 @@ export default class CardList extends ReactiveComponent {
     get filterBar() {
         return this.querySelector('.filter-bar');
     }
+
+    get filterInput() { return this.filterBar.querySelector('sl-input'); }
 
     get listView() {
         return this.querySelector('cm-list-view');
@@ -95,6 +98,18 @@ export default class CardList extends ReactiveComponent {
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
         this.updateStatus();
+    }
+
+    async revealCard(card) {
+        if (!activeProject.cards.includes(card)) return;
+        await this.flushSelection();
+        if (!this.listView.rows.includes(card)) {
+            this.filterValue = '';
+            this.filterInput.value = '';
+            this.updateFilter();
+        }
+        this.listView.revealRow(card);
+        await this.flushSelection();
     }
 
     async deleteSelectedCards() {

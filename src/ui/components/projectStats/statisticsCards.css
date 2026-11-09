@@ -51,8 +51,14 @@ cm-statistics-cards {
     }
 
     li {
+        cursor: pointer;
         padding: var(--sl-spacing-x-small) var(--sl-spacing-large);
         border-bottom: 1px solid var(--sl-color-neutral-200);
+    }
+
+    li:focus-visible {
+        outline: 2px solid var(--sl-color-primary-500);
+        outline-offset: -2px;
     }
 
     li:last-child { border-bottom: 0; }

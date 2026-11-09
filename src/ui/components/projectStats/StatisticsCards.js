@@ -68,11 +68,22 @@ export default class StatisticsCards extends ReactiveComponent {
         this.emptyMessage.hidden = true;
         this.summary.textContent = cardCountLabel(cards.length);
         this.clearButton.hidden = false;
-        this.list.replaceChildren(...cards.map(card => {
-            const item = document.createElement('li');
-            item.textContent = card.name || L`Unnamed card`;
-            return item;
-        }));
+        this.list.replaceChildren(...cards.map(card => this.createCardItem(card)));
+    }
+
+    createCardItem(card) {
+        const item = document.createElement('li');
+        item.textContent = card.name || L`Unnamed card`;
+        item.tabIndex = 0;
+        item.setAttribute('aria-label', L`Open card: ${item.textContent}`);
+        const activate = () => this.emit('card-activated', { card });
+        item.addEventListener('click', activate);
+        item.addEventListener('keydown', event => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            activate();
+        });
+        return item;
     }
 
     clear() {
