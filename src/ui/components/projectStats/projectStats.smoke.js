@@ -700,7 +700,7 @@ describe('Statistics', () => {
             expect(tabs.activeTab.panel).toBe('cards');
             expect(selectedProjectCard).toBe(target);
             expect(cardList.listView.selection.map(row => row.original))
-            .toEqual([target]);
+                .toEqual([target]);
             expect(cardList.filterInput.value).toBe('');
         } finally {
             await executeAction('filter', '');
@@ -868,6 +868,32 @@ describe('Statistics', () => {
         expect(accessor).toHaveBeenCalled();
     });
 
+    it('selects legendary cards from proportion cells and all color cards from totals',
+       async () => {
+           const legendary = makeCard('W', 'Legendary Creature');
+           const ordinary = makeCard('W', 'Creature');
+           activeProject.cards = [legendary, ordinary];
+           changed(activeProject, 'cards');
+           const chart = stats.querySelector('[report="legendary-permanents"]');
+           chart.querySelector('[data-chart-view="color"]').click();
+           await eventually(() => chart.data.cardCount === 2
+               && chart.viewport.querySelector('tbody tr'));
+           const row = chart.viewport.querySelector('tbody tr');
+           const cells = row.querySelectorAll('td');
+           const activate = spyOn(chart, 'activateSelection').and.callThrough();
+           for (const index of [0, 2]) {
+               cells[index].click();
+               expect(activate.calls.mostRecent().args[0])
+                   .toEqual({ row: 'w', column: 'legendary' });
+               expect(stats.cardsPanel.list.children.length).toBe(1);
+               expect(stats.cardsPanel.group.textContent).toBe('Cell: White × Legendary');
+           }
+           cells[1].click();
+           expect(activate.calls.mostRecent().args[0]).toEqual({ row: 'w' });
+           expect(stats.cardsPanel.list.children.length).toBe(2);
+           expect(activate.calls.count()).toBe(3);
+       });
+
     it('selects matrix totals, stacked segments and proportion groups', async () => {
         const selections = [];
         const listener = event => selections.push(event.detail);
@@ -900,7 +926,7 @@ describe('Statistics', () => {
         await eventually(() => proportion.viewport.querySelector('tbody tr'));
         const breakdownRow = proportion.viewport.querySelector('tbody tr');
         expect(breakdownRow.querySelector('button')).toBeNull();
-        breakdownRow.querySelector('td').click();
+        breakdownRow.querySelectorAll('td')[1].click();
         expect(selections[3].selection).toEqual({ row: 'w' });
         expect(selections[3].cards).toEqual([activeProject.cards[0]]);
         stats.removeEventListener('chart-selection', listener);
