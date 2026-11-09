@@ -1,10 +1,11 @@
 {
   "id": "magic/M15/Split",
   "gameId": "magic",
+  "gameVersion": "^0.2.0",
   "label": "M15 Split",
   "description": "Template for representing Magic 2015 split cards.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2.0",
   "card": [
     "magic/M15/SplitFrame",
     "magic/M15/CardLayout",

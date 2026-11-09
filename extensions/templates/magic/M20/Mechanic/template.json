@@ -1,10 +1,11 @@
 {
   "id": "magic/M20/Mechanic",
   "gameId": "magic",
+  "gameVersion": "^0.2.0",
   "label": "M20 Mechanic",
   "description": "This template is for the Mechanic Frame.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2.0",
   "card": [
     "magic/M15/CardLayout",
     "magic/M20/MechanicFrame",

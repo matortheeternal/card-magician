@@ -1,6 +1,6 @@
 {
   "name": "@card-magician/magic",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "type": "module",
   "dependencies": {
     "@sigil-sifter/magic": "^1.2.0",

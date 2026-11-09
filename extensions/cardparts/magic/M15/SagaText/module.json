@@ -1,10 +1,11 @@
 {
   "id": "magic/M15/SagaText",
   "gameId": "magic",
+  "gameVersion": "^0.2.0",
   "description": "Defines structured card rules text used by Sagas.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2.0",
   "dependencies": {
-    "magic/M15/Text": "^0.1"
+    "magic/M15/Text": "^0.2.0"
   }
 }
