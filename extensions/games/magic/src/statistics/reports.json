@@ -103,6 +103,11 @@
     },
     "rules-text-length": {
         "type": "bar",
+        "types": [
+            "bar",
+            "matrix"
+        ],
+        "dataTable": false,
         "title": "Rules text length",
         "measure": "card-count",
         "toggleSeries": true,
