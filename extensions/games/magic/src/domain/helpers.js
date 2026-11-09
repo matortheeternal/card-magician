@@ -1,9 +1,5 @@
-const ARTIFACT_PATTERN = /\bArtifact\b/i;
-const LAND_PATTERN = /\bLand\b/i;
-const BASIC_LAND_PATTERN = /\bBasic Land\b/i;
-const TOKEN_PATTERN = /\bToken\b/i;
-const EMBLEM_PATTERN = /\bEmblem\b/i;
-const CREATURE_PATTERN = /\bCreature\b/i;
+import * as cardTypes from './cardTraits/cardTypes.js';
+
 export function isUninitializedCard(card) {
     return Object.keys(card.front).length < 2;
 }
@@ -20,15 +16,15 @@ export function isMonoColor(card, color) {
 }
 
 export function isArtifact(card) {
-    return ARTIFACT_PATTERN.test(card.front.superType || '');
+    return cardTypes.isArtifact(card.front);
 }
 
 export function isLand(card) {
-    return LAND_PATTERN.test(card.front.superType || '');
+    return cardTypes.isLand(card.front);
 }
 
 export function isBasicLand(card) {
-    return BASIC_LAND_PATTERN.test(card.front.superType || '');
+    return cardTypes.isBasicLand(card.front);
 }
 
 export function isMulticolor(card) {
@@ -38,13 +34,13 @@ export function isMulticolor(card) {
 }
 
 export function isToken(card) {
-    return TOKEN_PATTERN.test(card.front.superType || '');
+    return cardTypes.isToken(card.front);
 }
 
 export function isEmblem(card) {
-    return EMBLEM_PATTERN.test(card.front.superType || '');
+    return cardTypes.isEmblem(card.front);
 }
 
 export function isCreature(card) {
-    return CREATURE_PATTERN.test(card.front.superType || '');
+    return cardTypes.isCreature(card.front);
 }

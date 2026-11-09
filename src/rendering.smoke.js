@@ -1,3 +1,4 @@
+import { buildCardFace } from './domain/card/cardBuilder.js';
 import {
     createCard, createTestProject, deleteTestProject, flushCard, setCardFields
 } from './shared/testing/testUtils.js';
@@ -23,6 +24,48 @@ describe('Rendering', () => {
 
     afterAll(async () => {
         await deleteTestProject();
+    });
+
+    it('initializes game traits before loading face and subcard modules', async () => {
+        const initialize = activeGame.initializeCardFace;
+        const initialized = [];
+        spyOn(activeGame, 'initializeCardFace').and.callFake(face => {
+            initialize.call(activeGame, face);
+            expect(face.modules).toEqual([]);
+            expect(face.isLand()).toBeFalse();
+            expect(face.hasNoText()).toBeTrue();
+            const symbols = face.parseSymbols('{W}');
+            expect(face.symbolsToHTML(symbols))
+                .toContain('/assets/symbols/flat/single/w.png');
+            expect(face.resolveColorSymbolIcon('w'))
+                .toContain('/assets/symbols/flat/single/w.png');
+            expect(Object.keys(face)).not.toContain('parseSymbols');
+            initialized.push(face);
+        });
+        const card = {
+            front: {
+                template: 'magic/M15/Adventure', superType: 'Legendary Creature',
+                rulesText: 'Companion — Draw a card.',
+                adventure: { superType: 'Sorcery', rulesText: '- Draw.\n- Scry.' }
+            },
+            back: { template: 'magic/M15/Main', superType: 'Land', subType: 'Forest' }
+        };
+        const front = await buildCardFace(card, 'front');
+        const back = await buildCardFace(card, 'back');
+        try {
+            expect(initialized).toEqual([front, front.adventure, back]);
+            expect(front.isLegendary()).toBeTrue();
+            expect(front.isCompanion()).toBeTrue();
+            expect(front.adventure.isCreature()).toBeFalse();
+            expect(front.adventure.hasChoices()).toBeTrue();
+            expect(back.isLand()).toBeTrue();
+            expect(Object.keys(front)).not.toContain('isLegendary');
+            expect(Object.keys(front.adventure)).not.toContain('hasChoices');
+            expect((await front.save()).isLegendary).toBeUndefined();
+        } finally {
+            front.dispose();
+            back.dispose();
+        }
     });
 
     it('keeps the current image source after saving and cropping', async () => {

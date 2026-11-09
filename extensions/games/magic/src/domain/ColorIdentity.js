@@ -1,7 +1,7 @@
+import { isLand } from './cardTraits/cardTypes.js';
 import { ActivationCost } from 'mana-scribe';
 
 const MANA_SYMBOL_PATTERN = /{(.+?)}/g;
-const LAND_PATTERN = /\bland\b/i;
 
 const colorNames = {
     w: 'white',
@@ -111,10 +111,6 @@ function getTextSymbols(rulesText) {
         symbols.push(...cost.symbols);
     }
     return symbols;
-}
-
-function isLand(cardFace) {
-    return LAND_PATTERN.test(cardFace.superType);
 }
 
 export function getCardFaceColors(cardFace) {

@@ -1,3 +1,5 @@
+import { initializeCardFace } from './domain/cardTraits/initializeCardFace.js';
+import * as textStructures from './domain/cardTraits/textStructures.js';
 import './ui/editSetSymbol/editSetSymbol.css';
 import { renderSetSymbol } from './domain/setSymbol/renderSetSymbol.js';
 import * as ManaScribe from 'mana-scribe';
@@ -36,19 +38,13 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.Card = MagicCard;
         this.filterPresets = filterPresets;
         this.symbols = new MagicSymbols(this);
+        this.textStructures = textStructures;
         registerStatistics(this);
     }
 
-    parseSymbols(str, ordered = true) {
-        return this.symbols.parseSymbols(str, ordered);
-    }
-
-    symbolsToHTML(symbols, useTall = false) {
-        return this.symbols.symbolsToHTML(symbols, useTall);
-    }
-
-    resolveColorSymbolIcon(colorId) {
-        return this.symbols.resolveColorSymbolIcon(colorId);
+    initializeCardFace(face) {
+        initializeCardFace(face);
+        this.symbols.initializeCardFace(face);
     }
 
     async init() {

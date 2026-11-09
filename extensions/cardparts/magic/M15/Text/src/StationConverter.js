@@ -1,12 +1,4 @@
-export const stationCardExpr = /^([\s\S]+?)(\d+\+ \| [\s\S]+)$/;
-const stationExpr = /(\d+\+) \| ([\s\S]+?)(?:(?=\d+\+ \| )|$)/g;
-
-function parseStationLevels(str) {
-    const levels = [];
-    for (const [,range, content] of str.matchAll(stationExpr))
-        levels.push({ range, content });
-    return levels;
-}
+export const stationCardExpr = activeGame.textStructures.stationCardExpr;
 
 // 2 levels + base
 // base: level-1
@@ -27,11 +19,11 @@ function generateStationsHTML(levels, convertParagraphs) {
 
 export const StationConverter = {
     match(str) {
-        return str.match(stationCardExpr);
+        return activeGame.textStructures.matchStation(str);
     },
     convert(match, { convertParagraphs }) {
         const startText = match[1];
-        const levels = parseStationLevels(match[2]);
+        const levels = activeGame.textStructures.parseStationLevels(match[2]);
         return (
             `<div class="station-start level-1">
                 ${convertParagraphs(startText)}

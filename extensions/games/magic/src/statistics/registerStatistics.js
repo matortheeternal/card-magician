@@ -85,7 +85,7 @@ function registerDimensions(registry, game) {
         categories: COLORS.map(color => ({
             ...color,
             label: localizeStatisticsText(color.label),
-            icon: game.resolveColorSymbolIcon(color.id)
+            icon: game.symbols.resolveColorSymbolIcon(color.id)
         }))
     });
     registry.registerDimension('rarity', {

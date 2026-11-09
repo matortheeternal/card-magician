@@ -1,7 +1,0 @@
-{
-  "id": "magic/M15/Symbols",
-  "gameId": "magic",
-  "description": "Compatibility adapter for the Magic game symbol APIs.",
-  "author": "Mator",
-  "version": "0.1"
-}

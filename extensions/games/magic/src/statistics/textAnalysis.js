@@ -1,8 +1,9 @@
+import { isCreature } from '../domain/cardTraits/cardTypes.js';
+
 const SYMBOL_PATTERN = /\{[^{}]*}/g;
 const CARD_NAME_PATTERN = /CARDNAME|LEGENDNAME|~|@/g;
 const FORMATTING_PATTERN = /[_*]/g;
 const WORD_PATTERN = /[\p{L}\p{N}]+(?:['’\/-][\p{L}\p{N}]+)*/gu;
-const CREATURE_PATTERN = /\bcreature\b/i;
 const TIME_LORD_PATTERN = /\btime\s+lord\b/gi;
 const CAPITALIZATION_PATTERN = /(^|[- ])[a-z]/g;
 const TIME_LORD_TOKEN = 'Time\u0000Lord';
@@ -23,7 +24,7 @@ function normalizeSubtype(type) {
 }
 
 export function creatureTypes(face) {
-    if (!CREATURE_PATTERN.test(face.superType || '')) return [];
+    if (!isCreature(face)) return [];
     const types = String(face.subType || '').trim()
         .replace(TIME_LORD_PATTERN, TIME_LORD_TOKEN)
         .split(/\s+/).filter(Boolean)
@@ -33,7 +34,7 @@ export function creatureTypes(face) {
 }
 
 export function nonCreatureSubtypes(face) {
-    if (CREATURE_PATTERN.test(face.superType || '')) return [];
+    if (isCreature(face)) return [];
     const types = String(face.subType || '').trim().split(/\s+/).filter(Boolean);
     return [...new Set(types.map(normalizeSubtype))];
 }

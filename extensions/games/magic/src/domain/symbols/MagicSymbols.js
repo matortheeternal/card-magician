@@ -6,6 +6,17 @@ export default class MagicSymbols {
         this.game = game;
     }
 
+    initializeCardFace(face) {
+        const methods = ['parseSymbols', 'symbolsToHTML', 'resolveColorSymbolIcon'];
+        for (const name of methods) {
+            Object.defineProperty(face, name, {
+                value: this[name].bind(this),
+                writable: true,
+                configurable: true
+            });
+        }
+    }
+
     parseSymbols(str, ordered = true) {
         const cost = ActivationCost.parse(str);
         return ordered ? cost.orderedSymbols : cost.symbols;

@@ -1,9 +1,13 @@
+import { CARD_TYPES, getCardTypes, isLand, isPermanent, isLegendary }
+    from '../domain/cardTraits/cardTypes.js';
 import { cardColors } from './cardColors.js';
 import { creatureStats } from './creatureStats.js';
 import {
     countRulesWords, creatureTypes, nonCreatureSubtypes
 } from './textAnalysis.js';
 import { localizeStatisticsText } from './localization.js';
+
+export { CARD_TYPES };
 
 export const COLORS = [
     { id: 'w', label: 'White', color: '#e8dca4' },
@@ -15,16 +19,6 @@ export const COLORS = [
     { id: 'c', label: 'Colorless', color: '#aab4c0' }
 ];
 export const RARITIES = ['common', 'uncommon', 'rare', 'mythic', 'special'];
-export const CARD_TYPES = [
-    'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment',
-    'Land', 'Planeswalker', 'Battle', 'Kindred', 'Other'
-];
-
-const CARD_TYPE_PATTERNS = CARD_TYPES.filter(type => type !== 'Other')
-    .map(type => ({ type, pattern: new RegExp(`\\b${type}\\b`, 'i') }));
-const LEGENDARY_PATTERN = /\blegendary\b/i;
-const PERMANENT_PATTERN = /\b(artifact|battle|creature|enchantment|land|planeswalker)\b/i;
-const TRIBAL_PATTERN = /\btribal\b/i;
 
 function parseManaCost(cost, game) {
     if (typeof cost !== 'string') return cost;
@@ -37,15 +31,6 @@ function parseManaCost(cost, game) {
 
 function getColorOverride(override) {
     return Array.isArray(override) ? override.join('') : override;
-}
-
-function getCardTypes(superType = '') {
-    const types = CARD_TYPE_PATTERNS
-        .filter(({ pattern }) => pattern.test(superType))
-        .map(({ type }) => type);
-    if (TRIBAL_PATTERN.test(superType) && !types.includes('Kindred'))
-        types.push('Kindred');
-    return types.length ? types : ['Other'];
 }
 
 function getRarity(value) {
@@ -66,7 +51,7 @@ function hasArtCredit(face, project) {
 export function cardRecord(card, game, project) {
     const face = card.front || {};
     const cost = parseManaCost(face.manaCost, game);
-    const types = getCardTypes(face.superType);
+    const types = getCardTypes(face);
     return {
         ...cardColors(cost, getColorOverride(face.colorOverride), game),
         ...creatureStats(face, types.includes('Creature')),
@@ -74,9 +59,9 @@ export function cardRecord(card, game, project) {
         rarity: getRarity(face.rarity),
         types,
         manaValue: getManaValue(cost),
-        isLand: types.includes('Land'),
-        isPermanent: PERMANENT_PATTERN.test(face.superType || ''),
-        isLegendary: LEGENDARY_PATTERN.test(face.superType || ''),
+        isLand: isLand(face),
+        isPermanent: isPermanent(face),
+        isLegendary: isLegendary(face),
         wordCount: countRulesWords(face.rulesText),
         creatureTypes: creatureTypes(face),
         nonCreatureSubtypes: nonCreatureSubtypes(face),

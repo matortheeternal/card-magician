@@ -5,6 +5,20 @@ describe('Magic game symbols', () => {
         resolveAsset: path => `games/magic/assets/${path}`
     });
 
+    it('installs bound symbol methods without adding them to saved data', () => {
+        const face = {};
+        symbols.initializeCardFace(face);
+        const parsed = face.parseSymbols('{W}{2}', false);
+        expect(parsed.map(symbol => symbol.raw)).toEqual(['W', '2']);
+        expect(face.symbolsToHTML(parsed, true))
+            .toContain('games/magic/assets/symbols/tall/single/w.png');
+        expect(face.resolveColorSymbolIcon('w'))
+            .toBe('/games/magic/assets/symbols/flat/single/w.png');
+        expect({ ...face }).toEqual({});
+        symbols.initializeCardFace(face);
+        expect(face.parseSymbols('{T}')[0].type).toBe('tap');
+    });
+
     it('preserves authored order when requested and otherwise orders costs', () => {
         const text = '{G}{2}{W}';
         expect(symbols.parseSymbols(text, false).map(symbol => symbol.raw))

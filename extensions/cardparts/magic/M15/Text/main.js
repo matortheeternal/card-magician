@@ -1,15 +1,7 @@
 import textToHTML from './src/textToHTML.js';
-import { stationCardExpr, StationConverter } from './src/StationConverter.js';
-import { levelCardExpr, LevelConverter } from './src/LevelConverter.js';
-import { ListConverter, listExpr } from './src/ListConverter.js';
-
-const COMPANION_PATTERN = /^companion\b/i;
-const MIRACLE_PATTERN = /\bmiracle\b/i;
-const MUTATE_PATTERN = /^mutate\b/i;
-const TRANSFORM_PATTERN = /\bTransform(ed)?\b/i;
-const DAYBOUND_PATTERN = /\bDaybound\b/i;
-const DISTURB_PATTERN = /\bDisturb\b/i;
-const MORE_THAN_MEETS_THE_EYE_PATTERN = /\bMore Than Meets the Eye\b/i;
+import { StationConverter } from './src/StationConverter.js';
+import { LevelConverter } from './src/LevelConverter.js';
+import { ListConverter } from './src/ListConverter.js';
 
 const L = localize('module-M15-text');
 
@@ -51,26 +43,10 @@ export default class TextModule extends CardMagicianModule {
     async init(card) {
         this.flavorBarUrl = this.resolveAsset('grey bar.png');
 
-        card.isCompanion = () => COMPANION_PATTERN.test(card.rulesText);
-        card.isMiracle = () => MIRACLE_PATTERN.test(card.rulesText);
-        card.isMutate = () => MUTATE_PATTERN.test(card.rulesText);
-        card.hasLevels = () => levelCardExpr.test(card.rulesText);
-        card.isStation = () => stationCardExpr.test(card.rulesText);
-        card.hasChoices = () => listExpr.test(card.rulesText);
-        card.hasNoText = () => !card.rulesText?.length && !card.flavorText?.length;
-
         card.textToHTML = (text, options) => {
             if (!text) return '';
             const html = this.escapeHTML(text);
             return textToHTML(html, card, options);
-        };
-
-        // TODO: probably should use a keyword system instead or be just user-configured
-        card.isTransform = function() {
-            return TRANSFORM_PATTERN.test(card.rulesText)
-                || DAYBOUND_PATTERN.test(card.rulesText)
-                || DISTURB_PATTERN.test(card.rulesText)
-                || MORE_THAN_MEETS_THE_EYE_PATTERN.test(card.rulesText);
         };
     }
 

@@ -1,27 +1,4 @@
-const rangeExpr = /(\d+\+|\d+-\d+)/;
-const ptExpr = /(.+?\/.+?)/;
-const contentExpr = /([\s\S]+?)/;
-const greedyContentExpr = /([\s\S]+)/;
-
-const getLevelExpr = (greedy = false) => {
-    const levelParts = [
-        rangeExpr,
-        ptExpr,
-        greedy ? greedyContentExpr : contentExpr
-    ];
-    const combinedSources = levelParts.map(p => p.source).join('\\s+');
-    return `LEVEL ${combinedSources}`;
-};
-
-export const levelCardExpr = new RegExp(`^([\\s\\S]+?)(${getLevelExpr(true)})`);
-const levelExpr = new RegExp(`${getLevelExpr()}(?:(?=LEVEL)|$)`, 'g');
-
-function parseLevels(str) {
-    const levels = [];
-    for (const [,range, pt, content] of str.matchAll(levelExpr))
-        levels.push({ range, content, pt });
-    return levels;
-}
+export const levelCardExpr = activeGame.textStructures.levelCardExpr;
 
 function generateLevelsHTML(levels, convertParagraphs) {
     return levels.map((level, index) => (
@@ -42,11 +19,11 @@ function generateLevelsHTML(levels, convertParagraphs) {
 
 export const LevelConverter = {
     match(str) {
-        return str.match(levelCardExpr);
+        return activeGame.textStructures.matchLevels(str);
     },
     convert(match, { convertParagraphs }) {
         const startText = match[1];
-        const levels = parseLevels(match[2]);
+        const levels = activeGame.textStructures.parseLevels(match[2]);
         return (
             `<auto-fit-text class="level-start" max="16">
                 ${convertParagraphs(startText)}

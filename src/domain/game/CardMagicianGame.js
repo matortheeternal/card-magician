@@ -36,6 +36,8 @@ export default class CardMagicianGame {
         this.statistics = new StatisticsRegistry();
     }
 
+    initializeCardFace(face) {}
+
     get platform() {
         return gamePlatform;
     }
