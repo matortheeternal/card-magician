@@ -147,6 +147,107 @@ describe('Statistics', () => {
             expect(tooltip.hidden).toBeTrue();
         });
 
+    it('keeps tooltips visible when movement bubbles from chart marks', async () => {
+        for (const [type, tag] of [['bar', 'rect'], ['line', 'circle']]) {
+            curve.querySelector(`[data-chart-type="${type}"]`).click();
+            const selector = `g ${tag}[data-category-index="2"]`;
+            await eventually(() => curve.viewport.querySelector(selector));
+            const mark = curve.viewport.querySelector(selector);
+            const tooltip = curve.viewport.querySelector('.stats-chart-tooltip');
+            expect(mark.hasAttribute('data-chart-selection')).toBeFalse();
+            mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
+            expect(tooltip.hidden).withContext(type).toBeFalse();
+            expect(tooltip.textContent).toContain('Mana value 2');
+            mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
+            expect(tooltip.hidden).withContext(`${type} repeated movement`).toBeFalse();
+            const svg = curve.viewport.querySelector('svg');
+            svg.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
+            expect(tooltip.hidden).toBeTrue();
+            mark.dispatchEvent(new PointerEvent('pointermove', { bubbles: true }));
+            expect(tooltip.hidden).withContext(`${type} re-entry`).toBeFalse();
+            svg.dispatchEvent(new PointerEvent('pointerleave'));
+            expect(tooltip.hidden).toBeTrue();
+        }
+    });
+
+    it('keeps the line tooltip visible when crossing a plotted line', async () => {
+        curve.scrollIntoView({ block: 'center' });
+        await new Promise(resolve => { requestAnimationFrame(resolve); });
+        const path = curve.viewport.querySelector('path');
+        const point = path.getPointAtLength(path.getTotalLength() * 0.37)
+            .matrixTransform(path.getScreenCTM());
+        const tooltip = curve.viewport.querySelector('.stats-chart-tooltip');
+        for (const offset of [-4, 0, 4]) {
+            const target = document.elementFromPoint(point.x, point.y + offset);
+            expect(curve.viewport.contains(target)).toBeTrue();
+            target.dispatchEvent(new PointerEvent('pointermove', {
+                bubbles: true, clientX: point.x, clientY: point.y + offset
+            }));
+            expect(tooltip.hidden).withContext(`vertical offset ${offset}`).toBeFalse();
+        }
+    });
+
+    it('follows the cursor with bounded tooltips on bars and lines', async () => {
+        for (const [type, tag] of [['bar', 'rect'], ['line', 'circle']]) {
+            curve.querySelector(`[data-chart-type="${type}"]`).click();
+            await eventually(() => curve.viewport.querySelector(`g ${tag}`));
+            const region = curve.viewport.querySelectorAll('.stats-hit-region')[2];
+            const tooltip = curve.viewport.querySelector('.stats-chart-tooltip');
+            region.dispatchEvent(new PointerEvent('pointermove', {
+                bubbles: true, clientX: 100, clientY: 100
+            }));
+            expect(getComputedStyle(tooltip).position).toBe('fixed');
+            expect(parseFloat(tooltip.style.left)).toBeCloseTo(112);
+            expect(parseFloat(tooltip.style.top)).toBeCloseTo(112);
+            region.dispatchEvent(new PointerEvent('pointermove', {
+                bubbles: true, clientX: 140, clientY: 150
+            }));
+            expect(tooltip.hidden).toBeFalse();
+            expect(parseFloat(tooltip.style.left)).toBeCloseTo(152);
+            expect(parseFloat(tooltip.style.top)).toBeCloseTo(162);
+            region.dispatchEvent(new PointerEvent('pointermove', {
+                bubbles: true, clientX: window.innerWidth - 1,
+                clientY: window.innerHeight - 1
+            }));
+            expect(tooltip.getBoundingClientRect().right)
+                .toBeLessThanOrEqual(window.innerWidth - 7);
+            expect(tooltip.getBoundingClientRect().bottom)
+                .toBeLessThanOrEqual(window.innerHeight - 7);
+            region.focus({ preventScroll: true });
+            expect(tooltip.hidden).withContext('keyboard focus').toBeFalse();
+            expect(tooltip.textContent).toContain('Mana value 2');
+            curve.viewport.dispatchEvent(new Event('scroll'));
+            expect(tooltip.hidden).toBeTrue();
+        }
+    });
+
+    it('groups minor card types, omits lands and offers exact colors', async () => {
+        activeProject.cards = [
+            makeCard('U', 'Instant'),
+            makeCard('RW', 'Battle'),
+            makeCard('G', 'Kindred Sorcery'),
+            makeCard('', 'Conspiracy'),
+            makeCard('', 'Land')
+        ];
+        changed(activeProject, 'cards');
+        const chart = stats.querySelector('[report="color-type"]');
+        const battle = activeProject.cards[1];
+        await eventually(() => chart.data?.getRecords()
+            .some(record => record.card === battle));
+        expect(chart.data.total).toBe(4);
+        expect(chart.data.columns.map(column => column.id)).toEqual([
+            'Creature', 'Instant', 'Sorcery', 'Artifact', 'Enchantment',
+            'Planeswalker', 'Other'
+        ]);
+        expect(chart.data.getRecords({ column: 'Other' }).length).toBe(3);
+        expect(chart.data.getRecords().some(record => record.isLand)).toBeFalse();
+        chart.querySelector('[data-chart-view="exact"]').click();
+        await eventually(() => chart.data.rows.some(row => row.id === 'wr'));
+        expect(chart.data.rows.find(row => row.id === 'wr').label).toBe('Boros (RW)');
+        expect(chart.data.getRecords({ row: 'wr', column: 'Other' })[0].card)
+            .toBe(activeProject.cards[1]);
+    });
+
     it('handles hidden series and project updates with lands excluded', async () => {
         activeProject.cards.push(makeCard('', 'Land', 'rare'));
         changed(activeProject, 'cards');

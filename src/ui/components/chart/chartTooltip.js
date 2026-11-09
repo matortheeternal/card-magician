@@ -2,6 +2,12 @@ import { categorySymbol } from './categoryLabel.js';
 
 let nextTooltip = 0;
 
+export function chartTooltipPosition(event) {
+    if (event.type.startsWith('pointer')) return [event.clientX, event.clientY];
+    const bounds = event.currentTarget.getBoundingClientRect();
+    return [bounds.left + bounds.width / 2, bounds.top];
+}
+
 function watchScroll(floating, hide, signal) {
     if (!floating) return;
     document.addEventListener('scroll', hide, { capture: true, signal });

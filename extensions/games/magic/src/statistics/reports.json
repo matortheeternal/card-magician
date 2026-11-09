@@ -25,8 +25,26 @@
         "type": "matrix",
         "title": "Color × card type",
         "rows": "color",
-        "columns": "card-type",
-        "measure": "card-count"
+        "columns": "card-type-overview",
+        "measure": "card-count",
+        "filters": [
+            "nonland"
+        ],
+        "views": [
+            {
+                "id": "category",
+                "label": "Color category",
+                "definition": {}
+            },
+            {
+                "id": "exact",
+                "label": "Exact colors",
+                "definition": {
+                    "rows": "exact-color",
+                    "title": "Exact colors × card type"
+                }
+            }
+        ]
     },
     "mana-curve": {
         "type": "line",

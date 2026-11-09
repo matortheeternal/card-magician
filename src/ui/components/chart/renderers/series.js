@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
 import { svgCategoryPaint } from '../categoryPaint.js';
-import { createChartTooltip } from '../chartTooltip.js';
+import { createChartTooltip, chartTooltipPosition } from '../chartTooltip.js';
 
 const L = localize('statistics');
 
@@ -12,7 +12,7 @@ let nextChart = 0;
 function appendLine(group, points, color, { type, x, y }) {
     if (type !== 'line') return;
     group.append('path').attr('fill', 'none').attr('stroke', color)
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 2).attr('pointer-events', 'none')
         .attr('d', line().defined(point => point.value !== null)
             .x(point => x(point.index) + x.bandwidth() / 2)
             .y(point => y(point.value))(points));
@@ -49,7 +49,7 @@ function renderSeries(svg, series, chartId, scales, columns, activate, show) {
                 row: item.id, column: columns[point.index].id
             }, activate, `${item.label}, ${columns[point.index].label}: `
                 + scales.formatValue(point.value));
-            mark.on('pointerenter pointermove focus', () => show(point.index))
+            mark.on('pointerenter pointermove focus', event => show(point.index, event))
                 .on('blur', () => svg.dispatch('pointerleave'))
                 .on('keydown', event => {
                     if (event.key === 'Escape') svg.dispatch('pointerleave');
@@ -103,21 +103,21 @@ export function renderD3Curve(container, {
         .attr('y', 13).text(measureLabel);
     const subX = scaleBand(series.map(item => item.id), [0, x.bandwidth()]).padding(0.08);
 
-    const tooltip = createChartTooltip(container, series, describeValue);
+    const tooltip = createChartTooltip(container, series, describeValue, {
+        floating: true
+    });
     const guide = svg.append('line').attr('class', 'stats-hover-guide')
         .attr('y1', margin.top).attr('y2', bottom).attr('visibility', 'hidden');
     const hide = () => {
         tooltip.hide();
         guide.attr('visibility', 'hidden');
     };
-    const show = index => {
+    const show = (index, event) => {
         const center = x(index) + x.bandwidth() / 2;
         guide.attr('x1', center).attr('x2', center).attr('visibility', 'visible');
-        const bounds = svg.node().getBoundingClientRect();
-        const chartBounds = container.getBoundingClientRect();
-        const anchor = bounds.left - chartBounds.left + center * bounds.width / width;
         tooltip.show(L`${columnLabel} ${labels[index]}`,
-                     series.map(item => item.values[index]), anchor);
+                     series.map(item => item.values[index]),
+                     ...chartTooltipPosition(event));
     };
     labels.forEach((label, index) => {
         const left = regionBoundary(index, labels.length, x,
@@ -133,7 +133,7 @@ export function renderD3Curve(container, {
             .attr('fill', 'transparent').attr('tabindex', 0)
             .attr('aria-label', description)
             .attr('aria-describedby', tooltip.element.id)
-            .on('pointerenter pointermove focus', () => show(index))
+            .on('pointerenter pointermove focus', event => show(index, event))
             .on('blur', hide)
             .on('keydown', event => {
                 if (event.key === 'Escape') hide();
@@ -144,7 +144,7 @@ export function renderD3Curve(container, {
     }, columns, activate, show);
     svg.on('pointerleave', hide).on('pointermove', event => {
         if (!event.target.classList.contains('stats-hit-region')
-            && !event.target.hasAttribute('data-chart-selection')) hide();
+            && !event.target.hasAttribute('data-category-index')) hide();
     });
     return () => tooltip.dispose();
 }

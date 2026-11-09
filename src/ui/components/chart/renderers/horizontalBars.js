@@ -1,7 +1,7 @@
 import { bindChartSelection } from '../chartSelection.js';
 import { scaleLinear } from 'd3-scale';
 import { categoryBackground } from '../categoryPaint.js';
-import { createChartTooltip } from '../chartTooltip.js';
+import { createChartTooltip, chartTooltipPosition } from '../chartTooltip.js';
 
 const L = localize('statistics');
 
@@ -49,14 +49,8 @@ function createBar({ start, end, paint, stacked, column }, scale, row, activate)
     return bar;
 }
 
-function tooltipPosition(event, row) {
-    if (event.type.startsWith('pointer')) return [event.clientX, event.clientY];
-    const bounds = row.getBoundingClientRect();
-    return [bounds.left + bounds.width / 2, bounds.top];
-}
-
 function bindTooltip(row, tooltip, title, values) {
-    const show = event => tooltip.show(title, values, ...tooltipPosition(event, row));
+    const show = event => tooltip.show(title, values, ...chartTooltipPosition(event));
     row.addEventListener('pointerenter', show);
     row.addEventListener('pointermove', show);
     row.addEventListener('focusin', show);

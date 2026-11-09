@@ -1,8 +1,12 @@
 import { colorCombinationLabel } from './colorCombinationLabels.js';
-import { COLORS } from './cardRecord.js';
+import { COLORS, CARD_TYPES } from './cardRecord.js';
 import { localizeStatisticsText } from './localization.js';
 
 const L = localize('game-magic-statistics');
+const OVERVIEW_TYPE_GROUPS = new Map([['Battle', 'Other'], ['Kindred', 'Other']]);
+const OVERVIEW_TYPES = CARD_TYPES.filter(id => (
+    !['Battle', 'Kindred', 'Land'].includes(id)
+));
 
 function colorCombinationCategory(id) {
     if (id === 'unclassified') return { id, label: L`Unclassified` };
@@ -66,6 +70,16 @@ function registerCreatureDimensions(registry) {
     registerNumericDimension(registry, 'toughness', L`Toughness`);
 }
 
+function registerTypeOverview(registry) {
+    registry.registerDimension('card-type-overview', {
+        label: L`Card type`,
+        values: record => record.types.map(type => (
+            OVERVIEW_TYPE_GROUPS.get(type) || type
+        )),
+        categories: OVERVIEW_TYPES.map(id => ({ id, label: localizeStatisticsText(id) }))
+    });
+}
+
 function registerArtCredit(registry) {
     registry.registerDimension('art-credit', {
         label: L`Art credit`,
@@ -81,4 +95,5 @@ export function registerCardDimensions(registry) {
     registerColorDimensions(registry);
     registerCreatureDimensions(registry);
     registerArtCredit(registry);
+    registerTypeOverview(registry);
 }
