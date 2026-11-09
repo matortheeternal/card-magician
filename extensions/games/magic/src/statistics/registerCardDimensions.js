@@ -41,22 +41,31 @@ function registerNumericDimension(registry, id, label) {
     registry.registerField(id, { label, value: record => record[id] });
 }
 
+function colorCount(record) {
+    return record.colorCount ?? 'unclassified';
+}
+
+function colorCountCategories(records) {
+    const counts = new Set(records.map(colorCount));
+    return [
+        { id: 0, label: L`Colorless` },
+        { id: 1, label: L`Monocolor` },
+        { id: 2, label: L`Two-color` },
+        { id: 3, label: L`Three-color` },
+        { id: 4, label: L`Four-color` },
+        { id: 5, label: L`Five-color` },
+        { id: 'unclassified', label: L`Unclassified` }
+    ].filter(category => counts.has(category.id));
+}
+
 function registerColorDimensions(registry) {
     registry.registerDimension('exact-color', {
         label: L`Exact color combination`,
         values: record => [exactColor(record)], categories: colorCombinations
     });
     registry.registerDimension('color-count', {
-        label: L`Color count`, values: record => [record.colorCount ?? 'unclassified'],
-        categories: [
-            { id: 0, label: L`Colorless` },
-            { id: 1, label: L`Monocolor` },
-            { id: 2, label: L`Two-color` },
-            { id: 3, label: L`Three-color` },
-            { id: 4, label: L`Four-color` },
-            { id: 5, label: L`Five-color` },
-            { id: 'unclassified', label: L`Unclassified` }
-        ]
+        label: L`Color count`, values: record => [colorCount(record)],
+        categories: colorCountCategories
     });
 }
 

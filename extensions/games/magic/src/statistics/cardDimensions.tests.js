@@ -37,13 +37,13 @@ describe('Magic card dimensions', () => {
         expect(data.getRecords()).not.toContain(records[4]);
     });
 
-    it('keeps all six color-count categories and groups unclassified colors', () => {
+    it('omits unused color counts and groups unclassified colors', () => {
         records.push(cardRecord({ front: { colorOverride: ['m'] } }, game));
         const data = queryStatistics(records, registry, {
             rows: 'color-count', columns: 'art-credit'
         });
-        expect(data.rows.map(row => row.id)).toEqual([0, 1, 2, 3, 4, 5, 'unclassified']);
-        expect(data.rowTotals).toEqual([1, 3, 1, 0, 0, 0, 1]);
+        expect(data.rows.map(row => row.id)).toEqual([0, 1, 2, 'unclassified']);
+        expect(data.rowTotals).toEqual([1, 3, 1, 1]);
         expect(data.total).toBe(6);
         expect(data.excludedCount).toBe(0);
         expect(data.getRecords({ row: 2 })).toEqual([records[1]]);
