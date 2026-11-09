@@ -15,8 +15,9 @@ function validateOptions(registry, definition) {
     for (const id of statisticsIdentifiers(definition.measures))
         requireStatisticsDefinition(registry.measures, id, 'measure');
     if (definition.filterToggle) {
-        requireStatisticsDefinition(registry.filters, definition.filterToggle.filter,
-                                    'filter');
+        requireStatisticsDefinition(
+            registry.filters, definition.filterToggle.filter, 'filter'
+        );
     }
     for (const id of statisticsIdentifiers(definition.types)) {
         const renderer = requireChartRenderer(registry, id);

@@ -170,4 +170,51 @@ describe('Statistics queries', () => {
         expect(result.getRecords({ row: 0, column: 1 })).toEqual([]);
     });
 
+    it('excludes undeclared memberships and preserves missing categories', () => {
+        registry.registerDimension('declared', {
+            label: 'Declared', categories: ['kept'], missing: 'kept',
+            values: record => record.categories
+        });
+        const input = [
+            { categories: ['kept', 'kept', 'unlisted'] },
+            { categories: ['unlisted'] },
+            { categories: [] },
+            { categories: [null, undefined] }
+        ];
+        const result = queryStatistics(input, registry, {
+            rows: 'declared', columns: 'declared'
+        });
+        expect(result.cells).toEqual([[3]]);
+        expect(result.scopeCount).toBe(4);
+        expect(result.excludedCount).toBe(1);
+        expect(result.getRecords({ row: 'kept', column: 'kept' }))
+            .toEqual([input[0], input[2], input[3]]);
+    });
+
+    it('rejects malformed dimension values and duplicate declared categories', () => {
+        const dimension = registry.dimensions.get('faction');
+        dimension.values = () => 'a';
+        expect(() => queryStatistics(records, registry, definition))
+            .toThrowError(/must return an array/);
+        dimension.values = record => record.factions;
+        dimension.categories = ['a', 'a'];
+        expect(() => queryStatistics(records, registry, definition))
+            .toThrowError(/Duplicate category/);
+    });
+
+    it('reorders displayed aggregates while retaining all source memberships', () => {
+        const extra = { factions: ['b'], types: ['unit'], power: 3 };
+        const result = queryStatistics([...records, extra], registry, {
+            ...definition, sortRows: 'descending', limitRows: 1
+        });
+        expect(result.rows.map(row => row.id)).toEqual(['b']);
+        expect(result.cells).toEqual([[2, 2]]);
+        expect(result.rowTotals).toEqual([3]);
+        expect(result.columnTotals).toEqual([3, 2]);
+        expect(result.total).toBe(4);
+        expect(result.getRecords({ row: 'b', column: 'unit' }))
+            .toEqual([records[0], extra]);
+        expect(result.getRecords({ row: 'a' })).toEqual([records[0], records[1]]);
+    });
+
 });
