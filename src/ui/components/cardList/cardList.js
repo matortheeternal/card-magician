@@ -11,11 +11,13 @@ import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
 import { openModal } from '../../modals/modalManager.js';
 import * as history from '../../systems/historySystem.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
+import { registerHotkey } from '../../systems/hotkeySystem.js';
 
 const report = createReporter({ unit: 'CardList' });
 
 export default class CardList extends ReactiveComponent {
     selectionUpdate = Promise.resolve();
+    #selectionRequest;
 
     connectedCallback() {
         this.render();
@@ -23,6 +25,8 @@ export default class CardList extends ReactiveComponent {
     }
 
     bind() {
+        registerHotkey('ArrowUp', () => this.listView.moveSelection(-1));
+        registerHotkey('ArrowDown', () => this.listView.moveSelection(1));
         this.addEventListener('row-selected', event => this.onRowSelected(event));
         onActiveProjectChanged(project => {
             this.updateCards(project);
@@ -188,12 +192,19 @@ export default class CardList extends ReactiveComponent {
         event.stopPropagation();
         const { row } = event.detail;
         const card = row?.original || null;
-        this.selectionUpdate = this.selectionUpdate.catch(() => {}).then(async () => {
-            await flushPendingCardSaves();
-            if (window.selectedProjectCard !== card) await selectCard(card);
-            this.updateStatus();
-        });
+        const request = {};
+        this.#selectionRequest = request;
+        this.selectionUpdate = this.selectionUpdate.catch(() => {})
+            .then(() => this.applySelection(card, request));
         this.selectionUpdate.catch(error => report('selectCard', error, [card]));
+    }
+
+    async applySelection(card, request) {
+        if (request !== this.#selectionRequest) return;
+        await flushPendingCardSaves();
+        if (request !== this.#selectionRequest) return;
+        if (window.selectedProjectCard !== card) await selectCard(card);
+        this.updateStatus();
     }
 
     canDrop(event) {

@@ -24,6 +24,57 @@ describe('ListView selection', () => {
         return list.activeRow?.original;
     }
 
+    it('moves selection in both directions and reveals the destination', () => {
+        list.rows = cards;
+        list.selection = [1];
+        const destination = list.tbody.children[2];
+        spyOn(destination, 'scrollIntoView');
+        events.length = 0;
+        list.moveSelection(1);
+        expect(selected()).toEqual([cards[2]]);
+        expect(events.at(-1).original).toBe(cards[2]);
+        expect(destination.scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+        list.moveSelection(-1);
+        expect(selected()).toEqual([cards[1]]);
+    });
+
+    it('does not wrap or emit selection events at either boundary', () => {
+        list.rows = cards;
+        events.length = 0;
+        list.moveSelection(1);
+        expect(active()).toBe(cards[3]);
+        list.selection = [0];
+        list.moveSelection(-1);
+        expect(active()).toBe(cards[0]);
+        expect(events).toEqual([]);
+    });
+
+    it('handles empty lists and starts at the first row without a selection', () => {
+        list.moveSelection(1);
+        expect(events).toEqual([]);
+        list.rows = cards;
+        list.selection = [];
+        list.moveSelection(-1);
+        expect(selected()).toEqual([cards[0]]);
+    });
+
+    it('collapses multiselection when navigating from the active row', () => {
+        list.rows = cards;
+        list.selection = [0, 2];
+        list.moveSelection(-1);
+        expect(selected()).toEqual([cards[1]]);
+    });
+
+    it('navigates only displayed rows in their sorted order', () => {
+        list.activeColumns[0].compare = (a, b) => b.data.name.localeCompare(a.data.name);
+        list.activeColumns[0].sort = { priority: 1, direction: 'desc' };
+        list.rows = [cards[0], cards[2], cards[3]];
+        list.moveSelection(1);
+        expect(selected()).toEqual([cards[2]]);
+        list.moveSelection(1);
+        expect(selected()).toEqual([cards[0]]);
+    });
+
     it('selects the last newly added item', () => {
         list.rows = cards.slice(0, 2);
         expect(selected()).toEqual([cards[1]]);

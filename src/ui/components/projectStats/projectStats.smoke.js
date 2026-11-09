@@ -1,4 +1,3 @@
-import { executeAction } from '../../systems/actionSystem.js';
 import { queryStatistics } from '../../../domain/statistics/queryStatistics.js';
 import StatisticsRegistry from '../../../domain/statistics/StatisticsRegistry.js';
 import Localization from '../../../shared/Localization.js';

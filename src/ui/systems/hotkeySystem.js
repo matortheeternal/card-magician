@@ -1,5 +1,15 @@
 const modifiers = ['ctrl', 'shift', 'alt'];
-const editingHotkeys = ['ctrl+c', 'ctrl+v', 'ctrl+x', 'ctrl+a', 'delete'];
+const navigationHotkeys = ['arrowup', 'arrowdown'];
+const editingHotkeys = [
+    'ctrl+c', 'ctrl+v', 'ctrl+x', 'ctrl+a', 'delete', ...navigationHotkeys
+];
+const navigationControlSelector = [
+    'input', 'textarea', 'select', 'button',
+    'sl-input', 'sl-textarea', 'sl-select', 'sl-range', 'sl-radio-group',
+    'sl-button', 'sl-menu', 'sl-tab-group', 'sl-tree',
+    '[role="combobox"]', '[role="listbox"]', '[role="spinbutton"]',
+    '[role="slider"]', '[role="menu"]', '[role="tree"]', '[role="tablist"]'
+].join(', ');
 
 export class Hotkey {
     constructor(keyStr, action) {
@@ -51,14 +61,24 @@ function isUserEditing() {
 
     return el.tagName === 'SL-INPUT'
         || el.tagName === 'SL-TEXTAREA'
+        || el.tagName === 'INPUT'
+        || el.tagName === 'TEXTAREA'
         || el.isContentEditable
         || userHasTextSelected();
+}
+
+function navigationBelongsToControl(event) {
+    if (!navigationHotkeys.includes(event.key.toLowerCase())) return false;
+    return event.composedPath().some(element =>
+        element instanceof Element
+        && (element.matches(navigationControlSelector) || element.isContentEditable));
 }
 
 function onKeyDown(event) {
     if (dialog.isOpen) return;
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
+    if (navigationBelongsToControl(event)) return;
     if (isUserEditing() && hotkey.ignoreWhenEditing) {
         log('user').debug(`User editing, ignoring hotkey ${hotkey.keyStr}`);
         return;

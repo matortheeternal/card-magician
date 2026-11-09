@@ -280,6 +280,15 @@ export default class ListView extends ReactiveComponent {
         window.addEventListener('mouseup', onMouseUp);
     }
 
+    moveSelection(offset) {
+        if (!this.activeRows.length) return;
+        const activeIndex = this.activeRows.indexOf(this.activeRow);
+        const targetIndex = activeIndex < 0 ? 0 : activeIndex + offset;
+        const target = this.activeRows[targetIndex];
+        if (!target || target === this.activeRow) return;
+        this.revealRow(target.original);
+    }
+
     revealRow(original) {
         const index = this.activeRows.findIndex(row => row.original === original);
         if (index < 0) return;
