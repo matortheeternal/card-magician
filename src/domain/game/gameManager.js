@@ -59,3 +59,7 @@ export async function loadGames() {
         games.push(game);
     }
 }
+
+export function getGames() {
+    return games.slice();
+}

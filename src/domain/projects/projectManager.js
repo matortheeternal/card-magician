@@ -5,10 +5,8 @@ import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 
-const L = localize('set-manager');
-const report = createReporter({
-    unit: 'ProjectManager'
-});
+const L = localize('project-manager');
+const report = createReporter({ unit: 'ProjectManager' });
 
 const filters = [
     { name: L`Project Files`, extensions: ['cmproj'] },

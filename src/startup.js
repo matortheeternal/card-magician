@@ -60,11 +60,9 @@ function loaded() {
     document.body.append(floatingStatus);
 }
 
-async function startApp() {
-    startupLog.debug('Loading games');
-    await loadGames();
-    startupLog.debug('Setting game to magic');
-    await setGame('magic');
+async function startGameSession(gameId) {
+    startupLog.debug(`Setting game to ${gameId}`);
+    await setGame(gameId);
     startupLog.debug('Loading templates');
     await loadTemplates();
     startupLog.debug('Loading exporters');
@@ -76,12 +74,33 @@ async function startApp() {
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
-    applyDeviceLayout();
     loaded();
 }
 
-window.addEventListener('resize', applyDeviceLayout.debounce(200));
+function showGameSelection() {
+    startupLog.info('Showing game selection');
+    const appTitleHtml = '<i>Card Magician</i>';
+    document.querySelector('main').innerHTML = (
+        `<h1>${L`Welcome to ${appTitleHtml}`}</h1>
+        <small>${L`Choose a game and click start.`}</small>
+        <cm-game-select></cm-game-select>`
+    );
+}
 
+async function startApp() {
+    startupLog.debug('Loading games');
+    await loadGames();
+    applyDeviceLayout();
+    showGameSelection();
+}
+
+window.addEventListener('resize', applyDeviceLayout.debounce(200));
+window.addEventListener('cm-select-game', event => {
+    document.querySelector('main').innerHTML = (
+        `<cm-loader></cm-loader>`
+    );
+    void startGameSession(event.detail.gameId);
+});
 
 (async function() {
     try {
