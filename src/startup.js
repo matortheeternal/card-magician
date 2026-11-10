@@ -97,10 +97,16 @@ async function startApp() {
 
 window.addEventListener('resize', applyDeviceLayout.debounce(200));
 window.addEventListener('cm-select-game', event => {
-    document.querySelector('main').innerHTML = (
-        `<cm-loader></cm-loader>`
-    );
-    void startGameSession(event.detail.gameId);
+    try {
+        document.querySelector('main').innerHTML = (
+            `<cm-loader></cm-loader>`
+        );
+        void startGameSession(event.detail.gameId);
+    } catch (error) {
+        startupLog.error('Startup error:', error);
+        report('startup', error);
+        document.querySelector('cm-loader').showError();
+    }
 });
 
 (async function() {
