@@ -4,6 +4,7 @@ import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
+import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
 
 const L = localize('project-manager');
 const report = createReporter({ unit: 'ProjectManager' });
@@ -69,12 +70,17 @@ export async function openProject(filePath) {
         L`Open a project`, filters
     );
     if (!filePath) return;
-    log('state').info('Opening project:', filePath);
-    await withNewContext(async () => {
-        const project = await activeGame.Project.load(filePath);
-        setActiveProject(project);
-    });
-    await activeGame.config.addRecentProject();
+    showLoading();
+    try {
+        log('state').info('Opening project:', filePath);
+        await withNewContext(async () => {
+            const project = await activeGame.Project.load(filePath);
+            setActiveProject(project);
+        });
+        await activeGame.config.addRecentProject();
+    } finally {
+        hideLoading();
+    }
 }
 
 export async function saveCard(editorCard, projectCard) {

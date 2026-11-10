@@ -8,6 +8,12 @@ import { loadExporters } from './domain/export/exporterManager.js';
 import { loadScripts } from './domain/scripts/scriptManager.js';
 import { applyDeviceLayout } from './ui/systems/deviceLayout.js';
 import { tagManager } from './domain/game/tagManager.js';
+import {
+    hideLoading,
+    showLoading,
+    showLoadingError
+} from './ui/systems/loadingService.js';
+import { emit } from './shared/htmlUtils.js';
 
 const L = localize('main');
 const startupLog = log('startup');
@@ -37,7 +43,7 @@ function setupDevState() {
     return devState;
 }
 
-function loaded() {
+function showMainUI() {
     document.querySelector('main').innerHTML = (
         `<cm-title-bar></cm-title-bar>
         <sl-tab-group id="workspace-tabs">
@@ -74,7 +80,9 @@ async function startGameSession(gameId) {
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
-    loaded();
+    showMainUI();
+    hideLoading();
+    emit(document.body, 'cm-loaded');
 }
 
 function showGameSelection() {
@@ -86,6 +94,7 @@ function showGameSelection() {
         <cm-game-select></cm-game-select>
         <cm-startup-actions></cm-startup-actions>`
     );
+    hideLoading();
 }
 
 async function startApp() {
@@ -98,14 +107,12 @@ async function startApp() {
 window.addEventListener('resize', applyDeviceLayout.debounce(200));
 window.addEventListener('cm-select-game', event => {
     try {
-        document.querySelector('main').innerHTML = (
-            `<cm-loader></cm-loader>`
-        );
+        showLoading();
         void startGameSession(event.detail.gameId);
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);
-        document.querySelector('cm-loader').showError();
+        showLoadingError();
     }
 });
 
@@ -124,6 +131,6 @@ window.addEventListener('cm-select-game', event => {
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);
-        document.querySelector('cm-loader').showError();
+        showLoadingError();
     }
 })();
