@@ -83,6 +83,7 @@ export default class DevState extends ReactiveComponent {
             : -1;
         const msg = {
             action: 'rebuild',
+            gameId: window.activeGame?.id,
             project: window.activeProject?.filePath,
             card: cardIndex
         };
@@ -118,9 +119,13 @@ export default class DevState extends ReactiveComponent {
             await flushBeforeExit();
             platform.reloadApp();
         }
-        if (msg.openProject) await openProject(msg.openProject);
-        if (Number.isInteger(msg.selectCard))
-            selectCard(activeProject.cards[msg.selectCard]);
+        if (!msg.gameId) return;
+        this.emit('cm-select-game', { gameId: msg.gameId });
+        document.addEventListener('cm-loaded', async () => {
+            if (msg.openProject) await openProject(msg.openProject);
+            if (Number.isInteger(msg.selectCard))
+                void selectCard(activeProject.cards[msg.selectCard]);
+        }, { once: true });
     }
 
     async onRebuildClick() {

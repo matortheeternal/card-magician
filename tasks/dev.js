@@ -48,10 +48,12 @@ console.info('Starting dev server at localhost:3344');
 const server = new WebSocketServer({ port: 3344 });
 let openedProject = null;
 let selectedCard = null;
+let gameId = null;
 server.on('connection', ws => {
     ws.on('message', async data => {
         const event = JSON.parse(data.toString('utf8'));
         if (event.action === 'rebuild') {
+            gameId = event.gameId;
             openedProject = event.project;
             selectedCard = event.editorCard;
             console.log('received rebuild request');
@@ -61,8 +63,9 @@ server.on('connection', ws => {
         }
         if (event.action === 'request data') {
             ws.send(JSON.stringify({
-                'openProject': openedProject,
-                'selectCard': selectedCard,
+                gameId,
+                openProject: openedProject,
+                selectCard: selectedCard,
             }));
         }
     });
