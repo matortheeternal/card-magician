@@ -1,6 +1,4 @@
 import { getGames } from '../../../domain/game/gameManager.js';
-import platform from '../../../shared/platformAdapter.js';
-import { executeAction } from '../../systems/actionSystem.js';
 
 const L = localize('game-select');
 
@@ -13,7 +11,6 @@ export default class GameSelect extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             selectGame: event => this.selectGame(event.target),
-            install: () => this.install(),
             start: () => this.start(),
         });
     }
@@ -61,9 +58,6 @@ export default class GameSelect extends ReactiveComponent {
         this.innerHTML = (
             `<div class="games-container"></div>
             <div class="buttons-container">
-                <sl-button data-click-action="install">
-                    ${L`Install from package`}
-                </sl-button>
                 <sl-button variant="primary" data-click-action="start">
                     ${L`Start`}
                 </sl-button>
@@ -82,15 +76,6 @@ export default class GameSelect extends ReactiveComponent {
         this.deselectGames();
         const item = element.closest('.game-item');
         item.classList.toggle('selected', true);
-    }
-
-    async install() {
-        const filePath = await platform.openSingleFileDialog(
-            L`Select a package to install`, this.installFilters
-        );
-        if (!filePath) return;
-        log('fs').info('Installing package:', filePath);
-        executeAction('install-package', filePath);
     }
 
     start() {

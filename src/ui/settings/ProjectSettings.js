@@ -8,6 +8,10 @@ export default class ProjectSettings extends CardMagicianSettings {
     static label = L`Project`;
     static groupWeight = 1024;
 
+    static hide() {
+        return true;
+    }
+
     static async search(query) {
         return [];
     }

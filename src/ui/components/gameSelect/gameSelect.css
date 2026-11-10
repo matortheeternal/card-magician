@@ -2,17 +2,14 @@ cm-game-select {
     display: flex;
     flex-direction: column;
     min-width: 26em;
-    background: #111;
     gap: var(--sl-spacing-small);
     margin: var(--sl-spacing-x-large);
-    padding: var(--sl-spacing-large);
-    border-radius: var(--sl-border-radius-large);
-    box-shadow: var(--sl-shadow-x-large);
     font-family: var(--sl-font-sans);
 
     .games-container {
         display: flex;
         flex-direction: column;
+        padding: var(--sl-spacing-large);
         gap: var(--sl-spacing-small);
     }
 
@@ -22,6 +19,7 @@ cm-game-select {
         border: 1px solid var(--sl-input-border-color);
         border-radius: var(--sl-border-radius-medium);
         background: var(--sl-color-neutral-0);
+        box-shadow: var(--sl-shadow-x-large);
 
         header strong {
             font-size: var(--sl-font-size-x-large);
@@ -35,7 +33,7 @@ cm-game-select {
     .buttons-container {
         display: flex;
         gap: var(--sl-spacing-2x-small);
-        justify-content: end;
+        justify-content: center;
     }
 }
 
@@ -45,7 +43,7 @@ body:has(cm-game-select) {
     main {
         display: flex;
         padding: var(--sl-spacing-medium);
-        padding-bottom: 10em;
+        padding-bottom: 5em;
         flex-direction: column;
         align-items: center;
         justify-content: center;

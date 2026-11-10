@@ -1,0 +1,15 @@
+cm-startup-actions {
+    position: fixed;
+    right: 1em;
+    top: 1em;
+    display: flex;
+    gap: var(--sl-spacing-x-small);
+
+    sl-button::part(label) {
+        padding-inline-start: var(--sl-spacing-x-small);
+    }
+
+    sl-icon {
+        font-size: var(--sl-font-size-x-large);
+    }
+}

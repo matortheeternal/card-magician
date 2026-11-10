@@ -83,7 +83,8 @@ function showGameSelection() {
     document.querySelector('main').innerHTML = (
         `<h1>${L`Welcome to ${appTitleHtml}`}</h1>
         <small>${L`Choose a game and click start.`}</small>
-        <cm-game-select></cm-game-select>`
+        <cm-game-select></cm-game-select>
+        <cm-startup-actions></cm-startup-actions>`
     );
 }
 

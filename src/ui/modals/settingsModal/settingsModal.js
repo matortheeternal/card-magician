@@ -19,7 +19,9 @@ export default class SettingsModal extends Modal {
     connectedCallback() {
         super.connectedCallback();
         this.renderNav();
-        const defaultTabId = activeGame.config.get('lastSettingsTab') || this.tabs[0].id;
+        const defaultTabId = window.activeGame
+            && activeGame.config.get('lastSettingsTab')
+            || this.tabs[0].id;
         this.selectNavItem(this.data?.selectedTabId || defaultTabId);
     }
 
@@ -42,7 +44,8 @@ export default class SettingsModal extends Modal {
         this.#activeTab = value;
         if (this.isConnected)
             this.contentContainer.appendChild(value);
-        activeGame.config.set('lastSettingsTab', value.tagName.toLowerCase());
+        if (window.activeGame)
+            activeGame.config.set('lastSettingsTab', value.tagName.toLowerCase());
     }
 
     get activeNavItem() {
@@ -125,7 +128,7 @@ export default class SettingsModal extends Modal {
     }
 
     saveProject() {
-        return window.activeProject.save();
+        return window.activeProject?.save();
     }
 }
 

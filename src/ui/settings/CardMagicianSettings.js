@@ -34,6 +34,15 @@ export default class CardMagicianSettings extends ReactiveComponent {
     static groupWeight = 0;
 
     /**
+     * Return true to hide the tab.
+     *
+     * @returns {boolean}
+     */
+    static hide() {
+        return false;
+    }
+
+    /**
      * Returns true if a field or its options match a given query.
      *
      * @param {object} field

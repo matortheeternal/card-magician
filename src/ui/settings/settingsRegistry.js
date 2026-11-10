@@ -14,6 +14,7 @@ function sortByWeight(settings) {
 export function getSettingsTabs() {
     const settingsByParentId = new Map();
     for (const SettingsClass of settings) {
+        if (SettingsClass.hide()) continue;
         const key = SettingsClass.parentId;
         if (!settingsByParentId.has(key))
             settingsByParentId.set(key, []);
