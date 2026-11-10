@@ -35,7 +35,7 @@ export default class DevState extends ReactiveComponent {
     }
 
     get primaryButton() {
-        return this.querySelector('sl-button[variant="primary"]');
+        return this.querySelector('sl-button:first-of-type');
     }
 
     get dismissButton() {
@@ -83,7 +83,7 @@ export default class DevState extends ReactiveComponent {
             : -1;
         const msg = {
             action: 'rebuild',
-            project: activeProject.filePath,
+            project: window.activeProject?.filePath,
             card: cardIndex
         };
         this.ws.send(JSON.stringify(msg));
