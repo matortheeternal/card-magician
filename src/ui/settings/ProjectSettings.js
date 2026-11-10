@@ -9,7 +9,7 @@ export default class ProjectSettings extends CardMagicianSettings {
     static groupWeight = 1024;
 
     static hide() {
-        return true;
+        return !window.activeProject;
     }
 
     static async search(query) {

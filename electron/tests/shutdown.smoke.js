@@ -164,6 +164,15 @@ export async function runShutdownTests(temp) {
             ]
         });
         try {
+            await waitFor(() => fixture.driver.evaluate(`(() => {
+                const picker = document.querySelector('cm-game-select');
+                const game = picker?.querySelector('[data-game-id="magic"]');
+                const start = picker?.querySelector('[data-click-action="start"]');
+                if (!game || !start) return false;
+                game.click();
+                start.click();
+                return true;
+            })()`), 'Magic game selection');
             await waitFor(
                 () => fixture.driver.evaluate('!!window.exitSmoke'),
                 'shutdown fixture startup'

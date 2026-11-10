@@ -81,6 +81,10 @@ async function startGameSession(gameId) {
     await imageCache.preload();
     startupLog.info('Startup successful, loading UI');
     showMainUI();
+    if (appEnvironment.args.includes('--test-exit')) {
+        const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
+        await setupExitFixture();
+    }
     hideLoading();
     emit(document.body, 'cm-loaded');
 }
@@ -105,10 +109,10 @@ async function startApp() {
 }
 
 window.addEventListener('resize', applyDeviceLayout.debounce(200));
-window.addEventListener('cm-select-game', event => {
+window.addEventListener('cm-select-game', async event => {
     try {
         showLoading();
-        void startGameSession(event.detail.gameId);
+        await startGameSession(event.detail.gameId);
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);
@@ -122,10 +126,6 @@ window.addEventListener('cm-select-game', event => {
         const devState = setupDevState();
         await startApp();
         if (devState) await devState.requestData();
-        if (appEnvironment.args.includes('--test-exit')) {
-            const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
-            await setupExitFixture();
-        }
         window.dispatchEvent(new CustomEvent('cm-loaded'));
         platform.ready();
     } catch (error) {

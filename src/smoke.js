@@ -27,13 +27,26 @@ function verifyTestEnvironment() {
     throw new Error(`Unsupported test application ID: ${appEnvironment.id}`);
 }
 
-async function runTests() {
+async function startSmokeSession() {
     log('startup').info('Verifying test environment');
     verifyTestEnvironment();
 
     log('startup').info('Clearing application storage');
     await platform.clearStoredData();
 
+    const game = document.querySelector('cm-game-select [data-game-id="magic"]');
+    const start = document.querySelector('cm-game-select [data-click-action="start"]');
+    if (!game || !start)
+        throw new Error('Magic is missing from the game selection view.');
+
+    document.body.addEventListener('cm-loaded', () => {
+        void runTests().catch(failSmoke);
+    }, { once: true });
+    game.click();
+    start.click();
+}
+
+async function runTests() {
     log('startup').info('Executing jasmine tests');
     const suiteId = getSuiteId();
     await jasmine.getEnv().execute([suiteId]);
@@ -58,10 +71,12 @@ jasmine.getEnv().addReporter({
     }
 });
 
+function failSmoke(error) {
+    console.error(error.stack);
+    exitApp(1);
+}
+
 window.addEventListener('cm-loaded', () => {
-    runTests().catch(err => {
-        console.error(err.stack);
-        exitApp(1);
-    });
-});
+    void startSmokeSession().catch(failSmoke);
+}, { once: true });
 
