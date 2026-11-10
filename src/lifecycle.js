@@ -40,6 +40,9 @@ export function registerPendingSave(save) {
     };
 }
 
+/**
+ * @returns {Promise<any>}
+ */
 export function flushBeforeExit() {
     return exitManager.flush();
 }

@@ -26,6 +26,9 @@ export default class ExitManager {
         return !!this.#exiting || this.#callbacks.some(entry => entry.hasPending());
     }
 
+    /**
+     * @returns {Promise<any>}
+     */
     flush() {
         if (this.#flushing) return this.#flushing;
         this.#flushing = Promise.allSettled(this.#callbacks.map(entry => {
