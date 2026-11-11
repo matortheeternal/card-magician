@@ -12,7 +12,6 @@ const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
 const stagePath = path.resolve('.tmp/package');
 const lockPath = path.resolve('.tmp/package.lock');
-const contentFolders = ['scripts'];
 
 function includeFile(sourcePath) {
     const normalizedPath = sourcePath.replaceAll(path.sep, '/');
@@ -24,7 +23,7 @@ function includeFile(sourcePath) {
 async function stageApplication() {
     await fs.rm(stagePath, { recursive: true, force: true });
     await fs.mkdir(stagePath, { recursive: true });
-    for (const folder of ['electron', 'resources', ...contentFolders]) {
+    for (const folder of ['electron', 'resources']) {
         await fs.cp(folder, path.join(stagePath, folder), {
             recursive: true,
             filter: includeFile
