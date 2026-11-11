@@ -1,6 +1,6 @@
 import { openModal } from '../../modals/modalManager.js';
 import platform from '../../../shared/platformAdapter.js';
-import { executeAction } from '../../systems/actionSystem.js';
+import { installPackage } from '../../../domain/extensions/extensionManager.js';
 
 const L = localize('startup-actions');
 
@@ -36,7 +36,7 @@ export default class StartupActions extends ReactiveComponent {
         );
         if (!filePath) return;
         log('fs').info('Installing package:', filePath);
-        executeAction('install-package', filePath);
+        void installPackage(filePath);
     }
 }
 

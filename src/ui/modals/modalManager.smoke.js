@@ -1,4 +1,8 @@
+import { registerInstallPackageTests }
+    from './installPackageModal/installPackageModal.smoke.js';
+
 describe('Modals', () => {
+    registerInstallPackageTests();
     let modal;
 
     afterEach(async () => {

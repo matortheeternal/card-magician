@@ -1,0 +1,119 @@
+cm-install-package-modal {
+    --install-package-height: calc(100dvh - 6em);
+    width: 36rem;
+    max-width: 100%;
+
+    .modal {
+        display: flex;
+        flex-direction: column;
+        max-height: var(--install-package-height);
+    }
+
+    .modal-title-bar,
+    .modal-actions {
+        flex-shrink: 0;
+    }
+
+    .modal-body {
+        min-height: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .modal-body > p {
+        margin: 0;
+        flex-shrink: 0;
+        padding: var(--sl-spacing-small) var(--sl-spacing-x-large);
+    }
+
+    .extension-summary {
+        padding: var(--sl-spacing-medium) var(--sl-spacing-x-large);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-medium);
+        flex-shrink: 0;
+    }
+
+    .summary-counts {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sl-spacing-x-small);
+    }
+
+    .extensions {
+        min-height: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+        border-top: 1px solid var(--sl-input-border-color);
+    }
+
+    .extensions > p {
+        display: none;
+        margin: 0;
+        padding: var(--sl-spacing-medium) var(--sl-spacing-x-large);
+    }
+
+    .extensions[data-filtered] > p {
+        display: block;
+    }
+
+    .extensions[data-filtered] [data-unavailable] {
+        display: none;
+    }
+
+    h3 {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        margin: 0;
+        padding: var(--sl-spacing-small) var(--sl-spacing-x-large);
+        font-size: var(--sl-font-size-small);
+        background: var(--sl-input-background-color);
+    }
+
+    article {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-small);
+        min-width: max-content;
+        padding: var(--sl-spacing-small) var(--sl-spacing-x-large);
+        border-bottom: 1px solid var(--sl-color-neutral-200);
+        white-space: nowrap;
+    }
+
+    article sl-checkbox {
+        flex: 1;
+    }
+
+    sl-checkbox::part(label) {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-small);
+    }
+
+    sl-checkbox strong {
+        max-width: 32ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    small {
+        font-size: var(--sl-font-size-small);
+        color: var(--sl-color-neutral-600);
+    }
+
+    [role="status"]:empty {
+        display: none;
+    }
+}
+
+.layout-desktop cm-install-package-modal .modal {
+    min-width: 0;
+}
+
+.layout-mobile cm-install-package-modal {
+    --install-package-height: 100dvh;
+}
