@@ -17,7 +17,7 @@ export default class TextField extends FieldComponent {
         this.innerHTML = (
             `<sl-textarea
               size="small"
-              resize="auto"
+              resize="none"
               autocomplete="off"
               name="${esc(this.field.id)}"
               label="${esc(this.field.label)}"

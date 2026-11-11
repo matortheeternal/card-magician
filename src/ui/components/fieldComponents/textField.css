@@ -1,0 +1,4 @@
+cm-text sl-textarea::part(textarea) {
+    field-sizing: content;
+    min-block-size: calc(2lh + 1em);
+}
