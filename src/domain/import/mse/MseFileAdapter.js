@@ -23,7 +23,12 @@ export default class MseFileAdapter extends MseProjectAdapter {
     }
 
     async getImage(filename) {
-        const buffer = await this.entries[filename].arrayBuffer();
+        const entry = this.entries[filename];
+        if (!entry) {
+            log('import').warn(`Missing MSE artwork "${filename}", importing without it`);
+            return null;
+        }
+        const buffer = await entry.arrayBuffer();
         return new Blob([buffer], { type: determineImageType(buffer) });
     }
 }

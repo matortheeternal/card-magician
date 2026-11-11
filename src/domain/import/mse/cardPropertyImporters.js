@@ -98,6 +98,7 @@ export default {
     },
     image: async (value, cmCardFace, adapter) => {
         const blob = await adapter.getImage(value);
+        if (!blob) return;
         cmCardFace.artImage = await ImageFieldValue.fromFile(blob);
     },
     super_type: (value, cmCardFace) => {
