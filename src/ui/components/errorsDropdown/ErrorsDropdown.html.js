@@ -1,7 +1,7 @@
 const L = localize('errors-dropdown');
 
 export default (
-    `<sl-dropdown skidding="-5" placement="bottom-start">
+    `<sl-dropdown skidding="-5" placement="bottom-start" hoist>
         <sl-button
             slot="trigger"
             size="small"

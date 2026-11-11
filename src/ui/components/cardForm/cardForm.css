@@ -5,7 +5,6 @@ cm-card-form {
     width: 30em;
     background-color: #040404;
     min-height: 0;
-    z-index: 1;
     overflow-y: auto;
     padding: var(--sl-spacing-large);
 
