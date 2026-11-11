@@ -55,11 +55,11 @@ export default class M15AdventureImporter extends M15AlteredImporter {
         await this.importProps(front, this.cmCard.front);
         await this.importOptions(this.cmCard.front);
         this.cmCard.front.pageStyle = this.pageStyle;
-        activeGame.addComputedProps(this.cmCard.front);
+        this.finalizeFace(this.cmCard.front);
 
         const adventureFace = {};
         this.cmCard.front.adventure = adventureFace;
         await this.importProps(adventure, adventureFace);
-        activeGame.addComputedProps(adventureFace);
+        this.finalizeFace(adventureFace);
     }
 }

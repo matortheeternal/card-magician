@@ -1,4 +1,4 @@
-import { isLand } from './cardTraits/cardTypes.js';
+import { isArtifact, isLand, getImplicitLandSymbols } from './cardTraits/cardTypes.js';
 import { ActivationCost } from 'mana-scribe';
 
 const MANA_SYMBOL_PATTERN = /{(.+?)}/g;
@@ -24,11 +24,45 @@ function addColor(colors, colorCharacter, sourceKey = 'normal') {
     colors[char].sources[sourceKey] = true;
 }
 
+function appearance(identity, face) {
+    return {
+        colors: identity.colors.map(color => color.char).join(''),
+        colorless: identity.isColorless(),
+        hybrid: identity.isHybrid(),
+        multicolor: identity.isMulticolor(),
+        land: Boolean(isLand(face) || identity.isLand()),
+        artifactColor: identity.colors.length === 1 && Boolean(identity.isArtifact()),
+        artifact: Boolean(isArtifact(face) || identity.isArtifact()),
+    };
+}
+
 export default class ColorIdentity {
     constructor() {
         this.colorSources = {};
         this.override = null;
         this.colors = [];
+    }
+
+    static fromCardFace(cardFace, { includeOverride = true } = {}) {
+        const identity = new this();
+        if (cardFace.manaCost)
+            identity.addColorSource('card', cardFace.manaCost.symbols);
+        identity.addColorSource('type', getImplicitLandSymbols(cardFace));
+        if (cardFace.rulesText && isLand(cardFace))
+            identity.addColorSource('text', getTextSymbols(cardFace.rulesText));
+        if (includeOverride && cardFace.colorOverride)
+            identity.setOverride(cardFace.colorOverride.join(''));
+        return identity;
+    }
+
+    static normalizeColorOverride(face) {
+        if (!face.colorOverride) return;
+        const identity = this.fromCardFace(face, { includeOverride: false });
+        const automatic = appearance(identity, face);
+        identity.setOverride(face.colorOverride.join(''));
+        const overridden = appearance(identity, face);
+        if (Object.keys(automatic).every(key => automatic[key] === overridden[key]))
+            delete face.colorOverride;
     }
 
     getColorsFromSources() {
@@ -114,12 +148,5 @@ function getTextSymbols(rulesText) {
 }
 
 export function getCardFaceColors(cardFace) {
-    const colorIdentity = new ColorIdentity();
-    if (cardFace.manaCost)
-        colorIdentity.addColorSource('card', cardFace.manaCost.symbols);
-    if (cardFace.colorOverride)
-        colorIdentity.setOverride(cardFace.colorOverride.join(''));
-    if (cardFace.rulesText && isLand(cardFace))
-        colorIdentity.addColorSource('text', getTextSymbols(cardFace.rulesText));
-    return colorIdentity.getColors();
+    return ColorIdentity.fromCardFace(cardFace).getColors();
 }

@@ -50,7 +50,11 @@ describe('MSE archive cards', () => {
 describe('MSE archive artwork', () => {
     it('imports a card when its referenced artwork is absent', async () => {
         const previousGame = window.activeGame;
-        window.activeGame = { Card: class { front = {}; }, addComputedProps: () => {} };
+        window.activeGame = {
+            Card: class { front = {}; },
+            ColorIdentity: { normalizeColorOverride: () => {} },
+            addComputedProps: () => {}
+        };
         try {
             const onFailure = jasmine.createSpy('onFailure');
             const card = await importCard({ stylesheet: 'm15-altered' }, {

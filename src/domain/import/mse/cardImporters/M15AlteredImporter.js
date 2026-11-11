@@ -85,6 +85,6 @@ export default class M15AlteredImporter extends BaseCardImporter {
         await this.importProps(base, this.cmCard);
         await this.importProps(front, this.cmCard.front);
         await this.importOptions(this.cmCard.front);
-        activeGame.addComputedProps(this.cmCard.front);
+        this.finalizeFace(this.cmCard.front);
     }
 }

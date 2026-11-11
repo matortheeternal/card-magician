@@ -11,6 +11,11 @@ export default class BaseCardImporter {
         this.adapter = adapter;
     }
 
+    finalizeFace(face) {
+        activeGame.ColorIdentity.normalizeColorOverride(face);
+        activeGame.addComputedProps(face);
+    }
+
     static checkStylesheet(stylesheetVersion) {
         if (stylesheetVersion === this.expectedVersion) return;
         return (

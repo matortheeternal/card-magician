@@ -11,6 +11,7 @@ describe('partial MSE card import', () => {
         window.activeGame = {
             Card: class { front = {}; },
             Project: class { cards = []; },
+            ColorIdentity: { normalizeColorOverride: () => {} },
             addComputedProps: () => {}
         };
     });

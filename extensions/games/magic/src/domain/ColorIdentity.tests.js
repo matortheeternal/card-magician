@@ -1,4 +1,4 @@
-import { getCardFaceColors } from './ColorIdentity.js';
+import ColorIdentity, { getCardFaceColors } from './ColorIdentity.js';
 import { ManaCost } from 'mana-scribe';
 
 describe('card face colors', () => {
@@ -22,6 +22,21 @@ describe('card face colors', () => {
         expect(colors({
             superType: 'Land', rulesText: '{T}: Add {G}.', colorOverride: ['c']
         })).toEqual([]);
+    });
+
+    it('combines implicit land subtypes with rules-text symbols', () => {
+        expect(colors({
+            superType: 'Land', subType: 'Forest Island',
+            rulesText: '{T}: Add {R}.',
+        })).toEqual(['u', 'r', 'g']);
+    });
+
+    it('can derive automatic colors without changing the supplied override', () => {
+        const face = { manaCost: ManaCost.parse('R'), colorOverride: ['g'] };
+        const identity = ColorIdentity.fromCardFace(face, { includeOverride: false });
+        expect(identity.colors.map(color => color.char)).toEqual(['r']);
+        expect(face.colorOverride).toEqual(['g']);
+        expect(colors(face)).toEqual(['g']);
     });
 
     it('uses mana cost rather than ability text for nonlands', () => {
