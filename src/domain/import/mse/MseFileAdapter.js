@@ -17,7 +17,9 @@ export default class MseFileAdapter extends MseProjectAdapter {
     }
 
     async entryText(filename) {
-        return await this.entries[filename].text();
+        const entry = this.entries[filename];
+        if (!entry) throw new Error(`Missing MSE archive entry: "${filename}"`);
+        return await entry.text();
     }
 
     async getImage(filename) {
