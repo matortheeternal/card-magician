@@ -68,6 +68,44 @@ describe('Rendering', () => {
         }
     });
 
+    it('renders short Saga text when optional flavor text is null', async () => {
+        const face = await buildCardFace({ front: {
+            template: 'magic/M15/Saga', centerText: 'short', rulesText: 'I — Draw.',
+        } }, 'front');
+        try {
+            const text = face.modules.find(module => module.name === 'SagaText');
+            expect(face.flavorText).toBeNull();
+            await text.renderPreHTML(face);
+            await text.renderPostHTML(face);
+            expect(text.renderPreText(face)).toContain('text-align: center');
+            expect(text.renderPostText(face)).toContain('text-align: center');
+            expect(text.render(face)).toContain('text-align: center');
+            face.flavorText = 'Some flavor text.';
+            expect(text.renderPreText(face)).not.toContain('text-align: center');
+        } finally {
+            face.dispose();
+        }
+    });
+
+    it('handles missing rules text and preserves text-centering options', async () => {
+        const face = await buildCardFace({ front: { template: 'magic/M15/Main' } },
+                                         'front');
+        try {
+            const text = face.modules.find(module => module.name === 'Text');
+            expect(text.shouldCenter({ centerText: 'short', rulesText: null,
+                flavorText: null })).toBeTrue();
+            expect(text.shouldCenter({ centerText: 'short' })).toBeTrue();
+            expect(text.shouldCenter({
+                centerText: 'short', rulesText: '123456789012345'
+            })).toBeFalse();
+            expect(text.shouldCenter({ centerText: 'never' })).toBeFalse();
+            expect(text.shouldCenter({ centerText: 'always', flavorText: 'Flavor' }))
+                .toBeTrue();
+        } finally {
+            face.dispose();
+        }
+    });
+
     it('keeps the current image source after saving and cropping', async () => {
         await createCard();
         const interactor = new FieldInteractor('artImage', { faceKey: 'front' });

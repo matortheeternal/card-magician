@@ -108,8 +108,8 @@ export default class TextModule extends CardMagicianModule {
     shouldCenter(card) {
         if (card.centerText === 'always') return true;
         return card.centerText === 'short'
-            && card.rulesText.length < 15
-            && !card.flavorText.length;
+            && (card.rulesText?.length ?? 0) < 15
+            && !card.flavorText?.length;
     }
 
     getTextStyle(card) {
