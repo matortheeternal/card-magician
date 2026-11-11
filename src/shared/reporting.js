@@ -1,4 +1,7 @@
 import safeStringify from './thePrinter.js';
+import { installDiagnostics } from './resizeObserverDiagnostics.js';
+
+const resizeDiagnostics = installDiagnostics(window);
 
 const items = [];
 const subscribers = [];
@@ -44,15 +47,21 @@ function reportNewErrors(id, error, data) {
     fallbackReport(id, error, data);
 }
 
+function getResizeDiagnostics(event) {
+    if (!event.message?.includes('ResizeObserver')) return;
+    return resizeDiagnostics.snapshot();
+}
+
 window.addEventListener('unhandledrejection', event => {
     reportNewErrors('unhandled-rejection', event.reason, null);
 });
 
 window.addEventListener('error', event => {
-    reportNewErrors('unhandled-error', event.error, {
+    reportNewErrors('unhandled-error', event.error ?? event.message, {
         message: event.message,
         filename: event.filename,
         line: event.lineno,
         column: event.colno,
+        resizeObservers: getResizeDiagnostics(event)
     });
 });
