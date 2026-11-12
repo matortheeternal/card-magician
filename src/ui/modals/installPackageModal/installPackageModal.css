@@ -104,10 +104,6 @@ cm-install-package-modal {
         font-size: var(--sl-font-size-small);
         color: var(--sl-color-neutral-600);
     }
-
-    [role="status"]:empty {
-        display: none;
-    }
 }
 
 .layout-desktop cm-install-package-modal .modal {

@@ -1,6 +1,8 @@
 import {
     GameExtension, ExporterExtension, CardPartExtension, TemplateExtension
 } from '../../../domain/extensions/extensionClasses.js';
+import platform from '../../../shared/platformAdapter.js';
+import { hideLoading } from '../../systems/loadingService.js';
 import { openModal, getActiveModal, closeModal } from '../modalManager.js';
 
 export function registerInstallPackageTests() {
@@ -13,7 +15,10 @@ export function registerInstallPackageTests() {
             return result;
         }
 
-        afterEach(() => closeModal());
+        afterEach(() => {
+            closeModal();
+            hideLoading();
+        });
 
         it('shows version tooltips and disables unavailable choices', () => {
             openModal('cm-install-package-modal', { extensions: [
@@ -48,21 +53,65 @@ export function registerInstallPackageTests() {
             expect(modal.extensionList.querySelector('strong').children.length).toBe(0);
         });
 
-        it('installs only selected extensions and reports completion', async () => {
+        it('shows the loader during installation, then reloads', async () => {
             const first = extension(GameExtension, 'first', '1.0');
             const second = extension(GameExtension, 'second', '1.0');
-            const install = spyOn(first, 'install').and.callFake(async () => {
-                first.installedVersion = '1.0';
-            });
+            let finishInstall;
+            const pendingInstall = new Promise(resolve => { finishInstall = resolve; });
+            const install = spyOn(first, 'install').and.returnValue(pendingInstall);
+            const reload = spyOn(platform, 'reloadApp');
             const skipped = spyOn(second, 'install');
             openModal('cm-install-package-modal', { extensions: [first, second] });
             const modal = getActiveModal();
             modal.extensionCheckboxes[1].checked = false;
+            const installing = modal.install();
+            const loader = document.querySelector('.loading-container');
+            expect(loader.querySelector('cm-loader')).not.toBeNull();
+            expect(getComputedStyle(loader).display).not.toBe('none');
+            expect(reload).not.toHaveBeenCalled();
             await modal.install();
+            finishInstall();
+            await installing;
             expect(install).toHaveBeenCalledTimes(1);
             expect(skipped).not.toHaveBeenCalled();
-            expect(modal.statusMessage.textContent).toContain('Installation complete');
-            expect(modal.extensionCheckboxes[0].disabled).toBeTrue();
+            expect(reload).toHaveBeenCalledTimes(1);
+            expect(getComputedStyle(loader).display).not.toBe('none');
+        });
+
+        it('keeps the loader error screen after a failed install', async () => {
+            const first = extension(GameExtension, 'first', '1.0');
+            const second = extension(GameExtension, 'second', '1.0');
+            spyOn(first, 'install').and.callFake(async () => {
+                first.installedVersion = '1.0';
+            });
+            const failedInstall = spyOn(second, 'install')
+                .and.rejectWith(new Error('Write failed'));
+            const reload = spyOn(platform, 'reloadApp');
+            openModal('cm-install-package-modal', { extensions: [first, second] });
+            const modal = getActiveModal();
+            await modal.install();
+            expect(reload).not.toHaveBeenCalled();
+            const loader = document.querySelector('.loading-container cm-loader');
+            expect(loader.classList.contains('error')).toBeTrue();
+            expect(getComputedStyle(loader.parentElement).display).not.toBe('none');
+            expect(loader.errorLog.textContent)
+                .toContain('Failed to install games/second');
+            expect(modal.querySelector('[role="status"]')).toBeNull();
+            await modal.install();
+            expect(failedInstall).toHaveBeenCalledTimes(1);
+            expect(reload).not.toHaveBeenCalled();
+        });
+
+        it('shows the loader error screen if reloading fails', async () => {
+            const item = extension(GameExtension, 'game', '1.0');
+            spyOn(item, 'install').and.resolveTo();
+            spyOn(platform, 'reloadApp').and.throwError('Reload failed');
+            openModal('cm-install-package-modal', { extensions: [item] });
+            await getActiveModal().install();
+            const loader = document.querySelector('.loading-container cm-loader');
+            expect(loader.classList.contains('error')).toBeTrue();
+            expect(loader.errorLog.textContent)
+                .toContain('Unable to finish extension installation and reload');
         });
 
         it('scrolls the list while keeping the summary and actions visible', async () => {

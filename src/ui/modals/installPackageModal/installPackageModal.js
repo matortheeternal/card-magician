@@ -1,4 +1,7 @@
 import Modal from '../Modal.js';
+import platform from '../../../shared/platformAdapter.js';
+import { flushBeforeExit } from '../../../lifecycle.js';
+import { showLoading, showLoadingError } from '../../systems/loadingService.js';
 import { registerModal } from '../modalManager.js';
 import { installExtensions } from '../../../domain/extensions/extensionManager.js';
 import { renderExtensionGroups } from './extensionGroups.js';
@@ -54,14 +57,6 @@ export default class InstallPackageModal extends Modal {
         return this.querySelector('[data-click-action="install"]');
     }
 
-    get cancelButton() {
-        return this.querySelector('[data-click-action="close"]');
-    }
-
-    get statusMessage() {
-        return this.querySelector('[role="status"]');
-    }
-
     get selectedExtensions() {
         return this.extensionCheckboxes.filter(checkbox => checkbox.checked)
             .map(checkbox => this.model.extensions[checkbox.dataset.extensionIndex])
@@ -72,7 +67,6 @@ export default class InstallPackageModal extends Modal {
         const selectedCount = this.selectedExtensions.length;
         this.installButton.textContent = L`Install selected (${selectedCount})`;
         this.installButton.disabled = this.installing || !selectedCount;
-        this.installButton.loading = this.installing;
         if (!this.summary) return;
         this.summary.innerHTML = renderExtensionSummary(
             this.model.extensions, this.selectedExtensions.length
@@ -95,8 +89,7 @@ export default class InstallPackageModal extends Modal {
                 aria-label="${L`Extensions available in this package`}">
                 ${renderExtensionGroups(extensions)}
                 ${this.renderFilteredEmptyState()}
-            </div>
-            <p role="status" aria-live="polite"></p>`
+            </div>`
         );
     }
 
@@ -124,21 +117,19 @@ export default class InstallPackageModal extends Modal {
         const extensions = this.selectedExtensions;
         if (!extensions.length) return;
         this.installing = true;
-        this.setControlsDisabled(true);
-        this.updateInstallButton();
-        const failures = await installExtensions(extensions);
-        this.installing = false;
-        this.render();
-        this.updateAvailabilityFilter();
-        this.updateInstallButton();
-        this.statusMessage.textContent = failures.length
-            ? L`Some extensions could not be installed. You can retry them.`
-            : L`Installation complete. Reload the application to load the changes.`;
-    }
-
-    setControlsDisabled(disabled) {
-        for (const checkbox of this.extensionCheckboxes) checkbox.disabled = disabled;
-        this.cancelButton.disabled = disabled;
+        showLoading();
+        try {
+            const failures = await installExtensions(extensions);
+            if (failures.length) {
+                showLoadingError();
+                return;
+            }
+            await flushBeforeExit();
+            platform.reloadApp();
+        } catch (error) {
+            log('fs').error('Unable to finish extension installation and reload', error);
+            showLoadingError();
+        }
     }
 }
 
