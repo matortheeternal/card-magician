@@ -1,5 +1,6 @@
 import { getGames } from '../../../domain/game/gameManager.js';
 import { executeAction } from '../../systems/actionSystem.js';
+import platform from '../../../shared/platformAdapter.js';
 
 const L = localize('game-select');
 
@@ -14,8 +15,12 @@ export default class GameSelect extends ReactiveComponent {
             selectGame: event => this.selectGame(event.target),
             start: () => this.start(),
             installPackage: () => executeAction('install-package'),
-            quit: () => window.close()
+            quit: () => platform.terminateApp()
         });
+    }
+
+    get games() {
+        return this._games ||= getGames();
     }
 
     get selectedGameId() {
@@ -44,25 +49,14 @@ export default class GameSelect extends ReactiveComponent {
 
     renderNoGames() {
         this.gamesContainer.innerHTML = (
-            `<div class="no-content-prompt">${L`No games installed`}</div>
-            <div class="buttons-container">
-                <sl-button
-                    variant="primary"
-                    data-click-action="installPackage"
-                >${L`Install Local Package`}</sl-button>
-                <sl-button
-                    variant="danger"
-                    data-click-action="quit"
-                >${L`Quit`}</sl-button>
-            </div>`
+            `<div class="no-content-prompt">${L`No games installed.`}</div>`
         );
     }
 
     renderGameOptions() {
-        const games = getGames();
-        for (const game of games)
+        for (const game of this.games)
             this.renderGameOption(game);
-        if (!games.length) {
+        if (!this.games.length) {
             this.renderNoGames();
             return;
         }
@@ -70,14 +64,27 @@ export default class GameSelect extends ReactiveComponent {
         this.selectGame(firstItem);
     }
 
+    renderActions() {
+        return this.games?.length ? (
+            `<sl-button variant="primary" data-click-action="start">
+                ${L`Start`}
+            </sl-button>`
+        ) : (
+            `<sl-button
+                variant="primary"
+                data-click-action="installPackage"
+            >${L`Install Local Package`}</sl-button>
+            <sl-button
+                variant="danger"
+                data-click-action="quit"
+            >${L`Quit`}</sl-button>`
+        );
+    }
+
     render() {
         this.innerHTML = (
             `<div class="games-container"></div>
-            <div class="buttons-container">
-                <sl-button variant="primary" data-click-action="start">
-                    ${L`Start`}
-                </sl-button>
-            </div>`
+            <div class="buttons-container">${this.renderActions()}</div>`
         );
         this.renderGameOptions();
     }

@@ -7,10 +7,17 @@ cm-game-select {
     font-family: var(--sl-font-sans);
 
     .games-container {
+        position: relative;
         display: flex;
         flex-direction: column;
         padding: var(--sl-spacing-large);
         gap: var(--sl-spacing-small);
+    }
+
+    .no-content-prompt {
+        position: static;
+        text-align: center;
+        font-size: var(--sl-font-size-large);
     }
 
     .game-item {
