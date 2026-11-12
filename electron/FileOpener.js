@@ -17,21 +17,12 @@ export default class FileOpener {
             && !this.mainWindow.isDestroyed();
     }
 
-    showAndFocusWindow() {
-        if (!this.ready()) return;
-        if (this.mainWindow.isMinimized()) this.mainWindow.restore();
-        this.mainWindow.show();
-        this.mainWindow.focus();
-    }
-
     open(filePath) {
         if (!this.ready) {
             this.pendingFiles.push(filePath);
             return;
         }
-
         this.mainWindow.webContents.send('open-file', filePath);
-        this.showAndFocusWindow();
     }
 
     getFilePathsFromArgs(argv, workingDir) {
