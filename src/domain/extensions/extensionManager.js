@@ -70,3 +70,8 @@ export async function installExtensions(extensions) {
     }
     return failures;
 }
+
+platform.onOpenFile(filePath => {
+    if (!filePath.endsWith('.cmpkg')) return;
+    void installPackage(filePath);
+});
