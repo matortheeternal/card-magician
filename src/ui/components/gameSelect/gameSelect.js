@@ -1,4 +1,5 @@
 import { getGames } from '../../../domain/game/gameManager.js';
+import { executeAction } from '../../systems/actionSystem.js';
 
 const L = localize('game-select');
 
@@ -12,6 +13,8 @@ export default class GameSelect extends ReactiveComponent {
         this.handleEvents('click', {
             selectGame: event => this.selectGame(event.target),
             start: () => this.start(),
+            installPackage: () => executeAction('install-package'),
+            quit: () => window.close()
         });
     }
 
@@ -22,13 +25,6 @@ export default class GameSelect extends ReactiveComponent {
 
     get gamesContainer() {
         return this.querySelector('.games-container');
-    }
-
-    get installFilters() {
-        return [
-            { name: L`Card Magician Package Files`, extensions: ['cmpkg'] },
-            { name: L`All files`, extensions: ['*'] }
-        ];
     }
 
     renderGameOption(game) {
@@ -46,10 +42,30 @@ export default class GameSelect extends ReactiveComponent {
         this.gamesContainer.append(element);
     }
 
+    renderNoGames() {
+        this.gamesContainer.innerHTML = (
+            `<div class="no-content-prompt">${L`No games installed`}</div>
+            <div class="buttons-container">
+                <sl-button
+                    variant="primary"
+                    data-click-action="installPackage"
+                >${L`Install Local Package`}</sl-button>
+                <sl-button
+                    variant="danger"
+                    data-click-action="quit"
+                >${L`Quit`}</sl-button>
+            </div>`
+        );
+    }
+
     renderGameOptions() {
         const games = getGames();
         for (const game of games)
             this.renderGameOption(game);
+        if (!games.length) {
+            this.renderNoGames();
+            return;
+        }
         const firstItem = this.querySelector('.game-item');
         this.selectGame(firstItem);
     }

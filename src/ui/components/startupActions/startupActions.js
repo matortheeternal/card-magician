@@ -1,6 +1,7 @@
 import { openModal } from '../../modals/modalManager.js';
 import platform from '../../../shared/platformAdapter.js';
 import { installPackage } from '../../../domain/extensions/extensionManager.js';
+import { registerAction } from '../../systems/actionSystem.js';
 
 const L = localize('startup-actions');
 
@@ -15,6 +16,7 @@ export default class StartupActions extends ReactiveComponent {
             installPackage: () => this.installPackage(),
             openSettings: () => openModal('cm-settings-modal')
         });
+        registerAction('install-package', () => this.installPackage());
     }
 
     render() {
