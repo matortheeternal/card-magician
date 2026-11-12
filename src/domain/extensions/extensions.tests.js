@@ -1,15 +1,28 @@
-import { compareVersions } from './extensionVersion.js';
 import {
     CardPartExtension, GameExtension, isSafeExtensionPath
 } from './extensionClasses.js';
 import platform from '../../shared/platformAdapter.js';
 
 describe('Extension packages', () => {
-    function createExtension() {
+    function createExtension(version = '0.2.0') {
         return new CardPartExtension('package/cardparts/magic/Text/module.json', {
-            id: 'magic/Text', version: '0.2.0'
+            id: 'magic/Text', version
         });
     }
+
+    function compareVersions(left, right) {
+        const extension = createExtension(left);
+        extension.installedVersion = right;
+        return extension.versionDifference;
+    }
+
+    it('rejects malformed versions rather than extracting embedded numbers', () => {
+        const versions = [
+            'release1.2.3', '1.2.3.4', '1.2.3-beta..1', '1.2.3-01', '01.2.3'
+        ];
+        for (const version of versions)
+            expect(() => createExtension(version)).withContext(version).toThrow();
+    });
 
     it('compares numeric components and treats missing components as zero', () => {
         expect(compareVersions('0.10', '0.2.0')).toBe(1);

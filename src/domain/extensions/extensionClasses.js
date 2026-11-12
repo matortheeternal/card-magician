@@ -1,6 +1,6 @@
 import platform from '../../shared/platformAdapter.js';
 import { getExtensionDirectory } from '../../shared/extensionManager.js';
-import { compareVersions, parseVersion } from './extensionVersion.js';
+import { SemVer, compare } from 'semver';
 
 const UNSAFE_PATH_PATTERN = /[\\:\u0000-\u001f]/;
 
@@ -10,7 +10,18 @@ export function isSafeExtensionPath(path) {
     return path.split('/').every(part => part && part !== '.' && part !== '..');
 }
 
+function parseExtensionVersion(version) {
+    const text = String(version);
+    const core = text.split('-')[0].split('+')[0];
+    const components = core.split('.');
+    while (components.length < 3) components.push('0');
+    return new SemVer(components.join('.') + text.slice(core.length));
+}
+
 export class Extension {
+    #installedVersion = null;
+    #installedSemver = null;
+
     static matches(entryPath) {
         return entryPath.split('/').at(-1) === this.metadataFile;
     }
@@ -19,15 +30,14 @@ export class Extension {
         const metadata = await entry.json();
         if (!isSafeExtensionPath(metadata.id))
             throw new Error(`Invalid extension ID in ${entryPath}`);
-        parseVersion(metadata.version);
         return new this(entryPath, metadata);
     }
 
     constructor(entryPath, metadata) {
         this.metadata = metadata;
+        this.packageVersion = parseExtensionVersion(metadata.version);
         this.folderPath = entryPath.slice(0, -this.constructor.metadataFile.length);
         this.entries = {};
-        this.installedVersion = null;
     }
 
     get id() {
@@ -46,13 +56,22 @@ export class Extension {
         return getExtensionDirectory().child(this.relativePath);
     }
 
+    get installedVersion() {
+        return this.#installedVersion;
+    }
+
+    set installedVersion(version) {
+        this.#installedSemver = version === null ? null : parseExtensionVersion(version);
+        this.#installedVersion = version;
+    }
+
     get isNew() {
         return this.installedVersion === null;
     }
 
     get versionDifference() {
         if (this.isNew) return 1;
-        return compareVersions(this.metadata.version, this.installedVersion);
+        return compare(this.packageVersion, this.#installedSemver);
     }
 
     get canInstall() {
@@ -82,7 +101,6 @@ export class Extension {
         const metadata = await this.directory.readJson(filename);
         if (metadata.id !== this.id)
             throw new Error(`Installed extension ID does not match ${this.relativePath}`);
-        parseVersion(metadata.version);
         this.installedVersion = metadata.version;
     }
 
