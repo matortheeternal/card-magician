@@ -14,6 +14,7 @@ import {
     showLoadingError
 } from './ui/systems/loadingService.js';
 import { emit } from './shared/htmlUtils.js';
+import { registerAction } from './ui/systems/actionSystem.js';
 
 const L = localize('main');
 const startupLog = log('startup');
@@ -108,8 +109,7 @@ async function startApp() {
     showGameSelection();
 }
 
-window.addEventListener('resize', applyDeviceLayout.debounce(200));
-window.addEventListener('cm-select-game', async event => {
+registerAction('cm-select-game', async event => {
     try {
         showLoading();
         await startGameSession(event.detail.gameId);
@@ -119,6 +119,8 @@ window.addEventListener('cm-select-game', async event => {
         showLoadingError();
     }
 });
+
+window.addEventListener('resize', applyDeviceLayout.debounce(200));
 
 (async function() {
     try {

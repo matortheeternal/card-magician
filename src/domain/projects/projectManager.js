@@ -1,10 +1,11 @@
 import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
-import { registerAction } from '../../ui/systems/actionSystem.js';
+import { executeAction, registerAction } from '../../ui/systems/actionSystem.js';
 import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
+import YAMLSerializer from './serializers/YAMLSerializer.js';
 
 const L = localize('project-manager');
 const report = createReporter({ unit: 'ProjectManager' });
@@ -144,8 +145,10 @@ registerAction('change-template', async (faceId, newTemplateId) => {
 });
 
 registerAction('open-project', openProject);
-platform.onOpenFile(filePath => {
+platform.onOpenFile(async filePath => {
     if (!filePath.endsWith('.cmproj')) return;
+    const data = await YAMLSerializer.load(filePath);
+    await executeAction('cm-select-game', { gameId: data.game });
     void openProject(filePath);
 });
 

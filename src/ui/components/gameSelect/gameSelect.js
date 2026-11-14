@@ -104,7 +104,7 @@ export default class GameSelect extends ReactiveComponent {
     start() {
         const gameId = this.selectedGameId;
         if (!gameId) throw new Error('No game selected');
-        this.emit('cm-select-game', { gameId });
+        void executeAction('cm-select-game', { gameId });
     }
 }
 
