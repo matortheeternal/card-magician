@@ -6,6 +6,7 @@ import {
     openProject,
     selectCard
 } from '../../../domain/projects/projectManager.js';
+import { executeAction } from '../../systems/actionSystem.js';
 
 export default class DevState extends ReactiveComponent {
     dirty = false;
@@ -120,7 +121,7 @@ export default class DevState extends ReactiveComponent {
             platform.reloadApp();
         }
         if (!msg.gameId) return;
-        this.emit('cm-select-game', { gameId: msg.gameId });
+        executeAction('cm-select-game', msg.gameId);
         document.addEventListener('cm-loaded', async () => {
             if (msg.openProject) await openProject(msg.openProject);
             if (Number.isInteger(msg.selectCard))

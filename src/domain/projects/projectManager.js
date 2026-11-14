@@ -148,7 +148,7 @@ registerAction('open-project', openProject);
 platform.onOpenFile(async filePath => {
     if (!filePath.endsWith('.cmproj')) return;
     const data = await YAMLSerializer.load(filePath);
-    await executeAction('cm-select-game', { gameId: data.game });
+    await executeAction('cm-select-game', data.game);
     void openProject(filePath);
 });
 

@@ -109,10 +109,10 @@ async function startApp() {
     showGameSelection();
 }
 
-registerAction('cm-select-game', async event => {
+registerAction('cm-select-game', async gameId => {
     try {
         showLoading();
-        await startGameSession(event.detail.gameId);
+        await startGameSession(gameId);
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);
