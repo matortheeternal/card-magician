@@ -27,8 +27,6 @@ export async function setupExitFixture() {
             12, 18, new ImageCrop(12, 18)
         );
     }
-    // Drain setup writes before replacing the debounce. A normal timer must not
-    // satisfy the shutdown assertion when collection flushing is disabled.
     await manager.flush();
     manager.save = CollectionManager.prototype.save.debounce(DEBOUNCE_DELAY);
     const editor = document.createElement('cm-edit-face-symbol');

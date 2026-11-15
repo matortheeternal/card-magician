@@ -122,7 +122,7 @@ describe('ListView selection', () => {
         list.activeColumns[0].compare = (a, b) => b.data.name.localeCompare(a.data.name);
         list.activeColumns[0].sort = { priority: 1, direction: 'desc' };
         list.rows = cards;
-        list.selection = [2]; // B follows C in the displayed order.
+        list.selection = [2];
         list.rows = [cards[0], cards[2], cards[3]];
         expect(selected()).toEqual([cards[2]]);
     });

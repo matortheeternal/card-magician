@@ -3,9 +3,6 @@ import { dialogSystem } from './dialogSystem.js';
 describe('Dialogs', () => {
     beforeEach(() => {
         const animate = Element.prototype.animate;
-        // The app and smoke tests use separate bundles, so overriding a bundled
-        // Shoelace animation registry would not affect the app's components.
-        // Keep native finish events, but remove animation durations and delays.
         spyOn(Element.prototype, 'animate').and.callFake(function(keyframes, options) {
             return animate.call(this, keyframes, {
                 ...options, duration: 0, delay: 0, endDelay: 0,
@@ -16,8 +13,6 @@ describe('Dialogs', () => {
     async function shownDialog() {
         await Promise.resolve();
         const dialog = document.querySelector('sl-dialog.service-dialog');
-        // Initial focus runs in a separate animation frame. With animations
-        // disabled, sl-after-show can arrive before that focus callback.
         await Promise.all(['sl-after-show', 'sl-initial-focus'].map(eventName =>
             new Promise(resolve => {
                 dialog.addEventListener(eventName, resolve, { once: true });

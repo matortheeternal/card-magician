@@ -25,7 +25,6 @@ function record(card, fieldId, oldValue, newValue, extra = {}) {
     }));
 }
 
-// Real form/persistence coverage plus controlled saves for deterministic races.
 describe('History', () => {
     beforeEach(async () => {
         await history.reset();
@@ -40,8 +39,6 @@ describe('History', () => {
 
         beforeEach(() => {
             window.selectedProjectCard ??= null;
-            // This object is intentionally unselected: replay must target its
-            // captured card rather than the application's current selection.
             card = { front: {}, back: {}, save: jasmine.createSpy('save')
                 .and.resolveTo() };
         });
@@ -149,7 +146,6 @@ describe('History', () => {
             await edit('name', 'A', 'AB');
             await history.redo();
             expect(card.front.rulesText).toBe('');
-            // Combining across Undo is an intentional grouping policy.
             await history.undo();
             expect(card.front.name).toBe('');
         });
@@ -807,7 +803,6 @@ describe('History', () => {
         });
 
         it('records checkbox-list changes through the options form', async () => {
-            // The default face declares this option but does not display it.
             const wrapper = document.createElement('form-field');
             wrapper.setAttribute('field-id', 'otherFrameOptions');
             document.querySelector('cm-options-form[data-face-id="front"]')
@@ -999,7 +994,6 @@ describe('History', () => {
             await history.reset();
             new FieldInteractor('artImage', { faceKey: 'front' }).clear();
             await flushCard();
-            // Regression: the field setter used to revoke its old URL at 500ms.
             await new Promise(resolve => { setTimeout(resolve, 550); });
             await history.undo();
             const imagePath = card.files.get('front.artImage');
@@ -1027,7 +1021,6 @@ describe('History', () => {
             expect({ ...field.value.crop }).toEqual({ ...before });
             expect(field.value.constructor).toBe(ValueClass);
             expect(typeof field.value.clone).toBe('function');
-            // An edit after replay must not mutate the stored undo snapshot.
             field.value.crop.xOffset = 99;
             await history.redo();
             expect({ ...field.value.crop }).toEqual({ ...new ImageCrop(100, 120, 3, 4) });
@@ -1035,7 +1028,6 @@ describe('History', () => {
             expect({ ...field.value.crop }).toEqual({ ...before });
         });
 
-        // Retention regressions plus the remaining deferred template replay case.
         it('restores an image loaded from disk after clear/save/reopen', async () => {
             await setCardFields({ artImage: art });
             await flushCard();
@@ -1048,6 +1040,7 @@ describe('History', () => {
             new FieldInteractor('artImage', { faceKey: 'front' }).clear();
             await flushCard();
             await history.undo();
+            await waitForCardUpdates();
             await executeAction('open-project', projectPath);
             card = activeProject.cards[0];
             const bytes = await platform.readBinaryFile(

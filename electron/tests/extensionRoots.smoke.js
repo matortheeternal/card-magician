@@ -6,7 +6,6 @@ async function terminateFixture(fixture) {
     try {
         await fixture.driver.evaluate('cardMagicianNative.call("terminateApp", [0])');
     } catch (error) {
-        // Native termination can close CDP before Runtime.evaluate replies.
         if (error.message !== 'DevTools connection closed.') throw error;
     }
 }

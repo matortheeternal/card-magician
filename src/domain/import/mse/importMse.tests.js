@@ -27,7 +27,6 @@ describe('partial MSE card import', () => {
         const mseSet = {
             card, stylesheet: 'm15-altered', stylesheet_version: '2026-09-06'
         };
-        // Use the real importer and a failing image read to exercise conversion failures.
         for (const entry of card)
             if (entry.fail) entry.image = 'broken.png';
         const adapter = { getImage: async () => { throw new Error('Broken card'); } };

@@ -1,4 +1,3 @@
-// Access at module evaluation time: extension specs may do the same.
 const api = cmTest;
 
 describe('Extension test API', () => {

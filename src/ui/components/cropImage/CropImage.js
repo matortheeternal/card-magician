@@ -78,7 +78,6 @@ class CropImage extends HTMLElement {
             await this.update();
             return true;
         });
-        // Consumers observe failures through updateComplete, including in tests.
         this._updatePromise.catch(() => {});
     }
 

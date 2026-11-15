@@ -76,8 +76,6 @@ export type ChartDefinition = Partial<StatisticsQuery> & {
     type: string;
     title?: string;
     description?: string;
-    // Legacy input aliases for columns and rows.
-    x?: string;
     series?: string;
     numerator?: CategoryId;
     breakdown?: boolean;

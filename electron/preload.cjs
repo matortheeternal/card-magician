@@ -1,6 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Bootstrap before any module executes, including modules that read paths at import.
 const metadata = ipcRenderer.sendSync('card-magician:metadata');
 contextBridge.exposeInMainWorld('appEnvironment', metadata);
 

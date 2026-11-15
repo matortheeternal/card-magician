@@ -30,9 +30,9 @@ export default class WindowLifecycle {
     }
 
     exit(code = 0) {
-        if (!Number.isInteger(code)) throw new TypeError('Exit code must be an integer.');
+        if (!Number.isInteger(code))
+            throw new TypeError('Exit code must be an integer.');
         this.exiting = true;
-        // Acknowledge the renderer's IPC request before tearing it down.
         setImmediate(() => app.exit(code));
     }
 }

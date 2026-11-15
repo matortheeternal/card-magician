@@ -161,9 +161,6 @@ async function drawBackgroundImage(ctx, elementRect, rootRect, style, layer) {
     }
 
     const matrix = new DOMMatrix();
-    // The pattern origin is (0,0) in the current user coordinate space.
-    // background-position defines the offset of the first tile.
-    // We also need to account for background-size if it's different from the image size.
     matrix.translateSelf(x, y);
     if (imgSize.width !== img.width || imgSize.height !== img.height)
         matrix.scaleSelf(imgSize.width / img.width, imgSize.height / img.height);
@@ -189,7 +186,6 @@ async function drawBackgroundImages(ctx, elementRect, rootRect, style) {
     const repeats = splitCssList(style.backgroundRepeat);
     const origins = splitCssList(style.backgroundOrigin);
 
-    // CSS paints the first listed image on top, so canvas draws in reverse.
     for (let i = images.length - 1; i >= 0; i--) {
         const url = extractBackgroundUrl(images[i]);
         if (!url) continue;

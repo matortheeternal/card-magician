@@ -64,7 +64,6 @@ describe('CollectionManager', () => {
             expect(yaml).not.toContain('blob:');
             expect(yaml).not.toContain('dirty:');
             expect(manager.collection[0].id).toBeUndefined();
-            // The embedded image remains usable after the original URL expires.
             URL.revokeObjectURL(url);
             await manager.load();
             const restored = manager.collection[0].front.image;
@@ -74,7 +73,6 @@ describe('CollectionManager', () => {
                 .toEqual({ width: 12, height: 18 });
             expect(new Uint8Array(await restored.loadImageData()))
                 .toEqual(new Uint8Array(await blob.arrayBuffer()));
-            // Saving a loaded image preserves its data URL without an extra fetch.
             const fetchImage = spyOn(window, 'fetch').and.callThrough();
             manager.collection[0].name = 'Renamed';
             manager.scheduleSave();

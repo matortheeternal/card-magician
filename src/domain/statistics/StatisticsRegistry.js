@@ -62,7 +62,11 @@ export default class StatisticsRegistry {
      * @type {(card: card, project?: any) => any}
      */
     prepare = card => card;
-    // Project paths that invalidate prepared records, including game-specific defaults.
+
+    /*
+     * Project paths that invalidate prepared records, including game-specific defaults.
+     * @type Array<string>
+     */
     projectProperties = ['cards'];
     cardForRecord = record => record;
     /**

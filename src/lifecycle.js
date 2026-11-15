@@ -15,7 +15,6 @@ const exitManager = new ExitManager(code => platform.terminateApp(code), error =
     progress.setStatus(L`Saving pending changes…`);
     const bar = getActiveModal()?.querySelector('sl-progress-bar');
     if (bar) bar.indeterminate = true;
-    // Let the modal paint before starting filesystem work.
     await new Promise(resolve => {
         requestAnimationFrame(() => requestAnimationFrame(resolve));
     });
@@ -31,8 +30,6 @@ export function registerPendingSave(save) {
         while (save.pending) await save.flush();
     };
     const unregister = beforeExit(flush, () => save.pending);
-    // Successful detached saves can release the component. Failed ones remain
-    // registered so shutdown cannot silently skip them.
     return () => {
         void flush().then(unregister).catch(error => {
             createReporter({ unit: 'Persistence' })('save', error);

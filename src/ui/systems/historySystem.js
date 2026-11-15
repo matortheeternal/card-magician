@@ -30,7 +30,6 @@ async function withLock(callback) {
 
 function withPreparedEntry(entry, callback) {
     const preparation = entry.prepare();
-    // A read may fail while an earlier history operation is still running.
     preparation.catch(() => {});
     return withLock(async () => {
         await preparation;

@@ -15,7 +15,6 @@ import * as styleManager from '../../ui/systems/styleManager.js';
 import { manageCollection } from '../../shared/storageUtils.js';
 import StatisticsRegistry from '../statistics/StatisticsRegistry.js';
 
-// Inherit platform methods without losing them through object spread.
 /** @type {typeof platform & { watchFile: typeof watchFile }} */
 const gamePlatform = Object.assign(Object.create(platform), { watchFile });
 
