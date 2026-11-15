@@ -2,7 +2,6 @@ import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { executeAction, registerAction } from '../../ui/systems/actionSystem.js';
 import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
-import * as progress from '../../ui/systems/progressSystem.js';
 import {
     openContext, releaseContext, restoreContext
 } from '../../ui/systems/objectUrlSystem.js';
@@ -22,28 +21,7 @@ const filters = [
 const cardChangedCallbacks = [];
 const projectChangedCallbacks = [];
 
-export async function saveAs() {
-    log('user').info('save as');
-    const filePath = await platform.saveSingleFileDialog(
-        L`Save project to file`,
-        activeProject.filePath || `${activeProject.title || L`Project`}.cmproj`,
-        filters
-    );
-    if (!filePath) return;
-    try {
-        log('fs').info('Saving project to:', filePath);
-        await activeProject.setFilePath(filePath);
-        await activeProject.saveAll(filePath);
-        progress.complete();
-    } catch (error) {
-        progress.onError(error);
-        report('saveAs', error, [filePath, activeProject]);
-        log('state').error(error);
-    }
-}
-
 export async function saveProject(saveCards = false) {
-    if (!activeProject.filePath) return saveAs();
     try {
         await activeProject.save();
         if (saveCards)
@@ -190,5 +168,4 @@ registerAction('save-project', async () => {
     await saveProject(true);
 });
 
-registerAction('save-project-as', saveAs);
 registerAction('select-card', selectCard);

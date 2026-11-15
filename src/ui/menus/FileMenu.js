@@ -42,11 +42,6 @@ export default class FileMenu extends ReactiveMenu {
                 L`Ctrl+S`,
                 () => executeAction('save-project')
             ),
-            this.menuItem(
-                L`Save as`,
-                L`Ctrl+Shift+S`,
-                () => executeAction('save-project-as')
-            ),
             this.menuItemGroup(
                 L`Recent projects`,
                 () => {
