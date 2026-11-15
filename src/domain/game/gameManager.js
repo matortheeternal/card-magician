@@ -1,7 +1,6 @@
-import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import AppConfig from './appConfig.js';
 import { readExtensionDirectories } from '../../shared/extensionManager.js';
-import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
+import { installProject, switchProject } from '../projects/projectManager.js';
 
 const games = [];
 let gameStylesheet = null;
@@ -40,10 +39,7 @@ export async function setGame(gameId) {
     await loadGameStyles(game);
     window.activeGame = new Module(game);
     await activeGame.init();
-    await withNewContext(() => {
-        clearFileWatchers();
-        window.activeProject = new activeGame.Project();
-    });
+    await switchProject(() => new activeGame.Project(), installProject);
     activeGame.config = new AppConfig(gameId);
     return activeGame;
 }

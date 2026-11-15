@@ -3,7 +3,11 @@ import { executeAction, registerAction } from '../../ui/systems/actionSystem.js'
 import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
-import { withNewContext } from '../../ui/systems/objectUrlSystem.js';
+import {
+    openContext, releaseContext, restoreContext
+} from '../../ui/systems/objectUrlSystem.js';
+import * as historySystem from '../../ui/systems/historySystem.js';
+import RenderScheduler from '../template/renderScheduler.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 
@@ -49,20 +53,36 @@ export async function saveProject(saveCards = false) {
     }
 }
 
-export function setActiveProject(project) {
+export function installProject(project) {
     clearFileWatchers();
     window.activeProject = project;
+}
+
+export function setActiveProject(project) {
+    installProject(project);
     void project.watchFiles({ initial: true });
     for (const callback of projectChangedCallbacks)
         callback(activeProject);
 }
 
+export async function switchProject(createProject, activate = setActiveProject) {
+    const previousContext = openContext();
+    try {
+        await historySystem.reset();
+        const project = await createProject();
+        activate(project);
+        await RenderScheduler.settle().catch(() => {});
+        releaseContext(previousContext);
+        return project;
+    } catch (error) {
+        restoreContext(previousContext);
+        throw error;
+    }
+}
+
 export async function newProject() {
     log('user').info('new project');
-    await withNewContext(() => {
-        const project = new activeGame.Project();
-        setActiveProject(project);
-    });
+    await switchProject(() => new activeGame.Project());
 }
 
 export async function openProject(filePath) {
@@ -74,10 +94,7 @@ export async function openProject(filePath) {
     showLoading();
     try {
         log('state').info('Opening project:', filePath);
-        await withNewContext(async () => {
-            const project = await activeGame.Project.load(filePath);
-            setActiveProject(project);
-        });
+        await switchProject(() => activeGame.Project.load(filePath));
         await activeGame.config.addRecentProject();
     } finally {
         hideLoading();

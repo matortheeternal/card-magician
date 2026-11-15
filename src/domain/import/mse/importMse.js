@@ -1,10 +1,9 @@
 import platform from '../../../shared/platformAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
 import { registerAction } from '../../../ui/systems/actionSystem.js';
-import { setActiveProject } from '../../projects/projectManager.js';
+import { switchProject } from '../../projects/projectManager.js';
 import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
-import { withNewContext } from '../../../ui/systems/objectUrlSystem.js';
 import MseFileAdapter from './MseFileAdapter.js';
 import { getStructure } from './cardStructureRegistry.js';
 import convertSetSymbol from './setSymbol/convertSetSymbol.js';
@@ -171,13 +170,15 @@ registerAction('import-mse-set', async () => {
     log('state').info('Importing MSE set:', filePath);
     openModal('cm-progress-modal', { title: L`Importing...` });
     try {
-        await withNewContext(async () => {
-            const [project, failures] = await importMseFile(filePath);
+        let failures = [];
+        const project = await switchProject(async () => {
+            const [imported, importFailures] = await importMseFile(filePath);
+            failures = importFailures;
             progress.setTitle(L`Import complete!`);
             progress.complete();
-            setActiveProject(project);
-            if (failures.length) showPartialStatus(project, failures);
+            return imported;
         });
+        if (failures.length) showPartialStatus(project, failures);
     } catch (error) {
         progress.onError(error);
         report('import', error, [filePath]);

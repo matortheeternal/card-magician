@@ -1,28 +1,21 @@
-import * as historySystem from './historySystem.js';
-import RenderScheduler from '../../domain/template/renderScheduler.js';
-
 let activeContext = null;
 
-export function clear(context) {
-    if (!context?.trackedUrls) return;
+export function openContext() {
+    const previous = activeContext;
+    activeContext = { trackedUrls: [] };
+    return previous;
+}
+
+export function releaseContext(context) {
+    if (!context) return;
     for (const url of context.trackedUrls)
         URL.revokeObjectURL(url);
     context.trackedUrls = [];
 }
 
-export async function withNewContext(callback) {
-    const prevContext = activeContext;
-    activeContext = { trackedUrls: [] };
-    try {
-        await historySystem.reset();
-        await callback();
-        await RenderScheduler.settle().catch(() => {});
-        clear(prevContext);
-    } catch (error) {
-        clear(activeContext);
-        activeContext = prevContext;
-        throw error;
-    }
+export function restoreContext(context) {
+    releaseContext(activeContext);
+    activeContext = context;
 }
 
 export function createURL(blob) {
