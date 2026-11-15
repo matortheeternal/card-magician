@@ -130,4 +130,22 @@ describe('Project manager', () => {
             expect(activeProject).toBe(previous);
         });
     });
+
+    describe('switching', () => {
+        it('saves pending card edits to the previous project first', async () => {
+            const project = await createTestProject();
+            folders.push(project.folderPath);
+            const card = await createCard();
+            await setCardFields({ name: 'Pending' });
+            await flushCard();
+            const dataPath = card.files.get('data');
+            await setCardFields({ rulesText: 'Saved before switching' });
+            const next = await createTestProject();
+            folders.push(next.folderPath);
+            await new Promise(resolve => { setTimeout(resolve, 1500); });
+            expect(await platform.readFile(dataPath)).toContain('Saved before switching');
+            const leaked = await platform.checkFolderExists(next.cardsFolderPath);
+            expect(leaked).toBeFalse();
+        });
+    });
 });

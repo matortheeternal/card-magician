@@ -1,4 +1,5 @@
 import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
+import { flushBeforeExit } from '../../lifecycle.js';
 import { executeAction, registerAction } from '../../ui/systems/actionSystem.js';
 import platform from '../../shared/platformAdapter.js';
 import { buildCard } from '../card/cardBuilder.js';
@@ -45,6 +46,7 @@ export function setActiveProject(project) {
 }
 
 export async function switchProject(createProject, activate = setActiveProject) {
+    await flushBeforeExit();
     const previousContext = openContext();
     try {
         await historySystem.reset();
