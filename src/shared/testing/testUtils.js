@@ -2,6 +2,7 @@ import { executeAction } from '../../ui/systems/actionSystem.js';
 import FieldInteractor from './FieldInteractor.js';
 import platform from '../platformAdapter.js';
 import RenderScheduler from '../../domain/template/renderScheduler.js';
+import { createProject } from '../../domain/projects/projectManager.js';
 
 /**
  * Waits until the provided asynchronous condition becomes true.
@@ -91,8 +92,7 @@ export async function createTestProject() {
     );
     const projectFilePath = await platform.getJoinedPath(testProjectDir, 'test.cmproj');
     try { await platform.rmrf(testProjectDir); } catch {}
-    await executeAction('new-project');
-    await activeProject.setFilePath(projectFilePath);
+    await createProject(projectFilePath);
     return activeProject;
 }
 

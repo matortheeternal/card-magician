@@ -51,6 +51,7 @@ export type AppEnvironment = Readonly<{
         extensions: string;
         content: string;
         data: string;
+        projects: string;
     }>;
 }>;
 

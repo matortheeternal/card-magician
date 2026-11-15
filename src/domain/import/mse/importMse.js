@@ -163,10 +163,21 @@ function showPartialStatus(project, failures) {
     progress.setOperation(L`Skipped entries are listed in the error report.`);
 }
 
-registerAction('import-mse-set', async () => {
-    log('user').info('Import MSE set');
-    const filePath = await platform.openSingleFileDialog(L`Import an MSE Set`);
-    if (!filePath) return;
+async function chooseImportLocation(filePath, callback) {
+    const { stem } = await platform.getPathParts(filePath);
+    openModal('cm-new-project-modal', {
+        title: L`Import an MSE Set`, name: stem, confirmLabel: L`Import`, callback
+    });
+}
+
+async function saveImportedProject(project, projectPath) {
+    progress.setStatus(L`Saving project`);
+    await project.setFilePath(projectPath);
+    await project.saveAll(projectPath);
+    await activeGame.config.addRecentProject();
+}
+
+async function importMseSet(filePath, projectPath) {
     log('state').info('Importing MSE set:', filePath);
     openModal('cm-progress-modal', { title: L`Importing...` });
     try {
@@ -174,14 +185,24 @@ registerAction('import-mse-set', async () => {
         const project = await switchProject(async () => {
             const [imported, importFailures] = await importMseFile(filePath);
             failures = importFailures;
-            progress.setTitle(L`Import complete!`);
-            progress.complete();
             return imported;
         });
+        await saveImportedProject(project, projectPath);
+        progress.setTitle(L`Import complete!`);
+        progress.complete();
         if (failures.length) showPartialStatus(project, failures);
     } catch (error) {
         progress.onError(error);
         report('import', error, [filePath]);
         log('user').error('Error importing MSE set', error);
     }
+}
+
+registerAction('import-mse-set', async () => {
+    log('user').info('Import MSE set');
+    const filePath = await platform.openSingleFileDialog(L`Import an MSE Set`);
+    if (!filePath) return;
+    await chooseImportLocation(filePath, projectPath => {
+        return importMseSet(filePath, projectPath);
+    });
 });

@@ -36,7 +36,10 @@ export function createEnvironment() {
         paths: {
             extensions: extensionsPath,
             content: app.isPackaged ? path.join(profile, 'content') : root,
-            data: path.resolve(getArgument('--data-dir', path.join(profile, 'data')))
+            data: path.resolve(getArgument('--data-dir', path.join(profile, 'data'))),
+            projects: path.resolve(getArgument(
+                '--projects-dir', path.join(app.getPath('documents'), 'Card Magician')
+            ))
         }
     };
 }

@@ -654,9 +654,7 @@ describe('Persistence', () => {
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
-        it('copies and pastes an unsaved card with its image', async () => {
-            const filePath = project.filePath;
-            await executeAction('new-project');
+        it('copies and pastes a card with its image before it is saved', async () => {
             await createCard();
             await setCardFields({ name: 'firebird', artImage });
             await executeAction('copy');
@@ -667,11 +665,8 @@ describe('Persistence', () => {
                 'firebird',
                 'firebird',
             ]);
-            expect(activeProject.cards.every(card => {
-                return !card.files.has('data') && !card.files.has('front.artImage');
-            })).toBeTrue();
 
-            await activeProject.setFilePath(filePath);
+            await flushCard();
             await activeProject.saveCards();
             const paths = activeProject.cards.map(card => {
                 return card.files.get('front.artImage');
@@ -772,9 +767,7 @@ describe('Persistence', () => {
             await expectFilesToMatch(new Blob([bytes]), artImage);
         });
 
-        it('persists unsaved cards and images after Save As', async () => {
-            const filePath = project.filePath;
-            await executeAction('new-project');
+        it('persists duplicated cards and images', async () => {
             await createCard();
             await setCardFields({ name: 'phoenix', artImage });
             await executeAction('duplicate-selected-cards');
@@ -784,11 +777,8 @@ describe('Persistence', () => {
                 'phoenix',
                 'phoenix',
             ]);
-            expect(activeProject.cards.every(card => {
-                return !card.files.has('data') && !card.files.has('front.artImage');
-            })).toBeTrue();
 
-            await activeProject.setFilePath(filePath);
+            await flushCard();
             await activeProject.saveCards();
             const paths = activeProject.cards.map(card => {
                 return card.files.get('front.artImage');

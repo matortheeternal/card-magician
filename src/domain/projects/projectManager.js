@@ -10,6 +10,7 @@ import * as historySystem from '../../ui/systems/historySystem.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
+import { openModal } from '../../ui/modals/modalManager.js';
 
 const L = localize('project-manager');
 const report = createReporter({ unit: 'ProjectManager' });
@@ -80,9 +81,23 @@ export async function switchProject(createProject, activate = setActiveProject) 
     }
 }
 
-export async function newProject() {
+export async function createProjectAt(filePath) {
+    const project = new activeGame.Project();
+    await project.setFilePath(filePath);
+    await project.save();
+    return project;
+}
+
+export async function createProject(filePath) {
+    log('state').info('Creating project:', filePath);
+    await switchProject(() => createProjectAt(filePath));
+    await activeGame.config.addRecentProject();
+    await setActiveEditorCard(null);
+}
+
+export function newProject() {
     log('user').info('new project');
-    await switchProject(() => new activeGame.Project());
+    openModal('cm-new-project-modal', { callback: createProject });
 }
 
 export async function openProject(filePath) {
@@ -169,10 +184,7 @@ platform.onOpenFile(async filePath => {
     void openProject(filePath);
 });
 
-registerAction('new-project', async () => {
-    await newProject();
-    await setActiveEditorCard(null);
-});
+registerAction('new-project', newProject);
 
 registerAction('save-project', async () => {
     await saveProject(true);
