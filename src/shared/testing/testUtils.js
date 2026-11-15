@@ -152,15 +152,8 @@ export async function toggleFace(face) {
  * Waits for card rendering and crop-image updates.
  * @returns Promise<void>
  */
-export async function waitForCardUpdates() {
-    if (RenderScheduler.queue.length) RenderScheduler.flush();
-    const faces = document.querySelectorAll('cm-card-face');
-    const updates = [];
-    for (const face of faces) {
-        for (const image of face.shadowRoot.querySelectorAll('crop-image'))
-            updates.push(image.updateComplete);
-    }
-    await Promise.all(updates);
+export function waitForCardUpdates() {
+    return RenderScheduler.settle();
 }
 
 export async function flushCard() {

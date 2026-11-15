@@ -96,4 +96,14 @@ export default class RenderScheduler {
         this.queue = [];
         this.flushComplete(queue);
     }
+
+    static async settle() {
+        if (this.queue.length) this.flush();
+        const updates = [];
+        for (const face of document.querySelectorAll('cm-card-face')) {
+            for (const image of face.shadowRoot.querySelectorAll('crop-image'))
+                updates.push(image.updateComplete);
+        }
+        await Promise.all(updates);
+    }
 }

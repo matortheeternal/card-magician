@@ -1,4 +1,5 @@
 import * as historySystem from './historySystem.js';
+import RenderScheduler from '../../domain/template/renderScheduler.js';
 
 let activeContext = null;
 
@@ -15,6 +16,7 @@ export async function withNewContext(callback) {
     try {
         await historySystem.reset();
         await callback();
+        await RenderScheduler.settle().catch(() => {});
         clear(prevContext);
     } catch (error) {
         clear(activeContext);
