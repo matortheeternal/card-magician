@@ -22,6 +22,8 @@ export default class WebArtifact extends ExportArtifact {
             if (card.back)
                 exportedCard.back = this.exportCardFace(card, 'back');
             exportedCard.baseName = card.baseName;
+            const cardExportInfo = activeProject.exportInfo[card.baseName];
+            exportedCard.imageExports = cardExportInfo.imageExports;
             return exportedCard;
         });
     }

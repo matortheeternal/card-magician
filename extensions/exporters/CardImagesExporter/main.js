@@ -65,7 +65,7 @@ export default class CardImagesExporter extends CardMagicianExporter {
     getFilePath(baseCard, card) {
         const hasBackFace = Object.hasOwn(baseCard, 'back');
         const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
-        return `${baseCard.baseName}${suffix} - [HASH].${this.extension}`;
+        return `${baseCard.baseName}${suffix}.${this.extension}`;
     }
 
     /**

@@ -135,10 +135,16 @@ export default class PackArtifact extends ExportArtifact {
     }
 
     createCardDefinition(card, index) {
+        const { filePath, hash } = activeProject.getImageExport(card);
+        const faceUrl = [
+            this.basePath,
+            'dist',
+            encodeURI(filePath)
+        ].join('/') + `?h=${hash.slice(0, 8)}`;
         return {
             id: index + 1,
             nickname: card.front.name,
-            faceUrl: this.basePath + encodeURI(card.imageExports.front)
+            faceUrl
         };
     }
 

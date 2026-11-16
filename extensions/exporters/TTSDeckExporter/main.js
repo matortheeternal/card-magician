@@ -10,7 +10,7 @@ export default class TTSDeckExporter extends CardMagicianExporter {
             id: 'basePath',
             label: L`Base URL Path`,
             default: 'https://raw.githubusercontent.com/[username]/[repo]/'
-                + 'refs/heads/main/output/CardImagesExporter',
+                + 'refs/heads/main/dist/images',
             hint: L`The base URL where image files will be hosted.`
         }];
     }

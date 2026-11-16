@@ -140,9 +140,8 @@ registerAction('run-exporter', async exporterId => {
             return;
         }
         await runExporters(params);
-        progress.setTitle('Saving cards');
-        for (const card of activeProject.cards)
-            await card.saveData();
+        progress.setTitle('Saving export info');
+        await activeProject.saveExportInfo();
         progress.setTitle('Export Complete');
         progress.complete();
     } catch (error) {

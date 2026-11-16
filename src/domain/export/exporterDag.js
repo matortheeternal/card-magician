@@ -100,16 +100,35 @@ function getHandler(output, exporter) {
     );
 }
 
+function trackExport(artifact, filePath, hash) {
+    if (!hash || ! artifact.card) return;
+    activeProject.trackExport(artifact.card, artifact.faceKey, filePath, hash);
+}
+
+function exportUnchanged(artifact, filePath, hash) {
+    if (!artifact.card || !hash) return;
+    const cardExportInfo = activeProject.getImageExport(
+        artifact.card,
+        artifact.faceKey
+    );
+    return cardExportInfo?.hash === hash;
+}
+
 async function saveArtifact(exporter, localPath, artifact) {
+    const hash = await artifact.hash();
+    const artifactPath = await platform.getJoinedPath(exporter.folder, localPath);
+    if (exportUnchanged(artifact, artifactPath, hash)) {
+        log('export').info(`Skipped unchanged ${artifactPath}`);
+        return;
+    }
+    trackExport(artifact, artifactPath, hash);
     const output = await artifact.toBuffer();
     if (!output) return;
     const handler = getHandler(output, exporter);
-    const filePath = await artifact.getExportFilePath(
-        exporter.folder,
-        localPath,
-        output
+    log('export').info(`Saving ${artifactPath}`);
+    const filePath = await platform.getJoinedPath(
+        activeProject.folderPath, 'dist', artifactPath
     );
-    log('export').info(`Saving ${filePath}`);
     await handler.write(filePath, output);
 }
 

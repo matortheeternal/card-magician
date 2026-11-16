@@ -14,6 +14,7 @@ export default class CardMagicianProject {
     #cardsFolderPath = '';
     #tagsPath = '';
     #symbolPath = '';
+    #exportInfoPath = '';
 
     constructor(data = {}) {
         Object.assign(this, {
@@ -36,6 +37,7 @@ export default class CardMagicianProject {
         await project.loadCards();
         await project.loadCardFiles();
         await project.loadSymbol();
+        await project.loadExportInfo();
         await project.afterLoad();
         return project;
     }
@@ -59,6 +61,13 @@ export default class CardMagicianProject {
      */
     get symbolPath() {
         return this.#symbolPath;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get exportInfoPath() {
+        return this.#exportInfoPath;
     }
 
     /**
@@ -96,6 +105,9 @@ export default class CardMagicianProject {
         this.#cardsFolderPath = await platform.getJoinedPath(this.folderPath, 'cards');
         this.#tagsPath = await platform.getJoinedPath(this.folderPath, 'tags.yml');
         this.#symbolPath = await platform.getJoinedPath(this.folderPath, 'symbol.svg');
+        this.#exportInfoPath = await platform.getJoinedPath(
+            this.folderPath, 'dist', 'exports.json'
+        );
         await platform.createDirectory(this.#folderPath);
         await platform.unmount('/project');
         await platform.mount('/project', this.#folderPath);
@@ -142,6 +154,26 @@ export default class CardMagicianProject {
             await card.loadFiles(filesByName);
     }
 
+    async loadExportInfo() {
+        this.exportInfo = {};
+        const exists = await platform.checkFileExists(this.exportInfoPath);
+        if (!exists) return;
+        const text = await platform.readFile(this.exportInfoPath);
+        this.exportInfo = JSON.parse(text);
+    }
+
+    getImageExport(card, faceKey = 'front') {
+        const cardInfo = this.exportInfo[card.baseName];
+        if (!cardInfo) return {};
+        return cardInfo.imageExports[faceKey];
+    }
+
+    trackExport(card, faceKey, filePath, hash) {
+        const cardExportInfo = activeProject.exportInfo[card.baseName] ||= {};
+        cardExportInfo.imageExports ||= {};
+        cardExportInfo.imageExports[faceKey] = { filePath, hash };
+    }
+
     async loadSymbol() {
         if (await platform.checkFileExists(this.symbolPath))
             this.updateSymbol(await platform.readFile(this.symbolPath));
@@ -165,6 +197,11 @@ export default class CardMagicianProject {
         } catch (error) {
             report('watchSymbol', error, [this.symbolPath]);
         }
+    }
+
+    async saveExportInfo() {
+        const text = JSON.stringify(this.exportInfo, null, 2);
+        await platform.writeFile(this.exportInfoPath, text);
     }
 
     async saveCards(withImages = true) {

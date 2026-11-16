@@ -1,5 +1,3 @@
-import platform from '../../shared/platformAdapter.js';
-
 export default class ExportArtifact {
     /**
      * @abstract
@@ -13,20 +11,6 @@ export default class ExportArtifact {
 
     async hash(bytes) {
         return '';
-    }
-
-    /**
-     * @param folder
-     * @param localPath
-     * @returns {string}
-     */
-    async getExportFilePath(folder, localPath) {
-        return platform.getJoinedPath(
-            activeProject.folderPath,
-            'dist',
-            folder,
-            localPath
-        );
     }
 }
 

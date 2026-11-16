@@ -4,6 +4,15 @@ const MIME_TYPES = {
     webp: 'image/webp',
 };
 
+async function getCanvasHash(canvas) {
+    const dataURL = canvas.toDataURL();
+    const encoder = new TextEncoder();
+    const data = encoder.encode(dataURL);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default class CardImageArtifact extends ExportArtifact {
     constructor(baseCard, faceKey, cardCanvas, config) {
         super();
@@ -11,6 +20,10 @@ export default class CardImageArtifact extends ExportArtifact {
         this.faceKey = faceKey;
         this.cardCanvas = cardCanvas;
         this.config = config;
+    }
+
+    get card() {
+        return this.baseCard;
     }
 
     get imageType() {
@@ -21,22 +34,8 @@ export default class CardImageArtifact extends ExportArtifact {
         return parseFloat(this.config.quality);
     }
 
-    async hash(buffer) {
-        const hashBuffer = await crypto.subtle.digest('SHA-1', buffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray
-            .slice(0, 4)
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-    }
-
-    async getExportFilePath(folder, localPath, output) {
-        const hash = await this.hash(output);
-        const fixedPath = localPath.replaceAll('[HASH]', hash);
-        const filePath = await super.getExportFilePath(folder, fixedPath);
-        this.baseCard.imageExports ||= {};
-        this.baseCard.imageExports[this.faceKey] = fixedPath;
-        return filePath;
+    async hash() {
+        return await getCanvasHash(this.cardCanvas);
     }
 
     async toBuffer() {
