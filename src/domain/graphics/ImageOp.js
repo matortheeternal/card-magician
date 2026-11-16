@@ -3,6 +3,7 @@ import imageCache from './ImageCache.js';
 import { fnv1a } from '../../shared/fsUtils.js';
 
 const operations = new Map();
+const pendingPublishes = new Map();
 
 function handleImageArg(arg) {
     const op = arg instanceof ImageOp
@@ -51,10 +52,15 @@ export default class ImageOp {
         const filename = this.makeFilename(imageFormat);
         if (imageCache.has(filename))
             return imageCache.get(filename);
-
-        log('cache').debug(`Cache miss ${filename}`);
-        const canvas = await this.execute();
-        return imageCache.save(filename, canvas, imageFormat, imageQuality);
+        if (!pendingPublishes.has(filename)) {
+            log('cache').debug(`Cache miss ${filename}`);
+            const save = canvas =>
+                imageCache.save(filename, canvas, imageFormat, imageQuality);
+            const result = this.execute().then(save)
+                .finally(() => pendingPublishes.delete(filename));
+            pendingPublishes.set(filename, result);
+        }
+        return pendingPublishes.get(filename);
     }
 }
 
