@@ -15,6 +15,14 @@ export default class WebArtifact extends ExportArtifact {
         }, {});
     }
 
+    exportImageUrls(card) {
+        const imageExports = activeProject.exportInfo[card.baseName]?.imageExports;
+        const imageUrls = {};
+        for (const [key, { filePath, hash }] of Object.entries(imageExports ?? {}))
+            imageUrls[key] = `${filePath}?h=${hash.slice(0, 8)}`;
+        return imageUrls;
+    }
+
     get cards() {
         return window.activeProject.cards.map(card => {
             const exportedCard = { ...card };
@@ -22,13 +30,7 @@ export default class WebArtifact extends ExportArtifact {
             if (card.back)
                 exportedCard.back = this.exportCardFace(card, 'back');
             exportedCard.baseName = card.baseName;
-            const { imageExports } = activeProject.exportInfo[card.baseName];
-            const exportKeys = Object.keys(imageExports);
-            exportedCard.imageExports = exportKeys.reduce((output, key) => {
-                const { filePath, hash } = imageExports[key];
-                output[key] = filePath + '?h=' + hash.slice(0,8);
-                return output;
-            }, {});
+            exportedCard.imageExports = this.exportImageUrls(card);
             return exportedCard;
         });
     }

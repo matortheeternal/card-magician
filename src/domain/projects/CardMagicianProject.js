@@ -20,6 +20,7 @@ export default class CardMagicianProject {
         Object.assign(this, {
             ...data,
             cards: [],
+            exportInfo: {},
         });
         this.export ??= this.defaultExportConfig;
     }
