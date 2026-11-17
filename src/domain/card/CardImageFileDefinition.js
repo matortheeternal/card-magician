@@ -20,12 +20,6 @@ export default class CardImageFileDefinition extends CardFileDefinition {
         field.imageUrl = null;
     }
 
-    async getLegacyFilePath(card) {
-        const field = this.getField(card);
-        if (!field?.imageUrl) return;
-        return this.urlToFilePath(field.imageUrl);
-    }
-
     async refresh(filePath) {
         const url = await this.filePathToUrl(filePath);
         if (!url) return;

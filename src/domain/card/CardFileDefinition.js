@@ -20,14 +20,6 @@ export default class CardFileDefinition {
         return `/project/cards/${encodeURIComponent(filename)}`;
     }
 
-    async urlToFilePath(mountedUrl) {
-        const filename = mountedUrl.split('/').pop();
-        return platform.getJoinedPath(
-            window.activeProject.cardsFolderPath,
-            decodeURIComponent(filename)
-        );
-    }
-
     /**
      * @abstract
      * @param filePath
@@ -57,14 +49,6 @@ export default class CardFileDefinition {
     getFilename(card) {
         return card.baseName + this.suffix + this.extension;
     }
-
-    /**
-     * @abstract
-     * @param card
-     * @param filesByName
-     * @returns {string|undefined}
-     */
-    getLegacyFilePath(card, filesByName) {}
 }
 
 window.CardFileDefinition = CardFileDefinition;

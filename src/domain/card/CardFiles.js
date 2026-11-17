@@ -65,8 +65,7 @@ export default class CardFiles {
     async load(filesByName) {
         for (const def of this.definitions) {
             const filename = def.getFilename(this.card);
-            const filePath = filesByName.get(filename.toLowerCase())
-                || await def.getLegacyFilePath(this.card);
+            const filePath = filesByName.get(filename.toLowerCase());
             if (!filePath) continue;
             this.paths.set(def.key, filePath);
             await def.setFieldValue(this.card, filePath);
