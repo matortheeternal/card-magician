@@ -2,6 +2,7 @@ import platform from '../../shared/platformAdapter.js';
 import { clear as clearFileWatchers, watchTextFile } from '../../shared/fileWatcher.js';
 import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { find } from '../../shared/fsUtils.js';
+import { compareCardOrder, hasSequence, highestSequence } from './cardOrder.js';
 import * as progress from '../../ui/systems/progressSystem.js';
 
 const YAML_EXTENSION_PATTERN = /.yml$/i;
@@ -15,6 +16,7 @@ export default class CardMagicianProject {
     #tagsPath = '';
     #symbolPath = '';
     #exportInfoPath = '';
+    #nextSequence = 1;
 
     constructor(data = {}) {
         Object.assign(this, {
@@ -137,6 +139,22 @@ export default class CardMagicianProject {
                 log('state').error(`Failed to load card file ${filePath}`);
             }
         }
+        this.orderLoadedCards();
+    }
+
+    orderLoadedCards() {
+        this.cards.sort(compareCardOrder);
+        this.#nextSequence = highestSequence(this.cards) + 1;
+        for (const card of this.cards) this.numberCardIfMissing(card);
+    }
+
+    numberCard(card) {
+        card.sequence = this.#nextSequence++;
+    }
+
+    numberCardIfMissing(card) {
+        if (hasSequence(card)) return;
+        this.numberCard(card);
     }
 
     async getFilesByName() {

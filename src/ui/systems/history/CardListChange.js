@@ -30,6 +30,12 @@ export default class CardListChange extends HistoryEntry {
             throw new Error('Cannot delete a card outside this project.');
         if (this.creating && this.cards.some(card => this.project.cards.includes(card)))
             throw new Error('Cannot create a card already in this project.');
+        this.numberCreatedCards();
+    }
+
+    numberCreatedCards() {
+        if (!this.creating) return;
+        for (const card of this.cards) this.project.numberCard(card);
     }
 
     async captureBackups() {

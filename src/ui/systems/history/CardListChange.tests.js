@@ -1,5 +1,6 @@
 import * as history from '../historySystem.js';
 import platform from '../../../shared/platformAdapter.js';
+import YAMLSerializer from '../../../domain/projects/serializers/YAMLSerializer.js';
 import { useGame } from '../../../shared/testing/gameFixture.js';
 import { useProjectOnDisk } from '../../../shared/testing/projectFixture.js';
 
@@ -85,5 +86,49 @@ describe('Card list history', () => {
         expect(activeProject.cards).toEqual([first]);
         await history.undo();
         expect(activeProject.cards).toEqual([]);
+    });
+
+    async function savedSequence(card) {
+        return (await YAMLSerializer.load(card.files.get('data'))).sequence;
+    }
+
+    it('numbers created cards in creation order and saves the numbers', async () => {
+        const first = newCard('First');
+        const second = newCard('Second');
+        const third = newCard('Third');
+        await createCards([first]);
+        await createCards([second, third]);
+        expect([first, second, third].map(card => card.sequence)).toEqual([1, 2, 3]);
+        expect(await savedSequence(third)).toBe(3);
+    });
+
+    it('gives a copied card a new number instead of its source number', async () => {
+        const source = newCard('Source');
+        await createCards([source]);
+        const copy = new activeGame.Card({ front: { name: 'Copy' }, sequence: 1 });
+        await createCards([copy]);
+        expect(copy.sequence).toBe(2);
+        expect(await savedSequence(copy)).toBe(2);
+    });
+
+    it('keeps numbers through undo and redo, and does not reuse them', async () => {
+        const first = newCard('First');
+        const second = newCard('Second');
+        await createCards([first]);
+        await createCards([second]);
+        await deleteCards([first]);
+        await history.undo();
+        expect(activeProject.cards).toEqual([first, second]);
+        expect(await savedSequence(first)).toBe(1);
+
+        await history.undo();
+        await history.redo();
+        expect(second.sequence).toBe(2);
+        expect(await savedSequence(second)).toBe(2);
+
+        await history.undo();
+        const third = newCard('Third');
+        await createCards([third]);
+        expect(third.sequence).toBe(3);
     });
 });

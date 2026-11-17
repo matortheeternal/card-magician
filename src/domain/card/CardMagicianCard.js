@@ -99,6 +99,7 @@ export default class CardMagicianCard {
     async save(saveAll = false) {
         await waitForImageRetention(this);
         if (!window.activeProject.cardsFolderPath) return;
+        window.activeProject.numberCardIfMissing(this);
         updateBaseName(this);
         progress.setOperation(`Saving card ${this.baseName}`);
         await this.removeClearedImages();

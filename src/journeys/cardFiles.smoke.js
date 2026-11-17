@@ -96,16 +96,21 @@ describe('Card files', () => {
         await expectFilesExist([card.files.get('data')]);
     }
 
-    async function expectBoltArt(bolts) {
-        const first = bolts.find(card => card.baseName === 'Lightning Bolt');
-        const second = bolts.find(card => card.baseName === 'Lightning Bolt-2');
+    async function expectBoltArt([first, second]) {
         await expectFileContent(first.files.get('front.artImage'), art);
         await expectFileContent(first.files.get('back.artImage'), art);
         await expectFileContent(second.files.get('front.artImage'), otherArt);
     }
 
-    async function deleteAndRestoreLoadedCards() {
+    async function reopenInCreationOrder() {
+        const order = activeProject.cards.map(card => card.files.get('data'));
         const project = await reopenProject();
+        expect(project.cards.map(card => card.files.get('data'))).toEqual(order);
+        return project;
+    }
+
+    async function deleteAndRestoreLoadedCards() {
+        const project = await reopenInCreationOrder();
         const bolts = project.cards.filter(card => card.front.name === 'Lightning Bolt');
         await selectCard(bolts[1]);
         selectCards(bolts);
