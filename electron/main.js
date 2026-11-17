@@ -18,7 +18,7 @@ function createWindow() {
     const window = new BrowserWindow({
         title: 'Card Magician',
         width: 800, height: 600,
-        minWidth: 800, minHeight: 600, 
+        minWidth: 800, minHeight: 600,
         backgroundColor: '#202124',
         icon: path.join(root, 'resources/icons/appIcon.png'),
         webPreferences: {

@@ -41,16 +41,47 @@ function installFromModal(driver) {
     })()`);
 }
 
-export async function runInstallPackageTests(temp) {
-    console.log('Running Install package: start screen offers an installed game...');
-    const folder = path.join(temp, 'install-package');
-    const extensionsPath = path.join(folder, 'extensions');
-    await fs.mkdir(extensionsPath, { recursive: true });
-    const packagePath = await packageMagic(folder);
-    const fixture = await launch({
-        profile: path.join(folder, 'profile'), url: '/', id: 'cardmagician.test',
+function installError(driver) {
+    return driver.evaluate(`(() => {
+        const loader = document.querySelector('.loading-container cm-loader.error');
+        return loader?.errorLog.textContent || null;
+    })()`);
+}
+
+function launchWithPackage(profile, extensionsPath, packagePath) {
+    return launch({
+        profile, url: '/', id: 'cardmagician.test',
         extensionsPath, args: [packagePath]
     });
+}
+
+async function runFailedInstall(folder, packagePath) {
+    console.log('Running Install package: a failed install reports its error...');
+    const extensionsPath = path.join(folder, 'blocked-extensions');
+    await fs.mkdir(extensionsPath, { recursive: true });
+    await fs.writeFile(path.join(extensionsPath, 'games'), 'not a folder');
+    const profile = path.join(folder, 'blocked-profile');
+    const fixture = await launchWithPackage(profile, extensionsPath, packagePath);
+    try {
+        const { driver } = fixture;
+        await waitFor(() => installFromModal(driver), 'install package modal');
+        const error = await waitFor(() => installError(driver), 'install error');
+        assert.match(error, /Failed to install games\/magic/);
+    } finally {
+        await fixture.cleanup();
+    }
+}
+
+export async function runInstallPackageTests(temp) {
+    const folder = path.join(temp, 'install-package');
+    await fs.mkdir(folder, { recursive: true });
+    const packagePath = await packageMagic(folder);
+    await runFailedInstall(folder, packagePath);
+    console.log('Running Install package: start screen offers an installed game...');
+    const extensionsPath = path.join(folder, 'extensions');
+    await fs.mkdir(extensionsPath, { recursive: true });
+    const profile = path.join(folder, 'profile');
+    const fixture = await launchWithPackage(profile, extensionsPath, packagePath);
     try {
         const { driver } = fixture;
         assert.deepEqual(

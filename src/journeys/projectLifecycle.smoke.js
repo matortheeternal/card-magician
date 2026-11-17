@@ -1,7 +1,8 @@
-import platform from '../../shared/platformAdapter.js';
+import platform from '../shared/platformAdapter.js';
 import {
     createCard, eventually, expectFilesToMatch, flushCard, setCardFields
-} from '../../shared/testing/testUtils.js';
+} from '../shared/testing/testUtils.js';
+import { finishProgress } from '../shared/testing/steps/progress.js';
 
 const PROJECT_NAME = 'Lifecycle Set';
 
@@ -44,12 +45,7 @@ async function createProjectFromStartScreen(folder) {
 
 async function exportAll() {
     findMenuItem('export', 'Export All').click();
-    const modal = await eventually(() => {
-        return document.querySelector('cm-progress-modal.done, cm-progress-modal.error');
-    }, { timeout: 20000 });
-    expect(modal.matches('.done')).withContext('export finished without errors')
-        .toBeTrue();
-    modal.querySelector('[data-click-action="close"]').click();
+    await finishProgress('export');
 }
 
 async function reopenFromRecentProjects() {

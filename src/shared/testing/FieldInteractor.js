@@ -7,10 +7,12 @@ const formSelectors = [
         return `cm-face-form[data-face-id="${esc(faceKey)}"]`;
     },
     () => `cm-card-properties`,
+    () => `cm-settings-modal`,
 ];
 
 export const CARD_FACE_FORM = 0;
 export const CARD_PROPERTIES = 1;
+export const SETTINGS = 2;
 
 export default class FieldInteractor {
     constructor(fieldId, options = {}) {
