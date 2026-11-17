@@ -9,7 +9,7 @@ import { prepareUserExtensions } from '../electron/tests/fixtures.js';
 const suites = [
     'Startup', 'Shutdown', 'Persistence', 'History', 'Rendering',
     'MSE colors', 'Card display', 'Card List', 'Dialogs', 'Modals',
-    'Extension roots', 'Extensions', 'Project files',
+    'Extension roots', 'Extensions', 'Project manager',
     'Set Icon Editor settings', 'Magic project settings', 'Statistics'
 ];
 
