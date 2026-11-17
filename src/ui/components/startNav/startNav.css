@@ -1,0 +1,18 @@
+cm-start-nav > nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sl-spacing-3x-small);
+
+    > button {
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-medium);
+
+        &[aria-current="true"] {
+            background: var(--sl-color-primary-100);
+        }
+    }
+}
+
+.layout-mobile cm-start-nav > nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+}

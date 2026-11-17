@@ -4,6 +4,34 @@ import platform from '../../shared/platformAdapter.js';
 const RECENT_PROJECT_MAX_COUNT = 10;
 const SAVE_DELAY = 200;
 
+function storageKey(gameId) {
+    return `appConfig-${gameId}`;
+}
+
+async function readStoredConfig(gameId) {
+    try {
+        const raw = await platform.getStoredData(storageKey(gameId));
+        return JSON.parse(raw) || {};
+    } catch (error) {
+        log('startup').info(`Could not load ${storageKey(gameId)}`, error);
+        return {};
+    }
+}
+
+async function findExistingProjects(projects) {
+    const existing = [];
+    for (const project of Array.isArray(projects) ? projects : []) {
+        if (await platform.checkFileExists(project.filePath))
+            existing.push(project);
+    }
+    return existing;
+}
+
+export async function readRecentProjects(gameId) {
+    const { recentProjects } = await readStoredConfig(gameId);
+    return findExistingProjects(recentProjects);
+}
+
 export default class AppConfig {
     #data = {};
     #writeQueued = false;
@@ -23,32 +51,13 @@ export default class AppConfig {
     }
 
     get key() {
-        return `appConfig-${this.gameId}`;
+        return storageKey(this.gameId);
     }
 
     async load() {
-        try {
-            const raw = await platform.getStoredData(this.key);
-            this.#data = JSON.parse(raw) || {};
-        } catch(e) {
-            log('startup').info(`Could not load ${this.key}`, e);
-            this.#data = {};
-        }
-
-        await this.updateRecentProjects();
+        this.#data = await readStoredConfig(this.gameId);
+        this.#data.recentProjects = await findExistingProjects(this.#data.recentProjects);
         this.queueSave();
-    }
-
-    async updateRecentProjects() {
-        const recentProjects = [];
-        const projects = Array.isArray(this.#data.recentProjects)
-            ? this.#data.recentProjects
-            : [];
-        for (const project of projects) {
-            if (await platform.checkFileExists(project.filePath))
-                recentProjects.push(project);
-        }
-        this.#data.recentProjects = recentProjects;
     }
 
     async set(key, value) {
@@ -71,7 +80,7 @@ export default class AppConfig {
         const filePath = activeProject.filePath;
         const title = activeProject.title;
         this.#data.recentProjects = [
-            { filePath, title },
+            { filePath, title, openedAt: Date.now() },
             ...this.#data.recentProjects.filter(
                 proj => proj.filePath !== filePath
             ),

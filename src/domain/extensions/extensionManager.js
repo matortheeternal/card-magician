@@ -2,6 +2,7 @@ import { unzip } from 'unzipit';
 import { openModal } from '../../ui/modals/modalManager.js';
 import platform from '../../shared/platformAdapter.js';
 import ExtensionClasses, { isSafeExtensionPath } from './extensionClasses.js';
+import { registerAction } from '../../ui/systems/actionSystem.js';
 
 const L = localize('install-package-modal');
 
@@ -70,6 +71,24 @@ export async function installExtensions(extensions) {
     }
     return failures;
 }
+
+function packageFilters() {
+    return [
+        { name: L`Card Magician packages`, extensions: ['cmpkg'] },
+        { name: L`All files`, extensions: ['*'] }
+    ];
+}
+
+export async function choosePackageToInstall() {
+    const filePath = await platform.openSingleFileDialog(
+        L`Select a package to install`, packageFilters()
+    );
+    if (!filePath) return;
+    log('fs').info('Installing package:', filePath);
+    await installPackage(filePath);
+}
+
+registerAction('install-package', choosePackageToInstall);
 
 platform.onOpenFile(filePath => {
     if (!filePath.endsWith('.cmpkg')) return;

@@ -2,6 +2,8 @@ import './shared/testing/textMatcher.js';
 import platform from './shared/platformAdapter.js';
 import { exitApp } from './lifecycle.js';
 import CustomReporter from './shared/testing/customReporter.js';
+import { executeAction } from './ui/systems/actionSystem.js';
+import { getGames } from './domain/game/gameManager.js';
 
 const RESULT_PREFIX = '@TEST_RESULT:';
 const OUTPUT_PREFIX = '@TEST_OUTPUT:';
@@ -34,16 +36,16 @@ async function startSmokeSession() {
     log('startup').info('Clearing application storage');
     await platform.clearStoredData();
 
-    const game = document.querySelector('cm-game-select [data-game-id="magic"]');
-    const start = document.querySelector('cm-game-select [data-click-action="start"]');
-    if (!game || !start)
-        throw new Error('Magic is missing from the game selection view.');
+    if (!getGames().some(game => game.id === 'magic'))
+        throw new Error('Magic is not installed.');
+    const folder = await platform.getJoinedPath(appEnvironment.paths.data, 'smoke');
+    try { await platform.rmrf(folder); } catch {}
+    const projectPath = await platform.getJoinedPath(folder, 'test.cmproj');
 
     document.body.addEventListener('cm-loaded', () => {
         void runTests().catch(failSmoke);
     }, { once: true });
-    game.click();
-    start.click();
+    await executeAction('start-new-project', 'magic', projectPath);
 }
 
 async function runTests() {

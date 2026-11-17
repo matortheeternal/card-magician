@@ -2,10 +2,7 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import { flushBeforeExit } from '../../../lifecycle.js';
 import platform from '../../../shared/platformAdapter.js';
 import { hide, show } from '../../../shared/htmlUtils.js';
-import {
-    openProject,
-    selectCard
-} from '../../../domain/projects/projectManager.js';
+import { selectCard } from '../../../domain/projects/projectManager.js';
 import { executeAction } from '../../systems/actionSystem.js';
 
 export default class DevState extends ReactiveComponent {
@@ -120,10 +117,9 @@ export default class DevState extends ReactiveComponent {
             await flushBeforeExit();
             platform.reloadApp();
         }
-        if (!msg.gameId) return;
-        executeAction('cm-select-game', msg.gameId);
-        document.addEventListener('cm-loaded', async () => {
-            if (msg.openProject) await openProject(msg.openProject);
+        if (!msg.openProject) return;
+        executeAction('start-project', msg.openProject);
+        document.addEventListener('cm-loaded', () => {
             if (Number.isInteger(msg.selectCard))
                 void selectCard(activeProject.cards[msg.selectCard]);
         }, { once: true });

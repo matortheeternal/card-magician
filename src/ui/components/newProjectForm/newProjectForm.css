@@ -1,0 +1,29 @@
+cm-new-project-form {
+    display: grid;
+    grid-template-columns: minmax(14rem, 20rem) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: var(--sl-spacing-large);
+    min-height: 0;
+
+    > header,
+    > footer {
+        grid-column: 1 / -1;
+    }
+
+    h2 {
+        margin: 0;
+        font-size: var(--sl-font-size-large);
+        font-weight: var(--sl-font-weight-normal);
+    }
+
+    > footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--sl-spacing-x-small);
+    }
+}
+
+.layout-mobile cm-new-project-form {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+}

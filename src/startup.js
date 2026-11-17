@@ -15,6 +15,8 @@ import {
 } from './ui/systems/loadingService.js';
 import { emit } from './shared/htmlUtils.js';
 import { registerAction } from './ui/systems/actionSystem.js';
+import { createProjectAt, switchProject } from './domain/projects/projectManager.js';
+import YAMLSerializer from './domain/projects/serializers/YAMLSerializer.js';
 
 const L = localize('main');
 const startupLog = log('startup');
@@ -67,7 +69,7 @@ function showMainUI() {
     document.body.append(floatingStatus);
 }
 
-async function startGameSession(gameId) {
+async function startGameSession(gameId, createProject) {
     startupLog.debug(`Setting game to ${gameId}`);
     await setGame(gameId);
     startupLog.debug('Loading templates');
@@ -80,6 +82,9 @@ async function startGameSession(gameId) {
     await tagManager.load();
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
+    startupLog.debug('Opening project');
+    await switchProject(createProject);
+    await activeGame.config.addRecentProject();
     startupLog.info('Startup successful, loading UI');
     showMainUI();
     if (appEnvironment.args.includes('--test-exit')) {
@@ -90,15 +95,9 @@ async function startGameSession(gameId) {
     emit(document.body, 'cm-loaded');
 }
 
-function showGameSelection() {
-    startupLog.info('Showing game selection');
-    const appTitleHtml = '<i>Card Magician</i>';
-    document.querySelector('main').innerHTML = (
-        `<h1>${L`Welcome to ${appTitleHtml}`}</h1>
-        <small>${L`Choose a game and click start.`}</small>
-        <cm-game-select></cm-game-select>
-        <cm-startup-actions></cm-startup-actions>`
-    );
+function showStartScreen() {
+    startupLog.info('Showing start screen');
+    document.querySelector('main').innerHTML = '<cm-start-screen></cm-start-screen>';
     hideLoading();
 }
 
@@ -106,19 +105,33 @@ async function startApp() {
     startupLog.debug('Loading games');
     await loadGames();
     applyDeviceLayout();
-    showGameSelection();
+    showStartScreen();
 }
 
-registerAction('cm-select-game', async gameId => {
+async function startSession(start) {
     try {
         showLoading();
-        await startGameSession(gameId);
+        await start();
     } catch (error) {
         startupLog.error('Startup error:', error);
         report('startup', error);
         showLoadingError();
     }
-});
+}
+
+async function readProjectGame(filePath) {
+    const { game } = await YAMLSerializer.load(filePath);
+    return game;
+}
+
+registerAction('start-project', filePath => startSession(async () => {
+    const gameId = await readProjectGame(filePath);
+    await startGameSession(gameId, () => activeGame.Project.load(filePath));
+}));
+
+registerAction('start-new-project', (gameId, filePath) => startSession(() => {
+    return startGameSession(gameId, () => createProjectAt(filePath));
+}));
 
 window.addEventListener('resize', applyDeviceLayout.debounce(200));
 

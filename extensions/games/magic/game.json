@@ -2,5 +2,6 @@
   "id": "magic",
   "name": "Magic: The Gathering",
   "author": "Mator, Aanginer",
-  "version": "0.2.0"
+  "version": "0.2.0",
+  "icon": "assets/icon.png"
 }

@@ -9,7 +9,6 @@ import {
 import * as historySystem from '../../ui/systems/historySystem.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
-import YAMLSerializer from './serializers/YAMLSerializer.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 
 const L = localize('project-manager');
@@ -80,11 +79,13 @@ export function newProject() {
     openModal('cm-new-project-modal', { callback: createProject });
 }
 
+export function chooseProjectFile() {
+    return platform.openSingleFileDialog(L`Open a project`, filters);
+}
+
 export async function openProject(filePath) {
     log('user').info('Open project');
-    filePath = filePath || await platform.openSingleFileDialog(
-        L`Open a project`, filters
-    );
+    filePath = filePath || await chooseProjectFile();
     if (!filePath) return;
     showLoading();
     try {
@@ -159,9 +160,7 @@ registerAction('change-template', async (faceId, newTemplateId) => {
 registerAction('open-project', openProject);
 platform.onOpenFile(async filePath => {
     if (!filePath.endsWith('.cmproj')) return;
-    const data = await YAMLSerializer.load(filePath);
-    await executeAction('cm-select-game', data.game);
-    void openProject(filePath);
+    await executeAction('start-project', filePath);
 });
 
 registerAction('new-project', newProject);

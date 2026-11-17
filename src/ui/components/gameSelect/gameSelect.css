@@ -1,23 +1,16 @@
 cm-game-select {
     display: flex;
     flex-direction: column;
-    min-width: 26em;
     gap: var(--sl-spacing-small);
-    margin: var(--sl-spacing-x-large);
-    font-family: var(--sl-font-sans);
+    min-height: 0;
+    padding: var(--sl-spacing-2x-small);
+    border-right: 1px solid var(--sl-color-neutral-0);
+    padding-right: var(--sl-spacing-small);
+    overflow-y: auto;
 
-    .games-container {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        padding: var(--sl-spacing-large);
-        gap: var(--sl-spacing-small);
-    }
-
-    .no-content-prompt {
-        position: static;
+    > p {
+        margin: 0;
         text-align: center;
-        font-size: var(--sl-font-size-large);
     }
 
     .game-item {
@@ -26,10 +19,16 @@ cm-game-select {
         border: 1px solid var(--sl-input-border-color);
         border-radius: var(--sl-border-radius-medium);
         background: var(--sl-color-neutral-0);
-        box-shadow: var(--sl-shadow-x-large);
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--sl-spacing-x-small);
+        }
 
         header strong {
-            font-size: var(--sl-font-size-x-large);
+            font-size: var(--sl-font-size-large);
         }
 
         &.selected {
@@ -37,32 +36,16 @@ cm-game-select {
         }
     }
 
-    .buttons-container {
+    .install-item {
         display: flex;
-        gap: var(--sl-spacing-2x-small);
-        justify-content: center;
-    }
-}
-
-body:has(cm-game-select) {
-    background-color: #050505;
-
-    main {
-        display: flex;
-        padding: var(--sl-spacing-medium);
-        padding-bottom: 5em;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-family: var(--sl-font-sans);
-    }
+        gap: var(--sl-spacing-x-small);
+        border-style: dashed;
+        background: none;
+        color: var(--sl-color-neutral-600);
 
-    h1 {
-        margin-bottom: var(--sl-spacing-x-small);
-
-        > i {
-            color: var(--sl-color-danger-600);
-            font-family: cursive;
+        &:hover {
+            color: var(--sl-color-neutral-900);
         }
     }
 }

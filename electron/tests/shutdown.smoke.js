@@ -164,15 +164,13 @@ export async function runShutdownTests(temp) {
             ]
         });
         try {
+            const projectPath = path.join(folder, 'project', 'test.cmproj');
             await waitFor(() => fixture.driver.evaluate(`(() => {
-                const picker = document.querySelector('cm-game-select');
-                const game = picker?.querySelector('[data-game-id="magic"]');
-                const start = picker?.querySelector('[data-click-action="start"]');
-                if (!game || !start) return false;
-                game.click();
-                start.click();
+                if (!document.querySelector('cm-project-select')) return false;
+                const start = window.actions.get('start-new-project');
+                void start('magic', ${JSON.stringify(projectPath)});
                 return true;
-            })()`), 'Magic game selection');
+            })()`), 'start screen');
             await waitFor(
                 () => fixture.driver.evaluate('!!window.exitSmoke'),
                 'shutdown fixture startup'

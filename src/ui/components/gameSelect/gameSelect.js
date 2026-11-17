@@ -1,6 +1,4 @@
 import { getGames } from '../../../domain/game/gameManager.js';
-import { executeAction } from '../../systems/actionSystem.js';
-import platform from '../../../shared/platformAdapter.js';
 
 const L = localize('game-select');
 
@@ -12,10 +10,8 @@ export default class GameSelect extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            selectGame: event => this.selectGame(event.target),
-            start: () => this.start(),
-            installPackage: () => executeAction('install-package'),
-            quit: () => platform.terminateApp()
+            selectGame: event => this.selectGame(event.target.closest('.game-item')),
+            install: () => this.emit('cm-game-select-install')
         });
     }
 
@@ -23,88 +19,52 @@ export default class GameSelect extends ReactiveComponent {
         return this._games ||= getGames();
     }
 
+    get gameItems() {
+        return this.querySelectorAll('.game-item[data-game-id]');
+    }
+
     get selectedGameId() {
-        const selected = this.querySelector('.game-item.selected');
-        return selected?.dataset.gameId;
+        return this.querySelector('.game-item.selected')?.dataset.gameId ?? null;
     }
 
-    get gamesContainer() {
-        return this.querySelector('.games-container');
+    markSelected(item) {
+        for (const gameItem of this.gameItems)
+            gameItem.classList.toggle('selected', gameItem === item);
     }
 
-    renderGameOption(game) {
-        const element = document.createElement('div');
-        element.className = 'game-item';
-        element.setAttribute('data-click-action', 'selectGame');
-        element.setAttribute('data-game-id', game.id);
-        element.innerHTML = (
-            `<header>
-                <strong>${L([game.name])}</strong>
-                <sl-badge variant="primary">${game.version}</sl-badge>
-            </header>
-            <small class="text-muted">${L`maintained by ${game.author}`}</small>`
+    selectGame(item) {
+        this.markSelected(item);
+        this.emit('cm-game-select-change', { gameId: item.dataset.gameId });
+    }
+
+    renderGame(game) {
+        return (
+            `<div class="game-item" data-click-action="selectGame"
+                data-game-id="${game.id}">
+                <header>
+                    <strong>${L([game.name])}</strong>
+                    <sl-badge variant="primary">${game.version}</sl-badge>
+                </header>
+                <small class="text-muted">${L`maintained by ${game.author}`}</small>
+            </div>`
         );
-        this.gamesContainer.append(element);
     }
 
     renderNoGames() {
-        this.gamesContainer.innerHTML = (
-            `<div class="no-content-prompt">${L`No games installed.`}</div>`
-        );
-    }
-
-    renderGameOptions() {
-        for (const game of this.games)
-            this.renderGameOption(game);
-        if (!this.games.length) {
-            this.renderNoGames();
-            return;
-        }
-        const firstItem = this.querySelector('.game-item');
-        this.selectGame(firstItem);
-    }
-
-    renderActions() {
-        return this.games?.length ? (
-            `<sl-button variant="primary" data-click-action="start">
-                ${L`Start`}
-            </sl-button>`
-        ) : (
-            `<sl-button
-                variant="primary"
-                data-click-action="installPackage"
-            >${L`Install Local Package`}</sl-button>
-            <sl-button
-                variant="danger"
-                data-click-action="quit"
-            >${L`Quit`}</sl-button>`
-        );
+        if (this.games.length) return '';
+        return `<p class="text-muted">${L`No games installed.`}</p>`;
     }
 
     render() {
         this.innerHTML = (
-            `<div class="games-container"></div>
-            <div class="buttons-container">${this.renderActions()}</div>`
+            `${this.games.map(game => this.renderGame(game)).join('')}
+            ${this.renderNoGames()}
+            <div class="game-item install-item" data-click-action="install">
+                <sl-icon name="box-arrow-up"></sl-icon>
+                ${L`Install game package`}
+            </div>`
         );
-        this.renderGameOptions();
-    }
-
-    deselectGames() {
-        const gameItems = this.querySelectorAll('.game-item');
-        for (const gameItem of gameItems)
-            gameItem.classList.remove('selected');
-    }
-
-    selectGame(element) {
-        this.deselectGames();
-        const item = element.closest('.game-item');
-        item.classList.toggle('selected', true);
-    }
-
-    start() {
-        const gameId = this.selectedGameId;
-        if (!gameId) throw new Error('No game selected');
-        void executeAction('cm-select-game', gameId);
+        this.markSelected(this.gameItems[0]);
     }
 }
 
