@@ -10,61 +10,49 @@ export default class GameSelect extends ReactiveComponent {
 
     bind() {
         this.handleEvents('click', {
-            selectGame: event => this.selectGame(event.target.closest('.game-item')),
             install: () => this.emit('cm-game-select-install')
         });
+        this.on('sl-change', () => this.emit('cm-game-select-change', {
+            gameId: this.selectedGameId
+        }));
     }
 
     get games() {
         return this._games ||= getGames();
     }
 
-    get gameItems() {
-        return this.querySelectorAll('.game-item[data-game-id]');
+    get select() {
+        return this.querySelector('sl-select');
     }
 
     get selectedGameId() {
-        return this.querySelector('.game-item.selected')?.dataset.gameId ?? null;
+        return this.select.value || null;
     }
 
-    markSelected(item) {
-        for (const gameItem of this.gameItems)
-            gameItem.classList.toggle('selected', gameItem === item);
-    }
-
-    selectGame(item) {
-        this.markSelected(item);
-        this.emit('cm-game-select-change', { gameId: item.dataset.gameId });
+    get placeholder() {
+        return this.games.length ? '' : L`No games installed.`;
     }
 
     renderGame(game) {
         return (
-            `<div class="game-item" data-click-action="selectGame"
-                data-game-id="${game.id}">
-                <header>
-                    <strong>${L([game.name])}</strong>
-                    <sl-badge variant="primary">${game.version}</sl-badge>
-                </header>
-                <small class="text-muted">${L`maintained by ${game.author}`}</small>
-            </div>`
+            `<sl-option value="${game.id}">
+                ${L([game.name])}
+                <small slot="suffix" class="text-muted">${game.version}</small>
+            </sl-option>`
         );
-    }
-
-    renderNoGames() {
-        if (this.games.length) return '';
-        return `<p class="text-muted">${L`No games installed.`}</p>`;
     }
 
     render() {
         this.innerHTML = (
-            `${this.games.map(game => this.renderGame(game)).join('')}
-            ${this.renderNoGames()}
-            <div class="game-item install-item" data-click-action="install">
-                <sl-icon name="box-arrow-up"></sl-icon>
+            `<sl-select label="${L`Game`}" placeholder="${this.placeholder}"
+                value="${this.games[0]?.id ?? ''}" hoist>
+                ${this.games.map(game => this.renderGame(game)).join('')}
+            </sl-select>
+            <sl-button data-click-action="install">
+                <sl-icon slot="prefix" name="box-arrow-up"></sl-icon>
                 ${L`Install game package`}
-            </div>`
+            </sl-button>`
         );
-        this.markSelected(this.gameItems[0]);
     }
 }
 

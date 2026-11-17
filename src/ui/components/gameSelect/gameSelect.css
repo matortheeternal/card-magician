@@ -1,51 +1,9 @@
 cm-game-select {
     display: flex;
-    flex-direction: column;
-    gap: var(--sl-spacing-small);
-    min-height: 0;
-    padding: var(--sl-spacing-2x-small);
-    border-right: 1px solid var(--sl-color-neutral-0);
-    padding-right: var(--sl-spacing-small);
-    overflow-y: auto;
+    align-items: flex-end;
+    gap: var(--sl-spacing-x-small);
 
-    > p {
-        margin: 0;
-        text-align: center;
-    }
-
-    .game-item {
-        cursor: pointer;
-        padding: var(--sl-spacing-medium);
-        border: 1px solid var(--sl-input-border-color);
-        border-radius: var(--sl-border-radius-medium);
-        background: var(--sl-color-neutral-0);
-
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: var(--sl-spacing-x-small);
-        }
-
-        header strong {
-            font-size: var(--sl-font-size-large);
-        }
-
-        &.selected {
-            border-color: var(--sl-color-primary-600);
-        }
-    }
-
-    .install-item {
-        display: flex;
-        align-items: center;
-        gap: var(--sl-spacing-x-small);
-        border-style: dashed;
-        background: none;
-        color: var(--sl-color-neutral-600);
-
-        &:hover {
-            color: var(--sl-color-neutral-900);
-        }
+    sl-select {
+        flex: 1;
     }
 }
