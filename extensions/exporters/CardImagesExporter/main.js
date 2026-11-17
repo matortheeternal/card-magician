@@ -58,10 +58,6 @@ export default class CardImagesExporter extends CardMagicianExporter {
         return this.config.imageType;
     }
 
-    async prepare() {
-        window.activeProject.imageExportPath = 'dist/images/';
-    }
-
     getFilePath(baseCard, card) {
         const hasBackFace = Object.hasOwn(baseCard, 'back');
         const suffix = hasBackFace ? ` - ${card.faceKey}` : '';
