@@ -49,7 +49,7 @@ function setupDevState() {
 function showMainUI() {
     document.querySelector('main').innerHTML = (
         `<cm-title-bar></cm-title-bar>
-        <sl-tab-group id="workspace-tabs">
+        <sl-tab-group id="workspace-tabs" no-scroll-controls>
             <sl-tab slot="nav" panel="cards">${L`Cards`}</sl-tab>
             <sl-tab slot="nav" panel="statistics">${L`Statistics`}</sl-tab>
 
@@ -87,6 +87,7 @@ async function startGameSession(gameId, createProject) {
     await activeGame.config.addRecentProject();
     startupLog.info('Startup successful, loading UI');
     showMainUI();
+    await platform.maximizeWindow();
     if (appEnvironment.args.includes('--test-exit')) {
         const { setupExitFixture } = await import('./shared/testing/exitFixture.js');
         await setupExitFixture();
@@ -99,13 +100,14 @@ function showStartScreen() {
     startupLog.info('Showing start screen');
     document.querySelector('main').innerHTML = '<cm-start-screen></cm-start-screen>';
     hideLoading();
+    return platform.compactWindow();
 }
 
 async function startApp() {
     startupLog.debug('Loading games');
     await loadGames();
     applyDeviceLayout();
-    showStartScreen();
+    await showStartScreen();
 }
 
 async function startSession(start) {

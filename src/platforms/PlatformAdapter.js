@@ -577,6 +577,27 @@ export default class PlatformAdapter {
     }
 
     /**
+     * Restores the window from maximized and resizes it to its minimum width,
+     * keeping its restored height, then centers it on screen.
+     *
+     * @abstract
+     * @returns {Promise<void>} Resolves after the host applies the new bounds.
+     */
+    compactWindow() {
+        throw new Error('compactWindow must be implemented');
+    }
+
+    /**
+     * Maximizes the window. Already maximized windows are left unchanged.
+     *
+     * @abstract
+     * @returns {Promise<void>} Resolves after the host requests maximization.
+     */
+    maximizeWindow() {
+        throw new Error('maximizeWindow must be implemented');
+    }
+
+    /**
      * Starts watching one file after host metadata changes settle for 250 ms.
      * The parent directory must exist; the file itself may initially be absent.
      * Reports changes, deletion, recreation, and errors without an initial event.

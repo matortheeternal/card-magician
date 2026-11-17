@@ -59,7 +59,7 @@ export class TestApplication {
         if (this.debug)
             return ['--auto-open-devtools-for-tabs'];
         if (process.platform === 'linux')
-            return ['--ozone-platform=headless'];
+            return ['--ozone-platform=headless', '--ozone-override-screen-size=1280,720'];
         console.warn('Headless tests require Linux.');
         return [];
     }

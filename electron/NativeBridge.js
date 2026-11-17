@@ -83,6 +83,8 @@ export default class NativeBridge {
             unmount: url => this.resources.unmount(url),
             writeProcessOutput: data => { process.stdout.write(data); },
             writeProcessError: data => { process.stderr.write(data); },
+            compactWindow: () => this.compactWindow(),
+            maximizeWindow: () => this.window.maximize(),
             readyToClose: () => this.lifecycle.readyToClose(),
             terminateApp: code => this.lifecycle.exit(code)
         });
@@ -114,6 +116,14 @@ export default class NativeBridge {
             if (this.fileWatchers.get(id) === entry) this.fileWatchers.delete(id);
             throw error;
         }
+    }
+
+    compactWindow() {
+        const [minimumWidth] = this.window.getMinimumSize();
+        const { height } = this.window.getNormalBounds();
+        this.window.unmaximize();
+        this.window.setSize(minimumWidth, height);
+        this.window.center();
     }
 
     unwatchFile(id) {

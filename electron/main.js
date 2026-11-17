@@ -16,7 +16,7 @@ registerResourceScheme();
 
 function createWindow() {
     const window = new BrowserWindow({
-        title: 'Card Magician', width: 1280, height: 720,
+        title: 'Card Magician', width: 800, height: 720,
         minWidth: 800, minHeight: 600, backgroundColor: '#202124',
         icon: path.join(root, 'resources/icons/appIcon.png'),
         webPreferences: {

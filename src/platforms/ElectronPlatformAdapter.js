@@ -222,6 +222,14 @@ export default class ElectronPlatformAdapter extends PlatformAdapter {
         return window.location.reload();
     }
 
+    compactWindow() {
+        return call('compactWindow');
+    }
+
+    maximizeWindow() {
+        return call('maximizeWindow');
+    }
+
     startFileWatch(id, filename) {
         return call('watchFile', id, filename);
     }
