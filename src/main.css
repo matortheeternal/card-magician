@@ -153,6 +153,20 @@ small {
     color: var(--sl-color-neutral-600);
 }
 
+.plain-button {
+    border: none;
+    border-radius: var(--sl-border-radius-medium);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+
+    &:where(:hover, :focus-visible) {
+        background: var(--sl-color-neutral-100);
+    }
+}
+
 .loading-container {
     position: absolute;
     z-index: 10000;
