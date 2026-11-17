@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveExtensionsPath } from './extensionsPath.js';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -20,12 +21,9 @@ export function createEnvironment() {
     const profile = path.resolve(getArgument('--profile', defaultProfile));
     app.setPath('userData', profile);
     const isDevelopment = !app.isPackaged && process.argv.includes('--development');
-    const defaultExtensionsPath = isDevelopment
-        ? path.join(root, 'extensions')
-        : path.join(profile, 'extensions');
-    const extensionsPath = path.resolve(
-        getArgument('--extensions-dir', defaultExtensionsPath)
-    );
+    const extensionsPath = resolveExtensionsPath({
+        root, profile, isDevelopment, override: getArgument('--extensions-dir')
+    });
     return {
         id: getArgument('--app-id', 'cardmagician'),
         version: app.getVersion(),

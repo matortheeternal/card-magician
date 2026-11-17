@@ -1,4 +1,5 @@
 import { importCard } from './importMse.js';
+import { useGame } from '../../../shared/testing/gameFixture.js';
 
 const cases = [
     {
@@ -108,6 +109,8 @@ async function importFace(source, stylesheet = 'm15-altered') {
 }
 
 describe('MSE colors', () => {
+    useGame('magic');
+
     for (const { label, source, colors } of cases) {
         it(`removes a redundant override for ${label}`, async () => {
             const { front } = await importFace(source);

@@ -45,8 +45,6 @@ export class TestApplication {
     }
 
     get extensionArgs() {
-        if (this.extensionsPath === null
-            || this.args?.some(arg => arg.startsWith('--extensions-dir='))) return [];
         const directory = this.extensionsPath ?? path.join(root, 'extensions');
         return [`--extensions-dir=${directory}`];
     }

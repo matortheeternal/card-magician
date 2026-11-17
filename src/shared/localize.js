@@ -15,7 +15,7 @@ export async function prepareSchema() {
     return Localization.schema;
 }
 
-async function loadLocaleDirectory(directory) {
+export async function loadLocaleDirectory(directory) {
     if (!await directory.exists('locales.json')) return [];
     const manifest = await directory.readJson('locales.json');
     const entries = await directory.readDirectory();

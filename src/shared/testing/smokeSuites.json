@@ -1,0 +1,11 @@
+{
+    "Project lifecycle": ["Project lifecycle"],
+    "Application lifecycle": [],
+    "Persistence": ["Persistence", "Project manager"],
+    "History": ["History"],
+    "Workspace": [
+        "Card display", "Card List", "Rendering", "Dialogs", "Modals",
+        "Set Icon Editor settings", "Magic project settings"
+    ],
+    "Statistics": ["Statistics"]
+}

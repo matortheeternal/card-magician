@@ -43,19 +43,25 @@ describe('getSettingsTabs', () => {
         static hide() { return false; }
     }
 
+    const registered = [
+        LaterRoot,
+        LaterChild,
+        Grandchild,
+        EarlierRoot,
+        Orphan,
+        EarlierChild,
+    ];
+
+    function registeredTabs() {
+        return getSettingsTabs().filter(tab => registered.includes(tab));
+    }
+
     beforeAll(() => {
-        [
-            LaterRoot,
-            LaterChild,
-            Grandchild,
-            EarlierRoot,
-            Orphan,
-            EarlierChild,
-        ].forEach(registerSettings);
+        registered.forEach(registerSettings);
     });
 
     it('returns tabs in weighted depth-first order', () => {
-        expect(getSettingsTabs()).toEqual([
+        expect(registeredTabs()).toEqual([
             EarlierRoot,
             EarlierChild,
             Grandchild,
@@ -65,6 +71,6 @@ describe('getSettingsTabs', () => {
     });
 
     it('excludes tabs whose parent is not registered', () => {
-        expect(getSettingsTabs()).not.toContain(Orphan);
+        expect(registeredTabs()).not.toContain(Orphan);
     });
 });

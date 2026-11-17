@@ -3,27 +3,28 @@ import os from 'node:os';
 import path from 'node:path';
 import { launch } from '../electron/tests/TestApplication.js';
 import { runShutdownTests } from '../electron/tests/shutdown.smoke.js';
-import { runExtensionRootTests } from '../electron/tests/extensionRoots.smoke.js';
-import { prepareUserExtensions } from '../electron/tests/fixtures.js';
+import { runInstallPackageTests } from '../electron/tests/installPackage.smoke.js';
 
-const suites = [
-    'Startup', 'Shutdown', 'Persistence', 'History', 'Rendering',
-    'MSE colors', 'Card display', 'Card List', 'Dialogs', 'Modals',
-    'Extension roots', 'Extensions', 'Project manager',
-    'Set Icon Editor settings', 'Magic project settings', 'Statistics'
-];
+const suiteGroups = JSON.parse(
+    await fs.readFile(new URL('../src/shared/testing/smokeSuites.json', import.meta.url))
+);
+const suites = Object.keys(suiteGroups);
+
+const startScreenSuites = ['Project lifecycle'];
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
 
+async function runApplicationLifecycleTests(profilePath) {
+    await runShutdownTests(profilePath);
+    await runInstallPackageTests(profilePath);
+}
+
 const customSuites = {
-    'Extension roots': runExtensionRootTests,
-    'Shutdown': runShutdownTests
+    'Application lifecycle': runApplicationLifecycleTests
 };
 
-function getExtensionsPath(suite, profilePath) {
-    return suite === 'Extensions'
-        ? path.join(profilePath, 'extensions')
-        : undefined;
+function startArgs(suite) {
+    return startScreenSuites.includes(suite) ? ['--test-start-screen'] : [];
 }
 
 async function runSuite(suite) {
@@ -32,16 +33,11 @@ async function runSuite(suite) {
     const customSuite = customSuites[suite];
     if (customSuite)
         return await customSuite(profilePath);
-    if (suite === 'Extensions')
-        await prepareUserExtensions(profilePath);
-
-    const extensionsPath = getExtensionsPath(suite, profilePath);
     const fixture = await launch({
         profile: profilePath,
         url: '/tests/smoke.html',
         id: 'cardmagician.test',
-        extensionsPath,
-        args: [`--test-suite=${suite}`]
+        args: [`--test-suite=${suite}`, ...startArgs(suite)]
     });
 
     try {

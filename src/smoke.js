@@ -4,6 +4,7 @@ import { exitApp } from './lifecycle.js';
 import CustomReporter from './shared/testing/customReporter.js';
 import { executeAction } from './ui/systems/actionSystem.js';
 import { getGames } from './domain/game/gameManager.js';
+import smokeSuites from './shared/testing/smokeSuites.json';
 
 const RESULT_PREFIX = '@TEST_RESULT:';
 const OUTPUT_PREFIX = '@TEST_OUTPUT:';
@@ -14,14 +15,27 @@ function getArgument(name) {
     return argument?.slice(prefix.length);
 }
 
-function getSuiteId() {
-    const targetSuite = getArgument('--test-suite');
-    const top = jasmine.getEnv().topSuite();
-    for (const suite of top.children || []) {
-        if (suite.description === targetSuite)
-            return suite.id;
-    }
-    throw new Error(`Test suite not found: ${targetSuite}`);
+function getTopLevelSuites() {
+    return jasmine.getEnv().topSuite().children || [];
+}
+
+function verifyListedSuites() {
+    const listed = Object.values(smokeSuites).flat();
+    const unlisted = getTopLevelSuites()
+        .map(suite => suite.description)
+        .filter(name => !listed.includes(name));
+    if (unlisted.length)
+        throw new Error(`Smoke suites missing from smokeSuites.json: ${unlisted}`);
+}
+
+function getSuiteIds() {
+    const group = getArgument('--test-suite');
+    const members = smokeSuites[group] ?? [];
+    const ids = getTopLevelSuites()
+        .filter(suite => members.includes(suite.description))
+        .map(suite => suite.id);
+    if (!ids.length) throw new Error(`Test suite not found: ${group}`);
+    return ids;
 }
 
 function verifyTestEnvironment() {
@@ -35,6 +49,7 @@ async function startSmokeSession() {
 
     log('startup').info('Clearing application storage');
     await platform.clearStoredData();
+    if (appEnvironment.args.includes('--test-start-screen')) return runTests();
 
     if (!getGames().some(game => game.id === 'magic'))
         throw new Error('Magic is not installed.');
@@ -50,8 +65,8 @@ async function startSmokeSession() {
 
 async function runTests() {
     log('startup').info('Executing jasmine tests');
-    const suiteId = getSuiteId();
-    await jasmine.getEnv().execute([suiteId]);
+    verifyListedSuites();
+    await jasmine.getEnv().execute(getSuiteIds());
 }
 
 function print(message) {
