@@ -1,38 +1,11 @@
-.classic-layout {
-    display: contents;
+module-container[module="Text"] .flavor-bar {
+    display: none;
+}
 
-    module-container[module="Name"] {
-        padding: 0 0 0 1px;
-        font-family: 'Matrix', serif;
-        font-size: 22px;
-        line-height: 1.2;
-    }
-
-    module-container[module="Type"] {
-        font-family: 'Matrix', serif;
-        font-size: 18px;
-        line-height: 1.2;
-    }
-
-    module-container[module="Text"] {
-        height: 100%;
-        margin: 0;
-        padding: 2px 4px 2px 6px;
-    }
-
-    .text {
-        font-size: 18px;
-    }
-
-    .flavor-bar {
-        display: none;
-    }
-
-    .pt-text {
-        align-items: center;
-        background-size: 100% 100%;
-        padding: 6px 8px 8px 13px;
-        font-family: 'ModMatrix', serif;
-        font-size: 22px;
-    }
+module-container[module="PT"] .pt-text {
+    align-items: center;
+    background-size: 100% 100%;
+    padding: 6px 8px 8px 13px;
+    font-family: 'ModMatrix', serif;
+    font-size: 22px;
 }

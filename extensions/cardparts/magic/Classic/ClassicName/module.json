@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicName",
+  "gameId": "magic",
+  "description": "Displays the card name in the fonts used by classic frame cards.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Name": "^0.1"
+  }
+}

@@ -1,0 +1,11 @@
+module-container[module="ClassicType"] {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    line-height: 1.2;
+    font-family: 'Matrix', serif;
+    font-size: 18px;
+    font-kerning: none;
+}
