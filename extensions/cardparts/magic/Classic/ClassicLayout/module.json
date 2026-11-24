@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicLayout",
+  "gameId": "magic",
+  "description": "Supplies classic frame card layout CSS rules and fonts.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/CardLayout": "^0.1"
+  }
+}

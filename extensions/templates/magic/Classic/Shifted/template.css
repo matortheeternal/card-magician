@@ -1,0 +1,66 @@
+.classic-layout {
+    .header {
+        position: absolute;
+        top: 30px;
+        left: 32px;
+        width: 311px;
+        height: 23px;
+        padding: 0;
+    }
+
+    module-container[module="Art"] {
+        position: absolute;
+        top: 62px;
+        left: 32px;
+        width: 311px;
+        height: 228px;
+        margin: 0;
+        border: none;
+    }
+
+    .type-line {
+        position: absolute;
+        top: 297px;
+        left: 35px;
+        width: 307px;
+        height: 22px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .text-box {
+        position: absolute;
+        top: 328px;
+        left: 31px;
+        width: 311px;
+        height: 142px;
+    }
+
+    module-container[render="renderPT"] {
+        top: 461px;
+        right: auto;
+        bottom: auto;
+        left: 271px;
+        width: 81px;
+        height: 42px;
+    }
+
+    module-container[module="ClassicFooter"] {
+        position: absolute;
+        z-index: 2;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"] {
+        top: 478px;
+        left: 56px;
+        width: 217px;
+        height: 16px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderLegal"] {
+        top: 493px;
+        left: 30px;
+        width: 247px;
+        height: 12px;
+    }
+}

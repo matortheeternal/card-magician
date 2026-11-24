@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicFooter",
+  "gameId": "magic",
+  "description": "Displays the illustrator and legal text lines of classic frame cards.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Footer": "^0.1"
+  }
+}

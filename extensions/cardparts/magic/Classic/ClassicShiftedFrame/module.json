@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicShiftedFrame",
+  "gameId": "magic",
+  "description": "Defines the classic timeshifted card frame background.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Frame": "^0.1"
+  }
+}

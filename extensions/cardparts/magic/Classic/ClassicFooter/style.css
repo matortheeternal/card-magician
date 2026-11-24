@@ -1,0 +1,15 @@
+module-container[module="ClassicFooter"] {
+    color: var(--footer-color);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+module-container[module="ClassicFooter"][render="renderInfo"] {
+    font-family: 'Matrix', serif;
+    font-size: 13px;
+}
+
+module-container[module="ClassicFooter"][render="renderLegal"] {
+    font-family: 'MPlantin', serif;
+    font-size: 8.5px;
+}
