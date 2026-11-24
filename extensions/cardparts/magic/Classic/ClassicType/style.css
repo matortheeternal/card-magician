@@ -5,6 +5,7 @@ module-container[module="ClassicType"] {
     min-width: 0;
     overflow: hidden;
     line-height: 1.2;
+    padding-bottom: 4px;
     font-family: 'Matrix', serif;
     font-size: 19px;
 }
