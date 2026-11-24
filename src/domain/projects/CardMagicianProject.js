@@ -267,6 +267,8 @@ export default class CardMagicianProject {
     }
 
     async afterLoad() {}
+
+    afterCardsChanged() {}
 }
 
 window.CardMagicianProject = CardMagicianProject;

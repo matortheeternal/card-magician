@@ -43,6 +43,10 @@ export default class MagicProject extends CardMagicianProject {
         this.updateNumbering();
     }
 
+    afterCardsChanged() {
+        this.updateNumbering();
+    }
+
     updateNumbering() {
         autoNumberCards(this);
     }

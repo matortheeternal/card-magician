@@ -81,7 +81,7 @@ function bindWatchers(cardFaces) {
 }
 
 export async function buildCard(baseCard) {
-    const card = Object.assign({}, baseCard);
+    const card = Object.assign({}, baseCard, { baseCard });
     const cardFaces = [];
     for (const key of getFaceKeys(baseCard)) {
         const cardFace = await buildCardFace(card, key);

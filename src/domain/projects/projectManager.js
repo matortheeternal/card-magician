@@ -10,6 +10,7 @@ import * as historySystem from '../../ui/systems/historySystem.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
 import { openModal } from '../../ui/modals/modalManager.js';
+import { watch } from '../../shared/reactivity.js';
 
 const L = localize('project-manager');
 const report = createReporter({ unit: 'ProjectManager' });
@@ -20,6 +21,7 @@ const filters = [
 ];
 const cardChangedCallbacks = [];
 const projectChangedCallbacks = [];
+let unwatchActiveCards = () => {};
 
 export async function saveProject(saveCards = false) {
     try {
@@ -34,7 +36,9 @@ export async function saveProject(saveCards = false) {
 
 export function installProject(project) {
     clearFileWatchers();
+    unwatchActiveCards();
     window.activeProject = project;
+    unwatchActiveCards = watch(project, 'cards', () => project.afterCardsChanged());
 }
 
 export function setActiveProject(project) {

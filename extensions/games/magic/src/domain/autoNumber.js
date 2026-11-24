@@ -43,12 +43,19 @@ export function formatCollectorNumber(project, num, suffix = '') {
     return num.toString() + suffix;
 }
 
+function assignAutoNumber(card, faceKey, value) {
+    const face = card[faceKey];
+    if (face.autoCollectorNumber === value) return;
+    face.autoCollectorNumber = value;
+    changed(card, `${faceKey}.autoCollectorNumber`);
+}
+
 export function setAutoNumber(project, card, num) {
     const hasBack = Object.hasOwn(card, 'back');
     const frontSuffix = hasBack ? 'a' : '';
-    card.front.autoCollectorNumber = formatCollectorNumber(project, num, frontSuffix);
+    assignAutoNumber(card, 'front', formatCollectorNumber(project, num, frontSuffix));
     if (!hasBack) return;
-    card.back.autoCollectorNumber = formatCollectorNumber(project, num, 'b');
+    assignAutoNumber(card, 'back', formatCollectorNumber(project, num, 'b'));
 }
 
 function sortAndNumber(project, cards) {
@@ -89,10 +96,7 @@ function getCardCodeGroup(card) {
 }
 
 function assignCardCode(key, card, index) {
-    card.front.autoCollectorNumber = [
-        key,
-        index.toString().padStart(2, '0')
-    ].join('');
+    assignAutoNumber(card, 'front', key + index.toString().padStart(2, '0'));
 }
 
 function applyCardCodes(project) {

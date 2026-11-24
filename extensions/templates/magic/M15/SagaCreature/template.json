@@ -18,6 +18,7 @@
     "magic/M15/SagaText",
     "magic/M15/PT",
     "magic/M15/Rarity",
-    "magic/M15/Footer"
+    "magic/M15/Footer",
+    "magic/M15/AutoNumber"
   ]
 }
