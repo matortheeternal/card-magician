@@ -33,9 +33,9 @@ function makeLineObject(match) {
     };
 }
 
-function findMultilineRoot(parsedLines, targetDepth) {
+function findMultilineRoot(parsedLines, continuationDepth) {
     for (let i = parsedLines.length - 1; i >= 0; i--) {
-        if (parsedLines[i].depth === targetDepth)
+        if (parsedLines[i].depth < continuationDepth)
             return i;
     }
 }
@@ -52,7 +52,7 @@ function collectMultilineValues(parsedLines, rootIndex) {
 }
 
 function rollupMultiline(depth, lastValue, parsedLines) {
-    const rootIndex = findMultilineRoot(parsedLines, depth - 1);
+    const rootIndex = findMultilineRoot(parsedLines, depth);
     parsedLines[rootIndex].type = 'multiline';
     parsedLines[rootIndex].value = [
         ...collectMultilineValues(parsedLines, rootIndex),
@@ -63,7 +63,7 @@ function rollupMultiline(depth, lastValue, parsedLines) {
 function shouldRollup(parsedLines, depth) {
     const prevLine = parsedLines[parsedLines.length - 1];
     return prevLine?.type === 'multiline'
-        && prevLine?.depth === depth - 1;
+        && prevLine.depth < depth;
 }
 
 function parseMseLines(text) {

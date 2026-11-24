@@ -111,4 +111,25 @@ describe('parseMse', () => {
         expect(obj.hello).toBeDefined();
         expect(obj.hello).toBe('world');
     });
+
+    it('should attach over-indented continuation lines to the preceding key', () => {
+        const obj = parseMse(
+            'styling:\n'
+            + '\tframe:\n'
+            + '\t\toverlay: none\n'
+            + 'card:\n'
+            + '\tname: First\n'
+            + '\tillustrator:\n'
+            + '\t\t\tKKPCW: Wikimedia\n'
+            + '\t\t\tCommons\n'
+            + '\tpower: 4\n'
+            + 'card:\n'
+            + '\tname: Second\n'
+        );
+        expect(obj.styling.frame.overlay).toBe('none');
+        expect(obj.card.length).toBe(2);
+        expect(obj.card[0].illustrator).toBe('KKPCW: Wikimedia\nCommons');
+        expect(obj.card[0].power).toBe('4');
+        expect(obj.card[1].name).toBe('Second');
+    });
 });
