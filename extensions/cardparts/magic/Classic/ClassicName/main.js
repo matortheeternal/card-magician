@@ -3,8 +3,8 @@ import NameModule from '../../M15/Name/main.js';
 const L = localize('module-classic-name');
 
 const NAME_FONTS = {
-    matrix:         { family: 'Matrix', size: 22 },
-    magicMedieval:  { family: 'MagicMedieval', size: 19 },
+    matrix:         { family: 'Matrix', size: 22.5, drop: 1 },
+    magicMedieval:  { family: 'MagicMedieval', size: 20, drop: 1 },
 };
 
 export default class ClassicNameModule extends NameModule {
@@ -32,7 +32,10 @@ export default class ClassicNameModule extends NameModule {
 
     render(card) {
         const font = NAME_FONTS[card.nameFont];
-        const style = `font-family: '${font.family}', serif`;
+        const style = [
+            `font-family: '${font.family}', serif`,
+            `margin-bottom: -${font.drop}px`
+        ].join('; ');
         return (
             `<auto-fit-line max="${font.size}" style="${style}">`
             + this.escapeHTML(card.name)

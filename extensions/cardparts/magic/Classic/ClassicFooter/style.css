@@ -6,10 +6,10 @@ module-container[module="ClassicFooter"] {
 
 module-container[module="ClassicFooter"][render="renderInfo"] {
     font-family: 'Matrix', serif;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 module-container[module="ClassicFooter"][render="renderLegal"] {
     font-family: 'MPlantin', serif;
-    font-size: 8.5px;
+    font-size: 9px;
 }

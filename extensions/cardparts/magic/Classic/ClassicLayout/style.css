@@ -1,11 +1,17 @@
+module-container[module="Text"] .text {
+    padding: 0;
+    color: black;
+}
+
 module-container[module="Text"] .flavor-bar {
-    display: none;
+    visibility: hidden;
 }
 
 module-container[module="PT"] .pt-text {
     align-items: center;
     background-size: 100% 100%;
-    padding: 6px 8px 8px 13px;
+    padding: 3px 8px 11px 13px;
     font-family: 'ModMatrix', serif;
-    font-size: 22px;
+    font-size: 23px;
+    color: black;
 }

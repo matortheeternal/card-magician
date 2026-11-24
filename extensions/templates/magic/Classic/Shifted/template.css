@@ -61,8 +61,8 @@
     }
 
     module-container[module="ClassicFooter"][render="renderInfo"] {
-        top: 478px;
-        left: 56px;
+        top: 480px;
+        left: 57px;
         width: 217px;
         height: 16px;
     }
