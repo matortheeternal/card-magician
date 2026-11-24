@@ -14,6 +14,11 @@ export default class FooterModule extends CardMagicianModule {
     }
 
     async init() {
+        this.initFieldPlaceholders();
+        this.brushSvg = await this.loadFile('assets/art.svg');
+    }
+
+    initFieldPlaceholders() {
         const fields = Object.fromEntries(
             this.fields.map(field => [field.id, field])
         );
@@ -22,7 +27,6 @@ export default class FooterModule extends CardMagicianModule {
         fields.language.placeholder = activeProject.language;
         fields.legalText.placeholder = activeProject.legalText;
         this.collectorNumberField = fields.collectorNumber;
-        this.brushSvg = await this.loadFile('assets/art.svg');
     }
 
     updateCollectorNumberPlaceholder(card) {
