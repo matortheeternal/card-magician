@@ -36,7 +36,7 @@ export default class FrameModule extends CardMagicianModule {
         if (meldStyle !== 'none') classes.push(`meld-${meldStyle}`);
         for (const bg of this.backgrounds)
             classes.push(`frame-${bg.id}`);
-        classes.push(`art-${wrapped.artSize}`);
+        if (wrapped.artSize) classes.push(`art-${wrapped.artSize}`);
         return classes;
     }
 
