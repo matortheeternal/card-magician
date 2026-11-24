@@ -4,6 +4,11 @@ import Border from '../../../M15/Frame/src/mixins/Border.js';
 import PT from '../../../M15/Frame/src/mixins/PT.js';
 import FooterColor from './mixins/FooterColor.js';
 
+const ART_DIMENSIONS = {
+    standard: { width: 311, height: 228 },
+    extended: { width: 311, height: 408 },
+};
+
 export default class ClassicShiftedFrame extends CardFrame.with(
     Frame,
     Border,
@@ -15,7 +20,7 @@ export default class ClassicShiftedFrame extends CardFrame.with(
     }
 
     get artDimensions() {
-        return { width: 311, height: 228 };
+        return ART_DIMENSIONS[this.card.artSize];
     }
 
     resolveAssetPath(path) {
@@ -28,7 +33,7 @@ export default class ClassicShiftedFrame extends CardFrame.with(
     }
 
     get frameMaskFilename() {
-        return 'classicshifted.png';
+        return `classicshifted_${this.card.artSize}.png`;
     }
 
     get frameBlendMaskFolder() {
@@ -41,6 +46,37 @@ export default class ClassicShiftedFrame extends CardFrame.with(
 
     get hybridBlendKey() {
         return `${super.hybridBlendKey}l`;
+    }
+
+    /* --- ALPHA DUAL LANDS --- */
+    get useAlphaBlend() {
+        return this.card.dualLandBlend === 'alpha'
+            && this.isLand
+            && this.card.colorIdentity.colors.length === 2;
+    }
+
+    get alphaBlendMaskUrl() {
+        return this.resolveAssetPath('mask/classicshifted/blend_alpha.png');
+    }
+
+    get useLandHybridBlend() {
+        return !this.useAlphaBlend && super.useLandHybridBlend;
+    }
+
+    resolveHybridColored(folder, card, options) {
+        if (!this.useAlphaBlend)
+            return super.resolveHybridColored(folder, card, options);
+        return this.resolveAlphaBlend(folder, card, options);
+    }
+
+    resolveAlphaBlend(folder, card, options) {
+        const [c1, c2] = card.colorIdentity.colors;
+        const [dark, light] = this.getHybridOrder(card, c1.char, c2.char);
+        return this.ctx.maskedBlend(
+            this.resolveColorKey(folder, light, options),
+            this.resolveColorKey(folder, dark, options),
+            this.alphaBlendMaskUrl
+        );
     }
 
     /* --- BORDER --- */

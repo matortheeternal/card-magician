@@ -18,6 +18,10 @@
         border: none;
     }
 
+    &.art-extended module-container[module="Art"] {
+        height: 408px;
+    }
+
     .type-line {
         position: absolute;
         top: 297px;
