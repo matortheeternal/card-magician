@@ -1,7 +1,3 @@
-module-container[module="Text"] .text {
-    padding: 0;
-}
-
 module-container[module="Text"] .flavor-bar {
     visibility: hidden;
 }
