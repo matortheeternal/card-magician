@@ -1,6 +1,5 @@
 module-container[module="Text"] .text {
     padding: 0;
-    color: black;
 }
 
 module-container[module="Text"] .flavor-bar {
@@ -13,5 +12,4 @@ module-container[module="PT"] .pt-text {
     padding: 3px 8px 11px 13px;
     font-family: 'ModMatrix', serif;
     font-size: 23px;
-    color: black;
 }
