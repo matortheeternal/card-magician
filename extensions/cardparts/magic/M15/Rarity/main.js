@@ -24,6 +24,18 @@ export default class RarityModule extends CardMagicianModule {
         }];
     }
 
+    static createOptions() {
+        return [{
+            id: 'commonSymbolStyle',
+            type: 'select',
+            label: L`Common Symbol`,
+            options: [
+                { id: 'standard',   name: L`Standard` },
+                { id: 'inverted',   name: L`Inverted` },
+            ]
+        }];
+    }
+
     async init(parent, template) {
         if (template?.rarity !== undefined)
             this.fields[0].override = template.rarity;
@@ -41,12 +53,20 @@ export default class RarityModule extends CardMagicianModule {
 
     bind(card, watch) {
         watch(card, 'rarity', () => this.updateRarity(card));
+        watch(card, 'commonSymbolStyle', () => this.requestRender());
         watch(activeProject, 'symbol', () => this.requestRender());
+    }
+
+    getSymbolPresetId(card) {
+        const rarity = card.rarity.toLowerCase();
+        if (rarity === 'common' && card.commonSymbolStyle === 'inverted')
+            return 'invertedCommon';
+        return rarity;
     }
 
     render(card) {
         return activeGame.renderSetSymbol(
-            activeProject.symbol, card.rarity.toLowerCase()
+            activeProject.symbol, this.getSymbolPresetId(card)
         );
     }
 

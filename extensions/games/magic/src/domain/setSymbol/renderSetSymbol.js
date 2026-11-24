@@ -1,5 +1,7 @@
 import DOMPurify from 'dompurify';
-import rarityPresets, { RARITY_GRADIENT_OFFSETS } from './rarityPresets.js';
+import rarityPresets, {
+    RARITY_GRADIENT_OFFSETS, symbolVariants
+} from './rarityPresets.js';
 
 const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
 
@@ -7,6 +9,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 const OFFSETS = RARITY_GRADIENT_OFFSETS.map(
     offset => `${Number((offset * 100).toFixed(6))}%`
 );
+const symbolPresets = [...rarityPresets, ...symbolVariants];
 let nextId = 0;
 
 function safeColor(value, fallback) {
@@ -120,7 +123,7 @@ function applyPalette(svg, preset) {
 }
 
 export function renderSetSymbol(source, rarity = 'common') {
-    const preset = rarityPresets.find(r => r.id === rarity) ?? rarityPresets[0];
+    const preset = symbolPresets.find(r => r.id === rarity) ?? rarityPresets[0];
     const clean = DOMPurify.sanitize(source ?? '', {
         USE_PROFILES: { svg: true, svgFilters: true }
     });

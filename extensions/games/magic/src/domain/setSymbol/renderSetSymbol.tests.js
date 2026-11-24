@@ -51,6 +51,13 @@ describe('renderSetSymbol', () => {
             .toBe(`url(#${maskId})`);
     });
 
+    it('renders the inverted common variant with a light fill and dark outline', () => {
+        const svg = parse(renderSetSymbol(wideSymbol, 'invertedCommon'));
+        expect(svg.classList.contains('rarity-invertedCommon')).toBeTrue();
+        expect(svg.querySelector('g').getAttribute('stroke')).toBe('#000000');
+        expect(svg.querySelector('stop').getAttribute('stop-color')).toBe('#ffffff');
+    });
+
     it('isolates gradient IDs across rendered copies', () => {
         const common = parse(renderSetSymbol(wideSymbol));
         const rare = parse(renderSetSymbol(wideSymbol, 'rare'));

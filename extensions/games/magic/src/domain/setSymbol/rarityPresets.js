@@ -48,3 +48,14 @@ export default [
     },
 ];
 
+export const symbolVariants = [
+    {
+        id: 'invertedCommon',
+        name: 'Inverted Common',
+        g1: '#ffffff',
+        g2: '#ffffff',
+        g3: '#ffffff',
+        g4: '#ffffff',
+        outline: '#000000',
+    },
+];
