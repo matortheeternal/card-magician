@@ -8,59 +8,19 @@
     --walker-ability-middle-offset: 5px;
 }
 
-module-container[module="WalkerText"] {
-    display: flex;
-    position: relative;
-    overflow: hidden;
+module-container[module="Text"] {
+    z-index: auto;
     padding: 0 13px 7px 0;
-    height: 163px;
-    margin-bottom: 0.5px;
     background-color: rgba(255, 255, 255, 0.45);
-    --chop-top: 0px;
-    --chop-bottom: 0px;
 }
 
 .text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    position: relative;
+    margin: 0;
     padding: 0;
-    font-size: 19px;
     line-height: 0.95;
-    font-family: "MPlantin", sans-serif;
 
-    &.flag-padding {
-        padding-bottom: 20px;
-    }
-
-    i {
-        font-family: "MPlantin-Italic", serif;
-        font-style: normal;
-        font-weight: 300;
-    }
-
-    .symbol-block {
-        white-space: nowrap;
-    }
-
-    p {
+    p, p:first-child, p:last-child {
         margin: 0.4em 0;
-    }
-
-    abbr.sym {
-        font-size: 97%;
-        line-height: 0.95;
-        height: 0.85em;
-        width: 0.9em;
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        background-position: center center;
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 1px;
-        margin-top: -1px;
     }
 }
 
