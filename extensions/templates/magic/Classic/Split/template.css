@@ -1,7 +1,3 @@
-module-container[module="Text"] .text {
-    font-size: 18px;
-}
-
 .split-top, .split-bottom {
     position: absolute;
     left: 18px;
@@ -32,10 +28,6 @@ module-container[module="Text"] .text {
         z-index: 0;
     }
 
-    .header, .type-line {
-        padding: 0;
-    }
-
     module-container[module="SplitArt"] {
         border: none;
     }
@@ -54,13 +46,7 @@ module-container[module="Text"] .text {
         flex-grow: 0;
     }
 
-    footer {
-        position: relative;
-        z-index: 2;
-    }
-
     module-container[module="ClassicFooter"][render="renderLegal"] {
-        height: 12px;
         font-size: 8px;
     }
 }
@@ -72,7 +58,6 @@ module-container[module="Text"] .text {
     }
 
     module-container[module="ClassicName"] {
-        position: relative;
         top: 3px;
     }
 
@@ -83,6 +68,10 @@ module-container[module="Text"] .text {
     .type-line {
         height: 21px;
         margin: auto 12px 0 15px;
+    }
+
+    module-container[module="ClassicType"] {
+        padding-top: 0;
     }
 
     module-container[module="Text"] {
@@ -112,7 +101,6 @@ module-container[module="Text"] .text {
     }
 
     module-container[module="ClassicFooter"][render="renderInfo"] {
-        height: 16px;
         font-size: 14.5px;
     }
 
@@ -148,8 +136,12 @@ module-container[module="Text"] .text {
         margin: auto 13px 0 12px;
     }
 
+    module-container[module="ClassicName"] {
+        top: 0;
+    }
+
     module-container[module="ClassicType"] {
-        padding-bottom: 6px;
+        padding: 0 0 6px;
     }
 
     module-container[module="Text"] {
@@ -179,7 +171,6 @@ module-container[module="Text"] .text {
 
     module-container[module="ClassicFooter"][render="renderInfo"] {
         width: 155px;
-        height: 16px;
         margin-left: 28px;
         font-family: 'Matrix', serif;
         font-size: 10.5px;
@@ -189,5 +180,4 @@ module-container[module="Text"] .text {
         width: 175px;
         margin: -6px 0 0 8px;
     }
-
 }

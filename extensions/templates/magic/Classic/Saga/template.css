@@ -1,24 +1,16 @@
-.text-column module-container[module="SagaText"] auto-fit-text {
-    font-size: 18px;
-}
-
 .frame-saga {
-    .header {
-        height: 25px;
-        margin: 7px 19px 0 27px;
-        padding: 0;
-    }
-
-    module-container[module="ClassicName"] {
-        position: relative;
-        top: 1.5px;
-    }
-
     .saga-columns {
         display: flex;
         flex: 1;
         min-height: 0;
         margin: 3px 0 5px 28px;
+    }
+
+    .text-column {
+        width: 141px;
+        margin-bottom: 3px;
+        padding: 0;
+        overflow: visible;
     }
 
     module-container[module="Art"] {
@@ -27,21 +19,8 @@
         border: none;
     }
 
-    .type-line {
-        height: 22px;
-        margin: auto 23px 0 24px;
-        padding: 0;
-    }
-
-    module-container[module="ClassicType"] {
-        padding-top: 3px;
-    }
-
-    .text-column {
-        width: 141px;
-        margin-bottom: 3px;
-        padding: 0;
-        overflow: visible;
+    footer {
+        margin-top: 4px;
     }
 
     module-container[module="SagaText"],
@@ -78,19 +57,5 @@
 
     module-container[module="PT"] .pt-text > span:not(.d) {
         flex-grow: 0;
-    }
-
-    footer {
-        position: relative;
-        z-index: 2;
-        margin: 4px 23px 10px 25px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderInfo"] {
-        height: 16px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderLegal"] {
-        height: 12px;
     }
 }
