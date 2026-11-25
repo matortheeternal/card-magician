@@ -21,4 +21,8 @@ export default class ShiftedSplitFrame extends SplitCardFrame {
     get halfFrameClass() {
         return ShiftedSplitHalf;
     }
+
+    get showIllustratorLabel() {
+        return false;
+    }
 }

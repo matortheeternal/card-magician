@@ -76,16 +76,23 @@
         margin: 10px 0 3px 15px;
     }
 
+    module-container[module="ClassicFooter"] {
+        text-align: start;
+    }
+
     module-container[module="ClassicFooter"][render="renderInfo"] {
         width: 217px;
         height: 16px;
         margin-left: 27px;
+        font-family: 'Matrix', serif;
+        font-size: 14px;
     }
 
     module-container[module="ClassicFooter"][render="renderLegal"] {
         width: 247px;
         height: 12px;
         margin-top: -3px;
+        font-size: 9px;
     }
 
     module-container[module="Text"]:has(.creature-level) {
@@ -232,22 +239,11 @@
         margin: 9px 23px 10px 25px;
     }
 
-    module-container[module="ClassicFooter"] {
-        text-align: center;
-    }
-
     module-container[module="ClassicFooter"][render="renderInfo"] {
         height: 16px;
-        font-family: 'MPlantin', serif;
-        font-size: 13.5px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
-        content: 'Illus. ';
     }
 
     module-container[module="ClassicFooter"][render="renderLegal"] {
         height: 12px;
-        font-size: 8.5px;
     }
 }

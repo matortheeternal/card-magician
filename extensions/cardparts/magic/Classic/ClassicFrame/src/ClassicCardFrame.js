@@ -68,4 +68,8 @@ export default class ClassicCardFrame extends CardFrame {
     get lightFooterKeys() {
         return ['u', 'b', 'r', 'g', 'm', 'a', 'c', 'l'];
     }
+
+    get showIllustratorLabel() {
+        return true;
+    }
 }

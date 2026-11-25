@@ -1,16 +1,16 @@
 module-container[module="ClassicFooter"] {
     display: block;
     color: var(--footer-color);
+    font-family: 'MPlantin', serif;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
 }
 
 module-container[module="ClassicFooter"][render="renderInfo"] {
-    font-family: 'Matrix', serif;
-    font-size: 14px;
+    font-size: 13.5px;
 }
 
 module-container[module="ClassicFooter"][render="renderLegal"] {
-    font-family: 'MPlantin', serif;
-    font-size: 9px;
+    font-size: 8.5px;
 }

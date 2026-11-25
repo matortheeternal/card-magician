@@ -59,10 +59,6 @@ module-container[module="Text"] .text {
         z-index: 2;
     }
 
-    module-container[module="ClassicFooter"] {
-        text-align: center;
-    }
-
     module-container[module="ClassicFooter"][render="renderLegal"] {
         height: 12px;
         font-size: 8px;
@@ -125,12 +121,7 @@ module-container[module="Text"] .text {
 
     module-container[module="ClassicFooter"][render="renderInfo"] {
         height: 16px;
-        font-family: 'MPlantin', serif;
         font-size: 14.5px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
-        content: 'Illus. ';
     }
 
     module-container[module="ClassicFooter"][render="renderLegal"] {
@@ -198,6 +189,7 @@ module-container[module="Text"] .text {
         width: 155px;
         height: 16px;
         margin-left: 28px;
+        font-family: 'Matrix', serif;
         font-size: 10.5px;
     }
 

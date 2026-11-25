@@ -94,4 +94,8 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     get lightFooterKeys() {
         return ['b', 'l'];
     }
+
+    get showIllustratorLabel() {
+        return false;
+    }
 }

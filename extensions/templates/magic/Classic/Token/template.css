@@ -73,24 +73,14 @@
         margin: 14px 43px 24px 42px;
     }
 
-    module-container[module="ClassicFooter"] {
-        text-align: center;
-    }
-
     module-container[module="ClassicFooter"][render="renderInfo"] {
         height: 15px;
-        font-family: 'MPlantin', serif;
         font-size: 12px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
-        content: 'Illus. ';
     }
 
     module-container[module="ClassicFooter"][render="renderLegal"] {
         height: 12px;
         margin-top: -2px;
-
         font-size: 10.5px;
     }
 }

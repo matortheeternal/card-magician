@@ -83,23 +83,11 @@ module-container[module="WalkerText"] .text {
         margin: 9px 23px 10px 25px;
     }
 
-    module-container[module="ClassicFooter"] {
-        text-align: center;
-    }
-
     module-container[module="ClassicFooter"][render="renderInfo"] {
         height: 16px;
-        font-family: 'MPlantin', serif;
-        font-size: 13.5px;
-    }
-
-    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
-        content: 'Illus. ';
     }
 
     module-container[module="ClassicFooter"][render="renderLegal"] {
         height: 12px;
-
-        font-size: 8.5px;
     }
 }
