@@ -40,6 +40,11 @@ module-container[module="Text"] .text {
         border: none;
     }
 
+    module-container[module="Cost"] {
+        align-items: center;
+        padding: 0 2px;
+    }
+
     module-container[render="renderPT"] {
         right: auto;
         bottom: auto;
@@ -129,6 +134,18 @@ module-container[module="Text"] .text {
 }
 
 .frame-shifted .inner-card {
+    abbr.sym {
+        width: 15px;
+        height: 15px;
+        font-size: 14.5px;
+
+        &.oversized {
+            width: 18px;
+            height: 18px;
+            margin-top: 0;
+        }
+    }
+
     .header {
         height: 17px;
         margin: 9px 11px 0 12px;
