@@ -4,6 +4,7 @@ import * as text from './cardText.js';
 const methods = {
     isLegendary: types.isLegendary,
     isLand: types.isLand,
+    isBasicLand: types.isBasicLand,
     isCreature: types.isCreature,
     isArtifact: types.isArtifact,
     isEnchantment: types.isEnchantment,

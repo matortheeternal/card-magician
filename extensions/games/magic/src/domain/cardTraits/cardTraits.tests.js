@@ -36,6 +36,7 @@ describe('Magic card face traits', () => {
             ['isConspiracy', 'superType', 'Conspiracy'],
             ['isToken', 'superType', 'Token'],
             ['isEmblem', 'superType', 'Emblem'],
+            ['isBasicLand', 'superType', 'Basic Land'],
             ['isCompanion', 'rulesText', 'Companion — A condition.'],
             ['isMiracle', 'rulesText', 'Miracle {W}'],
             ['isMutate', 'rulesText', 'Mutate {G}']
