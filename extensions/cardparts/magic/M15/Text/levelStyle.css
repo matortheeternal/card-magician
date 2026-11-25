@@ -27,6 +27,7 @@ module-container[module="Text"]:has(.creature-level) {
         display: flex;
         flex-direction: column;
         flex: 1;
+        min-height: 0;
     }
 }
 
@@ -36,6 +37,7 @@ module-container[module="Text"]:has(.creature-level) {
     justify-content: center;
     max-width: 250px;
     max-height: 55px;
+    min-height: 0;
     margin-left: 18px;
     flex: 1;
 }
