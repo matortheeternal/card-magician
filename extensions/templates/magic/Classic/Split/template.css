@@ -28,7 +28,7 @@
         z-index: 0;
     }
 
-    module-container[module="SplitArt"] {
+    module-container[module="Art"] {
         border: none;
     }
 
@@ -61,7 +61,7 @@
         top: 3px;
     }
 
-    module-container[module="SplitArt"] {
+    module-container[module="Art"] {
         margin: 3px 20px 5px 19px;
     }
 
@@ -127,7 +127,7 @@
         margin: 9px 11px 0 12px;
     }
 
-    module-container[module="SplitArt"] {
+    module-container[module="Art"] {
         margin: 5px 10px 3px;
     }
 
