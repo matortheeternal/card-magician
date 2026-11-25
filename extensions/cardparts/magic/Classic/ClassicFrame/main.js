@@ -1,4 +1,5 @@
 import FrameModule from '../../M15/Frame/main.js';
+import ClassicFrame from './src/ClassicFrame.js';
 import ShiftedFrame from './src/ShiftedFrame.js';
 import classicOptions from './src/options.js';
 
@@ -13,11 +14,14 @@ export default class ClassicFrameModule extends FrameModule {
 
     async init(card) {
         await super.init(card);
-        card.frames = [ShiftedFrame];
+        card.frames = [ClassicFrame, ShiftedFrame];
     }
 
     bind(card, watch) {
         super.bind(card, watch);
-        watch(card, 'dualLandBlend', () => this.updateFrame(card));
+        watch(card, [
+            'dualLandBlend', 'nonbasicLandColoring', 'multicolorGradient',
+            'artifactGradient', 'colorlessStyle'
+        ], () => this.updateFrame(card));
     }
 }

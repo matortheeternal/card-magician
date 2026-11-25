@@ -86,3 +86,107 @@
         height: 12px;
     }
 }
+
+.frame-classic {
+    .header {
+        position: absolute;
+        top: 22px;
+        left: 42px;
+        width: 299px;
+        height: 25px;
+        padding: 0;
+    }
+
+    module-container[module="ClassicName"],
+    module-container[module="ClassicType"],
+    module-container[render="renderPT"],
+    module-container[render="renderInfo"] {
+        color: white;
+        text-shadow: 1px 1px 0 black;
+    }
+
+    module-container[module="Art"] {
+        position: absolute;
+        top: 51px;
+        left: 45px;
+        width: 286px;
+        height: 233px;
+        margin: 0;
+        border: none;
+    }
+
+    .type-line {
+        position: absolute;
+        top: 290px;
+        left: 39px;
+        width: 298px;
+        height: 22px;
+        margin: 0;
+        padding: 0;
+    }
+
+    module-container[module="ClassicType"] {
+        padding-top: 3px;
+    }
+
+    .text-box {
+        position: absolute;
+        top: 318px;
+        left: 43px;
+        width: 289px;
+        height: 143px;
+    }
+
+    module-container[module="Text"] {
+        height: 100%;
+        margin: 0;
+        padding: 2px 4px 2px 0;
+    }
+
+    module-container[render="renderPT"] {
+        top: 467px;
+        right: auto;
+        bottom: auto;
+        left: 295px;
+        width: 47px;
+        height: 27px;
+    }
+
+    module-container[module="PT"] .pt-text {
+        align-items: center;
+        justify-content: flex-end;
+        background-image: none;
+        padding: 0;
+        font-family: 'MPlantin-Bold', serif;
+        font-size: 22.5px;
+    }
+
+    module-container[module="PT"] .pt-text > span:not(.d) {
+        flex-grow: 0;
+    }
+
+    module-container[module="ClassicFooter"] {
+        position: absolute;
+        z-index: 2;
+        left: 40px;
+        width: 297px;
+        text-align: center;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"] {
+        top: 470px;
+        height: 16px;
+        font-family: 'MPlantin', serif;
+        font-size: 13.5px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
+        content: 'Illus. ';
+    }
+
+    module-container[module="ClassicFooter"][render="renderLegal"] {
+        top: 486px;
+        height: 12px;
+        font-size: 8.5px;
+    }
+}

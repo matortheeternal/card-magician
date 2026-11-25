@@ -5,6 +5,7 @@ export default [{
     type: 'select',
     label: L`Frame`,
     options: [
+        { id: 'classic',    name: L`Classic` },
         { id: 'shifted',    name: L`Shifted` },
     ]
 }, {
@@ -22,5 +23,39 @@ export default [{
     options: [
         { id: 'gradient',   name: L`Gradient` },
         { id: 'alpha',      name: L`Alpha` },
+    ]
+}, {
+    id: 'nonbasicLandColoring',
+    type: 'select',
+    label: L`Nonbasic Land Coloring`,
+    options: [
+        { id: 'trimAndTextbox', name: L`Trim and Text Box` },
+        { id: 'textbox',        name: L`Text Box` },
+        { id: 'trim',           name: L`Trim` },
+        { id: 'none',           name: L`None` },
+    ]
+}, {
+    id: 'multicolorGradient',
+    type: 'select',
+    label: L`Multicolor Gradient`,
+    options: [
+        { id: 'full',       name: L`Full Card` },
+        { id: 'trim',       name: L`Trim Only` },
+    ]
+}, {
+    id: 'artifactGradient',
+    type: 'select',
+    label: L`Artifact Gradient`,
+    options: [
+        { id: 'full',       name: L`Full Card` },
+        { id: 'trim',       name: L`Trim Only` },
+    ]
+}, {
+    id: 'colorlessStyle',
+    type: 'select',
+    label: L`Colorless Style`,
+    options: [
+        { id: 'standard',   name: L`Standard` },
+        { id: 'eldrazi',    name: L`Eldrazi` },
     ]
 }];
