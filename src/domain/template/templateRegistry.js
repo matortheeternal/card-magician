@@ -34,7 +34,7 @@ export async function loadTemplates() {
         Object.assign(template, await loadTemplateView(folder, 'template'));
         template.form = await loadTemplateView(folder, 'form');
         template.options = await loadTemplateView(folder, 'options');
-        if (!template.css || !template.html || !template.form.html) {
+        if (!template.html || !template.form.html) {
             log('plugin').warn(`Incomplete template found at`, folder.url());
             continue;
         }
