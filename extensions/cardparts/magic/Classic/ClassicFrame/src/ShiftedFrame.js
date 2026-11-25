@@ -9,14 +9,14 @@ const ART_DIMENSIONS = {
     extended: { width: 311, height: 408 },
 };
 
-export default class ClassicShiftedFrame extends CardFrame.with(
+export default class ShiftedFrame extends CardFrame.with(
     Frame,
     Border,
     PT,
     FooterColor,
 ) {
-    static matches() {
-        return true;
+    static matches(card) {
+        return card.frame === 'shifted';
     }
 
     get artDimensions() {
@@ -29,19 +29,19 @@ export default class ClassicShiftedFrame extends CardFrame.with(
 
     /* --- FRAME --- */
     get frameSubfolder() {
-        return 'classicshifted';
+        return 'shifted';
     }
 
     get frameMaskFilename() {
-        return `classicshifted_${this.card.artSize}.png`;
+        return `shifted_${this.card.artSize}.png`;
     }
 
     get frameBlendMaskFolder() {
-        return this.resolveAssetPath('mask/classicshifted');
+        return this.resolveAssetPath('mask/shifted');
     }
 
     get frameId() {
-        return 'classicshifted';
+        return 'shifted';
     }
 
     get hybridBlendKey() {
@@ -56,7 +56,7 @@ export default class ClassicShiftedFrame extends CardFrame.with(
     }
 
     get alphaBlendMaskUrl() {
-        return this.resolveAssetPath('mask/classicshifted/blend_alpha.png');
+        return this.resolveAssetPath('mask/shifted/blend_alpha.png');
     }
 
     get useLandHybridBlend() {
@@ -81,12 +81,12 @@ export default class ClassicShiftedFrame extends CardFrame.with(
 
     /* --- BORDER --- */
     get borderMaskFilename() {
-        return 'classicshifted.png';
+        return 'shifted.png';
     }
 
     /* --- PT --- */
     get ptSubfolder() {
-        return 'classicshifted';
+        return 'shifted';
     }
 
     getPtPath(card) {

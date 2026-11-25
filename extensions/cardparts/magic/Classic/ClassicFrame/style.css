@@ -1,4 +1,4 @@
-module-container[module="ClassicShiftedFrame"] {
+module-container[module="ClassicFrame"] {
     position: absolute;
     inset: 0;
     z-index: 1;

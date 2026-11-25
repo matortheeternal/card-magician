@@ -1,6 +1,13 @@
-const L = localize('module-classic-shifted-frame');
+const L = localize('module-classic-frame');
 
 export default [{
+    id: 'frame',
+    type: 'select',
+    label: L`Frame`,
+    options: [
+        { id: 'shifted',    name: L`Shifted` },
+    ]
+}, {
     id: 'artSize',
     type: 'select',
     label: L`Art Size`,

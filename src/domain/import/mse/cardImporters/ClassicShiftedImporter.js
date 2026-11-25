@@ -9,7 +9,11 @@ export default class ClassicShiftedImporter extends M15AlteredImporter {
         return 'standard';
     }
 
+    get frame() {
+        return 'shifted';
+    }
+
     get template() {
-        return 'magic/Classic/Shifted';
+        return 'magic/Classic/Main';
     }
 }

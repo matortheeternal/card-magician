@@ -1,10 +1,10 @@
 import FrameModule from '../../M15/Frame/main.js';
-import ClassicShiftedFrame from './src/ClassicShiftedFrame.js';
+import ShiftedFrame from './src/ShiftedFrame.js';
 import classicOptions from './src/options.js';
 
 const INHERITED_OPTIONS = ['hybridStyle', 'hybridBlendStyle', 'borderColor'];
 
-export default class ClassicShiftedFrameModule extends FrameModule {
+export default class ClassicFrameModule extends FrameModule {
     static createOptions() {
         const inherited = super.createOptions()
             .filter(opt => INHERITED_OPTIONS.includes(opt.id));
@@ -13,7 +13,7 @@ export default class ClassicShiftedFrameModule extends FrameModule {
 
     async init(card) {
         await super.init(card);
-        card.frames = [ClassicShiftedFrame];
+        card.frames = [ShiftedFrame];
     }
 
     bind(card, watch) {
