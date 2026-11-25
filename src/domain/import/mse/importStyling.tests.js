@@ -25,4 +25,21 @@ describe('MSE styling import', () => {
         expect(enabled.commonSymbolStyle).toBe('inverted');
         expect(disabled.commonSymbolStyle).toBe('standard');
     });
+
+    it('imports classic frame options from the old style', async () => {
+        const face = await importStyled('old', {
+            alpha_style_blending: 'yes',
+            colored_nonbasic_land_trim: '',
+            type_of_gradient_multicolor: 'trim only',
+            eldrazi_colorless: 'yes'
+        });
+        expect(face.template).toBe('magic/Classic/Main');
+        expect(face.frame).toBe('classic');
+        expect(face.dualLandBlend).toBe('alpha');
+        expect(face.nonbasicLandColoring).toBe('none');
+        expect(face.multicolorGradient).toBe('trim');
+        expect(face.artifactGradient).toBe('full');
+        expect(face.colorlessStyle).toBe('eldrazi');
+    });
+
 });
