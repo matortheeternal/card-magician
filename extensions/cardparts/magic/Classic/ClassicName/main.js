@@ -6,6 +6,7 @@ const L = localize('module-classic-name');
 const NAME_FONTS = {
     matrix:         { family: 'Matrix', drop: 1 },
     magicMedieval:  { family: 'MagicMedieval', drop: 1 },
+    mplantin:       { family: 'MPlantin', drop: 0 },
 };
 
 function computeNameFont(card) {
@@ -22,6 +23,7 @@ export default class ClassicNameModule extends NameModule {
                 { id: 'auto',           name: L`Auto`, compute: computeNameFont },
                 { id: 'matrix',         name: L`Matrix` },
                 { id: 'magicMedieval',  name: L`Magic Medieval` },
+                { id: 'mplantin',       name: L`MPlantin` },
             ]
         }];
     }

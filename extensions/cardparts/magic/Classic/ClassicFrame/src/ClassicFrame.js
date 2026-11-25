@@ -89,7 +89,7 @@ export default class ClassicFrame extends GradientCardFrame.with(
     }
 
     get nameFontSizes() {
-        return { matrix: 22.5, magicMedieval: 21.5 };
+        return { matrix: 22.5, magicMedieval: 21.5, mplantin: 20 };
     }
 
     get typeFont() {
