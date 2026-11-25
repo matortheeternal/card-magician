@@ -1,9 +1,10 @@
+const MODULE_LAYER = 'modules';
 const textStylesheets = new Map();
 
 function textStylesheet(css) {
     if (textStylesheets.has(css)) return textStylesheets.get(css);
     const sheet = new CSSStyleSheet();
-    sheet.replaceSync(css);
+    sheet.replaceSync(`@layer ${MODULE_LAYER} {\n${css}\n}`);
     textStylesheets.set(css, sheet);
     return sheet;
 }
