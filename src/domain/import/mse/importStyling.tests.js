@@ -42,4 +42,9 @@ describe('MSE styling import', () => {
         expect(face.colorlessStyle).toBe('eldrazi');
     });
 
+    it('imports the classic shifted style into the shifted frame', async () => {
+        const face = await importStyled('classicshifted', {});
+        expect(face.template).toBe('magic/Classic/Main');
+        expect(face.frame).toBe('shifted');
+    });
 });
