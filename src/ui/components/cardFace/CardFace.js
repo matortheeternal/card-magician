@@ -36,6 +36,7 @@ export default class DisplayCardFace extends HTMLElement {
         this.shadowRoot.innerHTML = '';
         this.classList.add(this.#face.id);
         this.shadowRoot.appendChild(this.#face.dom.root);
+        this.#face.dom.adoptStylesheets();
     }
 }
 

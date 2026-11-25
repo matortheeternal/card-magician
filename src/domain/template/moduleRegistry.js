@@ -1,31 +1,42 @@
 import { getExtensionDirectory } from '../../shared/extensionManager.js';
+import { loadStylesheetFiles } from './moduleStylesheets.js';
 
 const report = createReporter({ unit: 'moduleRegistry', label: 'Card Modules' });
 const MODULE_METADATA_PATTERN = /^(.+)\/module\.json$/;
+const DEFAULT_STYLESHEET = 'style.css';
 const moduleClasses = new Map();
 let loadedGameId = null;
 
-function findModulePaths(entries) {
+function findModulePaths(files) {
     const modulePaths = [];
-    for (const { entry, type } of entries) {
-        const match = type === 'FILE' && entry.match(MODULE_METADATA_PATTERN);
+    for (const file of files) {
+        const match = file.match(MODULE_METADATA_PATTERN);
         if (match) modulePaths.push(match[1]);
     }
     return modulePaths;
 }
 
-async function importModuleClass(directory, metadata) {
+function stylesheetPaths(files, modulePath, metadata) {
+    if (metadata.stylesheets) return metadata.stylesheets;
+    const hasDefault = files.has(`${modulePath}/${DEFAULT_STYLESHEET}`);
+    return hasDefault ? [DEFAULT_STYLESHEET] : [];
+}
+
+async function importModuleClass(directory, metadata, stylesheets) {
     const { default: Module } = await import(directory.url('main.js'));
     Module.moduleMetadata = metadata;
+    Module.ownStylesheets = await loadStylesheetFiles(directory, stylesheets);
     return Module;
 }
 
-async function loadModuleClass(cardparts, modulePath, gameId) {
+async function loadModuleClass(cardparts, files, modulePath, gameId) {
     try {
         const directory = cardparts.child(modulePath);
         const metadata = await directory.readJson('module.json');
         if (metadata.gameId !== gameId) return;
-        moduleClasses.set(modulePath, await importModuleClass(directory, metadata));
+        const stylesheets = stylesheetPaths(files, modulePath, metadata);
+        const Module = await importModuleClass(directory, metadata, stylesheets);
+        moduleClasses.set(modulePath, Module);
     } catch (error) {
         log('plugin').warn('Failed to load module:', modulePath, error);
         report('loadModuleClass', error, [modulePath]);
@@ -38,8 +49,9 @@ export async function loadModuleClasses(gameId) {
     loadedGameId = gameId;
     const cardparts = getExtensionDirectory().child('cardparts');
     const entries = await cardparts.readDirectory({ recursive: true });
-    await Promise.all(findModulePaths(entries).map(modulePath => {
-        return loadModuleClass(cardparts, modulePath, gameId);
+    const files = new Set(entries.filter(e => e.type === 'FILE').map(e => e.entry));
+    await Promise.all(findModulePaths(files).map(modulePath => {
+        return loadModuleClass(cardparts, files, modulePath, gameId);
     }));
 }
 

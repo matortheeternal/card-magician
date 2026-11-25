@@ -1,6 +1,7 @@
 import { getModuleClass } from '../template/moduleRegistry.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { resolveContainerNames } from '../template/moduleContainers.js';
+import { loadModuleStylesheets } from '../template/moduleStylesheets.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 const report = createReporter({ unit: 'BaseCardModel', label: 'Card' });
@@ -95,15 +96,10 @@ export default class BaseCardModel {
         });
     }
 
-    loadStyles(parent) {
-        return Promise.all(
-            this.modules.map(async module => {
-                if (!module.styles || parent && parent.hasLoadedModule(module)) return;
-                const styles = await module.styles();
-                const target = parent?.dom || this.dom;
-                styles.forEach(style => target.addCSS(style));
-            })
-        );
+    async loadStyles(parent) {
+        const modules = this.modules.filter(module => !parent?.hasLoadedModule(module));
+        const stylesheets = await Promise.all(modules.map(loadModuleStylesheets));
+        (parent?.dom || this.dom).addStylesheets(stylesheets.flat());
     }
 
     async initializeModules(template, parent) {

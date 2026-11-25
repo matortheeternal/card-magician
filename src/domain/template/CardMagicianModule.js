@@ -299,7 +299,36 @@ export default class CardMagicianModule {
     }
 
     /**
-     * Returns CSS styles to be injected for this module.
+     * Stylesheets listed in the module's module.json `stylesheets` array, or
+     * its style.css when the array is omitted and the file exists. Assigned
+     * when the module is registered for the active game.
+     *
+     * @type {Array<CSSStyleSheet>}
+     */
+    static ownStylesheets = [];
+
+    /**
+     * Returns the stylesheets applied for this module in cascade order: the
+     * stylesheets of the modules it extends, followed by its own. A module
+     * whose module.json sets `inheritStylesheets` to false applies only its
+     * own stylesheets.
+     *
+     * @returns {Array<CSSStyleSheet>}
+     */
+    static get stylesheets() {
+        const sheets = [];
+        let Module = this;
+        while (Module !== CardMagicianModule) {
+            sheets.unshift(...Module.ownStylesheets);
+            if (Module.moduleMetadata.inheritStylesheets === false) break;
+            Module = Object.getPrototypeOf(Module);
+        }
+        return sheets;
+    }
+
+    /**
+     * Returns CSS generated at runtime for this module, applied after its
+     * stylesheets.
      *
      * @returns {Promise<Array<string>>|Array<string>}
      */

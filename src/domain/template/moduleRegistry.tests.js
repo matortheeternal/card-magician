@@ -18,6 +18,12 @@ describe('Module registry', () => {
         expect(Footer.moduleMetadata.id).toBe('magic/M15/Footer');
     });
 
+    it('loads style.css unless module.json lists stylesheets', () => {
+        expect(getModuleClass('magic/M15/Footer').ownStylesheets.length).toBe(1);
+        expect(getModuleClass('magic/M15/Text').ownStylesheets.length).toBe(3);
+        expect(getModuleClass('magic/M15/AutoNumber').ownStylesheets).toEqual([]);
+    });
+
     it('returns nothing for unknown modules', () => {
         expect(getModuleClass('magic/M15/Missing')).toBeUndefined();
     });
