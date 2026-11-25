@@ -72,7 +72,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
     }
 
     get commonSymbolStyle() {
-        if (this.stylingData?.inverted_common_symbol) return 'inverted';
+        if (this.stylingData?.inverted_common_symbol === 'yes') return 'inverted';
         return 'standard';
     }
 
