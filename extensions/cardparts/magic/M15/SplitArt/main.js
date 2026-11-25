@@ -2,7 +2,7 @@ import ArtModule from '../Art/main.js';
 
 export default class SplitArtModule extends ArtModule {
     defaultImage(name) {
-        return `extensions/cardparts/Magic/M15/Art/assets/${name}.jpg`;
+        return new URL(`../Art/assets/${name}.jpg`, import.meta.url).pathname;
     }
 
     async updateTopDefaultImage(card) {
