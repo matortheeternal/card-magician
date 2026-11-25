@@ -1,0 +1,183 @@
+module-container[module="Text"] .text {
+    font-size: 18px;
+}
+
+.split-top, .split-bottom {
+    position: absolute;
+    left: 18px;
+    width: 338px;
+    height: 236px;
+    container-type: size;
+}
+
+.split-top {
+    top: 18px;
+}
+
+.split-bottom {
+    top: 269px;
+}
+
+.inner-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100cqh;
+    height: 100cqw;
+    display: flex;
+    flex-direction: column;
+    transform: translate(-50%, -50%) rotate(-90deg);
+
+    module-container[module="ClassicSplitFrame"] {
+        z-index: 0;
+    }
+
+    .header, .type-line {
+        padding: 0;
+    }
+
+    module-container[module="SplitArt"] {
+        border: none;
+    }
+
+    module-container[render="renderPT"] {
+        right: auto;
+        bottom: auto;
+    }
+
+    module-container[module="PT"] .pt-text > span:not(.d) {
+        flex-grow: 0;
+    }
+
+    footer {
+        position: relative;
+        z-index: 2;
+    }
+
+    module-container[module="ClassicFooter"] {
+        text-align: center;
+    }
+
+    module-container[module="ClassicFooter"][render="renderLegal"] {
+        height: 12px;
+        font-size: 8px;
+    }
+}
+
+.frame-classic .inner-card {
+    .header {
+        height: 22px;
+        margin: 4px 10px 0 15px;
+    }
+
+    module-container[module="ClassicName"],
+    module-container[module="ClassicType"],
+    module-container[render="renderPT"],
+    module-container[render="renderInfo"] {
+        color: white;
+        text-shadow: 1px 1px 0 black;
+    }
+
+    module-container[module="SplitArt"] {
+        margin: 3px 20px 5px 19px;
+    }
+
+    .type-line {
+        height: 21px;
+        margin: auto 12px 0 15px;
+    }
+
+    module-container[module="Text"] {
+        height: 109px;
+        margin: 4px 19px 0 20px;
+        padding: 2px 2px 2px 0;
+    }
+
+    module-container[render="renderPT"] {
+        top: 306px;
+        left: 177px;
+        width: 47px;
+        height: 27px;
+    }
+
+    module-container[module="PT"] .pt-text {
+        align-items: center;
+        justify-content: flex-end;
+        background-image: none;
+        padding: 0;
+        font-family: 'MPlantin-Bold', serif;
+        font-size: 22.5px;
+    }
+
+    footer {
+        margin: 8px 16px 6px 17px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"] {
+        height: 16px;
+        font-family: 'MPlantin', serif;
+        font-size: 14.5px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"]:not(:empty)::before {
+        content: 'Illus. ';
+    }
+
+    module-container[module="ClassicFooter"][render="renderLegal"] {
+        margin-top: -2px;
+    }
+}
+
+.frame-shifted .inner-card {
+    .header {
+        height: 17px;
+        margin: 9px 11px 0 12px;
+    }
+
+    module-container[module="SplitArt"] {
+        margin: 5px 10px 3px;
+    }
+
+    .type-line {
+        height: 17px;
+        margin: auto 13px 0 12px;
+    }
+
+    module-container[module="Text"] {
+        height: 99px;
+        margin: 5px 11px 0;
+        padding: 0 2px;
+    }
+
+    module-container[render="renderPT"] {
+        top: 308px;
+        left: 176px;
+        width: 56px;
+        height: 29px;
+    }
+
+    module-container[module="PT"] .pt-text {
+        align-items: center;
+        background-size: 100% 100%;
+        padding: 0 4px 2px;
+        font-family: 'ModMatrix', serif;
+        font-size: 18.5px;
+    }
+
+    footer {
+        margin: 6px 0 -4px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderInfo"] {
+        width: 155px;
+        height: 16px;
+        margin-left: 28px;
+        font-size: 10.5px;
+    }
+
+    module-container[module="ClassicFooter"][render="renderLegal"] {
+        width: 175px;
+        margin: -6px 0 0 8px;
+    }
+
+}

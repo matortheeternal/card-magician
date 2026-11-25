@@ -1,0 +1,14 @@
+module-container[module="ClassicSplitFrame"] {
+    position: absolute;
+    inset: 0;
+}
+
+.split-top {
+    --pt-background: var(--top-pt-background);
+    --footer-color: var(--top-footer-color);
+}
+
+.split-bottom {
+    --pt-background: var(--bottom-pt-background);
+    --footer-color: var(--bottom-footer-color);
+}
