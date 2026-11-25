@@ -4,11 +4,6 @@ div.header {
     padding: 0;
 }
 
-module-container[module="ClassicName"] {
-    position: relative;
-    top: 1.5px;
-}
-
 div.type-line {
     height: 22px;
     margin: auto 23px 0 24px;

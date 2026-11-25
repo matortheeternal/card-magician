@@ -1,9 +1,8 @@
-module-container[module="ClassicName"] {
-    display: flex;
+module-container[module="Name"] {
     align-items: flex-end;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
+    margin-bottom: -1.5px;
+    padding: 0;
+    font-kerning: auto;
     line-height: 1.2;
     color: var(--title-color);
     text-shadow: var(--title-shadow);

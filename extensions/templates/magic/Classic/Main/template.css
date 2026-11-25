@@ -4,8 +4,8 @@
         margin: 15px 17px 0;
     }
 
-    module-container[module="ClassicName"] {
-        top: 0;
+    module-container[module="Name"] {
+        margin-bottom: 0;
     }
 
     module-container[module="Art"] {
