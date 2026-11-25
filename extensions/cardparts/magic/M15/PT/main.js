@@ -53,8 +53,4 @@ export default class PTModule extends CardMagicianModule {
             `<div class="notch-pt-text">${this.escapeHTML(card.notchPtText)}</div>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

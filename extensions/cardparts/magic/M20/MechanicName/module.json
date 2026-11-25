@@ -3,8 +3,9 @@
   "gameId": "magic",
   "description": "Defines the card name field and its corresponding display for M20 mechanic card templates.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
-    "magic/M15/Name": "^0.1"
-  }
+    "magic/M15/Name": "^0.2"
+  },
+  "inheritStylesheets": false
 }

@@ -42,8 +42,4 @@ export default class CostModule extends CardMagicianModule {
     render() {
         return this.manaCostHTML;
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

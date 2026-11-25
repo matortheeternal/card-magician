@@ -40,6 +40,6 @@ export default class MechanicTextModule extends TextModule {
     }
 
     async styles() {
-        return [await this.loadFile('style.css')];
+        return [];
     }
 }

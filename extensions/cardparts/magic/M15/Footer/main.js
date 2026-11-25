@@ -95,8 +95,4 @@ export default class FooterModule extends CardMagicianModule {
     renderLegal(card) {
         return card.legalText || activeProject.legalText;
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

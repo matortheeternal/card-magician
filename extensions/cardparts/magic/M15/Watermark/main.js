@@ -58,8 +58,4 @@ export default class WatermarkModule extends CardMagicianModule {
         if (!this.watermarkImageUrl) return;
         return `<img src="${this.watermarkImageUrl}" />`;
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

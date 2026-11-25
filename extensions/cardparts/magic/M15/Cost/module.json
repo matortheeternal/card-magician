@@ -4,7 +4,7 @@
   "gameVersion": "^0.2.0",
   "description": "Defines the card cost field and its corresponding display for Magic 2015 templates.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "dependencies": {
     "magic/M15/Color": "^0.1"
   }

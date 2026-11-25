@@ -4,5 +4,10 @@
   "gameVersion": "^0.2.0",
   "description": "Defines the card rules text and flavor text fields and their corresponding display.",
   "author": "Mator",
-  "version": "0.2.0"
+  "version": "0.3.0",
+  "stylesheets": [
+    "style.css",
+    "levelStyle.css",
+    "stationStyle.css"
+  ]
 }

@@ -79,8 +79,4 @@ export default class ArtModule extends CardMagicianModule {
             </crop-image>`
         ) : `<img src="${card.defaultImageUrl}" />`;
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

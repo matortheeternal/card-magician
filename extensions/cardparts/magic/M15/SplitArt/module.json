@@ -3,8 +3,9 @@
   "gameId": "magic",
   "description": "Renders card art for M15 split cards.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
-    "magic/M15/Art": "^0.1"
-  }
+    "magic/M15/Art": "^0.2"
+  },
+  "inheritStylesheets": false
 }

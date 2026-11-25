@@ -4,5 +4,5 @@
   "gameVersion": "^0.2.0",
   "description": "Defines the card supertype and subtype fields and the corresponding display for M15 Magic: The Gathering Card templates.",
   "author": "Mator",
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

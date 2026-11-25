@@ -105,10 +105,6 @@ export default class SagaText extends TextModule {
     }
 
     async styles() {
-        return [
-            this.chapterBarStyle,
-            this.chapterIconStyles,
-            await this.loadFile('style.css')
-        ];
+        return [this.chapterBarStyle, this.chapterIconStyles];
     }
 }

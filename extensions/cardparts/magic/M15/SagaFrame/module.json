@@ -3,8 +3,9 @@
   "gameId": "magic",
   "description": "Defines the frames for M15 saga cards.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
-    "magic/M15/Frame": "^0.1"
-  }
+    "magic/M15/Frame": "^0.2"
+  },
+  "inheritStylesheets": false
 }

@@ -4,8 +4,9 @@
   "gameVersion": "^0.2.0",
   "description": "Defines structured card rules text used by Sagas.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "dependencies": {
-    "magic/M15/Text": "^0.2.0"
-  }
+    "magic/M15/Text": "^0.3.0"
+  },
+  "inheritStylesheets": false
 }

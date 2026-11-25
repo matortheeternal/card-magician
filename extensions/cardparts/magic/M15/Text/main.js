@@ -165,12 +165,6 @@ export default class TextModule extends CardMagicianModule {
     }
 
     async styles() {
-        return [
-            await this.loadFile('style.css'),
-            await this.loadFile('levelStyle.css'),
-            await this.loadFile('stationStyle.css'),
-            this.levelArrowStyles,
-            this.levelCircleStyles,
-        ];
+        return [this.levelArrowStyles, this.levelCircleStyles];
     }
 }

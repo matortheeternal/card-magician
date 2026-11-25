@@ -4,8 +4,9 @@
   "gameVersion": "^0.2.0",
   "description": "Displays the card type line in the font used by classic frame cards.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
-    "magic/M15/Type": "^0.2.0"
-  }
+    "magic/M15/Type": "^0.3.0"
+  },
+  "inheritStylesheets": false
 }

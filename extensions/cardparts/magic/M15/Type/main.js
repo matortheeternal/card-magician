@@ -27,8 +27,4 @@ export default class TypeModule extends CardMagicianModule {
             `<auto-fit-line>${card.superType}</auto-fit-line>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

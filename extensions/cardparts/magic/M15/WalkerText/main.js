@@ -30,8 +30,6 @@ export default class WalkerText extends TextModule {
     }
 
     async styles() {
-        return [
-            await this.loadFile('style.css'),
-        ];
+        return [];
     }
 }

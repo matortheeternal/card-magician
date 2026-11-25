@@ -3,8 +3,9 @@
   "gameId": "magic",
   "description": "Displays the illustrator and legal text lines of classic frame cards.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
-    "magic/M15/Footer": "^0.1"
-  }
+    "magic/M15/Footer": "^0.2"
+  },
+  "inheritStylesheets": false
 }

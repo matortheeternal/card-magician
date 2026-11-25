@@ -81,8 +81,4 @@ export default class FrameModule extends CardMagicianModule {
         )).join('\n');
     }
 
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
-
 }

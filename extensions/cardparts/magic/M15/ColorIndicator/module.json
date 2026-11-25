@@ -3,7 +3,7 @@
   "gameId": "magic",
   "description": "Defines the card color identity field and its corresponding display for Magic 2015 templates.",
   "author": "Mator",
-  "version": "0.1",
+  "version": "0.2",
   "dependencies": {
     "magic/M15/Color": "^0.1"
   }

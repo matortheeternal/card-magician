@@ -43,8 +43,4 @@ export default class FlagModule extends CardMagicianModule {
             </div>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

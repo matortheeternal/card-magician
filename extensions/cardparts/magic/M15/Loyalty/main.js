@@ -18,8 +18,4 @@ export default class LoyaltyModule extends CardMagicianModule {
             </div>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

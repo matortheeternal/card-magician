@@ -52,8 +52,4 @@ export default class FaceSymbolModule extends CardMagicianModule {
             `<img src="${card.resolvedFaceSymbol.imageUrl}" class="${faceSymbolClass}"/>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

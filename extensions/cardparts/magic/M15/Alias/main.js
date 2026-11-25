@@ -19,10 +19,6 @@ export default class AliasModule extends CardMagicianModule {
             default: null
         }];
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }
 
 

@@ -23,8 +23,4 @@ export default class NameModule extends CardMagicianModule {
             `<auto-fit-line>${this.escapeHTML(card.name)}</auto-fit-line>`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

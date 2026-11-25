@@ -29,8 +29,4 @@ export default class ColorIndicatorModule extends CardMagicianModule {
             `<img src="${this.colorIdentityImage}">`
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

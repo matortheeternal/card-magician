@@ -69,8 +69,4 @@ export default class RarityModule extends CardMagicianModule {
             activeProject.symbol, this.getSymbolPresetId(card)
         );
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }

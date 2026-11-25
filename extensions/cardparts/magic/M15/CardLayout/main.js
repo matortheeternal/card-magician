@@ -8,8 +8,4 @@ export default class CardLayoutModule extends CardMagicianModule {
         await this.loadFont('Relay', 'relay.ttf');
         await this.loadFont('MPlantin', 'mplantin.ttf');
     }
-
-    async styles() {
-        return [await this.loadFile('style.css')];
-    }
 }
