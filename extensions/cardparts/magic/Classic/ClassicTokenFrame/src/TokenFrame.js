@@ -58,13 +58,4 @@ export default class TokenFrame extends GradientCardFrame.with(
     get nameFontSizes() {
         return { matrix: 22.5, magicMedieval: 21.5, mplantin: 22.5 };
     }
-
-    get typeFont() {
-        return { family: 'MPlantin', size: 16 };
-    }
-
-    /* --- FOOTER --- */
-    get lightFooterKeys() {
-        return ['u', 'b', 'r', 'g', 'm', 'a', 'c', 'l'];
-    }
 }

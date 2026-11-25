@@ -83,22 +83,4 @@ export default class ClassicFrame extends GradientCardFrame.with(
         if (this.isBorderless) return null;
         return super.resolveBorder(card);
     }
-
-    /* --- TYPOGRAPHY --- */
-    get defaultNameFont() {
-        return 'magicMedieval';
-    }
-
-    get nameFontSizes() {
-        return { matrix: 22.5, magicMedieval: 21.5, mplantin: 20 };
-    }
-
-    get typeFont() {
-        return { family: 'MPlantin', size: 16 };
-    }
-
-    /* --- FOOTER --- */
-    get lightFooterKeys() {
-        return ['u', 'b', 'r', 'g', 'm', 'a', 'c', 'l'];
-    }
 }

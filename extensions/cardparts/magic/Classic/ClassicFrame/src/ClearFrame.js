@@ -63,19 +63,6 @@ export default class ClearFrame extends ClassicCardFrame.with(
         return super.resolveBorder(card);
     }
 
-    /* --- TYPOGRAPHY --- */
-    get defaultNameFont() {
-        return 'magicMedieval';
-    }
-
-    get nameFontSizes() {
-        return { matrix: 22.5, magicMedieval: 21.5, mplantin: 20 };
-    }
-
-    get typeFont() {
-        return { family: 'MPlantin', size: 16 };
-    }
-
     /* --- FOOTER --- */
     get lightFooterKeys() {
         return ['w', 'u', 'b', 'r', 'g', 'm', 'a', 'c', 'l'];
