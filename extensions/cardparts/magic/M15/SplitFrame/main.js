@@ -57,5 +57,4 @@ export default class SplitFrameModule extends FrameModule {
             `<div class="bg ${bg.id}" style="${this.objectToStyle(bg.style)}"></div>`
         )).join('\n');
     }
-
 }

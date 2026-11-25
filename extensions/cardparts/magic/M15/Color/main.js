@@ -53,5 +53,4 @@ export default class ColorModule extends CardMagicianModule {
         watch(card, 'colorOverride', () => this.updateColorIdentity(card));
         watch(card, 'colorIdentity', () => this.updateCardColors(card));
     }
-
 }

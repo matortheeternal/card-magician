@@ -11,5 +11,4 @@ export default class MapFrameModule extends FrameModule {
     bind(card, watch) {
         watch(card, ['colorIdentity', 'superType'], () => this.updateFrame(card));
     }
-
 }

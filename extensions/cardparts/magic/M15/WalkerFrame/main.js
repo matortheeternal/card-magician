@@ -43,5 +43,4 @@ export default class WalkerFrameModule extends FrameModule {
             'artSize', 'meldStyle', 'otherFrameOptions', 'faceSymbol', 'abilityRects'
         ], () => this.updateFrame(card));
     }
-
 }

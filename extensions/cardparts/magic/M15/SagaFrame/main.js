@@ -30,5 +30,4 @@ export default class SagaFrameModule extends FrameModule {
         await super.init(card);
         card.frames = [SagaFrame];
     }
-
 }

@@ -46,5 +46,4 @@ export default class TokenFrameModule extends FrameModule {
             ...super.cardClasses
         ];
     }
-
 }

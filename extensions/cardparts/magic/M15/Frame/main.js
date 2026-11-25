@@ -80,5 +80,4 @@ export default class FrameModule extends CardMagicianModule {
             ></div>`
         )).join('\n');
     }
-
 }
