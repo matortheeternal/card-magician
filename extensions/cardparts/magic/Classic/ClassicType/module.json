@@ -7,6 +7,5 @@
   "version": "0.2",
   "dependencies": {
     "magic/M15/Type": "^0.3.0"
-  },
-  "inheritStylesheets": false
+  }
 }

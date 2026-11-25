@@ -70,7 +70,7 @@
         margin: auto 12px 0 15px;
     }
 
-    module-container[module="ClassicType"] {
+    module-container[module="Type"] {
         padding-top: 0;
     }
 
@@ -140,7 +140,7 @@
         margin-bottom: 0;
     }
 
-    module-container[module="ClassicType"] {
+    module-container[module="Type"] {
         padding: 0 0 6px;
     }
 

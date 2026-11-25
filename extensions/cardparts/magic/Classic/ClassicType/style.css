@@ -1,9 +1,7 @@
-module-container[module="ClassicType"] {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
+module-container[module="Type"] {
+    height: auto;
+    padding-top: 3px;
+    font-kerning: auto;
     line-height: 1.2;
     color: var(--title-color);
     text-shadow: var(--title-shadow);

@@ -10,10 +10,6 @@ div.type-line {
     padding: 0;
 }
 
-module-container[module="ClassicType"] {
-    padding-top: 3px;
-}
-
 div.text-box {
     position: relative;
     height: 143px;

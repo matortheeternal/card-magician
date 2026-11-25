@@ -23,7 +23,7 @@
         margin: auto 40px 0 43px;
     }
 
-    module-container[module="ClassicType"] {
+    module-container[module="Type"] {
         padding-top: 0;
     }
 
