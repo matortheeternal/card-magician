@@ -16,23 +16,8 @@ div.text-box {
     margin: 6px 28px 0;
 }
 
-div.text-box > module-container[module="Text"] {
-    height: 100%;
-    margin: 0;
-}
-
-module-container[module="Text"] .text,
 .text-column module-container[module="SagaText"] auto-fit-text {
     font-size: 18px;
-}
-
-module-container[module="Text"] .flavor-bar {
-    visibility: hidden;
-}
-
-module-container[render="renderPT"] {
-    color: var(--title-color);
-    text-shadow: var(--title-shadow);
 }
 
 footer {

@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicText",
+  "gameId": "magic",
+  "description": "Displays the rules and flavor text in the classic frame text box.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Text": "^0.3.0"
+  }
+}

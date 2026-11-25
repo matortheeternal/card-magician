@@ -28,30 +28,6 @@
         z-index: 0;
     }
 
-    module-container[module="Art"] {
-        border: none;
-    }
-
-    module-container[module="Cost"] {
-        align-items: center;
-        padding: 0 2px;
-    }
-
-    module-container[render="renderPT"] {
-        right: auto;
-        bottom: auto;
-    }
-
-    module-container[module="PT"] .pt-text > span:not(.d) {
-        flex-grow: 0;
-    }
-
-    module-container[module="Footer"][render="renderLegal"] {
-        font-size: 8px;
-    }
-}
-
-.frame-classic .inner-card {
     .header {
         height: 22px;
         margin: 4px 10px 0 15px;
@@ -61,8 +37,14 @@
         margin-bottom: -3px;
     }
 
+    module-container[module="Cost"] {
+        align-items: center;
+        padding: 0 2px;
+    }
+
     module-container[module="Art"] {
         margin: 3px 20px 5px 19px;
+        border: none;
     }
 
     .type-line {
@@ -83,17 +65,6 @@
     module-container[render="renderPT"] {
         top: 306px;
         left: 177px;
-        width: 47px;
-        height: 27px;
-    }
-
-    module-container[module="PT"] .pt-text {
-        align-items: center;
-        justify-content: flex-end;
-        background-image: none;
-        padding: 0;
-        font-family: 'MPlantin-Bold', serif;
-        font-size: 22.5px;
     }
 
     footer {
@@ -106,6 +77,7 @@
 
     module-container[module="Footer"][render="renderLegal"] {
         margin-top: -2px;
+        font-size: 8px;
     }
 }
 
@@ -159,6 +131,8 @@
 
     module-container[module="PT"] .pt-text {
         align-items: center;
+        justify-content: center;
+        background-image: var(--pt-background);
         background-size: 100% 100%;
         padding: 0 4px 2px;
         font-family: 'ModMatrix', serif;

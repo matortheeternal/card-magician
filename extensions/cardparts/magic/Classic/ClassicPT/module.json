@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicPT",
+  "gameId": "magic",
+  "description": "Displays power and toughness in the classic frame style.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/PT": "^0.2"
+  }
+}

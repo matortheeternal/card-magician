@@ -1,0 +1,13 @@
+module-container[module="Text"] {
+    height: 100%;
+    margin: 0;
+    padding: 2px 4px 2px 0;
+}
+
+.text {
+    font-size: 18px;
+
+    .flavor-bar {
+        visibility: hidden;
+    }
+}

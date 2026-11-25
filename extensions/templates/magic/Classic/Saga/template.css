@@ -16,7 +16,6 @@
     module-container[module="Art"] {
         flex: 0 0 130px;
         margin: 1px 0 0 16px;
-        border: none;
     }
 
     footer {
@@ -35,27 +34,5 @@
         background-image: var(--chapter-bar);
         background-position: 0 0;
         background-size: 100% 100%;
-    }
-
-    module-container[render="renderPT"] {
-        top: 467px;
-        right: auto;
-        bottom: auto;
-        left: 295px;
-        width: 47px;
-        height: 27px;
-    }
-
-    module-container[module="PT"] .pt-text {
-        align-items: center;
-        justify-content: flex-end;
-        background-image: none;
-        padding: 0;
-        font-family: 'MPlantin-Bold', serif;
-        font-size: 22.5px;
-    }
-
-    module-container[module="PT"] .pt-text > span:not(.d) {
-        flex-grow: 0;
     }
 }

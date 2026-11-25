@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicArt",
+  "gameId": "magic",
+  "description": "Displays the card art in the classic frame art window.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Art": "^0.2"
+  }
+}

@@ -12,10 +12,10 @@
     "magic/Classic/ClassicTokenFrame",
     "magic/M15/Color",
     "magic/Classic/ClassicName",
-    "magic/M15/Art",
+    "magic/Classic/ClassicArt",
     "magic/Classic/ClassicType",
-    "magic/M15/Text",
-    "magic/M15/PT",
+    "magic/Classic/ClassicText",
+    "magic/Classic/ClassicPT",
     "magic/M15/Rarity",
     "magic/Classic/ClassicFooter",
     "magic/M15/AutoNumber"
