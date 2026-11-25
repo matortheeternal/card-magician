@@ -7,9 +7,8 @@ const report = createReporter({
 });
 
 function getModuleContainers(card, module) {
-    const selector = `module-container[module="${module.name}"]`;
-    const root = card.isSubcard ? card.parent().dom.root : card.dom.root;
-    const containers = Array.from(root.querySelectorAll(selector));
+    const selector = `module-container[module="${module.containerName}"]`;
+    const containers = Array.from(card.renderRoot.querySelectorAll(selector));
     return containers.map(element => ({
         renderKey: element.getAttribute('render') || 'render',
         subcardKey: element.getAttribute('subcard'),
@@ -39,7 +38,7 @@ function renderMatches(task, options) {
 
 function renderTask({ card, module, options }) {
     const renderKey = options?.render || 'render';
-    const subcardKey = card.isSubcard ? card.id : null;
+    const subcardKey = card.subcardKey;
     try {
         renderModule(card, module, renderKey, subcardKey);
     } catch (err) {

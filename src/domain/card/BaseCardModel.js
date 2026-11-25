@@ -1,5 +1,6 @@
 import { getModuleClass } from '../template/moduleRegistry.js';
 import RenderScheduler from '../template/renderScheduler.js';
+import { resolveContainerNames } from '../template/moduleContainers.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
 const report = createReporter({ unit: 'BaseCardModel', label: 'Card' });
@@ -61,7 +62,16 @@ export default class BaseCardModel {
         this.modules.push(...modules.filter(Boolean));
     }
 
+    get renderRoot() {
+        return this.dom.root;
+    }
+
+    get subcardKey() {
+        return null;
+    }
+
     setupRenderPipeline() {
+        resolveContainerNames(this);
         this.modules.forEach(module => {
             module.requestRender = options => {
                 RenderScheduler.requestRender(this, module, options);

@@ -28,6 +28,33 @@ export default class CardMagicianModule {
         this.directory = directory ?? getExtensionDirectory()
             .child(`cardparts/${modulePath}`);
         this.name = modulePath.split('/').pop();
+        this.containerName = this.name;
+    }
+
+    /**
+     * Metadata from the module's module.json, assigned when the module is
+     * registered for the active game.
+     *
+     * @type {object}
+     */
+    static moduleMetadata;
+
+    /**
+     * Returns the module container names this module can render into: its own
+     * name first, followed by the names of the modules it extends. A template
+     * can use an extended module's name to let this module render there with
+     * that module's styling.
+     *
+     * @returns {Set<string>}
+     */
+    static get containerNames() {
+        const names = new Set();
+        let Module = this;
+        while (Module !== CardMagicianModule) {
+            names.add(Module.moduleMetadata.id.split('/').pop());
+            Module = Object.getPrototypeOf(Module);
+        }
+        return names;
     }
 
     dispose() {

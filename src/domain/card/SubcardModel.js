@@ -7,4 +7,12 @@ export default class SubcardModel extends BaseCardModel {
         super(id);
         this.parent = () => parent;
     }
+
+    get renderRoot() {
+        return this.parent().dom.root;
+    }
+
+    get subcardKey() {
+        return this.id;
+    }
 }
