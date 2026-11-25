@@ -1,4 +1,5 @@
 module-container[module="ClassicFooter"] {
+    display: block;
     color: var(--footer-color);
     white-space: nowrap;
     overflow: hidden;
