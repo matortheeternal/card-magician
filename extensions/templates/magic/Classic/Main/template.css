@@ -84,7 +84,7 @@
 
     module-container[module="Text"]:has(.creature-level) {
         width: 321px;
-        padding: 0;
+        padding: 4px 0 0;
 
         .text {
             padding: 0;
@@ -97,9 +97,6 @@
 
     .creature-level {
         grid-template-columns: 62px 1fr 0;
-        flex: 1 1 0;
-        height: auto;
-        min-height: 0;
         background-image: none;
     }
 
@@ -108,8 +105,8 @@
     }
 
     .creature-level .level-stats {
-        top: 5px;
-        right: 0;
+        top: 3px;
+        bottom: auto;
 
         .pt-text {
             width: 81px;
