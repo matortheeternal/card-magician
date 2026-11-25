@@ -21,7 +21,7 @@ export default class CardFrame {
             );
         }
 
-        Mixed.prototype.mixins = mixins;
+        Mixed.prototype.mixins = [...(this.prototype.mixins ?? []), ...mixins];
         return Mixed;
     }
 
