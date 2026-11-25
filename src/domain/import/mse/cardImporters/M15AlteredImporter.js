@@ -71,12 +71,18 @@ export default class M15AlteredImporter extends BaseCardImporter {
         return centerText || 'never';
     }
 
+    get commonSymbolStyle() {
+        if (this.stylingData?.inverted_common_symbol) return 'inverted';
+        return 'standard';
+    }
+
     async importOptions(cmCardFace) {
         cmCardFace.frame = this.frame;
         cmCardFace.artSize = this.artSize;
         cmCardFace.chopTop = this.chopTop;
         cmCardFace.chopBottom = this.chopBottom;
         cmCardFace.centerText = this.centerText;
+        cmCardFace.commonSymbolStyle = this.commonSymbolStyle;
     }
 
     async import() {
