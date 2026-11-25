@@ -1,3 +1,8 @@
 module-container[module="Text"] .flavor-bar {
     visibility: hidden;
 }
+
+module-container[render="renderPT"] {
+    color: var(--title-color);
+    text-shadow: var(--title-shadow);
+}

@@ -76,14 +76,6 @@ module-container[module="Text"] .text {
         top: 3px;
     }
 
-    module-container[module="ClassicName"],
-    module-container[module="ClassicType"],
-    module-container[render="renderPT"],
-    module-container[render="renderInfo"] {
-        color: white;
-        text-shadow: 1px 1px 0 black;
-    }
-
     module-container[module="SplitArt"] {
         margin: 3px 20px 5px 19px;
     }

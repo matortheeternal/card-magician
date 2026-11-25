@@ -8,6 +8,8 @@ module-container[module="ClassicFooter"] {
 }
 
 module-container[module="ClassicFooter"][render="renderInfo"] {
+    color: var(--title-color, var(--footer-color));
+    text-shadow: var(--title-shadow);
     font-size: 13.5px;
 }
 

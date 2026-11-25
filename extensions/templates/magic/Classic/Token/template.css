@@ -14,14 +14,6 @@
         align-items: center;
     }
 
-    module-container[module="ClassicName"],
-    module-container[module="ClassicType"],
-    module-container[render="renderPT"],
-    module-container[render="renderInfo"] {
-        color: white;
-        text-shadow: 1px 1px 0 black;
-    }
-
     module-container[module="Art"] {
         margin: 10px 30px 19px 29px;
         border: none;

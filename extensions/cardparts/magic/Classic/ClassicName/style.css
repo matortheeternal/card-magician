@@ -5,4 +5,6 @@ module-container[module="ClassicName"] {
     min-width: 0;
     overflow: hidden;
     line-height: 1.2;
+    color: var(--title-color);
+    text-shadow: var(--title-shadow);
 }

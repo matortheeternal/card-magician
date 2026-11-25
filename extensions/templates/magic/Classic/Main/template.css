@@ -163,14 +163,6 @@
         top: 1.5px;
     }
 
-    module-container[module="ClassicName"],
-    module-container[module="ClassicType"],
-    module-container[render="renderPT"],
-    module-container[render="renderInfo"] {
-        color: white;
-        text-shadow: 1px 1px 0 black;
-    }
-
     module-container[module="Art"] {
         margin: 4px 29px 6px 30px;
         border: none;

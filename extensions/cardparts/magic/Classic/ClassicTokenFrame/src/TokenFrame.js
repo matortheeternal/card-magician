@@ -2,6 +2,7 @@ import GradientCardFrame from '../../ClassicFrame/src/GradientCardFrame.js';
 import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from '../../ClassicFrame/src/mixins/FooterColor.js';
+import TitleColor from '../../ClassicFrame/src/mixins/TitleColor.js';
 
 const ART_SIZES = {
     standard: { width: 286, height: 270 },
@@ -11,6 +12,7 @@ export default class TokenFrame extends GradientCardFrame.with(
     Frame,
     Border,
     FooterColor,
+    TitleColor,
 ) {
     static matches() {
         return true;

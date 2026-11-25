@@ -2,6 +2,7 @@ import ClassicCardFrame from '../../ClassicFrame/src/ClassicCardFrame.js';
 import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from '../../ClassicFrame/src/mixins/FooterColor.js';
+import TitleColor from '../../ClassicFrame/src/mixins/TitleColor.js';
 import ChapterBar from './mixins/ChapterBar.js';
 
 const ART_SIZES = {
@@ -12,6 +13,7 @@ export default class SagaFrame extends ClassicCardFrame.with(
     Frame,
     Border,
     FooterColor,
+    TitleColor,
     ChapterBar,
 ) {
     static matches() {

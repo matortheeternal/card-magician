@@ -6,9 +6,13 @@ module-container[module="ClassicSplitFrame"] {
 .split-top {
     --pt-background: var(--top-pt-background);
     --footer-color: var(--top-footer-color);
+    --title-color: var(--top-title-color);
+    --title-shadow: var(--top-title-shadow);
 }
 
 .split-bottom {
     --pt-background: var(--bottom-pt-background);
     --footer-color: var(--bottom-footer-color);
+    --title-color: var(--bottom-title-color);
+    --title-shadow: var(--bottom-title-shadow);
 }

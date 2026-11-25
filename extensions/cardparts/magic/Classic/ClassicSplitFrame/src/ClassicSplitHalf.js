@@ -1,10 +1,12 @@
 import GradientCardFrame from '../../ClassicFrame/src/GradientCardFrame.js';
 import FooterColor from '../../ClassicFrame/src/mixins/FooterColor.js';
+import TitleColor from '../../ClassicFrame/src/mixins/TitleColor.js';
 import HalfFrame from './mixins/HalfFrame.js';
 
 export default class ClassicSplitHalf extends GradientCardFrame.with(
     HalfFrame,
     FooterColor,
+    TitleColor,
 ) {
     get frameId() {
         return 'classic';

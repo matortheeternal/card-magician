@@ -14,14 +14,6 @@
         top: 1.5px;
     }
 
-    module-container[module="ClassicName"],
-    module-container[module="ClassicType"],
-    module-container[render="renderPT"],
-    module-container[render="renderInfo"] {
-        color: white;
-        text-shadow: 1px 1px 0 black;
-    }
-
     .saga-columns {
         display: flex;
         flex: 1;
