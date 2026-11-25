@@ -102,6 +102,10 @@ export default class ClassicFrame extends ClassicCardFrame.with(
         return 'magicMedieval';
     }
 
+    get nameFontSizes() {
+        return { matrix: 22.5, magicMedieval: 22.5 };
+    }
+
     get typeFont() {
         return { family: 'MPlantin', size: 16 };
     }

@@ -66,6 +66,10 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
         return 'matrix';
     }
 
+    get nameFontSizes() {
+        return { matrix: 22.5, magicMedieval: 20 };
+    }
+
     get typeFont() {
         return { family: 'Matrix', size: 19 };
     }
