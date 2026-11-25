@@ -1,5 +1,10 @@
 import ClassicImporter from './cardImporters/ClassicImporter.js';
 import ClassicShiftedImporter from './cardImporters/ClassicShiftedImporter.js';
+import ClassicArtbgImporter from './cardImporters/ClassicArtbgImporter.js';
+import ClassicShiftedArtbgImporter from './cardImporters/ClassicShiftedArtbgImporter.js';
+import ClassicClearImporter from './cardImporters/ClassicClearImporter.js';
+import ClassicTokenImporter from './cardImporters/ClassicTokenImporter.js';
+import ClassicSagaImporter from './cardImporters/ClassicSagaImporter.js';
 import M15MainframeTokensImporter from './cardImporters/M15MainframeTokensImporter.js';
 import M15MainframeDFCImporter from './cardImporters/M15MainframeDFCImporter.js';
 import M15AlteredImporter from './cardImporters/M15AlteredImporter.js';
@@ -13,6 +18,11 @@ import M20EmblemImporter from './cardImporters/M20EmblemImporter.js';
 const cardImporters = [
     ClassicImporter,
     ClassicShiftedImporter,
+    ClassicArtbgImporter,
+    ClassicShiftedArtbgImporter,
+    ClassicClearImporter,
+    ClassicTokenImporter,
+    ClassicSagaImporter,
     M15MainframeTokensImporter,
     M15EmblemImporter,
     M20EmblemImporter,
