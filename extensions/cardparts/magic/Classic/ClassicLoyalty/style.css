@@ -1,16 +1,15 @@
-module-container[module="ClassicLoyalty"] {
-    position: absolute;
-    z-index: 3;
+module-container[module="Loyalty"] {
+    top: 445px;
+    right: auto;
+    bottom: auto;
+    left: 292px;
+    width: 60px;
+    height: 38px;
 }
 
 .loyalty-text {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    height: 100%;
-    background-repeat: no-repeat;
     background-size: 100% 100%;
     font-family: 'MPlantin', serif;
     font-size: 21px;
-    color: white;
 }

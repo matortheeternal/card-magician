@@ -37,11 +37,4 @@
         margin: 0 3px 0 1px;
         font-size: 20px;
     }
-
-    module-container[module="ClassicLoyalty"] {
-        top: 445px;
-        left: 292px;
-        width: 60px;
-        height: 38px;
-    }
 }
