@@ -1,3 +1,7 @@
+.text-box .text {
+    font-size: 18px;
+}
+
 .frame-shifted {
     .header {
         position: absolute;
