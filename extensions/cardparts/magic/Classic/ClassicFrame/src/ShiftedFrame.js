@@ -61,6 +61,15 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
         });
     }
 
+    /* --- TYPOGRAPHY --- */
+    get defaultNameFont() {
+        return 'matrix';
+    }
+
+    get typeFont() {
+        return { family: 'Matrix', size: 19 };
+    }
+
     /* --- FOOTER --- */
     get lightFooterKeys() {
         return ['b', 'l'];

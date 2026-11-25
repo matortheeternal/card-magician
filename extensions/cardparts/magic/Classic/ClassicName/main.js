@@ -1,4 +1,5 @@
 import NameModule from '../../M15/Name/main.js';
+import proxyAutoOptions from '../../M15/Frame/src/proxyAutoOptions.js';
 
 const L = localize('module-classic-name');
 
@@ -7,6 +8,10 @@ const NAME_FONTS = {
     magicMedieval:  { family: 'MagicMedieval', size: 20, drop: 1 },
 };
 
+function computeNameFont(card) {
+    return card.activeFrame?.().defaultNameFont || 'matrix';
+}
+
 export default class ClassicNameModule extends NameModule {
     static createOptions() {
         return [{
@@ -14,6 +19,7 @@ export default class ClassicNameModule extends NameModule {
             type: 'select',
             label: L`Name Font`,
             options: [
+                { id: 'auto',           name: L`Auto`, compute: computeNameFont },
                 { id: 'matrix',         name: L`Matrix` },
                 { id: 'magicMedieval',  name: L`Magic Medieval` },
             ]
@@ -27,11 +33,12 @@ export default class ClassicNameModule extends NameModule {
 
     bind(card, watch) {
         super.bind(card, watch);
-        watch(card, 'nameFont', () => this.requestRender());
+        watch(card, ['nameFont', 'activeFrame'], () => this.requestRender());
     }
 
     render(card) {
-        const font = NAME_FONTS[card.nameFont];
+        const { nameFont } = proxyAutoOptions(card, this.options);
+        const font = NAME_FONTS[nameFont];
         const style = [
             `font-family: '${font.family}', serif`,
             `margin-bottom: -${font.drop}px`
