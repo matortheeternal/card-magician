@@ -62,14 +62,10 @@ export default [{
     ]
 }, {
     id: 'frameOpacity',
-    type: 'select',
+    type: 'number',
     label: L`Frame Opacity`,
-    default: '75',
-    options: [
-        { id: '100',        name: L`100%` },
-        { id: '90',         name: L`90%` },
-        { id: '75',         name: L`75%` },
-        { id: '50',         name: L`50%` },
-        { id: '25',         name: L`25%` },
-    ]
+    min: 0,
+    max: 100,
+    step: 5,
+    default: 75
 }];

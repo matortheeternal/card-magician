@@ -4,6 +4,8 @@ import ArtLiner from './mixins/ArtLiner.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
 
+const DEFAULT_FRAME_OPACITY = 75;
+
 const ART_SIZES = {
     standard: { width: 337, height: 485 },
     background: { width: 375, height: 523 },
@@ -32,8 +34,14 @@ export default class ClearFrame extends ClassicCardFrame.with(
         return 'clear';
     }
 
+    get frameOpacityPercent() {
+        const { frameOpacity } = this.card;
+        if ([undefined, ''].includes(frameOpacity)) return DEFAULT_FRAME_OPACITY;
+        return Math.min(Math.max(Number(frameOpacity), 0), 100);
+    }
+
     get frameOpacity() {
-        return Number(this.card.frameOpacity) / 100;
+        return this.frameOpacityPercent / 100;
     }
 
     coloredBlend(folder) {
