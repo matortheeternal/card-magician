@@ -16,10 +16,6 @@ div.text-box {
     margin: 6px 28px 0;
 }
 
-.text-column module-container[module="SagaText"] auto-fit-text {
-    font-size: 18px;
-}
-
 footer {
     position: relative;
     z-index: 2;

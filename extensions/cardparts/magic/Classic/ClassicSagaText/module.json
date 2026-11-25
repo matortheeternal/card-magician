@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicSagaText",
+  "gameId": "magic",
+  "description": "Displays saga chapters in the classic frame text column.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/SagaText": "^0.3.0"
+  }
+}
