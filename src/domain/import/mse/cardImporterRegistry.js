@@ -1,3 +1,4 @@
+import ClassicShiftedImporter from './cardImporters/ClassicShiftedImporter.js';
 import M15MainframeTokensImporter from './cardImporters/M15MainframeTokensImporter.js';
 import M15MainframeDFCImporter from './cardImporters/M15MainframeDFCImporter.js';
 import M15AlteredImporter from './cardImporters/M15AlteredImporter.js';
@@ -9,6 +10,7 @@ import M15EmblemImporter from './cardImporters/M15EmblemImporter.js';
 import M20EmblemImporter from './cardImporters/M20EmblemImporter.js';
 
 const cardImporters = [
+    ClassicShiftedImporter,
     M15MainframeTokensImporter,
     M15EmblemImporter,
     M20EmblemImporter,
