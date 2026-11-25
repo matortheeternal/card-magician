@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicTokenFrame",
+  "gameId": "magic",
+  "description": "Defines the classic token card frame backgrounds.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/Classic/ClassicFrame": "^0.1"
+  }
+}
