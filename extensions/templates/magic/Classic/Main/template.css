@@ -87,6 +87,74 @@
         height: 12px;
         margin-top: -3px;
     }
+
+    module-container[module="Text"]:has(.creature-level) {
+        width: 321px;
+        padding: 0;
+
+        .text {
+            padding: 0;
+        }
+    }
+
+    &:has(.creature-level) module-container[render="renderPT"] {
+        top: 333px;
+    }
+
+    .level-start {
+        flex: 1 1 0;
+        min-height: 0;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+        padding: 2px 75px 2px 6px;
+    }
+
+    .creature-level {
+        grid-template-columns: 62px 1fr 0;
+        flex: 1 1 0;
+        height: auto;
+        min-height: 0;
+        background-image: none;
+    }
+
+    .creature-level .level-arrow {
+        padding: 0 18px 0 0;
+        background-position: 2px center;
+        background-size: 63px 44px;
+        font-family: 'ModMatrix', serif;
+        color: black;
+        text-shadow: 0 0 2px white;
+        line-height: 1;
+
+        > div:first-of-type {
+            font-family: 'MPlantin', serif;
+            font-size: 7.5px;
+        }
+
+        > div:last-of-type {
+            font-size: 22.5px;
+        }
+    }
+
+    .creature-level .level-content {
+        padding-right: 75px;
+    }
+
+    .creature-level .level-stats {
+        top: 5px;
+        right: 0;
+
+        .pt-text {
+            align-items: center;
+            width: 81px;
+            height: 42px;
+            padding: 3px 8px 11px 13px;
+            background-size: 100% 100%;
+            font-family: 'ModMatrix', serif;
+            font-size: 23px;
+        }
+    }
 }
 
 :is(.frame-classic, .frame-clear) {

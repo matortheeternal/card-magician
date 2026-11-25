@@ -2,7 +2,9 @@ import ClassicCardFrame from './ClassicCardFrame.js';
 import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import PT from '../../../M15/Frame/src/mixins/PT.js';
+import LevelPTs from '../../../M15/Frame/src/mixins/LevelPTs.js';
 import FooterColor from './mixins/FooterColor.js';
+import LevelArrows from './mixins/LevelArrows.js';
 
 const ART_SIZES = {
     standard: { width: 311, height: 228, mask: 'shifted_standard.png' },
@@ -15,7 +17,9 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     Frame,
     Border,
     PT,
+    LevelPTs,
     FooterColor,
+    LevelArrows,
 ) {
     static matches(card) {
         return card.frame === 'shifted';
@@ -66,6 +70,11 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
             ext: '.png',
             hasLandTemplates: true
         });
+    }
+
+    /* --- LEVELS --- */
+    getPtMult(level) {
+        return this.resolveAssetPath(`mask/shifted/ptmult_${level}.png`);
     }
 
     /* --- TYPOGRAPHY --- */
