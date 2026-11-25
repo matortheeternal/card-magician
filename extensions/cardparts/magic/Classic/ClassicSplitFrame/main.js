@@ -2,6 +2,7 @@ import ClassicFrameModule from '../ClassicFrame/main.js';
 import proxyAutoOptions from '../../M15/Frame/src/proxyAutoOptions.js';
 import ClassicSplitFrame from './src/ClassicSplitFrame.js';
 import ShiftedSplitFrame from './src/ShiftedSplitFrame.js';
+import sideVars from '../../M15/SplitFrame/src/sideVars.js';
 
 const SPLIT_OPTIONS = [
     'frame', 'multicolorGradient', 'artifactGradient',
@@ -15,14 +16,6 @@ function restrictFrameChoices(option) {
     if (option.id !== 'frame') return option;
     const options = option.options.filter(opt => SPLIT_FRAMES.includes(opt.id));
     return { ...option, options };
-}
-
-function sideVars(side, vars) {
-    const merged = Object.assign({}, ...vars.map(v => v.style));
-    const style = {};
-    for (const [name, value] of Object.entries(merged))
-        style[name.replace('--', `--${side}-`)] = value;
-    return style;
 }
 
 export default class ClassicSplitFrameModule extends ClassicFrameModule {

@@ -5,6 +5,7 @@ import BottomTexture from './mixins/BottomTexture.js';
 import TopFrame from './mixins/TopFrame.js';
 import BottomFrame from './mixins/BottomFrame.js';
 import Frame from '../../Frame/src/mixins/Frame.js';
+import PT from '../../Frame/src/mixins/PT.js';
 
 export default class SplitFrame extends CardFrame.with(
     Frame,
@@ -13,6 +14,7 @@ export default class SplitFrame extends CardFrame.with(
     BottomTexture,
     BottomFrame,
     Border,
+    PT,
 ) {
     static matches() {
         return true;

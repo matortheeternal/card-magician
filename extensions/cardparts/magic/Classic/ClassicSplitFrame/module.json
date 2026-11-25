@@ -5,6 +5,7 @@
   "author": "Mator",
   "version": "0.1",
   "dependencies": {
-    "magic/Classic/ClassicFrame": "^0.1"
+    "magic/Classic/ClassicFrame": "^0.1",
+    "magic/M15/SplitFrame": "^0.3"
   }
 }

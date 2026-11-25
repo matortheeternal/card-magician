@@ -1,7 +1,10 @@
 import FrameModule from '../Frame/main.js';
 import SplitFrame from './src/SplitFrame.js';
+import sideVars from './src/sideVars.js';
 
 export default class SplitFrameModule extends FrameModule {
+    halfVars = {};
+
     static createOptions() { return []; }
 
     async init(card) {
@@ -12,13 +15,23 @@ export default class SplitFrameModule extends FrameModule {
     async updateTopFrame(card) {
         if (!card.activeFrame || !card.top) return;
         this.topBackgrounds = await card.activeFrame.buildBackgrounds('top', card);
+        await this.updateHalfVars(card, 'top');
         this.requestRender({ render: 'renderTop' });
     }
 
     async updateBottomFrame(card) {
         if (!card.activeFrame || !card.bottom) return;
         this.bottomBackgrounds = await card.activeFrame.buildBackgrounds('bottom', card);
+        await this.updateHalfVars(card, 'bottom');
         this.requestRender({ render: 'renderBottom' });
+    }
+
+    async updateHalfVars(card, side) {
+        const vars = await card.activeFrame.buildBackgrounds('vars', card[side]);
+        this.halfVars[side] = sideVars(side, vars);
+        this.varStyle = { ...this.halfVars.top, ...this.halfVars.bottom };
+        if (!card.dom) return;
+        card.dom.root.style = this.objectToStyle(this.varStyle);
     }
 
     async updateFrame(card) {

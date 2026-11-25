@@ -3,7 +3,7 @@
   "gameId": "magic",
   "description": "Defines the frames for M15 split cards.",
   "author": "Mator",
-  "version": "0.2",
+  "version": "0.3",
   "dependencies": {
     "magic/M15/Frame": "^0.2"
   }

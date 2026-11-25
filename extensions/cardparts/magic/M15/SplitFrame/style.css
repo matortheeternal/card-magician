@@ -3,3 +3,11 @@
     background-position-x: 2px;
     background-position-y: 10px;
 }
+
+.split-top {
+    --pt-background: var(--top-pt-background);
+}
+
+.split-bottom {
+    --pt-background: var(--bottom-pt-background);
+}
