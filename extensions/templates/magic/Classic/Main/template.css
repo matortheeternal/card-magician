@@ -103,26 +103,6 @@
         background-image: none;
     }
 
-    .creature-level .level-arrow {
-        padding: 0 18px 0 0;
-        background-position: 2px center;
-        background-size: 63px 44px;
-        font-family: 'ModMatrix', serif;
-        color: black;
-        text-shadow: 0 0 2px white;
-        line-height: 1;
-
-        > div:first-of-type {
-            font-family: 'MPlantin', serif;
-            font-size: 7.5px;
-        }
-
-        > div:last-of-type {
-            font-size: 22.5px;
-            line-height: 0.7;
-        }
-    }
-
     .creature-level .level-content {
         padding-right: 75px;
     }

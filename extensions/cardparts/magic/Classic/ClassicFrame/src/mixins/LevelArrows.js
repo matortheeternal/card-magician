@@ -1,6 +1,6 @@
 const LevelArrowsMixin = {
     get levelArrowUrl() {
-        return this.resolveAssetPath(`element/level/${this.frameId}.png`);
+        return this.resolveAssetPath('element/level/arrow.png');
     },
 
     async resolveLevelArrows(card) {

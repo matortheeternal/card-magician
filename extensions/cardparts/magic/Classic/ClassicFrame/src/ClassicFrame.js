@@ -3,6 +3,7 @@ import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
 import TitleColor from './mixins/TitleColor.js';
+import LevelArrows from './mixins/LevelArrows.js';
 
 const ART_SIZES = {
     standard: { width: 286, height: 233, mask: 'classic_standard.png' },
@@ -15,6 +16,7 @@ export default class ClassicFrame extends GradientCardFrame.with(
     Border,
     FooterColor,
     TitleColor,
+    LevelArrows,
 ) {
     static matches(card) {
         return card.frame === 'classic';

@@ -4,6 +4,7 @@ import ArtLiner from './mixins/ArtLiner.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
 import TitleColor from './mixins/TitleColor.js';
+import LevelArrows from './mixins/LevelArrows.js';
 
 const DEFAULT_FRAME_OPACITY = 75;
 
@@ -19,6 +20,7 @@ export default class ClearFrame extends ClassicCardFrame.with(
     Border,
     FooterColor,
     TitleColor,
+    LevelArrows,
 ) {
     static matches(card) {
         return card.frame === 'clear';
