@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicSagaFrame",
+  "gameId": "magic",
+  "description": "Defines the classic saga card frame backgrounds.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/Classic/ClassicFrame": "^0.1"
+  }
+}

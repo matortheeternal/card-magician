@@ -1,0 +1,24 @@
+{
+  "id": "magic/Classic/Saga",
+  "gameId": "magic",
+  "gameVersion": "^0.2.0",
+  "label": "Classic Saga",
+  "description": "Template for sagas in the classic frame.",
+  "author": "Mator",
+  "version": "0.2.0",
+  "card": [
+    "magic/M15/CardLayout",
+    "magic/Classic/ClassicLayout",
+    "magic/Classic/ClassicSagaFrame",
+    "magic/M15/Color",
+    "magic/Classic/ClassicName",
+    "magic/M15/Cost",
+    "magic/M15/Art",
+    "magic/Classic/ClassicType",
+    "magic/M15/SagaText",
+    "magic/M15/PT",
+    "magic/M15/Rarity",
+    "magic/Classic/ClassicFooter",
+    "magic/M15/AutoNumber"
+  ]
+}
