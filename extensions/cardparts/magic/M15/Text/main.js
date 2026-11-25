@@ -90,6 +90,7 @@ export default class TextModule extends CardMagicianModule {
     }
 
     getAvoidSelectors(card) {
+        if (card.hasLevels?.()) return [];
         const a = [];
         if (card.showPT || card.showNotchPT)
             a.push(`module-container[module='PT']`);
