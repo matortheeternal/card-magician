@@ -10,6 +10,8 @@ const EXCLUDED_METADATA_PATTERN = /(?:^|\/)(?:package(?:-lock)?\.json|.*config\.
 
 const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
+const EXTENSION_BUNDLE_SOURCE = 'extensions';
+const EXTENSION_BUNDLE_OUTPUT_DIRECTORY = 'dist';
 const stagePath = path.resolve('.tmp/package');
 const lockPath = path.resolve('.tmp/package.lock');
 
@@ -81,11 +83,34 @@ async function createPlatformInstallers(platform) {
         ELECTRON_BUILDER_COMPRESSION_LEVEL
     };
     const child = spawn(process.execPath, args, { stdio: 'inherit', env });
-    const code = await new Promise((resolve, reject) => {
+    const code = await waitForExit(child);
+    if (code !== 0) throw new Error(`${platform} installer packaging failed (${code}).`);
+}
+
+function waitForExit(child) {
+    return new Promise((resolve, reject) => {
         child.once('error', reject);
         child.once('close', resolve);
     });
-    if (code !== 0) throw new Error(`${platform} installer packaging failed (${code}).`);
+}
+
+function getReleaseDate(date = new Date()) {
+    const year = String(date.getFullYear() % 100).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+async function createExtensionBundle() {
+    const outputDirectory = EXTENSION_BUNDLE_OUTPUT_DIRECTORY;
+    const basename = path.join(outputDirectory, `magic-${getReleaseDate()}`);
+    await fs.mkdir(outputDirectory, { recursive: true });
+    const command = `cmpack pack ${EXTENSION_BUNDLE_SOURCE} `
+        + `--bundle --force --output "${basename}"`;
+    const child = spawn(command, { stdio: 'inherit', shell: true });
+    const code = await waitForExit(child);
+    if (code !== 0)
+        throw new Error(`Extension bundle failed (${code}). Is cmpack installed?`);
 }
 
 async function acquireLock() {
@@ -105,5 +130,6 @@ async function acquireLock() {
 const platforms = getReleasePlatforms(process.argv.slice(2));
 await acquireLock();
 await build({ minify: true, tests: false });
+await createExtensionBundle();
 await stageApplication();
 await createInstallers(platforms);
