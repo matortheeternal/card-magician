@@ -40,11 +40,3 @@ footer {
     z-index: 2;
     margin: 9px 23px 10px 25px;
 }
-
-module-container[module="ClassicFooter"][render="renderInfo"] {
-    height: 16px;
-}
-
-module-container[module="ClassicFooter"][render="renderLegal"] {
-    height: 12px;
-}

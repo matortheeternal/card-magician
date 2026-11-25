@@ -46,7 +46,7 @@
         flex-grow: 0;
     }
 
-    module-container[module="ClassicFooter"][render="renderLegal"] {
+    module-container[module="Footer"][render="renderLegal"] {
         font-size: 8px;
     }
 }
@@ -100,11 +100,11 @@
         margin: 8px 16px 6px 17px;
     }
 
-    module-container[module="ClassicFooter"][render="renderInfo"] {
+    module-container[module="Footer"][render="renderInfo"] {
         font-size: 14.5px;
     }
 
-    module-container[module="ClassicFooter"][render="renderLegal"] {
+    module-container[module="Footer"][render="renderLegal"] {
         margin-top: -2px;
     }
 }
@@ -169,14 +169,14 @@
         margin: 6px 0 -4px;
     }
 
-    module-container[module="ClassicFooter"][render="renderInfo"] {
+    module-container[module="Footer"][render="renderInfo"] {
         width: 155px;
         margin-left: 28px;
         font-family: 'Matrix', serif;
         font-size: 10.5px;
     }
 
-    module-container[module="ClassicFooter"][render="renderLegal"] {
+    module-container[module="Footer"][render="renderLegal"] {
         width: 175px;
         margin: -6px 0 0 8px;
     }

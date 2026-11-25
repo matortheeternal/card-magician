@@ -68,18 +68,18 @@
         margin: 10px 0 3px 15px;
     }
 
-    module-container[module="ClassicFooter"] {
+    module-container[module="Footer"] {
         text-align: start;
     }
 
-    module-container[module="ClassicFooter"][render="renderInfo"] {
+    module-container[module="Footer"][render="renderInfo"] {
         width: 217px;
         margin-left: 27px;
         font-family: 'Matrix', serif;
         font-size: 14px;
     }
 
-    module-container[module="ClassicFooter"][render="renderLegal"] {
+    module-container[module="Footer"][render="renderLegal"] {
         width: 247px;
         margin-top: -3px;
         font-size: 9px;

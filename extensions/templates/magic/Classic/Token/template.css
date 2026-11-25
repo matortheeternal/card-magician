@@ -62,12 +62,12 @@
         margin: 14px 43px 24px 42px;
     }
 
-    module-container[module="ClassicFooter"][render="renderInfo"] {
+    module-container[module="Footer"][render="renderInfo"] {
         height: 15px;
         font-size: 12px;
     }
 
-    module-container[module="ClassicFooter"][render="renderLegal"] {
+    module-container[module="Footer"][render="renderLegal"] {
         margin-top: -2px;
         font-size: 10.5px;
     }

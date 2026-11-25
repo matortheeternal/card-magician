@@ -6,6 +6,5 @@
   "version": "0.2",
   "dependencies": {
     "magic/M15/Footer": "^0.2"
-  },
-  "inheritStylesheets": false
+  }
 }

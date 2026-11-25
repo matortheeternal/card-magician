@@ -1,18 +1,22 @@
-module-container[module="ClassicFooter"] {
+module-container[module="Footer"] {
     display: block;
-    color: var(--footer-color);
-    font-family: 'MPlantin', serif;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
 }
 
-module-container[module="ClassicFooter"][render="renderInfo"] {
+module-container[module="Footer"][render="renderInfo"] {
+    display: block;
+    height: 16px;
     color: var(--title-color, var(--footer-color));
     text-shadow: var(--title-shadow);
+    font-family: 'MPlantin', serif;
     font-size: 13.5px;
+    letter-spacing: normal;
 }
 
-module-container[module="ClassicFooter"][render="renderLegal"] {
-    font-size: 8.5px;
+module-container[module="Footer"][render="renderLegal"] {
+    height: 12px;
+    color: var(--footer-color);
+    font-family: 'MPlantin', serif;
 }
