@@ -2,10 +2,6 @@
     padding: 8px !important;
 }
 
-.footer {
-    padding: 0 15px 15px;
-}
-
 .split-top, .split-bottom {
     flex: 1;
     container-type: size;

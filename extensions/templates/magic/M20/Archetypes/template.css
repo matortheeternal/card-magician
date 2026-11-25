@@ -1,9 +1,5 @@
 :host {
     background: black;
-
-    > div {
-        padding-top: 10px;
-    }
 }
 
 :host module-container[module="Name"] {
