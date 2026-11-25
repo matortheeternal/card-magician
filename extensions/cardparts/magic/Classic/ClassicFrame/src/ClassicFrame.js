@@ -1,4 +1,4 @@
-import ClassicCardFrame from './ClassicCardFrame.js';
+import GradientCardFrame from './GradientCardFrame.js';
 import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
@@ -8,7 +8,7 @@ const ART_SIZES = {
     background: { width: 375, height: 523 },
 };
 
-export default class ClassicFrame extends ClassicCardFrame.with(
+export default class ClassicFrame extends GradientCardFrame.with(
     Frame,
     Border,
     FooterColor,
@@ -36,30 +36,6 @@ export default class ClassicFrame extends ClassicCardFrame.with(
 
     get frameId() {
         return 'classic';
-    }
-
-    get useLandHybridBlend() {
-        return false;
-    }
-
-    get useHybridBlend() {
-        return false;
-    }
-
-    gradientMaskUrl(gradient) {
-        return `${this.blendMaskFolder}/blend_gradient_${gradient}.png`;
-    }
-
-    get multicolorBlendMaskUrl() {
-        return this.gradientMaskUrl(this.card.multicolorGradient);
-    }
-
-    get useArtifactBlend() {
-        return super.useArtifactBlend && !this.useMulticolorBlend;
-    }
-
-    get artifactBlendMaskUrl() {
-        return this.gradientMaskUrl(this.card.artifactGradient);
     }
 
     /* --- ELDRAZI COLORLESS --- */
