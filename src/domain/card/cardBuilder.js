@@ -7,7 +7,7 @@ async function buildSubcard(parent, key, template, modulesToLoad, subcardData) {
     const subcard = new SubcardModel(key, parent);
     parent[key] = subcard;
     await activeGame.initializeCardFace(subcard);
-    await subcard.loadModules(modulesToLoad || []);
+    subcard.loadModules(modulesToLoad || []);
     subcard.setupRenderPipeline();
     await subcard.initializeModules(template, parent);
     await subcard.load(subcardData);
@@ -56,7 +56,7 @@ export async function buildCardFace(card, key) {
     card[key] = cardFace;
     await activeGame.initializeCardFace(cardFace);
     const template = setupTemplate(cardFace, faceDataToLoad);
-    await cardFace.loadModules(template.card || []);
+    cardFace.loadModules(template.card || []);
     cardFace.setupRenderPipeline();
     await cardFace.initializeModules(template);
     cardFace.parent = () => card;

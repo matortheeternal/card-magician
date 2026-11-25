@@ -1,5 +1,6 @@
 import AppConfig from './appConfig.js';
 import { readExtensionDirectories } from '../../shared/extensionManager.js';
+import { loadModuleClasses } from '../template/moduleRegistry.js';
 
 const games = [];
 let gameStylesheet = null;
@@ -39,6 +40,7 @@ export async function setGame(gameId) {
     window.activeGame = new Module(game);
     await activeGame.init();
     activeGame.config = new AppConfig(gameId);
+    await loadModuleClasses(gameId);
     return activeGame;
 }
 

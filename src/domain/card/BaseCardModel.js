@@ -1,4 +1,4 @@
-import { findExtension } from '../../shared/extensionManager.js';
+import { getModuleClass } from '../template/moduleRegistry.js';
 import RenderScheduler from '../template/renderScheduler.js';
 import { initializeFields } from '../../ui/systems/fieldSystem.js';
 
@@ -45,23 +45,19 @@ export default class BaseCardModel {
         }
     }
 
-    async loadModule(modulePath) {
+    loadModule(modulePath) {
         try {
-            const extension = await findExtension(`cardparts/${modulePath}`);
-            const mainPath = extension.url('main.js');
-            log('plugin').debug('Loading module', mainPath);
-            const { default: Module } = await import(mainPath);
-            return new Module(this, modulePath, extension);
+            const Module = getModuleClass(modulePath);
+            if (!Module) throw new Error(`Module not found: ${modulePath}`);
+            return new Module(this, modulePath);
         } catch (error) {
             report('loadModule', error, [modulePath]);
             log('plugin').error('Failed to load module:', error);
         }
     }
 
-    async loadModules(components) {
-        const modules = await Promise.all(
-            components.map(component => this.loadModule(component))
-        );
+    loadModules(components) {
+        const modules = components.map(component => this.loadModule(component));
         this.modules.push(...modules.filter(Boolean));
     }
 
