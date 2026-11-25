@@ -5,7 +5,7 @@
         z-index: 2;
     }
 
-    module-container[module="MechanicText"] {
+    module-container[module="Text"] {
         background: none;
         margin: 0;
         padding: 15px 5px 10px 5px;
