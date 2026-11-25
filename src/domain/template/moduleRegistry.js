@@ -4,6 +4,7 @@ import { loadStylesheetFiles } from './moduleStylesheets.js';
 const report = createReporter({ unit: 'moduleRegistry', label: 'Card Modules' });
 const MODULE_METADATA_PATTERN = /^(.+)\/module\.json$/;
 const DEFAULT_STYLESHEET = 'style.css';
+const ASSETS_FOLDER = 'assets';
 const moduleClasses = new Map();
 let loadedGameId = null;
 
@@ -22,9 +23,20 @@ function stylesheetPaths(files, modulePath, metadata) {
     return hasDefault ? [DEFAULT_STYLESHEET] : [];
 }
 
+function assetPaths(files, modulePath) {
+    const prefix = `${modulePath}/${ASSETS_FOLDER}/`;
+    const paths = new Set();
+    for (const file of files) {
+        if (!file.startsWith(prefix)) continue;
+        paths.add(file.slice(prefix.length));
+    }
+    return paths;
+}
+
 async function importModuleClass(directory, metadata, stylesheets) {
     const { default: Module } = await import(directory.url('main.js'));
     Module.moduleMetadata = metadata;
+    Module.moduleDirectory = directory;
     Module.ownStylesheets = await loadStylesheetFiles(directory, stylesheets);
     return Module;
 }
@@ -36,6 +48,7 @@ async function loadModuleClass(cardparts, files, modulePath, gameId) {
         if (metadata.gameId !== gameId) return;
         const stylesheets = stylesheetPaths(files, modulePath, metadata);
         const Module = await importModuleClass(directory, metadata, stylesheets);
+        Module.ownAssets = assetPaths(files, modulePath);
         moduleClasses.set(modulePath, Module);
     } catch (error) {
         log('plugin').warn('Failed to load module:', modulePath, error);

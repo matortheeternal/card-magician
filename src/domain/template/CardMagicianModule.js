@@ -95,13 +95,17 @@ export default class CardMagicianModule {
     }
 
     /**
-     * Returns a path for a file in this module's assets folder.
+     * Returns a path for a file in this module's assets folder. An asset the
+     * module does not include resolves to the nearest module it extends that
+     * does, so extended modules share the assets of the modules they extend.
      *
      * @param {string} assetPath - Path relative to the module's `assets` directory.
      * @returns {string} - Fully qualified path for the asset.
      */
     resolveAsset(assetPath) {
-        return this.directory.url(`assets/${assetPath}`);
+        const Owner = this.constructor.assetOwner(assetPath);
+        const directory = Owner?.moduleDirectory ?? this.directory;
+        return directory.url(`assets/${assetPath}`);
     }
 
     /**
@@ -306,6 +310,38 @@ export default class CardMagicianModule {
      * @type {Array<CSSStyleSheet>}
      */
     static ownStylesheets = [];
+
+    /**
+     * The module's folder, assigned when the module is registered for the
+     * active game.
+     *
+     * @type {MountedDirectory}
+     */
+    static moduleDirectory;
+
+    /**
+     * Paths of the files in the module's `assets` folder, relative to that
+     * folder. Assigned when the module is registered for the active game.
+     *
+     * @type {Set<string>}
+     */
+    static ownAssets = new Set();
+
+    /**
+     * Returns the nearest module in this module's extension chain whose
+     * `assets` folder includes the asset, starting with this module.
+     *
+     * @param {string} assetPath - Path relative to a module's `assets` folder.
+     * @returns {typeof CardMagicianModule|undefined} - The owning module class,
+     * or undefined when no module in the chain includes the asset.
+     */
+    static assetOwner(assetPath) {
+        let Module = this;
+        while (Module !== CardMagicianModule) {
+            if (Module.ownAssets.has(assetPath)) return Module;
+            Module = Object.getPrototypeOf(Module);
+        }
+    }
 
     /**
      * Returns the stylesheets applied for this module in cascade order: the

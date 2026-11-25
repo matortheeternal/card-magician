@@ -1,6 +1,11 @@
 import { getModuleClass } from './moduleRegistry.js';
 import { useGame } from '../../shared/testing/gameFixture.js';
 
+function createModule(modulePath) {
+    const Module = getModuleClass(modulePath);
+    return new Module({}, modulePath);
+}
+
 describe('Module registry', () => {
     useGame('magic');
 
@@ -22,6 +27,15 @@ describe('Module registry', () => {
         expect(getModuleClass('magic/M15/Footer').ownStylesheets.length).toBe(1);
         expect(getModuleClass('magic/M15/Text').ownStylesheets.length).toBe(3);
         expect(getModuleClass('magic/M15/AutoNumber').ownStylesheets).toEqual([]);
+    });
+
+    it('resolves assets from the nearest module that includes them', () => {
+        const footer = createModule('magic/Classic/ClassicFooter');
+        const name = createModule('magic/Classic/ClassicName');
+        expect(footer.resolveAsset('art.png'))
+            .toContain('magic/M15/Footer/assets/art.png');
+        expect(name.resolveAsset('magicmedieval.ttf'))
+            .toContain('magic/Classic/ClassicName/assets/magicmedieval.ttf');
     });
 
     it('returns nothing for unknown modules', () => {
