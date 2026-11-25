@@ -1,7 +1,7 @@
 const rangeExpr = /(\d+\+|\d+-\d+)/;
 const ptExpr = /(.+?\/.+?)/;
-const contentExpr = /([\s\S]+?)/;
-const greedyContentExpr = /([\s\S]+)/;
+const contentExpr = /([\s\S]*?)/;
+const greedyContentExpr = /([\s\S]*)/;
 
 const getLevelExpr = (greedy = false) => {
     const levelParts = [
