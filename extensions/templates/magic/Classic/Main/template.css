@@ -135,6 +135,7 @@
 
         > div:last-of-type {
             font-size: 22.5px;
+            line-height: 0.7;
         }
     }
 
