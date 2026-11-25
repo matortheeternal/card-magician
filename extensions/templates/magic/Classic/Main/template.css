@@ -62,7 +62,7 @@
         height: 42px;
     }
 
-    module-container[module="PT"] .pt-text {
+    :is(module-container[module="PT"], .level-stats) .pt-text {
         align-items: center;
         background-size: 100% 100%;
         padding: 3px 8px 11px 13px;
@@ -99,16 +99,6 @@
 
     &:has(.creature-level) module-container[render="renderPT"] {
         top: 333px;
-    }
-
-    .level-start {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        max-width: 250px;
-        max-height: 55px;
-        margin-left: 18px;
-        flex: 1;
     }
 
     .creature-level {
@@ -148,13 +138,8 @@
         right: 0;
 
         .pt-text {
-            align-items: center;
             width: 81px;
             height: 42px;
-            padding: 3px 8px 11px 13px;
-            background-size: 100% 100%;
-            font-family: 'ModMatrix', serif;
-            font-size: 23px;
         }
     }
 }
