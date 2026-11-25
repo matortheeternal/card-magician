@@ -3,6 +3,7 @@ import {
 } from './importMse.js';
 import MseFileAdapter from './MseFileAdapter.js';
 import { registerProgressEndpoint } from '../../../ui/systems/progressSystem.js';
+import { useGame } from '../../../shared/testing/gameFixture.js';
 
 describe('partial MSE card import', () => {
     let previousGame;
@@ -10,7 +11,7 @@ describe('partial MSE card import', () => {
         previousGame = window.activeGame;
         window.activeGame = {
             Card: class { front = {}; },
-            Project: class { cards = []; },
+            Project: class { cards = []; afterCardsChanged() {} },
             ColorIdentity: { normalizeColorOverride: () => {} },
             addComputedProps: () => {}
         };
@@ -154,4 +155,22 @@ describe('partial MSE card import', () => {
         );
     });
 
+});
+
+describe('MSE set import into a Magic project', () => {
+    useGame('magic');
+
+    it('assigns collector numbers to the imported cards', async () => {
+        spyOn(MseFileAdapter, 'load').and.resolveTo({
+            setInfo: async () => ({
+                card: [{ name: 'Zebra' }, { name: 'Aardvark' }],
+                mse_version: '2.6.0', game: 'magic', game_version: '2026-09-06',
+                stylesheet: 'm15-altered', stylesheet_version: '2026-09-06',
+                set_info: {}
+            })
+        });
+        const [project] = await importMseFile('test.mse-set');
+        const numbers = project.cards.map(card => card.front.autoCollectorNumber);
+        expect(numbers.sort()).toEqual(['CC01', 'CC02']);
+    });
 });

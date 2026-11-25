@@ -152,6 +152,7 @@ export async function importMseFile(filePath) {
     addCardsToProject(cardMap, project, reportFailure);
     if (mseSet.card.length && !project.cards.length)
         throw new Error(L`No cards could be imported. See the error report for details.`);
+    project.afterCardsChanged();
     return [project, failures];
 }
 
