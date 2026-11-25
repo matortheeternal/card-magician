@@ -4,9 +4,10 @@ import Border from '../../../M15/Frame/src/mixins/Border.js';
 import PT from '../../../M15/Frame/src/mixins/PT.js';
 import FooterColor from './mixins/FooterColor.js';
 
-const ART_DIMENSIONS = {
+const ART_SIZES = {
     standard: { width: 311, height: 228 },
     extended: { width: 311, height: 408 },
+    background: { width: 375, height: 523 },
 };
 
 export default class ShiftedFrame extends ClassicCardFrame.with(
@@ -19,8 +20,8 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
         return card.frame === 'shifted';
     }
 
-    get artDimensions() {
-        return ART_DIMENSIONS[this.card.artSize];
+    get artSizes() {
+        return ART_SIZES;
     }
 
     /* --- FRAME --- */
@@ -29,7 +30,7 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     }
 
     get frameMaskFilename() {
-        return `shifted_${this.card.artSize}.png`;
+        return `shifted_${this.artSize}.png`;
     }
 
     get frameBlendMaskFolder() {
@@ -47,6 +48,11 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     /* --- BORDER --- */
     get borderMaskFilename() {
         return 'shifted.png';
+    }
+
+    resolveBorder(card) {
+        if (this.hasArtBackground) return null;
+        return super.resolveBorder(card);
     }
 
     /* --- PT --- */

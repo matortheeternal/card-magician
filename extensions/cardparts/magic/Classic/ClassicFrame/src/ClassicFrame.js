@@ -3,6 +3,11 @@ import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
 
+const ART_SIZES = {
+    standard: { width: 286, height: 233 },
+    background: { width: 375, height: 523 },
+};
+
 export default class ClassicFrame extends ClassicCardFrame.with(
     Frame,
     Border,
@@ -12,8 +17,8 @@ export default class ClassicFrame extends ClassicCardFrame.with(
         return card.frame === 'classic';
     }
 
-    get artDimensions() {
-        return { width: 286, height: 233 };
+    get artSizes() {
+        return ART_SIZES;
     }
 
     /* --- FRAME --- */
@@ -22,7 +27,7 @@ export default class ClassicFrame extends ClassicCardFrame.with(
     }
 
     get frameMaskFilename() {
-        return 'classic.png';
+        return `classic_${this.artSize}.png`;
     }
 
     get frameBlendMaskFolder() {
@@ -95,6 +100,11 @@ export default class ClassicFrame extends ClassicCardFrame.with(
     /* --- BORDER --- */
     get borderMaskFilename() {
         return 'classic.png';
+    }
+
+    resolveBorder(card) {
+        if (this.hasArtBackground) return null;
+        return super.resolveBorder(card);
     }
 
     /* --- TYPOGRAPHY --- */

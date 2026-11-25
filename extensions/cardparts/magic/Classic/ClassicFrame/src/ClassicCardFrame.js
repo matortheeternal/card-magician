@@ -5,6 +5,20 @@ export default class ClassicCardFrame extends CardFrame {
         return new URL(`../assets/${path}`, import.meta.url).pathname;
     }
 
+    /* --- ART --- */
+    get artSize() {
+        if (Object.hasOwn(this.artSizes, this.card.artSize)) return this.card.artSize;
+        return 'standard';
+    }
+
+    get artDimensions() {
+        return this.artSizes[this.artSize];
+    }
+
+    get hasArtBackground() {
+        return this.artSize === 'background';
+    }
+
     /* --- ALPHA DUAL LANDS --- */
     get useAlphaBlend() {
         return this.card.dualLandBlend === 'alpha'

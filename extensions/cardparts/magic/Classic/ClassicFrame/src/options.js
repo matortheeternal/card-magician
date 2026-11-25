@@ -15,6 +15,7 @@ export default [{
     options: [
         { id: 'standard',   name: L`Standard` },
         { id: 'extended',   name: L`Extended` },
+        { id: 'background', name: L`Background` },
     ]
 }, {
     id: 'dualLandBlend',
