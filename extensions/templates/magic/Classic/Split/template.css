@@ -75,6 +75,11 @@ module-container[module="Text"] .text {
         margin: 4px 10px 0 15px;
     }
 
+    module-container[module="ClassicName"] {
+        position: relative;
+        top: 3px;
+    }
+
     module-container[module="ClassicName"],
     module-container[module="ClassicType"],
     module-container[render="renderPT"],
@@ -158,6 +163,10 @@ module-container[module="Text"] .text {
     .type-line {
         height: 17px;
         margin: auto 13px 0 12px;
+    }
+
+    module-container[module="ClassicType"] {
+        padding-bottom: 6px;
     }
 
     module-container[module="Text"] {
