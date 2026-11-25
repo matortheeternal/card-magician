@@ -7,6 +7,7 @@ export default [{
     options: [
         { id: 'classic',    name: L`Classic` },
         { id: 'shifted',    name: L`Shifted` },
+        { id: 'clear',      name: L`Clear` },
     ]
 }, {
     id: 'artSize',
@@ -58,5 +59,17 @@ export default [{
     options: [
         { id: 'standard',   name: L`Standard` },
         { id: 'eldrazi',    name: L`Eldrazi` },
+    ]
+}, {
+    id: 'frameOpacity',
+    type: 'select',
+    label: L`Frame Opacity`,
+    default: '75',
+    options: [
+        { id: '100',        name: L`100%` },
+        { id: '90',         name: L`90%` },
+        { id: '75',         name: L`75%` },
+        { id: '50',         name: L`50%` },
+        { id: '25',         name: L`25%` },
     ]
 }];

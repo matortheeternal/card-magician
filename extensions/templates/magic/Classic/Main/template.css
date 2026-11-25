@@ -82,7 +82,7 @@
     }
 }
 
-.frame-classic {
+:is(.frame-classic, .frame-clear) {
     .header {
         height: 25px;
         margin: 7px 19px 0 27px;
@@ -180,5 +180,17 @@
     module-container[module="ClassicFooter"][render="renderLegal"] {
         height: 12px;
         font-size: 8.5px;
+    }
+}
+
+.frame-clear {
+    module-container[module="Art"] {
+        position: absolute;
+        inset: 19px;
+        margin: 0;
+    }
+
+    &.art-background module-container[module="Art"] {
+        inset: 0;
     }
 }
