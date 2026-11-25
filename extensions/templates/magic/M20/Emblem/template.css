@@ -17,13 +17,13 @@
     margin-top: 0;
 }
 
-.frame-emblem module-container[module="EmblemArt"] {
+.frame-emblem module-container[module="Art"] {
     margin: 0;
     overflow: visible;
     border: none;
 }
 
-.frame-emblem module-container[module="EmblemArt"] crop-image {
+.frame-emblem module-container[module="Art"] crop-image {
     display: block;
     height: 523px;
     position: absolute;

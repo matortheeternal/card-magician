@@ -63,7 +63,7 @@
         background-position-x: 4px;
     }
 
-    module-container[module="SplitArt"] {
+    module-container[module="Art"] {
         margin: 4px 18px 5px;
     }
 }
