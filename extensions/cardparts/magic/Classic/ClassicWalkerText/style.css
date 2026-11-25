@@ -1,0 +1,47 @@
+module-container[module="Text"] {
+    height: 143px;
+    margin: 6px 28px 0 3px;
+    padding: 0;
+    background-color: transparent;
+}
+
+.text {
+    font-size: 18px;
+
+    p:first-child {
+        margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.rules-text .walker-static-ability {
+    padding-left: 48px;
+    padding-right: 2px;
+}
+
+.walker-ability {
+    padding-right: 2px;
+
+    .walker-ability-cost div.cost:is(
+        .walker-ability-plus, .walker-ability-minus, .walker-ability-zero
+    ) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 40px;
+        padding: 0;
+        background-size: 100% 100%;
+        font-family: 'MPlantin', serif;
+        font-size: 16px;
+    }
+
+    .walker-ability-cost div.colon {
+        width: 5px;
+        margin: 0 3px 0 1px;
+        font-size: 20px;
+    }
+}

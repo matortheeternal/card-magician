@@ -3,38 +3,4 @@
         margin: 4px 29px 6px 30px;
         border: none;
     }
-
-    module-container[module="WalkerText"] {
-        height: 143px;
-        margin: 6px 28px 0 3px;
-        padding: 0;
-        background-color: transparent;
-    }
-
-    module-container[module="WalkerText"] .walker-static-ability {
-        padding-left: 48px;
-        padding-right: 2px;
-    }
-
-    module-container[module="WalkerText"] .walker-ability {
-        padding-right: 2px;
-    }
-
-    module-container[module="WalkerText"] div.cost:is(.walker-ability-plus, .walker-ability-minus, .walker-ability-zero) {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 40px;
-        padding: 0;
-        background-size: 100% 100%;
-        font-family: 'MPlantin', serif;
-        font-size: 16px;
-    }
-
-    module-container[module="WalkerText"] div.colon {
-        width: 5px;
-        margin: 0 3px 0 1px;
-        font-size: 20px;
-    }
 }

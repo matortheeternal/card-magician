@@ -31,7 +31,6 @@ div.text-box > module-container[module="Text"] {
 }
 
 module-container[module="Text"] .text,
-module-container[module="WalkerText"] .text,
 .text-column module-container[module="SagaText"] auto-fit-text {
     font-size: 18px;
 }

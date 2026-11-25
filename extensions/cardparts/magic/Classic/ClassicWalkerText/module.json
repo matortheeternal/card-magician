@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicWalkerText",
+  "gameId": "magic",
+  "description": "Displays planeswalker abilities in the classic frame text box.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/WalkerText": "^0.3.0"
+  }
+}
