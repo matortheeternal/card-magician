@@ -1,28 +1,25 @@
 .split-top, .split-bottom {
-    position: absolute;
-    left: 18px;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
     width: 338px;
     height: 236px;
+    margin: 3px 0 0 3px;
     container-type: size;
 }
 
-.split-top {
-    top: 18px;
-}
-
 .split-bottom {
-    top: 269px;
+    margin-top: 15px;
 }
 
 .inner-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    display: flex;
+    flex: none;
+    flex-direction: column;
     width: 100cqh;
     height: 100cqw;
-    display: flex;
-    flex-direction: column;
-    transform: translate(-50%, -50%) rotate(-90deg);
+    transform: rotate(-90deg);
 
     module-container[module="ClassicSplitFrame"] {
         z-index: 0;
