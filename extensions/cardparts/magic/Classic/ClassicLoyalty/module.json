@@ -1,0 +1,10 @@
+{
+  "id": "magic/Classic/ClassicLoyalty",
+  "gameId": "magic",
+  "description": "Renders planeswalker loyalty in the classic style.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Loyalty": "^0.1"
+  }
+}
