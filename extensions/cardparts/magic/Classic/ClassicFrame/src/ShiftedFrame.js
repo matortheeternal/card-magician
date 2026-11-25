@@ -1,4 +1,4 @@
-import CardFrame from '../../../M15/Frame/src/CardFrame.js';
+import ClassicCardFrame from './ClassicCardFrame.js';
 import Frame from '../../../M15/Frame/src/mixins/Frame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
 import PT from '../../../M15/Frame/src/mixins/PT.js';
@@ -9,7 +9,7 @@ const ART_DIMENSIONS = {
     extended: { width: 311, height: 408 },
 };
 
-export default class ShiftedFrame extends CardFrame.with(
+export default class ShiftedFrame extends ClassicCardFrame.with(
     Frame,
     Border,
     PT,
@@ -21,10 +21,6 @@ export default class ShiftedFrame extends CardFrame.with(
 
     get artDimensions() {
         return ART_DIMENSIONS[this.card.artSize];
-    }
-
-    resolveAssetPath(path) {
-        return new URL(`../assets/${path}`, import.meta.url).pathname;
     }
 
     /* --- FRAME --- */
@@ -48,37 +44,6 @@ export default class ShiftedFrame extends CardFrame.with(
         return `${super.hybridBlendKey}l`;
     }
 
-    /* --- ALPHA DUAL LANDS --- */
-    get useAlphaBlend() {
-        return this.card.dualLandBlend === 'alpha'
-            && this.isLand
-            && this.card.colorIdentity.colors.length === 2;
-    }
-
-    get alphaBlendMaskUrl() {
-        return this.resolveAssetPath('mask/shifted/blend_alpha.png');
-    }
-
-    get useLandHybridBlend() {
-        return !this.useAlphaBlend && super.useLandHybridBlend;
-    }
-
-    resolveHybridColored(folder, card, options) {
-        if (!this.useAlphaBlend)
-            return super.resolveHybridColored(folder, card, options);
-        return this.resolveAlphaBlend(folder, card, options);
-    }
-
-    resolveAlphaBlend(folder, card, options) {
-        const [c1, c2] = card.colorIdentity.colors;
-        const [dark, light] = this.getHybridOrder(card, c1.char, c2.char);
-        return this.ctx.maskedBlend(
-            this.resolveColorKey(folder, light, options),
-            this.resolveColorKey(folder, dark, options),
-            this.alphaBlendMaskUrl
-        );
-    }
-
     /* --- BORDER --- */
     get borderMaskFilename() {
         return 'shifted.png';
@@ -94,5 +59,10 @@ export default class ShiftedFrame extends CardFrame.with(
             ext: '.png',
             hasLandTemplates: true
         });
+    }
+
+    /* --- FOOTER --- */
+    get lightFooterKeys() {
+        return ['b', 'l'];
     }
 }

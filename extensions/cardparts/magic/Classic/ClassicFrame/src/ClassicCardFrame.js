@@ -1,0 +1,38 @@
+import CardFrame from '../../../M15/Frame/src/CardFrame.js';
+
+export default class ClassicCardFrame extends CardFrame {
+    resolveAssetPath(path) {
+        return new URL(`../assets/${path}`, import.meta.url).pathname;
+    }
+
+    /* --- ALPHA DUAL LANDS --- */
+    get useAlphaBlend() {
+        return this.card.dualLandBlend === 'alpha'
+            && this.isLand
+            && this.card.colorIdentity.colors.length === 2;
+    }
+
+    get alphaBlendMaskUrl() {
+        return `${this.frameBlendMaskFolder}/blend_alpha.png`;
+    }
+
+    get useLandHybridBlend() {
+        return !this.useAlphaBlend && super.useLandHybridBlend;
+    }
+
+    resolveHybridColored(folder, card, options) {
+        if (!this.useAlphaBlend)
+            return super.resolveHybridColored(folder, card, options);
+        return this.resolveAlphaBlend(folder, card, options);
+    }
+
+    resolveAlphaBlend(folder, card, options) {
+        const [c1, c2] = card.colorIdentity.colors;
+        const [dark, light] = this.getHybridOrder(card, c1.char, c2.char);
+        return this.ctx.maskedBlend(
+            this.resolveColorKey(folder, light, options),
+            this.resolveColorKey(folder, dark, options),
+            this.alphaBlendMaskUrl
+        );
+    }
+}

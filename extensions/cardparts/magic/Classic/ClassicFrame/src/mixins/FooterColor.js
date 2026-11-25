@@ -1,5 +1,3 @@
-const LIGHT_TEXT_KEYS = ['b', 'l'];
-
 const FooterColorMixin = {
     get footerColorKey() {
         if (this.isLand) return 'l';
@@ -9,7 +7,7 @@ const FooterColorMixin = {
     },
 
     get footerColor() {
-        return LIGHT_TEXT_KEYS.includes(this.footerColorKey) ? 'white' : 'black';
+        return this.lightFooterKeys.includes(this.footerColorKey) ? 'white' : 'black';
     },
 
     async resolveFooterColor() {
