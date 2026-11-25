@@ -101,6 +101,11 @@
         padding: 0;
     }
 
+    module-container[module="ClassicName"] {
+        position: relative;
+        top: 1.5px;
+    }
+
     module-container[module="ClassicName"],
     module-container[module="ClassicType"],
     module-container[render="renderPT"],
