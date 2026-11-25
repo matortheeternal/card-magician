@@ -5,9 +5,10 @@ import PT from '../../../M15/Frame/src/mixins/PT.js';
 import FooterColor from './mixins/FooterColor.js';
 
 const ART_SIZES = {
-    standard: { width: 311, height: 228 },
-    extended: { width: 311, height: 408 },
-    background: { width: 375, height: 523 },
+    standard: { width: 311, height: 228, mask: 'shifted_standard.png' },
+    extended: { width: 311, height: 408, mask: 'shifted_extended.png' },
+    frameless: { width: 340, height: 488, mask: 'shifted_fullart.png' },
+    borderless: { width: 375, height: 523, mask: 'shifted_fullart.png' },
 };
 
 export default class ShiftedFrame extends ClassicCardFrame.with(
@@ -30,7 +31,7 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     }
 
     get frameMaskFilename() {
-        return `shifted_${this.artSize}.png`;
+        return this.artSizes[this.artSize].mask;
     }
 
     get frameBlendMaskFolder() {
@@ -51,7 +52,7 @@ export default class ShiftedFrame extends ClassicCardFrame.with(
     }
 
     resolveBorder(card) {
-        if (this.hasArtBackground) return null;
+        if (this.isBorderless) return null;
         return super.resolveBorder(card);
     }
 

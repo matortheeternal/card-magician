@@ -12,11 +12,12 @@ export default class ClassicCardFrame extends CardFrame {
     }
 
     get artDimensions() {
-        return this.artSizes[this.artSize];
+        const { width, height } = this.artSizes[this.artSize];
+        return { width, height };
     }
 
-    get hasArtBackground() {
-        return this.artSize === 'background';
+    get isBorderless() {
+        return this.artSize === 'borderless';
     }
 
     /* --- ALPHA DUAL LANDS --- */

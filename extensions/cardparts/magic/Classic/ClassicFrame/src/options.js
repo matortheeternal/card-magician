@@ -1,5 +1,9 @@
 const L = localize('module-classic-frame');
 
+function computeArtSize(card) {
+    return card.frame === 'clear' ? 'frameless' : 'standard';
+}
+
 export default [{
     id: 'frame',
     type: 'select',
@@ -14,9 +18,11 @@ export default [{
     type: 'select',
     label: L`Art Size`,
     options: [
+        { id: 'auto',       name: L`Auto`, compute: computeArtSize },
         { id: 'standard',   name: L`Standard` },
         { id: 'extended',   name: L`Extended` },
-        { id: 'background', name: L`Background` },
+        { id: 'frameless',  name: L`Frameless` },
+        { id: 'borderless', name: L`Borderless` },
     ]
 }, {
     id: 'dualLandBlend',

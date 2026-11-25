@@ -7,8 +7,9 @@ import FooterColor from './mixins/FooterColor.js';
 const DEFAULT_FRAME_OPACITY = 75;
 
 const ART_SIZES = {
-    standard: { width: 337, height: 485 },
-    background: { width: 375, height: 523 },
+    standard: { width: 286, height: 233 },
+    frameless: { width: 337, height: 485 },
+    borderless: { width: 375, height: 523 },
 };
 
 export default class ClearFrame extends ClassicCardFrame.with(
@@ -58,7 +59,7 @@ export default class ClearFrame extends ClassicCardFrame.with(
     }
 
     resolveBorder(card) {
-        if (this.hasArtBackground) return null;
+        if (this.isBorderless) return null;
         return super.resolveBorder(card);
     }
 

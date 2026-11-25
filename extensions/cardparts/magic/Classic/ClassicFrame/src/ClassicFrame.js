@@ -4,8 +4,9 @@ import Border from '../../../M15/Frame/src/mixins/Border.js';
 import FooterColor from './mixins/FooterColor.js';
 
 const ART_SIZES = {
-    standard: { width: 286, height: 233 },
-    background: { width: 375, height: 523 },
+    standard: { width: 286, height: 233, mask: 'classic_standard.png' },
+    frameless: { width: 337, height: 485, mask: 'classic_fullart.png' },
+    borderless: { width: 375, height: 523, mask: 'classic_fullart.png' },
 };
 
 export default class ClassicFrame extends GradientCardFrame.with(
@@ -27,7 +28,7 @@ export default class ClassicFrame extends GradientCardFrame.with(
     }
 
     get frameMaskFilename() {
-        return `classic_${this.artSize}.png`;
+        return this.artSizes[this.artSize].mask;
     }
 
     get frameBlendMaskFolder() {
@@ -79,7 +80,7 @@ export default class ClassicFrame extends GradientCardFrame.with(
     }
 
     resolveBorder(card) {
-        if (this.hasArtBackground) return null;
+        if (this.isBorderless) return null;
         return super.resolveBorder(card);
     }
 

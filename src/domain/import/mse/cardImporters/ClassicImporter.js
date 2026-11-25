@@ -25,7 +25,7 @@ export default class ClassicImporter extends M15AlteredImporter {
     }
 
     get artSize() {
-        return 'standard';
+        return 'auto';
     }
 
     get dualLandBlend() {
