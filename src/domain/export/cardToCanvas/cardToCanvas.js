@@ -106,26 +106,15 @@ async function paintChildren(transforms, parent, ctx, rootRect) {
     await paintElements(transforms, groupedNodes, ctx, rootRect);
 }
 
-function getOffsetPosition(node) {
-    if (!node.parentNode) return { top: 0, left: 0 };
-    return {
-        top: node.offsetTop + getOffsetPosition(node.parentNode).top,
-        left: node.offsetLeft + getOffsetPosition(node.parentNode).left
-    };
-}
-
-function resolveTransform(style, node, rootRect) {
-    const transform = style.transform === 'none'
-        ? new DOMMatrix()
-        : new DOMMatrix(style.transform);
-
-    const [originX, originY] = style.transformOrigin.split(' ').map(parseFloat);
-    const x = originX + getOffsetPosition(node).left;
-    const y = originY + getOffsetPosition(node).top;
+function resolveTransform(transform, origin, node, rootRect) {
+    const [originX, originY] = origin.split(' ').map(parseFloat);
+    const rect = node.getBoundingClientRect();
+    const x = rect.left - rootRect.left + originX;
+    const y = rect.top - rootRect.top + originY;
 
     return new DOMMatrix()
         .translate(x, y)
-        .multiply(transform)
+        .multiply(new DOMMatrix(transform))
         .translate(-x, -y);
 }
 
@@ -135,11 +124,13 @@ function removeTransforms(transforms, node, rootRect) {
         const style = getComputedStyle(node);
         const transform = style?.transform || 'none';
         if (transform !== 'none') {
+            node.style.transform = 'none';
             transforms.set(node, {
-                resolvedTransform: resolveTransform(style, node, rootRect),
+                resolvedTransform: resolveTransform(
+                    transform, style.transformOrigin, node, rootRect
+                ),
                 transform,
             });
-            node.style.transform = 'none';
         }
     }
     Array.from(node.children).forEach(
