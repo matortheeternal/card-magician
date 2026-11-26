@@ -1,6 +1,12 @@
 import TextModule from '../Text/main.js';
 import { AbilityConverter } from './src/AbilityConverter.js';
 
+const ABILITY_SELECTOR = 'div.walker-ability, div.walker-static-ability';
+
+function sameRects(rects, previousRects) {
+    return JSON.stringify(rects) === JSON.stringify(previousRects);
+}
+
 export default class WalkerText extends TextModule {
     async init(card) {
         await super.init(card);
@@ -11,14 +17,19 @@ export default class WalkerText extends TextModule {
         return [AbilityConverter];
     }
 
-    onTextResize(event) {
-        const selector = 'div.walker-ability, div.walker-static-ability';
-        const abilities = event.detail.querySelectorAll(selector);
-        this.card.abilityCount = abilities.length;
-        this.card.abilityRects = Array.from(abilities).map(ability => {
+    getAbilityRects(textElement) {
+        const abilities = textElement.querySelectorAll(ABILITY_SELECTOR);
+        return Array.from(abilities).map(ability => {
             const rect = this.getCardClientRect(ability);
             return { top: Math.round(rect.top), height: Math.round(rect.height) };
         });
+    }
+
+    onTextResize(event) {
+        const abilityRects = this.getAbilityRects(event.detail);
+        if (sameRects(abilityRects, this.card.abilityRects)) return;
+        this.card.abilityCount = abilityRects.length;
+        this.card.abilityRects = abilityRects;
         changed(this.card, 'abilityRects');
     }
 
