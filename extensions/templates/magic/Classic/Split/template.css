@@ -60,8 +60,8 @@
     }
 
     module-container[render="renderPT"] {
-        top: 306px;
-        left: 177px;
+        right: 12px;
+        bottom: 5px;
     }
 
     footer {
@@ -120,8 +120,8 @@
     }
 
     module-container[render="renderPT"] {
-        top: 308px;
-        left: 176px;
+        right: 4px;
+        bottom: 1px;
         width: 56px;
         height: 29px;
     }

@@ -1,8 +1,6 @@
 module-container[module="Loyalty"] {
-    top: 445px;
-    right: auto;
-    bottom: auto;
-    left: 292px;
+    right: 23px;
+    bottom: 40px;
     width: 60px;
     height: 38px;
 }

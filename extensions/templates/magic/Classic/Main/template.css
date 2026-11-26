@@ -38,8 +38,8 @@
     }
 
     module-container[render="renderPT"] {
-        top: 461px;
-        left: 271px;
+        right: 23px;
+        bottom: 20px;
         width: 81px;
         height: 42px;
     }
@@ -92,7 +92,7 @@
     }
 
     &:has(.creature-level) module-container[render="renderPT"] {
-        top: 333px;
+        bottom: 148px;
     }
 
     .creature-level {

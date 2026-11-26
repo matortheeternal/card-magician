@@ -1,8 +1,6 @@
 module-container[render="renderPT"] {
-    top: 467px;
-    right: auto;
-    bottom: auto;
-    left: 295px;
+    right: 33px;
+    bottom: 29px;
     width: 47px;
     height: 27px;
     color: var(--title-color);
