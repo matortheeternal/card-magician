@@ -52,6 +52,11 @@
         padding-top: 0;
     }
 
+    module-container[module="Rarity"] {
+        max-height: 14px;
+        min-width: 14px;
+    }
+
     module-container[module="Text"] {
         height: 109px;
         margin: 4px 19px 0 20px;

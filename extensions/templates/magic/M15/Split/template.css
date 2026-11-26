@@ -47,8 +47,8 @@
     }
 
     module-container[module="PT"] {
-        bottom: -6px;
-        right: 9px;
+        bottom: -13px;
+        right: 10px;
     }
 
     .type-line {
@@ -60,8 +60,9 @@
         }
 
         module-container[module="Rarity"] {
-            width: 14px;
+            max-height: 14px;
             min-width: 14px;
+            margin-top: 2px;
         }
     }
 
