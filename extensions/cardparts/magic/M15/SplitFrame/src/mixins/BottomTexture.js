@@ -4,7 +4,8 @@ const BottomTextureMixin = {
         const image = this.coloredBlend(textureFolder, card.bottom, {
             ext: '.png'
         });
-        return this.background('bottom-texture', image);
+        const maskUrl = this.resolveSplitAssetPath('mask/half/bottom.png');
+        return this.background('bottom-texture', this.ctx.maskImage(image, maskUrl));
     }
 };
 
