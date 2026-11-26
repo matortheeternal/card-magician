@@ -1,5 +1,4 @@
 import ExportArtifact from '../ExportArtifact.js';
-import { waitForStableLayout } from '../../../shared/htmlUtils.js';
 import Stopwatch from '../../../shared/Stopwatch.js';
 import { cardToCanvas } from '../cardToCanvas/cardToCanvas.js';
 
@@ -57,6 +56,11 @@ export default class CardSheetArtifact extends ExportArtifact {
         }));
     }
 
+    async cardsRendered(container) {
+        const cardFaces = [...container.querySelectorAll('cm-card-face')];
+        await Promise.all(cardFaces.map(cardFace => cardFace.rendered()));
+    }
+
     applyGridStyle(container) {
         container.style.display = 'grid';
         container.style.gridTemplateColumns = `repeat(${this.config.columns}, auto)`;
@@ -75,8 +79,8 @@ export default class CardSheetArtifact extends ExportArtifact {
         await this.createCardElements(container);
         tracker.lap('createCardElements');
 
-        await waitForStableLayout(container);
-        tracker.lap('waitForStableLayout');
+        await this.cardsRendered(container);
+        tracker.lap('cardsRendered');
 
         try {
             const result = await cardToCanvas(container, { scale: this.scale });
@@ -107,8 +111,8 @@ export default class CardSheetArtifact extends ExportArtifact {
         await this.createCardElements(this.cardsContainer);
         tracker.lap('createCardElements');
 
-        await waitForStableLayout(this.cardsContainer);
-        tracker.lap('waitForStableLayout');
+        await this.cardsRendered(this.cardsContainer);
+        tracker.lap('cardsRendered');
 
         try {
             for (let i = 0; i < this.cards.length; i++) {

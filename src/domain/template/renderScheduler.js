@@ -110,11 +110,7 @@ export default class RenderScheduler {
 
     static async settle() {
         if (this.queue.length) this.flush();
-        const updates = [];
-        for (const face of document.querySelectorAll('cm-card-face')) {
-            for (const image of face.shadowRoot.querySelectorAll('crop-image'))
-                updates.push(image.updateComplete);
-        }
-        await Promise.all(updates);
+        const cardFaces = [...document.querySelectorAll('cm-card-face')];
+        await Promise.all(cardFaces.map(cardFace => cardFace.rendered()));
     }
 }
