@@ -63,15 +63,24 @@ export default class CodeField extends FieldComponent {
         const assistance = this.rulesAssistance;
         const config = window.activeGame?.config;
         if (!assistance || !config) return;
-        this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules',
-                   () => this.refreshHighlighting());
+        const refresh = () => this.refreshHighlighting();
+        this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules', refresh);
         const { definitionFields } = assistance;
         if (window.activeProject && definitionFields?.length) {
             this.watch('rules-definitions', window.activeProject, definitionFields,
-                       () => this.refreshHighlighting());
+                       refresh);
         }
-        this.watch('rules-metadata', this.model, assistance.faceFields,
-                   () => this.refreshHighlighting());
+        this.watch('rules-metadata', this.model, assistance.faceFields, refresh);
+        this.watchEligibility(assistance, refresh);
+    }
+
+    watchEligibility(assistance, refresh) {
+        const faces = assistance.getRulesCardFaces?.(this.model) ?? [];
+        for (const [index, face] of faces.entries()) {
+            if (face === this.model) continue;
+            this.watch(`rules-eligibility-${index}`, face, assistance.eligibilityFields,
+                       refresh);
+        }
     }
 
     refreshHighlighting() {

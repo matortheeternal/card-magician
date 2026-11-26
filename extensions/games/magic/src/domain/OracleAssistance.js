@@ -1,6 +1,9 @@
 import Oracle from 'oracle-of-pie';
 import { getPrintedColors } from './ColorIdentity.js';
 import { mechanicFields, projectDefinitions } from './projectMechanics.js';
+import {
+    eligibilityFields, getCardFaces, isOracleCard
+} from './oracleCardEligibility.js';
 import { markUnrecognizedText } from './hljsMtg.js';
 import { defaultOracleTagStyle, oracleTagStyles } from './oracleTagStyles.js';
 
@@ -15,12 +18,17 @@ function faceMetadata(face, faceCount) {
     };
 }
 
-function getFaces(card) {
-    return [card?.front, card?.back].filter(Boolean);
+function cardForFace(face) {
+    const root = face.isSubcard ? face.parent() : face;
+    return root.parent?.() ?? { front: root };
 }
 
 export default class OracleAssistance {
-    faceFields = ['name', 'superType', 'subType', 'loyalty', 'manaCost', 'colorOverride'];
+    eligibilityFields = eligibilityFields;
+    faceFields = [
+        'name', 'superType', 'subType', 'loyalty', 'manaCost', 'colorOverride',
+        ...eligibilityFields
+    ];
     defaultTagStyles = oracleTagStyles;
     defaultTagStyle = defaultOracleTagStyle;
     definitionFields = [...Object.values(mechanicFields), 'customTokens'];
@@ -52,11 +60,12 @@ export default class OracleAssistance {
     }
 
     getSuggestionModels(card) {
-        return getFaces(card).flatMap(face => [face, ...(face.subcards ?? [])]);
+        return getCardFaces(card).flatMap(face => [face, ...(face.subcards ?? [])]);
     }
 
     suggestTags(card) {
-        const faceCount = getFaces(card).length;
+        if (!isOracleCard(card)) return [];
+        const faceCount = getCardFaces(card).length;
         const suggestions = new Set();
         for (const face of this.getSuggestionModels(card)) {
             if (!face.rulesText?.trim()) continue;
@@ -66,9 +75,14 @@ export default class OracleAssistance {
         return [...suggestions].sort();
     }
 
+    getRulesCardFaces(face) {
+        return getCardFaces(cardForFace(face));
+    }
+
     highlightRules(editor, face) {
-        const rootFace = face.isSubcard ? face.parent() : face;
-        const faceCount = getFaces(rootFace.parent?.()).length || 1;
+        const card = cardForFace(face);
+        if (!isOracleCard(card)) return;
+        const faceCount = getCardFaces(card).length;
         const text = editor.textContent;
         if (!text.trim()) return;
         const parsed = this.parse(face, text, faceCount);

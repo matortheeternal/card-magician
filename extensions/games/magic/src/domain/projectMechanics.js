@@ -1,11 +1,8 @@
 import Oracle, { inferMechanics } from 'oracle-of-pie';
 import { inferMechanicAffinities } from './mechanicAffinities.js';
+import { getCardFaces, isOracleCard } from './oracleCardEligibility.js';
 
 let stockOracle;
-
-function getFaces(card) {
-    return [card?.front, card?.back].filter(Boolean);
-}
 
 export const mechanicFields = {
     keywords: 'customKeywords',
@@ -27,9 +24,10 @@ function scanFace(face) {
 }
 
 function scanCards(project, editorCard) {
-    return project.cards.map(card => {
+    return project.cards.flatMap(card => {
         const source = editorCard?.baseCard === card ? editorCard : card;
-        return { name: card.name, faces: getFaces(source).flatMap(scanFace) };
+        if (!isOracleCard(source)) return [];
+        return [{ name: card.name, faces: getCardFaces(source).flatMap(scanFace) }];
     });
 }
 
