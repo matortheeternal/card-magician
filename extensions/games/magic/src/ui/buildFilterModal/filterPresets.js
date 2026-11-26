@@ -225,7 +225,7 @@ const tagsGroup = {
             .sort((a, b) => b[1] - a[1])
             .map(([tag]) => ({
                 label: tag,
-                q: `tag:${tag.toLowerCase()}`
+                q: `tag=${tag.toLowerCase()}`
             }));
     },
 };

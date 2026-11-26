@@ -1,8 +1,10 @@
 import { registerPendingSave } from '../../../lifecycle.js';
-import { registerAction } from '../../systems/actionSystem.js';
+import { executeAction, registerAction } from '../../systems/actionSystem.js';
 
 const SMOKE_TESTING = appEnvironment.args.includes('--run-smoke-tests');
 const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 500;
+const IMMEDIATE_FIELDS = new Set(['tags', 'dismissedTags']);
+const report = createReporter({ unit: 'CardProperties', label: 'Card Properties' });
 
 function buildHTML(card) {
     if (!card) return '';
@@ -32,13 +34,17 @@ class CardProperties extends HTMLElement {
     }
 
     bind() {
-        this.addEventListener('cm-field-changed', () => {
-            this.save();
+        this.addEventListener('cm-field-changed', event => {
+            executeAction('set-status', 'changes');
+            this.save(this.#card).catch(() => {});
+            if (IMMEDIATE_FIELDS.has(event.detail.fieldId))
+                this.save.flush().catch(() => {});
         });
         registerAction('cancel-card-properties-save', () => this.save.cancel());
     }
 
-    set card(card) {
+    async setCard(card) {
+        if (this.save.pending) await this.save.flush();
         this.#card = card;
         if (this.isConnected) this.render();
     }
@@ -54,10 +60,25 @@ class CardProperties extends HTMLElement {
         this.innerHTML = buildHTML(this.#card);
     }
 
-    async save() {
-        selectedProjectCard.notes = this.#card.notes;
-        selectedProjectCard.tags = this.#card.tags;
-        await selectedProjectCard.save();
+    async save(card) {
+        try {
+            executeAction('set-status', 'saving');
+            await this.saveProperties(card);
+            executeAction('set-status', 'saved');
+        } catch (error) {
+            executeAction('set-status', 'failed');
+            report('save', error, [card.baseCard]);
+            throw error;
+        }
+    }
+
+    async saveProperties(card) {
+        const projectCard = card.baseCard;
+        projectCard.notes = card.notes;
+        projectCard.tags = card.tags;
+        for (const key of ['dismissedTags', 'inheritedTags', 'excludedInheritedTags'])
+            if (Object.hasOwn(card, key)) projectCard[key] = card[key];
+        await projectCard.save();
     }
 }
 

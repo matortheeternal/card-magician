@@ -1,0 +1,76 @@
+[data-tag-style="neutral"] {
+    --tag-background: var(--sl-color-neutral-100);
+    --tag-border: var(--sl-color-neutral-300);
+    --tag-foreground: var(--sl-color-neutral-800);
+}
+
+[data-tag-style="ivory"] {
+    --tag-background: var(--sl-color-yellow-50);
+    --tag-border: var(--sl-color-yellow-500);
+    --tag-foreground: var(--sl-color-yellow-800);
+}
+
+[data-tag-style="blue"] {
+    --tag-background: var(--sl-color-blue-50);
+    --tag-border: var(--sl-color-blue-500);
+    --tag-foreground: var(--sl-color-blue-800);
+}
+
+[data-tag-style="violet"] {
+    --tag-background: var(--sl-color-violet-100);
+    --tag-border: var(--sl-color-violet-400);
+    --tag-foreground: var(--sl-color-violet-800);
+}
+
+[data-tag-style="red"] {
+    --tag-background: var(--sl-color-red-50);
+    --tag-border: var(--sl-color-red-500);
+    --tag-foreground: var(--sl-color-red-800);
+}
+
+[data-tag-style="green"] {
+    --tag-background: var(--sl-color-green-50);
+    --tag-border: var(--sl-color-green-500);
+    --tag-foreground: var(--sl-color-green-800);
+}
+
+[data-tag-style="teal"] {
+    --tag-background: var(--sl-color-teal-100);
+    --tag-border: var(--sl-color-teal-400);
+    --tag-foreground: var(--sl-color-teal-800);
+}
+
+[data-tag-style="amber"] {
+    --tag-background: var(--sl-color-amber-200);
+    --tag-border: var(--sl-color-amber-500);
+    --tag-foreground: var(--sl-color-amber-950);
+}
+
+[data-tag-style="pink"] {
+    --tag-background: var(--sl-color-pink-100);
+    --tag-border: var(--sl-color-pink-400);
+    --tag-foreground: var(--sl-color-pink-800);
+}
+
+sl-tag[data-tag-style]::part(base),
+.tag-style-chip[data-tag-style] {
+    background: var(--tag-background);
+    border: 2px solid var(--tag-border);
+    color: var(--tag-foreground);
+}
+
+sl-tag[data-tag-style]::part(remove-button__base),
+sl-tag[data-tag-style] sl-icon-button::part(base),
+.tag-style-chip[data-tag-style] [data-click-action="removeTag"] {
+    color: var(--sl-color-neutral-1000);
+}
+
+sl-tag[data-tag-style]::part(remove-button__base):hover,
+sl-tag[data-tag-style] sl-icon-button::part(base):hover,
+.tag-style-chip[data-tag-style] [data-click-action="removeTag"]:hover {
+    background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.tag-style-chip[data-tag-style] [data-click-action="removeTag"] {
+    font-weight: var(--sl-font-weight-bold);
+}

@@ -1,14 +1,85 @@
-cm-edit-tags {
-    .tags-container {
-        display: grid;
-        grid-template-columns: auto minmax(auto, 10em) minmax(auto, 10em);
-        gap: var(--sl-spacing-x-small);
-        align-items: end;
+cm-edit-tags > sl-switch {
+    margin-bottom: var(--sl-spacing-small);
+}
 
-        > div {
-            display: contents;
-            font-size: var(--sl-input-font-size-small);
-            color: var(--sl-input-label-color);
-        }
+cm-tag-style-board[hidden] {
+    display: none;
+}
+
+cm-tag-style-board {
+    display: block;
+
+    .tag-style-controls {
+        display: grid;
+        gap: var(--sl-spacing-small);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+        align-items: end;
+        margin-bottom: var(--sl-spacing-medium);
+    }
+
+    .tag-style-groups {
+        columns: 24rem;
+        column-gap: var(--sl-spacing-small);
+    }
+
+    section {
+        break-inside: avoid;
+        margin-bottom: var(--sl-spacing-small);
+        min-width: 0;
+        border: 1px solid var(--sl-color-neutral-200);
+        border-radius: var(--sl-border-radius-medium);
+        padding: var(--sl-spacing-x-small);
+    }
+
+    section[data-drag-over] {
+        border-color: var(--sl-color-primary-600);
+        background: var(--sl-color-primary-50);
+    }
+
+    h3 {
+        margin: 0;
+        font-weight: var(--sl-font-weight-semibold);
+    }
+
+    .tag-style-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-2x-small);
+        align-content: start;
+        min-height: 4rem;
+        margin-top: var(--sl-spacing-x-small);
+        padding: var(--sl-spacing-3x-small);
+    }
+
+    .tag-style-chip {
+        display: inline-flex;
+        max-width: 100%;
+        align-items: center;
+        border-radius: var(--sl-border-radius-medium);
+        font-size: var(--sl-font-size-x-small);
+        line-height: var(--sl-line-height-normal);
+    }
+
+    .tag-style-chip:not([draggable]) {
+        padding: var(--sl-spacing-3x-small) var(--sl-spacing-x-small);
+    }
+
+    .tag-style-chip[draggable] {
+        cursor: grab;
+    }
+
+    button {
+        border: 0;
+        background: transparent;
+        padding: var(--sl-spacing-3x-small) var(--sl-spacing-2x-small);
+        color: inherit;
+        font: inherit;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+    }
+
+    button[aria-pressed="true"] {
+        text-decoration: underline;
+        font-weight: var(--sl-font-weight-bold);
     }
 }

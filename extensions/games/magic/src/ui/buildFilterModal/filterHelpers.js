@@ -1,3 +1,5 @@
+import { canonicalTag } from 'oracle-of-pie/src/tags/tagRelationships.js';
+
 export function getProjectSubtypes() {
     const subtypes = {};
 
@@ -26,7 +28,8 @@ export function getProjectTags() {
     };
 
     activeProject.cards.forEach(card => {
-        card.tags.forEach(addTag);
+        const tags = new Set((card.tags ?? []).map(canonicalTag));
+        tags.forEach(addTag);
     });
 
     return tags;

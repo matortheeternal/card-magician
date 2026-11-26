@@ -25,6 +25,44 @@ cm-tags {
         }
     }
 
+    .inherited-toggle {
+        border: 0;
+        background: transparent;
+        color: var(--sl-color-neutral-800);
+        font-size: var(--sl-font-size-x-small);
+        cursor: pointer;
+        padding: var(--sl-spacing-3x-small) var(--sl-spacing-2x-small);
+    }
+
+    .inherited-tag-items:not([hidden]) {
+        display: contents;
+    }
+
+    .tag-suggestions:not([hidden]) {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sl-spacing-2x-small);
+        margin-top: var(--sl-spacing-2x-small);
+    }
+
+    .tag-suggestion-label {
+        flex-basis: 100%;
+        color: var(--sl-color-neutral-600);
+        font-size: var(--sl-font-size-small);
+    }
+
+    .tag-suggestion-items {
+        display: contents;
+    }
+
+    .tag-suggestions sl-button[hidden] {
+        display: none;
+    }
+
+    .tag-suggestions sl-icon-button::part(base) {
+        padding: var(--sl-spacing-3x-small);
+    }
+
     div.input {
         display: flex;
         flex-direction: row;

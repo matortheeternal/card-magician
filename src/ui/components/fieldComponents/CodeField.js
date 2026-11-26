@@ -31,13 +31,24 @@ export default class CodeField extends FieldComponent {
         return field.type === 'code';
     }
 
+    get rulesAssistance() {
+        if (this.field.id !== 'rulesText' || this.field.syntax !== 'mtg') return null;
+        return window.activeGame?.oracleAssistance;
+    }
+
+    get editor() {
+        return this.querySelector('.codejar-editor');
+    }
+
     get syntax() {
         const syntaxKey = this.field.syntax || 'plaintext';
-        return function(editor) {
+        return editor => {
             if (!hljs.listLanguages().includes(syntaxKey)) return;
             const code = editor.textContent;
             editor.innerHTML = hljs.highlight(code, { language: syntaxKey }).value;
             if (syntaxKey === 'yaml') fixYAML(editor);
+            if (window.activeGame?.config?.get('highlightUnrecognizedRules'))
+                this.rulesAssistance?.highlightRules(editor, this.model);
         };
     }
 
@@ -49,6 +60,25 @@ export default class CodeField extends FieldComponent {
 
     bind() {
         this.jar.onUpdate(code => this.onChange(code));
+        const assistance = this.rulesAssistance;
+        const config = window.activeGame?.config;
+        if (!assistance || !config) return;
+        this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules',
+                   () => this.refreshHighlighting());
+        const { definitionFields } = assistance;
+        if (window.activeProject && definitionFields?.length) {
+            this.watch('rules-definitions', window.activeProject, definitionFields,
+                       () => this.refreshHighlighting());
+        }
+        this.watch('rules-metadata', this.model, assistance.faceFields,
+                   () => this.refreshHighlighting());
+    }
+
+    refreshHighlighting() {
+        const editor = this.editor;
+        const position = editor.matches(':focus') ? this.jar.save() : null;
+        this.syntax(editor);
+        if (position) this.jar.restore(position);
     }
 
     inputValue(value) {

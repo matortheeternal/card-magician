@@ -60,10 +60,12 @@ export default class AppConfig {
         this.queueSave();
     }
 
-    async set(key, value) {
+    async set(key, value, { onlyIfUnset = false } = {}) {
         await this.#loadPromise;
+        if (onlyIfUnset && Object.hasOwn(this.#data, key)) return;
         this.#data[key] = value;
         this.queueSave();
+        changed(this, key);
     }
 
     get(key, fallback = null) {

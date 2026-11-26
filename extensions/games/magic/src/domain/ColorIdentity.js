@@ -1,5 +1,5 @@
 import { isArtifact, isLand, getImplicitLandSymbols } from './cardTraits/cardTypes.js';
-import { ActivationCost } from 'mana-scribe';
+import { ActivationCost, ManaCost } from 'mana-scribe';
 
 const MANA_SYMBOL_PATTERN = /{(.+?)}/g;
 
@@ -149,4 +149,13 @@ function getTextSymbols(rulesText) {
 
 export function getCardFaceColors(cardFace) {
     return ColorIdentity.fromCardFace(cardFace).getColors();
+}
+
+export function getPrintedColors(face) {
+    const { colorOverride } = face;
+    const manaCost = typeof face.manaCost === 'string'
+        ? ManaCost.parse(face.manaCost)
+        : face.manaCost;
+    return getCardFaceColors({ manaCost, colorOverride })
+        .map(color => color.char.toUpperCase());
 }

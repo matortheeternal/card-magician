@@ -8,7 +8,9 @@ import {
 import { loadImageFixture, loadTextFixture } from '../shared/testing/steps/fixtures.js';
 import { expectFileContent, readCardData } from '../shared/testing/steps/disk.js';
 import { selectCard } from '../shared/testing/steps/cardList.js';
+import { selectSettingsTab } from '../shared/testing/steps/settings.js';
 import { reopenProject } from '../shared/testing/steps/projects.js';
+import { tagManager } from '../domain/game/tagManager.js';
 
 const RULES_TEXT = 'Flying\n\nIf a source you control would deal damage to an opponent, '
     + 'it deals double that damage instead.';
@@ -27,6 +29,8 @@ describe('Card editing', () => {
     });
 
     afterEach(async () => {
+        await activeGame.config.set('suggestOracleTags', false);
+        await activeGame.config.set('highlightUnrecognizedRules', false);
         await deleteTestProject();
     });
 
@@ -114,6 +118,191 @@ describe('Card editing', () => {
            await selectCard(reopened);
            await clearFrontFace(reopened);
        }, 30000);
+
+    it('uses global editor preferences and remembers accepted and dismissed suggestions',
+       async () => {
+           await createCard();
+           const rulesText = 'Choose one —\n- Draw a card. (Invent {2} moons.)'
+               + '\n- Invent {2} moons. Invent {2} moons.';
+           await setCardFields({ manaCost: '1W', rulesText });
+           const rules = new FieldInteractor('rulesText', { faceKey: 'front' });
+           const tags = new FieldInteractor('tags', { mode: CARD_PROPERTIES });
+           const editor = rules.fieldElement.editor;
+           const suggestions = tags.fieldElement.suggestionsContainer;
+           const marks = () => [...editor.querySelectorAll('.hljs-unrecognized')];
+           expect(suggestions.hidden).toBeTrue();
+           expect(marks()).toEqual([]);
+
+           const workspace = await cmTest.openSettings();
+           const editorPage = 'cm-magic-editor-settings';
+           const settings = await selectSettingsTab(workspace, editorPage);
+           const suggestToggle = '[data-setting="suggestOracleTags"]';
+           await cmTest.click(settings.querySelector(suggestToggle));
+           expect(getComputedStyle(suggestions).flexWrap).toBe('wrap');
+           expect(marks()).toEqual([]);
+           await cmTest.click(
+               settings.querySelector('[data-setting="highlightUnrecognizedRules"]')
+           );
+           await cmTest.closeSettings();
+
+           expect(editor.textContent).toBe(rulesText);
+           expect(marks().map(mark => mark.textContent).join(''))
+               .toBe('Invent {2} moonsInvent {2} moons');
+           expect(editor.querySelectorAll('.hljs-symbol .hljs-unrecognized').length)
+               .toBe(2);
+           expect(getComputedStyle(marks()[0]).textDecorationStyle).toBe('wavy');
+
+           await setCardFields({ manaCost: '2U' });
+           expect(marks().map(mark => mark.textContent).join(''))
+               .toBe('Invent {2} moonsInvent {2} moons');
+
+           const suggestion = tag =>
+               suggestions.querySelector(`[data-suggested-tag="${tag}"]`);
+           expect(suggestion('draw')).toBeNull();
+           await flushCard();
+           const accept = suggestion('pure-draw').querySelector('[name="plus-lg"]');
+           await cmTest.click(accept);
+           await cmTest.eventually(async () => {
+               const data = await readCardData(selectedProjectCard);
+               return data?.tags?.includes('draw');
+           });
+           const status = document.querySelector('cm-floating-status');
+           await cmTest.eventually(() => status.textContent.includes('Saved'));
+           expect(activeGame.filter([selectedProjectCard], 'tag=draw'))
+               .toEqual([selectedProjectCard]);
+           const field = tags.fieldElement;
+           expect(field.inheritedTagItems.hidden).toBeTrue();
+           expect(field.inheritedToggle.textContent).toBe('Show inherited');
+           expect(field.inheritedTagItems.nextElementSibling).toBe(field.inheritedToggle);
+           await cmTest.click(field.inheritedToggle);
+           expect(field.inheritedTagItems.hidden).toBeFalse();
+           expect(field.inheritedTagItems.parentElement)
+               .toBe(field.tagsContainer.parentElement);
+
+           const inherited = field.inheritedTagItems.querySelector('sl-tag');
+           expect(inherited.textContent).toBe('draw');
+           await inherited.updateComplete;
+           await cmTest.click(inherited.shadowRoot.querySelector('sl-icon-button'));
+           const dismiss = suggestion('modal').querySelector('[name="x-lg"]');
+           await cmTest.click(dismiss);
+           await flushCardProperties();
+
+           activeProject.suggestOracleTags = false;
+           activeProject.highlightUnrecognizedRules = false;
+           await activeProject.save();
+           const project = await reopenProject();
+           expect(project.suggestOracleTags).toBeUndefined();
+           expect(project.highlightUnrecognizedRules).toBeUndefined();
+           const config = activeGame.config;
+           await config.flush();
+           const stored = JSON.parse(await platform.getStoredData(config.key));
+           expect(stored.suggestOracleTags).toBeTrue();
+           expect(stored.highlightUnrecognizedRules).toBeTrue();
+           const [card] = project.cards;
+           expect(card.tags).toEqual(['pure-draw']);
+           expect(card.dismissedTags).toEqual(['modal']);
+           expect(card.excludedInheritedTags).toEqual(['draw']);
+           expect(activeGame.filter(project.cards, 'tag=draw')).toEqual([]);
+           await selectCard(card);
+           expect(new FieldInteractor('manaCost', { faceKey: 'front' }).value).toBe('2U');
+           expect(tags.fieldElement.suggestions).toEqual([]);
+       });
+
+    it('matches tag styles and limits the initial suggestions', async () => {
+        await createCard();
+        const findTag = spyOn(tagManager, 'find').and.callThrough();
+        findTag.withArgs('activated-ability').and.returnValue({
+            text: 'activated-ability',
+            variant: 'success'
+        });
+        findTag.withArgs('attack-trigger').and.returnValue(undefined);
+        const rulesText = 'Flying, vigilance, trample'
+            + '\nWhen this creature enters, draw a card.'
+            + '\nWhenever this creature attacks, create a Treasure token.\n{T}: Add {G}.';
+        await setCardFields({ superType: 'Creature', rulesText });
+        await activeGame.config.set('suggestOracleTags', true);
+
+        const field = new FieldInteractor('tags', { mode: CARD_PROPERTIES }).fieldElement;
+        const tags = () => [...field.suggestionsContainer.querySelectorAll('sl-tag')];
+        expect(tags().length).toBe(6);
+        expect(tags()[0].dataset.tagStyle).toBe('green');
+        expect(tags()[1].dataset.tagStyle).toBe('red');
+        expect(tags()[0].firstElementChild.name).toBe('plus-lg');
+        expect(tags()[0].lastElementChild.name).toBe('x-lg');
+
+        await cmTest.click(field.suggestionToggle);
+        expect(tags().length).toBe(field.suggestions.length);
+        expect(tags().length).toBeGreaterThan(6);
+        await cmTest.click(field.suggestionToggle);
+        expect(tags().length).toBe(6);
+    });
+
+    it('moves Oracle tags between styles and persists catalog removals', async () => {
+        await createCard();
+        await setCardFields({ rulesText: 'Draw a card.' });
+        await setCardFields({ tags: ['project-label'] }, { mode: CARD_PROPERTIES });
+        await activeGame.config.set('suggestOracleTags', true);
+
+        const originalTags = structuredClone(tagManager.collection);
+        try {
+            await exerciseTagCatalog();
+        } finally {
+            tagManager.collection = originalTags;
+            changed(tagManager, 'tags');
+            tagManager.scheduleSave();
+            await tagManager.flush();
+            await cmTest.closeSettings();
+        }
+    });
+
+    async function exerciseTagCatalog() {
+        const tabs = document.querySelector('#workspace-tabs');
+        const workspace = tabs.querySelector('cm-settings-workspace');
+        await cmTest.click(tabs.querySelector('sl-tab[panel="settings"]'));
+        await cmTest.eventually(() => workspace.activeNavItem);
+        const settings = await selectSettingsTab(workspace, 'cm-edit-tags');
+        const board = settings.board;
+        const pureDraw = () => board.querySelector('[data-tag="pure-draw"]');
+        const suggestions = document.querySelector('cm-card-properties cm-tags');
+        expect(settings.projectOnlyToggle.checked).toBeTrue();
+        expect([...board.querySelectorAll('[data-tag]')].map(chip => chip.dataset.tag))
+            .toEqual(['project-label']);
+        await cmTest.click(settings.projectOnlyToggle);
+        expect(pureDraw().dataset.tagStyle).toBe('teal');
+        expect(getComputedStyle(board.groups).columnWidth).not.toBe('auto');
+        const items = pureDraw().parentElement;
+        expect(getComputedStyle(items).overflowY).toBe('visible');
+        await cmTest.click(settings.projectOnlyToggle);
+        expect(pureDraw()).toBeNull();
+        await cmTest.click(settings.projectOnlyToggle);
+        const dataTransfer = new DataTransfer();
+        pureDraw().dispatchEvent(
+            new DragEvent('dragstart', { bubbles: true, dataTransfer })
+        );
+        board.querySelector('[data-style-group="amber"]').dispatchEvent(
+            new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer })
+        );
+        expect(pureDraw().dataset.tagStyle).toBe('amber');
+        const chip = suggestions.querySelector('[data-suggested-tag="pure-draw"]');
+        expect(chip.dataset.tagStyle).toBe('amber');
+        await chip.updateComplete;
+        const base = chip.shadowRoot.querySelector('[part="base"]');
+        expect(getComputedStyle(base).borderTopWidth).toBe('2px');
+
+        await cmTest.click(pureDraw().querySelector('[data-click-action="selectTag"]'));
+        board.styleSelect.value = 'blue';
+        board.styleSelect.emit('sl-change');
+        expect(pureDraw().dataset.tagStyle).toBe('blue');
+
+        spyOn(dialog, 'confirm').and.resolveTo(true);
+        await cmTest.click(pureDraw().querySelector('[data-click-action="removeTag"]'));
+        await cmTest.eventually(() => !pureDraw());
+        expect(suggestions.suggestions).toEqual(['draw']);
+        await tagManager.flush();
+        await tagManager.load();
+        expect(tagManager.find('pure-draw').variant).toBe('blue');
+        expect(tagManager.find('pure-draw').hidden).toBeTrue();
+    }
 
     it('keeps the current image source after saving and cropping', async () => {
         await createCard();

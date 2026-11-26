@@ -1,16 +1,21 @@
 import CardMagicianSettings from './CardMagicianSettings.js';
-import editTagFields from '../components/editTag/editTagFields.js';
+import '../components/editTag/TagStyleBoard.js';
 import {
-    findTag,
-    findOrCreateTag,
-    getTags,
-    deleteTag,
-    tagManager,
+    findOrCreateTag, findTag, getTags, hideTag, setTagStyle, tagStyle
 } from '../../domain/game/tagManager.js';
 import { registerSettings } from './settingsRegistry.js';
-import { removeTagFromSet } from '../../domain/projects/projectManager.js';
 
 const L = localize('settings');
+
+function usedTagNames(project) {
+    const editor = window.activeEditorCard;
+    const names = new Set();
+    for (const card of project?.cards ?? []) {
+        const tags = editor?.baseCard === card ? editor.tags : card.tags;
+        for (const tag of tags ?? []) names.add(tag);
+    }
+    return names;
+}
 
 export default class EditTags extends CardMagicianSettings {
     static id = 'cm-edit-tags';
@@ -19,73 +24,89 @@ export default class EditTags extends CardMagicianSettings {
     static groupWeight = 896;
 
     static search(query) {
-        return editTagFields.filter(field => {
-            return this.fieldMatches(field, query);
-        });
+        const field = { label: L`Tag styles` };
+        return this.fieldMatches(field, query) ? [field] : [];
     }
 
-    get tagsContainer() {
-        return this.querySelector('div.tags-container');
+    get board() {
+        return this.querySelector('cm-tag-style-board');
     }
 
-    get model() {
-        return getTags();
+    get projectOnlyToggle() {
+        return this.querySelector('sl-switch');
+    }
+
+    get emptyMessage() {
+        return this.querySelector('.no-project-tags');
     }
 
     bind() {
-        this.handleEvents('click', {
-            addTag: () => this.addTag()
+        this.handleEvents('click', { addTag: () => this.addTag() });
+        this.on('sl-change', event => {
+            if (event.target === this.projectOnlyToggle) this.refreshTags();
         });
-        this.addEventListener('remove-tag', event => {
-            removeTagFromSet(event.detail.tag);
-            deleteTag(event.detail.tag);
-            tagManager.scheduleSave();
-        });
+        this.on('move-tag', event => this.moveTag(event.detail));
+        this.on('remove-tag', event => this.removeTag(event.detail));
     }
 
-    renderTag(tag) {
-        const element = document.createElement('cm-edit-tag');
-        element.tag = tag;
-        this.tagsContainer.appendChild(element);
+    visibleTagNames() {
+        const names = usedTagNames(window.activeProject);
+        const catalog = this.projectOnlyToggle.checked ? [] : getTags();
+        for (const { text } of catalog) names.add(text);
+        return [...names].filter(text => !findTag(text)?.hidden);
     }
 
-    renderTags() {
-        for (const tag of this.model)
-            this.renderTag(tag);
+    refreshTags() {
+        const tags = this.visibleTagNames()
+            .map(text => ({ text, style: tagStyle(text) }))
+            .sort((a, b) => a.text.localeCompare(b.text));
+        this.board.tags = tags;
+        const empty = this.projectOnlyToggle.checked && !tags.length;
+        this.board.hidden = empty;
+        this.emptyMessage.hidden = !empty;
     }
 
     render() {
-        this.innerHTML = (
-            `<div class="header">
+        const filterState = window.activeProject ? 'checked' : 'disabled';
+        this.innerHTML = `
+            <div class="header">
                 <p class="text-muted">
-                    ${L`Edit tags for use with this game.`}
+                    ${L`Drag tags between styles or select a tag and choose a style.`}
                 </p>
                 <sl-button data-click-action="addTag" variant="primary">
                     <sl-icon slot="prefix" name="plus-lg"></sl-icon>
                     ${L`Add Tag`}
                 </sl-button>
             </div>
-            <div class=tags-container>
-                <div style="display: contents">
-                    <div>Tag</div>
-                    <div>Variant</div>
-                    <div></div>
-                </div>
-            </div>`
-        );
-        this.renderTags();
+            <sl-switch ${filterState}>${L`Used in this project`}</sl-switch>
+            <p class="no-project-tags text-muted" hidden>
+                ${L`No tags are in use in this project.`}
+            </p>
+            <cm-tag-style-board></cm-tag-style-board>`;
+        this.refreshTags();
     }
 
     async addTag() {
-        const text = await dialog.prompt(L`Enter tag name`);
+        const text = (await dialog.prompt(L`Enter tag name`))?.trim();
         if (!text) return;
-        if (findTag(text)) {
+        if (getTags().some(tag => tag.text === text)) {
             await dialog.alert(L`Tag ${text} already exists.`);
             return;
         }
-        const tag = findOrCreateTag(text);
-        this.renderTag(tag);
-        tagManager.scheduleSave();
+        findOrCreateTag(text);
+        this.projectOnlyToggle.checked = false;
+        this.refreshTags();
+    }
+
+    moveTag({ text, style }) {
+        setTagStyle(text, style);
+        this.refreshTags();
+    }
+
+    async removeTag(text) {
+        if (!await dialog.confirm(L`Remove tag ${text} from the tag catalog?`)) return;
+        hideTag(text);
+        this.refreshTags();
     }
 }
 

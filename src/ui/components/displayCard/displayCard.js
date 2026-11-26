@@ -63,7 +63,7 @@ export default class DisplayCard extends ReactiveComponent {
             toggleDisplay(this.useFlip, this.flipButton);
             toggleDisplay(this.useRotate, this.rotateButton);
             this.querySelector('cm-card').card = card;
-            this.querySelector('cm-card-properties').card = card;
+            return this.querySelector('cm-card-properties').setCard(card);
         });
         registerHotkey('Ctrl+\\', () => this.flipCard());
         registerState('preview-card', {

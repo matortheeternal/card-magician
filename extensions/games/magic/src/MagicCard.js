@@ -1,3 +1,4 @@
+import { reconcileCardTags } from './domain/cardTagInheritance.js';
 import { collectMap } from './ui/listView/columns.js';
 
 // we extend window.CardMagicianCard so the IDE does not get confused
@@ -10,6 +11,10 @@ export default class MagicCard extends window.CardMagicianCard {
             tags: [],
             ...data
         });
+        const { tags, inheritedTags } = reconcileCardTags(this);
+        this.tags = tags;
+        if (inheritedTags.length || Object.hasOwn(this, 'inheritedTags'))
+            this.inheritedTags = inheritedTags;
     }
 
     get fileDefinitions() {

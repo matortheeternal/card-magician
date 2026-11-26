@@ -11,6 +11,10 @@
         margin: 4px 0;
     }
 
+    .hljs-unrecognized {
+        text-decoration: underline wavy var(--sl-color-blue-500);
+    }
+
     .hljs-comment {
         font-style: italic;
     }
