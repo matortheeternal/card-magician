@@ -1,0 +1,121 @@
+:is(cm-color-affinity, cm-reminder-texts) {
+    fieldset {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    legend {
+        padding: 0;
+        margin-bottom: var(--sl-spacing-3x-small);
+        font-size: var(--sl-input-label-font-size-small);
+        color: var(--sl-input-label-color);
+    }
+
+    .field-box {
+        padding: var(--sl-spacing-x-small);
+        background: var(--sl-input-background-color);
+        border: var(--sl-input-border-width) solid var(--sl-input-border-color);
+        border-radius: var(--sl-input-border-radius-small);
+    }
+}
+
+cm-color-affinity {
+    img {
+        display: block;
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    sl-button {
+        margin-inline-end: var(--sl-spacing-2x-small);
+    }
+
+    sl-button::part(base) {
+        width: var(--sl-input-height-small);
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+    }
+
+    sl-button::part(label) {
+        display: flex;
+        align-items: center;
+        padding: 0;
+    }
+
+    [data-tier="none"]::part(base) {
+        background: transparent;
+        border-color: transparent;
+        opacity: .5;
+    }
+
+    [data-tier="primary"]::part(base) {
+        background: var(--sl-color-primary-200);
+        border-color: var(--sl-color-primary-600);
+    }
+
+    [data-tier="secondary"]::part(base) {
+        background: transparent;
+        border-color: var(--sl-color-primary-600);
+    }
+
+    [data-tier="tertiary"]::part(base) {
+        background: transparent;
+        border-color: var(--sl-color-neutral-500);
+        border-style: dashed;
+    }
+}
+
+cm-reminder-texts {
+    .field-box,
+    .reminder-rows {
+        display: grid;
+        gap: var(--sl-spacing-x-small);
+    }
+
+    .reminder-rows:empty {
+        display: none;
+    }
+
+    .add-btn {
+        justify-self: start;
+    }
+
+    .reminder-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "text actions" "type actions";
+        gap: var(--sl-spacing-x-small);
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
+        border: 1px solid var(--sl-panel-border-color);
+        border-radius: var(--sl-border-radius-medium);
+        background-color: #111;
+
+        > p {
+            grid-area: text;
+            margin: 0;
+            font-size: var(--sl-input-font-size-small);
+            font-style: italic;
+            white-space: pre-wrap;
+        }
+
+        > sl-select {
+            grid-area: type;
+            justify-self: start;
+            width: 9rem;
+        }
+
+        > sl-select::part(form-control-label) {
+            position: absolute;
+            clip-path: inset(50%);
+        }
+    }
+
+    .reminder-actions {
+        grid-area: actions;
+        display: flex;
+        align-self: start;
+    }
+}

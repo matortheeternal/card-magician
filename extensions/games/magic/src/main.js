@@ -22,6 +22,7 @@ import MagicCard from './MagicCard.js';
 import MagicSymbols from './domain/symbols/MagicSymbols.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
+import MechanicSettings from './ui/settings/MechanicSettings.js';
 import MagicEditorSettings from './ui/settings/MagicEditorSettings.js';
 import MagicSettings from './ui/settings/MagicSettings.js';
 import SetIconEditorSettings from './ui/settings/SetIconEditorSettings.js';
@@ -75,6 +76,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.autoNumberCards = autoNumberCards;
         this.registerSettings(MagicSettings);
         this.registerSettings(MagicEditorSettings);
+        this.registerSettings(MechanicSettings);
         this.registerSettings(FaceSymbolSettings);
         this.registerSettings(SetIconEditorSettings);
         this.registerSettings(MagicProjectDetails);

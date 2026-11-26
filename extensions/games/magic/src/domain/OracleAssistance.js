@@ -1,5 +1,6 @@
 import Oracle from 'oracle-of-pie';
 import { getPrintedColors } from './ColorIdentity.js';
+import { mechanicFields, projectDefinitions } from './projectMechanics.js';
 import { markUnrecognizedText } from './hljsMtg.js';
 import { defaultOracleTagStyle, oracleTagStyles } from './oracleTagStyles.js';
 
@@ -22,16 +23,25 @@ export default class OracleAssistance {
     faceFields = ['name', 'superType', 'subType', 'loyalty', 'manaCost', 'colorOverride'];
     defaultTagStyles = oracleTagStyles;
     defaultTagStyle = defaultOracleTagStyle;
+    definitionFields = [...Object.values(mechanicFields), 'customTokens'];
     #cache = new WeakMap();
+    #definitionKey;
     #oracle;
 
-    get oracle() {
-        this.#oracle ??= new Oracle();
+    oracleFor(project) {
+        const definitions = projectDefinitions(project);
+        const key = JSON.stringify(definitions);
+        if (key === this.#definitionKey) return this.#oracle;
+        const enabled = Object.entries(definitions).map(([kind, entries]) =>
+            [kind, entries.filter(entry => !entry.disabled)]);
+        this.#oracle = new Oracle({ definitions: Object.fromEntries(enabled) });
+        this.#definitionKey = key;
+        this.#cache = new WeakMap();
         return this.#oracle;
     }
 
     parse(face, text, faceCount) {
-        const oracle = this.oracle;
+        const oracle = this.oracleFor(window.activeProject);
         const input = { ...faceMetadata(face, faceCount), text };
         const key = JSON.stringify(input);
         const cached = this.#cache.get(face);

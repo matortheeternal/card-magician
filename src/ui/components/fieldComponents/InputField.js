@@ -9,6 +9,11 @@ export default class InputField extends FieldComponent {
         return field.type === 'input' || !field.type;
     }
 
+    setModelAndField(model, field) {
+        this.eventKey = field.eventKey ?? 'sl-input';
+        super.setModelAndField(model, field);
+    }
+
     get input() {
         return this.querySelector('sl-input');
     }

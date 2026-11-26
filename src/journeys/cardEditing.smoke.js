@@ -208,6 +208,128 @@ describe('Card editing', () => {
            expect(tags.fieldElement.suggestions).toEqual([]);
        });
 
+    it('autodetects grouped reminders and saves mechanic editing and color affinity',
+       async () => {
+           await createCard();
+           await activeGame.config.set('highlightUnrecognizedRules', true);
+           await activeGame.config.set('suggestOracleTags', true);
+           const reminder = 'When this creature enters, draw a card.';
+           const variant = 'Create a Treasure token.';
+           await setCardFields({
+               name: 'Mist Singer',
+               manaCost: '1U',
+               rulesText: `Mistsong (${reminder})\nMistsong (${variant})\nGlimmer.`
+           });
+           await flushCard();
+           const rules = new FieldInteractor('rulesText', { faceKey: 'front' });
+           const editor = rules.fieldElement.editor;
+           expect(editor.querySelectorAll('.hljs-unrecognized').length).toBe(3);
+
+           const workspace = await cmTest.openSettings();
+           const settings = await selectSettingsTab(workspace, 'cm-mechanic-settings');
+           const scan = settings.querySelector('[data-click-action="scan"]');
+           expect(settings.querySelector('[type="submit"]')).toBeNull();
+           expect(scan.textContent).toBe('Autodetect');
+           await cmTest.click(scan);
+           expect(settings.list.activeRow.data.name).toBe('Mistsong');
+           expect(settings.list.activeRow.data.type).toBe('Keyword ability');
+           expect(editor.querySelectorAll('.hljs-unrecognized').length).toBe(1);
+           const reminders = settings.querySelector('cm-reminder-texts');
+           const reminderTexts = () => [...reminders.list.children]
+               .map(row => row.querySelector(':scope > p').textContent);
+           expect(reminderTexts()).toEqual([reminder, variant]);
+           expect(reminders.querySelector('sl-textarea')).toBeNull();
+
+           const blue = settings.querySelector('[data-color="U"]');
+           expect(blue.dataset.tier).toBe('primary');
+           await blue.updateComplete;
+           const symbol = blue.querySelector('img').getBoundingClientRect();
+           const button = blue.getBoundingClientRect();
+           expect(symbol.y + symbol.height / 2)
+               .toBeCloseTo(button.y + button.height / 2, 0);
+           expect(symbol.x + symbol.width / 2)
+               .toBeCloseTo(button.x + button.width / 2, 0);
+           for (const tier of ['secondary', 'tertiary', 'none', 'primary', 'secondary']) {
+               await cmTest.click(blue);
+               expect(blue.dataset.tier).toBe(tier);
+           }
+           const action = name =>
+               settings.querySelector(`[data-click-action="${name}"]`);
+           const third = 'Gain 2 life.';
+           const prompt = spyOn(dialog, 'prompt').and.resolveTo('Gain 1 life.');
+           await cmTest.click(reminders.querySelector('[data-click-action="add"]'));
+           await cmTest.eventually(() => reminderTexts().length === 3);
+           prompt.and.resolveTo(third);
+           await cmTest.click(reminders.querySelector(
+               '.reminder-row:last-child [data-click-action="editReminder"]'
+           ));
+           expect(prompt.calls.mostRecent().args[1].defaultValue).toBe('Gain 1 life.');
+           await cmTest.eventually(() => reminderTexts()[2] === third);
+           const type = reminders.querySelector('.reminder-row:last-child sl-select');
+           await expectTypeMenuAligned(type);
+           type.value = 'granted';
+           type.dispatchEvent(new Event('sl-change', { bubbles: true }));
+           await cmTest.click(scan);
+           expect(settings.list.rows.length).toBe(1);
+
+           const variantRow = reminders.list.children[1];
+           const replaceVariant = variantRow.querySelector(
+               '[data-click-action="replaceReminder"]'
+           );
+           await cmTest.click(replaceVariant);
+           expect(reminders.dialog.label).toBe('Replace reminder');
+           reminders.operation.value = '1';
+           await cmTest.click(reminders.applyButton);
+           await cmTest.eventually(() => reminders.list.childElementCount === 2);
+           expect(selectedProjectCard.front.rulesText).toContain(`Mistsong (${third})`);
+
+           const addMechanic = action('newMechanic');
+           await cmTest.click(addMechanic);
+           const field = id =>
+               settings.querySelector(`form-field[field-id="${id}"]`).fieldElement;
+           field('kind').inputValue('actions');
+           const actionReminders = field('reminders');
+           expect(actionReminders.list.childElementCount).toBe(0);
+           prompt.and.resolveTo('Draw a card.');
+           await cmTest.click(actionReminders.querySelector('[data-click-action="add"]'));
+           await cmTest.eventually(() => actionReminders.list.childElementCount === 1);
+           field('name').inputValue('Glimmer');
+           await cmTest.eventually(() => activeProject.customKeywordActions.length);
+           const currentRules = new FieldInteractor('rulesText', { faceKey: 'front' });
+           expect(currentRules.fieldElement.editor.querySelector('.hljs-unrecognized'))
+               .toBeNull();
+           expect(settings.list.activeRow.data.type).toBe('Keyword action');
+           await cmTest.closeSettings();
+
+           const project = await reopenProject();
+           expect(project.customKeywords).toEqual([
+               { name: 'Mistsong', reminder, reminders: [reminder, third],
+                   tiers: { U: 'secondary' }, reminderTypes: { [third]: 'granted' } }
+           ]);
+           expect(project.customKeywordActions).toEqual([
+               { name: 'Glimmer', reminder: 'Draw a card.' }
+           ]);
+           await selectCard(project.cards[0]);
+           const tags = new FieldInteractor('tags', { mode: CARD_PROPERTIES });
+           expect(tags.fieldElement.suggestions).toContain('cantrip');
+       });
+
+    async function expectTypeMenuAligned(select) {
+        await select.updateComplete;
+        select.scrollIntoView({ block: 'nearest' });
+        await select.show();
+        const anchor = select.shadowRoot.querySelector('[part="combobox"]');
+        const menu = select.shadowRoot.querySelector('[part="listbox"]');
+        await cmTest.eventually(() => {
+            const control = anchor.getBoundingClientRect();
+            const popup = menu.getBoundingClientRect();
+            const gap = Math.min(Math.abs(popup.top - control.bottom),
+                                 Math.abs(control.top - popup.bottom));
+            return popup.width > 0 && Math.abs(control.left - popup.left) < 2 && gap < 8;
+        });
+        await select.hide();
+    }
+
     it('matches tag styles and limits the initial suggestions', async () => {
         await createCard();
         const findTag = spyOn(tagManager, 'find').and.callThrough();
