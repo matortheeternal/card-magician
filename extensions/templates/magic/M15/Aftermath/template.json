@@ -1,0 +1,38 @@
+{
+  "id": "magic/M15/Aftermath",
+  "gameId": "magic",
+  "gameVersion": "^0.2.0",
+  "label": "M15 Aftermath",
+  "description": "Template for representing Magic 2015 aftermath cards.",
+  "author": "Mator",
+  "version": "0.1.0",
+  "card": [
+    "magic/M15/AftermathFrame",
+    "magic/M15/CardLayout",
+    "magic/M15/Rarity",
+    "magic/M15/Footer",
+    "magic/M15/AutoNumber"
+  ],
+  "subcards": {
+    "top": [
+      "magic/M15/Color",
+      "magic/M15/Name",
+      "magic/M15/Cost",
+      "magic/M15/Art",
+      "magic/M15/ColorIndicator",
+      "magic/M15/Type",
+      "magic/M15/Text",
+      "magic/M15/PT"
+    ],
+    "bottom": [
+      "magic/M15/Color",
+      "magic/M15/Name",
+      "magic/M15/Cost",
+      "magic/M15/Art",
+      "magic/M15/ColorIndicator",
+      "magic/M15/Type",
+      "magic/M15/Text",
+      "magic/M15/PT"
+    ]
+  }
+}

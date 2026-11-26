@@ -1,0 +1,77 @@
+front:
+  template: magic/M15/Aftermath
+  rarity: rare
+  illustrator: Raymond Swanland
+  autoCollectorNumber: "223"
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ™ & © 2017 Wizards of the Coast
+  showFooterOverrides: false
+  commonSymbolStyle: standard
+  top:
+    colors:
+      - char: r
+        name: red
+        sources:
+          normal: true
+    colorOverride: []
+    name: Cut
+    manaCost:
+      __type: ManaCost
+      symbols: 1R
+    artImage:
+      __type: image
+      width: 0
+      height: 0
+      cropWidth: 0
+      cropHeight: 0
+      xOffset: 0
+      yOffset: 0
+    superType: Sorcery
+    subType: ""
+    rulesText: Cut deals 4 damage to target creature.
+    flavorText: null
+    power: ""
+    toughness: ""
+    showPT: ""
+    symbolOrder: standard
+    chopTop: ""
+    chopBottom: ""
+    maxFontSize: ""
+    centerText: never
+    citationStyle: italic
+  bottom:
+    colors:
+      - char: b
+        name: black
+        sources:
+          normal: true
+    colorOverride: []
+    name: Ribbons
+    manaCost:
+      __type: ManaCost
+      symbols: XBB
+    artImage:
+      __type: image
+      width: 0
+      height: 0
+      cropWidth: 0
+      cropHeight: 0
+      xOffset: 0
+      yOffset: 0
+    superType: Sorcery
+    subType: ""
+    rulesText: |-
+      Aftermath (Cast this spell only from your graveyard. Then exile it.)
+      Each opponent loses X life.
+    flavorText: null
+    power: ""
+    toughness: ""
+    showPT: ""
+    symbolOrder: standard
+    chopTop: ""
+    chopBottom: ""
+    maxFontSize: ""
+    centerText: never
+    citationStyle: italic
