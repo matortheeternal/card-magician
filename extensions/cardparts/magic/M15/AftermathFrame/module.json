@@ -1,0 +1,11 @@
+{
+  "id": "magic/M15/AftermathFrame",
+  "gameId": "magic",
+  "description": "Defines the frames for M15 aftermath cards.",
+  "author": "Mator",
+  "version": "0.1",
+  "dependencies": {
+    "magic/M15/Frame": "^0.2",
+    "magic/M15/SplitFrame": "^0.3"
+  }
+}

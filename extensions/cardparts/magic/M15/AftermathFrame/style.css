@@ -1,0 +1,7 @@
+.aftermath-top {
+    --pt-background: var(--top-pt-background);
+}
+
+.aftermath-bottom {
+    --pt-background: var(--bottom-pt-background);
+}
