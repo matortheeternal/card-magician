@@ -19,3 +19,9 @@ module-container[module="PT"] .pt-text {
         flex-grow: 0;
     }
 }
+
+:where(:host:has(.creature-level)) module-container[render="renderPT"] {
+    right: 69px;
+    color: inherit;
+    text-shadow: none;
+}

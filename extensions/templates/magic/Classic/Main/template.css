@@ -95,6 +95,10 @@
         bottom: 148px;
     }
 
+    .level-start {
+        max-width: 218px;
+    }
+
     .creature-level {
         grid-template-columns: 62px 1fr 0;
         background-image: none;

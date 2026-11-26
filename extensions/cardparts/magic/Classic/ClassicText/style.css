@@ -12,6 +12,10 @@ module-container[module="Text"] {
     }
 }
 
+.level-start {
+    max-width: 194px;
+}
+
 .creature-level {
     grid-template-columns: 62px 3fr 1fr;
     flex: 1 1 0;
