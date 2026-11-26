@@ -21,7 +21,11 @@ module-container[module="PT"] .pt-text {
 }
 
 :where(:host:has(.creature-level)) module-container[render="renderPT"] {
-    right: 69px;
+    right: 48px;
     color: inherit;
     text-shadow: none;
+}
+
+:host:has(.creature-level) module-container[render="renderPT"] {
+    bottom: 162px;
 }

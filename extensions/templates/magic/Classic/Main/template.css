@@ -52,13 +52,16 @@
         font-size: 23px;
     }
 
-    module-container[module="PT"] .pt-text {
+    :is(module-container[module="PT"], .level-stats) .pt-text {
         justify-content: center;
-        background-image: var(--pt-background);
 
         > span:not(.d) {
             flex-grow: 1;
         }
+    }
+
+    module-container[module="PT"] .pt-text {
+        background-image: var(--pt-background);
     }
 
     footer {
@@ -91,12 +94,13 @@
         }
     }
 
-    &:has(.creature-level) module-container[render="renderPT"] {
+    &:has(.creature-level) module-container[module="PT"][render="renderPT"] {
         bottom: 148px;
     }
 
     .level-start {
-        max-width: 218px;
+        max-width: 225px;
+        margin-left: 11px;
     }
 
     .creature-level {
