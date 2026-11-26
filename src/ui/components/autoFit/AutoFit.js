@@ -34,10 +34,11 @@ export default class AutoFit extends HTMLElement {
     constructor() {
         super();
         this.queueFit = this.queueFit.bind(this);
-        this.resizeObserver = new ResizeObserver(() => {
-            cancelAnimationFrame(this.resizeFrame);
-            this.resizeFrame = requestAnimationFrame(this.queueFit);
-        });
+        this.resizeObserver = new ResizeObserver(() => this.queueResizeFit());
+    }
+
+    get fitPending() {
+        return Boolean(this._pending || this.resizeFrame);
     }
 
     get defaultMinFont() { return 8; };
@@ -62,6 +63,15 @@ export default class AutoFit extends HTMLElement {
         this.removeEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.disconnect();
         cancelAnimationFrame(this.resizeFrame);
+        this.resizeFrame = null;
+    }
+
+    queueResizeFit() {
+        cancelAnimationFrame(this.resizeFrame);
+        this.resizeFrame = requestAnimationFrame(() => {
+            this.resizeFrame = null;
+            this.queueFit();
+        });
     }
 
     attributeChangedCallback(name, _, value) {

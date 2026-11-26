@@ -55,6 +55,7 @@ function renderTask({ card, module, options }) {
 export default class RenderScheduler {
     static queue = [];
     static scheduled = false;
+    static nextFlush = Promise.resolve();
 
     static hasTask(module, options) {
         return this.queue.some(task => {
@@ -68,10 +69,21 @@ export default class RenderScheduler {
             this.queue = this.queue.filter(task => task.module !== module);
         if (!this.hasTask(module, options))
             this.queue.push({ card, module, options });
-        if (!this.scheduled) {
-            this.scheduled = true;
-            requestAnimationFrame(() => this.flush());
-        }
+        if (!this.scheduled) this.scheduleFlush();
+    }
+
+    static scheduleFlush() {
+        this.scheduled = true;
+        this.nextFlush = new Promise(resolve => {
+            requestAnimationFrame(() => {
+                this.flush();
+                resolve();
+            });
+        });
+    }
+
+    static async flushed() {
+        while (this.scheduled) await this.nextFlush;
     }
 
     static flushComplete(queue) {

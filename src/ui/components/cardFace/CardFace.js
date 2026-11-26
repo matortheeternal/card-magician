@@ -1,4 +1,5 @@
 import { emit } from '../../../shared/htmlUtils.js';
+import { waitForRender } from './renderCompletion.js';
 
 export default class DisplayCardFace extends HTMLElement {
     #face;
@@ -29,6 +30,11 @@ export default class DisplayCardFace extends HTMLElement {
 
     get face() {
         return this.#face;
+    }
+
+    async rendered() {
+        if (!this.#face?.dom) return;
+        await waitForRender(this);
     }
 
     render() {
