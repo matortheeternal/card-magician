@@ -2,6 +2,10 @@ import { emit } from '../../../shared/htmlUtils.js';
 
 const DEFAULT_MAX_FONT = 18;
 
+function classChanged(record) {
+    return record.oldValue !== record.target.className;
+}
+
 export function binarySearch(min, max, check, maxIt, step = 0.1) {
     if (check(max)) return max;
     if (!check(min)) return min;
@@ -35,6 +39,16 @@ export default class AutoFit extends HTMLElement {
         super();
         this.queueFit = this.queueFit.bind(this);
         this.resizeObserver = new ResizeObserver(() => this.queueResizeFit());
+        this.ancestorObserver = new MutationObserver(records => {
+            if (records.some(classChanged)) this.queueFit();
+        });
+    }
+
+    get ancestors() {
+        const ancestors = [];
+        for (let node = this.parentElement; node; node = node.parentElement)
+            ancestors.push(node);
+        return ancestors;
     }
 
     get fitPending() {
@@ -56,14 +70,25 @@ export default class AutoFit extends HTMLElement {
         this.minFont ||= this.defaultMinFont;
         this.addEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.observe(this);
+        this.observeAncestors();
         document.fonts.ready.then(() => this.queueFit());
     }
 
     disconnectedCallback() {
         this.removeEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.disconnect();
+        this.ancestorObserver.disconnect();
         cancelAnimationFrame(this.resizeFrame);
         this.resizeFrame = null;
+    }
+
+    observeAncestors() {
+        for (const ancestor of this.ancestors) {
+            this.ancestorObserver.observe(ancestor, {
+                attributeFilter: ['class'],
+                attributeOldValue: true
+            });
+        }
     }
 
     queueResizeFit() {

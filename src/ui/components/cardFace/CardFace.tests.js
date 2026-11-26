@@ -28,4 +28,15 @@ describe('Card face rendered()', () => {
         expect(face.dom.root.classList).toContain('frame-token');
     });
 
+    it('refits auto-fit text when a card class changes its maximum size', async () => {
+        const style = document.createElement('style');
+        style.textContent = 'auto-fit-line { font-size: 12px; } '
+            + '.frame-token auto-fit-line { font-size: 20px; }';
+        element.shadowRoot.appendChild(style);
+        await element.rendered();
+        face.dom.root.classList.add('frame-token');
+        await element.rendered();
+        const line = face.dom.root.querySelector('auto-fit-line');
+        expect(line.style.fontSize).toBe('20px');
+    });
 });
