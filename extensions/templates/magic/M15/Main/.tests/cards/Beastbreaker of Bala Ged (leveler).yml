@@ -1,0 +1,78 @@
+front:
+  template: magic/M15/Main
+  colors:
+    - char: g
+      name: green
+      sources:
+        normal: true
+  colorOverride: []
+  faceSymbol: null
+  name: Beastbreaker of Bala Ged
+  manaCost:
+    __type: ManaCost
+    symbols: 1G
+  alias: null
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Creature
+  subType: Human Warrior
+  rulesText: >-
+    Level up {2}{G} ({2}{G}: Put a level counter on this. Level up only as a
+    sorcery.)
+
+    LEVEL 1-3
+
+    4/4
+
+    LEVEL 4+
+
+    6/6
+
+    Trample
+  flavorText: null
+  watermark: null
+  flagLeft: ""
+  flagRight: ""
+  power: "2"
+  toughness: "2"
+  showPT: true
+  rarity: common
+  illustrator: Karl Kopinski
+  autoCollectorNumber: CG03
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  frame: auto
+  artSize: auto
+  crownStyle: auto
+  nyxStyle: auto
+  vehicleStyle: auto
+  snowStyle: auto
+  scrollsStyle: auto
+  draftStyle: auto
+  miracleStyle: auto
+  ubStyle: auto
+  hybridStyle: []
+  hybridBlendStyle: grey
+  meldStyle: none
+  otherFrameOptions:
+    avoidCoveringDevoid: true
+  borderColor: null
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 18

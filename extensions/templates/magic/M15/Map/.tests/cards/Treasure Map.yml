@@ -1,0 +1,38 @@
+front:
+  template: magic/M15/Map
+  colors: []
+  colorOverride: []
+  faceSymbol: null
+  name: Treasure Map
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Artifact
+  subType: ""
+  rulesText: "{1}, {T}: Scry 1."
+  flavorText: null
+  power: ""
+  toughness: ""
+  showPT: ""
+  rarity: common
+  illustrator: Cliff Childs
+  autoCollectorNumber: CA01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 29

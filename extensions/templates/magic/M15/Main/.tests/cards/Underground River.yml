@@ -1,0 +1,72 @@
+front:
+  template: magic/M15/Main
+  colors:
+    - char: u
+      name: blue
+      sources:
+        normal: true
+    - char: b
+      name: black
+      sources:
+        normal: true
+  colorOverride: []
+  faceSymbol: null
+  name: Underground River
+  manaCost:
+    __type: ManaCost
+    symbols: ""
+  alias: null
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Land
+  subType: ""
+  rulesText: |-
+    {T}: Add {C}.
+    {T}: Add {U} or {B}. Underground River deals 1 damage to you.
+  flavorText: null
+  watermark: null
+  flagLeft: ""
+  flagRight: ""
+  power: ""
+  toughness: ""
+  showPT: ""
+  rarity: common
+  illustrator: Andrew Robinson
+  autoCollectorNumber: CL02
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  frame: auto
+  artSize: auto
+  crownStyle: auto
+  nyxStyle: auto
+  vehicleStyle: auto
+  snowStyle: auto
+  scrollsStyle: auto
+  draftStyle: auto
+  miracleStyle: auto
+  ubStyle: auto
+  hybridStyle: []
+  hybridBlendStyle: grey
+  meldStyle: none
+  otherFrameOptions:
+    avoidCoveringDevoid: true
+  borderColor: null
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 17

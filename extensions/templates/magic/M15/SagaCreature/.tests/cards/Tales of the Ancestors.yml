@@ -1,0 +1,51 @@
+front:
+  template: magic/M15/SagaCreature
+  colors:
+    - char: g
+      name: green
+      sources:
+        normal: true
+  colorOverride: []
+  name: Tales of the Ancestors
+  manaCost:
+    __type: ManaCost
+    symbols: 2G
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Enchantment Creature
+  subType: Saga Spirit
+  preText: Read ahead
+  postText: Trample
+  rulesText: |-
+    I — Draw a card.
+    II — Scry 2.
+    III — Gain 3 life.
+  flavorText: null
+  power: "3"
+  toughness: "3"
+  showPT: true
+  rarity: common
+  illustrator: ""
+  autoCollectorNumber: CG04
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  ubStyle: auto
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 30

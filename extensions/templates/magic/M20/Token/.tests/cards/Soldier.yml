@@ -1,0 +1,46 @@
+front:
+  template: magic/M20/Token
+  colors: []
+  colorOverride: []
+  name: Soldier
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Token Creature
+  subType: Soldier
+  rulesText: Vigilance
+  flavorText: null
+  power: "1"
+  toughness: "1"
+  showPT: true
+  rarity: common
+  illustrator: ""
+  autoCollectorNumber: CC03
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  frame: normal
+  crownStyle: auto
+  nyxStyle: auto
+  vehicleStyle: auto
+  snowStyle: auto
+  hybridStyle: []
+  hybridBlendStyle: grey
+  otherFrameOptions:
+    tall: false
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 27

@@ -1,0 +1,56 @@
+front:
+  template: magic/Classic/Saga
+  colors:
+    - char: b
+      name: black
+      sources:
+        normal: true
+  colorOverride: []
+  name: The Eldest Reborn
+  manaCost:
+    __type: ManaCost
+    symbols: 4B
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Enchantment
+  subType: Saga
+  preText: ""
+  postText: ""
+  rulesText: >-
+    I — Each opponent sacrifices a creature or planeswalker.
+
+    II — Each opponent discards a card.
+
+    III — Put target creature or planeswalker card from a graveyard onto the
+    battlefield under your control.
+  flavorText: null
+  power: ""
+  toughness: ""
+  showPT: ""
+  rarity: common
+  illustrator: Jenn Ravenna
+  autoCollectorNumber: CB01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  hybridStyle: []
+  borderColor: null
+  nameFont: auto
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 12

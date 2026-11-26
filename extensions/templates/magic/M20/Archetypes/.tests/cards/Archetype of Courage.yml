@@ -1,0 +1,22 @@
+front:
+  template: magic/M20/Archetypes
+  name: Archetype of Courage
+  rulesText: Creatures you control have first strike.
+  flavorText: null
+  rarity: ad
+  illustrator: ""
+  autoCollectorNumber: A01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 23

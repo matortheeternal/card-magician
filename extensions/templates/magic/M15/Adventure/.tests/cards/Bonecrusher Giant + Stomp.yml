@@ -1,0 +1,85 @@
+front:
+  template: magic/M15/Adventure
+  colors:
+    - char: r
+      name: red
+      sources:
+        normal: true
+  colorOverride: []
+  faceSymbol: null
+  name: Bonecrusher Giant
+  manaCost:
+    __type: ManaCost
+    symbols: 2R
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Creature
+  subType: Giant
+  rulesText: Whenever this becomes the target of a spell, it deals 2 damage to
+    that spell’s controller.
+  flavorText: null
+  power: "4"
+  toughness: "3"
+  showPT: true
+  rarity: common
+  illustrator: ""
+  autoCollectorNumber: CR01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  frame: normal
+  artSize: auto
+  crownStyle: auto
+  nyxStyle: auto
+  vehicleStyle: auto
+  snowStyle: auto
+  scrollsStyle: auto
+  draftStyle: auto
+  miracleStyle: auto
+  ubStyle: auto
+  hybridStyle: []
+  hybridBlendStyle: grey
+  meldStyle: none
+  otherFrameOptions:
+    avoidCoveringDevoid: true
+  borderColor: null
+  pageStyle: name_and_type
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+  adventure:
+    colors:
+      - char: r
+        name: red
+        sources:
+          normal: true
+    colorOverride: []
+    name: Stomp
+    manaCost:
+      __type: ManaCost
+      symbols: 1R
+    superType: Instant
+    subType: ""
+    rulesText: Damage can’t be prevented this turn. Stomp deals 2 damage to any target.
+    flavorText: null
+    symbolOrder: standard
+    chopTop: ""
+    chopBottom: ""
+    maxFontSize: ""
+    centerText: never
+    citationStyle: italic
+notes: ""
+tags: []
+sequence: 31

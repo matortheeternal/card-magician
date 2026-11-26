@@ -1,0 +1,64 @@
+front:
+  template: magic/Classic/Main
+  colors:
+    - char: u
+      name: blue
+      sources:
+        normal: true
+    - char: b
+      name: black
+      sources:
+        normal: true
+  colorOverride: []
+  name: Underground River
+  manaCost:
+    __type: ManaCost
+    symbols: ""
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Land
+  subType: ""
+  rulesText: |-
+    {T}: Add {C}.
+    {T}: Add {U} or {B}. Underground River deals 1 damage to you.
+  flavorText: null
+  watermark: null
+  power: ""
+  toughness: ""
+  showPT: ""
+  rarity: common
+  illustrator: Andrew Robinson
+  autoCollectorNumber: CL01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  frame: classic
+  artSize: auto
+  dualLandBlend: gradient
+  nonbasicLandColoring: trimAndTextbox
+  multicolorGradient: full
+  artifactGradient: full
+  colorlessStyle: standard
+  frameOpacity: 75
+  hybridStyle: []
+  hybridBlendStyle: grey
+  borderColor: null
+  nameFont: auto
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 8

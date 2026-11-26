@@ -1,0 +1,80 @@
+front:
+  template: magic/Classic/Split
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  rarity: common
+  illustrator: Pete Venters
+  autoCollectorNumber: CC04
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: © 1999 Wizards
+  showFooterOverrides: false
+  frame: classic
+  multicolorGradient: full
+  artifactGradient: full
+  hybridStyle: []
+  hybridBlendStyle: grey
+  borderColor: null
+  commonSymbolStyle: standard
+  top:
+    colors:
+      - char: u
+        name: blue
+        sources:
+          normal: true
+    colorOverride: []
+    name: Ice
+    manaCost:
+      __type: ManaCost
+      symbols: 1U
+    superType: Creature
+    subType: ""
+    rulesText: |-
+      Tap target permanent.
+      Draw a card.
+    flavorText: null
+    power: "2"
+    toughness: "2"
+    showPT: true
+    nameFont: auto
+    symbolOrder: standard
+    chopTop: ""
+    chopBottom: ""
+    maxFontSize: ""
+    centerText: never
+    citationStyle: italic
+  bottom:
+    colors:
+      - char: r
+        name: red
+        sources:
+          normal: true
+    colorOverride: []
+    name: Fire
+    manaCost:
+      __type: ManaCost
+      symbols: 1R
+    superType: Instant
+    subType: ""
+    rulesText: Fire deals 2 damage divided as you choose among one or two targets.
+    flavorText: null
+    power: ""
+    toughness: ""
+    showPT: ""
+    nameFont: auto
+    symbolOrder: standard
+    chopTop: ""
+    chopBottom: ""
+    maxFontSize: ""
+    centerText: never
+    citationStyle: italic
+notes: ""
+tags: []
+sequence: 14

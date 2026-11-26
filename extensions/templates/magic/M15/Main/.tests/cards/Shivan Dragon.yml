@@ -1,0 +1,68 @@
+front:
+  template: magic/M15/Main
+  colors:
+    - char: r
+      name: red
+      sources:
+        normal: true
+  colorOverride: []
+  faceSymbol: null
+  name: Shivan Dragon
+  manaCost:
+    __type: ManaCost
+    symbols: 4RR
+  alias: null
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Creature
+  subType: Dragon
+  rulesText: |-
+    Flying
+    {R}: Shivan Dragon gets +1/+0 until end of turn.
+  flavorText: The undisputed master of the mountains.
+  watermark: null
+  flagLeft: ""
+  flagRight: ""
+  power: "5"
+  toughness: "5"
+  showPT: true
+  rarity: common
+  illustrator: Melissa Benson
+  autoCollectorNumber: CR09
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: © 1993 Wizards
+  showFooterOverrides: false
+  frame: auto
+  artSize: auto
+  crownStyle: auto
+  nyxStyle: auto
+  vehicleStyle: auto
+  snowStyle: auto
+  scrollsStyle: auto
+  draftStyle: auto
+  miracleStyle: auto
+  ubStyle: auto
+  hybridStyle: []
+  hybridBlendStyle: grey
+  meldStyle: none
+  otherFrameOptions:
+    avoidCoveringDevoid: true
+  borderColor: null
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 16

@@ -1,0 +1,50 @@
+front:
+  template: magic/M15/Walker
+  colors:
+    - char: u
+      name: blue
+      sources:
+        normal: true
+  colorOverride: []
+  faceSymbol: null
+  name: Urza, Lord Protector
+  manaCost:
+    __type: ManaCost
+    symbols: 3UU
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Legendary Planeswalker
+  subType: Urza
+  rulesText: |-
+    +1: Draw a card.
+    −2: Return target creature to its owner's hand.
+    −8: You get an emblem with "Artifacts you control have hexproof."
+  flavorText: null
+  loyalty: "4"
+  rarity: common
+  illustrator: Ryan Pancoast
+  autoCollectorNumber: CU02
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: ""
+  showFooterOverrides: false
+  artSize: normal
+  otherFrameOptions:
+    tall: false
+  symbolOrder: standard
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 20

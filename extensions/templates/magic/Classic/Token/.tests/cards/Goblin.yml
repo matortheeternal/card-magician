@@ -1,0 +1,42 @@
+front:
+  template: magic/Classic/Token
+  colors: []
+  colorOverride: []
+  name: Goblin
+  artImage:
+    __type: image
+    width: 0
+    height: 0
+    cropWidth: 0
+    cropHeight: 0
+    xOffset: 0
+    yOffset: 0
+  superType: Token Creature
+  subType: Goblin
+  rulesText: Haste
+  flavorText: null
+  power: "1"
+  toughness: "1"
+  showPT: true
+  rarity: common
+  illustrator: Pete Venters
+  autoCollectorNumber: CC01
+  collectorNumber: ""
+  setCode: ""
+  language: ""
+  legalText: © 1998 Wizards
+  showFooterOverrides: false
+  multicolorGradient: full
+  artifactGradient: full
+  hybridStyle: []
+  borderColor: null
+  nameFont: auto
+  chopTop: ""
+  chopBottom: ""
+  maxFontSize: ""
+  centerText: never
+  citationStyle: italic
+  commonSymbolStyle: standard
+notes: ""
+tags: []
+sequence: 11
