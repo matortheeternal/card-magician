@@ -3,7 +3,7 @@
   "gameId": "magic",
   "description": "Defines the M15 map card frame background.",
   "author": "Mator",
-  "version": "0.2",
+  "version": "0.2.1",
   "dependencies": {
     "magic/M15/Frame": "^0.2"
   }

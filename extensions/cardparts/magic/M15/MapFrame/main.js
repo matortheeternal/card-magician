@@ -9,6 +9,8 @@ export default class MapFrameModule extends FrameModule {
     }
 
     bind(card, watch) {
-        watch(card, ['colorIdentity', 'superType'], () => this.updateFrame(card));
+        watch(card, [
+            'colorIdentity', 'superType', 'rulesHTML', 'parent'
+        ], () => this.updateFrame(card));
     }
 }
