@@ -39,10 +39,14 @@ export default class SplitFrameModule extends FrameModule {
             return frame.matches(card);
         });
         card.activeFrame = new Frame(card, this);
-        card.setAspectRatio(card.activeFrame.artDimensions);
+        this.applyArtDimensions(card);
         changed(card, 'activeFrame');
         this.backgrounds = await card.activeFrame.buildBackgrounds('frame', card);
         this.requestRender({ render: 'render' });
+    }
+
+    applyArtDimensions(card) {
+        card.setAspectRatio(card.activeFrame.artDimensions);
     }
 
     bind(card, watch) {
