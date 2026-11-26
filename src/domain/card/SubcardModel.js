@@ -8,6 +8,10 @@ export default class SubcardModel extends BaseCardModel {
         this.parent = () => parent;
     }
 
+    get pendingWork() {
+        return this.parent().pendingWork;
+    }
+
     get renderRoot() {
         return this.parent().dom.root;
     }

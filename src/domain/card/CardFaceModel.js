@@ -1,11 +1,13 @@
 import BaseCardModel from './BaseCardModel.js';
 import DOMBuilder from './DomBuilder.js';
+import PendingWork from './PendingWork.js';
 
 export default class CardFaceModel extends BaseCardModel {
     dom = new DOMBuilder();
     form = new DOMBuilder();
     optionsForm = new DOMBuilder();
     subcards = [];
+    pendingWork = new PendingWork();
 
     dispose() {
         super.dispose();

@@ -63,7 +63,8 @@ export default class CardMagicianModule {
 
     /**
      * Invokes callback whenever the specified object properties are reported to
-     * have changed via changed().
+     * have changed via changed(). When the callback returns a promise, the card
+     * face waits for it before it reports that it has finished rendering.
      *
      * @param {object} obj - The object to watch for changes.
      * @param {string|string[]|null} keysArg - The key or keys to watch. Passing null
@@ -73,7 +74,7 @@ export default class CardMagicianModule {
      * @returns {{remove(): void}}
      */
     watch(obj, keysArg, callback) {
-        const unwatch = watch(obj, keysArg, callback);
+        const unwatch = watch(obj, keysArg, diff => this.#trackWork(callback(diff)));
         this.#watchers.push(unwatch);
         return {
             remove: () => {
@@ -82,6 +83,10 @@ export default class CardMagicianModule {
                 unwatch();
             }
         };
+    }
+
+    #trackWork(result) {
+        if (result instanceof Promise) this.card.pendingWork?.track(result);
     }
 
     /**
