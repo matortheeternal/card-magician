@@ -59,9 +59,16 @@ export async function drawSvg(ctx, svgEl, rootRect) {
     }
 }
 
+async function decodeSource(url) {
+    const response = await fetch(url);
+    return createImageBitmap(await response.blob());
+}
+
 export async function drawImage(ctx, imgEl, rootRect) {
     const rect = imgEl.getBoundingClientRect();
     const x = rect.left - rootRect.left;
     const y = rect.top - rootRect.top;
-    ctx.drawImage(imgEl, x, y, rect.width, rect.height);
+    const bitmap = await decodeSource(imgEl.currentSrc);
+    ctx.drawImage(bitmap, x, y, rect.width, rect.height);
+    bitmap.close();
 }
