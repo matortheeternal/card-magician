@@ -1,7 +1,6 @@
 const TrimMasksMixin = {
     beforeBuild() {
         this.numTrims = 0;
-        this.zIndex = 0;
     },
 
     get trimMaskFilename() {

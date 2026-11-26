@@ -6,6 +6,13 @@ const defaultColoredOptions = {
 
 const reverseByDefault = ['wr', 'wg', 'ug'];
 
+function stackBackgrounds(backgrounds) {
+    let zIndex = 0;
+    for (const { style } of backgrounds)
+        style.zIndex ||= zIndex++;
+    return backgrounds;
+}
+
 function xor(x, y) {
     return (x && !y) || (!x && y);
 }
@@ -54,9 +61,7 @@ export default class CardFrame {
         return this.mixins.filter(m => m.group === group);
     }
 
-    beforeBuild() {
-        this.zIndex = 0;
-    }
+    beforeBuild() {}
 
     async buildBackgrounds(group, card) {
         this.beforeBuild();
@@ -69,13 +74,13 @@ export default class CardFrame {
             const bgs = Array.isArray(result) ? result : [result];
             backgrounds.push(...bgs);
         }
-        return backgrounds.filter(Boolean);
+        return stackBackgrounds(backgrounds.filter(Boolean));
     }
 
     async background(id, image, zIndex) {
         const imageUrl = typeof image === 'string' ? image : await image.publish();
         const backgroundImage = `url('${imageUrl}')`;
-        const style = { backgroundImage, zIndex: zIndex || this.zIndex++ };
+        const style = { backgroundImage, zIndex };
         return { id, style };
     }
 
