@@ -3,9 +3,23 @@
 }
 
 .split-top, .split-bottom {
-    flex: 1;
+    position: absolute;
+    left: 15px;
+    width: 345px;
+    height: 241px;
     container-type: size;
-    position: relative;
+}
+
+.split-top {
+    top: 10px;
+}
+
+.split-bottom {
+    top: 249px;
+}
+
+.footer {
+    margin-top: auto;
 }
 
 .inner-card {
@@ -18,20 +32,28 @@
     transform: translate(-50%, -50%) rotate(-90deg);
     display: flex;
     flex-direction: column;
-    padding-left: 2px;
 
     .header {
-        padding: 16px 16px 4px;
-        height: 41px;
+        padding: 6px 15px 4px 16px;
+        height: 31px;
     }
 
     module-container[module="Cost"] {
         padding: 2px 4px;
     }
 
+    module-container[module="Art"] {
+        margin: 4px 17px 5px 18px;
+    }
+
+    module-container[module="PT"] {
+        bottom: -6px;
+        right: 9px;
+    }
+
     .type-line {
         height: 17px;
-        padding: 0 18px 6px;
+        padding: 0 17px 6px 18px;
 
         module-container[module="Type"] {
             font-size: 14px;
@@ -44,23 +66,9 @@
     }
 
     module-container[module="Text"] {
-        height: 139px;
-        padding: 4px 21px 8px 18px;
+        height: 135px;
+        padding: 4px 20px 4px 18px;
         font-size: 18px;
-    }
-}
-
-.split-bottom {
-    .inner-card {
-        padding-left: 4px;
-    }
-
-    .bg.standard {
-        background-position-x: 4px;
-    }
-
-    module-container[module="Art"] {
-        margin: 4px 18px 5px;
     }
 }
 
