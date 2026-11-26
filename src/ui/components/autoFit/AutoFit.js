@@ -1,5 +1,7 @@
 import { emit } from '../../../shared/htmlUtils.js';
 
+const DEFAULT_MAX_FONT = 18;
+
 export function binarySearch(min, max, check, maxIt, step = 0.1) {
     if (check(max)) return max;
     if (!check(min)) return min;
@@ -39,15 +41,18 @@ export default class AutoFit extends HTMLElement {
     }
 
     get defaultMinFont() { return 8; };
-    get defaultMaxFont() {
-        delete this.style.fontSize;
-        const style = getComputedStyle(this);
-        return parseInt(style?.fontSize || '18px');
+
+    get cssMaxFont() {
+        this.style.removeProperty('font-size');
+        return parseFloat(getComputedStyle(this).fontSize) || DEFAULT_MAX_FONT;
+    }
+
+    get maxFont() {
+        return this.maxAttributeFont ?? this.cssMaxFont;
     }
 
     connectedCallback() {
         this.minFont ||= this.defaultMinFont;
-        this.maxFont ||= this.defaultMaxFont;
         this.addEventListener('dom-morphed', this.queueFit);
         this.resizeObserver.observe(this);
         document.fonts.ready.then(() => this.queueFit());
@@ -61,7 +66,7 @@ export default class AutoFit extends HTMLElement {
 
     attributeChangedCallback(name, _, value) {
         if (name === 'min') this.minFont = parseFloat(value) || this.defaultMinFont;
-        if (name === 'max') this.maxFont = parseFloat(value) || this.defaultMaxFont;
+        if (name === 'max') this.maxAttributeFont = parseFloat(value) || null;
         this.queueFit();
     }
 
