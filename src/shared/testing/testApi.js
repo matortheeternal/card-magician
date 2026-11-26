@@ -19,37 +19,27 @@ async function click(element) {
 }
 
 /**
- * Open Settings through the application's File menu.
+ * Open the Settings workspace tab.
  *
  * @returns {Promise<HTMLElement>}
  */
 async function openSettings() {
-    const menu = document.querySelector('title-bar-menu[data-menu-id="file"]');
-    if (!menu) throw new Error('The application File menu is not available');
-    const dropdown = menu.querySelector('sl-dropdown');
-    if (!dropdown.open) await click(menu.querySelector('[slot="trigger"]'));
-    await eventually(() => dropdown.open);
-    const label = localize('title-bar')`Settings`;
-    await click([...menu.querySelectorAll('sl-menu-item')]
-        .find(item => item.value === label.toCamelCase()));
-    const modal = await eventually(() => document.querySelector('cm-settings-modal'));
-    await eventually(() => !dropdown.open);
-    await Promise.all([...modal.querySelectorAll('sl-button')]
-        .map(button => button.updateComplete));
-    return modal;
+    await click(document.querySelector('#workspace-tabs sl-tab[panel="settings"]'));
+    const panel = document.querySelector('sl-tab-panel[name="settings"]');
+    await eventually(() => panel.active);
+    return panel.querySelector('cm-settings-workspace');
 }
 
 /**
- * Close Settings using its visible Close button, if it is open.
+ * Switch back to Cards if Settings is open.
  *
  * @return Promise<void>
  */
 async function closeSettings() {
-    const modal = document.querySelector('cm-settings-modal');
-    if (!modal || getComputedStyle(modal.parentElement).display === 'none') return;
-    const closeButton = modal.querySelector('.modal-actions [data-click-action="close"]');
-    await click(closeButton);
-    await eventually(() => getComputedStyle(modal.parentElement).display === 'none');
+    const panel = document.querySelector('sl-tab-panel[name="settings"]');
+    if (!panel?.active) return;
+    await click(document.querySelector('#workspace-tabs sl-tab[panel="cards"]'));
+    await eventually(() => !panel.active);
 }
 
 window.cmTest = Object.freeze({ eventually, click, openSettings, closeSettings });

@@ -119,7 +119,7 @@ main > cm-loader {
     overflow: auto;
 }
 
-#workspace-tabs > sl-tab-panel[name="statistics"]::part(base) {
+#workspace-tabs > sl-tab-panel:is([name="statistics"], [name="settings"])::part(base) {
     overflow: hidden;
 }
 

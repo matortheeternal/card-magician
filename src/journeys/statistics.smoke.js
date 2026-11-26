@@ -36,10 +36,10 @@ async function addCard(fields) {
 }
 
 async function setProjectIllustrator(name) {
-    const modal = await cmTest.openSettings();
-    await selectSettingsTab(modal, 'cm-magic-project-details');
+    const settings = await cmTest.openSettings();
+    await selectSettingsTab(settings, 'cm-magic-project-details');
     await new FieldInteractor('illustrator', { mode: SETTINGS }).setValue(name);
-    await cmTest.closeSettings();
+    await openStatistics();
 }
 
 describe('Statistics', () => {

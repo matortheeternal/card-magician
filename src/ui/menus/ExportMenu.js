@@ -3,7 +3,6 @@ import { onActiveProjectChanged } from '../../domain/projects/projectManager.js'
 import { getExporter, hasExporter } from '../../domain/export/exporterManager.js';
 import { watch } from '../../shared/reactivity.js';
 import { executeAction } from '../systems/actionSystem.js';
-import { openModal } from '../modals/modalManager.js';
 
 const L = localize('title-bar');
 
@@ -48,7 +47,7 @@ export default class ExportMenu extends ReactiveMenu {
                 L`Configure Exporters`,
                 L`Ctrl+Shift+E`,
                 () => {
-                    openModal('cm-settings-modal', 'cm-configure-exporters');
+                    executeAction('open-settings', 'cm-configure-exporters');
                 }
             ),
         ];

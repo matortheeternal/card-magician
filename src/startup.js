@@ -52,6 +52,7 @@ function showMainUI() {
         <sl-tab-group id="workspace-tabs" no-scroll-controls>
             <sl-tab slot="nav" panel="cards">${L`Cards`}</sl-tab>
             <sl-tab slot="nav" panel="statistics">${L`Statistics`}</sl-tab>
+            <sl-tab slot="nav" panel="settings">${L`Settings`}</sl-tab>
 
             <sl-tab-panel name="cards">
                 <cm-display-card class="drawer-left"></cm-display-card>
@@ -61,8 +62,16 @@ function showMainUI() {
             <sl-tab-panel name="statistics">
                 <cm-project-stats></cm-project-stats>
             </sl-tab-panel>
+            <sl-tab-panel name="settings">
+                <cm-settings-workspace></cm-settings-workspace>
+            </sl-tab-panel>
         </sl-tab-group>`
     );
+    const tabs = document.querySelector('#workspace-tabs');
+    tabs.addEventListener('sl-tab-show', event => {
+        if (event.target !== tabs || event.detail.name !== 'settings') return;
+        tabs.querySelector('cm-settings-workspace').activate();
+    });
     const mobileActions = document.createElement('cm-mobile-actions');
     document.body.append(mobileActions);
     const floatingStatus = document.createElement('cm-floating-status');
@@ -125,6 +134,10 @@ async function readProjectGame(filePath) {
     const { game } = await YAMLSerializer.load(filePath);
     return game;
 }
+
+registerAction('open-settings', section => {
+    document.querySelector('cm-settings-workspace')?.open(section);
+});
 
 registerAction('start-project', filePath => startSession(async () => {
     const gameId = await readProjectGame(filePath);

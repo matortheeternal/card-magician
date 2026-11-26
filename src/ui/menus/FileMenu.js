@@ -1,7 +1,6 @@
 import ReactiveMenu from './ReactiveMenu.js';
 import { executeAction } from '../systems/actionSystem.js';
 import { exitApp } from '../../lifecycle.js';
-import { openModal } from '../modals/modalManager.js';
 import { openProject } from '../../domain/projects/projectManager.js';
 
 const L = localize('title-bar');
@@ -57,12 +56,6 @@ export default class FileMenu extends ReactiveMenu {
                     });
                     return submenuItems;
                 }
-            ),
-            this.DIVIDER,
-            this.desktopMenuItem(
-                L`Settings`,
-                `Ctrl+Alt+S`,
-                () => openModal('cm-settings-modal')
             ),
             this.DIVIDER,
             this.desktopMenuItem(

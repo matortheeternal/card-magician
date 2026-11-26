@@ -11,7 +11,7 @@ export default class EditSetSymbol extends ReactiveComponent {
     bind() {
         this.handleEvents('click', {
             edit: () => activeProject.editSetSymbol(),
-            setupSIE: () => this.closest('cm-settings-modal')
+            setupSIE: () => this.closest('cm-settings-workspace')
                 ?.selectNavItem('cm-set-icon-editor-settings')
         });
         this.watch('symbol', activeProject, 'symbol', () => this.renderSymbols());

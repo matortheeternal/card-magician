@@ -7,7 +7,7 @@ const formSelectors = [
         return `cm-face-form[data-face-id="${esc(faceKey)}"]`;
     },
     () => `cm-card-properties`,
-    () => `cm-settings-modal`,
+    () => `cm-settings-workspace`,
 ];
 
 export const CARD_FACE_FORM = 0;

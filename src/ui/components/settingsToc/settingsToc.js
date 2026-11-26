@@ -5,12 +5,12 @@ export default class SettingsToc extends ReactiveComponent {
         this.render();
     }
 
-    get settingsModal() {
-        return this.closest('cm-settings-modal');
+    get settingsWorkspace() {
+        return this.closest('cm-settings-workspace');
     }
 
     get pages() {
-        const childTreeItems = [...this.settingsModal.activeNavItem.children];
+        const childTreeItems = [...this.settingsWorkspace.activeNavItem.children];
         return childTreeItems.map(child => ({
             id: child.dataset.tabId,
             label: child.childNodes[0].textContent
@@ -20,7 +20,8 @@ export default class SettingsToc extends ReactiveComponent {
     render() {
         const pageItems = this.pages.map(page => (
             `<li>
-                <a data-page-id="${page.id}" data-click-action="navigate">
+                <a href="#${page.id}" data-page-id="${page.id}"
+                   data-click-action="navigate">
                     ${page.label}
                 </a>
             </li>`
