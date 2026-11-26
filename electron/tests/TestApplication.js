@@ -9,6 +9,8 @@ import DevToolsDriver from './devToolsDriver.js';
 import { handleOutput, isTestOutput } from './testOutput.js';
 
 const root = path.resolve(import.meta.dirname, '../..');
+const TEST_PAGES = ['/tests/smoke.html', '/tests/tests.html', '/tests/templates.html'];
+const DEFAULT_RESULT_TIMEOUT_MS = 120000;
 const pause = ms => new Promise(resolve => { setTimeout(resolve, ms); });
 
 export async function waitFor(check, label, timeout = 20000) {
@@ -49,6 +51,10 @@ export class TestApplication {
         return [`--extensions-dir=${directory}`];
     }
 
+    get resultTimeout() {
+        return this.timeout ?? DEFAULT_RESULT_TIMEOUT_MS;
+    }
+
     get debug() {
         return process.argv.includes('--debug');
     }
@@ -86,7 +92,7 @@ export class TestApplication {
         this.captureOutput();
         process.once('SIGINT', this.interrupted);
         process.once('SIGTERM', this.interrupted);
-        if (!['/tests/smoke.html', '/tests/tests.html'].includes(this.url))
+        if (!TEST_PAGES.includes(this.url))
             await this.connect();
     }
 
@@ -142,7 +148,7 @@ export class TestApplication {
     }
 
     async result() {
-        const timeout = this.debug ? Infinity : 120000;
+        const timeout = this.debug ? Infinity : this.resultTimeout;
         await waitFor(() => this.exited, 'test completion', timeout);
         await this.stopped();
         assert.equal(this.testResult?.status, 'passed', this.output);

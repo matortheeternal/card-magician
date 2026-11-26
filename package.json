@@ -37,6 +37,7 @@
     "test": "npm run build && node tasks/test.js",
     "test:native": "node --test electron/*.test.js",
     "smoke": "npm run build && node tasks/smoke.js",
+    "test:templates": "npm run build && node tasks/templateTests.js",
     "release": "node tasks/release.js",
     "lint": "eslint src extensions/games/magic/src extensions/cardparts extensions/exporters electron tasks eslint.config.js --max-warnings 0"
   },

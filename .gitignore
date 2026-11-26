@@ -27,6 +27,7 @@ cache/
 /extensions/games/magic/main.css
 /extensions/games/magic/main.css.map
 *.cmpkg
+/extensions/templates/**/.tests/output/
 
 # ESLint's optional local cache
 .eslintcache

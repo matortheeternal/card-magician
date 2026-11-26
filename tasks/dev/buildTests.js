@@ -72,5 +72,7 @@ export async function buildTests({ minify = false, target = 'electron' } = {}) {
     // Bundle app and smoke specs together so imports share module instances.
     const smokeEntry = `${await getApplicationEntry()}\n${smokeBundle}`;
     await buildJs('smoke.js', smokeEntry, { minify, target });
+    const templatesEntry = `${await getApplicationEntry()}\nimport './templateTests.js';`;
+    await buildJs('templates.js', templatesEntry, { minify, target });
     await copyJasmineFiles();
 }
