@@ -59,7 +59,10 @@ export default class ArtModule extends CardMagicianModule {
     }
 
     async updateDefaultImage(card) {
-        card.defaultImageUrl = await this.getDefaultImage(card);
+        const request = this.defaultImageRequest = this.getDefaultImage(card);
+        const defaultImageUrl = await request;
+        if (request !== this.defaultImageRequest) return;
+        card.defaultImageUrl = defaultImageUrl;
         this.requestRender();
     }
 
