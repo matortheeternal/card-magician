@@ -57,6 +57,7 @@ module-container[module="Text"]:has(.creature-level) {
         justify-content: center;
         background-repeat: no-repeat;
         background-position: 5px 6px;
+        background-size: 57.5px 41.5px;
         padding-left: 12px;
         padding-right: 26px;
         text-align: center;
