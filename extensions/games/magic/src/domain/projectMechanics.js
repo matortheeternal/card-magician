@@ -60,6 +60,29 @@ export function entriesFor(project) {
         definitions[kind].map(definition => ({ kind, definition })));
 }
 
+function withDiscoveredTypes(definition, discovered = {}) {
+    const reminderTypes = { ...discovered, ...definition.reminderTypes };
+    if (!Object.keys(reminderTypes).length) return definition;
+    return { ...definition, reminderTypes };
+}
+
+function typeCount(definition) {
+    return Object.keys(definition.reminderTypes ?? {}).length;
+}
+
+function mergeDiscovery(original, discovery) {
+    const reminders = [...new Set([
+        ...mechanicReminders(original), ...mechanicReminders(discovery)
+    ])];
+    const definition = withMechanicReminders(original, reminders);
+    return withDiscoveredTypes(definition, discovery.reminderTypes);
+}
+
+function isUnchanged(original, merged) {
+    return mechanicReminders(original).length === mechanicReminders(merged).length
+        && typeCount(original) === typeCount(merged);
+}
+
 export function mergeDiscoveries(entries, discoveries) {
     const merged = [...entries];
     const indexes = new Map(entries.map((entry, index) =>
@@ -71,10 +94,9 @@ export function mergeDiscoveries(entries, discoveries) {
         const current = merged[index];
         if (current && current.kind !== kind) continue;
         const original = current?.definition ?? { name };
-        const saved = mechanicReminders(original);
-        const reminders = [...new Set([...saved, ...mechanicReminders(discovery)])];
-        if (current && saved.length === reminders.length) continue;
-        merged[index] = { kind, definition: withMechanicReminders(original, reminders) };
+        const definition = mergeDiscovery(original, discovery);
+        if (current && isUnchanged(original, definition)) continue;
+        merged[index] = { kind, definition };
         indexes.set(key, index);
     }
     return merged;

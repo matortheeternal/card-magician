@@ -239,6 +239,8 @@ describe('Card editing', () => {
                .map(row => row.querySelector(':scope > p').textContent);
            expect(reminderTexts()).toEqual([reminder, variant]);
            expect(reminders.querySelector('sl-textarea')).toBeNull();
+           const typeSelects = [...reminders.querySelectorAll('.reminder-row sl-select')];
+           expect(typeSelects.map(select => select.value)).toEqual(['static', 'static']);
 
            const blue = settings.querySelector('[data-color="U"]');
            expect(blue.dataset.tier).toBe('primary');
@@ -304,7 +306,8 @@ describe('Card editing', () => {
            const project = await reopenProject();
            expect(project.customKeywords).toEqual([
                { name: 'Mistsong', reminder, reminders: [reminder, third],
-                   tiers: { U: 'secondary' }, reminderTypes: { [third]: 'granted' } }
+                   tiers: { U: 'secondary' },
+                   reminderTypes: { [reminder]: 'static', [third]: 'granted' } }
            ]);
            expect(project.customKeywordActions).toEqual([
                { name: 'Glimmer', reminder: 'Draw a card.' }
