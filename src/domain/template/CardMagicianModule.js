@@ -11,6 +11,7 @@ import {
 import DOMPurify from 'dompurify';
 import { escapeHTML, esc } from '../../shared/htmlUtils.js';
 import { watch } from '../../shared/reactivity.js';
+import SerialCallback from './SerialCallback.js';
 
 export default class CardMagicianModule {
     #watchers = [];
@@ -64,7 +65,9 @@ export default class CardMagicianModule {
     /**
      * Invokes callback whenever the specified object properties are reported to
      * have changed via changed(). When the callback returns a promise, the card
-     * face waits for it before it reports that it has finished rendering.
+     * face waits for it before it reports that it has finished rendering, and
+     * changes reported before it settles are combined into a single call made
+     * after it settles, so an earlier call never finishes after a later one.
      *
      * @param {object} obj - The object to watch for changes.
      * @param {string|string[]|null} keysArg - The key or keys to watch. Passing null
@@ -74,7 +77,8 @@ export default class CardMagicianModule {
      * @returns {{remove(): void}}
      */
     watch(obj, keysArg, callback) {
-        const unwatch = watch(obj, keysArg, diff => this.#trackWork(callback(diff)));
+        const serial = new SerialCallback(callback);
+        const unwatch = watch(obj, keysArg, diff => this.#trackWork(serial.call(diff)));
         this.#watchers.push(unwatch);
         return {
             remove: () => {
