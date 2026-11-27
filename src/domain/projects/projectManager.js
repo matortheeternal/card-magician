@@ -146,17 +146,19 @@ export async function setActiveEditorCard(card) {
     await installEditorCard(card ? await buildCard(card) : null);
 }
 
+export function needsAutoTemplateRefresh(editorFace, face = editorFace) {
+    return face?.template === AUTO_TEMPLATE
+        && editorFace.resolvedTemplate !== resolveFaceTemplate(face);
+}
+
 export async function refreshAutoTemplate(card, isSaveCurrent = () => true) {
     const editor = window.activeEditorCard;
     const isCurrent = () => window.selectedProjectCard === card
         && window.activeEditorCard === editor
         && isSaveCurrent();
     if (editor?.baseCard !== card || !isCurrent()) return;
-    const needsRefresh = getFaceKeys(editor).some(key => {
-        const face = card[key];
-        return face?.template === AUTO_TEMPLATE
-            && editor[key].resolvedTemplate !== resolveFaceTemplate(face);
-    });
+    const needsRefresh = getFaceKeys(editor)
+        .some(key => needsAutoTemplateRefresh(editor[key], card[key]));
     if (!needsRefresh) return;
     const updated = await buildCard(card);
     if (!isCurrent()) return disposeEditorCard(updated);

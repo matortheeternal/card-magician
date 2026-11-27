@@ -1,6 +1,7 @@
 import { registerPendingSave } from '../../../lifecycle.js';
 import html from './cardForm.html.js';
 import {
+    needsAutoTemplateRefresh,
     onActiveCardChanged,
     refreshAutoTemplate,
     saveCard
@@ -41,10 +42,17 @@ class CardForm extends ReactiveComponent {
             });
             executeAction('set-status', 'changes');
             this.save().catch(() => {});
+            this.flushTemplateChange(event.detail);
         });
 
         onActiveCardChanged(editorCard => this.updateEditor(editorCard));
         this.bind();
+    }
+
+    flushTemplateChange({ faceId, fieldId, modelKey }) {
+        if (modelKey || !isAutoTemplateField(fieldId)) return;
+        if (needsAutoTemplateRefresh(this.editorCard[faceId]))
+            this.save.flush().catch(() => {});
     }
 
     async updateEditor(editorCard) {

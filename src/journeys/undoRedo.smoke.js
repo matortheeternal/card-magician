@@ -466,10 +466,12 @@ describe('Undo and redo', () => {
                expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Main');
                await setCardFields({ superType: 'Enchantment Creature' });
                await flushCard();
+               const form = document.querySelector('cm-card-form');
                await setCardFields({ subType: 'Saga' });
-               await flushCard();
-               expect(activeEditorCard.front.resolvedTemplate.id)
-                   .toBe('magic/M15/SagaCreature');
+               await eventually(() =>
+                   activeEditorCard.front.resolvedTemplate.id === 'magic/M15/SagaCreature'
+               );
+               await form.save.flush();
                expect(templateField().textContent).toContain('Auto · M15 Saga Creature');
                expect((await readCardData(card)).front.template).toBe('auto');
                await undo();
