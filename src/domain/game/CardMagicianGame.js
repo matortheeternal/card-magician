@@ -19,6 +19,8 @@ import StatisticsRegistry from '../statistics/StatisticsRegistry.js';
 const gamePlatform = Object.assign(Object.create(platform), { watchFile });
 
 export default class CardMagicianGame {
+    #inspections = new Map();
+
     /**
      * @param {GameMetadata} metadata - Metadata loaded and parsed from game.json.
      */
@@ -181,6 +183,29 @@ export default class CardMagicianGame {
      */
     registerSettings(SettingsClass) {
         registerSettings(SettingsClass);
+    }
+
+    /**
+     * Registers an inspection definition for this game. Inspections are listed on
+     * the game's inspection settings page in registration order.
+     *
+     * @param {Inspection} inspection - Game-specific inspection metadata.
+     * @returns {void}
+     * @throws {Error} When an inspection with the same id is already registered.
+     */
+    registerInspection(inspection) {
+        if (this.#inspections.has(inspection.id))
+            throw new Error(`Duplicate inspection "${inspection.id}" for ${this.id}.`);
+        this.#inspections.set(inspection.id, inspection);
+    }
+
+    /**
+     * Returns the inspections registered for this game.
+     *
+     * @returns {Array<Inspection>} Inspections in registration order.
+     */
+    get inspections() {
+        return Array.from(this.#inspections.values());
     }
 
     registerLanguage(languageName, language, css) {

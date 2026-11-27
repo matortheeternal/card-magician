@@ -31,6 +31,7 @@ declare global {
     type ImageOp = import('./card-magician.js').ImageOp;
     type DOMBuilder = import('./card-magician.js').DOMBuilder;
     type Column = import('./card-magician.js').Column;
+    type Inspection = import('./card-magician.js').Inspection;
     type ReactiveComponent = import('./card-magician.js').ReactiveComponent;
     var appEnvironment: import('./card-magician.js').AppEnvironment;
     const activeGame: import('./card-magician.js').CardMagicianGame;
