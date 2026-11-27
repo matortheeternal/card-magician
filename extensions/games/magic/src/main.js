@@ -3,7 +3,7 @@ import * as textStructures from './domain/cardTraits/textStructures.js';
 import './ui/editSetSymbol/editSetSymbol.css';
 import { renderSetSymbol } from './domain/setSymbol/renderSetSymbol.js';
 import * as ManaScribe from 'mana-scribe';
-import { getInspectionCatalog } from 'oracle-of-pie/inspection-catalog';
+import pieInspections from './domain/inspections/pieInspections.js';
 import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
 import CardMagicianCard from '@sigil-sifter/magic-cm/card';
@@ -82,7 +82,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.registerSettings(FaceSymbolSettings);
         this.registerSettings(SetIconEditorSettings);
         this.registerSettings(MagicProjectDetails);
-        for (const inspection of getInspectionCatalog().inspections)
+        for (const inspection of pieInspections())
             this.registerInspection(inspection);
         this.registerSettings(InspectionSettings);
         this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));

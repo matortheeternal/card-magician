@@ -12,8 +12,7 @@ cm-magic-inspection-settings {
         padding: var(--sl-spacing-large);
     }
 
-    .inspection-heading,
-    .example-heading {
+    .inspection-heading {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -36,33 +35,6 @@ cm-magic-inspection-settings {
         font-size: var(--sl-font-size-small);
         font-weight: var(--sl-font-weight-semibold);
         color: var(--sl-color-neutral-700);
-    }
-
-    .inspection-examples {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-        gap: var(--sl-spacing-small);
-    }
-
-    .inspection-examples sl-card {
-        --padding: var(--sl-spacing-small);
-    }
-
-    .example-heading .sym {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        background-size: contain;
-        background-repeat: no-repeat;
-    }
-
-    .example-text {
-        white-space: pre-wrap;
-    }
-
-    .example-stats {
-        display: block;
-        text-align: right;
     }
 }
 
