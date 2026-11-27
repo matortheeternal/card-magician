@@ -238,6 +238,8 @@ describe('Card editing', () => {
            await cmTest.click(scan);
            expect(settings.list.activeRow.data.name).toBe('Mistsong');
            expect(settings.list.activeRow.data.type).toBe('Keyword ability');
+           const kind = settings.querySelector('form-field[field-id="kind"] sl-select');
+           await expectTypeMenuAligned(kind);
            expect(editor.querySelectorAll('.hljs-unrecognized').length).toBe(1);
            const reminders = settings.querySelector('cm-reminder-texts');
            const reminderTexts = () => [...reminders.list.children]

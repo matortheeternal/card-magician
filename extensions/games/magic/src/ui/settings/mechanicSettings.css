@@ -3,7 +3,6 @@ cm-mechanic-settings {
     flex-direction: column;
     height: 100%;
     min-height: 0;
-    container-type: inline-size;
 
     .mechanics-layout {
         display: grid;
@@ -70,7 +69,7 @@ cm-mechanic-settings {
     }
 }
 
-@container (width < 40rem) {
+@media (width < 57rem) {
     cm-mechanic-settings .mechanics-layout {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto minmax(0, 1fr);
