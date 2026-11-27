@@ -20,10 +20,6 @@ export default class TemplateField extends FieldComponent {
         return this.querySelector('sl-button');
     }
 
-    get templateName() {
-        return this.querySelector('span');
-    }
-
     get selectedTemplate() {
         return getTemplate(this.value)?.id ?? this.value;
     }
@@ -39,10 +35,8 @@ export default class TemplateField extends FieldComponent {
     render() {
         this.innerHTML = (
             `<div>${this.field.label}</div>
-            <span></span>
-            <sl-button size="small" data-click-action="chooseTemplate">
-                ${L`Change template…`}
-            </sl-button>`
+            <sl-button size="small" variant="text" aria-haspopup="dialog"
+                data-click-action="chooseTemplate"></sl-button>`
         );
         this.loadValue();
     }
@@ -52,7 +46,7 @@ export default class TemplateField extends FieldComponent {
         const label = this.value === AUTO_TEMPLATE
             ? L`Auto · ${resolvedName}`
             : templateLabel(getTemplate(this.value) ?? this.model.resolvedTemplate);
-        this.templateName.innerHTML = label;
+        this.button.innerHTML = label;
     }
 
     get card() {

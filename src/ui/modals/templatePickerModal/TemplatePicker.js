@@ -5,6 +5,15 @@ import { templateFamily, templateLabel } from './templateLabels.js';
 
 const L = localize('template-picker');
 const whitespace = /\s+/u;
+const familyOrder = new Map(['', 'M15', 'M20', 'Classic'].map(
+    (family, index) => [family, index]
+));
+
+function compareFamilies([a], [b]) {
+    const priorityA = familyOrder.get(a) ?? familyOrder.size;
+    const priorityB = familyOrder.get(b) ?? familyOrder.size;
+    return priorityA - priorityB || a.localeCompare(b);
+}
 
 function matchesQuery(option, query) {
     const text = `${option.label} ${option.family} ${option.id}`.toLowerCase();
@@ -53,9 +62,13 @@ export default class TemplatePicker extends ReactiveComponent {
 
     setTemplates(templates, selected) {
         this.selected = selected;
+        const defaultId = activeGame.defaultTemplateId;
+        const ordered = templates.toSorted((a, b) =>
+            Number(b.id === defaultId) - Number(a.id === defaultId)
+        );
         this.options = [
             { id: AUTO_TEMPLATE, label: L`Auto`, family: '' },
-            ...templates.map(template => ({
+            ...ordered.map(template => ({
                 id: template.id,
                 family: templateFamily(template) || L`Other templates`,
                 label: templateLabel(template),
@@ -67,8 +80,10 @@ export default class TemplatePicker extends ReactiveComponent {
 
     render() {
         this.innerHTML = (
-            `<sl-input type="search" label="${L`Search templates`}"
-                autocomplete="off" clearable></sl-input>
+            `<header>
+                <sl-input type="search" label="${L`Search templates`}"
+                    autocomplete="off" clearable></sl-input>
+            </header>
             <div data-template-results></div>`
         );
     }
@@ -98,7 +113,7 @@ export default class TemplatePicker extends ReactiveComponent {
             if (!groups.has(option.family)) groups.set(option.family, []);
             groups.get(option.family).push(this.renderOption(option, index));
         }
-        const sections = [...groups].sort(([a], [b]) => a.localeCompare(b));
+        const sections = [...groups].sort(compareFamilies);
         this.results.innerHTML = sections.map(group => this.renderGroup(...group))
             .join('') || `<p>${L`No matching templates.`}</p>`;
         this.results.scrollTop = 0;

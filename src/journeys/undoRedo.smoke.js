@@ -425,8 +425,14 @@ describe('Undo and redo', () => {
             const current = picker.querySelector('[aria-current]');
             expect(getComputedStyle(picker.results).overflowY).toBe('auto');
             expect([...picker.querySelectorAll('h3')].map(group => group.textContent))
-                .toEqual(jasmine.arrayContaining(['Classic', 'M15', 'M20']));
-            expect(current.textContent).toContain('Magic 2015');
+                .toEqual(['M15', 'M20', 'Classic']);
+            expect(picker.firstResult.textContent.trim()).toBe('Auto');
+            expect(picker.querySelector('section:nth-child(2) button')).toBe(current);
+            expect(current.querySelector('span').textContent).toBe('M15');
+            expect(picker.results.getBoundingClientRect().width)
+                .toBe(picker.parentElement.getBoundingClientRect().width);
+            expect(getComputedStyle(picker.search.parentElement).borderBottomWidth)
+                .toBe('1px');
             picker.search.value = 'm15 saga creature';
             picker.search.dispatchEvent(new Event('sl-input', { bubbles: true }));
             const options = picker.querySelectorAll('[data-option-index]');
@@ -459,7 +465,7 @@ describe('Undo and redo', () => {
                await flushCard();
                expect(activeEditorCard.front.resolvedTemplate.id)
                    .toBe('magic/M15/SagaCreature');
-               expect(templateField().textContent).toContain('Auto · Saga Creature');
+               expect(templateField().textContent).toContain('Auto · M15 Saga Creature');
                expect((await readCardData(card)).front.template).toBe('auto');
                await undo();
                expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Main');

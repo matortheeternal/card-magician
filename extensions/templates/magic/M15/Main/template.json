@@ -2,7 +2,7 @@
   "id": "magic/M15/Main",
   "gameId": "magic",
   "gameVersion": "^0.2.0",
-  "label": "Magic 2015",
+  "label": "M15",
   "description": "Template for representing normal Magic 2015 cards.",
   "author": "Mator",
   "version": "0.2.0",

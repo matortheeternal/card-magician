@@ -1,9 +1,20 @@
+cm-template-picker-modal .modal-body {
+    padding: 0;
+}
+
 cm-template-picker {
     display: grid;
-    gap: var(--sl-spacing-medium);
     font: var(--sl-font-size-medium) var(--sl-font-sans);
 
+    header {
+        padding: var(--sl-spacing-small) var(--sl-spacing-x-large)
+            var(--sl-spacing-medium);
+        border-bottom: 1px solid var(--sl-input-border-color);
+    }
+
     [data-template-results] {
+        padding: var(--sl-spacing-medium) var(--sl-spacing-x-large)
+            var(--sl-spacing-x-large);
         max-block-size: min(50vh, 28rem);
         overflow: auto;
     }

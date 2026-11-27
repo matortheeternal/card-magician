@@ -1,11 +1,14 @@
 cm-template-field {
     display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    column-gap: var(--sl-spacing-medium);
+    justify-items: start;
 
     div {
-        grid-column: 1 / -1;
         font-size: var(--sl-input-label-font-size-small);
+    }
+
+    sl-button::part(label) {
+        padding-inline: 0;
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
     }
 }
