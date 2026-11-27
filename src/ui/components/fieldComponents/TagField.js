@@ -1,6 +1,6 @@
-import renderTagField from './tagField.html.js';
+import renderTagField, { renderTagSuggestion } from './tagField.html.js';
 import FieldComponent from './FieldComponent.js';
-import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
+import { emit } from '../../../shared/htmlUtils.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
 import { suggestedTagsFor } from '../../../domain/game/tagSuggestions.js';
 import {
@@ -110,27 +110,13 @@ export default class TagField extends FieldComponent {
         return suggestedTagsFor(this.model);
     }
 
-    renderSuggestion(tag) {
-        return (
-            `<sl-tag size="small" data-tag-style="${tagStyle(tag)}"
-                    data-suggested-tag="${esc(tag)}">
-                <sl-icon-button name="plus-lg" data-click-action="acceptSuggestion"
-                    label="${esc(L`Add suggested tag ${tag}`)}"></sl-icon-button>
-                ${escapeHTML(tag)}
-                <sl-icon-button name="x-lg" data-click-action="dismissSuggestion"
-                    label="${esc(L`Dismiss suggested tag ${tag}`)}"></sl-icon-button>
-            </sl-tag>`
-        );
-    }
-
     renderSuggestions() {
         const suggestions = this.suggestions;
         this.suggestionsContainer.hidden = !suggestions.length;
         const visible = this.suggestionsExpanded
             ? suggestions
             : suggestions.slice(0, INITIAL_SUGGESTION_LIMIT);
-        this.suggestionItems.innerHTML = visible.map(tag => this.renderSuggestion(tag))
-            .join('');
+        this.suggestionItems.innerHTML = visible.map(renderTagSuggestion).join('');
         const toggle = this.suggestionToggle;
         const overflow = suggestions.length - INITIAL_SUGGESTION_LIMIT;
         toggle.hidden = overflow <= 0;

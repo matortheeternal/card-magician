@@ -1,6 +1,20 @@
-import { esc } from '../../../shared/htmlUtils.js';
+import { esc, escapeHTML } from '../../../shared/htmlUtils.js';
+import { tagStyle } from '../../../domain/game/tagManager.js';
 
 const L = localize('tag-field');
+
+export function renderTagSuggestion(tag) {
+    return (
+        `<sl-tag size="small" data-tag-style="${tagStyle(tag)}"
+                data-suggested-tag="${esc(tag)}">
+            <sl-icon-button name="plus-lg" data-click-action="acceptSuggestion"
+                label="${esc(L`Add suggested tag ${tag}`)}"></sl-icon-button>
+            ${escapeHTML(tag)}
+            <sl-icon-button name="x-lg" data-click-action="dismissSuggestion"
+                label="${esc(L`Dismiss suggested tag ${tag}`)}"></sl-icon-button>
+        </sl-tag>`
+    );
+}
 
 export default function renderTagField(label) {
     return `
