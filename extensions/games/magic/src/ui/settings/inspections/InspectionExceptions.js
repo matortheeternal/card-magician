@@ -111,11 +111,21 @@ export default class InspectionExceptions extends ReactiveComponent {
         const list = element('ul');
         const rows = this.exceptions.map((item, index) => this.row(item, index));
         list.append(...rows);
+        this.replaceChildren(list, this.addButton());
+    }
+
+    addButton() {
         const add = element('sl-button', L`Add exception`);
         add.size = 'small';
+        add.variant = 'success';
+        add.outline = true;
+        const plus = element('sl-icon');
+        plus.name = 'plus-lg';
+        plus.slot = 'prefix';
+        add.prepend(plus);
         add.dataset.clickAction = 'add';
         add.disabled = !this.conditions.length;
-        this.replaceChildren(list, add);
+        return add;
     }
 
     row(exception, index) {
@@ -161,7 +171,7 @@ export default class InspectionExceptions extends ReactiveComponent {
 
     removeButton() {
         const remove = element('sl-icon-button');
-        remove.name = 'x-lg';
+        remove.name = 'trash3';
         remove.label = L`Remove exception`;
         remove.dataset.clickAction = 'remove';
         return remove;

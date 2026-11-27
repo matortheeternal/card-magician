@@ -22,6 +22,17 @@ cm-inspection-exceptions {
         align-items: center;
         gap: var(--sl-spacing-small);
         padding: var(--sl-spacing-2x-small) var(--sl-spacing-small);
+        background: var(--sl-color-neutral-100);
+    }
+
+    li:first-child {
+        border-start-start-radius: inherit;
+        border-start-end-radius: inherit;
+    }
+
+    li:last-child {
+        border-end-start-radius: inherit;
+        border-end-end-radius: inherit;
     }
 
     li + li {
@@ -53,7 +64,7 @@ cm-inspection-exceptions {
     }
 
     button:hover {
-        background: var(--sl-color-neutral-100);
+        background: var(--sl-color-neutral-200);
     }
 
     button:focus-visible {
@@ -63,7 +74,7 @@ cm-inspection-exceptions {
 
     button[aria-pressed="true"] {
         border-color: var(--sl-input-border-color);
-        background: var(--sl-color-neutral-100);
+        background: var(--sl-color-neutral-0);
     }
 
     button[aria-pressed="false"] img {

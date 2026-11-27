@@ -8,7 +8,7 @@ cm-inspection-examples {
     }
 
     cm-card-preview {
-        zoom: 0.5;
+        zoom: 0.667;
         border-radius: var(--sl-border-radius-large);
         box-shadow: var(--sl-shadow-medium);
     }
