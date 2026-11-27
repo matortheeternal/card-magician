@@ -1,0 +1,108 @@
+import ReactiveComponent from '../../components/ReactiveComponent.js';
+import { AUTO_TEMPLATE } from '../../../domain/template/autoTemplate.js';
+import { emit, escapeHTML } from '../../../shared/htmlUtils.js';
+import { templateFamily, templateLabel } from './templateLabels.js';
+
+const L = localize('template-picker');
+const whitespace = /\s+/u;
+
+function matchesQuery(option, query) {
+    const text = `${option.label} ${option.family} ${option.id}`.toLowerCase();
+    return query.every(word => text.includes(word));
+}
+
+export default class TemplatePicker extends ReactiveComponent {
+    get search() {
+        return this.querySelector('sl-input');
+    }
+
+    get results() {
+        return this.querySelector('[data-template-results]');
+    }
+
+    get firstResult() {
+        return this.results.querySelector('[data-option-index]');
+    }
+
+    connectedCallback() {
+        this.render();
+        this.bind();
+    }
+
+    bind() {
+        this.on('sl-input', () => this.renderResults());
+        this.on('keydown', event => this.onKeyDown(event));
+        this.on('click', event => {
+            const button = event.target.closest('[data-option-index]');
+            if (button) this.select(button);
+        });
+    }
+
+    onKeyDown(event) {
+        if (event.target !== this.search || event.isComposing) return;
+        if (event.key !== 'Enter' || !this.search.value.trim() || !this.firstResult)
+            return;
+        event.preventDefault();
+        this.select(this.firstResult);
+    }
+
+    select(button) {
+        const option = this.options[button.dataset.optionIndex];
+        emit(this, 'cm-template-selected', { id: option.id });
+    }
+
+    setTemplates(templates, selected) {
+        this.selected = selected;
+        this.options = [
+            { id: AUTO_TEMPLATE, label: L`Auto`, family: '' },
+            ...templates.map(template => ({
+                id: template.id,
+                family: templateFamily(template) || L`Other templates`,
+                label: templateLabel(template),
+                version: template.version
+            }))
+        ];
+        this.renderResults();
+    }
+
+    render() {
+        this.innerHTML = (
+            `<sl-input type="search" label="${L`Search templates`}"
+                autocomplete="off" clearable></sl-input>
+            <div data-template-results></div>`
+        );
+    }
+
+    renderOption(option, index) {
+        const current = option.id === this.selected ? 'aria-current="true"' : '';
+        const version = option.version
+            ? `<small>${escapeHTML(option.version)}</small>` : '';
+        return (
+            `<button type="button" ${current}
+                data-option-index="${index}">
+                <span>${option.label}</span>${version}
+            </button>`
+        );
+    }
+
+    renderGroup(family, options) {
+        const heading = family ? `<h3>${escapeHTML(family)}</h3>` : '';
+        return `<section>${heading}${options.join('')}</section>`;
+    }
+
+    renderResults() {
+        const query = this.search.value.toLowerCase().trim().split(whitespace);
+        const groups = new Map();
+        for (const [index, option] of this.options.entries()) {
+            if (!matchesQuery(option, query)) continue;
+            if (!groups.has(option.family)) groups.set(option.family, []);
+            groups.get(option.family).push(this.renderOption(option, index));
+        }
+        const sections = [...groups].sort(([a], [b]) => a.localeCompare(b));
+        this.results.innerHTML = sections.map(group => this.renderGroup(...group))
+            .join('') || `<p>${L`No matching templates.`}</p>`;
+        this.results.scrollTop = 0;
+    }
+}
+
+customElements.define('cm-template-picker', TemplatePicker);

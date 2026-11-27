@@ -23,6 +23,10 @@ export default class FaceForm extends ReactiveComponent {
     get fields() { return this.#face.fields; }
     get subcards() { return this.#face.subcards; }
 
+    get templateField() {
+        return this.querySelector('form-field[field-id="template"]')?.fieldElement;
+    }
+
     getMissingFormHTML() {
         return (
             `<div class="no-content-prompt">
@@ -43,7 +47,9 @@ export default class FaceForm extends ReactiveComponent {
     focusFirstField() {
         const firstField = this.querySelector('form-field');
         if (!firstField) return;
-        const input = firstField.querySelector('sl-input, sl-select, sl-textarea');
+        const input = firstField.querySelector(
+            'sl-input, sl-select, sl-textarea, sl-button'
+        );
         if (!input) return;
         input.scrollIntoView(true);
         input.focus();

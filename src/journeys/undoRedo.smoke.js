@@ -1,11 +1,12 @@
 import * as history from '../ui/systems/historySystem.js';
+import { getActiveModal } from '../ui/modals/modalManager.js';
 import platform from '../shared/platformAdapter.js';
 import FieldInteractor from '../shared/testing/FieldInteractor.js';
 import ImageCrop from '../domain/card/ImageCrop.js';
 import ImageFieldValue from '../domain/card/ImageFieldValue.js';
 import {
-    createCard, createTestProject, deleteTestProject, flushCard, setCardFields,
-    toggleFace
+    createCard, createTestProject, deleteTestProject, eventually, flushCard,
+    setCardFields, toggleFace
 } from '../shared/testing/testUtils.js';
 import { loadImageFixture } from '../shared/testing/steps/fixtures.js';
 import {
@@ -352,11 +353,18 @@ describe('Undo and redo', () => {
             return new FieldInteractor('template', { faceKey: 'front' }).fieldElement;
         }
 
-        async function changeTemplate() {
-            const field = templateField();
-            const next = field.options.find(option => option.id !== field.value).id;
-            await field.onChange({ target: { value: next } });
+        async function changeTemplate(next = 'magic/M15/Saga') {
+            await templateField().inputValue(next);
             return next;
+        }
+
+        async function openTemplatePicker() {
+            templateField().button.click();
+            const picker = await eventually(() => document.querySelector(
+                'cm-template-picker-modal cm-template-picker'
+            ));
+            await eventually(() => document.activeElement === picker.search);
+            return picker;
         }
 
         it('records the field event and rebuilds the face on change, undo and redo',
@@ -406,9 +414,103 @@ describe('Undo and redo', () => {
             const next = await changeTemplate();
             await undo();
             const field = templateField();
-            await field.onChange({ target: { value: field.value } });
+            await field.inputValue(field.value);
             await redo();
             expect(activeEditorCard.front.template).toBe(next);
+        });
+
+        it('searches grouped templates and applies the matching result', async () => {
+            const picker = await openTemplatePicker();
+            const sagaCreature = 'magic/M15/SagaCreature';
+            const current = picker.querySelector('[aria-current]');
+            expect(getComputedStyle(picker.results).overflowY).toBe('auto');
+            expect([...picker.querySelectorAll('h3')].map(group => group.textContent))
+                .toEqual(jasmine.arrayContaining(['Classic', 'M15', 'M20']));
+            expect(current.textContent).toContain('Magic 2015');
+            picker.search.value = 'm15 saga creature';
+            picker.search.dispatchEvent(new Event('sl-input', { bubbles: true }));
+            const options = picker.querySelectorAll('[data-option-index]');
+            expect(options.length).toBe(1);
+            expect(options[0].textContent).toContain('Saga Creature');
+            options[0].click();
+            await eventually(() => activeEditorCard.front.template === sagaCreature);
+            expect((await readCardData(card)).front.template).toBe(sagaCreature);
+        });
+
+        it('cancels with Escape and puts focus back on the template button', async () => {
+            const picker = await openTemplatePicker();
+            picker.search.dispatchEvent(new KeyboardEvent('keydown', {
+                key: 'Escape', bubbles: true
+            }));
+            await eventually(() => document.activeElement === templateField().button);
+            expect(getActiveModal()).toBeNull();
+            expect(templateField().value).toBe('magic/M15/Main');
+        });
+
+        it('resolves Auto from the type line and keeps the choice through history',
+           async () => {
+               const picker = await openTemplatePicker();
+               picker.firstResult.click();
+               await eventually(() => activeEditorCard.front.template === 'auto');
+               expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Main');
+               await setCardFields({ superType: 'Enchantment Creature' });
+               await flushCard();
+               await setCardFields({ subType: 'Saga' });
+               await flushCard();
+               expect(activeEditorCard.front.resolvedTemplate.id)
+                   .toBe('magic/M15/SagaCreature');
+               expect(templateField().textContent).toContain('Auto · Saga Creature');
+               expect((await readCardData(card)).front.template).toBe('auto');
+               await undo();
+               expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Main');
+               await redo();
+               expect(activeEditorCard.front.resolvedTemplate.id)
+                   .toBe('magic/M15/SagaCreature');
+               await changeTemplate('magic/M15/Main');
+               await undo();
+               expect(activeEditorCard.front.template).toBe('auto');
+               expect(activeEditorCard.front.resolvedTemplate.id)
+                   .toBe('magic/M15/SagaCreature');
+           });
+
+        it('retains layout-specific data when Auto switches layouts', async () => {
+            await changeTemplate('auto');
+            await setCardFields({ superType: 'Planeswalker' });
+            await flushCard();
+            await setCardFields({ loyalty: '4' });
+            await flushCard();
+            await setCardFields({ superType: 'Creature' });
+            await flushCard();
+            await setCardFields({ name: 'Changed while using the default layout' });
+            await flushCard();
+            await setCardFields({ superType: 'Planeswalker' });
+            await flushCard();
+            expect(activeEditorCard.front.loyalty).toBe('4');
+            expect((await readCardData(card)).front.template).toBe('auto');
+        });
+
+        it('keeps the back face active and restores typing focus when Auto changes it',
+           async () => {
+               await toggleFace('back');
+               const back = { faceKey: 'back' };
+               const type = new FieldInteractor('superType', back);
+               const template = new FieldInteractor('template', back);
+               await template.fieldElement.inputValue('auto');
+               type.fieldElement.input.focus();
+               await setCardFields({ superType: 'Planeswalker' }, back);
+               await flushCard();
+               expect(activeEditorCard.back.resolvedTemplate.id).toBe('magic/M15/Walker');
+               expect(activeEditorCard.front.template).toBe('magic/M15/Main');
+               expect(document.querySelector('cm-card-form').activeFaceId).toBe('back');
+               const rebuiltType = new FieldInteractor('superType', back).fieldElement;
+               expect(document.activeElement).toBe(rebuiltType.input);
+           });
+
+        it('keeps a manual template fixed as the type line changes', async () => {
+            await changeTemplate('magic/M15/Walker');
+            await setCardFields({ superType: 'Enchantment', subType: 'Saga' });
+            await flushCard();
+            expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Walker');
         });
 
         it('replays changes on the original card after selection moves', async () => {

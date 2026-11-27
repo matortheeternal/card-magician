@@ -1,3 +1,5 @@
+import { getActiveModal } from '../modals/modalManager.js';
+
 const modifiers = ['ctrl', 'shift', 'alt'];
 const navigationHotkeys = ['arrowup', 'arrowdown'];
 const editingHotkeys = [
@@ -75,7 +77,7 @@ function navigationBelongsToControl(event) {
 }
 
 function onKeyDown(event) {
-    if (dialog.isOpen) return;
+    if (dialog.isOpen || getActiveModal()?.capturesHotkeys) return;
     const hotkey = hotkeys.find(hk => hk.respondsTo(event));
     if (!hotkey) return;
     if (navigationBelongsToControl(event)) return;

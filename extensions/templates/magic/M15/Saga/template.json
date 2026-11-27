@@ -6,6 +6,10 @@
   "description": "This template is for M15 Sagas.",
   "author": "Mator",
   "version": "0.2.0",
+  "autoMatch": {
+    "superType": ["Enchantment"],
+    "subType": ["Saga"]
+  },
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/SagaFrame",

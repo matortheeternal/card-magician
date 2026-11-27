@@ -6,6 +6,9 @@
   "description": "This template is for M15 Walkers.",
   "author": "Mator",
   "version": "0.2.0",
+  "autoMatch": {
+    "superType": ["Planeswalker"]
+  },
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/WalkerFrame",

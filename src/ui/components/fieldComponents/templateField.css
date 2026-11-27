@@ -1,0 +1,11 @@
+cm-template-field {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: var(--sl-spacing-medium);
+
+    div {
+        grid-column: 1 / -1;
+        font-size: var(--sl-input-label-font-size-small);
+    }
+}

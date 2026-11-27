@@ -2,7 +2,7 @@ import { clear as clearFileWatchers } from '../../shared/fileWatcher.js';
 import { flushBeforeExit } from '../../lifecycle.js';
 import { executeAction, registerAction } from '../../ui/systems/actionSystem.js';
 import platform from '../../shared/platformAdapter.js';
-import { buildCard } from '../card/cardBuilder.js';
+import { buildCard, getFaceKeys } from '../card/cardBuilder.js';
 import {
     openContext, releaseContext, restoreContext
 } from '../../ui/systems/objectUrlSystem.js';
@@ -11,6 +11,8 @@ import RenderScheduler from '../template/renderScheduler.js';
 import { hideLoading, showLoading } from '../../ui/systems/loadingService.js';
 import { openModal } from '../../ui/modals/modalManager.js';
 import { watch } from '../../shared/reactivity.js';
+import { AUTO_TEMPLATE } from '../template/autoTemplate.js';
+import { resolveFaceTemplate } from '../template/templateRegistry.js';
 
 const L = localize('project-manager');
 const report = createReporter({ unit: 'ProjectManager' });
@@ -101,11 +103,17 @@ export async function openProject(filePath) {
     }
 }
 
+async function saveFace(face, previousData) {
+    const saved = await face.save();
+    const preserveInactiveFields = saved.template === AUTO_TEMPLATE
+        || previousData?.template === AUTO_TEMPLATE;
+    return preserveInactiveFields ? { ...previousData, ...saved } : saved;
+}
+
 export async function saveCard(editorCard, projectCard) {
     log('state').debug('save card');
-    projectCard.front = await editorCard.front.save();
-    if (editorCard.back)
-        projectCard.back = await editorCard.back.save();
+    for (const key of getFaceKeys(editorCard))
+        projectCard[key] = await saveFace(editorCard[key], projectCard[key]);
     await projectCard.save();
     changed(window.activeProject, 'cards');
 }
@@ -123,12 +131,36 @@ export function onActiveProjectChanged(callback) {
     };
 }
 
+function disposeEditorCard(editor) {
+    if (!editor) return;
+    for (const key of getFaceKeys(editor)) editor[key].dispose();
+}
+
+async function installEditorCard(editor) {
+    disposeEditorCard(window.activeEditorCard);
+    window.activeEditorCard = editor;
+    for (const cb of cardChangedCallbacks) await cb(editor);
+}
+
 export async function setActiveEditorCard(card) {
-    if (window.activeEditorCard?.front) activeEditorCard.front.dispose();
-    if (window.activeEditorCard?.back) activeEditorCard.back.dispose();
-    window.activeEditorCard = card ? await buildCard(card) : null;
-    for (const cb of cardChangedCallbacks)
-        await cb(activeEditorCard);
+    await installEditorCard(card ? await buildCard(card) : null);
+}
+
+export async function refreshAutoTemplate(card, isSaveCurrent = () => true) {
+    const editor = window.activeEditorCard;
+    const isCurrent = () => window.selectedProjectCard === card
+        && window.activeEditorCard === editor
+        && isSaveCurrent();
+    if (editor?.baseCard !== card || !isCurrent()) return;
+    const needsRefresh = getFaceKeys(editor).some(key => {
+        const face = card[key];
+        return face?.template === AUTO_TEMPLATE
+            && editor[key].resolvedTemplate !== resolveFaceTemplate(face);
+    });
+    if (!needsRefresh) return;
+    const updated = await buildCard(card);
+    if (!isCurrent()) return disposeEditorCard(updated);
+    await installEditorCard(updated);
 }
 
 export async function selectCard(card) {

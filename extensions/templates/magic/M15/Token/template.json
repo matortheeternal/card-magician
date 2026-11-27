@@ -6,6 +6,9 @@
   "description": "This template is for the Token Frame.",
   "author": "Mator",
   "version": "0.2.0",
+  "autoMatch": {
+    "superType": ["Token"]
+  },
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/TokenFrame",

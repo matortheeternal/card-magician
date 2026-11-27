@@ -1,5 +1,7 @@
 import { readExtensionDirectories } from '../../shared/extensionManager.js';
 
+import { AUTO_TEMPLATE, matchAutoTemplate } from './autoTemplate.js';
+
 const templates = [];
 
 async function loadTemplateFile(templateFolder, filename) {
@@ -53,4 +55,15 @@ export function getTemplate(templateId) {
 
 export function getTemplates() {
     return templates.slice();
+}
+
+export function getGameTemplates(gameId) {
+    return templates.filter(template => template.gameId === gameId);
+}
+
+export function resolveFaceTemplate(face, game = activeGame) {
+    if (face.template !== AUTO_TEMPLATE)
+        return getTemplate(face.template ?? game.defaultTemplateId);
+    return matchAutoTemplate(getGameTemplates(game.id), face)
+        ?? getTemplate(game.defaultTemplateId);
 }

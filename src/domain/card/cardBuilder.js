@@ -1,4 +1,4 @@
-import { getTemplate } from '../template/templateRegistry.js';
+import { resolveFaceTemplate } from '../template/templateRegistry.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
 
@@ -33,7 +33,8 @@ const templateField = () => ({
 function setupTemplate(face, faceData) {
     face.fields.push(templateField());
     faceData.template ??= activeGame.defaultTemplateId;
-    const template = getTemplate(faceData.template);
+    const template = resolveFaceTemplate(faceData);
+    face.resolvedTemplate = template;
     face.dom.setHTML(template.html);
     face.dom.addCSS(template.css);
     face.form.setHTML(template.form.html);
