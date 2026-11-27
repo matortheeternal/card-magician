@@ -29,6 +29,7 @@ export type { default as MountedDirectory } from './shared/MountedDirectory.js';
 export type { default as ImageOp } from './domain/graphics/ImageOp.js';
 export type { default as DOMBuilder } from './domain/card/DomBuilder.js';
 export type Column = Record<string, unknown>;
+export type Inspection = { id: string; [key: string]: unknown };
 export { default as CardMagicianGame } from './domain/game/CardMagicianGame.js';
 export { default as StatisticsRegistry } from './domain/statistics/StatisticsRegistry.js';
 export type {

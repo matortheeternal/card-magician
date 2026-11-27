@@ -1,6 +1,7 @@
 {
     "Project lifecycle": ["Project lifecycle"],
     "Application lifecycle": [],
+    "Inspections": ["Inspections"],
     "Workspace": [
         "Card editing", "Card files", "Clipboard", "Undo and redo", "Projects",
         "Card display", "Set symbol", "Statistics", "MSE import", "Tag suggestions"

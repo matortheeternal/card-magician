@@ -28,12 +28,12 @@ cm-settings-workspace {
             width: 44rem;
         }
 
-        > :is(cm-edit-tags, cm-mechanic-settings) {
+        > :is(cm-edit-tags, cm-mechanic-settings, cm-magic-inspection-settings) {
             width: 100%;
         }
     }
 
-    .content-container:has(> cm-mechanic-settings) {
+    .content-container:has(> :is(cm-mechanic-settings, cm-magic-inspection-settings)) {
         padding: 0;
         overflow: hidden;
     }
