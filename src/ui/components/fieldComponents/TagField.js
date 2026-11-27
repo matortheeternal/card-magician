@@ -2,8 +2,9 @@ import renderTagField from './tagField.html.js';
 import FieldComponent from './FieldComponent.js';
 import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
 import { registerField } from '../../systems/fieldComponentRegistry.js';
+import { suggestedTagsFor } from '../../../domain/game/tagSuggestions.js';
 import {
-    findTag, rememberTag, searchTags, tagManager, tagStyle
+    rememberTag, searchTags, tagManager, tagStyle
 } from '../../../domain/game/tagManager.js';
 
 const L = localize('tag-field');
@@ -89,18 +90,7 @@ export default class TagField extends FieldComponent {
 
     get suggestions() {
         if (!window.activeGame?.config?.get('suggestOracleTags')) return [];
-        const assistance = window.activeGame?.oracleAssistance;
-        const tags = assistance?.suggestTags(this.model) ?? [];
-        const dismissed = this.model?.dismissedTags ?? [];
-        const relationships = this.tagRelationships;
-        const canonicalTag = relationships?.canonicalTag ?? (tag => tag);
-        const overrides = this.model?.excludedInheritedTags ?? [];
-        const excluded = new Set(
-            [...this.appliedTags, ...dismissed, ...overrides].map(canonicalTag)
-        );
-        const available = tags.map(canonicalTag)
-            .filter(tag => !excluded.has(tag) && !findTag(tag)?.hidden);
-        return relationships?.specificTags(available) ?? available;
+        return suggestedTagsFor(this.model);
     }
 
     renderSuggestion(tag) {
