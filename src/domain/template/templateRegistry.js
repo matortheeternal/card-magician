@@ -64,9 +64,31 @@ export function getGameTemplates(gameId) {
     return templates.filter(template => template.gameId === gameId);
 }
 
-export function resolveFaceTemplate(face, game = activeGame) {
+export function getTemplateFamily(template) {
+    return template?.family || template?.id.split('/').slice(1, -1).join(' / ') || '';
+}
+
+export function getFamilyDefaults(gameId) {
+    return getGameTemplates(gameId).filter(template => template.familyDefault);
+}
+
+export function getPreferredTemplateDefault(
+    game = activeGame, project = window.activeProject
+) {
+    const family = project?.preferredTemplateFamily;
+    return getFamilyDefaults(game.id)
+        .find(template => getTemplateFamily(template) === family)
+        ?? getTemplate(game.defaultTemplateId);
+}
+
+export function resolveFaceTemplate(
+    face, game = activeGame, project = window.activeProject
+) {
     if (face.template !== AUTO_TEMPLATE)
         return getTemplate(face.template ?? game.defaultTemplateId);
-    return matchAutoTemplate(getGameTemplates(game.id), face)
-        ?? getTemplate(game.defaultTemplateId);
+    const fallback = getPreferredTemplateDefault(game, project);
+    const family = getTemplateFamily(fallback);
+    const candidates = getGameTemplates(game.id)
+        .filter(template => getTemplateFamily(template) === family);
+    return matchAutoTemplate(candidates, face) ?? fallback;
 }

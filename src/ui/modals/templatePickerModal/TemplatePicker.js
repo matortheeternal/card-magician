@@ -1,7 +1,8 @@
 import ReactiveComponent from '../../components/ReactiveComponent.js';
 import { AUTO_TEMPLATE } from '../../../domain/template/autoTemplate.js';
 import { emit, escapeHTML } from '../../../shared/htmlUtils.js';
-import { templateFamily, templateLabel } from './templateLabels.js';
+import { getTemplateFamily } from '../../../domain/template/templateRegistry.js';
+import { templateLabel } from './templateLabels.js';
 
 const L = localize('template-picker');
 const whitespace = /\s+/u;
@@ -70,7 +71,7 @@ export default class TemplatePicker extends ReactiveComponent {
             { id: AUTO_TEMPLATE, label: L`Auto`, family: '' },
             ...ordered.map(template => ({
                 id: template.id,
-                family: templateFamily(template) || L`Other templates`,
+                family: getTemplateFamily(template) || L`Other templates`,
                 label: templateLabel(template),
                 version: template.version
             }))

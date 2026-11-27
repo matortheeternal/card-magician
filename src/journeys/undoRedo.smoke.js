@@ -20,6 +20,7 @@ import {
     deleteSelectedCards, filterCards, redo, undo
 } from '../shared/testing/steps/editMenu.js';
 import { reopenProject } from '../shared/testing/steps/projects.js';
+import { selectSettingsTab } from '../shared/testing/steps/settings.js';
 
 function deferred() {
     let resolve;
@@ -477,6 +478,32 @@ describe('Undo and redo', () => {
                expect(activeEditorCard.front.template).toBe('auto');
                expect(activeEditorCard.front.resolvedTemplate.id)
                    .toBe('magic/M15/SagaCreature');
+           });
+
+        it('refreshes Auto when the project family changes and persists the preference',
+           async () => {
+               await setCardFields({ superType: 'Enchantment', subType: 'Saga' });
+               await changeTemplate('auto');
+               expect(activeEditorCard.front.resolvedTemplate.id).toBe('magic/M15/Saga');
+               const workspace = await cmTest.openSettings();
+               const tabId = 'cm-card-defaults-settings';
+               const tab = await selectSettingsTab(workspace, tabId);
+               const field = tab.querySelector('form-field').fieldElement;
+               expect(field.value).toBe('M15');
+               expect(field.field.options.map(option => option.id))
+                   .toEqual(['Classic', 'M15']);
+               field.inputValue('Classic');
+               await eventually(() =>
+                   activeEditorCard.front.resolvedTemplate.id === 'magic/Classic/Saga'
+               );
+               await cmTest.closeSettings();
+               await workspace.saveProject.flush();
+               const [reopened] = (await reopenProject()).cards;
+               await selectCard(reopened);
+               expect(activeProject.preferredTemplateFamily).toBe('Classic');
+               expect(activeEditorCard.front.template).toBe('auto');
+               expect(activeEditorCard.front.resolvedTemplate.id)
+                   .toBe('magic/Classic/Saga');
            });
 
         it('retains layout-specific data when Auto switches layouts', async () => {

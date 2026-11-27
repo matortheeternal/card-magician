@@ -6,6 +6,7 @@
   "description": "Template for representing normal Magic 2015 cards.",
   "author": "Mator",
   "version": "0.2.0",
+  "familyDefault": true,
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/Frame",

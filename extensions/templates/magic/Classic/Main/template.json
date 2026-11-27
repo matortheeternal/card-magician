@@ -6,6 +6,7 @@
   "description": "Template for cards in the classic frame, including the timeshifted variant.",
   "author": "Mator",
   "version": "0.2.0",
+  "familyDefault": true,
   "card": [
     "magic/M15/CardLayout",
     "magic/Classic/ClassicLayout",

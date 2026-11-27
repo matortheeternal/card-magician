@@ -6,6 +6,9 @@
   "description": "Template for tokens in the classic frame.",
   "author": "Mator",
   "version": "0.2.0",
+  "autoMatch": {
+    "superType": ["Token"]
+  },
   "card": [
     "magic/M15/CardLayout",
     "magic/Classic/ClassicLayout",

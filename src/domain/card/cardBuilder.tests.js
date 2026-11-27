@@ -1,3 +1,4 @@
+import { resolveFaceTemplate } from '../template/templateRegistry.js';
 import { buildCardFace } from './cardBuilder.js';
 import { useGame } from '../../shared/testing/gameFixture.js';
 
@@ -44,6 +45,20 @@ describe('Card faces', () => {
             front.dispose();
             back.dispose();
         }
+    });
+
+    it('matches Auto within the project family and falls back to its default', () => {
+        const saga = { template: 'auto', superType: 'Enchantment', subType: 'Saga' };
+        const classic = { preferredTemplateFamily: 'Classic' };
+        const resolve = (face, project) =>
+            resolveFaceTemplate(face, activeGame, project).id;
+        expect(resolve(saga, {})).toBe('magic/M15/Saga');
+        expect(resolve(saga, classic)).toBe('magic/Classic/Saga');
+        expect(resolve({ template: 'auto', superType: 'Creature' }, classic))
+            .toBe('magic/Classic/Main');
+        expect(resolve({ template: 'magic/M15/Saga' }, classic)).toBe('magic/M15/Saga');
+        expect(resolve(saga, { preferredTemplateFamily: 'Spotlight' }))
+            .toBe('magic/M15/Saga');
     });
 
     it('reads previous Ixalan Map IDs and saves the canonical Spotlight ID', async () => {
