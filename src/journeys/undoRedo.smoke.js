@@ -95,6 +95,8 @@ describe('Undo and redo', () => {
         await dropImages([art, art]);
         const dropped = activeProject.cards.slice(before.length);
         expect(dropped.length).toBe(2);
+        for (const card of dropped)
+            expect((await readCardData(card)).front.template).toBe('magic/M15/Main');
         await undo();
         expect(activeProject.cards).toEqual(before);
         await redo();
@@ -428,8 +430,9 @@ describe('Undo and redo', () => {
             expect([...picker.querySelectorAll('h3')].map(group => group.textContent))
                 .toEqual(['M15', 'M20', 'Classic', 'Spotlight']);
             expect(picker.firstResult.textContent.trim()).toBe('Auto');
-            expect(picker.querySelector('section:nth-child(2) button')).toBe(current);
-            expect(current.querySelector('span').textContent).toBe('M15');
+            expect(current).toBe(picker.firstResult);
+            const m15 = picker.querySelector('section:nth-child(2) button span');
+            expect(m15.textContent).toBe('M15');
             expect(picker.results.getBoundingClientRect().width)
                 .toBe(picker.parentElement.getBoundingClientRect().width);
             expect(getComputedStyle(picker.search.parentElement).borderBottomWidth)
@@ -451,11 +454,12 @@ describe('Undo and redo', () => {
             }));
             await eventually(() => document.activeElement === templateField().button);
             expect(getActiveModal()).toBeNull();
-            expect(templateField().value).toBe('magic/M15/Main');
+            expect(templateField().value).toBe('auto');
         });
 
         it('resolves Auto from the type line and keeps the choice through history',
            async () => {
+               await changeTemplate('magic/M15/Main');
                const picker = await openTemplatePicker();
                picker.firstResult.click();
                await eventually(() => activeEditorCard.front.template === 'auto');
@@ -504,6 +508,10 @@ describe('Undo and redo', () => {
                expect(activeEditorCard.front.template).toBe('auto');
                expect(activeEditorCard.front.resolvedTemplate.id)
                    .toBe('magic/Classic/Saga');
+               const created = await createCard();
+               expect((await readCardData(created)).front.template).toBe('auto');
+               expect(activeEditorCard.front.resolvedTemplate.id)
+                   .toBe('magic/Classic/Main');
            });
 
         it('retains layout-specific data when Auto switches layouts', async () => {
@@ -533,7 +541,7 @@ describe('Undo and redo', () => {
                await setCardFields({ superType: 'Planeswalker' }, back);
                await flushCard();
                expect(activeEditorCard.back.resolvedTemplate.id).toBe('magic/M15/Walker');
-               expect(activeEditorCard.front.template).toBe('magic/M15/Main');
+               expect(activeEditorCard.front.template).toBe('auto');
                expect(document.querySelector('cm-card-form').activeFaceId).toBe('back');
                const rebuiltType = new FieldInteractor('superType', back).fieldElement;
                expect(document.activeElement).toBe(rebuiltType.input);

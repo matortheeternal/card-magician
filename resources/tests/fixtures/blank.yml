@@ -1,5 +1,6 @@
 front:
-  template: magic/M15/Main
+  template: auto
+  autoCollectorNumber: CC01
   colors: []
   colorOverride: []
   faceSymbol: null
@@ -28,7 +29,6 @@ front:
   showPT: ""
   rarity: common
   illustrator: ""
-  autoCollectorNumber: CC01
   collectorNumber: ""
   setCode: ""
   language: ""

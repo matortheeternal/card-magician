@@ -8,6 +8,7 @@ import {
 import { registerAction } from '../../systems/actionSystem.js';
 import { hide, show, toggleDisplay } from '../../../shared/htmlUtils.js';
 import ImageFieldValue from '../../../domain/card/ImageFieldValue.js';
+import { AUTO_TEMPLATE } from '../../../domain/template/autoTemplate.js';
 import { openModal } from '../../modals/modalManager.js';
 import * as history from '../../systems/historySystem.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
@@ -133,7 +134,10 @@ export default class CardList extends ReactiveComponent {
 
     async addCard() {
         log('user').info('Add card');
-        await this.createCards([new activeGame.Card()]);
+        const card = new activeGame.Card();
+        card.front ??= {};
+        card.front.template ??= AUTO_TEMPLATE;
+        await this.createCards([card]);
     }
 
     showFilter() {
@@ -229,6 +233,7 @@ export default class CardList extends ReactiveComponent {
         for (const file of files) {
             const card = new activeGame.Card();
             // TODO: This needs to be cross-game compatible.
+            card.front.template ??= activeGame.defaultTemplateId;
             card.front.artImage = await ImageFieldValue.fromFile(file);
             cards.push(card);
         }
