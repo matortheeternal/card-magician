@@ -12,13 +12,18 @@ function pruneEmpty(entry, key) {
     if (!Object.keys(entry[key]).length) delete entry[key];
 }
 
+function enabledByDefault(inspection) {
+    return inspection?.enabledByDefault ?? true;
+}
+
 function clearEntry(entry) {
     for (const key of Object.keys(entry)) delete entry[key];
 }
 
 export default class InspectionOverrides {
-    constructor(project) {
+    constructor(project, inspections) {
         this.project = project;
+        this.inspections = new Map(inspections.map(item => [item.id, item]));
     }
 
     get all() {
@@ -26,8 +31,14 @@ export default class InspectionOverrides {
     }
 
     get disabledIds() {
-        const ids = Object.keys(this.all).filter(id => this.all[id].disabled);
+        const ids = [...this.inspections.keys()].filter(id => !this.isEnabled(id));
         return new Set(ids);
+    }
+
+    isEnabled(id) {
+        const disabled = this.all[id]?.disabled;
+        if (disabled === undefined) return enabledByDefault(this.inspections.get(id));
+        return !disabled;
     }
 
     has(id) {
@@ -43,7 +54,10 @@ export default class InspectionOverrides {
     }
 
     setEnabled(ids, enabled) {
-        this.update(ids, entry => setOrDelete(entry, 'disabled', true, enabled));
+        this.update(ids, (entry, id) => {
+            const isDefault = enabled === enabledByDefault(this.inspections.get(id));
+            setOrDelete(entry, 'disabled', !enabled, isDefault);
+        });
     }
 
     setTier(inspection, color, tier) {
@@ -69,7 +83,7 @@ export default class InspectionOverrides {
         const overrides = this.all;
         for (const id of ids) {
             const entry = overrides[id] ?? {};
-            change(entry);
+            change(entry, id);
             overrides[id] = entry;
             if (!Object.keys(entry).length) delete overrides[id];
         }

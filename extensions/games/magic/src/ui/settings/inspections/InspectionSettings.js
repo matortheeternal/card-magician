@@ -40,7 +40,7 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     get overrides() {
-        return new InspectionOverrides(activeProject);
+        return new InspectionOverrides(activeProject, activeGame.inspections);
     }
 
     get selectedInspection() {
@@ -117,7 +117,7 @@ export default class InspectionSettings extends CardMagicianSettings {
     reset() {
         const inspection = this.selectedInspection;
         this.saveChange(() => this.overrides.reset(inspection.id));
-        this.tree.setEnabled([inspection.id], true);
+        this.tree.setEnabled([inspection.id], this.overrides.isEnabled(inspection.id));
         this.renderDetail(inspection);
     }
 
@@ -131,8 +131,8 @@ export default class InspectionSettings extends CardMagicianSettings {
         this.detail.replaceChildren(this.heading(inspection));
         if (inspection.description)
             this.detail.append(element('p', inspection.description));
-        this.detail.append(element('h3', L`Tier by color`), this.tiersFor(inspection));
-        if (inspection.conditions.length) this.renderExceptions(inspection);
+        if (inspection.tiers) this.renderTiers(inspection);
+        if (inspection.conditions?.length) this.renderExceptions(inspection);
         if (inspection.example) this.renderExamples(inspection);
     }
 
@@ -142,18 +142,19 @@ export default class InspectionSettings extends CardMagicianSettings {
         reset.dataset.clickAction = 'reset';
         reset.disabled = !this.overrides.has(inspection.id);
         const actions = element('div');
-        actions.append(searchButton(inspection), reset);
+        if (inspection.scryfall) actions.append(searchButton(inspection));
+        actions.append(reset);
         const heading = element('header', undefined, 'inspection-heading');
         heading.append(element('h2', inspection.title), actions);
         return heading;
     }
 
-    tiersFor(inspection) {
+    renderTiers(inspection) {
         const tiers = element('cm-inspection-tiers');
         tiers.defaults = inspection.tiers;
         tiers.cards = inspection.cards;
         tiers.overrides = this.overrides.all[inspection.id]?.tiers ?? {};
-        return tiers;
+        this.detail.append(element('h3', L`Tier by color`), tiers);
     }
 
     renderExceptions(inspection) {
