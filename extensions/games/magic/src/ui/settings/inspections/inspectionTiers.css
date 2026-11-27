@@ -1,6 +1,6 @@
 cm-inspection-tiers {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--sl-spacing-small);
 
     section {
@@ -9,8 +9,8 @@ cm-inspection-tiers {
         display: flex;
         flex-direction: column;
         gap: var(--sl-spacing-2x-small);
-        min-width: 0;
-        padding: var(--sl-spacing-x-small) var(--sl-spacing-x-small) var(--sl-spacing-small);
+        flex: 0 0 8.5rem;
+        padding: var(--sl-spacing-x-small) var(--sl-spacing-small) var(--sl-spacing-small);
         border: 1px solid var(--sl-input-border-color);
         border-radius: var(--sl-border-radius-medium);
         background: var(--sl-color-neutral-50);
