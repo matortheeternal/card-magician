@@ -1,7 +1,9 @@
 import ReactiveComponent from '../../components/ReactiveComponent.js';
 import { AUTO_TEMPLATE } from '../../../domain/template/autoTemplate.js';
-import { emit, escapeHTML } from '../../../shared/htmlUtils.js';
-import { getTemplateFamily } from '../../../domain/template/templateRegistry.js';
+import { emit, esc, escapeHTML } from '../../../shared/htmlUtils.js';
+import {
+    getPreferredTemplateDefault, getTemplateFamily
+} from '../../../domain/template/templateRegistry.js';
 import { templateLabel } from './templateLabels.js';
 
 const L = localize('template-picker');
@@ -22,6 +24,12 @@ function matchesQuery(option, query) {
 }
 
 export default class TemplatePicker extends ReactiveComponent {
+    expandedFamilies = new Set();
+    searching = false;
+
+    get familyGroups() {
+        return this.results.querySelectorAll('details');
+    }
     get search() {
         return this.querySelector('sl-input');
     }
@@ -63,7 +71,9 @@ export default class TemplatePicker extends ReactiveComponent {
 
     setTemplates(templates, selected) {
         this.selected = selected;
-        const defaultId = activeGame.defaultTemplateId;
+        const preferred = getPreferredTemplateDefault();
+        this.expandedFamilies = new Set([getTemplateFamily(preferred)]);
+        const defaultId = preferred?.id;
         const ordered = templates.toSorted((a, b) =>
             Number(b.id === defaultId) - Number(a.id === defaultId)
         );
@@ -73,7 +83,8 @@ export default class TemplatePicker extends ReactiveComponent {
                 id: template.id,
                 family: getTemplateFamily(template) || L`Other templates`,
                 label: templateLabel(template),
-                version: template.version
+                version: template.version,
+                iconUrl: template.iconUrl
             }))
         ];
         this.renderResults();
@@ -91,23 +102,43 @@ export default class TemplatePicker extends ReactiveComponent {
 
     renderOption(option, index) {
         const current = option.id === this.selected ? 'aria-current="true"' : '';
-        const version = option.version
-            ? `<small>${escapeHTML(option.version)}</small>` : '';
+        const icon = option.iconUrl
+            ? `<img src="${esc(option.iconUrl)}" alt="" loading="lazy">` : '';
         return (
             `<button type="button" ${current}
                 data-option-index="${index}">
-                <span>${option.label}</span>${version}
+                ${icon}<span>${option.label}</span>
             </button>`
         );
     }
 
     renderGroup(family, options) {
-        const heading = family ? `<h3>${escapeHTML(family)}</h3>` : '';
-        return `<section>${heading}${options.join('')}</section>`;
+        if (!family) return `<div class="auto-template">${options.join('')}</div>`;
+        const open = this.searching || this.expandedFamilies.has(family) ? 'open' : '';
+        return (
+            `<details ${open} data-family="${esc(escapeHTML(family))}">
+                <summary>${escapeHTML(family)}</summary>
+                <div class="template-grid">${options.join('')}</div>
+            </details>`
+        );
+    }
+
+    rememberExpansion() {
+        for (const group of this.familyGroups) {
+            const family = group.dataset.family;
+            if (group.open) {
+                this.expandedFamilies.add(family);
+                continue;
+            }
+            this.expandedFamilies.delete(family);
+        }
     }
 
     renderResults() {
-        const query = this.search.value.toLowerCase().trim().split(whitespace);
+        if (!this.searching) this.rememberExpansion();
+        const search = this.search.value.trim();
+        this.searching = Boolean(search);
+        const query = search.toLowerCase().split(whitespace);
         const groups = new Map();
         for (const [index, option] of this.options.entries()) {
             if (!matchesQuery(option, query)) continue;

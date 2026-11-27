@@ -1,3 +1,8 @@
+.layout-desktop cm-template-picker-modal .modal {
+    width: min(48rem, calc(100vw - 6rem));
+    min-width: 0;
+}
+
 cm-template-picker-modal .modal-body {
     padding: 0;
 }
@@ -15,34 +20,58 @@ cm-template-picker {
     [data-template-results] {
         padding: var(--sl-spacing-medium) var(--sl-spacing-x-large)
             var(--sl-spacing-x-large);
-        max-block-size: min(50vh, 28rem);
+        block-size: min(58dvh, 34rem);
         overflow: auto;
     }
 
-    section + section {
-        margin-block-start: var(--sl-spacing-medium);
+    details {
+        border-bottom: 1px solid var(--sl-input-border-color);
     }
 
-    h3 {
-        margin: 0 0 var(--sl-spacing-x-small);
-        font-size: var(--sl-font-size-small);
-        color: var(--sl-color-neutral-700);
+    summary {
+        padding-block: var(--sl-spacing-small);
+        font-weight: var(--sl-font-weight-semibold);
+        cursor: pointer;
+    }
+
+    .template-grid {
+        --template-preview-height: 96px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(7rem, 100%), 1fr));
+        gap: var(--sl-spacing-small);
+        padding-block: var(--sl-spacing-2x-small) var(--sl-spacing-medium);
     }
 
     button {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: var(--sl-spacing-medium);
-        width: 100%;
-        padding: var(--sl-spacing-small);
+        padding: var(--sl-spacing-x-small);
         background: var(--sl-color-neutral-0);
         color: var(--sl-color-neutral-1000);
-        border: 1px solid transparent;
+        border: 1px solid var(--sl-input-border-color);
         border-radius: var(--sl-border-radius-medium);
         font: inherit;
-        text-align: start;
         cursor: pointer;
+    }
+
+    .template-grid button {
+        display: grid;
+        grid-template-rows: var(--template-preview-height) auto;
+        align-content: start;
+        justify-items: center;
+        gap: var(--sl-spacing-2x-small);
+        inline-size: 100%;
+        block-size: 100%;
+    }
+
+    img {
+        grid-row: 1;
+        display: block;
+        max-inline-size: 100%;
+        block-size: var(--template-preview-height);
+        object-fit: contain;
+    }
+
+    .template-grid span {
+        grid-row: 2;
     }
 
     button:hover,
@@ -52,9 +81,5 @@ cm-template-picker {
 
     button[aria-current] {
         border-color: var(--sl-color-primary-600);
-    }
-
-    small {
-        color: var(--sl-color-neutral-700);
     }
 }

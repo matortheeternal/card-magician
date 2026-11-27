@@ -7,7 +7,8 @@ import {
     canvasToLosslessWebp, compareImages, imageDataToPng
 } from './imageComparison.js';
 
-const IMAGE_SCALE = 0.5;
+const EXPORT_SCALE = 2;
+const BASELINE_SCALE = 0.5;
 const SHEET_CONFIG = { columns: 1, gap: 0, backgroundColor: 'transparent' };
 
 async function writeBlob(filePath, blob) {
@@ -18,6 +19,17 @@ async function writeBlob(filePath, blob) {
 async function readBlob(filePath) {
     if (!await platform.checkFileExists(filePath)) return null;
     return new Blob([await platform.readBinaryFile(filePath)], { type: 'image/webp' });
+}
+
+function resizeForBaseline(canvas) {
+    const ratio = BASELINE_SCALE / EXPORT_SCALE;
+    const preview = document.createElement('canvas');
+    preview.width = Math.ceil(canvas.width * ratio);
+    preview.height = Math.ceil(canvas.height * ratio);
+    const context = preview.getContext('2d');
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(canvas, 0, 0, preview.width, preview.height);
+    return preview;
 }
 
 function describeDifference(name, comparison) {
@@ -55,7 +67,7 @@ export default class TemplateCardTest {
         for (const faceKey of getFaceKeys(this.baseCard))
             sheet.add({ card: renderer, faceKey });
         try {
-            yield* sheet.cardOutputs({ scale: IMAGE_SCALE });
+            yield* sheet.cardOutputs({ scale: EXPORT_SCALE });
         } finally {
             sheet.cleanup();
         }
@@ -63,7 +75,7 @@ export default class TemplateCardTest {
 
     async checkFace(faceKey, canvas) {
         const name = this.imageName(faceKey);
-        const actual = await canvasToLosslessWebp(canvas);
+        const actual = await canvasToLosslessWebp(resizeForBaseline(canvas));
         if (this.record)
             return writeBlob(this.project.expectedImagePath(name), actual);
         const expected = await readBlob(this.project.expectedImagePath(name));

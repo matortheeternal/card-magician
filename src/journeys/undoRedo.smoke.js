@@ -427,16 +427,40 @@ describe('Undo and redo', () => {
             const sagaCreature = 'magic/M15/SagaCreature';
             const current = picker.querySelector('[aria-current]');
             expect(getComputedStyle(picker.results).overflowY).toBe('auto');
-            expect([...picker.querySelectorAll('h3')].map(group => group.textContent))
+            const groups = [...picker.familyGroups];
+            expect(groups.map(group => group.dataset.family))
                 .toEqual(['M15', 'M20', 'Classic', 'Spotlight']);
+            expect(groups.map(group => group.open)).toEqual([true, false, false, false]);
             expect(picker.firstResult.textContent.trim()).toBe('Auto');
             expect(current).toBe(picker.firstResult);
-            const m15 = picker.querySelector('section:nth-child(2) button span');
-            expect(m15.textContent).toBe('M15');
+            const firstTile = groups[0].querySelector('button');
+            expect(firstTile.querySelector('span').textContent).toBe('M15');
+            const icon = firstTile.querySelector('img');
+            await eventually(() => icon.naturalWidth > 0);
+            expect(icon.getBoundingClientRect().height).toBe(96);
+            const sagaTile = [...groups[0].querySelectorAll('button')].find(tile =>
+                tile.querySelector('span').textContent === 'M15 Saga Creature'
+            );
+            const iconOffset = tile =>
+                tile.querySelector('img').getBoundingClientRect().top
+                - tile.getBoundingClientRect().top;
+            expect(iconOffset(sagaTile)).toBeCloseTo(iconOffset(firstTile));
+            expect(firstTile.textContent.trim()).toBe('M15');
+            const versionTooltip = firstTile.closest('sl-tooltip');
+            expect(versionTooltip.content).toBe('Version 0.2.0');
+            firstTile.focus();
+            await eventually(() => versionTooltip.open);
+            picker.search.focus();
             expect(picker.results.getBoundingClientRect().width)
                 .toBe(picker.parentElement.getBoundingClientRect().width);
             expect(getComputedStyle(picker.search.parentElement).borderBottomWidth)
                 .toBe('1px');
+            picker.search.value = 'classic saga';
+            picker.search.dispatchEvent(new Event('sl-input', { bubbles: true }));
+            expect(picker.familyGroups[0].open).toBeTrue();
+            picker.search.value = '';
+            picker.search.dispatchEvent(new Event('sl-input', { bubbles: true }));
+            expect(picker.familyGroups[2].open).toBeFalse();
             picker.search.value = 'm15 saga creature';
             picker.search.dispatchEvent(new Event('sl-input', { bubbles: true }));
             const options = picker.querySelectorAll('[data-option-index]');
@@ -514,6 +538,10 @@ describe('Undo and redo', () => {
                expect((await readCardData(created)).front.template).toBe('auto');
                expect(activeEditorCard.front.resolvedTemplate.id)
                    .toBe('magic/Classic/Main');
+               const picker = await openTemplatePicker();
+               const expanded = [...picker.familyGroups].filter(group => group.open);
+               expect(expanded.map(group => group.dataset.family)).toEqual(['Classic']);
+               getActiveModal().close();
            });
 
         it('retains layout-specific data when Auto switches layouts', async () => {

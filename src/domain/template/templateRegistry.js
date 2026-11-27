@@ -40,6 +40,7 @@ export async function loadTemplates() {
             log('plugin').warn(`Incomplete template found at`, folder.url());
             continue;
         }
+        if (await folder.exists('icon.webp')) template.iconUrl = folder.url('icon.webp');
         templates.push(template);
     }
     sortTemplates();
