@@ -20,6 +20,12 @@ cm-magic-inspection-settings {
         gap: var(--sl-spacing-small);
     }
 
+    .inspection-heading div {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-medium);
+    }
+
     h2 {
         margin: 0;
         font-size: var(--sl-font-size-large);
@@ -32,54 +38,10 @@ cm-magic-inspection-settings {
         color: var(--sl-color-neutral-700);
     }
 
-    .inspection-tiers,
     .inspection-examples {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr));
-        gap: var(--sl-spacing-small);
-    }
-
-    .inspection-tier {
-        min-width: 0;
-        padding: var(--sl-spacing-x-small);
-        border: 1px solid var(--sl-input-border-color);
-        border-radius: var(--sl-border-radius-medium);
-        background: var(--sl-color-neutral-50);
-    }
-
-    .inspection-tier sl-select {
-        --sl-input-spacing-small: var(--sl-spacing-2x-small);
-    }
-
-    .tier-label {
-        display: flex;
-        align-items: center;
-        gap: var(--sl-spacing-2x-small);
-        margin-bottom: var(--sl-spacing-2x-small);
-        font-size: var(--sl-font-size-x-small);
-    }
-
-    .tier-label img {
-        width: 1rem;
-    }
-
-    .tier-status {
-        display: block;
-        margin-top: var(--sl-spacing-2x-small);
-        font-size: var(--sl-font-size-x-small);
-        color: var(--sl-color-neutral-700);
-    }
-
-    .tier-status[data-severity="none"] {
-        color: var(--sl-color-warning-700);
-    }
-
-    sl-details + sl-details {
-        margin-top: var(--sl-spacing-x-small);
-    }
-
-    .inspection-examples {
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+        gap: var(--sl-spacing-small);
     }
 
     .inspection-examples sl-card {
