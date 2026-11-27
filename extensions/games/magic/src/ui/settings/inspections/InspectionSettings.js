@@ -2,61 +2,24 @@ import './inspectionSettings.css';
 import './InspectionTree.js';
 import './InspectionTiers.js';
 import './InspectionExceptions.js';
+import './InspectionExamples.js';
 import element from './element.js';
+import InspectionOverrides from '../../../domain/inspections/InspectionOverrides.js';
+import {
+    colorSearchUrl, inspectionSearchUrl
+} from '../../../domain/inspections/scryfallSearch.js';
 
 const L = localize('game-magic');
 
-function exampleCard(example) {
-    const card = element('sl-card');
-    const heading = element('div', undefined, 'example-heading');
-    heading.slot = 'header';
-    const cost = element('span');
-    cost.setAttribute('aria-label', example.mana_cost);
-    cost.innerHTML = activeGame.symbols.symbolsToHTML(
-        activeGame.symbols.parseSymbols(example.mana_cost, false)
-    );
-    heading.append(element('strong', example.name), cost);
-    card.append(
-        heading,
-        element('strong', example.type_line),
-        element('p', example.oracle_text, 'example-text')
-    );
-    const stats = example.power && example.toughness
-        ? `${example.power}/${example.toughness}`
-        : example.loyalty;
-    if (stats) card.append(element('strong', stats, 'example-stats'));
-    return card;
-}
-
-function setOverride(record, key, value, isDefault) {
-    if (isDefault) {
-        delete record[key];
-        return;
-    }
-    record[key] = value;
-}
-
-function pruneEmpty(entry, key) {
-    if (!Object.keys(entry[key]).length) delete entry[key];
-}
-
-function setDisabled(entry, enabled) {
-    if (enabled) {
-        delete entry.disabled;
-        return;
-    }
-    entry.disabled = true;
-}
-
-function clearEntry(entry) {
-    for (const key of Object.keys(entry)) delete entry[key];
-}
-
-function updateEntry(overrides, id, update) {
-    const entry = overrides[id] ?? {};
-    update(entry);
-    if (Object.keys(entry).length) overrides[id] = entry;
-    if (!Object.keys(entry).length) delete overrides[id];
+function searchButton() {
+    const button = element('sl-button', L`Scryfall`);
+    button.size = 'small';
+    button.dataset.clickAction = 'search-inspection';
+    const icon = element('sl-icon');
+    icon.name = 'search';
+    icon.slot = 'prefix';
+    button.prepend(icon);
+    return button;
 }
 
 export default class InspectionSettings extends CardMagicianSettings {
@@ -74,13 +37,7 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     get overrides() {
-        return activeProject.inspectionOverrides ?? {};
-    }
-
-    get disabledIds() {
-        const ids = Object.keys(this.overrides)
-            .filter(id => this.overrides[id].disabled);
-        return new Set(ids);
+        return new InspectionOverrides(activeProject);
     }
 
     get selectedInspection() {
@@ -100,26 +57,32 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     get resetButton() {
-        return this.detail.querySelector('.inspection-heading sl-button');
+        return this.detail.querySelector('[data-click-action="reset"]');
+    }
+
+    get examples() {
+        return this.detail.querySelector('cm-inspection-examples');
     }
 
     render() {
         const tree = element('cm-inspection-tree');
         tree.inspections = activeGame.inspections;
-        tree.disabledIds = this.disabledIds;
+        tree.disabledIds = this.overrides.disabledIds;
         this.replaceChildren(tree, element('section', undefined, 'inspection-detail'));
     }
 
     bind() {
         this.on('inspection-select', () => this.showSelected());
-        this.on('inspections-toggle', event => {
-            const { ids, enabled } = event.detail;
-            this.saveEnabled(ids, enabled);
-            if (ids.includes(this.tree.selectedId)) this.enabledSwitch.checked = enabled;
-        });
+        this.on('inspections-toggle', event => this.toggleInspections(event.detail));
         this.on('inspection-tier-change', event => this.saveTier(event.detail));
-        this.on('inspection-exception-change', event =>
-            this.saveExceptionColors(event.detail));
+        this.on('inspection-exceptions-change', event =>
+            this.saveExceptions(event.detail.exceptions));
+        this.on('inspection-search', event => this.searchColor(event.detail.color));
+        this.handleEvents('click', {
+            reset: () => this.reset(),
+            'search-inspection': () =>
+                this.openUrl(inspectionSearchUrl(this.selectedInspection))
+        });
         this.showSelected();
     }
 
@@ -129,43 +92,41 @@ export default class InspectionSettings extends CardMagicianSettings {
         this.detail.replaceChildren(element('p', L`No matching inspections.`));
     }
 
-    saveEnabled(ids, enabled) {
-        this.updateOverrides(ids, entry => setDisabled(entry, enabled));
+    toggleInspections({ ids, enabled }) {
+        this.saveChange(() => this.overrides.setEnabled(ids, enabled));
+        this.tree.setEnabled(ids, enabled);
+        if (ids.includes(this.tree.selectedId)) this.enabledSwitch.checked = enabled;
     }
 
     saveTier({ color, tier }) {
-        const { id, tiers } = this.selectedInspection;
-        this.updateOverrides([id], entry => {
-            entry.tiers ??= {};
-            setOverride(entry.tiers, color, tier, tier === tiers[color]);
-            pruneEmpty(entry, 'tiers');
-        });
+        const inspection = this.selectedInspection;
+        this.saveChange(() => this.overrides.setTier(inspection, color, tier));
+        this.examples?.update(this.overrides.tiersOf(inspection));
     }
 
-    saveExceptionColors({ exceptionId, colors }) {
-        const { id, exceptions } = this.selectedInspection;
-        const { colors: defaults } = exceptions.find(item => item.id === exceptionId);
-        this.updateOverrides([id], entry => {
-            entry.exceptions ??= {};
-            const isDefault = colors.join() === defaults.join();
-            setOverride(entry.exceptions, exceptionId, colors, isDefault);
-            pruneEmpty(entry, 'exceptions');
-        });
+    saveExceptions(exceptions) {
+        const inspection = this.selectedInspection;
+        this.saveChange(() => this.overrides.setExceptions(inspection, exceptions));
+    }
+
+    searchColor(color) {
+        this.openUrl(colorSearchUrl(this.selectedInspection, color));
+    }
+
+    openUrl(url) {
+        activeGame.platform.openUrl(url);
     }
 
     reset() {
         const inspection = this.selectedInspection;
-        this.updateOverrides([inspection.id], clearEntry);
+        this.saveChange(() => this.overrides.reset(inspection.id));
         this.tree.setEnabled([inspection.id], true);
         this.renderDetail(inspection);
     }
 
-    updateOverrides(ids, update) {
-        const overrides = this.overrides;
-        for (const id of ids) updateEntry(overrides, id, update);
-        if (Object.keys(overrides).length) activeProject.inspectionOverrides = overrides;
-        if (!Object.keys(overrides).length) delete activeProject.inspectionOverrides;
-        this.resetButton.disabled = !this.overrides[this.tree.selectedId];
+    saveChange(change) {
+        change();
+        this.resetButton.disabled = !this.overrides.has(this.tree.selectedId);
         this.emit('project-changed');
     }
 
@@ -174,23 +135,21 @@ export default class InspectionSettings extends CardMagicianSettings {
         if (inspection.description)
             this.detail.append(element('p', inspection.description));
         this.detail.append(element('h3', L`Tier by color`), this.tiersFor(inspection));
-        if (inspection.exceptions.length) this.renderExceptions(inspection);
-        if (inspection.examples.length) this.renderExamples(inspection.examples);
+        if (inspection.conditions.length) this.renderExceptions(inspection);
+        if (inspection.example) this.renderExamples(inspection);
     }
 
     heading(inspection) {
         const reset = element('sl-button', L`Reset to defaults`);
         reset.size = 'small';
-        reset.disabled = !this.overrides[inspection.id];
-        reset.addEventListener('click', () => this.reset());
+        reset.dataset.clickAction = 'reset';
+        reset.disabled = !this.overrides.has(inspection.id);
         const enabled = element('sl-switch', L`Enabled`);
-        enabled.checked = !this.disabledIds.has(inspection.id);
-        enabled.addEventListener('sl-change', () => {
-            this.saveEnabled([inspection.id], enabled.checked);
-            this.tree.setEnabled([inspection.id], enabled.checked);
-        });
+        enabled.checked = !this.overrides.disabledIds.has(inspection.id);
+        enabled.addEventListener('sl-change', () =>
+            this.toggleInspections({ ids: [inspection.id], enabled: enabled.checked }));
         const actions = element('div');
-        actions.append(reset, enabled);
+        actions.append(searchButton(), reset, enabled);
         const heading = element('header', undefined, 'inspection-heading');
         heading.append(element('h2', inspection.title), actions);
         return heading;
@@ -199,24 +158,21 @@ export default class InspectionSettings extends CardMagicianSettings {
     tiersFor(inspection) {
         const tiers = element('cm-inspection-tiers');
         tiers.defaults = inspection.tiers;
-        tiers.overrides = this.overrides[inspection.id]?.tiers ?? {};
+        tiers.overrides = this.overrides.all[inspection.id]?.tiers ?? {};
         return tiers;
     }
 
-    exceptionsFor(inspection) {
-        const exceptions = element('cm-inspection-exceptions');
-        exceptions.exceptions = inspection.exceptions;
-        exceptions.overrides = this.overrides[inspection.id]?.exceptions ?? {};
-        return exceptions;
-    }
-
     renderExceptions(inspection) {
-        this.detail.append(element('h3', L`Exceptions`), this.exceptionsFor(inspection));
+        const exceptions = element('cm-inspection-exceptions');
+        exceptions.conditions = inspection.conditions;
+        exceptions.exceptions = this.overrides.exceptionsOf(inspection);
+        this.detail.append(element('h3', L`Exceptions`), exceptions);
     }
 
-    renderExamples(examples) {
-        const cards = element('div', undefined, 'inspection-examples');
-        cards.append(...examples.map(exampleCard));
-        this.detail.append(element('h3', L`Examples`), cards);
+    renderExamples(inspection) {
+        const examples = element('cm-inspection-examples');
+        examples.inspection = inspection;
+        examples.tiers = this.overrides.tiersOf(inspection);
+        this.detail.append(element('h3', L`Examples`), examples);
     }
 }

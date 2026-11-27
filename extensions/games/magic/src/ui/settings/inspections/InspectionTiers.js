@@ -9,7 +9,12 @@ const TIERS = {
     tertiary: L`Tertiary`,
     none: L`None`,
 };
-const SEVERITIES = { tertiary: L`Bend`, none: L`Break` };
+const SEVERITIES = {
+    primary: { id: 'allowed', label: L`Allowed` },
+    secondary: { id: 'allowed', label: L`Allowed` },
+    tertiary: { id: 'bend', label: L`Bend` },
+    none: { id: 'break', label: L`Break` }
+};
 
 function tierOption([value, label]) {
     const option = element('sl-option', label);
@@ -17,18 +22,12 @@ function tierOption([value, label]) {
     return option;
 }
 
-function colorLabel(color, name) {
-    const label = element('span', name);
-    label.slot = 'label';
-    label.prepend(colorIcon(color));
-    return label;
-}
-
-function updateStatus(select) {
-    const status = select.nextElementSibling;
-    const severity = SEVERITIES[select.value];
-    status.textContent = severity ?? L`Allowed`;
-    status.dataset.severity = severity ? select.value : '';
+function searchButton(name) {
+    const button = element('sl-icon-button');
+    button.name = 'search';
+    button.label = L`Search ${name} cards on Scryfall`;
+    button.dataset.clickAction = 'search';
+    return button;
 }
 
 export default class InspectionTiers extends ReactiveComponent {
@@ -41,14 +40,19 @@ export default class InspectionTiers extends ReactiveComponent {
     }
 
     bind() {
-        this.on('sl-change', event => {
-            const select = event.target;
-            updateStatus(select);
-            this.emit('inspection-tier-change', {
-                color: select.dataset.color,
-                tier: select.value
-            });
+        this.on('sl-change', event => this.changeTier(event.target));
+        this.handleEvents('click', {
+            search: event => this.emit('inspection-search', {
+                color: event.target.closest('[data-color]').dataset.color
+            })
         });
+    }
+
+    changeTier(select) {
+        const tile = select.closest('[data-color]');
+        this.showSeverity(tile, select.value);
+        const { color } = tile.dataset;
+        this.emit('inspection-tier-change', { color, tier: select.value });
     }
 
     tierOf(color) {
@@ -60,15 +64,27 @@ export default class InspectionTiers extends ReactiveComponent {
     }
 
     tile([color, name]) {
-        const tile = element('div');
+        const tile = element('section');
+        tile.dataset.color = color;
+        const watermark = activeGame.symbols.resolveColorSymbolIcon(color.toLowerCase());
+        tile.style.setProperty('--watermark', `url("${watermark}")`);
+        tile.setAttribute('aria-label', name);
+        const heading = element('header');
+        heading.append(colorIcon(color), element('strong', name), searchButton(name));
         const select = element('sl-select');
         select.size = 'small';
-        select.dataset.color = color;
-        select.append(colorLabel(color, name), ...Object.entries(TIERS).map(tierOption));
+        select.setAttribute('aria-label', L`${name} tier`);
+        select.append(...Object.entries(TIERS).map(tierOption));
         select.value = this.tierOf(color);
-        tile.append(select, element('small'));
-        updateStatus(select);
+        tile.append(heading, select, element('small'));
+        this.showSeverity(tile, select.value);
         return tile;
+    }
+
+    showSeverity(tile, tier) {
+        const severity = SEVERITIES[tier];
+        tile.dataset.severity = severity.id;
+        tile.querySelector('small').textContent = severity.label;
     }
 }
 
