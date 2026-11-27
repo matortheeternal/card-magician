@@ -11,6 +11,7 @@ import { selectCard } from '../shared/testing/steps/cardList.js';
 import { selectSettingsTab } from '../shared/testing/steps/settings.js';
 import { reopenProject } from '../shared/testing/steps/projects.js';
 import { tagManager } from '../domain/game/tagManager.js';
+import { redo, undo } from '../shared/testing/steps/editMenu.js';
 
 const RULES_TEXT = 'Flying\n\nIf a source you control would deal damage to an opponent, '
     + 'it deals double that damage instead.';
@@ -283,6 +284,10 @@ describe('Card editing', () => {
            reminders.operation.value = '1';
            await cmTest.click(reminders.applyButton);
            await cmTest.eventually(() => reminders.list.childElementCount === 2);
+           expect(selectedProjectCard.front.rulesText).toContain(`Mistsong (${third})`);
+           await undo();
+           expect(selectedProjectCard.front.rulesText).toContain(`Mistsong (${variant})`);
+           await redo();
            expect(selectedProjectCard.front.rulesText).toContain(`Mistsong (${third})`);
 
            const addMechanic = action('newMechanic');

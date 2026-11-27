@@ -1,5 +1,5 @@
 import { flushPendingCardEdits } from '../../ui/systems/cardEditingSystem.js';
-import { setActiveEditorCard } from './projectManager.js';
+import * as history from '../../ui/systems/historySystem.js';
 
 const REGEX_SPECIAL = /[.*+?^${}()|[\]\\]/g;
 const PARAMETER = '(?: (?:\\{[^}]+\\})+| (?:\\d+|X))?';
@@ -21,40 +21,27 @@ function cardFaces(card) {
     ]);
 }
 
-async function updateCard(card, pattern, replacement) {
-    const updates = [];
+function reminderChanges(card, pattern, replacement) {
+    const changes = [];
     for (const face of cardFaces(card)) {
         const { rulesText } = face;
         const text = rulesText?.replace(pattern, (_, prefix) =>
             replacement ? `${prefix} (${replacement})` : prefix);
         if (text === rulesText) continue;
-        updates.push({ face, rulesText });
-        face.rulesText = text;
+        changes.push({
+            card, model: face, oldValues: { rulesText }, newValues: { rulesText: text }
+        });
     }
-    if (!updates.length) return false;
-    try {
-        await card.save();
-        return true;
-    } catch (error) {
-        for (const { face, rulesText } of updates) face.rulesText = rulesText;
-        throw error;
-    }
+    return changes;
 }
 
 export async function rewriteMechanicReminders(project, name, oldText, replacement) {
     await flushPendingCardEdits();
     if (window.activeProject !== project) return false;
     const pattern = reminderMatcher(name, oldText);
-    let refresh = false;
-    try {
-        for (const card of project.cards) {
-            const updated = await updateCard(card, pattern, replacement);
-            refresh ||= updated && card === window.selectedProjectCard;
-        }
-    } finally {
-        if (refresh && window.activeProject === project)
-            await setActiveEditorCard(window.selectedProjectCard);
-    }
-    changed(project, 'cards');
-    return true;
+    const changes = project.cards.flatMap(card =>
+        reminderChanges(card, pattern, replacement));
+    if (!changes.length) return true;
+    const event = new CustomEvent('cm-cards-edited', { detail: { changes } });
+    return await history.execute(project, event) ?? false;
 }
