@@ -13,7 +13,7 @@ await withTestProfile('templates', async profile => {
         profile,
         url: '/tests/templates.html',
         id: 'cardmagician.test',
-        args: forwardedArgs(),
+        args: ['--disable-gpu', ...forwardedArgs()],
         timeout: RESULT_TIMEOUT_MS
     });
     try {
