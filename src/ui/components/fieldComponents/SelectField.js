@@ -14,8 +14,12 @@ export default class SelectField extends FieldComponent {
         return this.querySelector('sl-select');
     }
 
+    get options() {
+        return this.field.options;
+    }
+
     renderOptions() {
-        return this.field.options.map(opt => (
+        return this.options.map(opt => (
             `<sl-option value="${opt.id}">${opt.name}</sl-option>`
         )).join('\n');
     }

@@ -58,7 +58,10 @@ export default class FieldComponent extends ReactiveComponent {
     }
 
     async onChange(event) {
-        const newValue = await this.getChangedValue(event);
+        this.applyChange(await this.getChangedValue(event));
+    }
+
+    applyChange(newValue) {
         if (newValue === this.value) return;
         const oldValue = this.value;
         this.value = newValue;

@@ -1,9 +1,10 @@
+import CardTemplateChange from './history/CardTemplateChange.js';
 import CardFieldChange from './history/CardFieldChange.js';
 import CardListChange from './history/CardListChange.js';
 import CardBatchChange from './history/CardBatchChange.js';
 
 const historyEntryClasses = [
-    CardFieldChange, CardListChange, CardBatchChange
+    CardTemplateChange, CardFieldChange, CardListChange, CardBatchChange
 ];
 
 let lock = Promise.resolve();

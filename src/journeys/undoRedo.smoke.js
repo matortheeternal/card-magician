@@ -340,6 +340,94 @@ describe('Undo and redo', () => {
         await undoClearingDiskImageAcrossReopen();
     }, 30000);
 
+    describe('template changes', () => {
+        let card;
+
+        beforeEach(async () => {
+            card = await addNamedCard('History card');
+            await history.reset();
+        });
+
+        function templateField() {
+            return new FieldInteractor('template', { faceKey: 'front' }).fieldElement;
+        }
+
+        async function changeTemplate() {
+            const field = templateField();
+            const next = field.options.find(option => option.id !== field.value).id;
+            await field.onChange({ target: { value: next } });
+            return next;
+        }
+
+        it('records the field event and rebuilds the face on change, undo and redo',
+           async () => {
+               const oldFace = activeEditorCard.front;
+               const oldTemplate = oldFace.template;
+               const fieldChanged = jasmine.createSpy('fieldChanged');
+               document.querySelector('cm-card-form').addEventListener(
+                   'cm-field-changed', fieldChanged, { once: true }
+               );
+
+               const next = await changeTemplate();
+               const changedFace = activeEditorCard.front;
+               expect(changedFace).not.toBe(oldFace);
+               expect(fieldChanged).toHaveBeenCalledOnceWith(jasmine.objectContaining({
+                   detail: {
+                       faceId: 'front', fieldId: 'template',
+                       oldValue: oldTemplate, newValue: next
+                   }
+               }));
+               expect((await readCardData(card)).front.template).toBe(next);
+
+               await undo();
+               const restoredFace = activeEditorCard.front;
+               expect(restoredFace).not.toBe(changedFace);
+               expect(restoredFace.template).toBe(oldTemplate);
+               expect((await readCardData(card)).front.template).toBe(oldTemplate);
+
+               await redo();
+               expect(activeEditorCard.front).not.toBe(restoredFace);
+               expect(activeEditorCard.front.template).toBe(next);
+               expect((await readCardData(card)).front.template).toBe(next);
+           });
+
+        it('saves pending edits and keeps them in separate undo steps', async () => {
+            await setCardFields({ name: 'Pending template edit' });
+            const next = await changeTemplate();
+            expect(card.front.template).toBe(next);
+            expect(await savedName(card)).toBe('Pending template edit');
+            await undo();
+            expect(activeEditorCard.front.name).toBe('Pending template edit');
+            await undo();
+            expect(activeEditorCard.front.name).toBe('History card');
+        });
+
+        it('keeps redo available after an unchanged selection', async () => {
+            const next = await changeTemplate();
+            await undo();
+            const field = templateField();
+            await field.onChange({ target: { value: field.value } });
+            await redo();
+            expect(activeEditorCard.front.template).toBe(next);
+        });
+
+        it('replays changes on the original card after selection moves', async () => {
+            const other = await addNamedCard('Other card');
+            await selectCard(card);
+            await history.reset();
+            const before = card.front.template;
+            const next = await changeTemplate();
+            await selectCard(other);
+            const editor = activeEditorCard;
+            await undo();
+            expect(card.front.template).toBe(before);
+            expect(activeEditorCard).toBe(editor);
+            await redo();
+            expect(card.front.template).toBe(next);
+            expect(activeEditorCard).toBe(editor);
+        });
+    });
+
     describe('regressions', () => {
         let card;
 
