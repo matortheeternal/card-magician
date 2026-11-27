@@ -11,6 +11,11 @@ cm-tag-suggestions-modal {
         font-size: var(--sl-font-size-small);
     }
 
+    [role="status"]:not([hidden]) {
+        display: grid;
+        gap: var(--sl-spacing-2x-small);
+    }
+
     cm-tag-suggestion-tree {
         max-height: 50vh;
         overflow: auto;

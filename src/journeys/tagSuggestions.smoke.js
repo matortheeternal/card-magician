@@ -23,8 +23,10 @@ async function addCards() {
 
 async function openSuggestions() {
     openModal('cm-tag-suggestions-modal');
-    const modal = await cmTest.eventually(() =>
-        document.querySelector('cm-tag-suggestions-modal'));
+    const modal = getActiveModal();
+    expect(modal.isLoading).toBeTrue();
+    expect(modal.applyButton.disabled).toBeTrue();
+    await cmTest.eventually(() => !modal.isLoading);
     await customElements.whenDefined('sl-tree-item');
     return modal;
 }
@@ -101,6 +103,8 @@ describe('Tag suggestions', () => {
 
         modal.scopeSelect.value = 'all';
         modal.scopeSelect.dispatchEvent(new Event('sl-change', { bubbles: true }));
+        expect(modal.isLoading).toBeTrue();
+        await cmTest.eventually(() => !modal.isLoading);
         const allCards = new Set(modal.tree.groups.flatMap(group => group.cards));
         expect(allCards).toEqual(new Set([insight, secondWind]));
         await filterCards('');

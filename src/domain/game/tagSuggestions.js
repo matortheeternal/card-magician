@@ -1,5 +1,7 @@
 import { findTag } from './tagManager.js';
 
+const SLICE_BUDGET = 12;
+
 function canonicalTag(tag) {
     return window.activeGame?.tagRelationships?.canonicalTag(tag) ?? tag;
 }
@@ -29,12 +31,35 @@ function addSuggestions(groups, card) {
     }
 }
 
-export function groupTagSuggestions(cards) {
-    const groups = new Map();
-    for (const card of cards) addSuggestions(groups, card);
+function sortedGroups(groups) {
     return [...groups]
         .map(([tag, taggedCards]) => ({ tag, cards: taggedCards }))
         .sort((a, b) => b.cards.length - a.cards.length || a.tag.localeCompare(b.tag));
+}
+
+function nextTask() {
+    return new Promise(resolve => { setTimeout(resolve, 0); });
+}
+
+function createPause(total, { onProgress, isCancelled }) {
+    let sliceStart = 0;
+    return async index => {
+        if (performance.now() - sliceStart < SLICE_BUDGET) return true;
+        onProgress?.(index, total);
+        await nextTask();
+        sliceStart = performance.now();
+        return !isCancelled?.();
+    };
+}
+
+export async function collectTagSuggestions(cards, options = {}) {
+    const groups = new Map();
+    const pause = createPause(cards.length, options);
+    for (const [index, card] of cards.entries()) {
+        if (!await pause(index)) return null;
+        addSuggestions(groups, card);
+    }
+    return sortedGroups(groups);
 }
 
 function editedTags(card, added) {
