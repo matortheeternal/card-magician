@@ -249,6 +249,7 @@ export default class CardMagicianProject {
         const data = Object.assign({}, this);
         delete data.cards;
         delete data.symbol;
+        delete data.exportInfo;
         await YAMLSerializer.save(this.filePath, data);
     }
 
