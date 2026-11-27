@@ -1,6 +1,6 @@
 cm-inspection-examples {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
     gap: var(--sl-spacing-medium);
 
     figure {
@@ -8,7 +8,7 @@ cm-inspection-examples {
     }
 
     cm-card-preview {
-        zoom: 0.42;
+        zoom: 0.5;
         border-radius: var(--sl-border-radius-large);
         box-shadow: var(--sl-shadow-medium);
     }
