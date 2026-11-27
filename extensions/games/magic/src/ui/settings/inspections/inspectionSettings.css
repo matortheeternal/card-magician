@@ -22,7 +22,7 @@ cm-magic-inspection-settings {
     .inspection-heading div {
         display: flex;
         align-items: center;
-        gap: var(--sl-spacing-medium);
+        gap: var(--sl-spacing-x-small);
     }
 
     h2 {

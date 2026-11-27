@@ -43,9 +43,7 @@ describe('Inspections', () => {
         expect(workspace.contentContainer.firstElementChild).toBe(settings);
         expect(settings.querySelector('cm-inspection-examples cm-card-preview'))
             .not.toBeNull();
-        const enabled = settings.querySelector('sl-switch');
-        enabled.checked = false;
-        enabled.dispatchEvent(new CustomEvent('sl-change', { bubbles: true }));
+        await cmTest.click(item.querySelector(':scope > sl-checkbox'));
         const white = settings.querySelector(WHITE_TIER);
         expect(white.value).toBe(inspection.tiers.W);
         changeValue(white, 'primary');
@@ -85,16 +83,13 @@ describe('Inspections', () => {
         expect(reset.disabled).toBeTrue();
 
         changeValue(white, inspection.tiers.W === 'none' ? 'primary' : 'none');
-        const enabled = settings.querySelector('sl-switch');
-        enabled.checked = false;
-        enabled.dispatchEvent(new CustomEvent('sl-change', { bubbles: true }));
+        const leaf = settings.querySelector(`[data-inspection-id="${inspection.id}"]`);
+        await cmTest.click(leaf.querySelector(':scope > sl-checkbox'));
         await eventually(async () => (await savedOverrides())?.[inspection.id]?.disabled);
 
         await cmTest.click(reset);
         const resetWhite = settings.querySelector(WHITE_TIER);
         expect(resetWhite.value).toBe(inspection.tiers.W);
-        expect(settings.querySelector('sl-switch').checked).toBeTrue();
-        const leaf = settings.querySelector(`[data-inspection-id="${inspection.id}"]`);
         expect(leaf.querySelector(':scope > sl-checkbox').checked).toBeTrue();
         await eventually(async () => !(await savedOverrides()));
     });
@@ -151,7 +146,5 @@ describe('Inspections', () => {
         expect(checkboxOf(group).checked).toBeFalse();
         const overrides = await eventually(savedOverrides);
         expect(Object.keys(overrides).sort()).toEqual([...groupIds].sort());
-        expect(settings.querySelector('.inspection-heading sl-switch').checked)
-            .toBe(!groupIds.includes(selectedId));
     });
 });
