@@ -6,9 +6,13 @@ cm-template-field {
         font-size: var(--sl-input-label-font-size-small);
     }
 
-    sl-button::part(label) {
-        padding-inline: 0;
-        text-decoration: underline;
-        text-underline-offset: 0.15em;
+    sl-button {
+        &::part(base) {
+            font-size: var(--sl-font-size-medium);
+        }
+
+        &::part(label) {
+            padding-inline: 0;
+        }
     }
 }
