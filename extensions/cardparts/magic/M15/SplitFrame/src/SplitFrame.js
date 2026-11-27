@@ -51,6 +51,7 @@ export default class SplitFrame extends CardFrame.with(
 
     resolveTextureImage(half) {
         const textureFolder = this.resolveSplitAssetPath('texture');
+        if (half.isLand) return `${textureFolder}/l.png`;
         return half.coloredBlend(textureFolder, half.card, {
             ext: '.png',
             blendMaskFolder: this.frameBlendMaskFolder
