@@ -1,4 +1,5 @@
 import platform from '../shared/platformAdapter.js';
+import YAMLSerializer from '../domain/projects/serializers/YAMLSerializer.js';
 import {
     createCard, eventually, expectFilesToMatch, flushCard, setCardFields
 } from '../shared/testing/testUtils.js';
@@ -87,6 +88,10 @@ describe('Project lifecycle', () => {
         );
         expect(await platform.checkFileExists(exportedPath)).toBeTrue();
         expect(await platform.checkFileExists(activeProject.exportInfoPath)).toBeTrue();
+
+        await activeProject.save();
+        const savedProject = await YAMLSerializer.load(projectPath);
+        expect(Object.hasOwn(savedProject, 'exportInfo')).toBeFalse();
 
         await reopenFromRecentProjects();
         expect(activeProject.filePath).toBe(projectPath);
