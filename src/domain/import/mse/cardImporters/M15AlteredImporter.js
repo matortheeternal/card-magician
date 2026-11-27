@@ -66,7 +66,10 @@ export default class M15AlteredImporter extends BaseCardImporter {
     }
 
     get centerText() {
-        const centerText = this.stylingData?.center_text;
+        return this.centerTextFrom(this.stylingData?.center_text);
+    }
+
+    centerTextFrom(centerText) {
         if (centerText === 'short text only') return 'short';
         return centerText || 'never';
     }

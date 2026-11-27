@@ -10,6 +10,7 @@ import M15MainframeDFCImporter from './cardImporters/M15MainframeDFCImporter.js'
 import M15AlteredImporter from './cardImporters/M15AlteredImporter.js';
 import M15FallbackImporter from './cardImporters/M15FallbackImporter.js';
 import M15AdventureImporter from './cardImporters/M15AdventureImporter.js';
+import M15AftermathImporter from './cardImporters/M15AftermathImporter.js';
 import M15SagaImporter from './cardImporters/M15SagaImporter.js';
 import M15FullArtBasicLandImporter from './cardImporters/M15FullArtBasicLandImporter.js';
 import M15EmblemImporter from './cardImporters/M15EmblemImporter.js';
@@ -29,6 +30,7 @@ const cardImporters = [
     M15MainframeDFCImporter,
     M15AlteredImporter,
     M15AdventureImporter,
+    M15AftermathImporter,
     M15SagaImporter,
     M15FullArtBasicLandImporter,
     M15FallbackImporter
