@@ -34,6 +34,7 @@ cm-tags {
         background: transparent;
         color: var(--sl-color-neutral-600);
         font-size: var(--sl-font-size-x-small);
+        line-height: 1;
         cursor: pointer;
         padding: var(--sl-spacing-3x-small) var(--sl-spacing-2x-small);
     }
@@ -118,7 +119,7 @@ cm-tags {
             margin: 0;
             cursor: inherit;
             -webkit-appearance: none;
-            height: calc(var(--sl-input-height-small) - var(--sl-input-border-width) * 2);
+            height: calc(var(--sl-input-height-small) * 0.8);
             padding: 0 var(--sl-spacing-x-small);
 
             &:focus {
