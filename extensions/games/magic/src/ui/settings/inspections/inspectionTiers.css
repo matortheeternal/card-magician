@@ -9,7 +9,7 @@ cm-inspection-tiers {
         display: flex;
         flex-direction: column;
         gap: var(--sl-spacing-2x-small);
-        flex: 0 0 8.5rem;
+        flex: 0 0 12rem;
         padding: var(--sl-spacing-x-small) var(--sl-spacing-small) var(--sl-spacing-small);
         border: 1px solid var(--sl-input-border-color);
         border-radius: var(--sl-border-radius-medium);
