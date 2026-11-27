@@ -1,6 +1,7 @@
 import { manageCollection } from '../../shared/storageUtils.js';
 import * as fuzzySort from 'fuzzysort';
 import { normalizeTagStyle } from './tagStyles.js';
+import { projectTagNames } from './projectTagNames.js';
 
 export const tagManager = manageCollection({
     path: () => [appEnvironment.paths.data, activeGame.id, 'tags.yml'],
@@ -24,6 +25,7 @@ export function getTags() {
     const tags = new Map();
     const defaults = window.activeGame?.oracleAssistance?.defaultTagStyles ?? [];
     for (const [text, variant] of defaults) tags.set(text, { text, variant });
+    for (const text of projectTagNames()) if (!tags.has(text)) tags.set(text, { text });
     for (const tag of tagManager.collection) tags.set(tag.text, tag);
     return [...tags.values()].filter(tag => !tag.hidden);
 }
@@ -42,8 +44,7 @@ export function findOrCreateTag(text) {
 }
 
 export function rememberTag(text) {
-    const defaults = window.activeGame?.oracleAssistance?.defaultTagStyles;
-    if (defaults?.has(text) || findTag(text)) return;
+    if (defaultTagStyle(text) || findTag(text)) return;
     tagManager.create(text);
 }
 

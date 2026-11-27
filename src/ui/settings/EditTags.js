@@ -3,19 +3,10 @@ import '../components/editTag/TagStyleBoard.js';
 import {
     findOrCreateTag, findTag, getTags, hideTag, setTagStyle, tagStyle
 } from '../../domain/game/tagManager.js';
+import { projectTagNames } from '../../domain/game/projectTagNames.js';
 import { registerSettings } from './settingsRegistry.js';
 
 const L = localize('settings');
-
-function usedTagNames(project) {
-    const editor = window.activeEditorCard;
-    const names = new Set();
-    for (const card of project?.cards ?? []) {
-        const tags = editor?.baseCard === card ? editor.tags : card.tags;
-        for (const tag of tags ?? []) names.add(tag);
-    }
-    return names;
-}
 
 export default class EditTags extends CardMagicianSettings {
     static id = 'cm-edit-tags';
@@ -50,7 +41,7 @@ export default class EditTags extends CardMagicianSettings {
     }
 
     visibleTagNames() {
-        const names = usedTagNames(window.activeProject);
+        const names = projectTagNames();
         const catalog = this.projectOnlyToggle.checked ? [] : getTags();
         for (const { text } of catalog) names.add(text);
         return [...names].filter(text => !findTag(text)?.hidden);

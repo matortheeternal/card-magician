@@ -10,7 +10,7 @@ import { expectFileContent, readCardData } from '../shared/testing/steps/disk.js
 import { selectCard } from '../shared/testing/steps/cardList.js';
 import { selectSettingsTab } from '../shared/testing/steps/settings.js';
 import { reopenProject } from '../shared/testing/steps/projects.js';
-import { tagManager } from '../domain/game/tagManager.js';
+import { searchTags, tagManager } from '../domain/game/tagManager.js';
 import { redo, undo } from '../shared/testing/steps/editMenu.js';
 
 const RULES_TEXT = 'Flying\n\nIf a source you control would deal damage to an opponent, '
@@ -381,11 +381,43 @@ describe('Card editing', () => {
         try {
             await exerciseTagCatalog();
         } finally {
-            tagManager.collection = originalTags;
-            changed(tagManager, 'tags');
-            tagManager.scheduleSave();
-            await tagManager.flush();
+            await restoreTagCatalog(originalTags);
             await cmTest.closeSettings();
+        }
+    });
+
+    async function restoreTagCatalog(originalTags) {
+        tagManager.collection = originalTags;
+        changed(tagManager, 'tags');
+        tagManager.scheduleSave();
+        await tagManager.flush();
+    }
+
+    function typeTag(field, text) {
+        field.textInput.value = text;
+        field.textInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    }
+
+    it('adds only typed tags to the tag catalog', async () => {
+        await createCard();
+        const originalTags = structuredClone(tagManager.collection);
+        try {
+            await setCardFields({ tags: ['loaded-label'] }, { mode: CARD_PROPERTIES });
+            expect(tagManager.find('loaded-label')).toBeUndefined();
+            const matches = searchTags('loaded-label').map(tag => tag.text);
+            expect(matches).toContain('loaded-label');
+
+            const tags = new FieldInteractor('tags', { mode: CARD_PROPERTIES });
+            const field = tags.fieldElement;
+            typeTag(field, 'typed-label');
+            typeTag(field, 'gains-flying');
+            expect(field.appliedTags).toEqual(jasmine.arrayContaining([
+                'loaded-label', 'typed-label', 'gains-flying'
+            ]));
+            expect(tagManager.find('typed-label')).toBeDefined();
+            expect(tagManager.find('gains-flying')).toBeUndefined();
+        } finally {
+            await restoreTagCatalog(originalTags);
         }
     });
 

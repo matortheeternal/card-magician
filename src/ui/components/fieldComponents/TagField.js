@@ -217,7 +217,6 @@ export default class TagField extends FieldComponent {
 
     loadValue() {
         if (!this.tagsContainer) return;
-        for (const tag of this.appliedTags) rememberTag(tag);
         this.renderAppliedTags();
         this.renderSuggestions();
     }
@@ -243,8 +242,13 @@ export default class TagField extends FieldComponent {
         this.editTags([tagText]);
     }
 
+    addTypedTag(tagText) {
+        rememberTag(tagText);
+        this.addTag(tagText);
+    }
+
     onItemSelected(event) {
-        this.addTag(event.target.value);
+        this.addTypedTag(event.target.value);
         this.popup.removeAttribute('active');
         this.textInput.value = '';
         this.textInput.focus();
@@ -255,7 +259,7 @@ export default class TagField extends FieldComponent {
             ? this.querySelector('sl-option.active')?.value
             : this.textInput.value.trim();
         if (!value) return;
-        this.addTag(value);
+        this.addTypedTag(value);
         this.popup.removeAttribute('active');
         this.textInput.value = '';
     }
