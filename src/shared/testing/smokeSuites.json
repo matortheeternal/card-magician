@@ -3,6 +3,6 @@
     "Application lifecycle": [],
     "Workspace": [
         "Card editing", "Card files", "Clipboard", "Undo and redo", "Projects",
-        "Card display", "Set symbol", "Statistics", "MSE import"
+        "Card display", "Set symbol", "Statistics", "MSE import", "Tag suggestions"
     ]
 }

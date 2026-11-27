@@ -36,6 +36,11 @@ export default class EditMenu extends ReactiveMenu {
                 () => executeAction('duplicate-selected-cards')
             ),
             this.menuItem(L`Automate`, L`Ctrl+M`, () => openModal('cm-automate-modal')),
+            this.menuItem(
+                L`Apply tag suggestions`,
+                ``,
+                () => openModal('cm-tag-suggestions-modal')
+            ),
             this.DIVIDER,
             this.menuItem(L`Filter`, L`Ctrl+F`, () => executeAction('toggle-filter')),
             this.menuItem(

@@ -61,6 +61,7 @@ export default class CardList extends ReactiveComponent {
         registerAction('reveal-card', card => this.revealCard(card));
         registerAction('create-cards', cards => this.createCards(cards));
         registerAction('delete-selected-cards', () => this.deleteSelectedCards());
+        registerAction('get-shown-cards', () => this.listView.rows);
     }
 
     get filterBar() {

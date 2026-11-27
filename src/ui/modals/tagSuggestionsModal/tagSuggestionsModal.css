@@ -1,0 +1,34 @@
+cm-tag-suggestions-modal {
+    width: min(40rem, 100%);
+
+    .modal-body {
+        display: grid;
+        gap: var(--sl-spacing-small);
+    }
+
+    p {
+        margin: 0;
+        font-size: var(--sl-font-size-small);
+    }
+
+    cm-tag-suggestion-tree {
+        max-height: 50vh;
+        overflow: auto;
+        border: var(--sl-input-border-width) solid var(--sl-input-border-color);
+        border-radius: var(--sl-input-border-radius-small);
+        background: var(--sl-input-background-color);
+    }
+
+    cm-tag-suggestion-tree > p {
+        padding: var(--sl-spacing-small);
+    }
+
+    sl-tree-item::part(label) {
+        font-size: var(--sl-font-size-small);
+    }
+
+    sl-tree-item small {
+        margin-inline-start: var(--sl-spacing-x-small);
+        color: var(--sl-color-neutral-600);
+    }
+}
