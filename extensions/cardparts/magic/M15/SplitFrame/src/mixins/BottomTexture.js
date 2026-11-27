@@ -1,11 +1,6 @@
 const BottomTextureMixin = {
     async resolveBottomTexture(card) {
-        const textureFolder = this.resolveSplitAssetPath(`texture`);
-        const image = this.coloredBlend(textureFolder, card.bottom, {
-            ext: '.png'
-        });
-        const maskUrl = this.resolveSplitAssetPath('mask/half.png');
-        return this.background('bottom-texture', this.ctx.maskImage(image, maskUrl));
+        return this.resolveHalfTexture('bottom', card.bottom);
     }
 };
 

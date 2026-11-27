@@ -33,6 +33,10 @@ export default class SplitFrame extends CardFrame.with(
         return '.png';
     }
 
+    get frameBlendMaskFolder() {
+        return this.resolveSplitAssetPath('mask/split');
+    }
+
     get frameMaskFolder() {
         return this.resolveSplitAssetPath('mask/frame');
     }
@@ -43,6 +47,20 @@ export default class SplitFrame extends CardFrame.with(
 
     async resolveFrame() {
         return null;
+    }
+
+    resolveTextureImage(half) {
+        const textureFolder = this.resolveSplitAssetPath('texture');
+        return half.coloredBlend(textureFolder, half.card, {
+            ext: '.png',
+            blendMaskFolder: this.frameBlendMaskFolder
+        });
+    }
+
+    resolveHalfTexture(side, subcard) {
+        const image = this.resolveTextureImage(this.forSubcard(subcard));
+        const maskUrl = this.resolveSplitAssetPath('mask/half.png');
+        return this.background(`${side}-texture`, this.ctx.maskImage(image, maskUrl));
     }
 
     // --- BORDER ---

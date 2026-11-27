@@ -31,7 +31,8 @@ export default class AftermathFrame extends CardFrame.with(
 
     resolveHalfFrame(side, half) {
         const frameFolder = this.resolveAftermathAssetPath(`frame/${side}`);
-        const image = this.coloredBlend(frameFolder, half, {
+        const halfFrame = this.forSubcard(half);
+        const image = halfFrame.coloredBlend(frameFolder, halfFrame.card, {
             ext: '.png',
             blendMaskFolder: this.resolveAftermathAssetPath(`mask/${side}`),
             hasLandTemplates: true

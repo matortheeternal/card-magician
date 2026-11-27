@@ -1,6 +1,7 @@
 const TopFrameMixin = {
     async resolveTopFrame(card) {
-        const image = this.coloredBlend(this.frameFolder, card.top, {
+        const half = this.forSubcard(card.top);
+        const image = half.coloredBlend(this.frameFolder, half.card, {
             ext: this.frameExt,
             blendMaskFolder: this.frameBlendMaskFolder,
             hasLandTemplates: this.frameHasLandTemplates

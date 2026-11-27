@@ -1,6 +1,6 @@
 import ClassicCardFrame from '../../ClassicFrame/src/ClassicCardFrame.js';
 import Border from '../../../M15/Frame/src/mixins/Border.js';
-import splitHalfCard from './splitHalfCard.js';
+import subcardCard from '../../../M15/Frame/src/subcardCard.js';
 
 export default class SplitCardFrame extends ClassicCardFrame.with(Border) {
     resolveAssetPath(path) {
@@ -8,7 +8,7 @@ export default class SplitCardFrame extends ClassicCardFrame.with(Border) {
     }
 
     createHalf(half) {
-        return new this.halfFrameClass(splitHalfCard(half, this.card), this.ctx);
+        return new this.halfFrameClass(subcardCard(half, this.card), this.ctx);
     }
 
     /* --- BORDER --- */

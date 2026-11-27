@@ -27,7 +27,8 @@ export default class SplitFrameModule extends FrameModule {
     }
 
     async updateHalfVars(card, side) {
-        const vars = await card.activeFrame.buildBackgrounds('vars', card[side]);
+        const half = card.activeFrame.forSubcard(card[side]);
+        const vars = await half.buildBackgrounds('vars', half.card);
         this.halfVars[side] = sideVars(side, vars);
         this.varStyle = { ...this.halfVars.top, ...this.halfVars.bottom };
         if (!card.dom) return;

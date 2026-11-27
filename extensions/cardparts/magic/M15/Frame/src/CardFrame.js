@@ -1,3 +1,5 @@
+import subcardCard from './subcardCard.js';
+
 const defaultColoredOptions = {
     ext: '.jpg',
     hybridMode: 'hybrid',
@@ -35,6 +37,10 @@ export default class CardFrame {
     constructor(card, module) {
         this.card = card;
         this.ctx = module;
+    }
+
+    forSubcard(subcard) {
+        return new this.constructor(subcardCard(subcard, this.card), this.ctx);
     }
 
     get artDimensions() {
