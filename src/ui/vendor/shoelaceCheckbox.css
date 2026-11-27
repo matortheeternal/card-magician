@@ -1,0 +1,31 @@
+sl-checkbox::part(control--checked),
+sl-checkbox::part(control--indeterminate),
+sl-tree-item::part(checkbox__control--checked),
+sl-tree-item::part(checkbox__control--indeterminate) {
+    background-color: var(--sl-color-primary-100);
+    border-color: var(--sl-color-primary-500);
+    color: var(--sl-color-primary-800);
+}
+
+sl-checkbox:not([disabled])::part(control--checked):hover,
+sl-checkbox:not([disabled])::part(control--indeterminate):hover,
+sl-tree-item:not([disabled])::part(checkbox__control--checked):hover,
+sl-tree-item:not([disabled])::part(checkbox__control--indeterminate):hover {
+    background-color: var(--sl-color-primary-200);
+}
+
+sl-checkbox::part(checked-icon),
+sl-tree-item::part(checkbox__checked-icon) {
+    display: none;
+}
+
+sl-checkbox::part(control--checked)::after,
+sl-tree-item::part(checkbox__control--checked)::after {
+    content: '';
+    box-sizing: border-box;
+    width: 36%;
+    height: 64%;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-12%) rotate(45deg);
+}
