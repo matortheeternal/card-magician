@@ -45,6 +45,13 @@ export default [
         }
     },
     {
+        files: [
+            'src/**/*.js', 'extensions/games/magic/src/**/*.js',
+            'extensions/cardparts/**/*.js', 'extensions/exporters/**/*.js'
+        ],
+        rules: { 'agent/shoelace-icon-names': 'error' }
+    },
+    {
         files: ['**/*.test.js', '**/*.tests.js', '**/*.smoke.js'],
         rules: { 'agent/regex-at-module-scope': 'off' }
     }
