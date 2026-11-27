@@ -104,12 +104,15 @@ export default class TemplatePicker extends ReactiveComponent {
         const current = option.id === this.selected ? 'aria-current="true"' : '';
         const icon = option.iconUrl
             ? `<img src="${esc(option.iconUrl)}" alt="" loading="lazy">` : '';
-        return (
+        const button = (
             `<button type="button" ${current}
                 data-option-index="${index}">
                 ${icon}<span>${option.label}</span>
             </button>`
         );
+        if (!option.version) return button;
+        const version = esc(L`Version ${option.version}`);
+        return `<sl-tooltip content="${version}" hoist>${button}</sl-tooltip>`;
     }
 
     renderGroup(family, options) {
