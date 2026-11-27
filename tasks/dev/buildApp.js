@@ -2,13 +2,7 @@ import esbuild from 'esbuild';
 import fs from 'node:fs/promises';
 import path from 'path';
 import { getSourceFiles, getPlatformAliases } from './buildHelpers.js';
-
-const shoelaceIcons = [
-    'x-lg', 'arrow-repeat', 'image', 'scissors', 'plus-lg', 'dash-lg', 'square',
-    'lock', 'unlock', 'arrow-up', 'arrow-down', 'arrow-counterclockwise',
-    'arrows-fullscreen', 'align-center', 'align-middle', 'folder2-open',
-    'arrow-left', 'circle', 'list'
-];
+import { shoelaceIcons } from './shoelaceIcons.js';
 
 function isApplicationCode(file) {
     return file.endsWith('.js')
@@ -62,6 +56,7 @@ async function buildJs({ minify, sourcemap, target }) {
 async function copyShoelaceIcons() {
     const sourceDir = 'node_modules/@shoelace-style/shoelace/dist/assets/icons';
     const targetDir = 'resources/shoelace/assets/icons';
+    await fs.rm(targetDir, { recursive: true, force: true });
     await fs.mkdir(targetDir, { recursive: true });
     await Promise.all(shoelaceIcons.map(icon => {
         return fs.copyFile(
