@@ -10,7 +10,6 @@
 
 # Custom
 node_modules/
-.tmp/auth_info.json
 /resources/js
 /resources/css
 /resources/shoelace
@@ -18,7 +17,7 @@ node_modules/
 /resources/tests/jasmine
 !/resources/tests/*.html
 !/resources/tests/**/*.yml
-.tmp/
+/.ai/
 card.json
 todos.txt
 cache/

@@ -11,13 +11,13 @@
     "desktop",
     "app"
   ],
-  "homepage": "https://codeberg.org/mator/card-magician#readme",
+  "homepage": "https://github.com/matortheeternal/card-magician#readme",
   "bugs": {
-    "url": "https://codeberg.org/mator/card-magician/issues"
+    "url": "https://github.com/matortheeternal/card-magician/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://codeberg.org/mator/card-magician.git"
+    "url": "git+https://github.com/matortheeternal/card-magician.git"
   },
   "license": "MIT",
   "author": "mator",

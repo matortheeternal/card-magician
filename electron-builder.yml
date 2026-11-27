@@ -1,7 +1,7 @@
 appId: org.cardmagician.app
 artifactName: '${productName}-${version}-${os}-${arch}.${ext}'
 directories:
-    app: .tmp/package
+    app: dist/.staging/package
     output: dist
     buildResources: build
 files:

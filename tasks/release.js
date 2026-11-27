@@ -12,8 +12,8 @@ const SUPPORTED_PLATFORM_ARGS = ['--linux', '--win', '--mac'];
 const ELECTRON_BUILDER_COMPRESSION_LEVEL = 6;
 const EXTENSION_BUNDLE_SOURCE = 'extensions';
 const EXTENSION_BUNDLE_OUTPUT_DIRECTORY = 'dist';
-const stagePath = path.resolve('.tmp/package');
-const lockPath = path.resolve('.tmp/package.lock');
+const stagePath = path.resolve('dist/.staging/package');
+const lockPath = path.resolve('dist/.staging/package.lock');
 
 function includeFile(sourcePath) {
     const normalizedPath = sourcePath.replaceAll(path.sep, '/');
@@ -120,7 +120,7 @@ async function acquireLock() {
     } catch (error) {
         if (error.code !== 'EEXIST') throw error;
         throw new Error(
-            'Another installer build is using .tmp/package. '
+            'Another installer build is using dist/.staging/package. '
             + 'Run builds sequentially.'
         );
     }

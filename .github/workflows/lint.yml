@@ -1,0 +1,41 @@
+name: Lint
+
+on:
+    workflow_dispatch:
+    pull_request:
+        paths:
+            - 'src/**'
+            - 'electron/**'
+            - 'tasks/**'
+            - 'extensions/games/**'
+            - 'extensions/cardparts/**'
+            - 'extensions/exporters/**'
+            - 'eslint.config.js'
+            - 'package.json'
+            - 'package-lock.json'
+            - '.github/workflows/lint.yml'
+
+permissions:
+    contents: read
+
+jobs:
+    eslint:
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  persist-credentials: false
+                  path: card-magician
+            - uses: actions/checkout@v6
+              with:
+                  persist-credentials: false
+                  repository: matortheeternal/oracle-of-pie
+                  ref: 947f2c4edc895c4912298c0e4b8f4d3818520de9
+                  path: oracle-of-pie
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: '24'
+            - run: npm ci
+              working-directory: card-magician
+            - run: npm run lint
+              working-directory: card-magician

@@ -1,4 +1,4 @@
-# card-magician ![](https://ci.codeberg.org/api/badges/18228/status.svg)
+# card-magician [![Test](https://github.com/matortheeternal/card-magician/actions/workflows/test.yml/badge.svg)](https://github.com/matortheeternal/card-magician/actions/workflows/test.yml)
 
 Card Magician is a cross-platform application for authoring custom playing cards. It currently supports the creation of custom Magic: the Gathering cards, with support for other games planned.
 
