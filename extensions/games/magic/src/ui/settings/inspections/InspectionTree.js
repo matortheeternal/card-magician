@@ -3,8 +3,12 @@ import element from './element.js';
 
 const L = localize('game-magic');
 
+function groupPath({ category, group, subgroup }) {
+    return [category, group, subgroup].filter(Boolean);
+}
+
 function searchText(inspection) {
-    return [inspection.title, inspection.group, inspection.subgroup, inspection.id]
+    return [inspection.title, ...groupPath(inspection), inspection.id]
         .join(' ').toLowerCase();
 }
 
@@ -142,10 +146,9 @@ export default class InspectionTree extends ReactiveComponent {
     }
 
     appendLeaf(groups, inspection, term) {
-        const group = this.groupItem(groups, inspection.group, this.tree);
-        const parent = inspection.subgroup
-            ? this.groupItem(groups, inspection.subgroup, group)
-            : group;
+        let parent = this.tree;
+        for (const title of groupPath(inspection))
+            parent = this.groupItem(groups, title, parent);
         const leaf = treeItem(inspection.title);
         leaf.dataset.inspectionId = inspection.id;
         leaf.selected = inspection.id === this.selectedId;
