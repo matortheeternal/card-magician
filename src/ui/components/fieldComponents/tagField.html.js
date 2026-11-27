@@ -7,9 +7,14 @@ export default function renderTagField(label) {
         <label class="form-control__label">${label}</label>
         <div class="input">
             <div class="active-tags"></div>
+            <sl-tooltip>
+                <button class="inherited-toggle" type="button" hidden
+                        data-click-action="toggleInherited">
+                    <sl-icon name="chevron-right"></sl-icon>
+                    <span></span>
+                </button>
+            </sl-tooltip>
             <div class="inherited-tag-items" hidden></div>
-            <button class="inherited-toggle" type="button" hidden
-                    data-click-action="toggleInherited"></button>
             <sl-popup
                 placement="bottom-start"
                 shift

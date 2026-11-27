@@ -10,6 +10,11 @@ import {
 const L = localize('tag-field');
 const INITIAL_SUGGESTION_LIMIT = 6;
 
+function inheritedToggleLabel(expanded, count) {
+    if (expanded) return L`Hide inherited tags`;
+    return count === 1 ? L`Show 1 inherited tag` : L`Show ${count} inherited tags`;
+}
+
 export default class TagField extends FieldComponent {
     static tagName = 'cm-tags';
     focusedOptionIndex = -1;
@@ -74,6 +79,18 @@ export default class TagField extends FieldComponent {
 
     get inheritedToggle() {
         return this.querySelector('[data-click-action="toggleInherited"]');
+    }
+
+    get inheritedTooltip() {
+        return this.inheritedToggle.closest('sl-tooltip');
+    }
+
+    get inheritedToggleIcon() {
+        return this.inheritedToggle.querySelector('sl-icon');
+    }
+
+    get inheritedToggleCount() {
+        return this.inheritedToggle.querySelector('span');
     }
 
     get inheritedTagItems() {
@@ -149,7 +166,11 @@ export default class TagField extends FieldComponent {
         this.inheritedTagItems.hidden = !expanded;
         toggle.hidden = count === 0;
         toggle.setAttribute('aria-expanded', String(expanded));
-        toggle.textContent = expanded ? L`Hide inherited` : L`Show inherited`;
+        const label = inheritedToggleLabel(expanded, count);
+        toggle.setAttribute('aria-label', label);
+        this.inheritedTooltip.content = label;
+        this.inheritedToggleIcon.name = expanded ? 'chevron-left' : 'chevron-right';
+        this.inheritedToggleCount.textContent = expanded ? '' : String(count);
     }
 
     toggleSuggestions() {

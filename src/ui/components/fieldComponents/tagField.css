@@ -26,12 +26,29 @@ cm-tags {
     }
 
     .inherited-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sl-spacing-3x-small);
         border: 0;
+        border-radius: var(--sl-border-radius-medium);
         background: transparent;
-        color: var(--sl-color-neutral-800);
+        color: var(--sl-color-neutral-600);
         font-size: var(--sl-font-size-x-small);
         cursor: pointer;
         padding: var(--sl-spacing-3x-small) var(--sl-spacing-2x-small);
+    }
+
+    .inherited-toggle[hidden] {
+        display: none;
+    }
+
+    .inherited-toggle:hover {
+        color: var(--sl-color-primary-600);
+    }
+
+    .inherited-toggle:focus-visible {
+        outline: var(--sl-focus-ring);
+        outline-offset: var(--sl-focus-ring-offset);
     }
 
     .inherited-tag-items:not([hidden]) {

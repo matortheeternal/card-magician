@@ -173,10 +173,14 @@ describe('Card editing', () => {
                .toEqual([selectedProjectCard]);
            const field = tags.fieldElement;
            expect(field.inheritedTagItems.hidden).toBeTrue();
-           expect(field.inheritedToggle.textContent).toBe('Show inherited');
-           expect(field.inheritedTagItems.nextElementSibling).toBe(field.inheritedToggle);
+           expect(field.inheritedToggle.getAttribute('aria-label'))
+               .toBe('Show 1 inherited tag');
+           const { inheritedTooltip, inheritedTagItems } = field;
+           expect(inheritedTooltip.nextElementSibling).toBe(inheritedTagItems);
            await cmTest.click(field.inheritedToggle);
            expect(field.inheritedTagItems.hidden).toBeFalse();
+           expect(field.inheritedToggle.getAttribute('aria-label'))
+               .toBe('Hide inherited tags');
            expect(field.inheritedTagItems.parentElement)
                .toBe(field.tagsContainer.parentElement);
 
