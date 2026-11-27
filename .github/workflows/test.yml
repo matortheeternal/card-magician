@@ -37,9 +37,15 @@ jobs:
               working-directory: oracle-of-pie
             - run: npm ci
               working-directory: card-magician
+              id: install
             - run: npm run test:native
               working-directory: card-magician
             - run: timeout 2m xvfb-run -a npm test
               working-directory: card-magician
             - run: timeout 5m xvfb-run -a npm run smoke
+              working-directory: card-magician
+            - name: Run template tests
+              if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+              run: xvfb-run -a npm run test:templates
+              timeout-minutes: 35
               working-directory: card-magician
