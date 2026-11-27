@@ -43,6 +43,8 @@ describe('Inspections', () => {
         changeValue(settings.querySelector('sl-select'), 'primary');
         changeValue(settings.querySelector('sl-details sl-select'), 'secondary');
 
+        expect(item.querySelector(':scope > sl-checkbox').checked).toBeFalse();
+
         const overrides = await eventually(async () => {
             const saved = await YAMLSerializer.load(activeProject.filePath);
             return saved.inspectionOverrides?.[inspection.id];
@@ -52,5 +54,35 @@ describe('Inspections', () => {
             tiers: { W: 'primary' },
             exceptions: { [inspection.exceptions[0].id]: { W: 'secondary' } }
         });
+    });
+
+    it('toggles tree checkboxes without changing the selection', async () => {
+        const workspace = await cmTest.openSettings();
+        const settings = await selectSettingsTab(workspace, SETTINGS_ID);
+        const tree = settings.querySelector('cm-inspection-tree');
+        const selectedId = tree.selectedId;
+        const leaf = settings.querySelector('[data-inspection-id="destroy-creature"]');
+        const group = leaf.closest('[data-group]');
+        const checkboxOf = item => item.querySelector(':scope > sl-checkbox');
+        const groupIds = tree.inspectionIdsIn(group);
+        const savedOverrides = async () =>
+            (await YAMLSerializer.load(activeProject.filePath)).inspectionOverrides;
+
+        await cmTest.click(checkboxOf(leaf));
+        expect(tree.selectedId).toBe(selectedId);
+        expect(checkboxOf(group).indeterminate).toBeTrue();
+        await eventually(async () =>
+            (await savedOverrides())?.['destroy-creature']?.disabled);
+
+        await cmTest.click(checkboxOf(group));
+        expect(checkboxOf(leaf).checked).toBeTrue();
+        await eventually(async () => !(await savedOverrides()));
+
+        await cmTest.click(checkboxOf(group));
+        expect(checkboxOf(group).checked).toBeFalse();
+        const overrides = await eventually(savedOverrides);
+        expect(Object.keys(overrides).sort()).toEqual([...groupIds].sort());
+        expect(settings.querySelector('.inspection-heading sl-switch').checked)
+            .toBe(!groupIds.includes(selectedId));
     });
 });

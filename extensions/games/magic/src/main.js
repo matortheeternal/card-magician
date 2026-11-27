@@ -22,7 +22,7 @@ import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
 import MagicSymbols from './domain/symbols/MagicSymbols.js';
 import MagicProjectDetails from './ui/settings/MagicProjectDetails.js';
-import InspectionSettings from './ui/settings/InspectionSettings.js';
+import InspectionSettings from './ui/settings/inspections/InspectionSettings.js';
 import filterPresets from './ui/buildFilterModal/filterPresets.js';
 import MechanicSettings from './ui/settings/MechanicSettings.js';
 import MagicEditorSettings from './ui/settings/MagicEditorSettings.js';

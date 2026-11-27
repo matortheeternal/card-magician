@@ -1,4 +1,6 @@
 import './inspectionSettings.css';
+import './InspectionTree.js';
+import element from './element.js';
 
 const L = localize('game-magic');
 const COLORS = { W: L`White`, U: L`Blue`, B: L`Black`, R: L`Red`, G: L`Green` };
@@ -9,13 +11,6 @@ const TIERS = {
     none: L`None`,
 };
 const SEVERITIES = { tertiary: L`Bend`, none: L`Break` };
-
-function element(tag, text, className) {
-    const node = document.createElement(tag);
-    if (text) node.textContent = text;
-    if (className) node.className = className;
-    return node;
-}
 
 function tierOption(value, label) {
     const option = element('sl-option', label);
@@ -53,6 +48,21 @@ function setTier(tiers, color, value) {
     tiers[color] = value;
 }
 
+function setDisabled(entry, enabled) {
+    if (enabled) {
+        delete entry.disabled;
+        return;
+    }
+    entry.disabled = true;
+}
+
+function updateEntry(overrides, id, update) {
+    const entry = overrides[id] ?? {};
+    update(entry);
+    if (Object.keys(entry).length) overrides[id] = entry;
+    if (!Object.keys(entry).length) delete overrides[id];
+}
+
 export default class InspectionSettings extends CardMagicianSettings {
     static id = 'cm-magic-inspection-settings';
     static parentId = 'cm-project-settings';
@@ -71,77 +81,54 @@ export default class InspectionSettings extends CardMagicianSettings {
         return activeProject.inspectionOverrides ?? {};
     }
 
-    render() {
-        const filter = element('sl-input');
-        filter.type = 'search';
-        filter.size = 'small';
-        filter.placeholder = L`Filter inspections`;
-        filter.setAttribute('aria-label', L`Filter inspections`);
-        this.tree = element('sl-tree');
-        this.tree.selection = 'leaf';
-        this.tree.setAttribute('aria-label', L`Inspections`);
-        this.results = element('div', undefined, 'inspection-list');
-        const filterBar = element('div', undefined, 'inspection-filter');
-        filterBar.append(filter);
-        this.results.append(filterBar, this.tree);
-        this.detail = element('section', undefined, 'inspection-detail');
-        this.replaceChildren(this.results, this.detail);
-
-        filter.addEventListener('sl-input', () => this.renderTree(filter.value));
-        this.tree.addEventListener('sl-selection-change', event => {
-            event.stopPropagation();
-            const id = event.detail.selection[0]?.dataset.inspectionId;
-            const inspection = activeGame.inspections.find(item => item.id === id);
-            if (inspection) this.renderDetail(inspection);
-        });
-        this.renderTree('');
+    get disabledIds() {
+        const ids = Object.keys(this.overrides)
+            .filter(id => this.overrides[id].disabled);
+        return new Set(ids);
     }
 
-    renderTree(query) {
-        const term = query.trim().toLowerCase();
-        const inspections = activeGame.inspections.filter(item =>
-            [item.title, item.group, item.subgroup, item.id].join(' ')
-                .toLowerCase().includes(term));
-        const selected = inspections.find(item => item.id === this.selectedId)
-            ?? inspections[0];
-        this.tree.replaceChildren();
-        const groups = new Map();
-        for (const inspection of inspections) {
-            const group = this.groupNode(groups, inspection.group, this.tree);
-            const parent = inspection.subgroup
-                ? this.groupNode(groups, inspection.subgroup, group)
-                : group;
-            const leaf = element('sl-tree-item', inspection.title);
-            leaf.dataset.inspectionId = inspection.id;
-            leaf.selected = inspection === selected;
-            if (leaf.selected || term) {
-                group.expanded = true;
-                parent.expanded = true;
-            }
-            parent.append(leaf);
-        }
-        this.tree.hidden = !selected;
-        if (selected) return this.renderDetail(selected);
+    get tree() {
+        return this.querySelector('cm-inspection-tree');
+    }
+
+    get detail() {
+        return this.querySelector('.inspection-detail');
+    }
+
+    get enabledSwitch() {
+        return this.detail.querySelector('.inspection-heading sl-switch');
+    }
+
+    render() {
+        const tree = element('cm-inspection-tree');
+        tree.inspections = activeGame.inspections;
+        tree.disabledIds = this.disabledIds;
+        this.replaceChildren(tree, element('section', undefined, 'inspection-detail'));
+    }
+
+    bind() {
+        this.on('inspection-select', event => this.showInspection(event.detail.id));
+        this.on('inspections-toggle', event => {
+            const { ids, enabled } = event.detail;
+            this.saveEnabled(ids, enabled);
+            if (ids.includes(this.tree.selectedId)) this.enabledSwitch.checked = enabled;
+        });
+        this.showInspection(this.tree.selectedId);
+    }
+
+    showInspection(id) {
+        const inspection = activeGame.inspections.find(item => item.id === id);
+        if (inspection) return this.renderDetail(inspection);
         this.detail.replaceChildren(element('p', L`No matching inspections.`));
     }
 
-    groupNode(groups, title, parent) {
-        const key = `${parent.dataset.group ?? ''}/${title}`;
-        if (!groups.has(key)) {
-            const group = element('sl-tree-item', title);
-            group.dataset.group = key;
-            parent.append(group);
-            groups.set(key, group);
-        }
-        return groups.get(key);
+    saveEnabled(ids, enabled) {
+        this.updateOverrides(ids, entry => setDisabled(entry, enabled));
     }
 
-    updateOverride(id, update) {
+    updateOverrides(ids, update) {
         const overrides = this.overrides;
-        const entry = overrides[id] ?? {};
-        update(entry);
-        if (Object.keys(entry).length) overrides[id] = entry;
-        if (!Object.keys(entry).length) delete overrides[id];
+        for (const id of ids) updateEntry(overrides, id, update);
         if (Object.keys(overrides).length) activeProject.inspectionOverrides = overrides;
         if (!Object.keys(overrides).length) delete activeProject.inspectionOverrides;
         this.emit('project-changed');
@@ -194,7 +181,7 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     updateTier(inspection, exception, color, value) {
-        this.updateOverride(inspection.id, entry => {
+        this.updateOverrides([inspection.id], entry => {
             if (!exception) {
                 entry.tiers ??= {};
                 setTier(entry.tiers, color, value);
@@ -210,14 +197,11 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     renderDetail(inspection) {
-        this.selectedId = inspection.id;
         const enabled = element('sl-switch', L`Enabled`);
-        enabled.checked = this.overrides[inspection.id]?.disabled !== true;
+        enabled.checked = !this.disabledIds.has(inspection.id);
         enabled.addEventListener('sl-change', () => {
-            this.updateOverride(inspection.id, entry => {
-                if (enabled.checked) delete entry.disabled;
-                if (!enabled.checked) entry.disabled = true;
-            });
+            this.saveEnabled([inspection.id], enabled.checked);
+            this.tree.setEnabled([inspection.id], enabled.checked);
         });
         const heading = element('div', undefined, 'inspection-heading');
         heading.append(element('h2', inspection.title), enabled);

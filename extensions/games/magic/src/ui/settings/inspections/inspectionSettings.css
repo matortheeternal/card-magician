@@ -1,33 +1,10 @@
 cm-magic-inspection-settings {
     display: grid;
-    grid-template-columns: clamp(12rem, 22vw, 17rem) minmax(0, 1fr);
+    grid-template-columns: clamp(16rem, 30vw, 24rem) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
     flex: 1;
     min-height: 0;
     min-width: 0;
-
-    .inspection-list {
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-        border-inline-end: 1px solid var(--sl-input-border-color);
-        background: var(--sl-color-neutral-50);
-    }
-
-    .inspection-filter {
-        padding: var(--sl-spacing-small);
-        border-bottom: 1px solid var(--sl-input-border-color);
-    }
-
-    sl-tree {
-        overflow: auto;
-        padding-block: var(--sl-spacing-x-small);
-        --indent-size: 0.875rem;
-    }
-
-    sl-tree-item::part(label) {
-        overflow-wrap: anywhere;
-    }
 
     .inspection-detail {
         overflow: auto;
@@ -133,18 +110,9 @@ cm-magic-inspection-settings {
         grid-template-rows: auto auto;
         flex: none;
 
-        .inspection-list {
-            border-inline-end: 0;
-            border-bottom: 1px solid var(--sl-input-border-color);
-        }
-
         .inspection-detail {
             overflow: visible;
             padding: var(--sl-spacing-medium);
-        }
-
-        sl-tree {
-            max-height: 15rem;
         }
     }
 }
