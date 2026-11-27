@@ -11,7 +11,7 @@ import {
 
 const L = localize('game-magic');
 
-function searchButton() {
+function searchButton(inspection) {
     const button = element('sl-button', L`Scryfall`);
     button.size = 'small';
     button.dataset.clickAction = 'search-inspection';
@@ -19,7 +19,10 @@ function searchButton() {
     icon.name = 'search';
     icon.slot = 'prefix';
     button.prepend(icon);
-    return button;
+    const tooltip = element('sl-tooltip');
+    tooltip.content = L`Search Scryfall for ${inspection.cards}`;
+    tooltip.append(button);
+    return tooltip;
 }
 
 export default class InspectionSettings extends CardMagicianSettings {
@@ -149,7 +152,7 @@ export default class InspectionSettings extends CardMagicianSettings {
         enabled.addEventListener('sl-change', () =>
             this.toggleInspections({ ids: [inspection.id], enabled: enabled.checked }));
         const actions = element('div');
-        actions.append(searchButton(), reset, enabled);
+        actions.append(searchButton(inspection), reset, enabled);
         const heading = element('header', undefined, 'inspection-heading');
         heading.append(element('h2', inspection.title), actions);
         return heading;
@@ -158,6 +161,7 @@ export default class InspectionSettings extends CardMagicianSettings {
     tiersFor(inspection) {
         const tiers = element('cm-inspection-tiers');
         tiers.defaults = inspection.tiers;
+        tiers.cards = inspection.cards;
         tiers.overrides = this.overrides.all[inspection.id]?.tiers ?? {};
         return tiers;
     }

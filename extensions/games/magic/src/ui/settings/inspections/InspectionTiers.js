@@ -22,8 +22,7 @@ function tierOption([value, label]) {
     return option;
 }
 
-function searchButton(name) {
-    const label = L`Search ${name} cards on Scryfall`;
+function searchButton(label) {
     const button = element('sl-icon-button');
     button.name = 'search';
     button.label = label;
@@ -38,6 +37,7 @@ function searchButton(name) {
 export default class InspectionTiers extends ReactiveComponent {
     defaults = {};
     overrides = {};
+    cards = '';
 
     connectedCallback() {
         this.render();
@@ -75,7 +75,8 @@ export default class InspectionTiers extends ReactiveComponent {
         tile.style.setProperty('--watermark', `url("${watermark}")`);
         tile.setAttribute('aria-label', name);
         const heading = element('header');
-        heading.append(colorIcon(color), element('strong', name), searchButton(name));
+        const search = searchButton(L`Search Scryfall for ${name} ${this.cards}`);
+        heading.append(colorIcon(color), element('strong', name), search);
         const select = element('sl-select');
         select.size = 'small';
         select.hoist = true;
