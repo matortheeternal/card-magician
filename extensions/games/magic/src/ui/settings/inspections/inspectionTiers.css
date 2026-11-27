@@ -5,7 +5,6 @@ cm-inspection-tiers {
 
     section {
         position: relative;
-        isolation: isolate;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -20,13 +19,16 @@ cm-inspection-tiers {
     section::before {
         content: '';
         position: absolute;
-        z-index: -1;
         right: -1.25rem;
         bottom: -1.25rem;
         width: 5.5rem;
         height: 5.5rem;
         background: var(--watermark) center / contain no-repeat;
         opacity: 0.14;
+    }
+
+    section > * {
+        position: relative;
     }
 
     header {
@@ -40,12 +42,19 @@ cm-inspection-tiers {
         --sl-input-spacing-small: var(--sl-spacing-2x-small);
     }
 
+    sl-select::part(listbox) {
+        min-width: max-content;
+    }
+
     header img {
         width: 1rem;
     }
 
-    header sl-icon-button {
+    header sl-tooltip {
         margin-left: auto;
+    }
+
+    header sl-icon-button {
         font-size: var(--sl-font-size-small);
     }
 

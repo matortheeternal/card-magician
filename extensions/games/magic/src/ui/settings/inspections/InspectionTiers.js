@@ -23,11 +23,16 @@ function tierOption([value, label]) {
 }
 
 function searchButton(name) {
+    const label = L`Search ${name} cards on Scryfall`;
     const button = element('sl-icon-button');
     button.name = 'search';
-    button.label = L`Search ${name} cards on Scryfall`;
+    button.label = label;
     button.dataset.clickAction = 'search';
-    return button;
+    const tooltip = element('sl-tooltip');
+    tooltip.content = label;
+    tooltip.hoist = true;
+    tooltip.append(button);
+    return tooltip;
 }
 
 export default class InspectionTiers extends ReactiveComponent {
@@ -73,6 +78,7 @@ export default class InspectionTiers extends ReactiveComponent {
         heading.append(colorIcon(color), element('strong', name), searchButton(name));
         const select = element('sl-select');
         select.size = 'small';
+        select.hoist = true;
         select.setAttribute('aria-label', L`${name} tier`);
         select.append(...Object.entries(TIERS).map(tierOption));
         select.value = this.tierOf(color);
