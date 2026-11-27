@@ -32,7 +32,6 @@ export default class CardDefaultsSettings extends CardMagicianSettings {
             id: 'preferredTemplateFamily',
             type: 'select',
             label: L`Preferred template family`,
-            description: L`Auto uses this family’s templates.`,
             options: familyOptions()
         }];
     }
@@ -77,8 +76,7 @@ export default class CardDefaultsSettings extends CardMagicianSettings {
 
     render() {
         return this.innerHTML = (
-            `<form-field field-id="preferredTemplateFamily"></form-field>
-            <p>${this.fields[0].description}</p>`
+            `<form-field field-id="preferredTemplateFamily"></form-field>`
         );
     }
 }
