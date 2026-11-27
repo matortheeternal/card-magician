@@ -3,7 +3,7 @@ cm-inspection-tree {
     flex-direction: column;
     min-height: 0;
     border-inline-end: 1px solid var(--sl-input-border-color);
-    background: var(--sl-color-neutral-50);
+    background: #111;
 
     search {
         padding: var(--sl-spacing-small);
