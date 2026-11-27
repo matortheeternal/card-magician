@@ -1,3 +1,4 @@
+import { AUTO_TEMPLATE } from '../template/autoTemplate.js';
 import { resolveFaceTemplate } from '../template/templateRegistry.js';
 import CardFaceModel from './CardFaceModel.js';
 import SubcardModel from './SubcardModel.js';
@@ -56,6 +57,7 @@ export async function buildCardFace(card, key) {
     cardFace.parent = () => card;
     cardFace.subcards = await buildSubcards(cardFace, template, faceDataToLoad);
     await cardFace.load(faceDataToLoad);
+    if (cardFace.template !== AUTO_TEMPLATE) cardFace.template = template.id;
     return cardFace;
 }
 

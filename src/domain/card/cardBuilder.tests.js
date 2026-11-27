@@ -46,6 +46,19 @@ describe('Card faces', () => {
         }
     });
 
+    it('reads previous Ixalan Map IDs and saves the canonical Spotlight ID', async () => {
+        for (const template of ['magic/M15/Map', 'M15Map']) {
+            const card = { front: { template } };
+            const face = await buildCardFace(card, 'front');
+            try {
+                expect(face.resolvedTemplate.id).toBe('magic/Spotlight/Map');
+                expect((await face.save()).template).toBe('magic/Spotlight/Map');
+            } finally {
+                face.dispose();
+            }
+        }
+    });
+
     it('renders short Saga text when optional flavor text is null', async () => {
         const face = await buildCardFace({ front: {
             template: 'magic/M15/Saga', centerText: 'short', rulesText: 'I — Draw.',

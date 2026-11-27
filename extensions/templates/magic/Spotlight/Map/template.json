@@ -1,5 +1,6 @@
 {
-  "id": "magic/M15/Map",
+  "id": "magic/Spotlight/Map",
+  "previously": ["magic/M15/Map", "M15Map"],
   "gameId": "magic",
   "gameVersion": "^0.2.0",
   "label": "Ixalan Map",

@@ -46,11 +46,14 @@ export async function loadTemplates() {
 }
 
 export function getTemplate(templateId) {
-    return templates.find(t => {
-        if (t.id === templateId) return true;
-        const oldTemplateId = t.id.split('/').slice(1).join('');
-        return oldTemplateId === templateId;
-    });
+    return templates.find(template => template.id === templateId)
+        ?? templates.find(template =>
+            Array.isArray(template.previously) && template.previously.includes(templateId)
+        )
+        ?? templates.find(template => {
+            const oldTemplateId = template.id.split('/').slice(1).join('');
+            return oldTemplateId === templateId;
+        });
 }
 
 export function getTemplates() {

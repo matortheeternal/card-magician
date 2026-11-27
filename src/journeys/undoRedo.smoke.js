@@ -425,7 +425,7 @@ describe('Undo and redo', () => {
             const current = picker.querySelector('[aria-current]');
             expect(getComputedStyle(picker.results).overflowY).toBe('auto');
             expect([...picker.querySelectorAll('h3')].map(group => group.textContent))
-                .toEqual(['M15', 'M20', 'Classic']);
+                .toEqual(['M15', 'M20', 'Classic', 'Spotlight']);
             expect(picker.firstResult.textContent.trim()).toBe('Auto');
             expect(picker.querySelector('section:nth-child(2) button')).toBe(current);
             expect(current.querySelector('span').textContent).toBe('M15');

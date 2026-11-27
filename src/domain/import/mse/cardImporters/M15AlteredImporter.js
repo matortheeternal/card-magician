@@ -8,7 +8,7 @@ export default class M15AlteredImporter extends BaseCardImporter {
     static expectedVersion = '2026-09-06';
 
     get template() {
-        return this.mseFrames.includes('map') ? 'magic/M15/Map' : 'magic/M15/Main';
+        return this.mseFrames.includes('map') ? 'magic/Spotlight/Map' : 'magic/M15/Main';
     }
 
     getPropertyGroup([key]) {
