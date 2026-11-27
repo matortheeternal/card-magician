@@ -58,10 +58,13 @@ const overrides = new Map();
 for (const [style, tags] of Object.entries(styleOverrides))
     tags.forEach(tag => overrides.set(tag, style));
 
-function keywordStyle(keyword) {
-    const tiers = keywordCanon[keyword.toLowerCase()]?.tiers ?? {};
+export function tierStyle(tiers = {}) {
     const primary = Object.keys(tiers).filter(color => tiers[color] === 'primary');
     return primary.length === 1 ? colorStyles[primary[0]] : 'neutral';
+}
+
+function keywordStyle(keyword) {
+    return tierStyle(keywordCanon[keyword.toLowerCase()]?.tiers);
 }
 
 function addTagFamily(defaults, spec) {
@@ -78,10 +81,10 @@ function directStyle(tag) {
 }
 
 const defaults = new Map();
-const families = [];
+export const keywordTagFamilies = [];
 for (const spec of DEFAULT_TAG_SPECS) {
     if (spec.family) {
-        families.push(addTagFamily(defaults, spec));
+        keywordTagFamilies.push(addTagFamily(defaults, spec));
         continue;
     }
     if (canonicalTag(spec.tag) !== spec.tag) continue;
@@ -95,5 +98,5 @@ export function defaultOracleTagStyle(tag) {
 }
 
 function familyStyle(tag) {
-    if (families.some(family => family.ownsTag(tag))) return 'neutral';
+    if (keywordTagFamilies.some(family => family.ownsTag(tag))) return 'neutral';
 }

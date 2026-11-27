@@ -57,8 +57,9 @@ export default class TagField extends FieldComponent {
         this.watch('suggestion-setting', config, 'suggestOracleTags', refresh);
         const { definitionFields } = assistance;
         const project = window.activeProject;
+        const reload = () => this.loadValue();
         if (project && definitionFields?.length)
-            this.watch('tag-definitions', project, definitionFields, refresh);
+            this.watch('tag-definitions', project, definitionFields, reload);
         this.watch('dismissed-tags', this.model, 'dismissedTags', refresh);
         const fields = ['rulesText', ...assistance.faceFields];
         for (const [index, face] of assistance.getSuggestionModels(this.model).entries())

@@ -6,6 +6,7 @@ import {
 } from './oracleCardEligibility.js';
 import { markUnrecognizedText } from './hljsMtg.js';
 import { defaultOracleTagStyle, oracleTagStyles } from './oracleTagStyles.js';
+import { projectKeywordTagStyles } from './projectKeywordTagStyles.js';
 
 function faceMetadata(face, faceCount) {
     const superType = face.superType ?? '';
@@ -30,11 +31,12 @@ export default class OracleAssistance {
         ...eligibilityFields
     ];
     defaultTagStyles = oracleTagStyles;
-    defaultTagStyle = defaultOracleTagStyle;
     definitionFields = [...Object.values(mechanicFields), 'customTokens'];
     #cache = new WeakMap();
     #definitionKey;
     #oracle;
+    #keywordStylesKey;
+    #keywordStyles = new Map();
 
     oracleFor(project) {
         const definitions = projectDefinitions(project);
@@ -46,6 +48,20 @@ export default class OracleAssistance {
         this.#definitionKey = key;
         this.#cache = new WeakMap();
         return this.#oracle;
+    }
+
+    keywordTagStyles(project) {
+        const keywords = projectDefinitions(project).keywords;
+        const key = JSON.stringify(keywords);
+        if (key === this.#keywordStylesKey) return this.#keywordStyles;
+        this.#keywordStyles = projectKeywordTagStyles(keywords);
+        this.#keywordStylesKey = key;
+        return this.#keywordStyles;
+    }
+
+    defaultTagStyle(tag) {
+        const projectStyle = this.keywordTagStyles(window.activeProject).get(tag);
+        return projectStyle ?? defaultOracleTagStyle(tag);
     }
 
     parse(face, text, faceCount) {

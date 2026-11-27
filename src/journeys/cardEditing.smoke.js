@@ -371,6 +371,23 @@ describe('Card editing', () => {
         expect(tags().length).toBe(6);
     });
 
+    it('styles custom keyword tags after their mechanic color affinity', async () => {
+        await createCard();
+        const setClimbingTiers = tiers => {
+            activeProject.customKeywords = [{ name: 'Climbing', tiers }];
+            changed(activeProject, 'customKeywords');
+        };
+        setClimbingTiers({ R: 'primary', G: 'tertiary' });
+        await setCardFields({ tags: ['gains-climbing'] }, { mode: CARD_PROPERTIES });
+        const field = new FieldInteractor('tags', { mode: CARD_PROPERTIES }).fieldElement;
+        const chip = () => [...field.tagsContainer.children]
+            .find(tag => tag.textContent === 'gains-climbing');
+        expect(chip().dataset.tagStyle).toBe('red');
+
+        setClimbingTiers({ U: 'primary' });
+        await cmTest.eventually(() => chip().dataset.tagStyle === 'blue');
+    });
+
     it('moves Oracle tags between styles and persists catalog removals', async () => {
         await createCard();
         await setCardFields({ rulesText: 'Draw a card.' });
