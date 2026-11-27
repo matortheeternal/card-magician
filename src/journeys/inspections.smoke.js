@@ -40,8 +40,12 @@ describe('Inspections', () => {
         const enabled = settings.querySelector('sl-switch');
         enabled.checked = false;
         enabled.dispatchEvent(new CustomEvent('sl-change', { bubbles: true }));
-        changeValue(settings.querySelector('sl-select'), 'primary');
-        changeValue(settings.querySelector('sl-details sl-select'), 'secondary');
+        const white = settings.querySelector('cm-inspection-tiers [data-color="W"]');
+        expect(white.value).toBe(inspection.tiers.W);
+        changeValue(white, 'primary');
+        const [exception] = inspection.exceptions;
+        await cmTest.click(settings.querySelector(
+            `[data-exception-id="${exception.id}"] button[data-color="W"]`));
 
         expect(item.querySelector(':scope > sl-checkbox').checked).toBeFalse();
 
@@ -52,8 +56,39 @@ describe('Inspections', () => {
         expect(overrides).toEqual({
             disabled: true,
             tiers: { W: 'primary' },
-            exceptions: { [inspection.exceptions[0].id]: { W: 'secondary' } }
+            exceptions: { [exception.id]: ['W', ...exception.colors] }
         });
+    });
+
+    it('drops overrides that match defaults and resets an inspection', async () => {
+        const workspace = await cmTest.openSettings();
+        const settings = await selectSettingsTab(workspace, SETTINGS_ID);
+        const inspection = activeGame.inspections.find(item =>
+            item.id === settings.querySelector('cm-inspection-tree').selectedId);
+        const reset = settings.querySelector('.inspection-heading sl-button');
+        const savedOverrides = async () =>
+            (await YAMLSerializer.load(activeProject.filePath)).inspectionOverrides;
+        expect(reset.disabled).toBeTrue();
+
+        const white = settings.querySelector('cm-inspection-tiers [data-color="W"]');
+        changeValue(white, inspection.tiers.W === 'none' ? 'primary' : 'none');
+        expect(reset.disabled).toBeFalse();
+        changeValue(white, inspection.tiers.W);
+        expect(reset.disabled).toBeTrue();
+
+        changeValue(white, inspection.tiers.W === 'none' ? 'primary' : 'none');
+        const enabled = settings.querySelector('sl-switch');
+        enabled.checked = false;
+        enabled.dispatchEvent(new CustomEvent('sl-change', { bubbles: true }));
+        await eventually(async () => (await savedOverrides())?.[inspection.id]?.disabled);
+
+        await cmTest.click(reset);
+        const resetWhite = settings.querySelector('cm-inspection-tiers [data-color="W"]');
+        expect(resetWhite.value).toBe(inspection.tiers.W);
+        expect(settings.querySelector('sl-switch').checked).toBeTrue();
+        const leaf = settings.querySelector(`[data-inspection-id="${inspection.id}"]`);
+        expect(leaf.querySelector(':scope > sl-checkbox').checked).toBeTrue();
+        await eventually(async () => !(await savedOverrides()));
     });
 
     it('toggles tree checkboxes without changing the selection', async () => {

@@ -1,22 +1,10 @@
 import './inspectionSettings.css';
 import './InspectionTree.js';
+import './InspectionTiers.js';
+import './InspectionExceptions.js';
 import element from './element.js';
 
 const L = localize('game-magic');
-const COLORS = { W: L`White`, U: L`Blue`, B: L`Black`, R: L`Red`, G: L`Green` };
-const TIERS = {
-    primary: L`Primary`,
-    secondary: L`Secondary`,
-    tertiary: L`Tertiary`,
-    none: L`None`,
-};
-const SEVERITIES = { tertiary: L`Bend`, none: L`Break` };
-
-function tierOption(value, label) {
-    const option = element('sl-option', label);
-    option.value = value;
-    return option;
-}
 
 function exampleCard(example) {
     const card = element('sl-card');
@@ -40,12 +28,16 @@ function exampleCard(example) {
     return card;
 }
 
-function setTier(tiers, color, value) {
-    if (value === 'default') {
-        delete tiers[color];
+function setOverride(record, key, value, isDefault) {
+    if (isDefault) {
+        delete record[key];
         return;
     }
-    tiers[color] = value;
+    record[key] = value;
+}
+
+function pruneEmpty(entry, key) {
+    if (!Object.keys(entry[key]).length) delete entry[key];
 }
 
 function setDisabled(entry, enabled) {
@@ -54,6 +46,10 @@ function setDisabled(entry, enabled) {
         return;
     }
     entry.disabled = true;
+}
+
+function clearEntry(entry) {
+    for (const key of Object.keys(entry)) delete entry[key];
 }
 
 function updateEntry(overrides, id, update) {
@@ -87,6 +83,10 @@ export default class InspectionSettings extends CardMagicianSettings {
         return new Set(ids);
     }
 
+    get selectedInspection() {
+        return activeGame.inspections.find(item => item.id === this.tree.selectedId);
+    }
+
     get tree() {
         return this.querySelector('cm-inspection-tree');
     }
@@ -99,6 +99,10 @@ export default class InspectionSettings extends CardMagicianSettings {
         return this.detail.querySelector('.inspection-heading sl-switch');
     }
 
+    get resetButton() {
+        return this.detail.querySelector('.inspection-heading sl-button');
+    }
+
     render() {
         const tree = element('cm-inspection-tree');
         tree.inspections = activeGame.inspections;
@@ -107,17 +111,20 @@ export default class InspectionSettings extends CardMagicianSettings {
     }
 
     bind() {
-        this.on('inspection-select', event => this.showInspection(event.detail.id));
+        this.on('inspection-select', () => this.showSelected());
         this.on('inspections-toggle', event => {
             const { ids, enabled } = event.detail;
             this.saveEnabled(ids, enabled);
             if (ids.includes(this.tree.selectedId)) this.enabledSwitch.checked = enabled;
         });
-        this.showInspection(this.tree.selectedId);
+        this.on('inspection-tier-change', event => this.saveTier(event.detail));
+        this.on('inspection-exception-change', event =>
+            this.saveExceptionColors(event.detail));
+        this.showSelected();
     }
 
-    showInspection(id) {
-        const inspection = activeGame.inspections.find(item => item.id === id);
+    showSelected() {
+        const inspection = this.selectedInspection;
         if (inspection) return this.renderDetail(inspection);
         this.detail.replaceChildren(element('p', L`No matching inspections.`));
     }
@@ -126,103 +133,85 @@ export default class InspectionSettings extends CardMagicianSettings {
         this.updateOverrides(ids, entry => setDisabled(entry, enabled));
     }
 
+    saveTier({ color, tier }) {
+        const { id, tiers } = this.selectedInspection;
+        this.updateOverrides([id], entry => {
+            entry.tiers ??= {};
+            setOverride(entry.tiers, color, tier, tier === tiers[color]);
+            pruneEmpty(entry, 'tiers');
+        });
+    }
+
+    saveExceptionColors({ exceptionId, colors }) {
+        const { id, exceptions } = this.selectedInspection;
+        const { colors: defaults } = exceptions.find(item => item.id === exceptionId);
+        this.updateOverrides([id], entry => {
+            entry.exceptions ??= {};
+            const isDefault = colors.join() === defaults.join();
+            setOverride(entry.exceptions, exceptionId, colors, isDefault);
+            pruneEmpty(entry, 'exceptions');
+        });
+    }
+
+    reset() {
+        const inspection = this.selectedInspection;
+        this.updateOverrides([inspection.id], clearEntry);
+        this.tree.setEnabled([inspection.id], true);
+        this.renderDetail(inspection);
+    }
+
     updateOverrides(ids, update) {
         const overrides = this.overrides;
         for (const id of ids) updateEntry(overrides, id, update);
         if (Object.keys(overrides).length) activeProject.inspectionOverrides = overrides;
         if (!Object.keys(overrides).length) delete activeProject.inspectionOverrides;
+        this.resetButton.disabled = !this.overrides[this.tree.selectedId];
         this.emit('project-changed');
     }
 
-    tierControls(inspection, exception = null) {
-        const container = element('div', undefined, 'inspection-tiers');
-        for (const [color, name] of Object.entries(COLORS))
-            container.append(this.tierSelect(inspection, exception, color, name));
-        return container;
-    }
-
-    tierSelect(inspection, exception, color, name) {
-        const panel = element('div', undefined, 'inspection-tier');
-        const image = element('img');
-        image.src = activeGame.symbols.resolveColorSymbolIcon(color.toLowerCase());
-        image.alt = '';
-        const label = element('span', name, 'tier-label');
-        label.slot = 'label';
-        label.prepend(image);
-        const select = element('sl-select');
-        select.size = 'small';
-        select.append(label);
-        const defaults = exception?.tiers ?? inspection.tiers;
-        select.append(tierOption('default', L`Default`));
-        if (exception && defaults[color])
-            select.append(tierOption('inherit', L`Inspection tier`));
-        for (const [id, title] of Object.entries(TIERS))
-            select.append(tierOption(id, title));
-        const entry = this.overrides[inspection.id];
-        const tiers = exception ? entry?.exceptions?.[exception.id] : entry?.tiers;
-        select.value = tiers?.[color] ?? 'default';
-        const status = element('span', undefined, 'tier-status');
-        const updateStatus = () => {
-            const isDefault = select.value === 'default';
-            const tier = isDefault ? defaults[color] : select.value;
-            const severity = SEVERITIES[tier];
-            status.dataset.severity = severity ? tier : '';
-            const label = isDefault ? TIERS[tier] ?? L`Inspection tier` : '';
-            status.textContent = [label, severity].filter(Boolean).join(' · ')
-                || (tier === 'inherit' ? L`Inherited` : L`No problem`);
-        };
-        updateStatus();
-        select.addEventListener('sl-change', () => {
-            this.updateTier(inspection, exception, color, select.value);
-            updateStatus();
-        });
-        panel.append(select, status);
-        return panel;
-    }
-
-    updateTier(inspection, exception, color, value) {
-        this.updateOverrides([inspection.id], entry => {
-            if (!exception) {
-                entry.tiers ??= {};
-                setTier(entry.tiers, color, value);
-                if (!Object.keys(entry.tiers).length) delete entry.tiers;
-                return;
-            }
-            const exceptions = entry.exceptions ??= {};
-            const tiers = exceptions[exception.id] ??= {};
-            setTier(tiers, color, value);
-            if (!Object.keys(tiers).length) delete exceptions[exception.id];
-            if (!Object.keys(exceptions).length) delete entry.exceptions;
-        });
-    }
-
     renderDetail(inspection) {
+        this.detail.replaceChildren(this.heading(inspection));
+        if (inspection.description)
+            this.detail.append(element('p', inspection.description));
+        this.detail.append(element('h3', L`Tier by color`), this.tiersFor(inspection));
+        if (inspection.exceptions.length) this.renderExceptions(inspection);
+        if (inspection.examples.length) this.renderExamples(inspection.examples);
+    }
+
+    heading(inspection) {
+        const reset = element('sl-button', L`Reset to defaults`);
+        reset.size = 'small';
+        reset.disabled = !this.overrides[inspection.id];
+        reset.addEventListener('click', () => this.reset());
         const enabled = element('sl-switch', L`Enabled`);
         enabled.checked = !this.disabledIds.has(inspection.id);
         enabled.addEventListener('sl-change', () => {
             this.saveEnabled([inspection.id], enabled.checked);
             this.tree.setEnabled([inspection.id], enabled.checked);
         });
-        const heading = element('div', undefined, 'inspection-heading');
-        heading.append(element('h2', inspection.title), enabled);
-        this.detail.replaceChildren(heading);
-        if (inspection.description)
-            this.detail.append(element('p', inspection.description));
-        this.detail.append(
-            element('h3', L`Tier by color`), this.tierControls(inspection)
-        );
-        if (inspection.exceptions?.length) this.renderExceptions(inspection);
-        if (inspection.examples?.length) this.renderExamples(inspection.examples);
+        const actions = element('div');
+        actions.append(reset, enabled);
+        const heading = element('header', undefined, 'inspection-heading');
+        heading.append(element('h2', inspection.title), actions);
+        return heading;
+    }
+
+    tiersFor(inspection) {
+        const tiers = element('cm-inspection-tiers');
+        tiers.defaults = inspection.tiers;
+        tiers.overrides = this.overrides[inspection.id]?.tiers ?? {};
+        return tiers;
+    }
+
+    exceptionsFor(inspection) {
+        const exceptions = element('cm-inspection-exceptions');
+        exceptions.exceptions = inspection.exceptions;
+        exceptions.overrides = this.overrides[inspection.id]?.exceptions ?? {};
+        return exceptions;
     }
 
     renderExceptions(inspection) {
-        this.detail.append(element('h3', L`Exceptions`));
-        for (const exception of inspection.exceptions) {
-            const details = element('sl-details');
-            details.summary = exception.title;
-            details.append(this.tierControls(inspection, exception));
-            this.detail.append(details);
-        }
+        this.detail.append(element('h3', L`Exceptions`), this.exceptionsFor(inspection));
     }
 
     renderExamples(examples) {

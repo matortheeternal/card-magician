@@ -1,0 +1,40 @@
+cm-inspection-tiers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr));
+    gap: var(--sl-spacing-small);
+
+    > div {
+        min-width: 0;
+        padding: var(--sl-spacing-x-small);
+        border: 1px solid var(--sl-input-border-color);
+        border-radius: var(--sl-border-radius-medium);
+        background: var(--sl-color-neutral-50);
+    }
+
+    sl-select {
+        --sl-input-spacing-small: var(--sl-spacing-2x-small);
+    }
+
+    [slot="label"] {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-2x-small);
+        margin-bottom: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-x-small);
+    }
+
+    img {
+        width: 1rem;
+    }
+
+    small {
+        display: block;
+        margin-top: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-x-small);
+        color: var(--sl-color-neutral-700);
+    }
+
+    small[data-severity="none"] {
+        color: var(--sl-color-warning-700);
+    }
+}

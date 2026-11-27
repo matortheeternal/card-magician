@@ -1,0 +1,64 @@
+cm-inspection-exceptions {
+    display: block;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid var(--sl-input-border-color);
+        border-radius: var(--sl-border-radius-medium);
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sl-spacing-small);
+        padding: var(--sl-spacing-2x-small) var(--sl-spacing-small);
+        font-size: var(--sl-font-size-small);
+    }
+
+    li + li {
+        border-top: 1px solid var(--sl-input-border-color);
+    }
+
+    [role="group"] {
+        display: flex;
+        flex-shrink: 0;
+        gap: var(--sl-spacing-3x-small);
+    }
+
+    button {
+        display: flex;
+        padding: var(--sl-spacing-3x-small);
+        border: 1px solid transparent;
+        border-radius: var(--sl-border-radius-medium);
+        background: transparent;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: var(--sl-color-neutral-100);
+    }
+
+    button:focus-visible {
+        outline: var(--sl-focus-ring);
+        outline-offset: var(--sl-focus-ring-offset);
+    }
+
+    button[aria-pressed="true"] {
+        border-color: var(--sl-input-border-color);
+        background: var(--sl-color-neutral-100);
+    }
+
+    button[aria-pressed="false"] img {
+        opacity: 0.3;
+        filter: grayscale(1);
+    }
+
+    img {
+        display: block;
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
