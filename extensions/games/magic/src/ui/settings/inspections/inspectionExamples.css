@@ -1,6 +1,6 @@
 cm-inspection-examples {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--sl-spacing-medium);
 
     figure {

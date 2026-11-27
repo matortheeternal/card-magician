@@ -50,8 +50,8 @@ cm-inspection-tiers {
         width: 1rem;
     }
 
-    header sl-tooltip {
-        margin-left: auto;
+    header strong {
+        margin-right: auto;
     }
 
     header sl-icon-button {
