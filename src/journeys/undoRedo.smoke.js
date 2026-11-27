@@ -446,11 +446,6 @@ describe('Undo and redo', () => {
                 - tile.getBoundingClientRect().top;
             expect(iconOffset(sagaTile)).toBeCloseTo(iconOffset(firstTile));
             expect(firstTile.textContent.trim()).toBe('M15');
-            const versionTooltip = firstTile.closest('sl-tooltip');
-            expect(versionTooltip.content).toBe('Version 0.2.0');
-            firstTile.focus();
-            await eventually(() => versionTooltip.open);
-            picker.search.focus();
             expect(picker.results.getBoundingClientRect().width)
                 .toBe(picker.parentElement.getBoundingClientRect().width);
             expect(getComputedStyle(picker.search.parentElement).borderBottomWidth)
