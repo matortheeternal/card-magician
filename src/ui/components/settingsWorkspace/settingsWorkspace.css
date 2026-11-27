@@ -10,6 +10,7 @@ cm-settings-workspace {
         min-width: 0;
         padding: var(--sl-spacing-x-small) 0;
         border-right: 1px solid var(--sl-input-border-color);
+        background: var(--sl-color-neutral-50);
         overflow-y: auto;
     }
 
