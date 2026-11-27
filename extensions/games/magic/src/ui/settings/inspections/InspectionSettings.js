@@ -55,10 +55,6 @@ export default class InspectionSettings extends CardMagicianSettings {
         return this.querySelector('.inspection-detail');
     }
 
-    get enabledSwitch() {
-        return this.detail.querySelector('.inspection-heading sl-switch');
-    }
-
     get resetButton() {
         return this.detail.querySelector('[data-click-action="reset"]');
     }
@@ -97,8 +93,6 @@ export default class InspectionSettings extends CardMagicianSettings {
 
     toggleInspections({ ids, enabled }) {
         this.saveChange(() => this.overrides.setEnabled(ids, enabled));
-        this.tree.setEnabled(ids, enabled);
-        if (ids.includes(this.tree.selectedId)) this.enabledSwitch.checked = enabled;
     }
 
     saveTier({ color, tier }) {
@@ -147,12 +141,8 @@ export default class InspectionSettings extends CardMagicianSettings {
         reset.size = 'small';
         reset.dataset.clickAction = 'reset';
         reset.disabled = !this.overrides.has(inspection.id);
-        const enabled = element('sl-switch', L`Enabled`);
-        enabled.checked = !this.overrides.disabledIds.has(inspection.id);
-        enabled.addEventListener('sl-change', () =>
-            this.toggleInspections({ ids: [inspection.id], enabled: enabled.checked }));
         const actions = element('div');
-        actions.append(searchButton(inspection), reset, enabled);
+        actions.append(searchButton(inspection), reset);
         const heading = element('header', undefined, 'inspection-heading');
         heading.append(element('h2', inspection.title), actions);
         return heading;
