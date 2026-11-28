@@ -1,6 +1,4 @@
-import Oracle from 'oracle-of-pie';
-import Keyword from 'oracle-of-pie/src/values/Keyword.js';
-import KeywordActionEffect from 'oracle-of-pie/src/effects/KeywordActionEffect.js';
+import Oracle, { Keyword, KeywordActionEffect } from 'oracle-of-pie';
 import { getPrintedColors } from './ColorIdentity.js';
 
 function keyFor(kind, name) {

@@ -1,8 +1,7 @@
 import {
-    DEFAULT_KEYWORDS, DEFAULT_TAG_SPECS, KeywordFamilyEvaluator
+    DEFAULT_KEYWORDS, DEFAULT_TAG_SPECS, KEYWORD_CANON, KeywordFamilyEvaluator,
+    canonicalTag
 } from 'oracle-of-pie';
-import keywordCanon from 'oracle-of-pie/src/pie/keywordCanon.json' with { type: 'json' };
-import { canonicalTag } from 'oracle-of-pie/src/tags/tagRelationships.js';
 import tagAffinity from './oracleTagAffinity.json' with { type: 'json' };
 
 const colorStyles = { W: 'ivory', U: 'blue', B: 'violet', R: 'red', G: 'green' };
@@ -64,7 +63,7 @@ export function tierStyle(tiers = {}) {
 }
 
 function keywordStyle(keyword) {
-    return tierStyle(keywordCanon[keyword.toLowerCase()]?.tiers);
+    return tierStyle(KEYWORD_CANON[keyword.toLowerCase()]?.tiers);
 }
 
 function addTagFamily(defaults, spec) {

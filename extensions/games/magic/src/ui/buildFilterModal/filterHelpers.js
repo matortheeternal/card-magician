@@ -1,4 +1,4 @@
-import { canonicalTag } from 'oracle-of-pie/src/tags/tagRelationships.js';
+import { canonicalTag } from 'oracle-of-pie';
 
 export function getProjectSubtypes() {
     const subtypes = {};

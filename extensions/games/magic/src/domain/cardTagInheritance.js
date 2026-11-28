@@ -1,5 +1,4 @@
-import { canonicalTag, inheritedTagSources }
-    from 'oracle-of-pie/src/tags/tagRelationships.js';
+import { canonicalTag, inheritedTagSources } from 'oracle-of-pie';
 
 export function reconcileCardTags(card, assigned = card.tags ?? []) {
     const previous = new Set(card.inheritedTags);
