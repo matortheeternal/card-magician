@@ -114,7 +114,9 @@ export default class ProjectInspections extends ReactiveComponent {
         this.inspectionPopup.close();
         const button = this.ignoredButton;
         button.name = show ? 'eye-slash' : 'eye';
-        button.label = show ? L`Hide ignored findings` : L`Show ignored findings`;
+        const label = show ? L`Hide ignored findings` : L`Show ignored findings`;
+        button.label = label;
+        button.parentElement.content = label;
         button.setAttribute('aria-pressed', String(show));
         if (show) this.resultsTree.append(this.#ignoredBranch.item);
         if (!show) this.#ignoredBranch.item.remove();
@@ -131,16 +133,27 @@ export default class ProjectInspections extends ReactiveComponent {
         this.innerHTML = `<header>
             <strong>${L`Problems`}</strong>
             <output aria-live="polite"></output>
-            <sl-icon-button name="arrow-clockwise" label="${L`Scan`}"
-                data-click-action="scanProblems"></sl-icon-button>
-            <sl-icon-button name="eye" label="${L`Show ignored findings`}"
-                data-click-action="toggleIgnored" aria-pressed="false"></sl-icon-button>
-            <sl-icon-button name="chevron-expand" label="${L`Expand all`}"
-                data-click-action="expandProblems"></sl-icon-button>
-            <sl-icon-button name="chevron-contract" label="${L`Collapse all`}"
-                data-click-action="collapseProblems"></sl-icon-button>
-            <sl-icon-button name="x-lg" label="${L`Close Problems`}"
-                data-click-action="toggleProblems"></sl-icon-button>
+            <sl-tooltip content="${L`Scan`}" hoist>
+                <sl-icon-button name="arrow-clockwise" label="${L`Scan`}"
+                    data-click-action="scanProblems"></sl-icon-button>
+            </sl-tooltip>
+            <sl-tooltip content="${L`Show ignored findings`}" hoist>
+                <sl-icon-button name="eye" label="${L`Show ignored findings`}"
+                    data-click-action="toggleIgnored"
+                    aria-pressed="false"></sl-icon-button>
+            </sl-tooltip>
+            <sl-tooltip content="${L`Expand all`}" hoist>
+                <sl-icon-button name="chevron-expand" label="${L`Expand all`}"
+                    data-click-action="expandProblems"></sl-icon-button>
+            </sl-tooltip>
+            <sl-tooltip content="${L`Collapse all`}" hoist>
+                <sl-icon-button name="chevron-contract" label="${L`Collapse all`}"
+                    data-click-action="collapseProblems"></sl-icon-button>
+            </sl-tooltip>
+            <sl-tooltip content="${L`Close Problems`}" hoist>
+                <sl-icon-button name="x-lg" label="${L`Close Problems`}"
+                    data-click-action="toggleProblems"></sl-icon-button>
+            </sl-tooltip>
         </header>
         <div class="problem-results">
             <sl-tree aria-label="${L`Problems`}"></sl-tree>

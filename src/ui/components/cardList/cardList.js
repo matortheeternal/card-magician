@@ -104,7 +104,9 @@ export default class CardList extends ReactiveComponent {
         split.disabled = !open;
         split.position = open ? this.#problemsPosition : 100;
         this.problemsToggle.setAttribute('aria-expanded', String(open));
-        this.problemsToggle.label = open ? L`Hide Problems` : L`Show Problems`;
+        const label = open ? L`Hide Problems` : L`Show Problems`;
+        this.problemsToggle.label = label;
+        this.problemsToggle.parentElement.content = label;
         if (restoreFocus) this.problemsToggle.focus();
     }
 
@@ -133,7 +135,7 @@ export default class CardList extends ReactiveComponent {
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
         const canShowProblems = Boolean(hasCards && window.activeGame?.cardInspector);
-        this.problemsToggle.hidden = !canShowProblems;
+        this.problemsToggle.parentElement.hidden = !canShowProblems;
         if (!canShowProblems) this.setProblemsOpen(false);
         this.updateStatus();
     }

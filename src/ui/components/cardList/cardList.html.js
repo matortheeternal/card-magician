@@ -18,9 +18,11 @@ export default
 <div class="status-bar">
     <div class="card-list-status"></div>
     <div class="card-list-selection"></div>
-    <sl-icon-button name="exclamation-triangle" label="${L`Show Problems`}"
-        data-click-action="toggleProblems" aria-controls="project-problems"
-        aria-expanded="false" hidden></sl-icon-button>
+    <sl-tooltip content="${L`Show Problems`}" hoist hidden>
+        <sl-icon-button name="exclamation-triangle" label="${L`Show Problems`}"
+            data-click-action="toggleProblems" aria-controls="project-problems"
+            aria-expanded="false"></sl-icon-button>
+    </sl-tooltip>
 </div>
 <div class="no-content-prompt">
     <h2>${L`This set has no cards in it.`}</h2>
