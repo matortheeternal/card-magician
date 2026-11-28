@@ -7,6 +7,7 @@ import {
 import { markUnrecognizedText } from './hljsMtg.js';
 import { defaultOracleTagStyle, oracleTagStyles } from './oracleTagStyles.js';
 import { projectKeywordTagStyles } from './projectKeywordTagStyles.js';
+import producedMana from './producedMana.js';
 
 function faceMetadata(face, faceCount) {
     const superType = face.superType ?? '';
@@ -95,6 +96,18 @@ export default class OracleAssistance {
             for (const name of printedKeywords(parsed)) keywords.add(name);
         }
         return [...keywords].sort();
+    }
+
+    cardProducedMana(card) {
+        if (!isOracleCard(card)) return [];
+        const faceCount = getCardFaces(card).length;
+        const colors = new Set();
+        for (const face of this.getSuggestionModels(card)) {
+            const mana = face.producedMana
+                ?? producedMana(this.parse(face, face.rulesText ?? '', faceCount));
+            for (const color of mana) colors.add(color);
+        }
+        return [...colors];
     }
 
     suggestTags(card) {

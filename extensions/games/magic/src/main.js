@@ -37,6 +37,11 @@ import FaceSymbolSettings from './ui/settings/FaceSymbolSettings.js';
 import { registerStatistics } from './statistics/registerStatistics.js';
 
 class MagicSearchCard extends CardMagicianCard {
+    get produces() {
+        return this.cache('produces', () =>
+            activeGame.oracleAssistance.cardProducedMana(this.card));
+    }
+
     get keywords() {
         const { keywords } = this.card;
         return keywords?.map(keyword => keyword.toLowerCase()) ?? super.keywords;
