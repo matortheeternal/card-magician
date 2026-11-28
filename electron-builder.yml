@@ -1,4 +1,8 @@
 appId: org.cardmagician.app
+publish:
+    provider: github
+    owner: matortheeternal
+    repo: card-magician
 artifactName: '${productName}-${version}-${os}-${arch}.${ext}'
 directories:
     app: dist/.staging/package

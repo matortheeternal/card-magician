@@ -46,6 +46,14 @@ function configureNavigation(window) {
     });
 }
 
+function startUpdates(lifecycle) {
+    if (!app.isPackaged || process.platform !== 'win32') return;
+    if (environment.id !== 'cardmagician') return;
+    import('./autoUpdates.js').then(({ checkForUpdates }) => {
+        return checkForUpdates(lifecycle);
+    }).catch(error => console.error('Unable to check for updates:', error));
+}
+
 async function prepareContent() {
     await fs.mkdir(environment.paths.data, { recursive: true });
     if (app.isPackaged) {
@@ -70,6 +78,7 @@ async function start() {
         mainWindow.webContents.openDevTools();
     if (process.platform !== 'darwin')
         fileOpener.openFileArgs();
+    startUpdates(lifecycle);
 }
 
 app.on('open-file', (event, filePath) => {

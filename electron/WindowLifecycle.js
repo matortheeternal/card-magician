@@ -4,6 +4,7 @@ export default class WindowLifecycle {
     ready = false;
     requested = false;
     exiting = false;
+    installUpdateOnQuit = false;
 
     constructor(window) {
         this.window = window;
@@ -33,6 +34,12 @@ export default class WindowLifecycle {
         if (!Number.isInteger(code))
             throw new TypeError('Exit code must be an integer.');
         this.exiting = true;
-        setImmediate(() => app.exit(code));
+        setImmediate(() => {
+            if (code === 0 && this.installUpdateOnQuit) {
+                app.quit();
+                return;
+            }
+            app.exit(code);
+        });
     }
 }

@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import { build as bundle } from 'esbuild';
 import { build } from './build.js';
 
 const EXCLUDED_DIRECTORY_PATTERN = /(?:^|\/)(?:node_modules|tests|unused)(?:\/|$)/;
@@ -50,6 +51,21 @@ async function writePackageMetadata() {
             desktopName: 'card-magician'
         }, null, 2)
     );
+}
+
+async function bundleUpdater() {
+    await bundle({
+        entryPoints: ['electron/autoUpdates.js'],
+        outfile: path.join(stagePath, 'electron', 'autoUpdates.js'),
+        bundle: true,
+        platform: 'node',
+        format: 'esm',
+        external: ['electron'],
+        banner: {
+            js: 'import { createRequire } from \'node:module\';\n'
+                + 'const require = createRequire(import.meta.url);'
+        }
+    });
 }
 
 function checkPlatform(arg) {
@@ -132,4 +148,5 @@ await acquireLock();
 await build({ minify: true, tests: false });
 await createExtensionBundle();
 await stageApplication();
+if (platforms.includes('win')) await bundleUpdater();
 await createInstallers(platforms);

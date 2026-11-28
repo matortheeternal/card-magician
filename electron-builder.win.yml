@@ -2,6 +2,7 @@ extends: ./electron-builder.yml
 productName: Card Magician
 executableName: CardMagician
 win:
+    artifactName: 'Card-Magician-${version}-${os}-${arch}.${ext}'
     icon: build/icons/icon.ico
     target: nsis
 nsis:
