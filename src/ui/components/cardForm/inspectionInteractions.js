@@ -2,6 +2,7 @@ import { registerAction } from '../../systems/actionSystem.js';
 import {
     applyProjectInspection, resolveInspection, toggleIgnoredInspection
 } from './inspectionActions.js';
+import { mostSpecificInspection } from '../fieldComponents/inspectionRanges.js';
 import { findingsAt } from '../fieldComponents/inspectionTargets.js';
 
 const TARGET = '[data-inspection-target]';
@@ -12,7 +13,9 @@ function targetFor(event) {
 
 function openPopup(form, anchor, findings, hover = false) {
     const target = anchor.closest('cm-input')?.input ?? anchor;
-    form.inspectionPopup.open(anchor, findings, { target, hover });
+    const specific = mostSpecificInspection(findings);
+    const shown = specific ? [specific] : findings;
+    form.inspectionPopup.open(anchor, shown, { target, hover });
 }
 
 const inspectionActions = {
@@ -32,13 +35,16 @@ function onKey(event, form) {
 }
 
 export default function bindInspectionInteractions(form) {
-    form.on('pointerover', event => {
+    const hover = event => {
         const target = targetFor(event);
-        if (!target) return;
-        openPopup(form, target, findingsAt(target), true);
-    });
+        if (target) openPopup(form, target, findingsAt(target), true);
+    };
+    form.on('pointerover', hover);
+    form.on('pointermove', hover);
     form.on('pointerout', event => {
-        if (targetFor(event)) form.inspectionPopup.leave();
+        const target = targetFor(event);
+        if (!target || target.contains(event.relatedTarget)) return;
+        form.inspectionPopup.leaveAnchor(target, event);
     });
     form.on('click', event => {
         const target = targetFor(event);

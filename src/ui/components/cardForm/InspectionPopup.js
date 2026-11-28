@@ -1,3 +1,4 @@
+import inspectionHoverBridge from './inspectionHoverBridge.js';
 import openInspectionSettings from '../../settings/openInspectionSettings.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 
@@ -23,6 +24,8 @@ export default class InspectionPopup extends ReactiveComponent {
     #placementAnchor;
     #scrollRegion;
     #hover;
+    #bridge;
+    #trackPointer = event => this.trackPointer(event);
     #pressedPointer;
     #release = event => this.releasePointer(event);
     #resize = () => this.position();
@@ -32,7 +35,10 @@ export default class InspectionPopup extends ReactiveComponent {
         this.popover = 'auto';
         this.setAttribute('role', 'dialog');
         this.setAttribute('aria-label', L`Inspection findings`);
-        this.on('pointerenter', () => this.keepOpen());
+        this.on('pointerenter', () => {
+            this.#bridge = null;
+            this.keepOpen();
+        });
         this.on('pointerleave', () => this.leave());
         this.on('pointerdown', event => this.pressPointer(event));
         for (const eventType of ['pointerup', 'mousedown', 'mouseup', 'click'])
@@ -40,6 +46,7 @@ export default class InspectionPopup extends ReactiveComponent {
         window.addEventListener('pointerup', this.#release, true);
         window.addEventListener('pointercancel', this.#release, true);
         window.addEventListener('scroll', this.#resize, true);
+        window.addEventListener('pointermove', this.#trackPointer, true);
         this.#observer.observe(this);
         window.addEventListener('resize', this.#resize);
     }
@@ -50,6 +57,7 @@ export default class InspectionPopup extends ReactiveComponent {
         this.#observer.disconnect();
         window.removeEventListener('resize', this.#resize);
         window.removeEventListener('scroll', this.#resize, true);
+        window.removeEventListener('pointermove', this.#trackPointer, true);
         window.removeEventListener('pointerup', this.#release, true);
         window.removeEventListener('pointercancel', this.#release, true);
     }
@@ -60,6 +68,30 @@ export default class InspectionPopup extends ReactiveComponent {
 
     keepOpen() {
         clearTimeout(this.#timer);
+    }
+
+    leaveAnchor(anchor, event) {
+        if (anchor !== this.#anchor || !this.#hover || !this.matches(':popover-open'))
+            return;
+        const point = { x: event.clientX, y: event.clientY };
+        this.#bridge = event.relatedTarget
+            ? inspectionHoverBridge(point, this.getBoundingClientRect())
+            : null;
+        this.leave();
+    }
+
+    trackPointer(event) {
+        if (!this.#bridge) return;
+        if (!this.matches(':popover-open')) {
+            this.#bridge = null;
+            return;
+        }
+        if (this.#bridge({ x: event.clientX, y: event.clientY })) {
+            this.keepOpen();
+            return;
+        }
+        this.#bridge = null;
+        this.leave();
     }
 
     pressPointer(event) {
@@ -81,6 +113,7 @@ export default class InspectionPopup extends ReactiveComponent {
     }
 
     close(restoreFocus = false) {
+        this.#bridge = null;
         this.#pressedPointer = undefined;
         this.keepOpen();
         if (!this.matches(':popover-open')) return;
@@ -115,7 +148,8 @@ export default class InspectionPopup extends ReactiveComponent {
     open(anchor, findings, options = {}) {
         this.keepOpen();
         const openOnAnchor = anchor === this.#anchor && this.matches(':popover-open');
-        if (options.hover && openOnAnchor) return;
+        if (options.hover && (openOnAnchor || this.#bridge)) return;
+        this.#bridge = null;
         this.#anchor = anchor;
         this.#hover = options.hover;
         this.#placementAnchor = options.target ?? anchor;

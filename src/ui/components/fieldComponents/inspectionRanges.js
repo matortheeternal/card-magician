@@ -42,6 +42,16 @@ export function hasInspectionRange({ location }) {
     return location?.start < location?.end;
 }
 
+function compareRanges({ location: first }, { location: second }) {
+    const firstLength = first.end - first.start;
+    const secondLength = second.end - second.start;
+    return firstLength - secondLength || first.start - second.start;
+}
+
+export function mostSpecificInspection(findings) {
+    return findings.filter(hasInspectionRange).sort(compareRanges)[0];
+}
+
 export function markInspectionRanges(editor, findings) {
     if (!findings.length) return;
     const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
