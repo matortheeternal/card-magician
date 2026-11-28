@@ -1,7 +1,9 @@
 const L = localize('card-list');
 
 export default
-`<div class="filter-bar" style="display: none">
+`<sl-split-panel class="problems-split" vertical disabled position="100">
+<div slot="start" class="card-list-region">
+<div class="filter-bar" style="display: none">
     <sl-input
         autocomplete="off"
         placeholder="${L`Filter cards`}"
@@ -13,7 +15,13 @@ export default
 <cm-list-view
     add-row-label="${L`Click to add a card or press Ctrl+Enter`}"
 ></cm-list-view>
-<div class="status-bar"></div>
+<div class="status-bar">
+    <div class="card-list-status"></div>
+    <div class="card-list-selection"></div>
+    <sl-icon-button name="exclamation-triangle" label="${L`Show Problems`}"
+        data-click-action="toggleProblems" aria-controls="project-problems"
+        aria-expanded="false" hidden></sl-icon-button>
+</div>
 <div class="no-content-prompt">
     <h2>${L`This set has no cards in it.`}</h2>
     <div class="buttons-container">
@@ -25,4 +33,7 @@ export default
         </sl-button>
     </div>
     <cm-recent-projects></cm-recent-projects>
-</div>`;
+</div>
+</div>
+<cm-project-inspections id="project-problems" slot="end" hidden></cm-project-inspections>
+</sl-split-panel>`;

@@ -22,6 +22,10 @@ export default
     >${L`Preview`}</sl-button>
 </div>
 
+<ul class="inspection-summary" aria-label="${L`Inspection warnings`}" hidden></ul>
+
+<cm-inspection-popup></cm-inspection-popup>
+
 <div class="face-front">
     <sl-details summary="${L`Fields`}" open>
         <cm-face-form data-face-id="front"></cm-face-form>

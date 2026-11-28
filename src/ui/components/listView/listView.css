@@ -50,7 +50,7 @@ body.column-resizing * {
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #111;
+    background-color: var(--card-list-header-surface, #111);
     border-bottom: 1px solid var(--sl-color-neutral-200);
 }
 

@@ -114,6 +114,9 @@ export async function saveCard(editorCard, projectCard) {
     log('state').debug('save card');
     for (const key of getFaceKeys(editorCard))
         projectCard[key] = await saveFace(editorCard[key], projectCard[key]);
+    const ignored = editorCard.ignoredInspections;
+    if (ignored?.length) projectCard.ignoredInspections = ignored;
+    if (ignored?.length === 0) delete projectCard.ignoredInspections;
     await projectCard.save();
     changed(window.activeProject, 'cards');
 }

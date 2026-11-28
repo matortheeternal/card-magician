@@ -41,3 +41,67 @@ sl-details[open]::part(header) {
 sl-details::part(header) {
     padding: var(--sl-spacing-small);
 }
+
+cm-card-form {
+    .inspection-highlight {
+        background-color: color-mix(in srgb, var(--sl-color-yellow-400) 35%, transparent);
+    }
+
+    .codejar-editor.inspection-warning,
+    sl-input.inspection-warning::part(base) {
+        border-color: var(--sl-color-yellow-500);
+    }
+
+    sl-input.inspection-warning sl-icon-button {
+        color: var(--sl-color-yellow-600);
+    }
+
+}
+
+cm-inspection-popup {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: min(26rem, calc(100vw - 1rem));
+    max-height: min(28rem, calc(100vh - 1rem));
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--sl-color-neutral-300);
+    background: var(--sl-color-neutral-50);
+    color: var(--sl-color-neutral-900);
+    box-shadow: var(--sl-shadow-large);
+    font-size: var(--sl-font-size-small);
+    overflow-wrap: anywhere;
+
+    section > div {
+        padding: var(--sl-spacing-small);
+    }
+
+    section + section {
+        border-top: 1px solid var(--sl-color-neutral-300);
+    }
+
+    p {
+        margin: var(--sl-spacing-2x-small) 0 0;
+    }
+
+    footer {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        column-gap: var(--sl-spacing-large);
+        padding: var(--sl-spacing-2x-small) var(--sl-spacing-small);
+        background: var(--sl-color-neutral-0);
+    }
+
+    sl-button::part(base) {
+        min-height: 0;
+        line-height: var(--sl-line-height-normal);
+    }
+
+    sl-button::part(label) {
+        padding: 0;
+    }
+}

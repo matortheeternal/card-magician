@@ -1,3 +1,4 @@
+import rulesRange from '../rulesRange.js';
 import CardInspection from '../CardInspection.js';
 import { TEMPLATING } from '../categories.js';
 import { hasRulesText } from '../faceTraits.js';
@@ -16,12 +17,13 @@ export default class UnrecognizedText extends CardInspection {
         });
     }
 
-    findingFor(face, card) {
-        if (!hasRulesText(face)) return null;
+    findingsFor(face, card) {
+        if (!hasRulesText(face)) return [];
         const parsed = parsedRules(face, card);
-        const [range] = unrecognizedRanges(parsed);
-        if (!range) return null;
-        const text = parsed.locator.source.slice(range.start, range.end);
-        return L`Unrecognized text: “${text}”`;
+        const { source } = parsed.locator;
+        return unrecognizedRanges(parsed).map(range => ({
+            message: source.slice(range.start, range.end),
+            location: rulesRange(range, 'underline')
+        }));
     }
 }

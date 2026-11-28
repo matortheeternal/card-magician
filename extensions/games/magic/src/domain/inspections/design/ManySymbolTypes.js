@@ -11,6 +11,7 @@ export default class ManySymbolTypes extends CardInspection {
         super({
             id: 'many-mana-symbol-types',
             title: L`Too many kinds of mana symbols`,
+            field: 'manaCost',
             category: DESIGN,
             group: MANA_COSTS,
             description: DESCRIPTION

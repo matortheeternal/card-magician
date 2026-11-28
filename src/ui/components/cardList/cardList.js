@@ -1,3 +1,4 @@
+import './ProjectInspections.js';
 import ReactiveComponent from '../ReactiveComponent.js';
 import html from './cardList.html.js';
 import {
@@ -14,11 +15,13 @@ import * as history from '../../systems/historySystem.js';
 import { flushPendingCardSaves } from '../../systems/cardEditingSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
 
+const L = localize('card-list');
 const report = createReporter({ unit: 'CardList' });
 
 export default class CardList extends ReactiveComponent {
     selectionUpdate = Promise.resolve();
     #selectionRequest;
+    #problemsPosition = 70;
 
     connectedCallback() {
         this.render();
@@ -39,7 +42,8 @@ export default class CardList extends ReactiveComponent {
         this.handleEvents('click', {
             buildFilter: () => openModal('cm-build-filter-modal'),
             addCard: () => this.addCard(),
-            openProject: () => openProject()
+            openProject: () => openProject(),
+            toggleProblems: () => this.setProblemsOpen(this.problems.hidden)
         });
         this.handleEvents('keydown', {
             filterInputKeyDown: this.filterInputKeyDown
@@ -79,6 +83,31 @@ export default class CardList extends ReactiveComponent {
         return this.querySelector('.status-bar');
     }
 
+    get problemsSplit() {
+        return this.querySelector('.problems-split');
+    }
+
+    get problems() {
+        return this.querySelector('cm-project-inspections');
+    }
+
+    get problemsToggle() {
+        return this.statusBar.querySelector('sl-icon-button');
+    }
+
+    setProblemsOpen(open) {
+        const split = this.problemsSplit;
+        if (!open && !this.problems.hidden) this.#problemsPosition = split.position;
+        const restoreFocus = !open && this.problems.contains(document.activeElement);
+        if (!open) this.problems.inspectionPopup.close();
+        this.problems.hidden = !open;
+        split.disabled = !open;
+        split.position = open ? this.#problemsPosition : 100;
+        this.problemsToggle.setAttribute('aria-expanded', String(open));
+        this.problemsToggle.label = open ? L`Hide Problems` : L`Show Problems`;
+        if (restoreFocus) this.problemsToggle.focus();
+    }
+
     get noContentPrompt() {
         return this.querySelector('.no-content-prompt');
     }
@@ -103,6 +132,9 @@ export default class CardList extends ReactiveComponent {
         const hasCards = Boolean(project.cards?.length);
         toggleDisplay(hasCards, this.listView, this.noContentPrompt);
         toggleDisplay(hasCards, this.statusBar, this.noContentPrompt);
+        const canShowProblems = Boolean(hasCards && window.activeGame?.cardInspector);
+        this.problemsToggle.hidden = !canShowProblems;
+        if (!canShowProblems) this.setProblemsOpen(false);
         this.updateStatus();
     }
 
@@ -171,10 +203,10 @@ export default class CardList extends ReactiveComponent {
         const secondaryStatus = this.listView.selection.length
             ? `${this.listView.selection.length} selected`
             : '';
-        this.statusBar.innerHTML = (
-            `<div>${primaryStatus}</div>
-             <div>${secondaryStatus}</div>`
-        );
+        const status = this.statusBar.querySelector('.card-list-status');
+        status.textContent = primaryStatus;
+        const selection = this.statusBar.querySelector('.card-list-selection');
+        selection.textContent = secondaryStatus;
     }
 
     filterInputKeyDown(event) {

@@ -10,6 +10,8 @@ export default class MissingLoyalty extends CardInspection {
         super({
             id: 'missing-loyalty',
             title: L`Planeswalkers without loyalty`,
+            field: 'loyalty',
+            resolution: L`Focus the loyalty field`,
             category: COMPLETENESS,
             description: L`Planeswalkers missing starting loyalty.`
         });

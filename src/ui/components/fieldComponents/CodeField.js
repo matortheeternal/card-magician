@@ -1,3 +1,5 @@
+import { hasInspectionRange, markInspectionRanges } from './inspectionRanges.js';
+import { markInspectionTarget } from './inspectionTargets.js';
 import FieldComponent from './FieldComponent.js';
 import { CodeJar } from 'codejar';
 import hljs from 'highlight.js/lib/core';
@@ -26,6 +28,10 @@ function fixYAML(editor) {
 export default class CodeField extends FieldComponent {
     static tagName = 'cm-code';
     jar = null;
+    #inspectionText;
+    #inspectionKey;
+    #inspectionRanges = [];
+    #fieldWarnings = [];
 
     static matches(field) {
         return field.type === 'code';
@@ -34,6 +40,40 @@ export default class CodeField extends FieldComponent {
     get rulesAssistance() {
         if (this.field.id !== 'rulesText' || this.field.syntax !== 'mtg') return null;
         return window.activeGame?.oracleAssistance;
+    }
+
+    get usesCardInspections() {
+        return window.activeGame?.cardInspector && this.closest('cm-card-form');
+    }
+
+    setInspectionFindings(findings) {
+        const text = this.value ?? '';
+        const marks = findings.map(({ label, location, key }) => [label, location, key]);
+        const key = JSON.stringify(marks);
+        if (key === this.#inspectionKey && text === this.#inspectionText) return;
+        this.#inspectionText = text;
+        this.#inspectionKey = key;
+        this.#inspectionRanges = findings.filter(hasInspectionRange);
+        this.#fieldWarnings = findings.filter(finding => !hasInspectionRange(finding));
+        this.refreshHighlighting();
+    }
+
+    markInspections(editor, code) {
+        const current = code === this.#inspectionText;
+        const warnings = current ? this.#fieldWarnings : [];
+        editor.classList.toggle('inspection-warning', warnings.length > 0);
+        markInspectionTarget(editor, warnings);
+        if (current) markInspectionRanges(editor, this.#inspectionRanges);
+    }
+
+    inspectionsAtCaret() {
+        if (this.editor.textContent !== this.#inspectionText) return [];
+        const selection = window.getSelection();
+        if (!this.editor.contains(selection?.focusNode)) return this.#fieldWarnings;
+        const { end } = this.jar.save();
+        const marks = this.#inspectionRanges.filter(({ location }) =>
+            location.start <= end && location.end >= end);
+        return [...marks, ...this.#fieldWarnings];
     }
 
     get editor() {
@@ -47,6 +87,7 @@ export default class CodeField extends FieldComponent {
             const code = editor.textContent;
             editor.innerHTML = hljs.highlight(code, { language: syntaxKey }).value;
             if (syntaxKey === 'yaml') fixYAML(editor);
+            if (this.usesCardInspections) return this.markInspections(editor, code);
             if (window.activeGame?.config?.get('highlightUnrecognizedRules'))
                 this.rulesAssistance?.highlightRules(editor, this.model);
         };
@@ -62,7 +103,7 @@ export default class CodeField extends FieldComponent {
         this.jar.onUpdate(code => this.onChange(code));
         const assistance = this.rulesAssistance;
         const config = window.activeGame?.config;
-        if (!assistance || !config) return;
+        if (!assistance || !config || this.usesCardInspections) return;
         const refresh = () => this.refreshHighlighting();
         this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules', refresh);
         const { definitionFields } = assistance;

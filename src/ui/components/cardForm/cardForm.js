@@ -1,3 +1,8 @@
+import presentInspections, {
+    describeFindings
+} from './cardInspectionPresentation.js';
+import bindInspectionInteractions from './inspectionInteractions.js';
+import './InspectionPopup.js';
 import { registerPendingSave } from '../../../lifecycle.js';
 import html from './cardForm.html.js';
 import {
@@ -22,9 +27,12 @@ const report = createReporter({
 const SMOKE_TESTING = appEnvironment.args.includes('--run-smoke-tests');
 const DEBOUNCE_TIME = SMOKE_TESTING ? 30 : 1000;
 
+const INSPECTION_DELAY = SMOKE_TESTING ? 30 : 250;
+
 class CardForm extends ReactiveComponent {
     #editorCard;
     #editVersion = 0;
+    #inspectionTimer;
 
     constructor() {
         super();
@@ -84,6 +92,8 @@ class CardForm extends ReactiveComponent {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
+        clearTimeout(this.#inspectionTimer);
         this.unregisterExitSave?.();
     }
 
@@ -111,6 +121,7 @@ class CardForm extends ReactiveComponent {
             const faceForm = activeFaceElement.querySelector('cm-face-form');
             faceForm.focusNameField();
         });
+        bindInspectionInteractions(this);
         registerAction('cancel-card-save', () => this.save.cancel());
         this.handleEvents('click', {
             toggleFront: () => this.toggleFace('front'),
@@ -140,6 +151,66 @@ class CardForm extends ReactiveComponent {
             const faceId = faceForm.dataset.faceId;
             faceForm.face = this.editorCard[faceId];
         });
+        this.bindInspections();
+    }
+
+    get inspectionPopup() {
+        return this.querySelector('cm-inspection-popup');
+    }
+
+    get inspectionSummary() {
+        return this.querySelector('.inspection-summary');
+    }
+
+    get inspectionFields() {
+        return this.querySelectorAll('form-field');
+    }
+
+    bindInspections() {
+        clearTimeout(this.#inspectionTimer);
+        if (!this.editorCard || !window.activeGame?.cardInspector) return;
+        const refresh = () => this.scheduleInspections();
+        const { config, oracleAssistance } = window.activeGame;
+        this.watch('inspection-config', config, 'highlightUnrecognizedRules', refresh);
+        const projectFields = [
+            ...oracleAssistance.definitionFields, 'inspectionOverrides', 'illustrator'
+        ];
+        this.watch('inspection-project', window.activeProject, projectFields, refresh);
+        for (const faceId of ['front', 'back']) {
+            const face = this.editorCard[faceId];
+            this.watch(`inspection-${faceId}`, face, null, refresh);
+        }
+        refresh();
+    }
+
+    scheduleInspections() {
+        clearTimeout(this.#inspectionTimer);
+        const refresh = () => this.refreshInspections();
+        this.#inspectionTimer = setTimeout(refresh, INSPECTION_DELAY);
+    }
+
+    refreshInspections() {
+        clearTimeout(this.#inspectionTimer);
+        const game = window.activeGame;
+        const project = window.activeProject;
+        const card = this.editorCard;
+        if (!game?.cardInspector || !project || !card || !this.isConnected) return;
+        try {
+            const showUnrecognized = game.config.get('highlightUnrecognizedRules');
+            const findings = game.cardInspector.inspect(card, project, true);
+            const described = describeFindings(findings, game.inspections);
+            const visible = described.filter(item =>
+                !item.ignored
+                && (showUnrecognized || item.location?.style !== 'underline'));
+            this.inspectionPopup.close();
+            presentInspections(visible, this.inspectionFields, this.inspectionSummary);
+            this.emit('card-inspections-updated', {
+                project, card: card.baseCard, findings: described
+            });
+            return described;
+        } catch (error) {
+            report('inspect', error, [this.editorCard]);
+        }
     }
 
     get faceForms() {
@@ -184,6 +255,7 @@ class CardForm extends ReactiveComponent {
     }
 
     showFace(faceId) {
+        this.inspectionPopup?.close();
         const frontSection = this.querySelector(`div.face-front`);
         const backSection = this.querySelector(`div.face-back`);
         toggleDisplay(faceId === 'front', frontSection, backSection);

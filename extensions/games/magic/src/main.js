@@ -3,6 +3,7 @@ import * as textStructures from './domain/cardTraits/textStructures.js';
 import './ui/editSetSymbol/editSetSymbol.css';
 import { renderSetSymbol } from './domain/setSymbol/renderSetSymbol.js';
 import * as ManaScribe from 'mana-scribe';
+import CardInspector from './domain/inspections/CardInspector.js';
 import pieInspections from './domain/inspections/pieInspections.js';
 import { CARD_INSPECTIONS } from './domain/inspections/cardInspections.js';
 import Magic from '@sigil-sifter/magic';
@@ -56,6 +57,7 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.symbols = new MagicSymbols(this);
         this.textStructures = textStructures;
         this.oracleAssistance = new OracleAssistance();
+        this.cardInspector = new CardInspector();
         this.tagRelationships = {
             canonicalTag, effectiveTags, equivalentTags, inheritedTagSources, specificTags
         };

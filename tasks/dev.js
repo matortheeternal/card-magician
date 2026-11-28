@@ -1,6 +1,11 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import { build } from './build.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
+
+const run = promisify(execFile);
+const buildScript = fileURLToPath(new URL('./build.js', import.meta.url));
 
 let building = false;
 
@@ -25,12 +30,14 @@ async function handleRebuild() {
     console.log('start build');
     const start = Date.now();
     try {
-        await build({ minify: false });
+        const { stdout, stderr } = await run(process.execPath, [buildScript]);
+        if (stdout) process.stdout.write(stdout);
+        if (stderr) process.stderr.write(stderr);
         console.log(`build completed (${Date.now() - start}ms)`);
         return { reload: true };
-    } catch(error) {
+    } catch (error) {
         console.log(`build failed (${Date.now() - start}ms)`);
-        return { error: error.stack || String(error) };
+        return { error: error.stderr || error.stack || String(error) };
     } finally {
         building = false;
     }
@@ -73,7 +80,8 @@ server.on('connection', ws => {
 
 chokidar
     .watch(['src', 'extensions/games/magic/src', 'extensions/templates',
-            'extensions/cardparts', 'extensions/exporters', 'extensions/locales'], {
+            'extensions/cardparts', 'extensions/exporters', 'extensions/locales',
+            'tasks/build.js', 'tasks/dev'], {
         ignoreInitial: true
     })
     .on('add', onFilesChange)

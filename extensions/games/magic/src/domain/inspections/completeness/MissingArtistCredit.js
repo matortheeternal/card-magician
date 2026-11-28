@@ -8,15 +8,16 @@ export default class MissingArtistCredit extends CardInspection {
     constructor() {
         super({
             id: 'missing-artist-credit',
-            title: L`Art without an artist credit`,
+            title: L`Art used without credit`,
+            field: 'illustrator',
             category: COMPLETENESS,
-            description: L`Cards with art but no illustrator on the card or the project.`
+            description: L`It is considerate to provide a source for the artwork you use.`
         });
     }
 
     findingFor(face, card, project) {
         if (!hasArt(face)) return null;
         if (!isBlank(face.illustrator) || !isBlank(project?.illustrator)) return null;
-        return L`Art has no artist credit.`;
+        return this.description;
     }
 }

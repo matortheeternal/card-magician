@@ -294,6 +294,8 @@ export default class ListView extends ReactiveComponent {
         if (index < 0) return;
         this.selection = [index];
         emit(this, 'row-selected', { row: this.activeRow });
+        const headerHeight = Math.ceil(this.thead.getBoundingClientRect().height);
+        this.style.scrollPaddingBlockStart = `${headerHeight}px`;
         this.activeRowElement.scrollIntoView({ block: 'nearest' });
     }
 

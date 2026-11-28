@@ -45,6 +45,18 @@ describe('Magic game symbols', () => {
         expect(html).toContain('>A</abbr>');
     });
 
+    it('uses individual icons for multicolor cards and one for hybrid mana', () => {
+        const paths = cost => symbols.cardColorIcons({ front: { manaCost: cost } });
+        const root = '/games/magic/assets/symbols/flat';
+        const whiteBlue = [`${root}/single/w.png`, `${root}/single/u.png`];
+        expect(paths('{U}{W}')).toEqual(whiteBlue);
+        expect(paths('{W/U}{W/U}')).toEqual([`${root}/hybrid2/wu.png`]);
+        expect(paths('{W/U}{W}')).toEqual(whiteBlue);
+        expect(paths('{2/W}')).toEqual([`${root}/hybrid2/2w.png`]);
+        expect(paths('{C/W}')).toEqual([`${root}/hybrid2/cw.png`]);
+        expect(paths('{3}')).toEqual([`${root}/single/c.png`]);
+    });
+
     it('resolves statistics icons without a cardpart dependency', () => {
         for (const color of ['w', 'u', 'b', 'r', 'g', 'c']) {
             expect(symbols.resolveColorSymbolIcon(color)).toBe(

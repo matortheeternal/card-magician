@@ -1,4 +1,6 @@
 cm-card-list {
+    --card-list-surface: #080808;
+    --card-list-header-surface: #111;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -11,7 +13,7 @@ cm-card-list {
 cm-list-view {
     overflow: auto;
     height: 100%;
-    background: #080808;
+    background: var(--card-list-surface, #080808);
 }
 
 .no-content-prompt {
@@ -76,4 +78,156 @@ cm-card-list .status-bar {
     font-size: var(--sl-font-size-small);
     font-family: var(--sl-font-sans);
     padding: var(--sl-spacing-3x-small) var(--sl-spacing-2x-small);
+}
+
+cm-card-list .problems-split {
+    flex: 1;
+    min-height: 0;
+    --max: calc(100% - 5rem);
+    --min: min(8rem, 45%);
+
+    &[disabled] {
+        --divider-width: 0px;
+        --divider-hit-area: 0px;
+        --max: 100%;
+        --min: 0px;
+    }
+
+    &::part(divider) {
+        background-color: var(--sl-color-neutral-300);
+    }
+}
+
+.card-list-region {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+
+    cm-list-view {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
+cm-card-list .status-bar {
+    align-items: center;
+    gap: var(--sl-spacing-x-small);
+
+    .card-list-status {
+        flex: 1;
+    }
+
+    sl-icon-button::part(base) {
+        color: var(--sl-color-warning-600);
+        padding: var(--sl-spacing-3x-small);
+    }
+}
+
+cm-project-inspections:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: var(--card-list-surface);
+    font-size: var(--sl-font-size-small);
+
+    header {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-x-small);
+        padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
+        border-bottom: 1px solid var(--sl-input-border-color);
+        background: var(--card-list-header-surface);
+
+        sl-icon-button::part(base) {
+            padding: var(--sl-spacing-3x-small);
+        }
+    }
+
+    output {
+        flex: 1;
+        color: var(--sl-color-neutral-600);
+    }
+
+    .problem-results {
+        overflow: auto;
+        flex: 1;
+        min-height: 0;
+        padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
+    }
+
+    sl-tree {
+        --indent-size: calc(var(--sl-spacing-small) + var(--sl-spacing-3x-small));
+        --indent-guide-width: 1px;
+        --indent-guide-color: var(--sl-color-neutral-200);
+    }
+
+    sl-tree-item::part(expand-button) {
+        width: var(--sl-spacing-x-small);
+        height: var(--sl-spacing-x-small);
+        padding: var(--sl-spacing-2x-small);
+        font-size: var(--sl-font-size-2x-small);
+    }
+
+    sl-tree-item::part(item) {
+        padding-block: calc(var(--sl-spacing-3x-small) / 2);
+    }
+
+    sl-tree-item::part(label) {
+        flex: 1;
+        min-width: 0;
+        padding-inline-end: var(--sl-spacing-x-small);
+        font-size: var(--sl-font-size-x-small);
+        line-height: var(--sl-line-height-dense);
+    }
+
+    sl-tree-item > span {
+        flex: 1;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    .problem-branch-label {
+        font-weight: var(--sl-font-weight-bold);
+
+        .text-muted {
+            font-weight: var(--sl-font-weight-normal);
+        }
+    }
+
+    sl-tree-item[data-section]::part(label) {
+        font-weight: var(--sl-font-weight-bold);
+    }
+
+    .problem-card::part(label) {
+        gap: var(--sl-spacing-3x-small);
+        color: var(--sl-color-neutral-900);
+    }
+
+    .problem-card > img {
+        height: 1em;
+        width: auto;
+        flex: none;
+    }
+
+    .problem-card > img:last-of-type {
+        margin-inline-end: var(--sl-spacing-2x-small);
+    }
+
+    :is(.problem-type, .problem-card, .problem-finding)::part(label) {
+        cursor: pointer;
+    }
+
+    .problem-finding::part(item) {
+        color: var(--sl-color-neutral-700);
+    }
+
+    .problem-finding:hover::part(item),
+    .problem-finding[selected]::part(item) {
+        background: var(--sl-color-neutral-100);
+        color: var(--sl-color-neutral-900);
+    }
 }

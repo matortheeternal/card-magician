@@ -10,14 +10,19 @@ export default class MissingCreatureStats extends CardInspection {
         super({
             id: 'missing-creature-stats',
             title: L`Creatures without power and toughness`,
+            resolution: L`Focus the missing field`,
             category: COMPLETENESS,
             description: L`Creatures and Vehicles missing power or toughness.`
         });
     }
 
-    findingFor(face) {
-        if (!isCreature(face) && !isVehicle(face)) return null;
-        if (!isBlank(face.power) && !isBlank(face.toughness)) return null;
-        return L`Power or toughness is missing.`;
+    findingsFor(face) {
+        if (!isCreature(face) && !isVehicle(face)) return [];
+        return ['power', 'toughness'].filter(field => isBlank(face[field]))
+            .map(field => ({
+                message: L`Power or toughness is missing.`,
+                location: { field },
+                resolution: { type: 'focus', label: this.resolution }
+            }));
     }
 }

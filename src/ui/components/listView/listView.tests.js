@@ -34,8 +34,22 @@ describe('ListView selection', () => {
         expect(selected()).toEqual([cards[2]]);
         expect(events.at(-1).original).toBe(cards[2]);
         expect(destination.scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+        const headerHeight = Math.ceil(list.thead.getBoundingClientRect().height);
+        expect(list.style.scrollPaddingBlockStart).toBe(`${headerHeight}px`);
         list.moveSelection(-1);
         expect(selected()).toEqual([cards[1]]);
+    });
+
+    it('reveals an upward destination below the sticky header', () => {
+        list.rows = Array.from({ length: 12 }, (_, index) => ({ name: String(index) }));
+        Object.assign(list.style, { display: 'block', height: '64px', overflow: 'auto' });
+        Object.assign(list.thead.style, { position: 'sticky', top: '0', height: '24px' });
+        list.scrollTop = list.scrollHeight;
+        const first = list.activeRows[0];
+        list.revealRow(first.original);
+        const row = list.activeRowElement.getBoundingClientRect();
+        const header = list.thead.getBoundingClientRect();
+        expect(row.top).toBeGreaterThanOrEqual(header.bottom - 1);
     });
 
     it('does not wrap or emit selection events at either boundary', () => {

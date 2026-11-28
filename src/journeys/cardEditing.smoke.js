@@ -147,8 +147,9 @@ describe('Card editing', () => {
            await cmTest.closeSettings();
 
            expect(editor.textContent).toBe(rulesText);
-           expect(marks().map(mark => mark.textContent).join(''))
-               .toBe('Invent {2} moonsInvent {2} moons');
+           await cmTest.eventually(() =>
+               marks().map(mark => mark.textContent).join('')
+               === 'Invent {2} moonsInvent {2} moons');
            expect(editor.querySelectorAll('.hljs-symbol .hljs-unrecognized').length)
                .toBe(2);
            expect(getComputedStyle(marks()[0]).textDecorationStyle).toBe('wavy');
@@ -213,6 +214,224 @@ describe('Card editing', () => {
            expect(tags.fieldElement.suggestions).toEqual([]);
        });
 
+    it('opens an interactive warning for rules text and mana cost', async () => {
+        await createCard();
+        await setCardFields({
+            manaCost: '{W/U}{B/R}',
+            rulesText: 'When this enters the battlefield, draw a card.'
+        });
+        const rules = new FieldInteractor('rulesText', { faceKey: 'front' });
+        const mana = new FieldInteractor('manaCost', { faceKey: 'front' });
+        const wording = () =>
+            rules.fieldElement.editor.querySelector('.inspection-highlight');
+        const warning = () => mana.fieldElement.inspectionButton;
+        const popup = document.querySelector('cm-card-form cm-inspection-popup');
+        const highlighted = await cmTest.eventually(wording);
+        const background = getComputedStyle(highlighted).backgroundColor;
+        expect(background).not.toBe('rgba(0, 0, 0, 0)');
+        await cmTest.click(await cmTest.eventually(warning));
+        expect(popup.textContent).toContain('different hybrid symbols');
+        popup.close();
+
+        highlighted.dispatchEvent(new PointerEvent('pointerover', {
+            bubbles: true, clientX: window.innerWidth - 1, clientY: window.innerHeight - 1
+        }));
+        expect(popup.matches(':popover-open')).toBeTrue();
+        expect(getComputedStyle(popup).fontFamily)
+            .toBe(getComputedStyle(document.body).fontFamily);
+        expect(popup.textContent).toContain('is now written');
+        const fix = popup.querySelector('sl-button');
+        await fix.updateComplete;
+        await cmTest.eventually(() => {
+            const { left, right, top, bottom } = popup.getBoundingClientRect();
+            const anchor = highlighted.getBoundingClientRect();
+            const { clientWidth, clientHeight } = document.documentElement;
+            const below = top >= anchor.bottom;
+            const above = bottom <= anchor.top;
+            return left >= 0 && right <= clientWidth
+                && (below || above) && top >= 0 && bottom <= clientHeight;
+        });
+        const bubbledClick = jasmine.createSpy('bubbled popup click');
+        const form = popup.closest('cm-card-form');
+        form.addEventListener('click', bubbledClick);
+        await cmTest.click(fix);
+        form.removeEventListener('click', bubbledClick);
+        expect(bubbledClick).not.toHaveBeenCalled();
+        expect(rules.fieldElement.editor.textContent)
+            .toBe('When this enters, draw a card.');
+        await setCardFields({ manaCost: '{U}' });
+        await cmTest.eventually(() => !wording() && !warning());
+        await flushCard();
+    });
+
+    it('persists an ignored occurrence and restores it without hiding other matches',
+       async () => {
+           const card = await createCard();
+           const first = 'When this creature enters the battlefield, draw a card.';
+           await setCardFields({ name: 'Witness', manaCost: '{U}', rulesText: first });
+           await flushCard();
+           const rules = new FieldInteractor('rulesText', { faceKey: 'front' });
+           const mark = () =>
+               rules.fieldElement.editor.querySelector('.inspection-highlight');
+           const popup = document.querySelector('cm-card-form cm-inspection-popup');
+           (await cmTest.eventually(mark)).dispatchEvent(new PointerEvent('pointerover', {
+               bubbles: true, clientX: 100, clientY: 100
+           }));
+           const ignore = [...popup.querySelectorAll('footer sl-button')].find(button =>
+               button.textContent === 'Ignore this occurrence');
+           await cmTest.click(ignore);
+           await cmTest.eventually(() => !mark());
+           await flushCard();
+           expect((await readCardData(card)).ignoredInspections.length).toBe(1);
+
+           const second = 'When another creature enters the battlefield, draw a card.';
+           await setCardFields({ rulesText: `${first}\n${second}` });
+           await cmTest.eventually(mark);
+           expect(document.querySelector('.ignored-inspections')).toBeNull();
+           const listToggle = document.querySelector('.status-bar sl-icon-button');
+           await cmTest.click(listToggle);
+           const panel = document.querySelector('cm-project-inspections');
+           expect(panel.resultsTree.children.length).toBe(1);
+           await cmTest.click(panel.ignoredButton);
+           const ignored = panel.resultsTree.lastElementChild;
+           const finding = await cmTest.eventually(() =>
+               ignored.querySelector('.problem-finding'));
+           expect(ignored.querySelector('.problem-branch-label').textContent)
+               .toBe('Ignored (1)');
+           expect(panel.ignoredButton.name).toBe('eye-slash');
+           const collapse = panel.querySelector('[data-click-action="collapseProblems"]');
+           await cmTest.click(collapse);
+           expect(ignored.expanded).toBeFalse();
+           const expand = panel.querySelector('[data-click-action="expandProblems"]');
+           await cmTest.click(expand);
+           expect(ignored.expanded).toBeTrue();
+           await cmTest.click(finding);
+           expect(panel.inspectionPopup.firstAction.textContent).toBe('Restore finding');
+           await cmTest.click(panel.inspectionPopup.firstAction);
+           await cmTest.eventually(() => !ignored.querySelector('.problem-finding'));
+           expect(ignored.querySelector('.text-muted').textContent).toBe('(0)');
+           await cmTest.click(panel.ignoredButton);
+           expect(panel.resultsTree.children.length).toBe(1);
+           expect(panel.ignoredButton.name).toBe('eye');
+           await cmTest.click(listToggle);
+           await flushCard();
+           expect((await readCardData(card)).ignoredInspections).toBeUndefined();
+       });
+
+    it('keeps project results open when selecting a finding', async () => {
+        const flagged = await createCard();
+        await setCardFields({
+            name: 'Flagged',
+            manaCost: '{U}',
+            rulesText: 'When this enters the battlefield, draw a card.\n'
+                + 'Create a Treasure token.'
+        });
+        await flushCard();
+        const other = await createCard();
+        expect(selectedProjectCard).toBe(other);
+        const panel = document.querySelector('cm-project-inspections');
+        const toggle = document.querySelector('.status-bar sl-icon-button');
+        const split = panel.parentElement;
+        expect(panel.hidden).toBeTrue();
+        expect(split.position).toBe(100);
+        const icon = () => toggle.shadowRoot?.querySelector('sl-icon');
+        await cmTest.eventually(() => icon()?.shadowRoot?.querySelector('svg'));
+        await cmTest.click(toggle);
+        expect(split.vertical).toBeTrue();
+        expect(split.disabled).toBeFalse();
+        await cmTest.click(panel.scanButton);
+        const result = await cmTest.eventually(() =>
+            [...panel.querySelectorAll('.problem-finding')].find(item =>
+                item.textContent.includes('enters the battlefield')));
+        const label = result.firstElementChild;
+        expect(label.hasAttribute('title')).toBeFalse();
+        const cardGroup = result.parentElement;
+        expect(cardGroup.querySelector('span').textContent).toBe('Flagged');
+        expect(cardGroup.querySelector('img').src).toContain('/single/u.png');
+        const inspection = cardGroup.parentElement;
+        expect(inspection.firstChild.textContent).toBe('“Enters the battlefield”');
+        expect(inspection.parentElement.firstChild.textContent).toBe('Outdated wording');
+        expect(inspection.parentElement.parentElement.firstChild.textContent)
+            .toBe('Templating');
+        await cmTest.click(inspection);
+        const workspace = document.querySelector('cm-settings-workspace');
+        const settings = workspace.contentContainer.firstElementChild;
+        expect(settings.tree.selectedId).toBe('wording-enters-the-battlefield');
+        await cmTest.closeSettings();
+
+        const popup = panel.inspectionPopup;
+        split.position = 30;
+        await split.updateComplete;
+        result.scrollIntoView({ block: 'start' });
+        await cmTest.click(result);
+        expect(selectedProjectCard).toBe(other);
+        expect(popup.matches(':popover-open')).toBeTrue();
+        await cmTest.eventually(() => {
+            const row = result.getBoundingClientRect();
+            const bounds = popup.getBoundingClientRect();
+            return bounds.top >= row.bottom && bounds.bottom <= window.innerHeight;
+        });
+        popup.close();
+        split.position = 85;
+        await split.updateComplete;
+        result.scrollIntoView({ block: 'end' });
+        await cmTest.click(result);
+        await cmTest.eventually(() =>
+            popup.getBoundingClientRect().bottom <= result.getBoundingClientRect().top);
+        popup.dispatchEvent(new PointerEvent('pointerleave'));
+        await new Promise(resolve => {
+            setTimeout(resolve, 250);
+        });
+        expect(popup.matches(':popover-open')).toBeTrue();
+        const scrollRegion = panel.resultsRegion;
+        scrollRegion.style.maxHeight = '24px';
+        scrollRegion.scrollTop = 0;
+        await cmTest.eventually(() => !popup.matches(':popover-open'));
+        scrollRegion.style.maxHeight = '';
+        result.scrollIntoView({ block: 'end' });
+        await cmTest.click(result);
+        expect(popup.textContent).toContain('Ignore this occurrence');
+        expect(popup.textContent).toContain('Replace with');
+        const configure = [...popup.querySelectorAll('sl-button')].find(button =>
+            button.textContent === 'Configure this inspection');
+        expect(configure.variant).toBe('text');
+        await cmTest.click(configure);
+        expect(workspace.contentContainer.firstElementChild.tree.selectedId)
+            .toBe('wording-enters-the-battlefield');
+        expect(popup.matches(':popover-open')).toBeFalse();
+        await cmTest.closeSettings();
+        await cmTest.click(cardGroup);
+        await cmTest.eventually(() => selectedProjectCard === flagged);
+        const editorPopup = document.querySelector('cm-card-form cm-inspection-popup');
+        expect(editorPopup.matches(':popover-open')).toBeFalse();
+        expect(panel.hidden).toBeFalse();
+        const token = await cmTest.eventually(() =>
+            [...document.querySelectorAll('cm-code .inspection-highlight')]
+                .find(mark => mark.textContent === 'Treasure'));
+        expect(token.textContent).toBe('Treasure');
+        expect(inspection.querySelector('.problem-card')).toBe(cardGroup);
+        expect(cardGroup.selected).toBeTrue();
+        const header = panel.querySelector('header');
+        expect(getComputedStyle(header).borderBottomWidth).toBe('1px');
+        const results = panel.querySelector('.problem-results');
+        expect(getComputedStyle(results).overflowY).toBe('auto');
+        await selectCard(other);
+        const currentResult = inspection.querySelector('.problem-finding');
+        await cmTest.click(currentResult);
+        await cmTest.click(popup.firstAction);
+        await cmTest.eventually(() =>
+            selectedProjectCard === flagged
+            && activeEditorCard.front.rulesText.startsWith('When this enters,'));
+        await flushCard();
+        split.position = 55;
+        await cmTest.click(panel.querySelector('[data-click-action="toggleProblems"]'));
+        expect(panel.hidden).toBeTrue();
+        expect(split.position).toBe(100);
+        await cmTest.click(toggle);
+        expect(split.position).toBe(55);
+        await cmTest.click(toggle);
+    });
+
     it('autodetects grouped reminders and saves mechanic editing and color affinity',
        async () => {
            await createCard();
@@ -228,7 +447,8 @@ describe('Card editing', () => {
            await flushCard();
            const rules = new FieldInteractor('rulesText', { faceKey: 'front' });
            const editor = rules.fieldElement.editor;
-           expect(editor.querySelectorAll('.hljs-unrecognized').length).toBe(3);
+           await cmTest.eventually(() =>
+               editor.querySelectorAll('.hljs-unrecognized').length === 3);
 
            const workspace = await cmTest.openSettings();
            const settings = await selectSettingsTab(workspace, 'cm-mechanic-settings');
@@ -240,7 +460,8 @@ describe('Card editing', () => {
            expect(settings.list.activeRow.data.type).toBe('Keyword ability');
            const kind = settings.querySelector('form-field[field-id="kind"] sl-select');
            await expectTypeMenuAligned(kind);
-           expect(editor.querySelectorAll('.hljs-unrecognized').length).toBe(1);
+           await cmTest.eventually(() =>
+               editor.querySelectorAll('.hljs-unrecognized').length === 1);
            const reminders = settings.querySelector('cm-reminder-texts');
            const reminderTexts = () => [...reminders.list.children]
                .map(row => row.querySelector(':scope > p').textContent);
@@ -309,8 +530,9 @@ describe('Card editing', () => {
            field('name').inputValue('Glimmer');
            await cmTest.eventually(() => activeProject.customKeywordActions.length);
            const currentRules = new FieldInteractor('rulesText', { faceKey: 'front' });
-           expect(currentRules.fieldElement.editor.querySelector('.hljs-unrecognized'))
-               .toBeNull();
+           const currentEditor = currentRules.fieldElement.editor;
+           await cmTest.eventually(() =>
+               !currentEditor.querySelector('.hljs-unrecognized'));
            expect(settings.list.activeRow.data.type).toBe('Keyword action');
            await cmTest.closeSettings();
 

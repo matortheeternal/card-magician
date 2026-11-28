@@ -9,6 +9,7 @@ export default class MultiColorPhyrexian extends CardInspection {
         super({
             id: 'multicolor-phyrexian',
             title: L`Phyrexian mana in several colors`,
+            field: 'manaCost',
             category: DESIGN,
             group: MANA_COSTS,
             description: L`Mana costs with Phyrexian symbols of two or more colors.`

@@ -10,6 +10,7 @@ export default class MissingRulesText extends CardInspection {
         super({
             id: 'missing-rules-text',
             title: L`Cards without rules text`,
+            field: 'rulesText',
             category: COMPLETENESS,
             description: L`Noncreature, nonland cards with no rules text.`
         });

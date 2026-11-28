@@ -1,4 +1,5 @@
 import { useGame } from '../../../../../../src/shared/testing/gameFixture.js';
+import CardInspector from './CardInspector.js';
 import { CARD_INSPECTIONS } from './cardInspections.js';
 import InspectionOverrides from './InspectionOverrides.js';
 
@@ -35,6 +36,58 @@ function cost(manaCost) {
 
 describe('Card inspections', () => {
     useGame('magic');
+
+    it('inspects only the edited card and locates findings in its fields', () => {
+        const saved = card(rules('Flying', { name: 'Old name' }));
+        const peer = card(rules('Draw a card.'));
+        const edited = card(rules('When this enters the battlefield, draw a card.', {
+            manaCost: '{W/U}{B/R}'
+        }));
+        edited.baseCard = saved;
+        const project = { cards: [saved, peer] };
+        const parse = spyOn(activeGame.oracleAssistance, 'parse').and.callThrough();
+        const result = new CardInspector().inspect(edited, project, true);
+        expect(parse).toHaveBeenCalled();
+        expect(parse.calls.allArgs().every(([face]) => face === edited.front)).toBeTrue();
+        expect(result.every(finding => finding.card === edited)).toBeTrue();
+        const locations = new Map(result.map(item => [item.inspectionId, item.location]));
+        expect(locations.get('mixed-hybrid-pips')).toEqual({ field: 'manaCost' });
+        expect(locations.get('duplicate-names')).toEqual({ field: 'name' });
+        const wording = locations.get('wording-enters-the-battlefield');
+        expect(edited.front.rulesText.slice(wording.start, wording.end))
+            .toBe('enters the battlefield');
+    });
+
+    it('honors color pie overrides on the inspected face', () => {
+        const front = creature({ manaCost: '{R}' });
+        const back = rules('Destroy target creature.', { manaCost: '{U}' });
+        const target = card(front, back);
+        const inspector = new CardInspector();
+        const project = {};
+        const flags = () => inspector.inspect(target, project, true)
+            .filter(item => item.inspectionId === 'destroy-creature');
+        expect(flags()).toEqual([jasmine.objectContaining({
+            face: back,
+            location: jasmine.objectContaining({ start: 0, field: 'rulesText' })
+        })]);
+        project.inspectionOverrides = { 'destroy-creature': { disabled: true } };
+        expect(flags()).toEqual([]);
+    });
+
+    it('describes pie bends and breaks using color names', () => {
+        const inspectionId = 'destroy-creature';
+        const inspector = new CardInspector();
+        const inspect = (manaCost, tiers) => {
+            const target = card(rules('Destroy target creature.', { manaCost }));
+            const project = { inspectionOverrides: { [inspectionId]: { tiers } } };
+            return inspector.inspect(target, project, true)
+                .find(item => item.inspectionId === inspectionId)?.message;
+        };
+        expect(inspect('{B}', { B: 'none' })).toBe('Pie break in black.');
+        expect(inspect('{U}{R}', { U: 'none', R: 'none' }))
+            .toBe('Pie break in blue and red.');
+        expect(inspect('{U}', { U: 'tertiary' })).toBe('Pie bend in blue.');
+    });
 
     it('have unique ids and a category', () => {
         const ids = CARD_INSPECTIONS.map(inspection => inspection.id);
@@ -100,6 +153,8 @@ describe('Card inspections', () => {
     });
 
     it('check reminder text against keyword familiarity', () => {
+        const [ward] = findings('missing-reminder-text', [card(rules('Ward {2}'))]);
+        expect(ward.message).toBe('Ward is missing reminder text.');
         expect(flagged('missing-reminder-text', rules('Prowess'))).toBeTrue();
         expect(flagged('missing-reminder-text', rules('Flying'))).toBeFalse();
         const rare = rules('Prowess', { rarity: 'rare' });
@@ -146,6 +201,43 @@ describe('Card inspections', () => {
         expect(result.map(finding => finding.card)).toEqual(cards.slice(0, 2));
     });
 
+    it('matches custom tokens by name on either face in both scan paths', () => {
+        const maker = card(rules('Create X Morsel tokens.'));
+        const token = card(creature(), {
+            name: 'morsel', superType: 'Artifact', template: 'magic/M20/Token'
+        });
+        const project = { cards: [maker, token] };
+        const inspection = inspectionById('missing-token-cards');
+        expect(inspection.inspectCard(maker, project)).toEqual([]);
+        const context = inspection.projectContext(project.cards);
+        expect(inspection.inspectCard(maker, project, context)).toEqual([]);
+        const [missing] = inspection.inspect([maker]);
+        const { start, end } = missing.location;
+        expect(maker.front.rulesText.slice(start, end)).toBe('Morsel');
+    });
+
+    it('does not treat words in granted token abilities as token names', () => {
+        const maker = card(rules(
+            'Create a 1/1 red Punk creature token with “This token attacks each combat.”'
+        ));
+        const token = card({ name: 'Punk', superType: 'Token Creature' });
+        expect(findings('missing-token-cards', [maker, token])).toEqual([]);
+        expect(findings('missing-token-cards', [maker]).map(item => item.evidence))
+            .toEqual(['Punk']);
+    });
+
+    it('matches an explicitly named custom token with quoted abilities', () => {
+        const maker = card(rules(
+            'Create a 1/1 red creature token named “Alley Punk”'
+            + ' with “This token can’t block.”'
+        ));
+        const token = card({ name: 'Alley Punk', superType: 'Token Creature' });
+        expect(findings('missing-token-cards', [maker, token])).toEqual([]);
+        const [missing] = findings('missing-token-cards', [maker]);
+        const { start, end } = missing.location;
+        expect(maker.front.rulesText.slice(start, end)).toBe('Alley Punk');
+    });
+
     it('flag created tokens without a token card', () => {
         const maker = card(rules('When this creature enters, create a 1/1 white '
             + 'Spirit creature token with flying and a Treasure token.'));
@@ -157,6 +249,10 @@ describe('Card inspections', () => {
         expect(messages([maker]).length).toBe(2);
         const treasure = jasmine.stringContaining('Treasure');
         expect(messages([maker, spirit])).toEqual([treasure]);
+        const text = maker.front.rulesText;
+        const locations = findings('missing-token-cards', [maker])
+            .map(({ location }) => text.slice(location.start, location.end));
+        expect(locations).toEqual(['Spirit', 'Treasure']);
     });
 });
 

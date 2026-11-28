@@ -14,8 +14,19 @@ export default class CardInspection extends Inspection {
     }
 
     collect(findings, card, face, project) {
+        const matches = this.findingsFor(face, card, project);
+        for (const { message, location, resolution } of matches) {
+            findings.push(new InspectionFinding(
+                this.id, card, face, message, location, resolution
+            ));
+        }
+    }
+
+    findingsFor(face, card, project) {
         const message = this.findingFor(face, card, project);
-        if (message) findings.push(new InspectionFinding(this.id, card, face, message));
+        const location = this.field ? { field: this.field } : null;
+        const resolution = this.resolution && { label: this.resolution, type: 'focus' };
+        return message ? [{ message, location, resolution }] : [];
     }
 
     findingFor() {

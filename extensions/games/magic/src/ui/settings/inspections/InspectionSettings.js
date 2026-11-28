@@ -85,6 +85,15 @@ export default class InspectionSettings extends CardMagicianSettings {
         this.showSelected();
     }
 
+    selectInspection(id) {
+        this.tree.filter.value = '';
+        this.tree.selectedId = id;
+        this.tree.filterChanged();
+        const selected = this.tree.leafItems;
+        const item = [...selected].find(leaf => leaf.dataset.inspectionId === id);
+        item?.scrollIntoView({ block: 'nearest' });
+    }
+
     showSelected() {
         const inspection = this.selectedInspection;
         if (inspection) return this.renderDetail(inspection);
@@ -123,6 +132,7 @@ export default class InspectionSettings extends CardMagicianSettings {
 
     saveChange(change) {
         change();
+        changed(activeProject, 'inspectionOverrides');
         this.resetButton.disabled = !this.overrides.has(this.tree.selectedId);
         this.emit('project-changed');
     }
@@ -131,6 +141,10 @@ export default class InspectionSettings extends CardMagicianSettings {
         this.detail.replaceChildren(this.heading(inspection));
         if (inspection.description)
             this.detail.append(element('p', inspection.description));
+        if (inspection.resolution) {
+            const resolution = L`Available resolution: ${inspection.resolution}`;
+            this.detail.append(element('p', resolution));
+        }
         if (inspection.tiers) this.renderTiers(inspection);
         if (inspection.conditions?.length) this.renderExceptions(inspection);
         if (inspection.example) this.renderExamples(inspection);

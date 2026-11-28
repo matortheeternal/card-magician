@@ -2,7 +2,8 @@ import { Query } from 'oracle-of-pie';
 import CardInspection from '../CardInspection.js';
 import { DESIGN, MANA_COSTS } from '../categories.js';
 import { hasRulesText } from '../faceTraits.js';
-import parsedRules from '../parsedRules.js';
+import locatedAbilities from '../locatedAbilities.js';
+import rulesRange from '../rulesRange.js';
 import { costColors } from './manaSymbols.js';
 import { isLand } from '../../cardTraits/cardTypes.js';
 
@@ -39,14 +40,17 @@ export default class OffColorActivation extends CardInspection {
         });
     }
 
-    findingFor(face, card) {
-        if (isLand(face) || !hasRulesText(face)) return null;
+    findingsFor(face, card) {
+        if (isLand(face) || !hasRulesText(face)) return [];
         const colors = cardColors(face);
-        const abilities = parsedRules(face, card).text.abilities
-            .filter(ability => ACTIVATED_ABILITY.test(ability));
-        const symbols = abilities.flatMap(costSymbols);
-        const symbol = symbols.find(item => isOffColor(item, colors));
-        if (!symbol) return null;
-        return L`Activation cost uses {${symbol.raw}} outside this card's colors.`;
+        const findings = [];
+        for (const { ability, range } of locatedAbilities(face, card)) {
+            if (!ACTIVATED_ABILITY.test(ability)) continue;
+            const symbol = costSymbols(ability).find(item => isOffColor(item, colors));
+            if (!symbol) continue;
+            const message = L`Activation uses {${symbol.raw}} outside the card's colors.`;
+            findings.push({ message, location: rulesRange(range) });
+        }
+        return findings;
     }
 }

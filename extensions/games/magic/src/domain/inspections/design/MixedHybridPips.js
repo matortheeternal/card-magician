@@ -9,6 +9,7 @@ export default class MixedHybridPips extends CardInspection {
         super({
             id: 'mixed-hybrid-pips',
             title: L`Several different hybrid symbols`,
+            field: 'manaCost',
             category: DESIGN,
             group: MANA_COSTS,
             description: L`Mana costs mixing two or more different hybrid symbols.`
