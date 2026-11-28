@@ -9,7 +9,9 @@ import Magic from '@sigil-sifter/magic';
 import CardMagicianMagic from '@sigil-sifter/magic-cm';
 import CardMagicianCard from '@sigil-sifter/magic-cm/card';
 import { editCardTags } from './domain/cardTagInheritance.js';
-import * as tagRelationships from 'oracle-of-pie/src/tags/tagRelationships.js';
+import {
+    canonicalTag, effectiveTags, equivalentTags, inheritedTagSources, specificTags
+} from 'oracle-of-pie';
 import { buildColumns } from './ui/listView/columns.js';
 import { autoNumberCards } from './domain/autoNumber.js';
 import MakeManaCostAdapter from './domain/ManaCostAdapter.js';
@@ -34,7 +36,7 @@ import { registerStatistics } from './statistics/registerStatistics.js';
 
 class MagicSearchCard extends CardMagicianCard {
     get tags() {
-        return tagRelationships.equivalentTags(super.tags);
+        return equivalentTags(super.tags);
     }
 }
 
@@ -54,7 +56,9 @@ export default class MagicTheGathering extends CardMagicianGame {
         this.symbols = new MagicSymbols(this);
         this.textStructures = textStructures;
         this.oracleAssistance = new OracleAssistance();
-        this.tagRelationships = tagRelationships;
+        this.tagRelationships = {
+            canonicalTag, effectiveTags, equivalentTags, inheritedTagSources, specificTags
+        };
         this.editCardTags = editCardTags;
         registerStatistics(this);
     }
