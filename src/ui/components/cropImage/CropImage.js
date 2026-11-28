@@ -94,7 +94,7 @@ class CropImage extends HTMLElement {
             }
             this._loadedSrc = source;
         }
-        if (!this._srcWidth || !this._srcHeight || window.__EXPORTING__) return;
+        if (!this._srcWidth || !this._srcHeight) return;
         const viewportWidth  = this.clientWidth;
         const viewportHeight = this.clientHeight;
 

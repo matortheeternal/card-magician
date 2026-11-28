@@ -1,6 +1,4 @@
-import { cardToCanvas } from './cardToCanvas/cardToCanvas.js';
 import CardSheetPair from './CardSheetExporter/CardSheetPair.js';
-import Stopwatch from '../../shared/Stopwatch.js';
 
 function downloadImage(imageUrl, filename) {
     const link = document.createElement('a');
@@ -47,23 +45,26 @@ export async function cardsToBlob(cards) {
     return await canvasToBlob(canvas, 'image/png');
 }
 
-export async function saveHTMLAsImage(node, filename) {
+export async function exportCardImages(card) {
+    const sheet = new CardSheetPair({
+        backFaceMode: 'adjacent',
+        columns: 2,
+        gap: 0,
+        rows: 1
+    }, 1);
+    sheet.add(card);
+
     try {
-        window.__EXPORTING__ = true;
-
-        const stopwatch = new Stopwatch('render');
-        const canvas = await cardToCanvas(node);
-        stopwatch.lap('cardToCanvas');
-
-        const imgURL = canvas.toDataURL('image/png');
-        stopwatch.lap('toDataUrl');
-
-        downloadImage(imgURL, filename);
-        stopwatch.complete('saveHTMLAsImage');
-        log('fs').info(`Saved image to ${filename}`);
+        let index = 0;
+        for await (const { cardCanvas } of sheet.front.cardOutputs({ scale: 2 })) {
+            const filename = `${card.baseName} - ${index}.png`;
+            downloadImage(cardCanvas.toDataURL('image/png'), filename);
+            log('fs').info(`Saved image to ${filename}`);
+            index++;
+        }
     } catch (err) {
         log('fs').error('Failed to save image:', err);
     } finally {
-        window.__EXPORTING__ = false;
+        sheet.front.cleanup();
     }
 }

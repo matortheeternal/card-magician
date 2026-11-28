@@ -1,4 +1,5 @@
 import { selectCard } from '../../../domain/projects/projectManager.js';
+import { executeAction } from '../../systems/actionSystem.js';
 import {
     createCard, createTestProject, deleteTestProject, eventually, flushCard
 } from '../../../shared/testing/testUtils.js';
@@ -9,6 +10,45 @@ describe('Card display', () => {
     });
 
     afterEach(async () => { await deleteTestProject(); });
+
+    it('exports both card faces at full size regardless of preview scale', async () => {
+        await createCard();
+        const card = selectedProjectCard;
+        card.front.name = 'Front face';
+        card.back = { name: 'Back face' };
+        await selectCard(card);
+        await flushCard();
+
+        const preview = document.querySelector('cm-display-card');
+        const anchorClick = spyOn(HTMLAnchorElement.prototype, 'click');
+        const originalTransform = preview.canvas.style.transform;
+        const exportsByWidth = [];
+        try {
+            for (const width of [375, 296]) {
+                preview.canvas.style.transform = `scale(${width / 375})`;
+                expect(preview.canvas.getBoundingClientRect().width).toBeCloseTo(width);
+                anchorClick.calls.reset();
+                await executeAction('export-card-image');
+                const links = anchorClick.calls.all().map(call => call.object);
+                expect(links.map(link => link.download)).toEqual([
+                    `${card.baseName} - 0.png`, `${card.baseName} - 1.png`
+                ]);
+                exportsByWidth.push(links.map(link => link.href));
+            }
+        } finally {
+            preview.canvas.style.transform = originalTransform;
+        }
+
+        const [fullPreview, narrowPreview] = exportsByWidth;
+        expect(narrowPreview).toEqual(fullPreview);
+        expect(fullPreview[0]).not.toBe(fullPreview[1]);
+        for (const url of narrowPreview) {
+            const image = new Image();
+            image.src = url;
+            await image.decode();
+            expect([image.naturalWidth, image.naturalHeight]).toEqual([750, 1046]);
+        }
+    });
 
     it('switches faces with empty flavor text without resize loop errors', async () => {
         await createCard();

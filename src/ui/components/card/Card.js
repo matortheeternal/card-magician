@@ -73,7 +73,7 @@ class Card extends HTMLElement {
     }
 
     flip() {
-        if (!this.canFlip || window.__EXPORTING__) return;
+        if (!this.canFlip) return;
         if (this.classList.contains('flipping')) {
             this.classList.toggle('flipped');
             return;

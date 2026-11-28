@@ -2,7 +2,7 @@ import ReactiveComponent from '../ReactiveComponent.js';
 import html from './displayCard.html.js';
 import { onActiveCardChanged } from '../../../domain/projects/projectManager.js';
 import { registerAction } from '../../systems/actionSystem.js';
-import { saveHTMLAsImage } from '../../../domain/export/cardImageExporter.js';
+import { exportCardImages } from '../../../domain/export/cardImageExporter.js';
 import { toggleDisplay } from '../../../shared/htmlUtils.js';
 import { registerState } from '../../systems/navigationSystem.js';
 import { registerHotkey } from '../../systems/hotkeySystem.js';
@@ -92,12 +92,8 @@ export default class DisplayCard extends ReactiveComponent {
     }
 
     exportCardImage() {
-        const cardElement = this.querySelector('cm-card');
-        const cardFaces = cardElement.querySelectorAll(`cm-card-face`);
-        cardFaces.forEach((cardFace, index) => {
-            const filename = `${selectedProjectCard.baseName} - ${index}.png`;
-            saveHTMLAsImage(cardFace, filename);
-        });
+        if (!window.selectedProjectCard) return;
+        return exportCardImages(window.selectedProjectCard);
     }
 }
 

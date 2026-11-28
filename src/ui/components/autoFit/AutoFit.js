@@ -119,7 +119,6 @@ export default class AutoFit extends HTMLElement {
     }
 
     fit() {
-        if (window.__EXPORTING__) return;
         const best = binarySearch(
             this.minFont,
             this.maxFont,
