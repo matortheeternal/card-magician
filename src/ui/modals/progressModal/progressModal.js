@@ -33,6 +33,10 @@ export default class ProgressModal extends Modal {
         this.#unregister?.();
     }
 
+    get capturesHotkeys() {
+        return this.data.capturesHotkeys;
+    }
+
     get onClickHandlers() {
         return {
             ...super.onClickHandlers,

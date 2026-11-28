@@ -10,7 +10,7 @@ const suiteGroups = JSON.parse(
 );
 const suites = Object.keys(suiteGroups);
 
-const startScreenSuites = ['Project lifecycle'];
+const startScreenSuites = ['Project lifecycle', 'Start screen MSE import'];
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'card-magician-electron-'));
 

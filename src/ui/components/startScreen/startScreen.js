@@ -23,6 +23,7 @@ export default class StartScreen extends ReactiveComponent {
     bind() {
         this.on('cm-start-nav-select', event => this.showTab(event.detail.tabId));
         this.on('cm-project-select-new', () => this.showView('cm-new-project-form'));
+        this.on('cm-project-select-import', () => executeAction('start-mse-import'));
         this.on('cm-project-select-browse', () => this.openProject());
         this.on('cm-project-select-open', event => {
             void executeAction('start-project', event.detail.filePath);

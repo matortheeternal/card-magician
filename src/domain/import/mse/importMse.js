@@ -1,8 +1,4 @@
-import platform from '../../../shared/platformAdapter.js';
 import { createImporter } from './cardImporterRegistry.js';
-import { registerAction } from '../../../ui/systems/actionSystem.js';
-import { switchProject } from '../../projects/projectManager.js';
-import { openModal } from '../../../ui/modals/modalManager.js';
 import * as progress from '../../../ui/systems/progressSystem.js';
 import MseFileAdapter from './MseFileAdapter.js';
 import { getStructure } from './cardStructureRegistry.js';
@@ -12,7 +8,7 @@ const L = localize('import-mse');
 const report = createReporter({ unit: 'ImportMSE', label: 'MSE Set Importer' });
 
 const TESTED_MSE_VERSION = '2.6.0';
-const TESTED_MSE_GAME = 'magic';
+export const MSE_GAME = 'magic';
 const TESTED_MSE_GAME_VERSION = '2026-09-06';
 const TESTED_STYLESHEET = 'm15-altered';
 const TESTED_STYLESHEET_VERSION = '2026-09-06';
@@ -23,7 +19,7 @@ function checkVersion(mseVersion) {
 }
 
 function checkGame(mseGame, mseGameVersion) {
-    if (mseGame !== TESTED_MSE_GAME)
+    if (mseGame !== MSE_GAME)
         throw new Error('Import only supports Magic: The Gathering projects.');
     if (mseGameVersion !== TESTED_MSE_GAME_VERSION)
         return L`Untested MSE game version "${mseGameVersion}"`;
@@ -145,7 +141,9 @@ export async function importMseFile(filePath) {
         throw new Error('User cancelled import.');
     progress.setMax(mseSet.card.length);
     progress.setStatus(L`Loading set info`);
-    await importSetInfo(mseSet.set_info, project, adapter);
+    const setInfo = {};
+    await importSetInfo(mseSet.set_info, setInfo, adapter);
+    Object.assign(project, setInfo);
     progress.setStatus(L`Importing cards`);
     const reportFailure = makeFailureReporter(filePath, failures);
     const cardMap = await importCards(mseSet, adapter, reportFailure);
@@ -153,57 +151,5 @@ export async function importMseFile(filePath) {
     if (mseSet.card.length && !project.cards.length)
         throw new Error(L`No cards could be imported. See the error report for details.`);
     project.afterCardsChanged();
-    return [project, failures];
+    return [project, failures, setInfo];
 }
-
-function showPartialStatus(project, failures) {
-    progress.setTitle(L`Import partially complete`);
-    const numCards = project.cards.length;
-    const numFails = failures.length;
-    progress.setStatus(L`Imported ${numCards} cards; ${numFails} cards failed.`);
-    progress.setOperation(L`Skipped entries are listed in the error report.`);
-}
-
-async function chooseImportLocation(filePath, callback) {
-    const { stem } = await platform.getPathParts(filePath);
-    openModal('cm-new-project-modal', {
-        title: L`Import an MSE Set`, name: stem, confirmLabel: L`Import`, callback
-    });
-}
-
-async function saveImportedProject(project, projectPath) {
-    progress.setStatus(L`Saving project`);
-    await project.setFilePath(projectPath);
-    await project.saveAll(projectPath);
-    await activeGame.config.addRecentProject();
-}
-
-async function importMseSet(filePath, projectPath) {
-    log('state').info('Importing MSE set:', filePath);
-    openModal('cm-progress-modal', { title: L`Importing...` });
-    try {
-        let failures = [];
-        const project = await switchProject(async () => {
-            const [imported, importFailures] = await importMseFile(filePath);
-            failures = importFailures;
-            return imported;
-        });
-        await saveImportedProject(project, projectPath);
-        progress.setTitle(L`Import complete!`);
-        progress.complete();
-        if (failures.length) showPartialStatus(project, failures);
-    } catch (error) {
-        progress.onError(error);
-        report('import', error, [filePath]);
-        log('user').error('Error importing MSE set', error);
-    }
-}
-
-registerAction('import-mse-set', async () => {
-    log('user').info('Import MSE set');
-    const filePath = await platform.openSingleFileDialog(L`Import an MSE Set`);
-    if (!filePath) return;
-    await chooseImportLocation(filePath, projectPath => {
-        return importMseSet(filePath, projectPath);
-    });
-});

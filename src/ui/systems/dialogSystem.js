@@ -1,4 +1,5 @@
 import AlertDialog from '../dialogs/AlertDialog.js';
+import ChoiceDialog from '../dialogs/ChoiceDialog.js';
 import ConfirmDialog from '../dialogs/ConfirmDialog.js';
 import PromptDialog from '../dialogs/PromptDialog.js';
 
@@ -31,6 +32,10 @@ export const dialogSystem = {
 
     confirm(message, options = {}) {
         return enqueue(new ConfirmDialog(message, options));
+    },
+
+    choose(message, options) {
+        return enqueue(new ChoiceDialog(message, options));
     },
 
     prompt(message, options = {}) {

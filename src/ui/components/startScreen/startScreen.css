@@ -30,7 +30,10 @@ cm-start-screen {
     > section {
         display: flex;
         min-height: 0;
-        padding: var(--sl-spacing-large);
+
+        &:not(:has(> cm-project-select)) {
+            padding: var(--sl-spacing-large);
+        }
 
         > * {
             flex: 1;

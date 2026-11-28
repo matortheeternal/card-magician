@@ -1,18 +1,28 @@
 cm-project-select {
     display: flex;
     flex-direction: column;
-    gap: var(--sl-spacing-small);
+    min-width: 0;
     min-height: 0;
 
     > header {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: var(--sl-spacing-x-small);
-        padding-bottom: var(--sl-spacing-small);
+        gap: var(--sl-spacing-x-small) var(--sl-spacing-2x-small);
+        padding: var(--sl-spacing-large) var(--sl-spacing-large) var(--sl-spacing-small);
         border-bottom: 1px solid var(--sl-input-border-color);
 
         > sl-input {
-            flex: 1;
+            flex: 1 1 12rem;
+            min-width: 0;
+        }
+
+        sl-menu-item::part(base) {
+            padding-inline: var(--sl-spacing-medium);
+        }
+
+        sl-menu-item:not([type="checkbox"])::part(checked-icon) {
+            display: none;
         }
     }
 
@@ -23,7 +33,7 @@ cm-project-select {
         flex-direction: column;
         gap: var(--sl-spacing-2x-small);
         margin: 0;
-        padding: 0;
+        padding: var(--sl-spacing-small) var(--sl-spacing-large) var(--sl-spacing-large);
         overflow-y: auto;
         list-style: none;
     }
@@ -68,5 +78,6 @@ cm-project-select {
 
     > p {
         margin: 0;
+        padding: var(--sl-spacing-small) var(--sl-spacing-large) 0;
     }
 }

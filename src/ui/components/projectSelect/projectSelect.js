@@ -73,6 +73,9 @@ export default class ProjectSelect extends ReactiveComponent {
             openProject: () => this.emit('cm-project-select-browse'),
             openRecent: event => this.openRecent(event.target)
         });
+        this.on('sl-select', event => {
+            if (event.detail.item.value === 'mse') this.emit('cm-project-select-import');
+        });
         this.on('sl-input', () => this.renderProjects());
     }
 
@@ -138,14 +141,23 @@ export default class ProjectSelect extends ReactiveComponent {
     render() {
         this.innerHTML = (
             `<header>
-                <sl-input type="search" clearable placeholder="${L`Search projects`}"
+                <sl-input type="search" size="small" clearable
+                    placeholder="${L`Search projects`}"
                     aria-label="${L`Search projects`}">
                     <sl-icon slot="prefix" name="search"></sl-icon>
                 </sl-input>
-                <sl-button variant="primary" data-click-action="newProject">
-                    ${L`New project`}
+                <sl-button size="small" variant="primary" data-click-action="newProject">
+                    ${L`New`}
                 </sl-button>
-                <sl-button data-click-action="openProject">${L`Open…`}</sl-button>
+                <sl-button size="small" data-click-action="openProject">
+                    ${L`Open`}
+                </sl-button>
+                <sl-dropdown placement="bottom-end">
+                    <sl-button size="small" slot="trigger" caret>${L`Import`}</sl-button>
+                    <sl-menu>
+                        <sl-menu-item value="mse">${L`From MSE`}</sl-menu-item>
+                    </sl-menu>
+                </sl-dropdown>
             </header>
             <p class="text-muted" hidden></p>
             <ul aria-label="${L`Recent projects`}"></ul>`

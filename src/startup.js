@@ -2,6 +2,8 @@ import { mountExtensions } from './shared/extensionManager.js';
 import { setupExitHandling } from './lifecycle.js';
 import { loadTemplates } from './domain/template/templateRegistry.js';
 import { loadGames, setGame } from './domain/game/gameManager.js';
+import { chooseMseImport } from './domain/import/mse/importMseProject.js';
+import { MSE_GAME } from './domain/import/mse/importMse.js';
 import imageCache from './domain/graphics/ImageCache.js';
 import platform from './shared/platformAdapter.js';
 import { loadExporters } from './domain/export/exporterManager.js';
@@ -21,6 +23,8 @@ import YAMLSerializer from './domain/projects/serializers/YAMLSerializer.js';
 const L = localize('main');
 const startupLog = log('startup');
 const report = createReporter({ unit: 'startup' });
+let preparedGameId;
+let loadedWorkspaceResources = false;
 
 function ensureDirectories() {
     return platform.createDirectory(appEnvironment.paths.data + '/cache/images');
@@ -78,21 +82,34 @@ function showMainUI() {
     document.body.append(floatingStatus);
 }
 
-async function startGameSession(gameId, createProject) {
-    startupLog.debug(`Setting game to ${gameId}`);
-    await setGame(gameId);
+async function loadWorkspaceResources() {
+    if (loadedWorkspaceResources) return;
     startupLog.debug('Loading templates');
     await loadTemplates();
     startupLog.debug('Loading exporters');
     await loadExporters();
     startupLog.debug('Loading scripts');
     await loadScripts();
-    startupLog.debug('Loading tags');
-    await tagManager.load();
     startupLog.debug('Preloading image cache');
     await imageCache.preload();
+    loadedWorkspaceResources = true;
+}
+
+async function prepareGameSession(gameId) {
+    if (preparedGameId === gameId) return;
+    startupLog.debug(`Setting game to ${gameId}`);
+    await setGame(gameId);
+    await loadWorkspaceResources();
+    startupLog.debug('Loading tags');
+    await tagManager.load();
+    preparedGameId = gameId;
+}
+
+async function startGameSession(gameId, createProject, saveProject) {
+    await prepareGameSession(gameId);
     startupLog.debug('Opening project');
-    await switchProject(createProject);
+    const project = await switchProject(createProject);
+    await saveProject?.(project);
     await activeGame.config.addRecentProject();
     startupLog.info('Startup successful, loading UI');
     showMainUI();
@@ -142,6 +159,10 @@ registerAction('open-settings', section => {
 registerAction('start-project', filePath => startSession(async () => {
     const gameId = await readProjectGame(filePath);
     await startGameSession(gameId, () => activeGame.Project.load(filePath));
+}));
+
+registerAction('start-mse-import', () => chooseMseImport((create, save) => {
+    return startGameSession(MSE_GAME, create, save);
 }));
 
 registerAction('start-new-project', (gameId, filePath) => startSession(() => {
