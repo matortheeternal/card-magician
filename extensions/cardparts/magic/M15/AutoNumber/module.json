@@ -3,5 +3,5 @@
   "gameId": "magic",
   "description": "Handles card auto numbering for M15 Magic: the Gathering templates.",
   "author": "Mator",
-  "version": "0.1"
+  "version": "0.1.1"
 }

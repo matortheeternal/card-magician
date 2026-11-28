@@ -4,5 +4,5 @@
   "folder": "tts",
   "description": "Exports a tabletop simulator pack spawner object for the set.",
   "author": "Mator",
-  "version": "0.1"
+  "version": "0.1.1"
 }

@@ -5,7 +5,7 @@
   "label": "Archetypes",
   "description": "This template is for the M20 Archetypes Frame.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "rarity": "ad",
   "card": [
     "magic/M15/CardLayout",

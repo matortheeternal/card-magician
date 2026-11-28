@@ -6,7 +6,7 @@
   "label": "Ixalan Map",
   "description": "This template is for the Ixalan Map Frame.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/MapFrame",

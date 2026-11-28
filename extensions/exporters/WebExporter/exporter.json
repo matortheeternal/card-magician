@@ -4,5 +4,5 @@
   "folder": "web",
   "description": "Exports the set as a JSON file for use by cardplace or another website.",
   "author": "Mator",
-  "version": "0.1"
+  "version": "0.1.1"
 }

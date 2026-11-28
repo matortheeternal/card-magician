@@ -5,7 +5,7 @@
   "label": "M15 Textless Land",
   "description": "Template for representing Magic 2015 textless land cards.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "card": [
     "magic/M15/CardLayout",
     "magic/M15/LandFrame",

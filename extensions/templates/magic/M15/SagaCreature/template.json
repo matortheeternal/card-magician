@@ -5,7 +5,7 @@
   "label": "M15 Saga Creature",
   "description": "This template is for M15 Saga Creatures.",
   "author": "Mator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "autoMatch": {
     "superType": ["Enchantment", "Creature"],
     "subType": ["Saga"]

@@ -4,7 +4,7 @@
   "folder": "images",
   "description": "Exports the set's cards to individual image files.",
   "author": "Mator",
-  "version": "0.2",
+  "version": "0.2.1",
   "dependencies": {
     "CardSheetExporter": "^0.1"
   }
