@@ -16,6 +16,7 @@ cm-inspection-examples {
     figcaption {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: var(--sl-spacing-2x-small);
         margin-top: var(--sl-spacing-x-small);
         font-size: var(--sl-font-size-small);
