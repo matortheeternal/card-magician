@@ -141,21 +141,21 @@ export default class ProjectSelect extends ReactiveComponent {
     render() {
         this.innerHTML = (
             `<header>
-                <sl-input type="search" size="small" clearable
+                <sl-input type="search" clearable
                     placeholder="${L`Search projects`}"
                     aria-label="${L`Search projects`}">
                     <sl-icon slot="prefix" name="search"></sl-icon>
                 </sl-input>
-                <sl-button size="small" variant="primary" data-click-action="newProject">
+                <sl-button variant="primary" data-click-action="newProject">
                     ${L`New`}
                 </sl-button>
-                <sl-button size="small" data-click-action="openProject">
+                <sl-button data-click-action="openProject">
                     ${L`Open`}
                 </sl-button>
                 <sl-dropdown placement="bottom-end">
-                    <sl-button size="small" slot="trigger" caret>${L`Import`}</sl-button>
+                    <sl-button slot="trigger" caret>${L`Import`}</sl-button>
                     <sl-menu>
-                        <sl-menu-item value="mse">${L`From MSE`}</sl-menu-item>
+                        <sl-menu-item value="mse">${L`MSE Set`}</sl-menu-item>
                     </sl-menu>
                 </sl-dropdown>
             </header>
