@@ -49,6 +49,10 @@ cm-inspection-exceptions {
         width: 9rem;
     }
 
+    sl-icon-button {
+        color: var(--sl-color-danger-600);
+    }
+
     [role="group"] {
         display: flex;
         flex-shrink: 0;
