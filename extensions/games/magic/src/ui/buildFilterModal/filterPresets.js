@@ -215,7 +215,6 @@ const rarityGroup = {
 };
 
 const manaColors = [...'wubrg'];
-const anyMana = [...manaColors, 'c'].map(color => `produces:${color}`).join(' or ');
 const anyColorPair = manaColors.flatMap((color, index) =>
     manaColors.slice(index + 1).map(other => `produces:${color}${other}`)
 ).join(' or ');
@@ -223,8 +222,8 @@ const anyColorPair = manaColors.flatMap((color, index) =>
 const producesGroup = {
     label: L`Mana Production`,
     options: [
-        { q: `t:creature -t:land (${anyMana})`, label: L`Mana Dorks` },
-        { q: `t:artifact -t:land (${anyMana})`, label: L`Mana Rocks` },
+        { q: 't:creature -t:land produces>0', label: L`Mana Dorks` },
+        { q: 't:artifact -t:land produces>0', label: L`Mana Rocks` },
         { q: `(${anyColorPair})`, label: L`Color Fixers` },
     ]
 };
