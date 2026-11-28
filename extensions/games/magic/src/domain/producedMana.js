@@ -15,18 +15,19 @@ const basicLandMana = new Map([
 function effectMana(effect) {
     const { mana } = effect;
     if (anyType.test(mana)) return 'WUBRGC';
-    const symbols = Array.from(mana.matchAll(manaSymbol), match => match[1].toUpperCase());
+    const matches = mana.matchAll(manaSymbol);
+    const symbols = Array.from(matches, match => match[1].toUpperCase());
     if (anyColor.test(mana)) symbols.push(...'WUBRG');
     return symbols;
 }
 
+function intrinsicMana(card) {
+    if (!card.isLand) return [];
+    return card.subtypes.map(subtype => basicLandMana.get(subtype)).filter(Boolean);
+}
+
 export default function* producedMana(parsed) {
-    if (parsed.card.isLand) {
-        for (const subtype of parsed.card.subtypes) {
-            if (basicLandMana.has(subtype)) yield basicLandMana.get(subtype);
-        }
-    }
-    for (const [node, context] of parsed.walked) {
+    yield* intrinsicMana(parsed.card);
+    for (const [node, context] of parsed.walked)
         if (addMana.test(node, context)) yield* effectMana(node);
-    }
 }
