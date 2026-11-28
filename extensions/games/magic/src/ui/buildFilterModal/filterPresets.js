@@ -135,7 +135,7 @@ const textGroup = {
         },
         {
             q: '(o:destroy or o:exile or '
-                + '(o:/damage to (target creature|any target|each creature)/)',
+                + 'o:/damage to (target creature|any target|each creature)/)',
             label: L`Hard removal`,
         },
         {
@@ -155,21 +155,28 @@ const textGroup = {
         { q: 'o=""',       label: L`Vanilla`               },
 
         { q: 'o:"+1/+1 counter"', label: L`+1/+1 counters` },
-        { q: 'o:flash',           label: L`Flash`          },
-        { q: 'o:flying',          label: L`Flying`         },
-        { q: 'o:trample',         label: L`Trample`        },
-        { q: 'o:vigilance',       label: L`Vigilance`      },
-        { q: 'o:lifelink',        label: L`Lifelink`       },
-        { q: 'o:haste',           label: L`Haste`          },
-        { q: 'o:defender',        label: L`Defender`       },
-        { q: 'o:deathtouch',      label: L`Deathtouch`     },
-        { q: 'o:"first strike"',  label: L`First strike`   },
-        { q: 'o:"double strike"', label: L`Double strike`  },
-        { q: 'o:menace',          label: L`Menace`         },
-        { q: 'o:reach',           label: L`Reach`          },
-        { q: 'o:indestructible',  label: L`Indestructible` },
-        { q: 'o:hexproof',        label: L`Hexproof`       },
-        { q: 'o:ward',            label: L`Ward`           },
+    ]
+};
+
+const keywordsGroup = {
+    label: L`Keywords`,
+    allowMultiple: true,
+    options: [
+        { q: 'kw:flash',           label: L`Flash`          },
+        { q: 'kw:flying',          label: L`Flying`         },
+        { q: 'kw:trample',         label: L`Trample`        },
+        { q: 'kw:vigilance',       label: L`Vigilance`      },
+        { q: 'kw:lifelink',        label: L`Lifelink`       },
+        { q: 'kw:haste',           label: L`Haste`          },
+        { q: 'kw:defender',        label: L`Defender`       },
+        { q: 'kw:deathtouch',      label: L`Deathtouch`     },
+        { q: 'kw:"first strike"',  label: L`First strike`   },
+        { q: 'kw:"double strike"', label: L`Double strike`  },
+        { q: 'kw:menace',          label: L`Menace`         },
+        { q: 'kw:reach',           label: L`Reach`          },
+        { q: 'kw:indestructible',  label: L`Indestructible` },
+        { q: 'kw:hexproof',        label: L`Hexproof`       },
+        { q: 'kw:ward',            label: L`Ward`           },
     ]
 };
 
@@ -207,12 +214,18 @@ const rarityGroup = {
     ]
 };
 
+const manaColors = [...'wubrg'];
+const anyMana = [...manaColors, 'c'].map(color => `produces:${color}`).join(' or ');
+const anyColorPair = manaColors.flatMap((color, index) =>
+    manaColors.slice(index + 1).map(other => `produces:${color}${other}`)
+).join(' or ');
+
 const producesGroup = {
     label: L`Mana Production`,
     options: [
-        { q: 'produces>0 t:creature -t:land',  label: L`Mana Dorks` },
-        { q: 'produces>0 t:artifact -t:land',  label: L`Mana Rocks` },
-        { q: 'produces>1',  label: L`Color Fixers` },
+        { q: `t:creature -t:land (${anyMana})`, label: L`Mana Dorks` },
+        { q: `t:artifact -t:land (${anyMana})`, label: L`Mana Rocks` },
+        { q: `(${anyColorPair})`, label: L`Color Fixers` },
     ]
 };
 
@@ -241,6 +254,7 @@ export default [
     toughnessGroup,
     subtypeGroup,
     textGroup,
+    keywordsGroup,
     producesGroup,
     tagsGroup
 ];
