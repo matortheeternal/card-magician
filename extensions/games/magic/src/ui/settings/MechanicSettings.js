@@ -176,6 +176,7 @@ export default class MechanicSettings extends CardMagicianSettings {
                 .map(entry => entry.definition);
         }
         changed(this.project, Object.values(mechanicFields));
+        this.project.updateCardKeywords();
         this.emit('project-changed');
     }
 

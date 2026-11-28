@@ -2,7 +2,7 @@ import Oracle from 'oracle-of-pie';
 import { getPrintedColors } from './ColorIdentity.js';
 import { mechanicFields, projectDefinitions } from './projectMechanics.js';
 import {
-    eligibilityFields, getCardFaces, isOracleCard
+    eligibilityFields, getCardFaces, getFaceModels, isOracleCard
 } from './oracleCardEligibility.js';
 import { markUnrecognizedText } from './hljsMtg.js';
 import { defaultOracleTagStyle, oracleTagStyles } from './oracleTagStyles.js';
@@ -22,6 +22,12 @@ function faceMetadata(face, faceCount) {
 function cardForFace(face) {
     const root = face.isSubcard ? face.parent() : face;
     return root.parent?.() ?? { front: root };
+}
+
+function printedKeywords(parsed) {
+    return parsed.text.abilities
+        .filter(ability => ability.isKeywordAbility)
+        .flatMap(ability => ability.conferredKeywordNames);
 }
 
 export default class OracleAssistance {
@@ -64,8 +70,8 @@ export default class OracleAssistance {
         return projectStyle ?? defaultOracleTagStyle(tag);
     }
 
-    parse(face, text, faceCount) {
-        const oracle = this.oracleFor(window.activeProject);
+    parse(face, text, faceCount, project = window.activeProject) {
+        const oracle = this.oracleFor(project);
         const input = { ...faceMetadata(face, faceCount), text };
         const key = JSON.stringify(input);
         const cached = this.#cache.get(face);
@@ -76,7 +82,19 @@ export default class OracleAssistance {
     }
 
     getSuggestionModels(card) {
-        return getCardFaces(card).flatMap(face => [face, ...(face.subcards ?? [])]);
+        return getCardFaces(card).flatMap(getFaceModels);
+    }
+
+    cardKeywords(card, project) {
+        if (!isOracleCard(card)) return [];
+        const faceCount = getCardFaces(card).length;
+        const keywords = new Set();
+        for (const face of this.getSuggestionModels(card)) {
+            if (!face.rulesText?.trim()) continue;
+            const parsed = this.parse(face, face.rulesText, faceCount, project);
+            for (const name of printedKeywords(parsed)) keywords.add(name);
+        }
+        return [...keywords].sort();
     }
 
     suggestTags(card) {

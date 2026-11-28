@@ -37,7 +37,14 @@ export default class MagicProject extends CardMagicianProject {
     }
 
     async loadCard(filePath) {
-        return await MagicCard.load(filePath);
+        const card = await MagicCard.load(filePath);
+        card.updateKeywords(this);
+        return card;
+    }
+
+    updateCardKeywords() {
+        for (const card of this.cards) card.updateKeywords(this);
+        changed(this, 'cards');
     }
 
     async afterLoad() {

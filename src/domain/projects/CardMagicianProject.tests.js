@@ -35,4 +35,30 @@ describe('Project loading', () => {
         project.numberCard(next);
         expect(next.sequence).toBe(5);
     });
+
+    it('indexes keywords across faces and saves them on the card', async () => {
+        await platform.createDirectory(activeProject.cardsFolderPath);
+        const front = {
+            rulesText: 'Flying, trample\nTarget creature gains haste.',
+            adventure: { rulesText: 'Vigilance' }
+        };
+        await writeCard('Keywords.yml', { front, back: { rulesText: 'Trample' } });
+        const project = await loadProject();
+        const [card] = project.cards;
+
+        expect(card.keywords).toEqual(['flying', 'trample', 'vigilance']);
+        expect(activeGame.filter(project.cards, 'kw:trample')).toEqual([card]);
+        expect(activeGame.filter(project.cards, 'kw:haste')).toEqual([]);
+
+        card.front.rulesText = 'Flying';
+        card.back.rulesText = '';
+        await card.saveData();
+        const path = await platform.getJoinedPath(
+            project.cardsFolderPath, 'Keywords.yml'
+        );
+        const saved = await YAMLSerializer.load(path);
+        expect(saved.keywords).toEqual(['flying', 'vigilance']);
+        expect(saved.front.keywords).toBeUndefined();
+        expect(activeGame.filter(project.cards, 'kw:trample')).toEqual([]);
+    });
 });

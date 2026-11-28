@@ -27,6 +27,15 @@ export default class MagicCard extends window.CardMagicianCard {
         ];
     }
 
+    updateKeywords(project) {
+        this.keywords = activeGame.oracleAssistance.cardKeywords(this, project);
+    }
+
+    async saveData() {
+        this.updateKeywords(window.activeProject);
+        await super.saveData();
+    }
+
     get name() {
         return collectMap(this, f => f.name, ' + ') || 'blank';
     }
