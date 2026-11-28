@@ -1,16 +1,3 @@
-export const KEYWORDS = [
-    'Flying',
-    'Trample',
-    'Vigilance',
-    'Indestructible',
-    'Deathtouch',
-    'Lifelink',
-    'Haste',
-    'Ward',
-    'Station',
-    'Level up'
-].join('|');
-
 export const ABILITY_WORDS = [
     'Landfall',
     'Raid',

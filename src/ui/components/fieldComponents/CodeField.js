@@ -84,6 +84,8 @@ export default class CodeField extends FieldComponent {
         const syntaxKey = this.field.syntax || 'plaintext';
         return editor => {
             if (!hljs.listLanguages().includes(syntaxKey)) return;
+            if (this.rulesAssistance)
+                window.activeGame.prepareRulesSyntax?.(window.activeProject);
             const code = editor.textContent;
             editor.innerHTML = hljs.highlight(code, { language: syntaxKey }).value;
             if (syntaxKey === 'yaml') fixYAML(editor);
@@ -103,14 +105,15 @@ export default class CodeField extends FieldComponent {
         this.jar.onUpdate(code => this.onChange(code));
         const assistance = this.rulesAssistance;
         const config = window.activeGame?.config;
-        if (!assistance || !config || this.usesCardInspections) return;
+        if (!assistance) return;
         const refresh = () => this.refreshHighlighting();
-        this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules', refresh);
         const { definitionFields } = assistance;
         if (window.activeProject && definitionFields?.length) {
             this.watch('rules-definitions', window.activeProject, definitionFields,
                        refresh);
         }
+        if (!config || this.usesCardInspections) return;
+        this.watch('rules-diagnostics', config, 'highlightUnrecognizedRules', refresh);
         this.watch('rules-metadata', this.model, assistance.faceFields, refresh);
         this.watchEligibility(assistance, refresh);
     }

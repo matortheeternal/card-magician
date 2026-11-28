@@ -21,6 +21,7 @@ import SigilSifter from 'sigil-sifter';
 import ColorIdentity, { getCardFaceColors } from './domain/ColorIdentity.js';
 import OracleAssistance from './domain/OracleAssistance.js';
 import mtg from './domain/hljsMtg.js';
+import { entriesFor } from './domain/projectMechanics.js';
 import baseCardFields from './baseCardFields.js';
 import MagicProject from './MagicProject.js';
 import MagicCard from './MagicCard.js';
@@ -46,6 +47,9 @@ function randomId() {
 }
 
 export default class MagicTheGathering extends CardMagicianGame {
+    #updateMtgLanguage;
+    #mechanicNames = '[]';
+
     constructor(metadata) {
         super(metadata);
         this.renderSetSymbol = renderSetSymbol;
@@ -92,8 +96,21 @@ export default class MagicTheGathering extends CardMagicianGame {
         for (const inspection of [...pieInspections(), ...CARD_INSPECTIONS])
             this.registerInspection(inspection);
         this.registerSettings(InspectionSettings);
-        this.registerLanguage('mtg', mtg, await this.loadFile('hljsMtg.css'));
+        this.#updateMtgLanguage = this.registerLanguage(
+            'mtg', () => mtg(), await this.loadFile('hljsMtg.css')
+        );
         this.setupSearch();
+    }
+
+    prepareRulesSyntax(project) {
+        if (!this.#updateMtgLanguage) return;
+        const names = entriesFor(project)
+            .filter(({ definition }) => !definition.disabled)
+            .map(({ definition }) => definition.name);
+        const key = JSON.stringify(names);
+        if (key === this.#mechanicNames) return;
+        this.#updateMtgLanguage(() => mtg(names));
+        this.#mechanicNames = key;
     }
 
     setupSearch() {

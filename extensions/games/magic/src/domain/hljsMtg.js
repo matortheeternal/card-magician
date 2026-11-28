@@ -1,12 +1,35 @@
-import { ABILITY_WORDS, CHAPTERS, KEYWORDS, MACROS } from './hljsConstants.js';
+import { DEFAULT_KEYWORDS, RulesDefinitions } from 'oracle-of-pie';
+import { ABILITY_WORDS, CHAPTERS, MACROS } from './hljsConstants.js';
 import unrecognizedRanges from './unrecognizedRanges.js';
 
-const MANA_SYMBOL_PATTERN = /\{[^}]+}/i;
+const MANA_SYMBOL_PATTERN = /\{[^}]+\}/;
 const LEVEL_HEADER_PATTERN = /^LEVEL (?:\d+\+|\d+-\d+)\n[^\/\n]+\/[^\/\n]+\n/;
 const NEXT_LEVEL_PATTERN = /(?=^LEVEL)/;
 const STATION_HEADER_PATTERN = /^\d+\+ \| /;
 
-export default function mtg() {
+const REGEX_SPECIAL = /[.*+?^${}()|[\]\\]/g;
+const WORD_CHARACTER = '[\\p{L}\\p{N}_]';
+
+const stockDefinitions = RulesDefinitions.withDefaults();
+const stockNames = [
+    ...DEFAULT_KEYWORDS,
+    ...stockDefinitions.keywords.definitions.map(({ name }) => name),
+    ...stockDefinitions.actions.definitions.map(({ name }) => name)
+];
+const keywordFamilies = stockDefinitions.keywords.definitions
+    .filter(definition => definition.pattern)
+    .map(definition => definition.patternSource);
+
+function keywordPattern(customNames) {
+    const names = [...stockNames, ...customNames].map(name => name.toLowerCase());
+    const sources = [...new Set(names)]
+        .sort((a, b) => b.length - a.length)
+        .map(name => name.replace(REGEX_SPECIAL, '\\$&'));
+    const terms = [...sources, ...keywordFamilies].join('|');
+    return new RegExp(`(?<!${WORD_CHARACTER})(?i:${terms})(?!${WORD_CHARACTER})`, 'u');
+}
+
+export default function mtg(customNames = []) {
     const macroRule = {
         className: 'built_in',
         begin: new RegExp(`(?<!\\w)(${MACROS})(?!\\w)`)
@@ -24,7 +47,7 @@ export default function mtg() {
 
     const keywordRule = {
         className: 'keyword',
-        begin: new RegExp(`\\b(${KEYWORDS})\\b`, 'i')
+        begin: keywordPattern(customNames)
     };
 
     const commentRule = {
@@ -43,8 +66,8 @@ export default function mtg() {
             contains: [
                 commentRule,
                 symbolRule,
-                keywordRule,
                 abilityWordRule,
+                keywordRule,
                 // typeRule,
                 macroRule,
             ]
@@ -63,14 +86,15 @@ export default function mtg() {
     return {
         name: 'MTG',
         case_insensitive: false,
+        unicodeRegex: true,
         contains: [
             commentRule,
             levelBlockRule,
             stationBlockRule,
             sagaBlockRule,
             symbolRule,
-            keywordRule,
             abilityWordRule,
+            keywordRule,
             // typeRule,
             macroRule,
         ]
